@@ -45,8 +45,6 @@ class ParseSuiteTest {
             if (data.getError()) {
                 assertTrue(result.getError().isPresent(), "Expected error, but got none in file " + data.getName() + ", " +
                         data.getLabel() + "\n" + result.getEvents());
-                System.out.println("Error");
-
             } else {
                 if (result.getError().isPresent()) {
                     //println("Expected NO error, but got: " + result.second)
@@ -54,7 +52,6 @@ class ParseSuiteTest {
                 } else {
                     List<Pair> pairs = Streams.zip(data.getEvents().stream(), result.getEvents().stream(), Pair::new)
                             .collect(Collectors.toList());
-                    System.out.println(pairs);
                     for(Pair pair : pairs) {
                         assertEquals(pair.getEtalon(), pair.getEvent().toString());
                     }

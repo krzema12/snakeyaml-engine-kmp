@@ -15,13 +15,13 @@
  */
 package org.snakeyaml.engine.events;
 
-import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
+import org.snakeyaml.engine.common.ScalarStyle;
+import org.snakeyaml.engine.exceptions.Mark;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.snakeyaml.engine.common.ScalarStyle;
-import org.snakeyaml.engine.exceptions.Mark;
+import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
 
 /**
  * Marks a scalar value.
@@ -144,7 +144,7 @@ public final class ScalarEvent extends NodeEvent {
         if (ESCAPES_TO_PRINT.containsKey(ch)) {
             Integer i = ESCAPES_TO_PRINT.get(ch);
             Character c = Character.valueOf((char) i.intValue());
-            return c.toString();
+            return "\\" + c.toString();
         } else {
             return ch.toString();
         }

@@ -48,7 +48,7 @@ public final class MappingStartEvent extends CollectionStartEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("+MAP");
         if (getFlowStyle() == FlowStyle.FLOW) {
-            builder.append(" {}");
+            //TODO builder.append(" {}");
         }
         builder.append(super.toString());
         return builder.toString();

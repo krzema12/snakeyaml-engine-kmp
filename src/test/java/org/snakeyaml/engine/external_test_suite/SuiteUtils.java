@@ -26,6 +26,8 @@ import com.google.common.io.Files;
 
 public class SuiteUtils {
 
+    public static final String FOLDER_NAME = "src/test/resources/comprehensive-test-suite-data";
+
     public static List<File> getAllFoldersIn(String folder) {
         File file = new File(folder);
         if (!file.exists()) {
@@ -52,9 +54,11 @@ public class SuiteUtils {
     }
 
     public static List<SuiteData> getAll() {
-        List<File> allSuiteFiles = getAllFoldersIn("src/test/resources/comprehensive-test-suite-data");
+        List<File> allSuiteFiles = getAllFoldersIn(FOLDER_NAME);
         return allSuiteFiles.stream().map(file -> readData(file)).collect(Collectors.toList());
     }
 
-
+    public static SuiteData getOne(String name) {
+        return readData(new File(FOLDER_NAME, name));
+    }
 }

@@ -17,6 +17,7 @@ package org.snakeyaml.engine.external_test_suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,12 @@ import com.google.common.collect.Streams;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
-    private List<String> deviations = Lists.newArrayList("9C9N", "SU5Z", "QB6E", "QLJ7", "EB22");
+    public static final List<String> deviationsWithSuccess = Lists.newArrayList("9C9N", "SU5Z", "QB6E", "QLJ7", "EB22");
+    public static final List<String> deviationsWithError = Lists.newArrayList("CXX2", "KZN9", "J3BT", "DC7X", "6HB6", "2JQS", "6M2F", "S3PD", "Q5MG", "FRK4", "NHX8", "DBG4", "4ABK", "M7A3", "9MMW", "6BCT", "A2M4", "2SXE", "DK3J", "W5VH", "8XYN", "K54U", "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 
     private List<SuiteData> all = SuiteUtils.getAll().stream()
-            .filter(data -> !deviations.contains(data.getName()))
+            .filter(data -> !deviationsWithSuccess.contains(data.getName()))
+            .filter(data -> !deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
 
     public static ParseResult parseData(SuiteData data) {
@@ -57,9 +60,20 @@ class ParseSuiteTest {
     }
 
     @Test
+    @DisplayName("Parse: Run one test")
+    void runOne(TestInfo testInfo) {
+        SuiteData data = SuiteUtils.getOne("6FWR");
+        LoadSettings settings = new LoadSettings();
+        settings.setLabel(data.getLabel());
+        Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
+        for (Event event : iterable) {
+            System.out.println(event);
+        }
+    }
+
+    @Test
     @DisplayName("Run comprehensive test suite")
     void runAll(TestInfo testInfo) {
-        int errorCounter = 0;
         for (SuiteData data : all) {
             ParseResult result = parseData(data);
             if (data.getError()) {
@@ -67,8 +81,7 @@ class ParseSuiteTest {
                         data.getLabel() + "\n" + result.getEvents());
             } else {
                 if (result.getError().isPresent()) {
-                    //println("Expected NO error, but got: " + result.second)
-                    errorCounter++;
+                    fail("Expected NO error, but got: " + result.getError().get());
                 } else {
                     List<ParsePair> pairs = Streams.zip(data.getEvents().stream(), result.getEvents().stream(), ParsePair::new)
                             .collect(Collectors.toList());

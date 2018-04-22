@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.external_test_suite;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,15 +30,13 @@ import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.exceptions.YAMLException;
 import org.snakeyaml.engine.nodes.Node;
 
-import com.google.common.collect.Lists;
-
 @org.junit.jupiter.api.Tag("fast")
 class ComposeSuiteTest {
-    private List<String> deviations = Lists.newArrayList("CXX2", "KZN9", "AVM7", "J3BT", "8G76");
 
     private List<SuiteData> allValid = SuiteUtils.getAll().stream()
             .filter(data -> !data.getError())
-            .filter(data -> !deviations.contains(data.getName()))
+            .filter(data -> !ParseSuiteTest.deviationsWithSuccess.contains(data.getName()))
+            .filter(data -> !ParseSuiteTest.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
 
 
@@ -55,21 +55,20 @@ class ComposeSuiteTest {
 
     @Test
     @DisplayName("Compose: Run comprehensive test suite")
+    void runOne(TestInfo testInfo) {
+        SuiteData data = SuiteUtils.getOne("AVM7");
+        LoadSettings settings = new LoadSettings();
+        settings.setLabel(data.getLabel());
+        Optional<Node> node = new Compose(settings).composeString(data.getInput());
+        System.out.println(node);
+    }
+
+    @Test
+    @DisplayName("Compose: Run comprehensive test suite")
     void runAll(TestInfo testInfo) {
         for (SuiteData data : allValid) {
-            if (data.getName().equals("DC7X")) {
-                System.out.println(data.getInput());
-
-            }
             ComposeResult result = composeData(data);
-            if (!result.getNode().isPresent()) {
-                System.out.println(data.getName());
-                if (data.getName().equals("DC7X")) {
-                    System.out.println(data.getInput());
-
-                }
-            }
-            //assertTrue(result.getNode().isPresent(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            assertTrue(result.getNode().isPresent(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
         }
     }
 

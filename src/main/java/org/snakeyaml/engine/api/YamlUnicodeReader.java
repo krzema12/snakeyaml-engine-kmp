@@ -37,7 +37,11 @@ package org.snakeyaml.engine.api;
  * Unicode format = UTF-16LE
  ***/
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
@@ -60,8 +64,7 @@ public class YamlUnicodeReader extends Reader {
     private static final int BOM_SIZE = 4;
 
     /**
-     * @param in
-     *            InputStream to be read
+     * @param in InputStream to be read
      */
     public YamlUnicodeReader(InputStream in) {
         internalIn = new PushbackInputStream(in, BOM_SIZE);
@@ -70,6 +73,7 @@ public class YamlUnicodeReader extends Reader {
     /**
      * Get stream encoding or NULL if stream is uninitialized. Call init() or
      * read() method to initialize it.
+     *
      * @return the name of the character encoding being used by this stream.
      */
     public Charset getEncoding() {
@@ -79,6 +83,7 @@ public class YamlUnicodeReader extends Reader {
     /**
      * Read-ahead four bytes and check for BOM marks. Extra bytes are unread
      * back to the stream, only BOM bytes are skipped.
+     *
      * @throws IOException if InputStream cannot be created
      */
     protected void init() throws IOException {

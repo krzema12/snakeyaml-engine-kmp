@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.exceptions;
 
-import org.snakeyaml.engine.common.Constant;
-
 import java.io.Serializable;
+
+import org.snakeyaml.engine.common.Constant;
 
 /**
  * It's just a record and its only use is producing nice error messages. Parser
@@ -79,8 +79,8 @@ public final class Mark implements Serializable {
         return Constant.NULL_OR_LINEBR.has(c);
     }
 
-    public String createSnippet(int indent, int max_length) {
-        float half = max_length / 2 - 1;
+    public String createSnippet(int indent, int maxLength) {
+        float half = maxLength / 2 - 1;
         int start = pointer;
         String head = "";
         while ((start > 0) && !isLineBreak(buffer[start - 1])) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.scanner;
 
 import org.snakeyaml.engine.exceptions.Mark;
 

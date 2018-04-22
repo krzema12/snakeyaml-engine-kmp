@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.scanner;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -100,7 +100,6 @@ public final class ScannerImpl implements Scanner {
      * A mapping from a character to a number of bytes to read-ahead for that
      * escape sequence. These escape sequences are used to handle unicode
      * escaping in the following formats, where H is a hexadecimal character:
-     * <p>
      * <pre>
      * &#92;xHH         : escaped 8-bit Unicode character
      * &#92;uHHHH       : escaped 16-bit Unicode character
@@ -132,6 +131,8 @@ public final class ScannerImpl implements Scanner {
         ESCAPE_REPLACEMENTS.put(Character.valueOf(' '), "\u0020");
         // ASCII double-quote
         ESCAPE_REPLACEMENTS.put(Character.valueOf('"'), "\"");
+        // ASCII slash (#x2F), for JSON compatibility.
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('/'), "/");
         // ASCII backslash
         ESCAPE_REPLACEMENTS.put(Character.valueOf('\\'), "\\");
         // Unicode next line
@@ -669,7 +670,6 @@ public final class ScannerImpl implements Scanner {
      * '}'.
      *
      * @param isMappingStart
-     * @see <a href="http://www.yaml.org/spec/1.1/#id863975"></a>
      */
     private void fetchFlowCollectionStart(boolean isMappingStart) {
         // '[' and '{' may start a simple key.
@@ -771,7 +771,7 @@ public final class ScannerImpl implements Scanner {
             }
         } else {
             // It's an error for the block entry to occur in the flow
-            // context,but we let the parser detect this.
+            // context,but we let the scanner detect this.
         }
         // Simple keys are allowed after '-'.
         this.allowSimpleKey = true;
@@ -843,7 +843,7 @@ public final class ScannerImpl implements Scanner {
         } else {
             // It must be a part of a complex key.
             // Block context needs additional checks. Do we really need them?
-            // They will be caught by the parser anyway.
+            // They will be caught by the scanner anyway.
             if (this.flowLevel == 0) {
 
                 // We are allowed to start a complex value if and only if we can
@@ -856,7 +856,7 @@ public final class ScannerImpl implements Scanner {
 
             // If this value starts a new block mapping, we need to add
             // BLOCK-MAPPING-START. It will be detected as an error later by
-            // the parser.
+            // the scanner.
             if (flowLevel == 0) {
                 if (addIndent(reader.getColumn())) {
                     Mark mark = reader.getMark();
@@ -1019,8 +1019,6 @@ public final class ScannerImpl implements Scanner {
     /**
      * Returns true if the next thing on the reader is a directive, given that
      * the leading '%' has already been checked.
-     *
-     * @see <a href="http://www.yaml.org/spec/1.1/#id864824"></a>
      */
     private boolean checkDirective() {
         // DIRECTIVE: ^ '%' ...

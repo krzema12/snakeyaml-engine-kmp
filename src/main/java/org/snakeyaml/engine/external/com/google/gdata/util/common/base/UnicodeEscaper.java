@@ -20,13 +20,13 @@ import java.io.IOException;
  * An {@link Escaper} that converts literal text into a format safe for
  * inclusion in a particular context (such as an XML document). Typically (but
  * not always), the inverse process of "unescaping" the text is performed
- * automatically by the relevant parser.
+ * automatically by the relevant scanner.
  * <p>
  * <p>
  * For example, an XML escaper would convert the literal string
  * {@code "Foo<Bar>"} into {@code "Foo&lt;Bar&gt;"} to prevent {@code "<Bar>"}
  * from being confused with an XML tag. When the resulting XML document is
- * parsed, the parser API will return this text as the original literal string
+ * parsed, the scanner API will return this text as the original literal string
  * {@code "Foo<Bar>"}.
  * <p>
  * <p>

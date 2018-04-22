@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.scanner;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -50,7 +50,6 @@ public final class StreamReader {
     private boolean eof;
     /**
      * index is only required to implement 1024 key length restriction
-     * http://yaml.org/spec/1.1/#simple key/
      * It must count code points, but it counts characters (to be fixed)
      */
     private int index = 0; // in code points

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.scanner;
 
 
 import org.snakeyaml.engine.exceptions.ScannerException;
@@ -22,7 +22,7 @@ import org.snakeyaml.engine.tokens.Token;
 /**
  * This interface represents an input stream of {@link Token}s.
  * <p>
- * The parser and the scanner form together the 'Parse' step in the loading process.
+ * The scanner and the scanner form together the 'Parse' step in the loading process.
  * </p>
  *
  * @see org.snakeyaml.engine.tokens.Token

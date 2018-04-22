@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.exceptions;
+package org.snakeyaml.engine.parser;
 
-import org.snakeyaml.engine.scanner.Scanner;
+
+import org.snakeyaml.engine.exceptions.Mark;
+import org.snakeyaml.engine.exceptions.MarkedYAMLException;
 
 /**
- * Exception thrown by the {@link Scanner} implementations in case of malformed
+ * Exception thrown by the {@link Parser} implementations in case of malformed
  * input.
  */
-public class ScannerException extends MarkedYAMLException {
-
-    private static final long serialVersionUID = 4782293188600445954L;
+public class ParserException extends MarkedYAMLException {
+    private static final long serialVersionUID = -2349253802798398038L;
 
     /**
      * Constructs an instance.
@@ -32,13 +33,9 @@ public class ScannerException extends MarkedYAMLException {
      *                    occurred.
      * @param contextMark Position of the <code>context</code> within the document.
      * @param problem     Part of the input document that caused the problem.
-     * @param problemMark Position of the <code>problem</code> within the document.
+     * @param problemMark Position of the <code>problem</code>. within the document.
      */
-    public ScannerException(String context, Mark contextMark, String problem, Mark problemMark) {
+    public ParserException(String context, Mark contextMark, String problem, Mark problemMark) {
         super(context, contextMark, problem, problemMark, null);
-    }
-
-    public ScannerException(String problem, Mark problemMark) {
-        super(null, null, problem, problemMark, null);
     }
 }

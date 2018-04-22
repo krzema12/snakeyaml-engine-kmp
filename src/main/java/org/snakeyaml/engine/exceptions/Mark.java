@@ -15,7 +15,7 @@
  */
 package org.snakeyaml.engine.exceptions;
 
-import org.snakeyaml.engine.common.Constant;
+import org.snakeyaml.engine.common.CharConstants;
 
 import java.io.Serializable;
 
@@ -76,7 +76,7 @@ public final class Mark implements Serializable {
     }
 
     private boolean isLineBreak(int c) {
-        return Constant.NULL_OR_LINEBR.has(c);
+        return CharConstants.NULL_OR_LINEBR.has(c);
     }
 
     public String createSnippet(int indent, int maxLength) {

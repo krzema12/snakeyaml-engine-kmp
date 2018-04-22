@@ -16,7 +16,7 @@
 package org.snakeyaml.engine.scanner;
 
 import org.snakeyaml.engine.common.ArrayStack;
-import org.snakeyaml.engine.common.Constant;
+import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.UriEncoder;
 import org.snakeyaml.engine.exceptions.Mark;
@@ -29,8 +29,8 @@ import java.nio.charset.CharacterCodingException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.snakeyaml.engine.common.Constant.ESCAPE_CODES;
-import static org.snakeyaml.engine.common.Constant.ESCAPE_REPLACEMENTS;
+import static org.snakeyaml.engine.common.CharConstants.ESCAPE_CODES;
+import static org.snakeyaml.engine.common.CharConstants.ESCAPE_REPLACEMENTS;
 
 /**
  * <pre>
@@ -314,7 +314,7 @@ public final class ScannerImpl implements Scanner {
         // converting escaped characters into their escape sequences. This is a
         // backwards use of the ESCAPE_REPLACEMENTS map.
         String chRepresentation = String.valueOf(Character.toChars(c));
-        for (Character s : ESCAPE_REPLACEMENTS.keySet()) {
+        for (Integer s : ESCAPE_REPLACEMENTS.keySet()) {
             String v = ESCAPE_REPLACEMENTS.get(s);
             if (v.equals(chRepresentation)) {
                 chRepresentation = "\\" + s;// ' ' -> '\t'
@@ -946,7 +946,7 @@ public final class ScannerImpl implements Scanner {
     private boolean checkDocumentStart() {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         if (reader.getColumn() == 0) {
-            if ("---".equals(reader.prefix(3)) && Constant.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+            if ("---".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                 return true;
             }
         }
@@ -960,7 +960,7 @@ public final class ScannerImpl implements Scanner {
     private boolean checkDocumentEnd() {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         if (reader.getColumn() == 0) {
-            if ("...".equals(reader.prefix(3)) && Constant.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+            if ("...".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                 return true;
             }
         }
@@ -972,7 +972,7 @@ public final class ScannerImpl implements Scanner {
      */
     private boolean checkBlockEntry() {
         // BLOCK-ENTRY: '-' (' '|'\n')
-        return Constant.NULL_BL_T_LINEBR.has(reader.peek(1));
+        return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1));
     }
 
     /**
@@ -984,7 +984,7 @@ public final class ScannerImpl implements Scanner {
             return true;
         } else {
             // KEY(block context): '?' (' '|'\n')
-            return Constant.NULL_BL_T_LINEBR.has(reader.peek(1));
+            return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1));
         }
     }
 
@@ -997,7 +997,7 @@ public final class ScannerImpl implements Scanner {
             return true;
         } else {
             // VALUE(block context): ':' (' '|'\n')
-            return Constant.NULL_BL_T_LINEBR.has(reader.peek(1));
+            return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1));
         }
     }
 
@@ -1024,8 +1024,8 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         // If the next char is NOT one of the forbidden chars above or
         // whitespace, then this is the start of a plain scalar.
-        return Constant.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>\'\"%@`")
-                || (Constant.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && (c == '-' || (this.flowLevel == 0 && "?:"
+        return CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>\'\"%@`")
+                || (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && (c == '-' || (this.flowLevel == 0 && "?:"
                 .indexOf(c) != -1)));
     }
 
@@ -1075,7 +1075,7 @@ public final class ScannerImpl implements Scanner {
             // past the comment.
             if (reader.peek() == '#') {
                 ff = 0;
-                while (Constant.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
+                while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
                     ff++;
                 }
                 if (ff > 0) {
@@ -1113,7 +1113,7 @@ public final class ScannerImpl implements Scanner {
         } else {
             endMark = reader.getMark();
             int ff = 0;
-            while (Constant.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
                 ff++;
             }
             if (ff > 0) {
@@ -1135,7 +1135,7 @@ public final class ScannerImpl implements Scanner {
         // (a-z,A-Z,0-9). We scan until we find something that isn't.
         // FIXME this disagrees with the specification.
         int c = reader.peek(length);
-        while (Constant.ALPHA.has(c)) {
+        while (CharConstants.ALPHA.has(c)) {
             length++;
             c = reader.peek(length);
         }
@@ -1148,7 +1148,7 @@ public final class ScannerImpl implements Scanner {
         }
         String value = reader.prefixForward(length);
         c = reader.peek();
-        if (Constant.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a directive", startMark,
                     "expected alphabetic or numeric character, but found " + s + "(" + c
@@ -1173,7 +1173,7 @@ public final class ScannerImpl implements Scanner {
         reader.forward();
         Integer minor = scanYamlDirectiveNumber(startMark);
         c = reader.peek();
-        if (Constant.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a directive", startMark,
                     "expected a digit or ' ', but found " + s + "("
@@ -1256,7 +1256,7 @@ public final class ScannerImpl implements Scanner {
         // See the specification for details.
         String value = scanTagUri("directive", startMark);
         int c = reader.peek();
-        if (Constant.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a directive", startMark,
                     "expected ' ', but found " + s + "(" + c + ")",
@@ -1271,7 +1271,7 @@ public final class ScannerImpl implements Scanner {
             reader.forward();
         }
         if (reader.peek() == '#') {
-            while (Constant.NULL_OR_LINEBR.hasNo(reader.peek())) {
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek())) {
                 reader.forward();
             }
         }
@@ -1304,7 +1304,7 @@ public final class ScannerImpl implements Scanner {
         reader.forward();
         int length = 0;
         int c = reader.peek(length);
-        while (Constant.ALPHA.has(c)) {
+        while (CharConstants.ALPHA.has(c)) {
             length++;
             c = reader.peek(length);
         }
@@ -1316,7 +1316,7 @@ public final class ScannerImpl implements Scanner {
         }
         String value = reader.prefixForward(length);
         c = reader.peek();
-        if (Constant.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning an " + name, startMark,
                     "expected alphabetic or numeric character, but found " + s + "("
@@ -1387,7 +1387,7 @@ public final class ScannerImpl implements Scanner {
                                 + ")", reader.getMark());
             }
             reader.forward();
-        } else if (Constant.NULL_BL_T_LINEBR.has(c)) {
+        } else if (CharConstants.NULL_BL_T_LINEBR.has(c)) {
             // A NUL, blank, tab, or line-break means that this was a
             // c-ns-non-specific tag.
             suffix = "!";
@@ -1399,7 +1399,7 @@ public final class ScannerImpl implements Scanner {
             // is of the form !foo or !foo!bar.
             int length = 1;
             boolean useHandle = false;
-            while (Constant.NULL_BL_LINEBR.hasNo(c)) {
+            while (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
                 if (c == '!') {
                     useHandle = true;
                     break;
@@ -1420,7 +1420,7 @@ public final class ScannerImpl implements Scanner {
         c = reader.peek();
         // Check that the next character is allowed to follow a tag-property;
         // if it is not, raise the error.
-        if (Constant.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a tag", startMark,
                     "expected ' ', but found '" + s + "' (" + (c) + ")", reader.getMark());
@@ -1478,7 +1478,7 @@ public final class ScannerImpl implements Scanner {
             chunks.append(breaks);
             boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
             int length = 0;
-            while (Constant.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
                 length++;
             }
             chunks.append(reader.prefixForward(length));
@@ -1568,7 +1568,7 @@ public final class ScannerImpl implements Scanner {
             }
         }
         c = reader.peek();
-        if (Constant.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a block scalar", startMark,
                     "expected chomping or indentation indicators, but found " + s + "("
@@ -1591,7 +1591,7 @@ public final class ScannerImpl implements Scanner {
 
         // If a comment occurs, scan to just before the end of line.
         if (reader.peek() == '#') {
-            while (Constant.NULL_OR_LINEBR.hasNo(reader.peek())) {
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek())) {
                 reader.forward();
             }
         }
@@ -1621,7 +1621,7 @@ public final class ScannerImpl implements Scanner {
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
         // leading spaces on any of these lines.
-        while (Constant.LINEBR.has(reader.peek(), " \r")) {
+        while (CharConstants.LINEBR.has(reader.peek(), " \r")) {
             if (reader.peek() != ' ') {
                 // If the character isn't a space, it must be some kind of
                 // line-break; scan the line break and track it.
@@ -1719,7 +1719,7 @@ public final class ScannerImpl implements Scanner {
             // Scan through any number of characters which are not: NUL, blank,
             // tabs, line breaks, single-quotes, double-quotes, or backslashes.
             int length = 0;
-            while (Constant.NULL_BL_T_LINEBR.hasNo(reader.peek(length), "\'\"\\")) {
+            while (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(length), "\'\"\\")) {
                 length++;
             }
             if (length != 0) {
@@ -1737,11 +1737,11 @@ public final class ScannerImpl implements Scanner {
             } else if (doubleQuoted && c == '\\') {
                 reader.forward();
                 c = reader.peek();
-                if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(Character.valueOf((char) c))) {
+                if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(c)) {
                     // The character is one of the single-replacement
                     // types; these are replaced with a literal character
                     // from the mapping.
-                    chunks.append(ESCAPE_REPLACEMENTS.get(Character.valueOf((char) c)));
+                    chunks.append(ESCAPE_REPLACEMENTS.get(c));
                     reader.forward();
                 } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.containsKey(Character.valueOf((char) c))) {
                     // The character is a multi-digit escape sequence, with
@@ -1813,7 +1813,7 @@ public final class ScannerImpl implements Scanner {
             // separators.
             String prefix = reader.prefix(3);
             if (("---".equals(prefix) || "...".equals(prefix))
-                    && Constant.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                    && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                 throw new ScannerException("while scanning a quoted scalar", startMark,
                         "found unexpected document separator", reader.getMark());
             }
@@ -1858,8 +1858,8 @@ public final class ScannerImpl implements Scanner {
             }
             while (true) {
                 c = reader.peek(length);
-                if (Constant.NULL_BL_T_LINEBR.has(c)
-                        || (c == ':' && Constant.NULL_BL_T_LINEBR.has(reader.peek(length + 1), flowLevel != 0 ? ",[]{}" : ""))
+                if (CharConstants.NULL_BL_T_LINEBR.has(c)
+                        || (c == ':' && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(length + 1), flowLevel != 0 ? ",[]{}" : ""))
                         || (this.flowLevel != 0 && ",?[]{}".indexOf(c) != -1)) {
                     break;
                 }
@@ -1897,7 +1897,7 @@ public final class ScannerImpl implements Scanner {
             this.allowSimpleKey = true;
             String prefix = reader.prefix(3);
             if ("---".equals(prefix) || "...".equals(prefix)
-                    && Constant.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                    && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                 return "";
             }
             StringBuilder breaks = new StringBuilder();
@@ -1910,7 +1910,7 @@ public final class ScannerImpl implements Scanner {
                         breaks.append(lb);
                         prefix = reader.prefix(3);
                         if ("---".equals(prefix) || "...".equals(prefix)
-                                && Constant.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                                && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                             return "";
                         }
                     } else {
@@ -1965,7 +1965,7 @@ public final class ScannerImpl implements Scanner {
             // FIXME According to the specification, these should be
             // ns-word-char only, which prohibits '_'. This might be a
             // candidate for a configuration option.
-            while (Constant.ALPHA.has(c)) {
+            while (CharConstants.ALPHA.has(c)) {
                 length++;
                 c = reader.peek(length);
             }
@@ -2006,7 +2006,7 @@ public final class ScannerImpl implements Scanner {
         // to a start-escape, scan the escaped sequence, then return.
         int length = 0;
         int c = reader.peek(length);
-        while (Constant.URI_CHARS.has(c)) {
+        while (CharConstants.URI_CHARS.has(c)) {
             if (c == '%') {
                 chunks.append(reader.prefixForward(length));
                 length = 0;

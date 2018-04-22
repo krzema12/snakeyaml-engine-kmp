@@ -16,7 +16,7 @@
 package org.snakeyaml.engine.scanner;
 
 import org.snakeyaml.engine.api.LoadSettings;
-import org.snakeyaml.engine.common.Constant;
+import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ReaderException;
 import org.snakeyaml.engine.exceptions.YAMLException;
@@ -117,7 +117,7 @@ public final class StreamReader {
         for (int i = 0; i < length && ensureEnoughData(); i++) {
             int c = dataWindow[pointer++];
             this.index++;
-            if (Constant.LINEBR.has(c)
+            if (CharConstants.LINEBR.has(c)
                     || (c == '\r' && (ensureEnoughData() && dataWindow[pointer] != '\n'))) {
                 this.line++;
                 this.column = 0;

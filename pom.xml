@@ -68,6 +68,12 @@
             <version>5.1.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>24.1-jre</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>

@@ -1,0 +1,4 @@
+Data from https://github.com/yaml/yaml-test-suite
+
+https://github.com/yaml/yaml-test-suite/archive/data-2018-01-02.tar.gz
+

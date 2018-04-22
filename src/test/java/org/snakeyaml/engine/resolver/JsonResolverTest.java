@@ -15,13 +15,13 @@
  */
 package org.snakeyaml.engine.resolver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.nodes.NodeType;
 import org.snakeyaml.engine.nodes.Tag;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class JsonResolverTest {

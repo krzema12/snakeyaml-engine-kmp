@@ -31,6 +31,7 @@ public class Parse {
 
     /**
      * Create
+     *
      * @param settings - configuration
      */
     public Parse(LoadSettings settings) {
@@ -40,10 +41,10 @@ public class Parse {
     /**
      * Parse a YAML stream and produce parsing events.
      *
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     *
      * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
+     *             (it will be parsed as content)
      * @return parsed events
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseReader(InputStream yaml) {
         return new EventIterable(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings)));
@@ -52,10 +53,9 @@ public class Parse {
     /**
      * Parse a YAML stream and produce parsing events.
      *
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     *
      * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
      * @return parsed events
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseInputStream(Reader yaml) {
         return new EventIterable(new ParserImpl(new StreamReader(yaml, settings)));
@@ -64,10 +64,9 @@ public class Parse {
     /**
      * Parse a YAML stream and produce parsing events.
      *
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     *
-     * @param yaml - YAML document(s).
+     * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
      * @return parsed events
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseString(String yaml) {
         return new EventIterable(new ParserImpl(new StreamReader(new StringReader(yaml), settings)));
@@ -94,5 +93,4 @@ class EventIterable implements Iterable<Event> {
             }
         };
     }
-
 }

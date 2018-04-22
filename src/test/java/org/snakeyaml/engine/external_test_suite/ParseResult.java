@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.external_test_suite;
 
-import org.snakeyaml.engine.events.Event;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.snakeyaml.engine.events.Event;
 
 public class ParseResult {
 

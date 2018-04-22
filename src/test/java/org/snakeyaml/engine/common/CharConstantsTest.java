@@ -15,8 +15,8 @@
  */
 package org.snakeyaml.engine.common;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
 import static org.snakeyaml.engine.common.CharConstants.ESCAPE_REPLACEMENTS;
@@ -25,9 +25,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.snakeyaml.engine.common.CharConstants.ESCAPE_REPLACEMENTS;
 
 @Tag("fast")
 class CharConstantsTest {

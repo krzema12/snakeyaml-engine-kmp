@@ -15,13 +15,6 @@
  */
 package org.snakeyaml.engine.external_test_suite;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import org.snakeyaml.engine.api.LoadSettings;
-import org.snakeyaml.engine.api.Parse;
-import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.exceptions.YAMLException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.Parse;
+import org.snakeyaml.engine.events.Event;
+import org.snakeyaml.engine.exceptions.YAMLException;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class SuiteUtils {
 

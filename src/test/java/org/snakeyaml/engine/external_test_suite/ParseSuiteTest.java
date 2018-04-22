@@ -15,18 +15,19 @@
  */
 package org.snakeyaml.engine.external_test_suite;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Streams;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.events.Event;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
@@ -52,12 +53,11 @@ class ParseSuiteTest {
                 } else {
                     List<Pair> pairs = Streams.zip(data.getEvents().stream(), result.getEvents().stream(), Pair::new)
                             .collect(Collectors.toList());
-                    for(Pair pair : pairs) {
+                    for (Pair pair : pairs) {
                         assertEquals(pair.getEtalon(), pair.getEvent().toString());
                     }
                 }
             }
-
         }
     }
 

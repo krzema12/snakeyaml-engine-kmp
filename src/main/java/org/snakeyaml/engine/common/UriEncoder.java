@@ -16,10 +16,6 @@
 package org.snakeyaml.engine.common;
 
 
-import org.snakeyaml.engine.exceptions.YAMLException;
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
@@ -28,6 +24,10 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+
+import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
 
 public abstract class UriEncoder {
     private static final CharsetDecoder UTF8Decoder = Charset.forName("UTF-8").newDecoder()

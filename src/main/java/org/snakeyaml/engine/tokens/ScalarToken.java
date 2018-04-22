@@ -35,7 +35,7 @@ public final class ScalarToken extends Token {
         this.style = style;
     }
 
-    public boolean getPlain() {
+    public boolean isPlain() {
         return this.plain;
     }
 

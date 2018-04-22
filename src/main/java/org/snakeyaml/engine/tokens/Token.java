@@ -39,9 +39,7 @@ public abstract class Token {
         StreamEnd("<stream end>"),
         StreamStart("<stream start>"),
         Tag("<tag>"),
-        Value(":"),
-        Error("<error>");
-
+        Value(":");
 
         private final String description;
 
@@ -79,7 +77,6 @@ public abstract class Token {
      * For error reporting.
      *
      * @return ID of this token
-     * @see "class variable 'id' in PyYAML"
      */
     public abstract Token.ID getTokenId();
 }

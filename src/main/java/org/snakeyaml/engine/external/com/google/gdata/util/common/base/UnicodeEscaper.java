@@ -28,8 +28,8 @@ import java.io.IOException;
  * from being confused with an XML tag. When the resulting XML document is
  * parsed, the scanner API will return this text as the original literal string
  * {@code "Foo<Bar>"}.
- * <p>
- * <p>
+ *
+ *
  * <b>Note:</b> This class is similar to {@link CharEscaper} but with one very
  * important difference. A CharEscaper can only process Java <a
  * href="http://en.wikipedia.org/wiki/UTF-16">UTF16</a> characters in isolation
@@ -87,8 +87,8 @@ public abstract class UnicodeEscaper implements Escaper {
     /**
      * Scans a sub-sequence of characters from a given {@link CharSequence},
      * returning the index of the next character that requires escaping.
-     * <p>
-     * <p>
+     *
+     *
      * <b>Note:</b> When implementing an escaper, it is a good idea to override
      * this method for efficiency. The base class implementation determines
      * successive Unicode code points and invokes {@link #escape(int)} for each
@@ -135,8 +135,8 @@ public abstract class UnicodeEscaper implements Escaper {
      * valid <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a> before
      * calling this method or use an escaped {@link Appendable} (as returned by
      * {@link #escape(Appendable)}) which can cope with arbitrarily split input.
-     * <p>
-     * <p>
+     *
+     *
      * <b>Note:</b> When implementing an escaper it is a good idea to override
      * this method for efficiency by inlining the implementation of
      * {@link #nextEscapeIndex(CharSequence, int, int)} directly. Doing this for
@@ -249,7 +249,7 @@ public abstract class UnicodeEscaper implements Escaper {
      * the escaping behavior is identical to that of {@link #escape(String)} and
      * the following code is equivalent to (but much slower than)
      * {@code escaper.escape(string)}:
-     * <p>
+     *
      * <pre>
      * {
      *     &#064;code

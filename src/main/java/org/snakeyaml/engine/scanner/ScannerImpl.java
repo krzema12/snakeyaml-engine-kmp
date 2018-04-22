@@ -15,16 +15,6 @@
  */
 package org.snakeyaml.engine.scanner;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.Constant;
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -32,28 +22,15 @@ import org.snakeyaml.engine.common.UriEncoder;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ScannerException;
 import org.snakeyaml.engine.exceptions.YAMLException;
-import org.snakeyaml.engine.tokens.AliasToken;
-import org.snakeyaml.engine.tokens.AnchorToken;
-import org.snakeyaml.engine.tokens.BlockEndToken;
-import org.snakeyaml.engine.tokens.BlockEntryToken;
-import org.snakeyaml.engine.tokens.BlockMappingStartToken;
-import org.snakeyaml.engine.tokens.BlockSequenceStartToken;
-import org.snakeyaml.engine.tokens.DirectiveToken;
-import org.snakeyaml.engine.tokens.DocumentEndToken;
-import org.snakeyaml.engine.tokens.DocumentStartToken;
-import org.snakeyaml.engine.tokens.FlowEntryToken;
-import org.snakeyaml.engine.tokens.FlowMappingEndToken;
-import org.snakeyaml.engine.tokens.FlowMappingStartToken;
-import org.snakeyaml.engine.tokens.FlowSequenceEndToken;
-import org.snakeyaml.engine.tokens.FlowSequenceStartToken;
-import org.snakeyaml.engine.tokens.KeyToken;
-import org.snakeyaml.engine.tokens.ScalarToken;
-import org.snakeyaml.engine.tokens.StreamEndToken;
-import org.snakeyaml.engine.tokens.StreamStartToken;
-import org.snakeyaml.engine.tokens.TagToken;
-import org.snakeyaml.engine.tokens.TagTuple;
-import org.snakeyaml.engine.tokens.Token;
-import org.snakeyaml.engine.tokens.ValueToken;
+import org.snakeyaml.engine.tokens.*;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.snakeyaml.engine.common.Constant.ESCAPE_CODES;
+import static org.snakeyaml.engine.common.Constant.ESCAPE_REPLACEMENTS;
 
 /**
  * <pre>
@@ -87,70 +64,6 @@ public final class ScannerImpl implements Scanner {
      * set (0-9, A-F, a-f).
      */
     private final static Pattern NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]");
-
-    /**
-     * A mapping from an escaped character in the input stream to the character
-     * that they should be replaced with.
-     * <p>
-     * YAML defines several common and a few uncommon escape sequences.
-     */
-    public final static Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<Character, String>();
-
-    /**
-     * A mapping from a character to a number of bytes to read-ahead for that
-     * escape sequence. These escape sequences are used to handle unicode
-     * escaping in the following formats, where H is a hexadecimal character:
-     * <pre>
-     * &#92;xHH         : escaped 8-bit Unicode character
-     * &#92;uHHHH       : escaped 16-bit Unicode character
-     * &#92;UHHHHHHHH   : escaped 32-bit Unicode character
-     * </pre>
-     */
-    public final static Map<Character, Integer> ESCAPE_CODES = new HashMap<Character, Integer>();
-
-    static {
-        // ASCII null
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('0'), "\0");
-        // ASCII bell
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('a'), "\u0007");
-        // ASCII backspace
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('b'), "\u0008");
-        // ASCII horizontal tab
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('t'), "\u0009");
-        // ASCII newline (line feed; &#92;n maps to 0x0A)
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('n'), "\n");
-        // ASCII vertical tab
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('v'), "\u000B");
-        // ASCII form-feed
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('f'), "\u000C");
-        // carriage-return (&#92;r maps to 0x0D)
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('r'), "\r");
-        // ASCII escape character (Esc)
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('e'), "\u001B");
-        // ASCII space
-        ESCAPE_REPLACEMENTS.put(Character.valueOf(' '), "\u0020");
-        // ASCII double-quote
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('"'), "\"");
-        // ASCII slash (#x2F), for JSON compatibility.
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('/'), "/");
-        // ASCII backslash
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('\\'), "\\");
-        // Unicode next line
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('N'), "\u0085");
-        // Unicode non-breaking-space
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('_'), "\u00A0");
-        // Unicode line-separator
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('L'), "\u2028");
-        // Unicode paragraph separator
-        ESCAPE_REPLACEMENTS.put(Character.valueOf('P'), "\u2029");
-
-        // 8-bit Unicode
-        ESCAPE_CODES.put(Character.valueOf('x'), 2);
-        // 16-bit Unicode
-        ESCAPE_CODES.put(Character.valueOf('u'), 4);
-        // 32-bit Unicode (Supplementary characters are supported)
-        ESCAPE_CODES.put(Character.valueOf('U'), 8);
-    }
 
     private final StreamReader reader;
     // Had we reached the end of the stream?
@@ -517,7 +430,7 @@ public final class ScannerImpl implements Scanner {
      * * Handle implicitly ending multiple levels of block nodes by decreased
      * indentation. This function becomes important on lines 4 and 7 of this
      * example:
-     * <p>
+     *
      * <pre>
      * 1) book one:
      * 2)   part one:
@@ -881,7 +794,7 @@ public final class ScannerImpl implements Scanner {
     /**
      * Fetch an alias, which is a reference to an anchor. Aliases take the
      * format:
-     * <p>
+     *
      * <pre>
      * *(anchor name)
      * </pre>
@@ -900,7 +813,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Fetch an anchor. Anchors take the form:
-     * <p>
+     *
      * <pre>
      * &(anchor name)
      * </pre>
@@ -1762,8 +1675,8 @@ public final class ScannerImpl implements Scanner {
      * Scan a flow-style scalar. Flow scalars are presented in one of two forms;
      * first, a flow scalar may be a double-quoted string; second, a flow scalar
      * may be a single-quoted string.
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      * See the specification for details.
      * Note that we loose indentation rules for quoted scalars. Quoted
@@ -1921,7 +1834,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Scan a plain scalar.
-     * <p>
+     *
      * <pre>
      * See the specification for details.
      * We add an additional restriction for the flow context:
@@ -2027,8 +1940,8 @@ public final class ScannerImpl implements Scanner {
      * <p>
      * Where (name) must be formatted as an ns-word-char.
      * </p>
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      * See the specification for details.
      * For some strange reasons, the specification does not allow '_' in
@@ -2168,7 +2081,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Scan a line break, transforming:
-     * <p>
+     *
      * <pre>
      * '\r\n' : '\n'
      * '\r' : '\n'

@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.events;
 
-import java.util.Map;
-
 import org.snakeyaml.engine.common.Version;
 import org.snakeyaml.engine.exceptions.Mark;
+
+import java.util.Map;
 
 /**
  * Marks the beginning of a document.

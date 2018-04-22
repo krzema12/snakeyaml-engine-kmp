@@ -15,42 +15,22 @@
  */
 package org.snakeyaml.engine.parser;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.Version;
-import org.snakeyaml.engine.events.AliasEvent;
-import org.snakeyaml.engine.events.DocumentEndEvent;
-import org.snakeyaml.engine.events.DocumentStartEvent;
-import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.events.ImplicitTuple;
-import org.snakeyaml.engine.events.MappingEndEvent;
-import org.snakeyaml.engine.events.MappingStartEvent;
-import org.snakeyaml.engine.events.ScalarEvent;
-import org.snakeyaml.engine.events.SequenceEndEvent;
-import org.snakeyaml.engine.events.SequenceStartEvent;
-import org.snakeyaml.engine.events.StreamEndEvent;
-import org.snakeyaml.engine.events.StreamStartEvent;
+import org.snakeyaml.engine.events.*;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.YAMLException;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.scanner.Scanner;
 import org.snakeyaml.engine.scanner.ScannerImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
-import org.snakeyaml.engine.tokens.AliasToken;
-import org.snakeyaml.engine.tokens.AnchorToken;
-import org.snakeyaml.engine.tokens.BlockEntryToken;
-import org.snakeyaml.engine.tokens.DirectiveToken;
-import org.snakeyaml.engine.tokens.ScalarToken;
-import org.snakeyaml.engine.tokens.StreamEndToken;
-import org.snakeyaml.engine.tokens.StreamStartToken;
-import org.snakeyaml.engine.tokens.TagToken;
-import org.snakeyaml.engine.tokens.TagTuple;
-import org.snakeyaml.engine.tokens.Token;
+import org.snakeyaml.engine.tokens.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>

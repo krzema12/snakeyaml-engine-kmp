@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.common;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 //TODO rename to CharRange
 public final class Constant {
@@ -64,4 +66,69 @@ public final class Constant {
     public boolean hasNo(int c, String additional) {
         return !has(c, additional);
     }
+
+    /**
+     * A mapping from an escaped character in the input stream to the character
+     * that they should be replaced with.
+     * <p>
+     * YAML defines several common and a few uncommon escape sequences.
+     */
+    public final static Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<Character, String>();
+
+    /**
+     * A mapping from a character to a number of bytes to read-ahead for that
+     * escape sequence. These escape sequences are used to handle unicode
+     * escaping in the following formats, where H is a hexadecimal character:
+     * <pre>
+     * &#92;xHH         : escaped 8-bit Unicode character
+     * &#92;uHHHH       : escaped 16-bit Unicode character
+     * &#92;UHHHHHHHH   : escaped 32-bit Unicode character
+     * </pre>
+     */
+    public final static Map<Character, Integer> ESCAPE_CODES = new HashMap<Character, Integer>();
+
+    static {
+        // ASCII null
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('0'), "\0");
+        // ASCII bell
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('a'), "\u0007");
+        // ASCII backspace
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('b'), "\u0008");
+        // ASCII horizontal tab
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('t'), "\u0009");
+        // ASCII newline (line feed; &#92;n maps to 0x0A)
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('n'), "\n");
+        // ASCII vertical tab
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('v'), "\u000B");
+        // ASCII form-feed
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('f'), "\u000C");
+        // carriage-return (&#92;r maps to 0x0D)
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('r'), "\r");
+        // ASCII escape character (Esc)
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('e'), "\u001B");
+        // ASCII space
+        ESCAPE_REPLACEMENTS.put(Character.valueOf(' '), "\u0020");
+        // ASCII double-quote
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('"'), "\"");
+        // ASCII slash (#x2F), for JSON compatibility.
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('/'), "/");
+        // ASCII backslash
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('\\'), "\\");
+        // Unicode next line
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('N'), "\u0085");
+        // Unicode non-breaking-space
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('_'), "\u00A0");
+        // Unicode line-separator
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('L'), "\u2028");
+        // Unicode paragraph separator
+        ESCAPE_REPLACEMENTS.put(Character.valueOf('P'), "\u2029");
+
+        // 8-bit Unicode
+        ESCAPE_CODES.put(Character.valueOf('x'), 2);
+        // 16-bit Unicode
+        ESCAPE_CODES.put(Character.valueOf('u'), 4);
+        // 32-bit Unicode (Supplementary characters are supported)
+        ESCAPE_CODES.put(Character.valueOf('U'), 8);
+    }
+
 }

@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.parser;
 
-import java.util.Map;
-
 import org.snakeyaml.engine.common.Version;
+
+import java.util.Map;
 
 /**
  * Store the internal state for directives

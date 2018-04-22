@@ -37,25 +37,12 @@ public abstract class Event {
         this.endMark = endMark;
     }
 
-    public String toString() {
-        return "<" + this.getClass().getName() + "(" + getArguments() + ")>";
-    }
-
     public Mark getStartMark() {
         return startMark;
     }
 
     public Mark getEndMark() {
         return endMark;
-    }
-
-    /**
-     * Generate human readable representation of the Event
-     *
-     * @return representation fore humans
-     */
-    protected String getArguments() {
-        return "";
     }
 
     //TODO refactor to be isEvent

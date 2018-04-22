@@ -13,25 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.events;
-
-import org.snakeyaml.engine.exceptions.Mark;
+package org.snakeyaml.engine.nodes;
 
 /**
- * Marks the inclusion of a previously anchored node.
+ * Enum for the basic YAML types: scalar, sequence, mapping or anchor.
  */
-public final class AliasEvent extends NodeEvent {
-    public AliasEvent(String anchor, Mark startMark, Mark endMark) {
-        super(anchor, startMark, endMark);
-    }
-
-    @Override
-    public boolean is(Event.ID id) {
-        return ID.Alias == id;
-    }
-
-    @Override
-    public String toString() {
-        return "=ALI *" + getAnchor();
-    }
+public enum NodeId {
+    scalar, sequence, mapping, anchor
 }

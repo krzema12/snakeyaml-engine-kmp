@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.resolver;
 
-import org.snakeyaml.engine.nodes.Tag;
-
 import java.util.regex.Pattern;
+
+import org.snakeyaml.engine.nodes.Tag;
 
 
 final class ResolverTuple {

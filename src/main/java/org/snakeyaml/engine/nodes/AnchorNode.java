@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.nodes;
 
-import java.util.Map;
+public class AnchorNode extends Node {
 
-import org.snakeyaml.engine.common.Version;
+    private Node realNode;
 
-/**
- * Store the internal state for directives
- */
-class VersionTagsTuple {
-    private Version version;
-    private Map<String, String> tags;
-
-    public VersionTagsTuple(Version version, Map<String, String> tags) {
-        this.version = version;
-        this.tags = tags;
-    }
-
-    public Version getVersion() {
-        return version;
-    }
-
-    public Map<String, String> getTags() {
-        return tags;
+    public AnchorNode(Node realNode) {
+        super(realNode.getTag(), realNode.getStartMark(), realNode.getEndMark());
+        this.realNode = realNode;
     }
 
     @Override
-    public String toString() {
-        return String.format("VersionTagsTuple<%s, %s>", version, tags);
+    public NodeId getNodeId() {
+        return NodeId.anchor;
+    }
+
+    public Node getRealNode() {
+        return realNode;
     }
 }

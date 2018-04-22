@@ -13,25 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.events;
+package org.snakeyaml.engine.exceptions;
 
-import org.snakeyaml.engine.exceptions.Mark;
+public class ComposerException extends MarkedYAMLException {
+    private static final long serialVersionUID = 2146314636913113935L;
 
-/**
- * Marks the inclusion of a previously anchored node.
- */
-public final class AliasEvent extends NodeEvent {
-    public AliasEvent(String anchor, Mark startMark, Mark endMark) {
-        super(anchor, startMark, endMark);
-    }
-
-    @Override
-    public boolean is(Event.ID id) {
-        return ID.Alias == id;
-    }
-
-    @Override
-    public String toString() {
-        return "=ALI *" + getAnchor();
+    public ComposerException(String context, Mark contextMark, String problem, Mark problemMark) {
+        super(context, contextMark, problem, problemMark);
     }
 }

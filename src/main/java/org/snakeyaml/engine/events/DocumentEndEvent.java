@@ -26,17 +26,26 @@ import org.snakeyaml.engine.exceptions.Mark;
 public final class DocumentEndEvent extends Event {
     private final boolean explicit;
 
-    public DocumentEndEvent(Mark startMark, Mark endMark, boolean explicit) {
+    public DocumentEndEvent(boolean explicit, Mark startMark, Mark endMark) {
         super(startMark, endMark);
         this.explicit = explicit;
     }
 
-    public boolean getExplicit() {
+    public boolean isExplicit() {
         return explicit;
     }
 
     @Override
     public boolean is(Event.ID id) {
         return ID.DocumentEnd == id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("-DOC");
+        if (isExplicit()) {
+            builder.append(" ...");
+        }
+        return builder.toString();
     }
 }

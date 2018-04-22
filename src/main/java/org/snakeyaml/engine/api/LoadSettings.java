@@ -15,13 +15,19 @@
  */
 package org.snakeyaml.engine.api;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonResolver;
 import org.snakeyaml.engine.resolver.Resolver;
-
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 /**

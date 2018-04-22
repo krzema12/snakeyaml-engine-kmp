@@ -28,13 +28,23 @@ import org.snakeyaml.engine.exceptions.Mark;
  * @see SequenceEndEvent
  */
 public final class SequenceStartEvent extends CollectionStartEvent {
-    public SequenceStartEvent(String anchor, String tag, boolean implicit, Mark startMark,
-                              Mark endMark, FlowStyle flowStyle) {
-        super(anchor, tag, implicit, startMark, endMark, flowStyle);
+    public SequenceStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Mark startMark,
+                              Mark endMark) {
+        super(anchor, tag, implicit, flowStyle, startMark, endMark);
     }
 
     @Override
     public boolean is(Event.ID id) {
         return ID.SequenceStart == id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("+SEQ");
+        if (getFlowStyle() == FlowStyle.FLOW) {
+            builder.append(" []");
+        }
+        builder.append(super.toString());
+        return builder.toString();
     }
 }

@@ -45,8 +45,8 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
  * <p>
  * RFC 2396 specifies the set of unreserved characters as "-", "_", ".", "!",
  * "~", "*", "'", "(" and ")". It goes on to state:
- *
- *
+ * <p>
+ * <p>
  * <i>Unreserved characters can be escaped without changing the semantics of the
  * URI, but this should not be done unless the URI is being used in a context
  * that does not allow the unescaped character to appear.</i>
@@ -54,8 +54,8 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
  * <p>
  * For performance reasons the only currently supported character encoding of
  * this class is UTF-8.
- *
- *
+ * <p>
+ * <p>
  * <b>Note</b>: This escaper produces uppercase hexidecimal sequences. From <a
  * href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>:<br>
  * <i>"URI producers and normalizers should use uppercase hexadecimal digits for

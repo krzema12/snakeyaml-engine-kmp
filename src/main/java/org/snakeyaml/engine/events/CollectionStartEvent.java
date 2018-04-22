@@ -29,8 +29,8 @@ public abstract class CollectionStartEvent extends NodeEvent {
     // flag indicates if a collection is block or flow
     private final FlowStyle flowStyle;
 
-    public CollectionStartEvent(String anchor, String tag, boolean implicit, Mark startMark,
-                                Mark endMark, FlowStyle flowStyle) {
+    public CollectionStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Mark startMark,
+                                Mark endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
         this.implicit = implicit;
@@ -54,7 +54,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
      *
      * @return True if the tag can be omitted while this collection is emitted.
      */
-    public boolean getImplicit() {
+    public boolean isImplicit() {
         return this.implicit;
     }
 
@@ -68,12 +68,22 @@ public abstract class CollectionStartEvent extends NodeEvent {
         return this.flowStyle;
     }
 
-    @Override
-    protected String getArguments() {
-        return super.getArguments() + ", tag=" + tag + ", implicit=" + implicit;
-    }
-
     public boolean isFlow() {
         return FlowStyle.FLOW == flowStyle;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("");
+        if (getAnchor() != null) {
+            builder.append(" &");
+            builder.append(getAnchor());
+        }
+        if (getTag() != null) {
+            builder.append(" <");
+            builder.append(getTag());
+            builder.append(">");
+        }
+        return builder.toString();
     }
 }

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO rename to CharRange
 public final class CharConstants {
     private final static String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
@@ -76,6 +75,16 @@ public final class CharConstants {
     public final static Map<Integer, String> ESCAPE_REPLACEMENTS = new HashMap();
 
     /**
+     * A mapping from a character to be escaped to its code in the output stream. (used for emitting)
+     * It contains the same as ESCAPE_REPLACEMENTS except ' ' and '/'
+     *
+     * YAML defines several common and a few uncommon escape sequences.
+     *
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2776092">5.7. Escaped Characters</a>
+     */
+    public final static Map<String, Integer> ESCAPES = new HashMap();
+
+    /**
      * A mapping from a character to a number of bytes to read-ahead for that
      * escape sequence. These escape sequences are used to handle unicode
      * escaping in the following formats, where H is a hexadecimal character:
@@ -88,47 +97,31 @@ public final class CharConstants {
     public final static Map<Character, Integer> ESCAPE_CODES = new HashMap();
 
     static {
-        // ASCII null
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('0'), "\0");
-        // ASCII bell
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('a'), "\u0007");
-        // ASCII backspace
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('b'), "\u0008");
-        // ASCII horizontal tab
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('t'), "\u0009");
-        // ASCII newline (line feed; &#92;n maps to 0x0A)
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('n'), "\n");
-        // ASCII vertical tab
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('v'), "\u000B");
-        // ASCII form-feed
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('f'), "\u000C");
-        // carriage-return (&#92;r maps to 0x0D)
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('r'), "\r");
-        // ASCII escape character (Esc)
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('e'), "\u001B");
-        // ASCII space
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf(' '), "\u0020");
-        // ASCII double-quote
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('"'), "\"");
-        // ASCII slash (#x2F), for JSON compatibility.
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('/'), "/");
-        // ASCII backslash
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('\\'), "\\");
-        // Unicode next line
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('N'), "\u0085");
-        // Unicode non-breaking-space
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('_'), "\u00A0");
-        // Unicode line-separator
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('L'), "\u2028");
-        // Unicode paragraph separator
-        ESCAPE_REPLACEMENTS.put(Integer.valueOf('P'), "\u2029");
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('0'), "\0");// ASCII null
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('a'), "\u0007");// ASCII bell
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('b'), "\u0008"); // ASCII backspace
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('t'), "\u0009"); // ASCII horizontal tab
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('n'), "\n");// ASCII newline (line feed; &#92;n maps to 0x0A)
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('v'), "\u000B");// ASCII vertical tab
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('f'), "\u000C");// ASCII form-feed
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('r'), "\r");// carriage-return (&#92;r maps to 0x0D)
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('e'), "\u001B");// ASCII escape character (Esc)
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf(' '), "\u0020");// ASCII space
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('"'), "\"");// ASCII double-quote
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('/'), "/");// ASCII slash (#x2F), for JSON compatibility.
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('\\'), "\\");// ASCII backslash
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('N'), "\u0085");// Unicode next line
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('_'), "\u00A0");// Unicode non-breaking-space
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('L'), "\u2028");// Unicode line-separator
+        ESCAPE_REPLACEMENTS.put(Integer.valueOf('P'), "\u2029");// Unicode paragraph separator
 
-        // 8-bit Unicode
-        ESCAPE_CODES.put(Character.valueOf('x'), 2);
-        // 16-bit Unicode
-        ESCAPE_CODES.put(Character.valueOf('u'), 4);
-        // 32-bit Unicode (Supplementary characters are supported)
-        ESCAPE_CODES.put(Character.valueOf('U'), 8);
+        ESCAPE_REPLACEMENTS.entrySet().stream()
+                .filter(entry -> entry.getKey() != ' ' && entry.getKey() != '/')
+                .forEach(entry ->  ESCAPES.put(entry.getValue(), entry.getKey()));
+
+        ESCAPE_CODES.put(Character.valueOf('x'), 2);// 8-bit Unicode
+        ESCAPE_CODES.put(Character.valueOf('u'), 4);// 16-bit Unicode
+        ESCAPE_CODES.put(Character.valueOf('U'), 8);// 32-bit Unicode (Supplementary characters are supported)
     }
 
 }

@@ -32,4 +32,9 @@ public final class MappingEndEvent extends CollectionEndEvent {
     public boolean is(Event.ID id) {
         return ID.MappingEnd == id;
     }
+
+    @Override
+    public String toString() {
+        return "-MAP";
+    }
 }

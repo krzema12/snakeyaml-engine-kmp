@@ -199,7 +199,7 @@ public class ParserImpl implements Parser {
                 Token token = scanner.peekToken();
                 Mark startMark = token.getStartMark();
                 Mark endMark = startMark;
-                Event event = new DocumentStartEvent(startMark, endMark, false, null, null);
+                Event event = new DocumentStartEvent(false, null, null, startMark, endMark);
                 // Prepare the next state.
                 states.push(new ParseDocumentEnd());
                 state = new ParseBlockNode();
@@ -229,8 +229,8 @@ public class ParserImpl implements Parser {
                 }
                 token = scanner.getToken();
                 Mark endMark = token.getEndMark();
-                event = new DocumentStartEvent(startMark, endMark, true, tuple.getVersion(),
-                        tuple.getTags());
+                event = new DocumentStartEvent(true, tuple.getVersion(),
+                        tuple.getTags(), startMark, endMark);
                 states.push(new ParseDocumentEnd());
                 state = new ParseDocumentContent();
             } else {
@@ -261,7 +261,7 @@ public class ParserImpl implements Parser {
                 endMark = token.getEndMark();
                 explicit = true;
             }
-            Event event = new DocumentEndEvent(startMark, endMark, explicit);
+            Event event = new DocumentEndEvent(explicit, startMark, endMark);
             // Prepare the next state.
             state = new ParseDocumentStart();
             return event;
@@ -427,8 +427,7 @@ public class ParserImpl implements Parser {
             boolean implicit = tag == null || tag.equals("!");
             if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
                 endMark = scanner.peekToken().getEndMark();
-                event = new SequenceStartEvent(anchor, tag, implicit, startMark, endMark,
-                        FlowStyle.BLOCK);
+                event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);
                 state = new ParseIndentlessSequenceEntry();
             } else {
                 if (scanner.checkToken(Token.ID.Scalar)) {
@@ -442,13 +441,12 @@ public class ParserImpl implements Parser {
                     } else {
                         implicitValues = new ImplicitTuple(false, false);
                     }
-                    event = new ScalarEvent(anchor, tag, implicitValues, token.getValue(),
-                            startMark, endMark, token.getStyle());
+                    event = new ScalarEvent(anchor, tag, implicitValues, token.getValue(), token.getStyle(),
+                            startMark, endMark);
                     state = states.pop();
                 } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {
                     endMark = scanner.peekToken().getEndMark();
-                    event = new SequenceStartEvent(anchor, tag, implicit, startMark, endMark,
-                            FlowStyle.FLOW);
+                    event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark);
                     state = new ParseFlowSequenceFirstEntry();
                 } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
                     endMark = scanner.peekToken().getEndMark();
@@ -457,8 +455,7 @@ public class ParserImpl implements Parser {
                     state = new ParseFlowMappingFirstKey();
                 } else if (block && scanner.checkToken(Token.ID.BlockSequenceStart)) {
                     endMark = scanner.peekToken().getStartMark();
-                    event = new SequenceStartEvent(anchor, tag, implicit, startMark, endMark,
-                            FlowStyle.BLOCK);
+                    event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);
                     state = new ParseBlockSequenceFirstEntry();
                 } else if (block && scanner.checkToken(Token.ID.BlockMappingStart)) {
                     endMark = scanner.peekToken().getStartMark();
@@ -468,8 +465,8 @@ public class ParserImpl implements Parser {
                 } else if (anchor != null || tag != null) {
                     // Empty scalars are allowed even if a tag or an anchor is
                     // specified.
-                    event = new ScalarEvent(anchor, tag, new ImplicitTuple(implicit, false), "",
-                            startMark, endMark, ScalarStyle.PLAIN);
+                    event = new ScalarEvent(anchor, tag, new ImplicitTuple(implicit, false), "", ScalarStyle.PLAIN,
+                            startMark, endMark);
                     state = states.pop();
                 } else {
                     String node;
@@ -792,6 +789,6 @@ public class ParserImpl implements Parser {
      * </pre>
      */
     private Event processEmptyScalar(Mark mark) {
-        return new ScalarEvent(null, null, new ImplicitTuple(true, false), "", mark, mark, ScalarStyle.PLAIN);
+        return new ScalarEvent(null, null, new ImplicitTuple(true, false), "", ScalarStyle.PLAIN, mark, mark);
     }
 }

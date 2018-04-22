@@ -29,4 +29,9 @@ public final class AliasEvent extends NodeEvent {
     public boolean is(Event.ID id) {
         return ID.Alias == id;
     }
+
+    @Override
+    public String toString() {
+        return "=ALI *" + getAnchor();
+    }
 }

@@ -37,4 +37,9 @@ public final class StreamEndEvent extends Event {
     public boolean is(Event.ID id) {
         return ID.StreamEnd == id;
     }
+
+    @Override
+    public String toString() {
+        return "-STR";
+    }
 }

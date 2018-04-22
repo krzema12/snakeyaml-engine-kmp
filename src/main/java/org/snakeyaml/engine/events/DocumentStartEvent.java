@@ -31,15 +31,15 @@ public final class DocumentStartEvent extends Event {
     private final Version version;
     private final Map<String, String> tags;
 
-    public DocumentStartEvent(Mark startMark, Mark endMark, boolean explicit, Version version,
-                              Map<String, String> tags) {
+    public DocumentStartEvent(boolean explicit, Version version,
+                              Map<String, String> tags, Mark startMark, Mark endMark) {
         super(startMark, endMark);
         this.explicit = explicit;
         this.version = version;
         this.tags = tags;
     }
 
-    public boolean getExplicit() {
+    public boolean isExplicit() {
         return explicit;
     }
 
@@ -68,5 +68,14 @@ public final class DocumentStartEvent extends Event {
     @Override
     public boolean is(Event.ID id) {
         return ID.DocumentStart == id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("+DOC");
+        if (isExplicit()) {
+            builder.append(" ---");
+        }
+        return builder.toString();
     }
 }

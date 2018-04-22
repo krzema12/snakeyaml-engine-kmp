@@ -33,4 +33,9 @@ public final class SequenceEndEvent extends CollectionEndEvent {
     public boolean is(Event.ID id) {
         return ID.SequenceEnd == id;
     }
+
+    @Override
+    public String toString() {
+        return "-SEQ";
+    }
 }

@@ -15,6 +15,11 @@
  */
 package org.snakeyaml.engine.events;
 
+import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
+
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.exceptions.Mark;
 
@@ -22,6 +27,11 @@ import org.snakeyaml.engine.exceptions.Mark;
  * Marks a scalar value.
  */
 public final class ScalarEvent extends NodeEvent {
+
+    //this is only for Scalar representation (error messages and test suite)
+    private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet().stream()
+            .filter(entry -> entry.getKey() != '"').collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+
     private final String tag;
     // style flag of a scalar event indicates the style of the scalar. Possible
     // values are None, '', '\'', '"', '|', '>'
@@ -32,11 +42,14 @@ public final class ScalarEvent extends NodeEvent {
     // and non-plain style correspondingly.
     private final ImplicitTuple implicit;
 
-    public ScalarEvent(String anchor, String tag, ImplicitTuple implicit, String value,
-                       Mark startMark, Mark endMark, ScalarStyle style) {
+    //TODO anchor is optional ?
+    //TODO tag is optional ?
+    public ScalarEvent(String anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
+                       Mark startMark, Mark endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
         this.implicit = implicit;
+        if (value == null) throw new NullPointerException("Value must be provided.");
         this.value = value;
         if (style == null) throw new NullPointerException("Style must be provided.");
         this.style = style;
@@ -90,16 +103,50 @@ public final class ScalarEvent extends NodeEvent {
     }
 
     @Override
-    protected String getArguments() {
-        return super.getArguments() + ", tag=" + tag + ", " + implicit + ", value=" + value;
-    }
-
-    @Override
     public boolean is(Event.ID id) {
         return ID.Scalar == id;
     }
 
     public boolean isPlain() {
         return style == ScalarStyle.PLAIN;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("=VAL");
+        if (getAnchor() != null) {
+            builder.append(" &");
+            builder.append(getAnchor());
+        }
+        if (getTag() != null) {
+            builder.append(" <");
+            builder.append(getTag());
+            builder.append(">");
+        }
+        builder.append(" ");
+        if (getStyle() == ScalarStyle.PLAIN) {
+            builder.append(":");
+        } else {
+            builder.append(getStyle().getChar());
+        }
+        //escape and drop surrogates
+        String str = value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
+                .map(c -> escape(c)).collect(Collectors.joining(""));
+        builder.append(str);
+        return builder.toString();
+    }
+
+    /*
+     * TODO why the hel converting int -> string is so complex ?
+     * ch - the character to escape. Surrogates are not supported (because of int -> char conversion)
+     */
+    private String escape(Character ch) {
+        if (ESCAPES_TO_PRINT.containsKey(ch)) {
+            Integer i = ESCAPES_TO_PRINT.get(ch);
+            Character c = Character.valueOf((char) i.intValue());
+            return c.toString();
+        } else {
+            return ch.toString();
+        }
     }
 }

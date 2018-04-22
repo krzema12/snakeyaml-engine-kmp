@@ -15,11 +15,6 @@
  */
 package org.snakeyaml.engine.events;
 
-import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -30,9 +25,6 @@ public abstract class Event {
     public enum ID {
         Alias, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart
     }
-
-    private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet().stream()
-            .filter(entry -> entry.getKey() != '"').collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
     private final Mark startMark;
     private final Mark endMark;
@@ -45,25 +37,12 @@ public abstract class Event {
         this.endMark = endMark;
     }
 
-    public String toString() {
-        return "<" + this.getClass().getName() + "(" + getArguments() + ")>";
-    }
-
     public Mark getStartMark() {
         return startMark;
     }
 
     public Mark getEndMark() {
         return endMark;
-    }
-
-    /**
-     * Generate human readable representation of the Event
-     *
-     * @return representation fore humans
-     */
-    protected String getArguments() {
-        return "";
     }
 
     //TODO refactor to be isEvent

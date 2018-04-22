@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.snakeyaml.engine.events.AliasEvent;
@@ -29,6 +30,7 @@ import org.snakeyaml.engine.events.NodeEvent;
 import org.snakeyaml.engine.events.ScalarEvent;
 import org.snakeyaml.engine.events.SequenceStartEvent;
 import org.snakeyaml.engine.exceptions.ComposerException;
+import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.nodes.MappingNode;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.nodes.NodeTuple;
@@ -83,19 +85,21 @@ public class Composer {
      * @return The root node of the document or <code>null</code> if no document
      * is available.
      */
-    public Node getSingleNode() {
+    public Optional<Node> getSingleNode() {
         // Drop the STREAM-START event.
         parser.getEvent();
         // Compose a document if the stream is not empty.
-        Node document = null;
+        Optional<Node> document = Optional.empty();
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
-            document = composeDocument();
+            document = Optional.of(composeDocument());
         }
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             Event event = parser.getEvent();
+            Optional<Mark> previousDocMark = document.map(d -> d.getStartMark());
             throw new ComposerException("expected a single document in the stream",
-                    document.getStartMark(), "but found another document", event.getStartMark());
+                    previousDocMark.orElseThrow(() -> new IllegalArgumentException()),
+                    "but found another document", event.getStartMark());
         }
         // Drop the STREAM-END event.
         parser.getEvent();

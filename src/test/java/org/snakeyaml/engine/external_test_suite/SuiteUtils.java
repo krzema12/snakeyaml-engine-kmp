@@ -17,16 +17,9 @@ package org.snakeyaml.engine.external_test_suite;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.snakeyaml.engine.api.LoadSettings;
-import org.snakeyaml.engine.api.Parse;
-import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.exceptions.YAMLException;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -63,17 +56,5 @@ public class SuiteUtils {
         return allSuiteFiles.stream().map(file -> readData(file)).collect(Collectors.toList());
     }
 
-    public static ParseResult parseData(SuiteData data) {
-        Optional<Exception> error = Optional.empty();
-        List<Event> list = new ArrayList();
-        try {
-            LoadSettings settings = new LoadSettings();
-            settings.setLabel(data.getLabel());
-            Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
-            iterable.forEach(event -> list.add(event));
-        } catch (YAMLException e) {
-            error = Optional.of(e);
-        }
-        return new ParseResult(list, error);
-    }
+
 }

@@ -96,8 +96,7 @@ public class MappingNode extends CollectionNode<NodeTuple> {
     }
 
     /**
-     * @param merged
-     *            - true if map contains merge node
+     * @param merged - true if map contains merge node
      */
     public void setMerged(boolean merged) {
         this.merged = merged;

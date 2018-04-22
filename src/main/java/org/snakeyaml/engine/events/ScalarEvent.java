@@ -15,13 +15,13 @@
  */
 package org.snakeyaml.engine.events;
 
-import org.snakeyaml.engine.common.ScalarStyle;
-import org.snakeyaml.engine.exceptions.Mark;
+import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
+import org.snakeyaml.engine.common.ScalarStyle;
+import org.snakeyaml.engine.exceptions.Mark;
 
 /**
  * Marks a scalar value.

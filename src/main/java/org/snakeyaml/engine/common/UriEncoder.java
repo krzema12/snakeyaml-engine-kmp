@@ -40,6 +40,7 @@ public abstract class UriEncoder {
 
     /**
      * Escape special characters with '%'
+     *
      * @param uri URI to be escaped
      * @return encoded URI
      */
@@ -49,6 +50,7 @@ public abstract class UriEncoder {
 
     /**
      * Decode '%'-escaped characters. Decoding fails in case of invalid UTF-8
+     *
      * @param buff data to decode
      * @return decoded data
      * @throws CharacterCodingException if cannot be decoded

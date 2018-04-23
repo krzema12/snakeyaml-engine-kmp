@@ -873,7 +873,7 @@ public final class ScannerImpl implements Scanner {
      * must be included verbatim.
      */
     private void fetchLiteral() {
-        fetchBlockScalar('|');
+        fetchBlockScalar(ScalarStyle.LITERAL);
     }
 
     /**
@@ -881,7 +881,7 @@ public final class ScannerImpl implements Scanner {
      * best used for long content, such as the text of a chapter or description.
      */
     private void fetchFolded() {
-        fetchBlockScalar('>');
+        fetchBlockScalar(ScalarStyle.FOLDED);
     }
 
     /**
@@ -889,7 +889,7 @@ public final class ScannerImpl implements Scanner {
      *
      * @param style
      */
-    private void fetchBlockScalar(char style) {
+    private void fetchBlockScalar(ScalarStyle style) {
         // A simple key may follow a block scalar.
         this.allowSimpleKey = true;
 
@@ -1452,17 +1452,9 @@ public final class ScannerImpl implements Scanner {
         return new TagToken(value, startMark, endMark);
     }
 
-    //TODO to enum ScalarStyle
-    private Token scanBlockScalar(char style) {
+    private Token scanBlockScalar(ScalarStyle style) {
         // See the specification for details.
         boolean folded;
-        // Depending on the given style, we determine whether the scalar is
-        // folded ('>') or literal ('|')
-        if (style == '>') {
-            folded = true;
-        } else {
-            folded = false;
-        }
         StringBuilder chunks = new StringBuilder();
         Optional<Mark> startMark = reader.getMark();
         // Scan the header.
@@ -1513,7 +1505,7 @@ public final class ScannerImpl implements Scanner {
                 // Unfortunately, folding rules are ambiguous.
                 //
                 // This is the folding according to the specification:
-                if (folded && "\n".equals(lineBreak) && leadingNonSpace
+                if (style == ScalarStyle.FOLDED && "\n".equals(lineBreak) && leadingNonSpace
                         && " \t".indexOf(reader.peek()) == -1) {
                     if (breaks.length() == 0) {
                         chunks.append(" ");
@@ -1533,7 +1525,7 @@ public final class ScannerImpl implements Scanner {
             chunks.append(breaks);
         }
         // We are done.
-        return new ScalarToken(chunks.toString(), false, startMark, endMark, ScalarStyle.createStyle(style));
+        return new ScalarToken(chunks.toString(), false, startMark, endMark, style);
     }
 
     /**

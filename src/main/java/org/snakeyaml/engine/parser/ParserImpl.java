@@ -166,11 +166,16 @@ public class ParserImpl implements Parser {
     /**
      * Get the next event and proceed further.
      */
-    public Event getEvent() {
+    public Event next() {
         peekEvent();
         Event value = currentEvent;
         currentEvent = null;
         return value;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return peekEvent() != null;
     }
 
     /**

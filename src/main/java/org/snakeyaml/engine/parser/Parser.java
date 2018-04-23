@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.parser;
 
 
+import java.util.Iterator;
+
 import org.snakeyaml.engine.events.Event;
 
 /**
@@ -27,7 +29,7 @@ import org.snakeyaml.engine.events.Event;
  *
  * @see org.snakeyaml.engine.events.Event
  */
-public interface Parser {
+public interface Parser extends Iterator<Event> {
 
     /**
      * Check if the next event is one of the given type.
@@ -44,7 +46,7 @@ public interface Parser {
      * Return the next event, but do not delete it from the stream.
      *
      * @return The event that will be returned on the next call to
-     * {@link #getEvent}
+     * {@link #next}
      * @throws ParserException Thrown in case of malformed input.
      */
     public Event peekEvent();
@@ -58,5 +60,5 @@ public interface Parser {
      * @return the next parsed event
      * @throws ParserException Thrown in case of malformed input.
      */
-    public Event getEvent();
+    public Event next();
 }

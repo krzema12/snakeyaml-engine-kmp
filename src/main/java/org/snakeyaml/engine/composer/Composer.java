@@ -71,7 +71,7 @@ public class Composer implements Iterator<Node> {
     public boolean hasNext() {
         // Drop the STREAM-START event.
         if (parser.checkEvent(Event.ID.StreamStart)) {
-            parser.getEvent();
+            parser.next();
         }
         // If there are more documents available?
         return !parser.checkEvent(Event.ID.StreamEnd);
@@ -88,7 +88,7 @@ public class Composer implements Iterator<Node> {
      */
     public Optional<Node> getSingleNode() {
         // Drop the STREAM-START event.
-        parser.getEvent();
+        parser.next();
         // Compose a document if the stream is not empty.
         Optional<Node> document = Optional.empty();
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
@@ -96,14 +96,14 @@ public class Composer implements Iterator<Node> {
         }
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
-            Event event = parser.getEvent();
+            Event event = parser.next();
             Optional<Mark> previousDocMark = document.map(d -> d.getStartMark());
             throw new ComposerException("expected a single document in the stream",
                     previousDocMark.orElseThrow(() -> new IllegalArgumentException()),
                     "but found another document", event.getStartMark());
         }
         // Drop the STREAM-END event.
-        parser.getEvent();
+        parser.next();
         return document;
     }
 
@@ -115,11 +115,11 @@ public class Composer implements Iterator<Node> {
      */
     public Node next() {
         // Drop the DOCUMENT-START event.
-        parser.getEvent();
+        parser.next();
         // Compose the root node.
         Node node = composeNode(null);
         // Drop the DOCUMENT-END event.
-        parser.getEvent();
+        parser.next();
         this.anchors.clear();
         recursiveNodes.clear();
         return node;
@@ -131,7 +131,7 @@ public class Composer implements Iterator<Node> {
         if (parent != null) recursiveNodes.add(parent);
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
-            AliasEvent event = (AliasEvent) parser.getEvent();
+            AliasEvent event = (AliasEvent) parser.next();
             String anchor = event.getAnchor();
             if (!anchors.containsKey(anchor)) {
                 throw new ComposerException(null, null, "found undefined alias " + anchor, event.getStartMark());
@@ -157,7 +157,7 @@ public class Composer implements Iterator<Node> {
     }
 
     protected Node composeScalarNode(String anchor) {
-        ScalarEvent ev = (ScalarEvent) parser.getEvent();
+        ScalarEvent ev = (ScalarEvent) parser.next();
         String tag = ev.getTag();
         boolean resolved = false;
         Tag nodeTag;
@@ -176,7 +176,7 @@ public class Composer implements Iterator<Node> {
     }
 
     protected Node composeSequenceNode(String anchor) {
-        SequenceStartEvent startEvent = (SequenceStartEvent) parser.getEvent();
+        SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
@@ -195,13 +195,13 @@ public class Composer implements Iterator<Node> {
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             children.add(composeNode(node));
         }
-        Event endEvent = parser.getEvent();
+        Event endEvent = parser.next();
         node.setEndMark(endEvent.getEndMark());
         return node;
     }
 
     protected Node composeMappingNode(String anchor) {
-        MappingStartEvent startEvent = (MappingStartEvent) parser.getEvent();
+        MappingStartEvent startEvent = (MappingStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
@@ -220,7 +220,7 @@ public class Composer implements Iterator<Node> {
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             composeMappingChildren(children, node);
         }
-        Event endEvent = parser.getEvent();
+        Event endEvent = parser.next();
         node.setEndMark(endEvent.getEndMark());
         return node;
     }

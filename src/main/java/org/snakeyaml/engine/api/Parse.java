@@ -21,7 +21,6 @@ import java.io.StringReader;
 import java.util.Iterator;
 
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.parser.Parser;
 import org.snakeyaml.engine.parser.ParserImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
 
@@ -47,7 +46,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseReader(InputStream yaml) {
-        return new EventIterable(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings)));
+        return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings));
     }
 
     /**
@@ -58,7 +57,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseInputStream(Reader yaml) {
-        return new EventIterable(new ParserImpl(new StreamReader(yaml, settings)));
+        return () -> new ParserImpl(new StreamReader(yaml, settings));
     }
 
     /**
@@ -69,28 +68,12 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseString(String yaml) {
-        return new EventIterable(new ParserImpl(new StreamReader(new StringReader(yaml), settings)));
-    }
-}
-
-class EventIterable implements Iterable<Event> {
-    private final Parser parser;
-
-    public EventIterable(Parser parser) {
-        this.parser = parser;
-    }
-
-    @Override
-    public Iterator<Event> iterator() {
-        return new Iterator<Event>() {
-            @Override
-            public boolean hasNext() {
-                return parser.peekEvent() != null;
-            }
-
-            public Event next() {
-                return parser.getEvent();
+        //do not use lambda to keep Iterable and Iterator visible
+        return new Iterable() {
+            public Iterator<Event> iterator() {
+                return new ParserImpl(new StreamReader(new StringReader(yaml), settings));
             }
         };
     }
 }
+

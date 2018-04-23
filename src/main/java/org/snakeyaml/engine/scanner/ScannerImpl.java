@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.common.ArrayStack;
@@ -348,8 +349,7 @@ public final class ScannerImpl implements Scanner {
         String text = String
                 .format("found character '%s' that cannot start any token. (Do not use %s for indentation)",
                         chRepresentation, chRepresentation);
-        throw new ScannerException("while scanning for the next token", null, text,
-                reader.getMark());
+        throw new ScannerException("while scanning for the next token", null, text, reader.getMark());
     }
 
     // Simple keys treatment.
@@ -477,7 +477,7 @@ public final class ScannerImpl implements Scanner {
 
         // In block context, we may need to issue the BLOCK-END tokens.
         while (this.indent > col) {
-            Mark mark = reader.getMark();
+            Optional<Mark> mark = reader.getMark();
             this.indent = this.indents.pop();
             this.tokens.add(new BlockEndToken(mark, mark));
         }
@@ -503,7 +503,7 @@ public final class ScannerImpl implements Scanner {
      */
     private void fetchStreamStart() {
         // Read the token.
-        Mark mark = reader.getMark();
+        Optional<Mark> mark = reader.getMark();
 
         // Add STREAM-START.
         Token token = new StreamStartToken(mark, mark);
@@ -520,7 +520,7 @@ public final class ScannerImpl implements Scanner {
         this.possibleSimpleKeys.clear();
 
         // Read the token.
-        Mark mark = reader.getMark();
+        Optional<Mark> mark = reader.getMark();
 
         // Add STREAM-END.
         Token token = new StreamEndToken(mark, mark);
@@ -576,9 +576,9 @@ public final class ScannerImpl implements Scanner {
         this.allowSimpleKey = false;
 
         // Add DOCUMENT-START or DOCUMENT-END.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward(3);
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token;
         if (isDocumentStart) {
             token = new DocumentStartToken(startMark, endMark);
@@ -617,9 +617,9 @@ public final class ScannerImpl implements Scanner {
         this.allowSimpleKey = true;
 
         // Add FLOW-SEQUENCE-START or FLOW-MAPPING-START.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward(1);
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token;
         if (isMappingStart) {
             token = new FlowMappingStartToken(startMark, endMark);
@@ -656,9 +656,9 @@ public final class ScannerImpl implements Scanner {
         this.allowSimpleKey = false;
 
         // Add FLOW-SEQUENCE-END or FLOW-MAPPING-END.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token;
         if (isMappingEnd) {
             token = new FlowMappingEndToken(startMark, endMark);
@@ -680,9 +680,9 @@ public final class ScannerImpl implements Scanner {
         removePossibleSimpleKey();
 
         // Add FLOW-ENTRY.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token = new FlowEntryToken(startMark, endMark);
         this.tokens.add(token);
     }
@@ -701,7 +701,7 @@ public final class ScannerImpl implements Scanner {
 
             // We may need to add BLOCK-SEQUENCE-START.
             if (addIndent(this.reader.getColumn())) {
-                Mark mark = reader.getMark();
+                Optional<Mark> mark = reader.getMark();
                 this.tokens.add(new BlockSequenceStartToken(mark, mark));
             }
         } else {
@@ -715,9 +715,9 @@ public final class ScannerImpl implements Scanner {
         removePossibleSimpleKey();
 
         // Add BLOCK-ENTRY.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token = new BlockEntryToken(startMark, endMark);
         this.tokens.add(token);
     }
@@ -735,7 +735,7 @@ public final class ScannerImpl implements Scanner {
             }
             // We may need to add BLOCK-MAPPING-START.
             if (addIndent(this.reader.getColumn())) {
-                Mark mark = reader.getMark();
+                Optional<Mark> mark = reader.getMark();
                 this.tokens.add(new BlockMappingStartToken(mark, mark));
             }
         }
@@ -746,9 +746,9 @@ public final class ScannerImpl implements Scanner {
         removePossibleSimpleKey();
 
         // Add KEY.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token = new KeyToken(startMark, endMark);
         this.tokens.add(token);
     }
@@ -794,7 +794,7 @@ public final class ScannerImpl implements Scanner {
             // the scanner.
             if (flowLevel == 0) {
                 if (addIndent(reader.getColumn())) {
-                    Mark mark = reader.getMark();
+                    Optional<Mark> mark = reader.getMark();
                     this.tokens.add(new BlockMappingStartToken(mark, mark));
                 }
             }
@@ -806,9 +806,9 @@ public final class ScannerImpl implements Scanner {
             removePossibleSimpleKey();
         }
         // Add VALUE.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token token = new ValueToken(startMark, endMark);
         this.tokens.add(token);
     }
@@ -1121,8 +1121,8 @@ public final class ScannerImpl implements Scanner {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private Token scanDirective() {
         // See the specification for details.
-        Mark startMark = reader.getMark();
-        Mark endMark;
+        Optional<Mark> startMark = reader.getMark();
+        Optional<Mark> endMark;
         reader.forward();
         String name = scanDirectiveName(startMark);
         List<?> value = null;
@@ -1150,7 +1150,7 @@ public final class ScannerImpl implements Scanner {
      * Scan a directive name. Directive names are a series of non-space
      * characters.
      */
-    private String scanDirectiveName(Mark startMark) {
+    private String scanDirectiveName(Optional<Mark> startMark) {
         // See the specification for details.
         int length = 0;
         // A Directive-name is a sequence of alphanumeric characters
@@ -1179,7 +1179,7 @@ public final class ScannerImpl implements Scanner {
         return value;
     }
 
-    private List<Integer> scanYamlDirectiveValue(Mark startMark) {
+    private List<Integer> scanYamlDirectiveValue(Optional<Mark> startMark) {
         // See the specification for details.
         while (reader.peek() == ' ') {
             reader.forward();
@@ -1211,7 +1211,7 @@ public final class ScannerImpl implements Scanner {
      * Read a %YAML directive number: this is either the major or the minor
      * part. Stop reading at a non-digit character (usually either '.' or '\n').
      */
-    private Integer scanYamlDirectiveNumber(Mark startMark) {
+    private Integer scanYamlDirectiveNumber(Optional<Mark> startMark) {
         // See the specification for details.
         int c = reader.peek();
         if (!Character.isDigit(c)) {
@@ -1237,7 +1237,7 @@ public final class ScannerImpl implements Scanner {
      * <p>
      * </p>
      */
-    private List<String> scanTagDirectiveValue(Mark startMark) {
+    private List<String> scanTagDirectiveValue(Optional<Mark> startMark) {
         // See the specification for details.
         while (reader.peek() == ' ') {
             reader.forward();
@@ -1259,7 +1259,7 @@ public final class ScannerImpl implements Scanner {
      * @param startMark
      * @return the directive value
      */
-    private String scanTagDirectiveHandle(Mark startMark) {
+    private String scanTagDirectiveHandle(Optional<Mark> startMark) {
         // See the specification for details.
         String value = scanTagHandle("directive", startMark);
         int c = reader.peek();
@@ -1274,7 +1274,7 @@ public final class ScannerImpl implements Scanner {
     /**
      * Scan a %TAG directive's prefix. This is YAML's ns-tag-prefix.
      */
-    private String scanTagDirectivePrefix(Mark startMark) {
+    private String scanTagDirectivePrefix(Optional<Mark> startMark) {
         // See the specification for details.
         String value = scanTagUri("directive", startMark);
         int c = reader.peek();
@@ -1287,7 +1287,7 @@ public final class ScannerImpl implements Scanner {
         return value;
     }
 
-    private void scanDirectiveIgnoredLine(Mark startMark) {
+    private void scanDirectiveIgnoredLine(Optional<Mark> startMark) {
         // See the specification for details.
         while (reader.peek() == ' ') {
             reader.forward();
@@ -1320,7 +1320,7 @@ public final class ScannerImpl implements Scanner {
      * </pre>
      */
     private Token scanAnchor(boolean isAnchor) {
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         int indicator = reader.peek();
         String name = indicator == '*' ? "alias" : "anchor";
         reader.forward();
@@ -1344,7 +1344,7 @@ public final class ScannerImpl implements Scanner {
                     "expected alphabetic or numeric character, but found " + s + "("
                             + c + ")", reader.getMark());
         }
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         Token tok;
         if (isAnchor) {
             tok = new AnchorToken(value, startMark, endMark);
@@ -1387,7 +1387,7 @@ public final class ScannerImpl implements Scanner {
      */
     private Token scanTag() {
         // See the specification for details.
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         // Determine the type of tag property based on the first character
         // encountered
         int c = reader.peek(1);
@@ -1448,7 +1448,7 @@ public final class ScannerImpl implements Scanner {
                     "expected ' ', but found '" + s + "' (" + (c) + ")", reader.getMark());
         }
         TagTuple value = new TagTuple(handle, suffix);
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         return new TagToken(value, startMark, endMark);
     }
 
@@ -1464,7 +1464,7 @@ public final class ScannerImpl implements Scanner {
             folded = false;
         }
         StringBuilder chunks = new StringBuilder();
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         // Scan the header.
         reader.forward();
         Chomping chompi = scanBlockScalarIndicators(startMark);
@@ -1479,18 +1479,18 @@ public final class ScannerImpl implements Scanner {
         String breaks;
         int maxIndent;
         int indent;
-        Mark endMark;
+        Optional<Mark> endMark;
         if (increment == -1) {
             Object[] brme = scanBlockScalarIndentation();
             breaks = (String) brme[0];
             maxIndent = ((Integer) brme[1]).intValue();
-            endMark = (Mark) brme[2];
+            endMark = (Optional<Mark>) brme[2];
             indent = Math.max(minIndent, maxIndent);
         } else {
             indent = minIndent + increment - 1;
             Object[] brme = scanBlockScalarBreaks(indent);
             breaks = (String) brme[0];
-            endMark = (Mark) brme[1];
+            endMark = (Optional<Mark>) brme[1];
         }
 
         String lineBreak = "";
@@ -1507,7 +1507,7 @@ public final class ScannerImpl implements Scanner {
             lineBreak = scanLineBreak();
             Object[] brme = scanBlockScalarBreaks(indent);
             breaks = (String) brme[0];
-            endMark = (Mark) brme[1];
+            endMark = (Optional<Mark>) brme[1];
             if (this.reader.getColumn() == indent && reader.peek() != '\0') {
 
                 // Unfortunately, folding rules are ambiguous.
@@ -1547,7 +1547,7 @@ public final class ScannerImpl implements Scanner {
      * A block chomping indicator is a + or -, selecting the chomping mode away
      * from the default (clip) to either -(strip) or +(keep).
      */
-    private Chomping scanBlockScalarIndicators(Mark startMark) {
+    private Chomping scanBlockScalarIndicators(Optional<Mark> startMark) {
         // See the specification for details.
         Boolean chomping = null;
         int increment = -1;
@@ -1603,7 +1603,7 @@ public final class ScannerImpl implements Scanner {
      * Scan to the end of the line after a block scalar has been scanned; the
      * only things that are permitted at this time are comments and spaces.
      */
-    private String scanBlockScalarIgnoredLine(Mark startMark) {
+    private String scanBlockScalarIgnoredLine(Optional<Mark> startMark) {
         // See the specification for details.
 
         // Forward past any number of trailing spaces
@@ -1639,7 +1639,7 @@ public final class ScannerImpl implements Scanner {
         // See the specification for details.
         StringBuilder chunks = new StringBuilder();
         int maxIndent = 0;
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
         // leading spaces on any of these lines.
@@ -1666,7 +1666,7 @@ public final class ScannerImpl implements Scanner {
     private Object[] scanBlockScalarBreaks(int indent) {
         // See the specification for details.
         StringBuilder chunks = new StringBuilder();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         int col = this.reader.getColumn();
         // Scan for up to the expected indentation-level of spaces, then move
         // forward past that amount.
@@ -1718,7 +1718,7 @@ public final class ScannerImpl implements Scanner {
             _double = false;
         }
         StringBuilder chunks = new StringBuilder();
-        Mark startMark = reader.getMark();
+        Optional<Mark> startMark = reader.getMark();
         int quote = reader.peek();
         reader.forward();
         chunks.append(scanFlowScalarNonSpaces(_double, startMark));
@@ -1727,14 +1727,14 @@ public final class ScannerImpl implements Scanner {
             chunks.append(scanFlowScalarNonSpaces(_double, startMark));
         }
         reader.forward();
-        Mark endMark = reader.getMark();
+        Optional<Mark> endMark = reader.getMark();
         return new ScalarToken(chunks.toString(), false, startMark, endMark, ScalarStyle.createStyle(style));
     }
 
     /**
      * Scan some number of flow-scalar non-space characters.
      */
-    private String scanFlowScalarNonSpaces(boolean doubleQuoted, Mark startMark) {
+    private String scanFlowScalarNonSpaces(boolean doubleQuoted, Optional<Mark> startMark) {
         // See the specification for details.
         StringBuilder chunks = new StringBuilder();
         while (true) {
@@ -1795,7 +1795,7 @@ public final class ScannerImpl implements Scanner {
         }
     }
 
-    private String scanFlowScalarSpaces(Mark startMark) {
+    private String scanFlowScalarSpaces(Optional<Mark> startMark) {
         // See the specification for details.
         StringBuilder chunks = new StringBuilder();
         int length = 0;
@@ -1827,7 +1827,7 @@ public final class ScannerImpl implements Scanner {
         return chunks.toString();
     }
 
-    private String scanFlowScalarBreaks(Mark startMark) {
+    private String scanFlowScalarBreaks(Optional<Mark> startMark) {
         // See the specification for details.
         StringBuilder chunks = new StringBuilder();
         while (true) {
@@ -1867,8 +1867,8 @@ public final class ScannerImpl implements Scanner {
      */
     private Token scanPlain() {
         StringBuilder chunks = new StringBuilder();
-        Mark startMark = reader.getMark();
-        Mark endMark = startMark;
+        Optional<Mark> startMark = reader.getMark();
+        Optional<Mark> endMark = startMark;
         int indent = this.indent + 1;
         String spaces = "";
         while (true) {
@@ -1970,7 +1970,7 @@ public final class ScannerImpl implements Scanner {
      * tag handles. I have allowed it anyway.
      * </pre>
      */
-    private String scanTagHandle(String name, Mark startMark) {
+    private String scanTagHandle(String name, Optional<Mark> startMark) {
         int c = reader.peek();
         if (c != '!') {
             final String s = String.valueOf(Character.toChars(c));
@@ -2019,7 +2019,7 @@ public final class ScannerImpl implements Scanner {
      * particular kind of URI specification.
      * </p>
      */
-    private String scanTagUri(String name, Mark startMark) {
+    private String scanTagUri(String name, Optional<Mark> startMark) {
         // See the specification for details.
         // Note: we do not check if URI is well-formed.
         StringBuilder chunks = new StringBuilder();
@@ -2061,7 +2061,7 @@ public final class ScannerImpl implements Scanner {
      * FIXME This method fails for more than 256 bytes' worth of URI-encoded
      * characters in a row. Is this possible? Is this a use-case?
      */
-    private String scanUriEscapes(String name, Mark startMark) {
+    private String scanUriEscapes(String name, Optional<Mark> startMark) {
         // First, look ahead to see how many URI-escaped characters we should
         // expect, so we can use the correct buffer size.
         int length = 1;
@@ -2072,7 +2072,7 @@ public final class ScannerImpl implements Scanner {
         // URIs containing 16 and 32 bit Unicode characters are
         // encoded in UTF-8, and then each octet is written as a
         // separate character.
-        Mark beginningMark = reader.getMark();
+        Optional<Mark> beginningMark = reader.getMark();
         ByteBuffer buff = ByteBuffer.allocate(length);
         while (reader.peek() == '%') {
             reader.forward();

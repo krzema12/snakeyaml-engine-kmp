@@ -15,11 +15,13 @@
  */
 package org.snakeyaml.engine.tokens;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class StreamStartToken extends Token {
 
-    public StreamStartToken(Mark startMark, Mark endMark) {
+    public StreamStartToken(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
 

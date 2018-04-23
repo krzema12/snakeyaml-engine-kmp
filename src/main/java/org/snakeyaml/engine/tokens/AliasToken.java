@@ -16,12 +16,14 @@
 package org.snakeyaml.engine.tokens;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class AliasToken extends Token {
     private final String value;
 
-    public AliasToken(String value, Mark startMark, Mark endMark) {
+    public AliasToken(String value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.value = value;
     }

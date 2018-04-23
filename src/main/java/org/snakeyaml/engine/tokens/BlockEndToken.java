@@ -16,11 +16,13 @@
 package org.snakeyaml.engine.tokens;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class BlockEndToken extends Token {
 
-    public BlockEndToken(Mark startMark, Mark endMark) {
+    public BlockEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
 

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.events;
 import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -45,7 +46,7 @@ public final class ScalarEvent extends NodeEvent {
     //TODO anchor is optional ?
     //TODO tag is optional ?
     public ScalarEvent(String anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
-                       Mark startMark, Mark endMark) {
+                       Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
         this.implicit = implicit;

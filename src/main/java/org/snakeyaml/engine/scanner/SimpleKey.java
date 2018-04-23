@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.scanner;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -31,9 +33,9 @@ final class SimpleKey {
     private int index;
     private int line;
     private int column;
-    private Mark mark;
+    private Optional<Mark> mark;
 
-    public SimpleKey(int tokenNumber, boolean required, int index, int line, int column, Mark mark) {
+    public SimpleKey(int tokenNumber, boolean required, int index, int line, int column, Optional<Mark> mark) {
         this.tokenNumber = tokenNumber;
         this.required = required;
         this.index = index;
@@ -50,7 +52,7 @@ final class SimpleKey {
         return this.column;
     }
 
-    public Mark getMark() {
+    public Optional<Mark> getMark() {
         return mark;
     }
 

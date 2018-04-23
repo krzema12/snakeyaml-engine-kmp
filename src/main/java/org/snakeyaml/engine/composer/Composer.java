@@ -97,9 +97,8 @@ public class Composer implements Iterator<Node> {
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             Event event = parser.next();
-            Optional<Mark> previousDocMark = document.map(d -> d.getStartMark());
-            throw new ComposerException("expected a single document in the stream",
-                    previousDocMark.orElseThrow(() -> new IllegalArgumentException()),
+            Optional<Mark> previousDocMark = document.flatMap(d -> d.getStartMark());
+            throw new ComposerException("expected a single document in the stream", previousDocMark,
                     "but found another document", event.getStartMark());
         }
         // Drop the STREAM-END event.

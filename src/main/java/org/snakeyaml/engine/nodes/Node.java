@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.nodes;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -31,8 +33,8 @@ import org.snakeyaml.engine.exceptions.Mark;
  */
 public abstract class Node {
     private Tag tag;
-    private Mark startMark;
-    protected Mark endMark;
+    private Optional<Mark> startMark;
+    protected Optional<Mark> endMark;
     private Class<? extends Object> type;
     private boolean recursive;
 
@@ -42,7 +44,7 @@ public abstract class Node {
     protected boolean resolved;
     protected Boolean useClassConstructor;
 
-    public Node(Tag tag, Mark startMark, Mark endMark) {
+    public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
         setTag(tag);
         this.startMark = startMark;
         this.endMark = endMark;
@@ -63,7 +65,7 @@ public abstract class Node {
         return this.tag;
     }
 
-    public Mark getEndMark() {
+    public Optional<Mark> getEndMark() {
         return endMark;
     }
 
@@ -72,7 +74,7 @@ public abstract class Node {
      */
     public abstract NodeId getNodeId();
 
-    public Mark getStartMark() {
+    public Optional<Mark> getStartMark() {
         return startMark;
     }
 

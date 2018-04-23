@@ -15,11 +15,13 @@
  */
 package org.snakeyaml.engine.tokens;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class FlowEntryToken extends Token {
 
-    public FlowEntryToken(Mark startMark, Mark endMark) {
+    public FlowEntryToken(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
 

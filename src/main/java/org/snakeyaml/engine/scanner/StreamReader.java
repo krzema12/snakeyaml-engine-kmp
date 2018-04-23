@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.common.CharConstants;
@@ -95,12 +96,11 @@ public final class StreamReader {
                 || (c >= 0x10000 && c <= 0x10FFFF);
     }
 
-    //TODO use optional
-    public Mark getMark() {
+    public Optional<Mark> getMark() {
         if (useMarks)
-            return new Mark(name, this.index, this.line, this.column, this.dataWindow, this.pointer);
+            return Optional.of(new Mark(name, this.index, this.line, this.column, this.dataWindow, this.pointer));
         else
-            return null;
+            return Optional.empty();
     }
 
     public void forward() {

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.parser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.FlowStyle;
@@ -116,7 +117,7 @@ import org.snakeyaml.engine.tokens.Token;
  * not give many comments here.
  */
 public class ParserImpl implements Parser {
-    private static final Map<String, String> DEFAULT_TAGS = new HashMap<String, String>();
+    private static final Map<String, String> DEFAULT_TAGS = new HashMap();
 
     static {
         DEFAULT_TAGS.put("!", "!");
@@ -126,7 +127,7 @@ public class ParserImpl implements Parser {
     protected final Scanner scanner;
     private Event currentEvent;
     private final ArrayStack<Production> states;
-    private final ArrayStack<Mark> marks;
+    private final ArrayStack<Optional<Mark>> marks222;
     private Production state;
     private VersionTagsTuple directives;
 
@@ -139,7 +140,7 @@ public class ParserImpl implements Parser {
         currentEvent = null;
         directives = new VersionTagsTuple(null, new HashMap<String, String>(DEFAULT_TAGS));
         states = new ArrayStack<Production>(100);
-        marks = new ArrayStack<Mark>(10);
+        marks222 = new ArrayStack(10);
         state = new ParseStreamStart();
     }
 
@@ -202,8 +203,8 @@ public class ParserImpl implements Parser {
             if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
                 directives = new VersionTagsTuple(null, DEFAULT_TAGS);
                 Token token = scanner.peekToken();
-                Mark startMark = token.getStartMark();
-                Mark endMark = startMark;
+                Optional<Mark> startMark = token.getStartMark();
+                Optional<Mark> endMark = startMark;
                 Event event = new DocumentStartEvent(false, null, null, startMark, endMark);
                 // Prepare the next state.
                 states.push(new ParseDocumentEnd());
@@ -226,14 +227,14 @@ public class ParserImpl implements Parser {
             Event event;
             if (!scanner.checkToken(Token.ID.StreamEnd)) {
                 Token token = scanner.peekToken();
-                Mark startMark = token.getStartMark();
+                Optional<Mark> startMark = token.getStartMark();
                 VersionTagsTuple tuple = processDirectives();
                 if (!scanner.checkToken(Token.ID.DocumentStart)) {
-                    throw new ParserException(null, null, "expected '<document start>', but found '"
+                    throw new ParserException(null, Optional.empty(), "expected '<document start>', but found '"
                             + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
                 }
                 token = scanner.getToken();
-                Mark endMark = token.getEndMark();
+                Optional<Mark> endMark = token.getEndMark();
                 event = new DocumentStartEvent(true, tuple.getVersion(),
                         tuple.getTags(), startMark, endMark);
                 states.push(new ParseDocumentEnd());
@@ -245,8 +246,8 @@ public class ParserImpl implements Parser {
                 if (!states.isEmpty()) {
                     throw new YAMLException("Unexpected end of stream. States left: " + states);
                 }
-                if (!marks.isEmpty()) {
-                    throw new YAMLException("Unexpected end of stream. Marks left: " + marks);
+                if (!markEmpty()) {
+                    throw new YAMLException("Unexpected end of stream. Marks left: " + marks222);
                 }
                 state = null;
             }
@@ -258,8 +259,8 @@ public class ParserImpl implements Parser {
         public Event produce() {
             // Parse the document end.
             Token token = scanner.peekToken();
-            Mark startMark = token.getStartMark();
-            Mark endMark = startMark;
+            Optional<Mark> startMark = token.getStartMark();
+            Optional<Mark> endMark = startMark;
             boolean explicit = false;
             if (scanner.checkToken(Token.ID.DocumentEnd)) {
                 token = scanner.getToken();
@@ -377,9 +378,9 @@ public class ParserImpl implements Parser {
 
     private Event parseNode(boolean block, boolean indentlessSequence) {
         Event event;
-        Mark startMark = null;
-        Mark endMark = null;
-        Mark tagMark = null;
+        Optional<Mark> startMark = null;
+        Optional<Mark> endMark = null;
+        Optional<Mark> tagMark = null;
         if (scanner.checkToken(Token.ID.Alias)) {
             AliasToken token = (AliasToken) scanner.getToken();
             event = new AliasEvent(token.getValue(), token.getStartMark(), token.getEndMark());
@@ -496,7 +497,7 @@ public class ParserImpl implements Parser {
     private class ParseBlockSequenceFirstEntry implements Production {
         public Event produce() {
             Token token = scanner.getToken();
-            marks.push(token.getStartMark());
+            markPush(token.getStartMark());
             return new ParseBlockSequenceEntry().produce();
         }
     }
@@ -515,14 +516,14 @@ public class ParserImpl implements Parser {
             }
             if (!scanner.checkToken(Token.ID.BlockEnd)) {
                 Token token = scanner.peekToken();
-                throw new ParserException("while parsing a block collection", marks.pop(),
+                throw new ParserException("while parsing a block collection", markPop(),
                         "expected <block end>, but found '" + token.getTokenId() + "'",
                         token.getStartMark());
             }
             Token token = scanner.getToken();
             Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
             state = states.pop();
-            marks.pop();
+            markPop();
             return event;
         }
     }
@@ -552,7 +553,7 @@ public class ParserImpl implements Parser {
     private class ParseBlockMappingFirstKey implements Production {
         public Event produce() {
             Token token = scanner.getToken();
-            marks.push(token.getStartMark());
+            markPush(token.getStartMark());
             return new ParseBlockMappingKey().produce();
         }
     }
@@ -571,14 +572,14 @@ public class ParserImpl implements Parser {
             }
             if (!scanner.checkToken(Token.ID.BlockEnd)) {
                 Token token = scanner.peekToken();
-                throw new ParserException("while parsing a block mapping", marks.pop(),
+                throw new ParserException("while parsing a block mapping", markPop(),
                         "expected <block end>, but found '" + token.getTokenId() + "'",
                         token.getStartMark());
             }
             Token token = scanner.getToken();
             Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
             state = states.pop();
-            marks.pop();
+            markPop();
             return event;
         }
     }
@@ -617,7 +618,7 @@ public class ParserImpl implements Parser {
     private class ParseFlowSequenceFirstEntry implements Production {
         public Event produce() {
             Token token = scanner.getToken();
-            marks.push(token.getStartMark());
+            markPush(token.getStartMark());
             return new ParseFlowSequenceEntry(true).produce();
         }
     }
@@ -636,7 +637,7 @@ public class ParserImpl implements Parser {
                         scanner.getToken();
                     } else {
                         Token token = scanner.peekToken();
-                        throw new ParserException("while parsing a flow sequence", marks.pop(),
+                        throw new ParserException("while parsing a flow sequence", markPop(),
                                 "expected ',' or ']', but got " + token.getTokenId(),
                                 token.getStartMark());
                     }
@@ -655,7 +656,7 @@ public class ParserImpl implements Parser {
             Token token = scanner.getToken();
             Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
             state = states.pop();
-            marks.pop();
+            markPop();
             return event;
         }
     }
@@ -712,7 +713,7 @@ public class ParserImpl implements Parser {
     private class ParseFlowMappingFirstKey implements Production {
         public Event produce() {
             Token token = scanner.getToken();
-            marks.push(token.getStartMark());
+            markPush(token.getStartMark());
             return new ParseFlowMappingKey(true).produce();
         }
     }
@@ -731,7 +732,7 @@ public class ParserImpl implements Parser {
                         scanner.getToken();
                     } else {
                         Token token = scanner.peekToken();
-                        throw new ParserException("while parsing a flow mapping", marks.pop(),
+                        throw new ParserException("while parsing a flow mapping", markPop(),
                                 "expected ',' or '}', but got " + token.getTokenId(),
                                 token.getStartMark());
                     }
@@ -754,7 +755,7 @@ public class ParserImpl implements Parser {
             Token token = scanner.getToken();
             Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
             state = states.pop();
-            marks.pop();
+            markPop();
             return event;
         }
     }
@@ -793,7 +794,21 @@ public class ParserImpl implements Parser {
      *           BLOCK-END
      * </pre>
      */
-    private Event processEmptyScalar(Mark mark) {
+    private Event processEmptyScalar(Optional<Mark> mark) {
         return new ScalarEvent(null, null, new ImplicitTuple(true, false), "", ScalarStyle.PLAIN, mark, mark);
     }
+
+    private Optional<Mark> markPop() {
+        return marks222.pop();
+    }
+
+    private void markPush(Optional<Mark> mark) {
+        marks222.push(mark);
+    }
+
+    private boolean markEmpty() {
+        return marks222.isEmpty();
+    }
+
+
 }

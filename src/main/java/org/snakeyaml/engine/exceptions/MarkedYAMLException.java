@@ -15,24 +15,29 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+import java.util.Optional;
+
 public class MarkedYAMLException extends YAMLException {
 
     private static final long serialVersionUID = -9119388488683035101L;
     private String context;
-    private Mark contextMark;
+    private Optional<Mark> contextMark;
     private String problem;
-    private Mark problemMark;
+    private Optional<Mark> problemMark;
 
-    protected MarkedYAMLException(String context, Mark contextMark, String problem,
-                                  Mark problemMark, Throwable cause) {
+    protected MarkedYAMLException(String context, Optional<Mark> contextMark, String problem,
+                                  Optional<Mark> problemMark, Throwable cause) {
         super(context + "; " + problem + "; " + problemMark, cause);
+        if (contextMark == null || problemMark == null) {
+            throw new YAMLException("Marks cannot be null");
+        }
         this.context = context;
         this.contextMark = contextMark;
         this.problem = problem;
         this.problemMark = problemMark;
     }
 
-    protected MarkedYAMLException(String context, Mark contextMark, String problem, Mark problemMark) {
+    protected MarkedYAMLException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         this(context, contextMark, problem, problemMark, null);
     }
 
@@ -48,20 +53,20 @@ public class MarkedYAMLException extends YAMLException {
             lines.append(context);
             lines.append("\n");
         }
-        if (contextMark != null
-                && (problem == null || problemMark == null
-                || contextMark.getName().equals(problemMark.getName())
-                || (contextMark.getLine() != problemMark.getLine()) || (contextMark
-                .getColumn() != problemMark.getColumn()))) {
-            lines.append(contextMark.toString());
+        if (contextMark.isPresent()
+                && (problem == null || !problemMark.isPresent()
+                || contextMark.get().getName().equals(problemMark.get().getName())
+                || (contextMark.get().getLine() != problemMark.get().getLine()) || (contextMark.get()
+                .getColumn() != problemMark.get().getColumn()))) {
+            lines.append(contextMark.get().toString());
             lines.append("\n");
         }
         if (problem != null) {
             lines.append(problem);
             lines.append("\n");
         }
-        if (problemMark != null) {
-            lines.append(problemMark.toString());
+        if (problemMark.isPresent()) {
+            lines.append(problemMark.get().toString());
             lines.append("\n");
         }
         return lines.toString();
@@ -71,7 +76,7 @@ public class MarkedYAMLException extends YAMLException {
         return context;
     }
 
-    public Mark getContextMark() {
+    public Optional<Mark> getContextMark() {
         return contextMark;
     }
 
@@ -79,7 +84,7 @@ public class MarkedYAMLException extends YAMLException {
         return problem;
     }
 
-    public Mark getProblemMark() {
+    public Optional<Mark> getProblemMark() {
         return problemMark;
     }
 }

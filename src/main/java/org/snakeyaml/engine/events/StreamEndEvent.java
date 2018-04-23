@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -29,7 +31,7 @@ import org.snakeyaml.engine.exceptions.Mark;
  * </p>
  */
 public final class StreamEndEvent extends Event {
-    public StreamEndEvent(Mark startMark, Mark endMark) {
+    public StreamEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
 

@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.events;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -25,7 +27,7 @@ public abstract class NodeEvent extends Event {
 
     private final String anchor;
 
-    public NodeEvent(String anchor, Mark startMark, Mark endMark) {
+    public NodeEvent(String anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.anchor = anchor;
     }

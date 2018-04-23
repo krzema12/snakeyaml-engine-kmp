@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -26,10 +28,10 @@ public abstract class Event {
         Alias, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart
     }
 
-    private final Mark startMark;
-    private final Mark endMark;
+    private final Optional<Mark> startMark;
+    private final Optional<Mark> endMark;
 
-    public Event(Mark startMark, Mark endMark) {
+    public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
         if ((startMark == null && endMark != null) || (startMark != null && endMark == null)) {
             throw new NullPointerException("Both marks must be either present or absent.");
         }
@@ -37,11 +39,11 @@ public abstract class Event {
         this.endMark = endMark;
     }
 
-    public Mark getStartMark() {
+    public Optional<Mark> getStartMark() {
         return startMark;
     }
 
-    public Mark getEndMark() {
+    public Optional<Mark> getEndMark() {
         return endMark;
     }
 

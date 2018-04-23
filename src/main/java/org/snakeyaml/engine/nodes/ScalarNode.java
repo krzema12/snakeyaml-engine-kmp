@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.nodes;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.exceptions.Mark;
 
@@ -28,11 +30,11 @@ public class ScalarNode extends Node {
     private ScalarStyle style;
     private String value;
 
-    public ScalarNode(Tag tag, String value, ScalarStyle style, Mark startMark, Mark endMark) {
+    public ScalarNode(Tag tag, String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
         this(tag, true, value, style, startMark, endMark);
     }
 
-    public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style, Mark startMark, Mark endMark) {
+    public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, startMark, endMark);
         if (value == null) {
             throw new NullPointerException("value in a Node is required.");

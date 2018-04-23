@@ -17,6 +17,7 @@ package org.snakeyaml.engine.tokens;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.YAMLException;
@@ -25,7 +26,7 @@ public final class DirectiveToken<T> extends Token {
     private final String name;
     private final List<T> value;
 
-    public DirectiveToken(String name, List<T> value, Mark startMark, Mark endMark) {
+    public DirectiveToken(String name, List<T> value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.name = name;
         if (value != null && value.size() != 2) {

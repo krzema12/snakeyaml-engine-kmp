@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -26,7 +28,7 @@ import org.snakeyaml.engine.exceptions.Mark;
 public final class DocumentEndEvent extends Event {
     private final boolean explicit;
 
-    public DocumentEndEvent(boolean explicit, Mark startMark, Mark endMark) {
+    public DocumentEndEvent(boolean explicit, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.explicit = explicit;
     }

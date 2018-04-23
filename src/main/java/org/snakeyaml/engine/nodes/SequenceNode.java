@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.exceptions.Mark;
@@ -29,7 +30,7 @@ import org.snakeyaml.engine.exceptions.Mark;
 public class SequenceNode extends CollectionNode<Node> {
     final private List<Node> value;
 
-    public SequenceNode(Tag tag, boolean resolved, List<Node> value, Mark startMark, Mark endMark,
+    public SequenceNode(Tag tag, boolean resolved, List<Node> value, Optional<Mark> startMark, Optional<Mark> endMark,
                         FlowStyle flowStyle) {
         super(tag, startMark, endMark, flowStyle);
         if (value == null) {

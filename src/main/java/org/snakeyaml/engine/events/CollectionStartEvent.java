@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.exceptions.Mark;
 
@@ -29,8 +31,8 @@ public abstract class CollectionStartEvent extends NodeEvent {
     // flag indicates if a collection is block or flow
     private final FlowStyle flowStyle;
 
-    public CollectionStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Mark startMark,
-                                Mark endMark) {
+    public CollectionStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
+                                Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
         this.implicit = implicit;

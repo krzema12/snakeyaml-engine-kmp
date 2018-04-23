@@ -15,13 +15,15 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
  * Marks the inclusion of a previously anchored node.
  */
 public final class AliasEvent extends NodeEvent {
-    public AliasEvent(String anchor, Mark startMark, Mark endMark) {
+    public AliasEvent(String anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
     }
 

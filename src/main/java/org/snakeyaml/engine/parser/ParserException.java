@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.parser;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.MarkedYAMLException;
 
@@ -35,7 +37,7 @@ public class ParserException extends MarkedYAMLException {
      * @param problem     Part of the input document that caused the problem.
      * @param problemMark Position of the <code>problem</code>. within the document.
      */
-    public ParserException(String context, Mark contextMark, String problem, Mark problemMark) {
+    public ParserException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         super(context, contextMark, problem, problemMark, null);
     }
 }

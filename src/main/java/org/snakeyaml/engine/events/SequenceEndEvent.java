@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.events;
 
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -25,7 +27,7 @@ import org.snakeyaml.engine.exceptions.Mark;
  */
 public final class SequenceEndEvent extends CollectionEndEvent {
 
-    public SequenceEndEvent(Mark startMark, Mark endMark) {
+    public SequenceEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
 

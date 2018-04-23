@@ -15,10 +15,12 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+import java.util.Optional;
+
 public class ComposerException extends MarkedYAMLException {
     private static final long serialVersionUID = 2146314636913113935L;
 
-    public ComposerException(String context, Mark contextMark, String problem, Mark problemMark) {
+    public ComposerException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         super(context, contextMark, problem, problemMark);
     }
 }

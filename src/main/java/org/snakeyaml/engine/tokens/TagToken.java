@@ -15,12 +15,14 @@
  */
 package org.snakeyaml.engine.tokens;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class TagToken extends Token {
     private final TagTuple value;
 
-    public TagToken(TagTuple value, Mark startMark, Mark endMark) {
+    public TagToken(TagTuple value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.value = value;
     }

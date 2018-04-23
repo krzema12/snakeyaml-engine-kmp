@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.exceptions.Mark;
@@ -27,7 +28,7 @@ import org.snakeyaml.engine.exceptions.Mark;
 public abstract class CollectionNode<T> extends Node {
     private FlowStyle flowStyle;
 
-    public CollectionNode(Tag tag, Mark startMark, Mark endMark, FlowStyle flowStyle) {
+    public CollectionNode(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark, FlowStyle flowStyle) {
         super(tag, startMark, endMark);
         setFlowStyle(flowStyle);
     }
@@ -54,7 +55,7 @@ public abstract class CollectionNode<T> extends Node {
         this.flowStyle = flowStyle;
     }
 
-    public void setEndMark(Mark endMark) {
+    public void setEndMark(Optional<Mark> endMark) {
         this.endMark = endMark;
     }
 }

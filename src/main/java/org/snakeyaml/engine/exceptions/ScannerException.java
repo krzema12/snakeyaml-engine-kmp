@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.scanner.Scanner;
 
 /**
@@ -34,11 +36,11 @@ public class ScannerException extends MarkedYAMLException {
      * @param problem     Part of the input document that caused the problem.
      * @param problemMark Position of the <code>problem</code> within the document.
      */
-    public ScannerException(String context, Mark contextMark, String problem, Mark problemMark) {
+    public ScannerException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         super(context, contextMark, problem, problemMark, null);
     }
 
-    public ScannerException(String problem, Mark problemMark) {
+    public ScannerException(String problem, Optional<Mark> problemMark) {
         super(null, null, problem, problemMark, null);
     }
 }

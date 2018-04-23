@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.exceptions.Mark;
@@ -31,7 +32,7 @@ public class MappingNode extends CollectionNode<NodeTuple> {
     private List<NodeTuple> value;
     private boolean merged = false;
 
-    public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Mark startMark, Mark endMark) {
+    public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, startMark, endMark, flowStyle);
         if (value == null) {
             throw new NullPointerException("value in a Node is required.");

@@ -36,8 +36,8 @@ import org.snakeyaml.engine.exceptions.Mark;
  * @see MappingEndEvent
  */
 public final class MappingStartEvent extends CollectionStartEvent {
-    public MappingStartEvent(String anchor, String tag, boolean implicit, Optional<Mark> startMark,
-                             Optional<Mark> endMark, FlowStyle flowStyle) {
+    public MappingStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
+                             Optional<Mark> endMark) {
         super(anchor, tag, implicit, flowStyle, startMark, endMark);
     }
 

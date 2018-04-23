@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+//TODO rename
 public class YAMLException extends RuntimeException {
     private static final long serialVersionUID = -4738336175050337570L;
 

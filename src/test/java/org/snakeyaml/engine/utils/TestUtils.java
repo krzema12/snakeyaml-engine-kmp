@@ -25,6 +25,9 @@ public class TestUtils {
 
     public static String getResource(String theName) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(theName);
+        if (inputStream == null) {
+            throw new RuntimeException("Resource not found: " + theName);
+        }
         String string = null;
         try {
             string = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));

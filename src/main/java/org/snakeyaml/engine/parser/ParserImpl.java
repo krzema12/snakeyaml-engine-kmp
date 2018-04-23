@@ -456,8 +456,8 @@ public class ParserImpl implements Parser {
                     state = new ParseFlowSequenceFirstEntry();
                 } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
                     endMark = scanner.peekToken().getEndMark();
-                    event = new MappingStartEvent(anchor, tag, implicit, startMark, endMark,
-                            FlowStyle.FLOW);
+                    event = new MappingStartEvent(anchor, tag, implicit,
+                            FlowStyle.FLOW, startMark, endMark);
                     state = new ParseFlowMappingFirstKey();
                 } else if (block && scanner.checkToken(Token.ID.BlockSequenceStart)) {
                     endMark = scanner.peekToken().getStartMark();
@@ -465,8 +465,8 @@ public class ParserImpl implements Parser {
                     state = new ParseBlockSequenceFirstEntry();
                 } else if (block && scanner.checkToken(Token.ID.BlockMappingStart)) {
                     endMark = scanner.peekToken().getStartMark();
-                    event = new MappingStartEvent(anchor, tag, implicit, startMark, endMark,
-                            FlowStyle.BLOCK);
+                    event = new MappingStartEvent(anchor, tag, implicit,
+                            FlowStyle.BLOCK, startMark, endMark);
                     state = new ParseBlockMappingFirstKey();
                 } else if (anchor != null || tag != null) {
                     // Empty scalars are allowed even if a tag or an anchor is
@@ -644,8 +644,8 @@ public class ParserImpl implements Parser {
                 }
                 if (scanner.checkToken(Token.ID.Key)) {
                     Token token = scanner.peekToken();
-                    Event event = new MappingStartEvent(null, null, true, token.getStartMark(),
-                            token.getEndMark(), FlowStyle.FLOW);
+                    Event event = new MappingStartEvent(null, null, true, FlowStyle.FLOW, token.getStartMark(),
+                            token.getEndMark());
                     state = new ParseFlowSequenceEntryMappingKey();
                     return event;
                 } else if (!scanner.checkToken(Token.ID.FlowSequenceEnd)) {

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.composer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,7 +50,7 @@ import org.snakeyaml.engine.resolver.Resolver;
  * <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">YAML Specification</a>.
  * </p>
  */
-public class Composer {
+public class Composer implements Iterator<Node> {
     protected final Parser parser;
     private final Resolver resolver;
     private final Map<String, Node> anchors;
@@ -67,7 +68,7 @@ public class Composer {
      *
      * @return <code>true</code> if there is at least one more document.
      */
-    public boolean checkNode() {
+    public boolean hasNext() {
         // Drop the STREAM-START event.
         if (parser.checkEvent(Event.ID.StreamStart)) {
             parser.getEvent();
@@ -91,7 +92,7 @@ public class Composer {
         // Compose a document if the stream is not empty.
         Optional<Node> document = Optional.empty();
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
-            document = Optional.of(composeDocument());
+            document = Optional.of(next());
         }
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
@@ -112,7 +113,7 @@ public class Composer {
      * @return The root node of the document or <code>null</code> if no more
      * documents are available.
      */
-    public Node composeDocument() {
+    public Node next() {
         // Drop the DOCUMENT-START event.
         parser.getEvent();
         // Compose the root node.
@@ -125,6 +126,7 @@ public class Composer {
     }
 
 
+    //TODO Mode is optional
     private Node composeNode(Node parent) {
         if (parent != null) recursiveNodes.add(parent);
         final Node node;

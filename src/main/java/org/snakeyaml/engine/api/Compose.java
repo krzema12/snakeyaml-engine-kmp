@@ -18,6 +18,7 @@ package org.snakeyaml.engine.api;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.snakeyaml.engine.composer.Composer;
@@ -39,7 +40,7 @@ public class Compose {
     }
 
     /**
-     * Parse a YAML stream and produce [Node]
+     * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present (it will be parsed as content)
      * @return parsed events
@@ -50,7 +51,7 @@ public class Compose {
     }
 
     /**
-     * Parse a YAML stream and produce [Node].
+     * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
      * @return parsed events
@@ -61,7 +62,7 @@ public class Compose {
     }
 
     /**
-     * Parse a YAML stream and produce [Node].
+     * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s).
      * @return parsed events
@@ -70,7 +71,48 @@ public class Compose {
     public Optional<Node> composeString(String yaml) {
         return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings)), settings.getResolver()).getSingleNode();
     }
+
+    // Compose all documents
+
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml stream of YAML documents
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+     */
+    public Iterable<Node> composeAllFromReader(Reader yaml) {
+        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings)), settings.getResolver());
+    }
+
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+     */
+    public Iterable<Node> composeAllFromInputStream(InputStream yaml) {
+        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings)), settings.getResolver());
+    }
+
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml - YAML document(s).
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+     */
+    public Iterable<Node> composeAllFromString(String yaml) {
+        return new Iterable() {
+            public Iterator<Node> iterator() {
+                return new Composer(new ParserImpl(
+                        new StreamReader(new StringReader(yaml), settings)), settings.getResolver());
+            }
+        };
+    }
 }
+
 
 
 

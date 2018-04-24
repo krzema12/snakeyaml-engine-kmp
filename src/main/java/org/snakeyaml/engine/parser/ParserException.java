@@ -26,7 +26,6 @@ import org.snakeyaml.engine.exceptions.MarkedYamlEngineException;
  * input.
  */
 public class ParserException extends MarkedYamlEngineException {
-    private static final long serialVersionUID = -2349253802798398038L;
 
     /**
      * Constructs an instance.

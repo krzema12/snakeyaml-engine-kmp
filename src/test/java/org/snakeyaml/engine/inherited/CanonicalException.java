@@ -19,8 +19,6 @@ import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 public class CanonicalException extends YamlEngineException {
 
-    private static final long serialVersionUID = -6489045150083747626L;
-
     public CanonicalException(String message) {
         super(message);
     }

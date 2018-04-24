@@ -25,8 +25,6 @@ import org.snakeyaml.engine.scanner.Scanner;
  */
 public class ScannerException extends MarkedYamlEngineException {
 
-    private static final long serialVersionUID = 4782293188600445954L;
-
     /**
      * Constructs an instance.
      *

@@ -19,7 +19,6 @@ import java.util.Optional;
 
 public class MarkedYamlEngineException extends YamlEngineException {
 
-    private static final long serialVersionUID = -9119388488683035101L;
     private String context;
     private Optional<Mark> contextMark;
     private String problem;

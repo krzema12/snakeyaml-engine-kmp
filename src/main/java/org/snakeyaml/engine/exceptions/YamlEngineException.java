@@ -16,8 +16,6 @@
 package org.snakeyaml.engine.exceptions;
 
 public class YamlEngineException extends RuntimeException {
-    private static final long serialVersionUID = -4738336175050337570L;
-
     public YamlEngineException(String message) {
         super(message);
     }

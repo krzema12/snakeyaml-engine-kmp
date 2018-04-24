@@ -189,10 +189,15 @@ public final class ScannerImpl implements Scanner {
         return this.tokens.get(0);
     }
 
+    @Override
+    public boolean hasNext() {
+        return checkToken();
+    }
+
     /**
      * Return the next token, removing it from the queue.
      */
-    public Token getToken() {
+    public Token next() {
         this.tokensTaken++;
         return this.tokens.remove(0);
     }
@@ -1380,7 +1385,7 @@ public final class ScannerImpl implements Scanner {
      * to have type tag:yaml.org,2002:str.
      * </p>
      * <p>
-     * TODO SnakeYaml incorrectly ignores c-ns-non-specific-tag right now.
+     * TODO SnakeYAML incorrectly ignores c-ns-non-specific-tag right now.
      * <p>
      * <p>
      * TODO Note that this method does not enforce rules about local versus global tags!

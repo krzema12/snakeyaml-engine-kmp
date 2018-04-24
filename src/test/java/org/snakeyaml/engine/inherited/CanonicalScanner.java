@@ -136,7 +136,12 @@ public class CanonicalScanner implements Scanner {
         return null;
     }
 
-    public Token getToken() {
+    @Override
+    public boolean hasNext() {
+        return checkToken();
+    }
+
+    public Token next() {
         if (!scanned) {
             scan();
         }
@@ -144,7 +149,7 @@ public class CanonicalScanner implements Scanner {
     }
 
     public Token getToken(Token.ID choice) {
-        Token token = getToken();
+        Token token = next();
         if (choice != null && token.getTokenId() != choice) {
             throw new CanonicalException("unexpected token " + token);
         }

@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.scanner;
 
 
+import java.util.Iterator;
+
 import org.snakeyaml.engine.exceptions.ScannerException;
 import org.snakeyaml.engine.tokens.Token;
 
@@ -27,8 +29,7 @@ import org.snakeyaml.engine.tokens.Token;
  *
  * @see org.snakeyaml.engine.tokens.Token
  */
-//TODO implement Iterator as Parser
-public interface Scanner {
+public interface Scanner extends Iterator<Token> {
 
     /**
      * Check if the next token is one of the given types.
@@ -45,7 +46,7 @@ public interface Scanner {
      * Return the next token, but do not delete it from the stream.
      * The method must be called only after {@link #checkToken}.
      *
-     * @return The token that will be returned on the next call to {@link #getToken}
+     * @return The token that will be returned on the next call to {@link #next}
      * @throws ScannerException          Thrown in case of malformed input.
      * @throws IndexOutOfBoundsException if no more token left
      */
@@ -62,5 +63,5 @@ public interface Scanner {
      * @throws ScannerException          Thrown in case of malformed input.
      * @throws IndexOutOfBoundsException if no more token left
      */
-    Token getToken();
+    Token next();
 }

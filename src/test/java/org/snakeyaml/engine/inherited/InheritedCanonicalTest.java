@@ -54,9 +54,9 @@ public class InheritedCanonicalTest extends InheritedImportTest {
             ch = input.read();
         }
         CanonicalScanner scanner = new CanonicalScanner(buffer.toString(), label);
-        List<Token> result = new ArrayList<Token>();
-        while (scanner.peekToken() != null) {
-            result.add(scanner.getToken());
+        List<Token> result = new ArrayList();
+        while (scanner.hasNext()) {
+            result.add(scanner.next());
         }
         return result;
     }

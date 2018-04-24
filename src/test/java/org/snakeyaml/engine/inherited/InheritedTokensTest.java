@@ -86,7 +86,7 @@ public class InheritedTokensTest extends InheritedImportTest {
             Scanner scanner = new ScannerImpl(reader);
             try {
                 while (scanner.checkToken(new Token.ID[0])) {
-                    Token token = scanner.getToken();
+                    Token token = scanner.next();
                     if (!(token instanceof StreamStartToken || token instanceof StreamEndToken)) {
                         String replacement = replaces.get(token.getTokenId());
                         tokens1.add(replacement);
@@ -119,7 +119,7 @@ public class InheritedTokensTest extends InheritedImportTest {
             Scanner scanner = new ScannerImpl(reader);
             try {
                 while (scanner.checkToken(new Token.ID[0])) {
-                    Token token = scanner.getToken();
+                    Token token = scanner.next();
                     tokens.add(token.getClass().getName());
                 }
             } catch (RuntimeException e) {

@@ -86,21 +86,21 @@ public class CanonicalParser implements Parser {
     // node: ALIAS | ANCHOR? TAG? (SCALAR|sequence|mapping)
     private void parseNode() {
         if (scanner.checkToken(Token.ID.Alias)) {
-            AliasToken token = (AliasToken) scanner.getToken();
+            AliasToken token = (AliasToken) scanner.next();
             events.add(new AliasEvent(token.getValue(), Optional.empty(), Optional.empty()));
         } else {
             String anchor = null;
             if (scanner.checkToken(Token.ID.Anchor)) {
-                AnchorToken token = (AnchorToken) scanner.getToken();
+                AnchorToken token = (AnchorToken) scanner.next();
                 anchor = token.getValue();
             }
             String tag = null;
             if (scanner.checkToken(Token.ID.Tag)) {
-                TagToken token = (TagToken) scanner.getToken();
+                TagToken token = (TagToken) scanner.next();
                 tag = token.getValue().getHandle() + token.getValue().getSuffix();
             }
             if (scanner.checkToken(Token.ID.Scalar)) {
-                ScalarToken token = (ScalarToken) scanner.getToken();
+                ScalarToken token = (ScalarToken) scanner.next();
                 events.add(new ScalarEvent(anchor, tag, new ImplicitTuple(false, false), token
                         .getValue(), ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
             } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {

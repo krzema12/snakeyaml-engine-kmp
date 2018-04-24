@@ -40,7 +40,7 @@ public interface Parser extends Iterator<Event> {
      * are available.
      * @throws ParserException Thrown in case of malformed input.
      */
-    public boolean checkEvent(Event.ID choice);
+    boolean checkEvent(Event.ID choice);
 
     /**
      * Return the next event, but do not delete it from the stream.
@@ -49,7 +49,7 @@ public interface Parser extends Iterator<Event> {
      * {@link #next}
      * @throws ParserException Thrown in case of malformed input.
      */
-    public Event peekEvent();
+    Event peekEvent();
 
     /**
      * Returns the next event.
@@ -60,5 +60,5 @@ public interface Parser extends Iterator<Event> {
      * @return the next parsed event
      * @throws ParserException Thrown in case of malformed input.
      */
-    public Event next();
+    Event next();
 }

@@ -1,3 +1,14 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!str "here's to \"quotes\""
+!!str "Document"
+...
+%YAML 1.2
+---
+!!null ""
+...
+%YAML 1.2
+---
+!!map {
+  ? !!str "matches %": !!int "20"
+}
+

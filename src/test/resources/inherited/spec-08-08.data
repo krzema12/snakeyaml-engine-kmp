@@ -1,13 +1,9 @@
----
-foo:
- "bar
- baz"
----
-"foo
- bar"
----
-foo
- bar
---- |
- foo
-...
+|
+ 
+  
+  literal
+   
+  
+  text
+
+ # Comment

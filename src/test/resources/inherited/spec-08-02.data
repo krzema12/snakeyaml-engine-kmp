@@ -1,2 +1,12 @@
-First occurrence: &anchor Value
-Second occurrence: *anchor
+- |
+ detected
+- >
+ 
+  
+  # detected
+- |1
+  explicit
+- >
+ 	
+ detected
+

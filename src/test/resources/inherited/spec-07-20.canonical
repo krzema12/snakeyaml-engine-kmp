@@ -1,0 +1,9 @@
+%YAML 1.2
+---
+!!seq [
+  !!map {
+    ? !!str "foo bar"
+    : !!str "baz",
+  },
+]
+

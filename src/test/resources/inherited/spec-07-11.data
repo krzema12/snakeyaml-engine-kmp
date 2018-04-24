@@ -1,2 +1,3 @@
-﻿# A stream may contain
-# no documents.
+﻿implicit block key : [
+  implicit flow key : value,
+ ]

@@ -1,7 +1,11 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!seq [
-  !<!foo> "bar",
-  !<tag:yaml.org,2002:str> "string",
-  !<tag:ben-kiki.org,2000:type> "baz"
-]
+!!map {
+  ? !!str "implicit block key"
+  : !!seq [
+    !!map {
+      ? !!str "implicit flow key"
+      : !!str "value",
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-%YAML 1.1
+%YAML 1.2
 ---
 !!map {
   ? !!str "literal"
-  : !!str "text\n",
+  : !!str "some\ntext\n",
   ? !!str "folded"
-  : !!str "text\n",
+  : !!str "some text\n",
 }

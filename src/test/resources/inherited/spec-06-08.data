@@ -1,2 +1,7 @@
->-
-  specific   trimmed     as  space
+"
+  foo 
+ 
+  	 bar
+
+  baz
+"

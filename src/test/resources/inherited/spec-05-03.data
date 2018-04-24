@@ -4,4 +4,4 @@ sequence:
 mapping:
   ? sky
   : blue
-  ? sea : green
+  sea : green

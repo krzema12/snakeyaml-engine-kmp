@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.common;
 
+//TODO rename to SpecVersion
 public class Version {
     private final int major;
     private final int minor;

@@ -1,10 +1,11 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!seq [
-  !!str "Without properties",
-  &A !!str "Anchored",
-  !!str "Tagged",
-  *A,
-  !!str "",
-  !!str "",
-]
+!!str "\n\
+      folded line\n\
+      next line\n\
+      \  * bullet\n\
+      \n\
+      \  * list\n\
+      \  * lines\n\
+      \n\
+      last line\n"

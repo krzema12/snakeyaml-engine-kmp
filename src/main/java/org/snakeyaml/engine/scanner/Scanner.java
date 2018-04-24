@@ -27,6 +27,7 @@ import org.snakeyaml.engine.tokens.Token;
  *
  * @see org.snakeyaml.engine.tokens.Token
  */
+//TODO implement Iterator as Parser
 public interface Scanner {
 
     /**

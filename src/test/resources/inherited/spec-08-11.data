@@ -1,2 +1,16 @@
-First occurrence: &anchor Value
-Second occurrence: *anchor
+>
+
+ folded
+ line
+
+ next
+ line
+   * bullet
+
+   * list
+   * lines
+
+ last
+ line
+
+# Comment

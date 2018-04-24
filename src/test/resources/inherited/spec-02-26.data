@@ -1,5 +1,5 @@
-# ordered maps are represented as
-# a sequence of mappings, with
+# Ordered maps are represented as
+# A sequence of mappings, with
 # each mapping having one key
 --- !!omap
 - Mark McGwire: 65

@@ -1,0 +1,14 @@
+%YAML 1.2
+---
+!!map {
+  ? !!str "sequence"
+  : !!seq [
+    !!str "entry",
+    !!seq [ !!str "nested" ],
+  ],
+  ? !!str "mapping"
+  : !!map {
+    ? !!str "foo" : !!str "bar",
+  },
+}
+

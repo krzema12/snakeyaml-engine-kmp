@@ -1,3 +1,13 @@
-%YAML 1.1
---- !!str
-"foo"
+%YAML 1.2
+---
+!!map {
+  ? !!str "First occurrence"
+  : &A !!str "Foo",
+  ? !!str "Second occurrence"
+  : *A,
+  ? !!str "Override anchor"
+  : &B !!str "Bar",
+  ? !!str "Reuse anchor"
+  : *B,
+}
+

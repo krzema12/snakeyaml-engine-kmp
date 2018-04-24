@@ -1,9 +1,12 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!str "First document"
----
-!<!foo> "No directives"
----
-!<!foobar> "With directives"
----
-!<!baz> "Reset settings"
+!!seq [
+  !!seq [
+    !!str "one",
+    !!str "two",
+  ],
+  !!seq [
+    !!str "three",
+    !!str "four",
+  ],
+]

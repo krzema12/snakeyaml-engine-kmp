@@ -1,6 +1,4 @@
-%YAML 1.1
---- !!str
-"Generic line break (no glyph)\n\
- Generic line break (glyphed)\n\
- Line separator\u2028\
- Paragraph separator\u2029"
+%YAML 1.2
+---
+!!str "Line break (no glyph)\n\
+      Line break (glyphed)\n"

@@ -1,11 +1,15 @@
-%YAML 1.1
+%YAML 1.2
 ---
 !!seq [
   !!null "",
+  !!str "block node\n",
+  !!seq [
+    !!str "one",
+    !!str "two",
+  ],
   !!map {
-    ? !!str "foo"
-    : !!null "",
-    ? !!null ""
-    : !!str "bar",
-  }
+    ? !!str "one"
+    : !!str "two",
+  },
 ]
+

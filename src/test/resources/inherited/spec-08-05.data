@@ -1,5 +1,19 @@
-%TAG !o! tag:ben-kiki.org,2000:
----
-- !local foo
-- !!str bar
-- !o!type baz
+ # Strip
+  # Comments:
+strip: |-
+  # text1
+  
+ # Clip
+  # comments:
+
+clip: |
+  # text2
+ 
+ # Keep
+  # comments:
+
+keep: |+
+  # text3
+
+ # Trail
+  # comments.

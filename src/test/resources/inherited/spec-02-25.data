@@ -1,6 +1,6 @@
-# sets are represented as a
-# mapping where each key is
-# associated with the empty string
+# Sets are represented as a
+# Mapping where each key is
+# associated with a null value
 --- !!set
 ? Mark McGwire
 ? Sammy Sosa

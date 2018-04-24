@@ -59,16 +59,18 @@ public abstract class InheritedImportTest {
         return file;
     }
 
-    protected List<Event> canonicalParse(InputStream input2) throws IOException {
-        StreamReader reader = new StreamReader(new YamlUnicodeReader(input2), new LoadSettings());
+    protected List<Event> canonicalParse(InputStream input2, String label) throws IOException {
+        LoadSettings setting = new LoadSettings();
+        setting.setLabel(label);
+        StreamReader reader = new StreamReader(new YamlUnicodeReader(input2), setting);
         StringBuilder buffer = new StringBuilder();
         while (reader.peek() != '\0') {
             buffer.appendCodePoint(reader.peek());
             reader.forward();
         }
-        CanonicalParser parser = new CanonicalParser(buffer.toString());
-        List<Event> result = new ArrayList<Event>();
-        while (parser.peekEvent() != null) {
+        CanonicalParser parser = new CanonicalParser(buffer.toString(), label);
+        List<Event> result = new ArrayList();
+        while (parser.hasNext()) {
             result.add(parser.next());
         }
         input2.close();
@@ -78,7 +80,7 @@ public abstract class InheritedImportTest {
     protected List<Event> parse(InputStream input) throws IOException {
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input), new LoadSettings());
         Parser parser = new ParserImpl(reader);
-        List<Event> result = new ArrayList<Event>();
+        List<Event> result = new ArrayList();
         while (parser.peekEvent() != null) {
             result.add(parser.next());
         }

@@ -1,0 +1,8 @@
+%YAML 1.2
+---
+!!map {
+  ? !!str "explicit" : !!str "entry",
+  ? !!str "implicit" : !!str "entry",
+  ? !!null "" : !!null "",
+}
+

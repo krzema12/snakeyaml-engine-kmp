@@ -1,6 +1,10 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!str "first \
-  inner 1  \
-  inner 2 \
-  last"
+!!map {
+  ? !!str "matches %" : !!int "20"
+}
+...
+%YAML 1.2
+---
+!!null ""
+

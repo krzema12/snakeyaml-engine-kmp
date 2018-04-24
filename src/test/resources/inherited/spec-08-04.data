@@ -1,2 +1,6 @@
-- !<!> foo
-- !<$:?> bar
+strip: |-
+  text
+clip: |
+  text
+keep: |+
+  text

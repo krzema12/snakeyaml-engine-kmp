@@ -80,4 +80,9 @@ public abstract class Token {
      * @return ID of this token
      */
     public abstract Token.ID getTokenId();
+
+    @Override
+    public String toString() {
+        return getTokenId().toString();
+    }
 }

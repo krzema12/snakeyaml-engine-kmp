@@ -1,15 +1,4 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!map {
-  ? !!str "foo"
-  : !!str "bar baz"
-}
-%YAML 1.1
----
-!!str "foo bar"
-%YAML 1.1
----
-!!str "foo bar"
-%YAML 1.1
----
-!!str "foo\n"
+!!str "\n\nliteral\n \n\ntext\n"
+

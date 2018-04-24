@@ -40,20 +40,20 @@ public class InheritedCanonicalTest extends InheritedImportTest {
         assertTrue(files.length > 0, "No test files found.");
         for (int i = 0; i < files.length; i++) {
             InputStream input = new FileInputStream(files[i]);
-            List<Token> tokens = canonicalScan(input);
+            List<Token> tokens = canonicalScan(input, files[i].getName());
             input.close();
             assertFalse(tokens.isEmpty());
         }
     }
 
-    private List<Token> canonicalScan(InputStream input) throws IOException {
+    private List<Token> canonicalScan(InputStream input, String label) throws IOException {
         int ch = input.read();
         StringBuilder buffer = new StringBuilder();
         while (ch != -1) {
             buffer.append((char) ch);
             ch = input.read();
         }
-        CanonicalScanner scanner = new CanonicalScanner(buffer.toString());
+        CanonicalScanner scanner = new CanonicalScanner(buffer.toString(), label);
         List<Token> result = new ArrayList<Token>();
         while (scanner.peekToken() != null) {
             result.add(scanner.getToken());
@@ -68,7 +68,7 @@ public class InheritedCanonicalTest extends InheritedImportTest {
         assertTrue(files.length > 0, "No test files found.");
         for (int i = 0; i < files.length; i++) {
             InputStream input = new FileInputStream(files[i]);
-            List<Event> tokens = canonicalParse(input);
+            List<Event> tokens = canonicalParse(input, files[i].getName());
             input.close();
             assertFalse(tokens.isEmpty());
         }

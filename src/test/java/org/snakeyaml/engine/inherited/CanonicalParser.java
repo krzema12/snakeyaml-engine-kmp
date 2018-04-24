@@ -42,14 +42,16 @@ import org.snakeyaml.engine.tokens.TagToken;
 import org.snakeyaml.engine.tokens.Token;
 
 public class CanonicalParser implements Parser {
+    private String label;
     private ArrayList<Event> events;
     private boolean parsed;
     private CanonicalScanner scanner;
 
-    public CanonicalParser(String data) {
-        events = new ArrayList<Event>();
+    public CanonicalParser(String data, String label) {
+        this.label = label;
+        events = new ArrayList();
         parsed = false;
-        scanner = new CanonicalScanner(data);
+        scanner = new CanonicalScanner(data, label);
     }
 
     // stream: STREAM-START document* STREAM-END
@@ -60,7 +62,7 @@ public class CanonicalParser implements Parser {
             if (scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart)) {
                 parseDocument();
             } else {
-                throw new CanonicalException("document is expected, got " + scanner.tokens.get(0));
+                throw new CanonicalException("document is expected, got " + scanner.tokens.get(0) + " in " + label);
             }
         }
         scanner.getToken(Token.ID.StreamEnd);
@@ -75,6 +77,9 @@ public class CanonicalParser implements Parser {
         scanner.getToken(Token.ID.DocumentStart);
         events.add(new DocumentStartEvent(true, new Version(1, 1), null, Optional.empty(), Optional.empty()));
         parseNode();
+        if (scanner.checkToken(Token.ID.DocumentEnd)) {
+            scanner.getToken(Token.ID.DocumentEnd);
+        }
         events.add(new DocumentEndEvent(true, Optional.empty(), Optional.empty()));
     }
 
@@ -82,7 +87,7 @@ public class CanonicalParser implements Parser {
     private void parseNode() {
         if (scanner.checkToken(Token.ID.Alias)) {
             AliasToken token = (AliasToken) scanner.getToken();
-            events.add(new AliasEvent(token.getValue(), null, null));
+            events.add(new AliasEvent(token.getValue(), Optional.empty(), Optional.empty()));
         } else {
             String anchor = null;
             if (scanner.checkToken(Token.ID.Anchor)) {

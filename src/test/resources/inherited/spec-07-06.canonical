@@ -1,6 +1,6 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!seq [
-  !<!foobar> "baz",
-  !<tag:yaml.org,2002:str> "string"
-]
+!!str " 1st non-empty\n\
+      2nd non-empty \
+      3rd non-empty "
+

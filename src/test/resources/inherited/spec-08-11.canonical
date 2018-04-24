@@ -1,8 +1,12 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!map {
-  ? !!str "First occurrence"
-  : &A !!str "Value",
-  ? !!str "Second occurrence"
-  : *A
-}
+!!str "\n\
+      folded line\n\
+      next line\n\
+      \  * bullet\n\
+      \n\
+      \  * list\n\
+      \  * lines\n\
+      \n\
+      last line\n"
+

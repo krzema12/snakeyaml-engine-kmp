@@ -1,8 +1,9 @@
-- "first
-  	"
-- "first
+%YAML 1.2
+--- 
+PS-Adobe-2.0
+...
+%YAML 1.2
+---
+# Empty
+...
 
-  	last"
-- "first
- inner
- \ 	last"

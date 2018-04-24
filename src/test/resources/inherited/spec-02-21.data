@@ -1,4 +1,3 @@
-null: ~
-true: y
-false: n
-string: '12345'
+null:
+booleans: [ true, false ]
+string: '012345'

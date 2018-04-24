@@ -1,6 +1,8 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!map {
-  ? !!str "key"
-  : !!str "value"
-}
+!!seq [
+  !!map {
+    ? !!str "foo" : !!str "bar",
+  },
+  !!seq [ !!str "baz", !!str "baz" ],
+]

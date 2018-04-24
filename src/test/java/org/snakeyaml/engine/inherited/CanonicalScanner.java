@@ -27,6 +27,7 @@ import org.snakeyaml.engine.scanner.Scanner;
 import org.snakeyaml.engine.tokens.AliasToken;
 import org.snakeyaml.engine.tokens.AnchorToken;
 import org.snakeyaml.engine.tokens.DirectiveToken;
+import org.snakeyaml.engine.tokens.DocumentEndToken;
 import org.snakeyaml.engine.tokens.DocumentStartToken;
 import org.snakeyaml.engine.tokens.FlowEntryToken;
 import org.snakeyaml.engine.tokens.FlowMappingEndToken;
@@ -43,7 +44,7 @@ import org.snakeyaml.engine.tokens.Token;
 import org.snakeyaml.engine.tokens.ValueToken;
 
 public class CanonicalScanner implements Scanner {
-    private static final String DIRECTIVE = "%YAML 1.1";
+    private static final String DIRECTIVE = "%YAML 1.2";
 
     private final static Map<Character, Integer> ESCAPE_CODES = new HashMap();
     public final static Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
@@ -92,13 +93,15 @@ public class CanonicalScanner implements Scanner {
     }
 
     private String data;
+    private String label;
     private int index;
     public ArrayList<Token> tokens;
     private boolean scanned;
     private Optional<Mark> mark;
 
-    public CanonicalScanner(String data) {
+    public CanonicalScanner(String data, String label) {
         this.data = data + "\0";
+        this.label = label;
         this.index = 0;
         this.tokens = new ArrayList<Token>();
         this.scanned = false;
@@ -171,6 +174,13 @@ public class CanonicalScanner implements Scanner {
                     }
                     break;
 
+                case '.':
+                    if ("...".equals(data.substring(index, index + 3))) {
+                        index += 3;
+                        tokens.add(new DocumentEndToken(mark, mark));
+                    }
+                    break;
+
                 case '[':
                     index++;
                     tokens.add(new FlowSequenceStartToken(mark, mark));
@@ -223,7 +233,7 @@ public class CanonicalScanner implements Scanner {
                     break;
 
                 default:
-                    throw new CanonicalException("invalid token");
+                    throw new CanonicalException("invalid token: " + Character.valueOf((char) c) + " in " + label);
             }
         }
         scanned = true;
@@ -239,7 +249,7 @@ public class CanonicalScanner implements Scanner {
             implicit.add(1);
             return new DirectiveToken<Integer>("YAML", implicit, mark, mark);
         } else {
-            throw new CanonicalException("invalid directive");
+            throw new CanonicalException("invalid directive: " + chunk1 + " " + chunk2 + " in " + label);
         }
     }
 

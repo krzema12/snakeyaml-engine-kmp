@@ -1,8 +1,16 @@
-[
-  Without properties,
-  &anchor "Anchored",
-  !!str 'Tagged',
-  *anchor, # Alias node
-  !!str ,  # Empty plain scalar
-  '',   # Empty plain scalar
-]
+>
+
+ folded
+ line
+
+ next
+ line
+   * bullet
+
+   * list
+   * lines
+
+ last
+ line
+
+# Comment

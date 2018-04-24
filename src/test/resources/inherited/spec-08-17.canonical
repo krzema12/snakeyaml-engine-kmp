@@ -1,0 +1,12 @@
+%YAML 1.2
+---
+!!map {
+  ? !!str "explicit key"
+  : !!null "",
+  ? !!str "block key\n"
+  : !!seq [
+    !!str "one",
+    !!str "two",
+  ],
+}
+

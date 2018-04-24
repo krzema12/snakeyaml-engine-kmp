@@ -1,8 +1,8 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!map {
-  ? &A1 !!str "foo"
-  : !!str "bar",
-  ? &A2 !!str "baz"
-  : *A1
-}
+!!seq [
+  !!str "literal\n",
+  !!str " folded\n",
+  !!str "keep\n\n",
+  !!str " strip",
+]

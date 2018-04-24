@@ -1,1 +1,8 @@
- 'here''s to "quotes"'
+Document
+---
+# Empty
+...
+%YAML 1.2
+---
+matches %: 20
+

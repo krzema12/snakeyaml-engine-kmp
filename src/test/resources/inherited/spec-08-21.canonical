@@ -1,0 +1,9 @@
+%YAML 1.2
+---
+!!map {
+  ? !!str "literal"
+  : !!str "value\n",
+  ? !!str "folded"
+  : !<!foo> "value\n",
+}
+

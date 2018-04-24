@@ -1,0 +1,13 @@
+%YAML 1.2
+---
+!!seq [
+  !!map {
+    ? !!str "one"   : !!str "two",
+    ? !!str "three" : !!str "four",
+  },
+  !!map {
+    ? !!str "five"  : !!str "six",
+    ? !!str "seven" : !!str "eight",
+  },
+]
+

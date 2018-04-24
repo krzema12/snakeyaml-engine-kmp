@@ -1,0 +1,5 @@
+%YAML 1.2
+---
+!!str "folded to a space,\n\
+      to a line feed, \
+      or \t \tnon-content"

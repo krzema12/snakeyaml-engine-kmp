@@ -1,9 +1,5 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!str "foo"
-%YAML 1.1
----
-!!str "bar"
-%YAML 1.1
----
-!!str "baz"
+!!str " 1st non-empty\n\
+      2nd non-empty \
+      3rd non-empty "

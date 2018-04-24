@@ -1,7 +1,8 @@
-%YAML 1.1
+%YAML 1.2
 ---
-!!seq [
-  !!str "first ",
-  !!str "first\nlast",
-  !!str "first inner  \tlast",
-]
+!!str "PS-Adobe-2.0"
+...
+%YAML 1.2
+---
+!!null ""
+

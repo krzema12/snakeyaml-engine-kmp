@@ -1,6 +1,10 @@
-%YAML 1.1
+%YAML 1.2
 ---
 !!map {
-  ? !!str "key"
-  : !!str "value"
+  ? !!str "plain"
+  : !!str "text lines",
+  ? !!str "quoted"
+  : !!str "text lines",
+  ? !!str "block"
+  : !!str "text\n \tlines\n",
 }

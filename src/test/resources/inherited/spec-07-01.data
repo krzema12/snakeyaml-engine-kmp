@@ -1,3 +1,5 @@
-%FOO  bar baz # Should be ignored
-               # with a warning.
---- "foo"
+First occurrence: &anchor Foo
+Second occurrence: *anchor
+Override anchor: &anchor Bar
+Reuse anchor: *anchor
+

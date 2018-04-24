@@ -1,11 +1,4 @@
----
-foo
-...
-# Repeated end marker.
-...
----
-bar
-# No end marker.
----
-baz
-...
+' 1st non-empty
+
+ 2nd non-empty 
+	3rd non-empty '

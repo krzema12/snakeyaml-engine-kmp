@@ -1,0 +1,10 @@
+%YAML 1.2
+---
+!!map {
+  ? !!str "quoted"
+  : "Quoted \t",
+  ? !!str "block"
+  : "void main() {\n\
+    \tprintf(\"Hello, world!\\n\");\n\
+    }\n",
+}

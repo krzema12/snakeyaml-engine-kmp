@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
 import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
 
@@ -63,7 +63,7 @@ public abstract class UriEncoder {
         try {
             return URLDecoder.decode(buff, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new YAMLException(e);
+            throw new YamlEngineException(e);
         }
     }
 }

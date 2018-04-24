@@ -15,7 +15,7 @@
  */
 package org.snakeyaml.engine.exceptions;
 
-public class ReaderException extends YAMLException {
+public class ReaderException extends YamlEngineException {
     private static final long serialVersionUID = 8710781187529689083L;
     private final String name;
     private final int codePoint;

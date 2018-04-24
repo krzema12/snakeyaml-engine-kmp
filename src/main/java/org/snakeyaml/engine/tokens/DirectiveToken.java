@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 public final class DirectiveToken<T> extends Token {
     private final String name;
@@ -30,7 +30,7 @@ public final class DirectiveToken<T> extends Token {
         super(startMark, endMark);
         this.name = name;
         if (value != null && value.size() != 2) {
-            throw new YAMLException("Two strings must be provided instead of "
+            throw new YamlEngineException("Two strings must be provided instead of "
                     + String.valueOf(value.size()));
         }
         this.value = value;

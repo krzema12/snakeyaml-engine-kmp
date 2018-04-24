@@ -18,7 +18,7 @@ package org.snakeyaml.engine.tokens;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 public abstract class Token {
     public enum ID {
@@ -60,7 +60,7 @@ public abstract class Token {
 
     public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
         if (startMark == null || endMark == null) {
-            throw new YAMLException("Token requires marks.");
+            throw new YamlEngineException("Token requires marks.");
         }
         this.startMark = startMark;
         this.endMark = endMark;

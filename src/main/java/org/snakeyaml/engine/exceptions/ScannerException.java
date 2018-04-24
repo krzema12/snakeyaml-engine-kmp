@@ -23,7 +23,7 @@ import org.snakeyaml.engine.scanner.Scanner;
  * Exception thrown by the {@link Scanner} implementations in case of malformed
  * input.
  */
-public class ScannerException extends MarkedYAMLException {
+public class ScannerException extends MarkedYamlEngineException {
 
     private static final long serialVersionUID = 4782293188600445954L;
 

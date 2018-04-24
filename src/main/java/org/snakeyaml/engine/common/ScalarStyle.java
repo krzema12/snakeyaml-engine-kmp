@@ -15,7 +15,7 @@
  */
 package org.snakeyaml.engine.common;
 
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 /**
  * YAML provides a rich set of scalar styles. Block scalar styles include
@@ -55,7 +55,7 @@ public enum ScalarStyle {
                 case '>':
                     return FOLDED;
                 default:
-                    throw new YAMLException("Unknown scalar style character: " + style);
+                    throw new YamlEngineException("Unknown scalar style character: " + style);
             }
         }
     }

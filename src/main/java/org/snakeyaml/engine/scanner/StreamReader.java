@@ -25,7 +25,7 @@ import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ReaderException;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 /**
  * Reader: checks if code points are in allowed range. Returns '\0' when end of
@@ -219,7 +219,7 @@ public final class StreamReader {
                 eof = true;
             }
         } catch (IOException ioe) {
-            throw new YAMLException(ioe);
+            throw new YamlEngineException(ioe);
         }
     }
 

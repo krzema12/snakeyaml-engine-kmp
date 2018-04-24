@@ -29,7 +29,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Compose;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Node;
 
 import com.google.common.collect.Lists;
@@ -62,7 +62,7 @@ class ComposeSuiteTest {
             settings.setLabel(data.getLabel());
             Iterable<Node> iterable = new Compose(settings).composeAllFromString(data.getInput());
             iterable.forEach(event -> list.add(event));
-        } catch (YAMLException e) {
+        } catch (YamlEngineException e) {
             error = Optional.of(e);
         }
         return new ComposeResult(list, error);

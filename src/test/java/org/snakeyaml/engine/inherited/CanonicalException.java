@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.inherited;
 
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
-public class CanonicalException extends YAMLException {
+public class CanonicalException extends YamlEngineException {
 
     private static final long serialVersionUID = -6489045150083747626L;
 

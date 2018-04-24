@@ -35,7 +35,7 @@ import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.UriEncoder;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ScannerException;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.tokens.AliasToken;
 import org.snakeyaml.engine.tokens.AnchorToken;
 import org.snakeyaml.engine.tokens.BlockEndToken;
@@ -425,7 +425,7 @@ public final class ScannerImpl implements Scanner {
             // A simple key is required only if it is the first token in the
             // current line. Therefore it is always allowed.
         } else {
-            throw new YAMLException(
+            throw new YamlEngineException(
                     "A simple key is required only if it is the first token in the current line");
         }
 

@@ -19,13 +19,13 @@ package org.snakeyaml.engine.parser;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
-import org.snakeyaml.engine.exceptions.MarkedYAMLException;
+import org.snakeyaml.engine.exceptions.MarkedYamlEngineException;
 
 /**
  * Exception thrown by the {@link Parser} implementations in case of malformed
  * input.
  */
-public class ParserException extends MarkedYAMLException {
+public class ParserException extends MarkedYamlEngineException {
     private static final long serialVersionUID = -2349253802798398038L;
 
     /**

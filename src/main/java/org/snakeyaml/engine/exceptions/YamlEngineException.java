@@ -15,19 +15,18 @@
  */
 package org.snakeyaml.engine.exceptions;
 
-//TODO rename
-public class YAMLException extends RuntimeException {
+public class YamlEngineException extends RuntimeException {
     private static final long serialVersionUID = -4738336175050337570L;
 
-    public YAMLException(String message) {
+    public YamlEngineException(String message) {
         super(message);
     }
 
-    public YAMLException(Throwable cause) {
+    public YamlEngineException(Throwable cause) {
         super(cause);
     }
 
-    public YAMLException(String message, Throwable cause) {
+    public YamlEngineException(String message, Throwable cause) {
         super(message, cause);
     }
 }

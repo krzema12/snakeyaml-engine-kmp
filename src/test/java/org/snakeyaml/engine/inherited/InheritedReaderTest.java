@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.api.YamlUnicodeReader;
 import org.snakeyaml.engine.exceptions.ReaderException;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.scanner.StreamReader;
 
 @org.junit.jupiter.api.Tag("fast")
@@ -50,7 +50,7 @@ public class InheritedReaderTest extends InheritedImportTest {
                         + "; encoding=" + unicodeReader.getEncoding());
             } catch (ReaderException e) {
                 assertTrue(e.toString().contains(" special characters are not allowed"), e.toString());
-            } catch (YAMLException e) {
+            } catch (YamlEngineException e) {
                 assertTrue(e.toString().contains("MalformedInputException"), e.toString());
             } finally {
                 input.close();

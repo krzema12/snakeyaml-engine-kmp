@@ -30,7 +30,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.api.Parse;
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
@@ -53,7 +53,7 @@ class ParseSuiteTest {
             settings.setLabel(data.getLabel());
             Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
             iterable.forEach(event -> list.add(event));
-        } catch (YAMLException e) {
+        } catch (YamlEngineException e) {
             error = Optional.of(e);
         }
         return new ParseResult(list, error);

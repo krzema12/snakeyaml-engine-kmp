@@ -37,7 +37,7 @@ import org.snakeyaml.engine.events.SequenceStartEvent;
 import org.snakeyaml.engine.events.StreamEndEvent;
 import org.snakeyaml.engine.events.StreamStartEvent;
 import org.snakeyaml.engine.exceptions.Mark;
-import org.snakeyaml.engine.exceptions.YAMLException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.scanner.Scanner;
 import org.snakeyaml.engine.scanner.ScannerImpl;
@@ -244,10 +244,10 @@ public class ParserImpl implements Parser {
                 StreamEndToken token = (StreamEndToken) scanner.next();
                 event = new StreamEndEvent(token.getStartMark(), token.getEndMark());
                 if (!states.isEmpty()) {
-                    throw new YAMLException("Unexpected end of stream. States left: " + states);
+                    throw new YamlEngineException("Unexpected end of stream. States left: " + states);
                 }
                 if (!markEmpty()) {
-                    throw new YAMLException("Unexpected end of stream. Marks left: " + marks222);
+                    throw new YamlEngineException("Unexpected end of stream. Marks left: " + marks222);
                 }
                 state = null;
             }

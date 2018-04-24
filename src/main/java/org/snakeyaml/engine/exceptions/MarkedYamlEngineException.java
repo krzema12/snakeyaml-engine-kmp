@@ -17,7 +17,7 @@ package org.snakeyaml.engine.exceptions;
 
 import java.util.Optional;
 
-public class MarkedYAMLException extends YAMLException {
+public class MarkedYamlEngineException extends YamlEngineException {
 
     private static final long serialVersionUID = -9119388488683035101L;
     private String context;
@@ -25,11 +25,11 @@ public class MarkedYAMLException extends YAMLException {
     private String problem;
     private Optional<Mark> problemMark;
 
-    protected MarkedYAMLException(String context, Optional<Mark> contextMark, String problem,
-                                  Optional<Mark> problemMark, Throwable cause) {
+    protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
+                                        Optional<Mark> problemMark, Throwable cause) {
         super(context + "; " + problem + "; " + problemMark, cause);
         if (contextMark == null || problemMark == null) {
-            throw new YAMLException("Marks cannot be null");
+            throw new YamlEngineException("Marks cannot be null");
         }
         this.context = context;
         this.contextMark = contextMark;
@@ -37,7 +37,7 @@ public class MarkedYAMLException extends YAMLException {
         this.problemMark = problemMark;
     }
 
-    protected MarkedYAMLException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
+    protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         this(context, contextMark, problem, problemMark, null);
     }
 

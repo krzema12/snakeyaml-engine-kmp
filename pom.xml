@@ -88,6 +88,9 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+    <prerequisites>
+        <maven>3.5.0</maven>
+    </prerequisites>
     <build>
         <testResources>
             <testResource>

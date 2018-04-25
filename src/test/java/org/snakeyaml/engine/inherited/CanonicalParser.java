@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
-import org.snakeyaml.engine.common.Version;
+import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
@@ -75,7 +75,8 @@ public class CanonicalParser implements Parser {
             scanner.getToken(Token.ID.Directive);
         }
         scanner.getToken(Token.ID.DocumentStart);
-        events.add(new DocumentStartEvent(true, new Version(1, 1), null, Optional.empty(), Optional.empty()));
+        //TODO version
+        events.add(new DocumentStartEvent(true, new SpecVersion(1, 1), null, Optional.empty(), Optional.empty()));
         parseNode();
         if (scanner.checkToken(Token.ID.DocumentEnd)) {
             scanner.getToken(Token.ID.DocumentEnd);

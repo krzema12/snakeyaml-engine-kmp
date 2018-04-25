@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
-import org.snakeyaml.engine.common.Version;
+import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
@@ -235,7 +235,7 @@ public class ParserImpl implements Parser {
                 }
                 token = scanner.next();
                 Optional<Mark> endMark = token.getEndMark();
-                event = new DocumentStartEvent(true, tuple.getVersion(),
+                event = new DocumentStartEvent(true, tuple.getSpecVersion(),
                         tuple.getTags(), startMark, endMark);
                 states.push(new ParseDocumentEnd());
                 state = new ParseDocumentContent();
@@ -291,13 +291,13 @@ public class ParserImpl implements Parser {
 
     @SuppressWarnings("unchecked")
     private VersionTagsTuple processDirectives() {
-        Version yamlVersion = null;
+        SpecVersion yamlSpecVersion = null;
         HashMap<String, String> tagHandles = new HashMap<String, String>();
         while (scanner.checkToken(Token.ID.Directive)) {
             @SuppressWarnings("rawtypes")
             DirectiveToken token = (DirectiveToken) scanner.next();
             if (token.getName().equals("YAML")) {
-                if (yamlVersion != null) {
+                if (yamlSpecVersion != null) {
                     throw new ParserException(null, null, "found duplicate YAML directive",
                             token.getStartMark());
                 }
@@ -309,13 +309,14 @@ public class ParserImpl implements Parser {
                             token.getStartMark());
                 }
                 Integer minor = value.get(1);
+                //TODO fix the version
                 switch (minor) {
                     case 0:
-                        yamlVersion = new Version(1, 0);
+                        yamlSpecVersion = new SpecVersion(1, 0);
                         break;
 
                     default:
-                        yamlVersion = new Version(1, 1);
+                        yamlSpecVersion = new SpecVersion(1, 1);
                         break;
                 }
             } else if (token.getName().equals("TAG")) {
@@ -329,7 +330,7 @@ public class ParserImpl implements Parser {
                 tagHandles.put(handle, prefix);
             }
         }
-        if (yamlVersion != null || !tagHandles.isEmpty()) {
+        if (yamlSpecVersion != null || !tagHandles.isEmpty()) {
             // directives in the document found - drop the previous
             for (String key : DEFAULT_TAGS.keySet()) {
                 // do not overwrite re-defined tags
@@ -337,7 +338,7 @@ public class ParserImpl implements Parser {
                     tagHandles.put(key, DEFAULT_TAGS.get(key));
                 }
             }
-            directives = new VersionTagsTuple(yamlVersion, tagHandles);
+            directives = new VersionTagsTuple(yamlSpecVersion, tagHandles);
         }
         return directives;
     }

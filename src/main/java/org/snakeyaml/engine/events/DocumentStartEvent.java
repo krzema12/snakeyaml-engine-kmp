@@ -18,7 +18,7 @@ package org.snakeyaml.engine.events;
 import java.util.Map;
 import java.util.Optional;
 
-import org.snakeyaml.engine.common.Version;
+import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -29,14 +29,14 @@ import org.snakeyaml.engine.exceptions.Mark;
  */
 public final class DocumentStartEvent extends Event {
     private final boolean explicit;
-    private final Version version;
+    private final SpecVersion specVersion;
     private final Map<String, String> tags;
 
-    public DocumentStartEvent(boolean explicit, Version version,
+    public DocumentStartEvent(boolean explicit, SpecVersion specVersion,
                               Map<String, String> tags, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.explicit = explicit;
-        this.version = version;
+        this.specVersion = specVersion;
         this.tags = tags;
     }
 
@@ -52,8 +52,8 @@ public final class DocumentStartEvent extends Event {
      * components, the major and minor part of the version (in this
      * order).
      */
-    public Version getVersion() {
-        return version;
+    public SpecVersion getSpecVersion() {
+        return specVersion;
     }
 
     /**

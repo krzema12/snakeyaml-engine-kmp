@@ -17,22 +17,22 @@ package org.snakeyaml.engine.parser;
 
 import java.util.Map;
 
-import org.snakeyaml.engine.common.Version;
+import org.snakeyaml.engine.common.SpecVersion;
 
 /**
  * Store the internal state for directives
  */
 class VersionTagsTuple {
-    private Version version;
+    private SpecVersion specVersion;
     private Map<String, String> tags;
 
-    public VersionTagsTuple(Version version, Map<String, String> tags) {
-        this.version = version;
+    public VersionTagsTuple(SpecVersion specVersion, Map<String, String> tags) {
+        this.specVersion = specVersion;
         this.tags = tags;
     }
 
-    public Version getVersion() {
-        return version;
+    public SpecVersion getSpecVersion() {
+        return specVersion;
     }
 
     public Map<String, String> getTags() {
@@ -41,6 +41,6 @@ class VersionTagsTuple {
 
     @Override
     public String toString() {
-        return String.format("VersionTagsTuple<%s, %s>", version, tags);
+        return String.format("VersionTagsTuple<%s, %s>", specVersion, tags);
     }
 }

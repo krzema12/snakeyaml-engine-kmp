@@ -15,12 +15,11 @@
  */
 package org.snakeyaml.engine.common;
 
-//TODO rename to SpecVersion
-public class Version {
+public class SpecVersion {
     private final int major;
     private final int minor;
 
-    public Version(int major, int minor) {
+    public SpecVersion(int major, int minor) {
         this.major = major;
         this.minor = minor;
     }
@@ -35,7 +34,7 @@ public class Version {
 
     @Override
     public String toString() {
-        return "Version{" +
+        return "SpecVersion{" +
                 "major=" + major +
                 ", minor=" + minor +
                 '}';

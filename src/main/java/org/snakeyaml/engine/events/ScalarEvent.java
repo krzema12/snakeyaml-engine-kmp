@@ -125,11 +125,7 @@ public final class ScalarEvent extends NodeEvent {
             builder.append(">");
         }
         builder.append(" ");
-        if (getStyle() == ScalarStyle.PLAIN) {
-            builder.append(":");
-        } else {
-            builder.append(getStyle().getChar());
-        }
+        builder.append(getStyle().toString());
         //escape and drop surrogates
         String str = value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
                 .map(c -> escape(c)).collect(Collectors.joining(""));

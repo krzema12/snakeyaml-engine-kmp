@@ -910,14 +910,14 @@ public final class ScannerImpl implements Scanner {
      * Fetch a single-quoted (') scalar.
      */
     private void fetchSingle() {
-        fetchFlowScalar('\'');
+        fetchFlowScalar(ScalarStyle.SINGLE_QUOTED);
     }
 
     /**
      * Fetch a double-quoted (") scalar.
      */
     private void fetchDouble() {
-        fetchFlowScalar('"');
+        fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED);
     }
 
     /**
@@ -925,7 +925,7 @@ public final class ScannerImpl implements Scanner {
      *
      * @param style
      */
-    private void fetchFlowScalar(char style) {
+    private void fetchFlowScalar(ScalarStyle style) {
         // A flow scalar could be a simple key.
         savePossibleSimpleKey();
 
@@ -1705,11 +1705,11 @@ public final class ScannerImpl implements Scanner {
      * that document separators are not included in scalars.
      * </pre>
      */
-    private Token scanFlowScalar(char style) {
+    private Token scanFlowScalar(ScalarStyle style) {
         boolean _double;
         // The style will be either single- or double-quoted; we determine this
         // by the first character in the entry (supplied)
-        if (style == '"') {
+        if (style == ScalarStyle.DOUBLE_QUOTED) {
             _double = true;
         } else {
             _double = false;
@@ -1725,7 +1725,7 @@ public final class ScannerImpl implements Scanner {
         }
         reader.forward();
         Optional<Mark> endMark = reader.getMark();
-        return new ScalarToken(chunks.toString(), false, startMark, endMark, ScalarStyle.createStyle(style));
+        return new ScalarToken(chunks.toString(), false, startMark, endMark, style);
     }
 
     /**

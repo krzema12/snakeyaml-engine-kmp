@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.common;
 
+import java.util.Optional;
+
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 /**
@@ -25,26 +27,30 @@ import org.snakeyaml.engine.exceptions.YamlEngineException;
  * expressive power and readability.
  */
 public enum ScalarStyle {
-    DOUBLE_QUOTED('"'), SINGLE_QUOTED('\''), LITERAL('|'), FOLDED('>'), PLAIN(null);
-    private Character styleChar; //TODO should styleChar be optional ?
+    DOUBLE_QUOTED(Optional.of('"')), SINGLE_QUOTED(Optional.of('\'')), LITERAL(Optional.of('|')),
+    FOLDED(Optional.of('>')), PLAIN(Optional.empty());
+    private Optional<Character> styleOpt;
 
-    private ScalarStyle(Character style) {
-        this.styleChar = style;
+    private ScalarStyle(Optional<Character> style) {
+        this.styleOpt = style;
     }
 
-    public Character getChar() {
-        return styleChar;
+    public Optional<Character> getChar() {
+        return styleOpt;
     }
 
     @Override
     public String toString() {
-        return "Scalar style: '" + styleChar + "'";
+        if (styleOpt.isPresent()) {
+            return String.valueOf(styleOpt.get());
+        } else return ":";
     }
 
-    public static ScalarStyle createStyle(Character style) {
-        if (style == null) {
+    public static ScalarStyle createStyle(Optional<Character> opt) {
+        if (!opt.isPresent()) {
             return PLAIN;
         } else {
+            Character style = opt.get();
             switch (style) {
                 case '"':
                     return DOUBLE_QUOTED;

@@ -15,21 +15,23 @@
  */
 package org.snakeyaml.engine.common;
 
+import java.util.Optional;
+
 /**
  * Block styles use indentation to denote nesting and scope within the
  * document. In contrast, flow styles rely on explicit indicators to denote
  * nesting and scope.
  */
 public enum FlowStyle {
-    FLOW(Boolean.TRUE), BLOCK(Boolean.FALSE), AUTO(null);
+    FLOW(Optional.of(Boolean.TRUE)), BLOCK(Optional.of(Boolean.FALSE)), AUTO(Optional.empty());
 
-    private Boolean styleBoolean;//TODO optional ?
+    private Optional<Boolean> styleBoolean;
 
-    private FlowStyle(Boolean flowStyle) {
+    private FlowStyle(Optional<Boolean> flowStyle) {
         styleBoolean = flowStyle;
     }
 
-    public Boolean getStyleBoolean() {
+    public Optional<Boolean> getStyleBoolean() {
         return styleBoolean;
     }
 

@@ -78,8 +78,9 @@ public abstract class InheritedImportTest {
     }
 
     protected List<Event> parse(InputStream input) throws IOException {
-        StreamReader reader = new StreamReader(new YamlUnicodeReader(input), new LoadSettings());
-        Parser parser = new ParserImpl(reader);
+        LoadSettings settings = new LoadSettings();
+        StreamReader reader = new StreamReader(new YamlUnicodeReader(input), settings);
+        Parser parser = new ParserImpl(reader, settings);
         List<Event> result = new ArrayList();
         while (parser.peekEvent() != null) {
             result.add(parser.next());

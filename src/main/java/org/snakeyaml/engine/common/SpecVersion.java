@@ -34,7 +34,7 @@ public class SpecVersion {
 
     @Override
     public String toString() {
-        return "SpecVersion{" +
+        return "Version{" +
                 "major=" + major +
                 ", minor=" + minor +
                 '}';

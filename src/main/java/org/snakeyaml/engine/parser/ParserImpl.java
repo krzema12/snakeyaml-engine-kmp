@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -125,18 +126,20 @@ public class ParserImpl implements Parser {
     }
 
     protected final Scanner scanner;
+    private final LoadSettings settings;
     private Event currentEvent;
     private final ArrayStack<Production> states;
     private final ArrayStack<Optional<Mark>> marks222;
     private Production state;
     private VersionTagsTuple directives;
 
-    public ParserImpl(StreamReader reader) {
-        this(new ScannerImpl(reader));
+    public ParserImpl(StreamReader reader, LoadSettings settings) {
+        this(new ScannerImpl(reader), settings);
     }
 
-    public ParserImpl(Scanner scanner) {
+    public ParserImpl(Scanner scanner, LoadSettings settings) {
         this.scanner = scanner;
+        this.settings = settings;
         currentEvent = null;
         directives = new VersionTagsTuple(null, new HashMap<String, String>(DEFAULT_TAGS));
         states = new ArrayStack<Production>(100);
@@ -309,16 +312,8 @@ public class ParserImpl implements Parser {
                             token.getStartMark());
                 }
                 Integer minor = value.get(1);
-                //TODO fix the version
-                switch (minor) {
-                    case 0:
-                        yamlSpecVersion = new SpecVersion(1, 0);
-                        break;
-
-                    default:
-                        yamlSpecVersion = new SpecVersion(1, 1);
-                        break;
-                }
+                yamlSpecVersion = new SpecVersion(1, minor);
+                settings.getVersionFunction().apply(yamlSpecVersion);
             } else if (token.getName().equals("TAG")) {
                 List<String> value = (List<String>) token.getValue();
                 String handle = value.get(0);

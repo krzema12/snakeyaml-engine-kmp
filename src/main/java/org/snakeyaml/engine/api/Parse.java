@@ -46,7 +46,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseReader(InputStream yaml) {
-        return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings));
+        return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings),settings);
     }
 
     /**
@@ -57,7 +57,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseInputStream(Reader yaml) {
-        return () -> new ParserImpl(new StreamReader(yaml, settings));
+        return () -> new ParserImpl(new StreamReader(yaml, settings), settings);
     }
 
     /**
@@ -71,7 +71,7 @@ public class Parse {
         //do not use lambda to keep Iterable and Iterator visible
         return new Iterable() {
             public Iterator<Event> iterator() {
-                return new ParserImpl(new StreamReader(new StringReader(yaml), settings));
+                return new ParserImpl(new StreamReader(new StringReader(yaml), settings),settings);
             }
         };
     }

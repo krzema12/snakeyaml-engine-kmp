@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.snakeyaml.engine.common.SpecVersion;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonResolver;
 import org.snakeyaml.engine.resolver.Resolver;
@@ -40,7 +42,7 @@ public final class LoadSettings {
     private Function<Integer, List> defaultList;
     private Function<Integer, Set> defaultSet;
     private Function<Integer, Map> defaultMap;
-    private BiFunction<Integer, Integer, Boolean> yamlVersionReaction; //TODO should return Void instead of Boolean
+    private Function<SpecVersion, SpecVersion> versionFunction;
     private Integer bufferSize;
     private Boolean allowDuplicateKeys;
     private Boolean useMarks;
@@ -52,7 +54,10 @@ public final class LoadSettings {
         this.defaultList = (initSize) -> new ArrayList(initSize);
         this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
         this.defaultMap = (initSize) -> new LinkedHashMap(initSize);
-        this.yamlVersionReaction = (major, minor) -> false;
+        this.versionFunction = (version) -> {
+            if (version.getMinor() != 2) throw new YamlEngineException("Unexpected version: " + version);
+            return version;
+        };
         this.bufferSize = 1024;
         this.allowDuplicateKeys = false;
         this.useMarks = true;
@@ -106,14 +111,6 @@ public final class LoadSettings {
         this.defaultMap = defaultMap;
     }
 
-    public BiFunction<Integer, Integer, Boolean> getYamlVersionReaction() {
-        return yamlVersionReaction;
-    }
-
-    public void setYamlVersionReaction(BiFunction<Integer, Integer, Boolean> yamlVersionReaction) {
-        this.yamlVersionReaction = yamlVersionReaction;
-    }
-
     public Integer getBufferSize() {
         return bufferSize;
     }
@@ -136,6 +133,14 @@ public final class LoadSettings {
 
     public void setUseMarks(Boolean useMarks) {
         this.useMarks = useMarks;
+    }
+
+    public Function<SpecVersion, SpecVersion> getVersionFunction() {
+        return versionFunction;
+    }
+
+    public void setVersionFunction(Function<SpecVersion, SpecVersion> versionFunction) {
+        this.versionFunction = versionFunction;
     }
 }
 

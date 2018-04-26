@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.snakeyaml.engine.common.SpecVersion;
-import org.snakeyaml.engine.exceptions.YamlEngineException;
+import org.snakeyaml.engine.exceptions.YamlVersionException;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonResolver;
 import org.snakeyaml.engine.resolver.Resolver;
@@ -55,7 +54,7 @@ public final class LoadSettings {
         this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
         this.defaultMap = (initSize) -> new LinkedHashMap(initSize);
         this.versionFunction = (version) -> {
-            if (version.getMinor() != 2) throw new YamlEngineException("Unexpected version: " + version);
+            if (version.getMajor() != 1) throw new YamlVersionException(version);
             return version;
         };
         this.bufferSize = 1024;

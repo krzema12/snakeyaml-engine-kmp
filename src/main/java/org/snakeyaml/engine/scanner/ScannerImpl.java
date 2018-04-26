@@ -457,7 +457,7 @@ public final class ScannerImpl implements Scanner {
      * * Handle implicitly ending multiple levels of block nodes by decreased
      * indentation. This function becomes important on lines 4 and 7 of this
      * example:
-     * <p>
+     *
      * <pre>
      * 1) book one:
      * 2)   part one:
@@ -821,7 +821,7 @@ public final class ScannerImpl implements Scanner {
     /**
      * Fetch an alias, which is a reference to an anchor. Aliases take the
      * format:
-     * <p>
+     *
      * <pre>
      * *(anchor name)
      * </pre>
@@ -840,7 +840,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Fetch an anchor. Anchors take the form:
-     * <p>
+     *
      * <pre>
      * &(anchor name)
      * </pre>
@@ -1694,8 +1694,8 @@ public final class ScannerImpl implements Scanner {
      * Scan a flow-style scalar. Flow scalars are presented in one of two forms;
      * first, a flow scalar may be a double-quoted string; second, a flow scalar
      * may be a single-quoted string.
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      * See the specification for details.
      * Note that we loose indentation rules for quoted scalars. Quoted
@@ -1853,7 +1853,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Scan a plain scalar.
-     * <p>
+     *
      * <pre>
      * See the specification for details.
      * We add an additional restriction for the flow context:
@@ -1959,8 +1959,8 @@ public final class ScannerImpl implements Scanner {
      * <p>
      * Where (name) must be formatted as an ns-word-char.
      * </p>
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      * See the specification for details.
      * For some strange reasons, the specification does not allow '_' in
@@ -2100,7 +2100,7 @@ public final class ScannerImpl implements Scanner {
 
     /**
      * Scan a line break, transforming:
-     * <p>
+     *
      * <pre>
      * '\r\n' : '\n'
      * '\r' : '\n'

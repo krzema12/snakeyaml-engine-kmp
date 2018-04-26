@@ -71,7 +71,7 @@ class ComposeSuiteTest {
     @Test
     @DisplayName("Compose: run one test")
     void runOne(TestInfo testInfo) {
-        SuiteData data = SuiteUtils.getOne("2AUY");
+        SuiteData data = SuiteUtils.getOne("C4HZ");
         LoadSettings settings = new LoadSettings();
         settings.setLabel(data.getLabel());
         Optional<Node> node = new Compose(settings).composeString(data.getInput());

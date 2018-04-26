@@ -43,9 +43,8 @@ public final class ScalarEvent extends NodeEvent {
     // and non-plain style correspondingly.
     private final ImplicitTuple implicit;
 
-    //TODO anchor is optional ?
     //TODO tag is optional ?
-    public ScalarEvent(String anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
+    public ScalarEvent(Optional<String> anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
                        Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
@@ -115,9 +114,9 @@ public final class ScalarEvent extends NodeEvent {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
-        if (getAnchor() != null) {
+        if (getAnchor().isPresent()) {
             builder.append(" &");
-            builder.append(getAnchor());
+            builder.append(getAnchor().orElse(""));
         }
         if (getTag() != null) {
             builder.append(" <");

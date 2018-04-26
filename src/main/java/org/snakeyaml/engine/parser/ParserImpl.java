@@ -129,7 +129,7 @@ public class ParserImpl implements Parser {
     private final LoadSettings settings;
     private Event currentEvent;
     private final ArrayStack<Production> states;
-    private final ArrayStack<Optional<Mark>> marks222;
+    private final ArrayStack<Optional<Mark>> marksStack;
     private Production state;
     private VersionTagsTuple directives;
 
@@ -143,7 +143,7 @@ public class ParserImpl implements Parser {
         currentEvent = null;
         directives = new VersionTagsTuple(null, new HashMap<String, String>(DEFAULT_TAGS));
         states = new ArrayStack<Production>(100);
-        marks222 = new ArrayStack(10);
+        marksStack = new ArrayStack(10);
         state = new ParseStreamStart();
     }
 
@@ -250,7 +250,7 @@ public class ParserImpl implements Parser {
                     throw new YamlEngineException("Unexpected end of stream. States left: " + states);
                 }
                 if (!markEmpty()) {
-                    throw new YamlEngineException("Unexpected end of stream. Marks left: " + marks222);
+                    throw new YamlEngineException("Unexpected end of stream. Marks left: " + marksStack);
                 }
                 state = null;
             }
@@ -374,16 +374,16 @@ public class ParserImpl implements Parser {
         Optional<Mark> tagMark = null;
         if (scanner.checkToken(Token.ID.Alias)) {
             AliasToken token = (AliasToken) scanner.next();
-            event = new AliasEvent(token.getValue(), token.getStartMark(), token.getEndMark());
+            event = new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
             state = states.pop();
         } else {
-            String anchor = null;
+            Optional<String> anchor = Optional.empty();
             TagTuple tagTokenTag = null;
             if (scanner.checkToken(Token.ID.Anchor)) {
                 AnchorToken token = (AnchorToken) scanner.next();
                 startMark = token.getStartMark();
                 endMark = token.getEndMark();
-                anchor = token.getValue();
+                anchor = Optional.of(token.getValue());
                 if (scanner.checkToken(Token.ID.Tag)) {
                     TagToken tagToken = (TagToken) scanner.next();
                     tagMark = tagToken.getStartMark();
@@ -399,7 +399,7 @@ public class ParserImpl implements Parser {
                 if (scanner.checkToken(Token.ID.Anchor)) {
                     AnchorToken token = (AnchorToken) scanner.next();
                     endMark = token.getEndMark();
-                    anchor = token.getValue();
+                    anchor = Optional.of(token.getValue());
                 }
             }
             String tag = null;
@@ -459,9 +459,8 @@ public class ParserImpl implements Parser {
                     event = new MappingStartEvent(anchor, tag, implicit,
                             FlowStyle.BLOCK, startMark, endMark);
                     state = new ParseBlockMappingFirstKey();
-                } else if (anchor != null || tag != null) {
-                    // Empty scalars are allowed even if a tag or an anchor is
-                    // specified.
+                } else if (anchor.isPresent() || tag != null) {
+                    // Empty scalars are allowed even if a tag or an anchor is specified.
                     event = new ScalarEvent(anchor, tag, new ImplicitTuple(implicit, false), "", ScalarStyle.PLAIN,
                             startMark, endMark);
                     state = states.pop();
@@ -635,7 +634,7 @@ public class ParserImpl implements Parser {
                 }
                 if (scanner.checkToken(Token.ID.Key)) {
                     Token token = scanner.peekToken();
-                    Event event = new MappingStartEvent(null, null, true, FlowStyle.FLOW, token.getStartMark(),
+                    Event event = new MappingStartEvent(Optional.empty(), null, true, FlowStyle.FLOW, token.getStartMark(),
                             token.getEndMark());
                     state = new ParseFlowSequenceEntryMappingKey();
                     return event;
@@ -786,19 +785,19 @@ public class ParserImpl implements Parser {
      * </pre>
      */
     private Event processEmptyScalar(Optional<Mark> mark) {
-        return new ScalarEvent(null, null, new ImplicitTuple(true, false), "", ScalarStyle.PLAIN, mark, mark);
+        return new ScalarEvent(Optional.empty(), null, new ImplicitTuple(true, false), "", ScalarStyle.PLAIN, mark, mark);
     }
 
     private Optional<Mark> markPop() {
-        return marks222.pop();
+        return marksStack.pop();
     }
 
     private void markPush(Optional<Mark> mark) {
-        marks222.push(mark);
+        marksStack.push(mark);
     }
 
     private boolean markEmpty() {
-        return marks222.isEmpty();
+        return marksStack.isEmpty();
     }
 
 

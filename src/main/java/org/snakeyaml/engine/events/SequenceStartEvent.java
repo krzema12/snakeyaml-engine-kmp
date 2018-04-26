@@ -30,7 +30,7 @@ import org.snakeyaml.engine.exceptions.Mark;
  * @see SequenceEndEvent
  */
 public final class SequenceStartEvent extends CollectionStartEvent {
-    public SequenceStartEvent(String anchor, String tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
+    public SequenceStartEvent(Optional<String> anchor, String tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
                               Optional<Mark> endMark) {
         super(anchor, tag, implicit, flowStyle, startMark, endMark);
     }

@@ -88,12 +88,12 @@ public class CanonicalParser implements Parser {
     private void parseNode() {
         if (scanner.checkToken(Token.ID.Alias)) {
             AliasToken token = (AliasToken) scanner.next();
-            events.add(new AliasEvent(token.getValue(), Optional.empty(), Optional.empty()));
+            events.add(new AliasEvent(Optional.of(token.getValue()), Optional.empty(), Optional.empty()));
         } else {
-            String anchor = null;
+            Optional<String> anchor = Optional.empty();
             if (scanner.checkToken(Token.ID.Anchor)) {
                 AnchorToken token = (AnchorToken) scanner.next();
-                anchor = token.getValue();
+                anchor = Optional.of(token.getValue());
             }
             String tag = null;
             if (scanner.checkToken(Token.ID.Tag)) {

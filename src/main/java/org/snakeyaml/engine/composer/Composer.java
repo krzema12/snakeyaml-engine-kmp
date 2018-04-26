@@ -130,9 +130,9 @@ public class Composer implements Iterator<Node> {
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.next();
-            String anchor = event.getAnchor();
+            String anchor = event.getAnchor().get();
             if (!anchors.containsKey(anchor)) {
-                throw new ComposerException(null, null, "found undefined alias " + anchor, event.getStartMark());
+                throw new ComposerException(null, Optional.empty(), "found undefined alias " + anchor, event.getStartMark());
             }
             node = anchors.get(anchor);
             if (recursiveNodes.remove(node)) {
@@ -140,7 +140,7 @@ public class Composer implements Iterator<Node> {
             }
         } else {
             NodeEvent event = (NodeEvent) parser.peekEvent();
-            String anchor = event.getAnchor();
+            Optional<String> anchor = event.getAnchor();
             // the check for duplicate anchors has been removed (issue 174)
             if (parser.checkEvent(Event.ID.Scalar)) {
                 node = composeScalarNode(anchor);
@@ -154,7 +154,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeScalarNode(String anchor) {
+    protected Node composeScalarNode(Optional<String> anchor) {
         ScalarEvent ev = (ScalarEvent) parser.next();
         String tag = ev.getTag();
         boolean resolved = false;
@@ -166,13 +166,11 @@ public class Composer implements Iterator<Node> {
             nodeTag = new Tag(tag);
         }
         Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStyle(), ev.getStartMark(), ev.getEndMark());
-        if (anchor != null) {
-            anchors.put(anchor, node);
-        }
+        anchor.ifPresent(a -> anchors.put(a, node));
         return node;
     }
 
-    protected Node composeSequenceNode(String anchor) {
+    protected Node composeSequenceNode(Optional<String> anchor) {
         SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;
@@ -186,9 +184,7 @@ public class Composer implements Iterator<Node> {
         final ArrayList<Node> children = new ArrayList<Node>();
         SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getStartMark(),
                 null, startEvent.getFlowStyle());
-        if (anchor != null) {
-            anchors.put(anchor, node);
-        }
+        anchor.ifPresent(a -> anchors.put(a, node));
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             children.add(composeNode(node));
         }
@@ -197,7 +193,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeMappingNode(String anchor) {
+    protected Node composeMappingNode(Optional<String> anchor) {
         MappingStartEvent startEvent = (MappingStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;
@@ -211,9 +207,7 @@ public class Composer implements Iterator<Node> {
 
         final List<NodeTuple> children = new ArrayList<NodeTuple>();
         MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), null);
-        if (anchor != null) {
-            anchors.put(anchor, node);
-        }
+        anchor.ifPresent(a -> anchors.put(a, node));
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             composeMappingChildren(children, node);
         }

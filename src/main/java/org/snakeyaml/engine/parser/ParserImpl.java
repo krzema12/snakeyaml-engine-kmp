@@ -26,6 +26,7 @@ import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.events.AliasEvent;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
 import org.snakeyaml.engine.events.Event;
@@ -377,7 +378,7 @@ public class ParserImpl implements Parser {
             event = new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
             state = states.pop();
         } else {
-            Optional<String> anchor = Optional.empty();
+            Optional<Anchor> anchor = Optional.empty();
             TagTuple tagTokenTag = null;
             if (scanner.checkToken(Token.ID.Anchor)) {
                 AnchorToken token = (AnchorToken) scanner.next();

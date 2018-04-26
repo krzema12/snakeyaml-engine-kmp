@@ -17,13 +17,14 @@ package org.snakeyaml.engine.events;
 
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
  * Marks the inclusion of a previously anchored node.
  */
 public final class AliasEvent extends NodeEvent {
-    public AliasEvent(Optional<String> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
+    public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         if(!anchor.isPresent()) throw new NullPointerException("Anochor is required in AliasEvent");
     }
@@ -35,6 +36,6 @@ public final class AliasEvent extends NodeEvent {
 
     @Override
     public String toString() {
-        return "=ALI *" + getAnchor().orElse("");
+        return "=ALI *" + getAnchor().get();
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.scanner.Scanner;
@@ -274,9 +275,9 @@ public class CanonicalScanner implements Scanner {
         String value = data.substring(start, index);
         Token token;
         if (isTokenClassAlias) {
-            token = new AliasToken(value, mark, mark);
+            token = new AliasToken(new Anchor(value), mark, mark);
         } else {
-            token = new AnchorToken(value, mark, mark);
+            token = new AnchorToken(new Anchor(value), mark, mark);
         }
         return token;
     }

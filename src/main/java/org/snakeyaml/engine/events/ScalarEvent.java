@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.exceptions.Mark;
 
@@ -44,7 +45,7 @@ public final class ScalarEvent extends NodeEvent {
     private final ImplicitTuple implicit;
 
     //TODO tag is optional ?
-    public ScalarEvent(Optional<String> anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
+    public ScalarEvent(Optional<Anchor> anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
                        Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         this.tag = tag;
@@ -114,10 +115,7 @@ public final class ScalarEvent extends NodeEvent {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
-        if (getAnchor().isPresent()) {
-            builder.append(" &");
-            builder.append(getAnchor().orElse(""));
-        }
+        getAnchor().ifPresent(a ->  builder.append(" &" + a));
         if (getTag() != null) {
             builder.append(" <");
             builder.append(getTag());

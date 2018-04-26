@@ -18,6 +18,7 @@ package org.snakeyaml.engine.events;
 
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -25,9 +26,9 @@ import org.snakeyaml.engine.exceptions.Mark;
  */
 public abstract class NodeEvent extends Event {
 
-    private final Optional<String> anchor;
+    private final Optional<Anchor> anchor;
 
-    public NodeEvent(Optional<String> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
+    public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         if(anchor == null) throw new NullPointerException("Anchor cannot be null");
         this.anchor = anchor;
@@ -42,7 +43,7 @@ public abstract class NodeEvent extends Event {
      *
      * @return Anchor of this node or <code>null</code> if no anchor is defined.
      */
-    public Optional<String> getAnchor() {
+    public Optional<Anchor> getAnchor() {
         return this.anchor;
     }
 }

@@ -18,18 +18,19 @@ package org.snakeyaml.engine.tokens;
 
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class AliasToken extends Token {
-    private final String value;
+    private final Anchor value;
 
-    public AliasToken(String value, Optional<Mark> startMark, Optional<Mark> endMark) {
+    public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         if(value == null) throw new NullPointerException("Value is required in AliasToken");
         this.value = value;
     }
 
-    public String getValue() {
+    public Anchor getValue() {
         return this.value;
     }
 

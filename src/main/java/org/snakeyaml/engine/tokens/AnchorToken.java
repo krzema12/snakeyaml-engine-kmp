@@ -18,17 +18,18 @@ package org.snakeyaml.engine.tokens;
 
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 
 public final class AnchorToken extends Token {
-    private final String value;
+    private final Anchor value;
 
-    public AnchorToken(String value, Optional<Mark> startMark, Optional<Mark> endMark) {
+    public AnchorToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.value = value;
     }
 
-    public String getValue() {
+    public Anchor getValue() {
         return this.value;
     }
 

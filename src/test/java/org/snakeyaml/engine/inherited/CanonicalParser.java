@@ -22,6 +22,7 @@ import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.events.AliasEvent;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
 import org.snakeyaml.engine.events.Event;
@@ -90,7 +91,7 @@ public class CanonicalParser implements Parser {
             AliasToken token = (AliasToken) scanner.next();
             events.add(new AliasEvent(Optional.of(token.getValue()), Optional.empty(), Optional.empty()));
         } else {
-            Optional<String> anchor = Optional.empty();
+            Optional<Anchor> anchor = Optional.empty();
             if (scanner.checkToken(Token.ID.Anchor)) {
                 AnchorToken token = (AnchorToken) scanner.next();
                 anchor = Optional.of(token.getValue());

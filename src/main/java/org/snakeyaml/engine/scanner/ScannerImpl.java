@@ -33,6 +33,7 @@ import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.UriEncoder;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ScannerException;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
@@ -1352,9 +1353,9 @@ public final class ScannerImpl implements Scanner {
         Optional<Mark> endMark = reader.getMark();
         Token tok;
         if (isAnchor) {
-            tok = new AnchorToken(value, startMark, endMark);
+            tok = new AnchorToken(new Anchor(value), startMark, endMark);
         } else {
-            tok = new AliasToken(value, startMark, endMark);
+            tok = new AliasToken(new Anchor(value), startMark, endMark);
         }
         return tok;
     }

@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.snakeyaml.engine.events.AliasEvent;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.events.MappingStartEvent;
 import org.snakeyaml.engine.events.NodeEvent;
@@ -52,7 +53,7 @@ import org.snakeyaml.engine.resolver.ScalarResolver;
 public class Composer implements Iterator<Node> {
     protected final Parser parser;
     private final ScalarResolver scalarResolver;
-    private final Map<String, Node> anchors;
+    private final Map<Anchor, Node> anchors;
     private final Set<Node> recursiveNodes;
 
     public Composer(Parser parser, ScalarResolver scalarResolver) {
@@ -124,13 +125,13 @@ public class Composer implements Iterator<Node> {
     }
 
 
-    //TODO Mode is optional
+    //TODO Node is optional
     private Node composeNode(Node parent) {
         if (parent != null) recursiveNodes.add(parent);
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.next();
-            String anchor = event.getAnchor().get();
+            Anchor anchor = event.getAnchor().get();
             if (!anchors.containsKey(anchor)) {
                 throw new ComposerException(null, Optional.empty(), "found undefined alias " + anchor, event.getStartMark());
             }
@@ -140,7 +141,7 @@ public class Composer implements Iterator<Node> {
             }
         } else {
             NodeEvent event = (NodeEvent) parser.peekEvent();
-            Optional<String> anchor = event.getAnchor();
+            Optional<Anchor> anchor = event.getAnchor();
             // the check for duplicate anchors has been removed (issue 174)
             if (parser.checkEvent(Event.ID.Scalar)) {
                 node = composeScalarNode(anchor);
@@ -154,7 +155,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeScalarNode(Optional<String> anchor) {
+    protected Node composeScalarNode(Optional<Anchor> anchor) {
         ScalarEvent ev = (ScalarEvent) parser.next();
         String tag = ev.getTag();
         boolean resolved = false;
@@ -170,7 +171,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeSequenceNode(Optional<String> anchor) {
+    protected Node composeSequenceNode(Optional<Anchor> anchor) {
         SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;
@@ -193,7 +194,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeMappingNode(Optional<String> anchor) {
+    protected Node composeMappingNode(Optional<Anchor> anchor) {
         MappingStartEvent startEvent = (MappingStartEvent) parser.next();
         String tag = startEvent.getTag();
         Tag nodeTag;

@@ -37,7 +37,7 @@ public final class StreamStartEvent extends Event {
     }
 
     @Override
-    public boolean is(Event.ID id) {
+    public boolean isEvent(Event.ID id) {
         return ID.StreamStart == id;
     }
 

@@ -47,8 +47,7 @@ public abstract class Event {
         return endMark;
     }
 
-    //TODO refactor to be isEvent
-    public abstract boolean is(Event.ID id);
+    public abstract boolean isEvent(Event.ID id);
 
     /*
      * for tests only

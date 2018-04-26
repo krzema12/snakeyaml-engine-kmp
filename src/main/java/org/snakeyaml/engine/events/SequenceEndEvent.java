@@ -32,7 +32,7 @@ public final class SequenceEndEvent extends CollectionEndEvent {
     }
 
     @Override
-    public boolean is(Event.ID id) {
+    public boolean isEvent(Event.ID id) {
         return ID.SequenceEnd == id;
     }
 

@@ -152,7 +152,7 @@ public class ParserImpl implements Parser {
      */
     public boolean checkEvent(Event.ID choice) {
         peekEvent();
-        return currentEvent != null && currentEvent.is(choice);
+        return currentEvent != null && currentEvent.isEvent(choice);
     }
 
     /**

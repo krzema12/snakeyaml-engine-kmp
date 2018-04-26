@@ -31,7 +31,7 @@ public final class MappingEndEvent extends CollectionEndEvent {
     }
 
     @Override
-    public boolean is(Event.ID id) {
+    public boolean isEvent(Event.ID id) {
         return ID.MappingEnd == id;
     }
 

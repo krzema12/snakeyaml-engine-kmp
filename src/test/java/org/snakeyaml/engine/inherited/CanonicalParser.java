@@ -177,7 +177,7 @@ public class CanonicalParser implements Parser {
             parse();
         }
         if (!events.isEmpty()) {
-            if (events.get(0).is(choice)) {
+            if (events.get(0).isEvent(choice)) {
                 return true;
             }
         }

@@ -27,8 +27,8 @@ import java.util.function.Function;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.exceptions.YamlVersionException;
 import org.snakeyaml.engine.nodes.Tag;
-import org.snakeyaml.engine.resolver.JsonResolver;
-import org.snakeyaml.engine.resolver.Resolver;
+import org.snakeyaml.engine.resolver.JsonScalarResolver;
+import org.snakeyaml.engine.resolver.ScalarResolver;
 
 
 /**
@@ -37,7 +37,7 @@ import org.snakeyaml.engine.resolver.Resolver;
 public final class LoadSettings {
     private String label;
     private Optional<Tag> rootTag;
-    private Resolver resolver;
+    private ScalarResolver scalarResolver;
     private Function<Integer, List> defaultList;
     private Function<Integer, Set> defaultSet;
     private Function<Integer, Map> defaultMap;
@@ -49,7 +49,7 @@ public final class LoadSettings {
     public LoadSettings() {
         this.label = "reader";
         this.rootTag = Optional.empty();
-        this.resolver = new JsonResolver();
+        this.scalarResolver = new JsonScalarResolver();
         this.defaultList = (initSize) -> new ArrayList(initSize);
         this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
         this.defaultMap = (initSize) -> new LinkedHashMap(initSize);
@@ -78,12 +78,12 @@ public final class LoadSettings {
         this.rootTag = rootTag;
     }
 
-    public Resolver getResolver() {
-        return resolver;
+    public ScalarResolver getScalarResolver() {
+        return scalarResolver;
     }
 
-    public void setResolver(Resolver resolver) {
-        this.resolver = resolver;
+    public void setScalarResolver(ScalarResolver scalarResolver) {
+        this.scalarResolver = scalarResolver;
     }
 
     public Function<Integer, List> getDefaultList() {

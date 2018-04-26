@@ -71,5 +71,4 @@ class SpecVersionTest {
                 new Compose(settings).composeString("%YAML 2.0\n---\nfoo").get());
         assertEquals("Version{major=2, minor=0}", exception.getMessage());
     }
-
 }

@@ -15,22 +15,21 @@
  */
 package org.snakeyaml.engine.resolver;
 
-import org.snakeyaml.engine.nodes.NodeType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.nodes.Tag;
 
-/**
- * Resolver tries to detect a type by content (when the tag is implicit)
- */
-public interface Resolver {
+@org.junit.jupiter.api.Tag("fast")
+class ScalarResolverTupleTest {
 
-    /**
-     * TODO should it be only scalar node ???
-     * Resolve (detect) the tag of the scalar node of the given type.
-     *
-     * @param kind     - the type of node
-     * @param value    - the value of the node
-     * @param implicit - true if there was no tag specified (the tag will be resolved)
-     * @return the Tag that matches the contents
-     */
-    Tag resolve(NodeType kind, String value, Boolean implicit);
+    @Test
+    @DisplayName("ResolverTuple.toString()")
+    void resolveMap(TestInfo testInfo) {
+        assertEquals("Tuple tag=tag:yaml.org,2002:str regexp=^(?:true|false)$", new ResolverTuple(Tag.STR, Pattern.compile("^(?:true|false)$")).toString());
+    }
 }

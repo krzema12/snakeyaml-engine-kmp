@@ -35,12 +35,11 @@ import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.nodes.MappingNode;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.nodes.NodeTuple;
-import org.snakeyaml.engine.nodes.NodeType;
 import org.snakeyaml.engine.nodes.ScalarNode;
 import org.snakeyaml.engine.nodes.SequenceNode;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.parser.Parser;
-import org.snakeyaml.engine.resolver.Resolver;
+import org.snakeyaml.engine.resolver.ScalarResolver;
 
 
 /**
@@ -52,13 +51,13 @@ import org.snakeyaml.engine.resolver.Resolver;
  */
 public class Composer implements Iterator<Node> {
     protected final Parser parser;
-    private final Resolver resolver;
+    private final ScalarResolver scalarResolver;
     private final Map<String, Node> anchors;
     private final Set<Node> recursiveNodes;
 
-    public Composer(Parser parser, Resolver resolver) {
+    public Composer(Parser parser, ScalarResolver scalarResolver) {
         this.parser = parser;
-        this.resolver = resolver;
+        this.scalarResolver = scalarResolver;
         this.anchors = new HashMap();
         this.recursiveNodes = new HashSet();
     }
@@ -161,8 +160,7 @@ public class Composer implements Iterator<Node> {
         boolean resolved = false;
         Tag nodeTag;
         if (tag == null || tag.equals("!")) {
-            nodeTag = resolver.resolve(NodeType.SCALAR, ev.getValue(),
-                    ev.getImplicit().canOmitTagInPlainScalar());
+            nodeTag = scalarResolver.resolve(ev.getValue(), ev.getImplicit().canOmitTagInPlainScalar());
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
@@ -180,7 +178,7 @@ public class Composer implements Iterator<Node> {
         Tag nodeTag;
         boolean resolved = false;
         if (tag == null || tag.equals("!")) {
-            nodeTag = resolver.resolve(NodeType.SEQUENCE, null, startEvent.isImplicit());
+            nodeTag = Tag.SEQ;
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
@@ -205,7 +203,7 @@ public class Composer implements Iterator<Node> {
         Tag nodeTag;
         boolean resolved = false;
         if (tag == null || tag.equals("!")) {
-            nodeTag = resolver.resolve(NodeType.MAPPING, null, startEvent.isImplicit());
+            nodeTag = Tag.MAP;
             resolved = true;
         } else {
             nodeTag = new Tag(tag);

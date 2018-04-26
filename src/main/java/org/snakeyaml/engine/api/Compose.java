@@ -47,7 +47,7 @@ public class Compose {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeReader(Reader yaml) {
-        return new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getScalarResolver()).getSingleNode();
     }
 
     /**
@@ -58,7 +58,7 @@ public class Compose {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeInputStream(InputStream yaml) {
-        return new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
     }
 
     /**
@@ -69,7 +69,7 @@ public class Compose {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeString(String yaml) {
-        return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings), settings.getResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
     }
 
     // Compose all documents
@@ -82,7 +82,7 @@ public class Compose {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Node> composeAllFromReader(Reader yaml) {
-        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getResolver());
+        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getScalarResolver());
     }
 
     /**
@@ -93,7 +93,7 @@ public class Compose {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Node> composeAllFromInputStream(InputStream yaml) {
-        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getResolver());
+        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getScalarResolver());
     }
 
     /**
@@ -107,7 +107,7 @@ public class Compose {
         return new Iterable() {
             public Iterator<Node> iterator() {
                 return new Composer(new ParserImpl(
-                        new StreamReader(new StringReader(yaml), settings), settings), settings.getResolver());
+                        new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver());
             }
         };
     }

@@ -157,14 +157,14 @@ public class Composer implements Iterator<Node> {
 
     protected Node composeScalarNode(Optional<Anchor> anchor) {
         ScalarEvent ev = (ScalarEvent) parser.next();
-        String tag = ev.getTag();
+        Optional<String> tag = ev.getTag();
         boolean resolved = false;
         Tag nodeTag;
-        if (tag == null || tag.equals("!")) {
+        if (!tag.isPresent() || tag.get().equals("!")) {
             nodeTag = scalarResolver.resolve(ev.getValue(), ev.getImplicit().canOmitTagInPlainScalar());
             resolved = true;
         } else {
-            nodeTag = new Tag(tag);
+            nodeTag = new Tag(tag.get());
         }
         Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStyle(), ev.getStartMark(), ev.getEndMark());
         anchor.ifPresent(a -> anchors.put(a, node));
@@ -173,16 +173,16 @@ public class Composer implements Iterator<Node> {
 
     protected Node composeSequenceNode(Optional<Anchor> anchor) {
         SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
-        String tag = startEvent.getTag();
+        Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
-        if (tag == null || tag.equals("!")) {
+        if (!tag.isPresent() || tag.equals("!")) {
             nodeTag = Tag.SEQ;
             resolved = true;
         } else {
-            nodeTag = new Tag(tag);
+            nodeTag = new Tag(tag.get());
         }
-        final ArrayList<Node> children = new ArrayList<Node>();
+        final ArrayList<Node> children = new ArrayList();
         SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getStartMark(),
                 null, startEvent.getFlowStyle());
         anchor.ifPresent(a -> anchors.put(a, node));
@@ -196,14 +196,14 @@ public class Composer implements Iterator<Node> {
 
     protected Node composeMappingNode(Optional<Anchor> anchor) {
         MappingStartEvent startEvent = (MappingStartEvent) parser.next();
-        String tag = startEvent.getTag();
+        Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
-        if (tag == null || tag.equals("!")) {
+        if (!tag.isPresent() || tag.equals("!")) {
             nodeTag = Tag.MAP;
             resolved = true;
         } else {
-            nodeTag = new Tag(tag);
+            nodeTag = new Tag(tag.get());
         }
 
         final List<NodeTuple> children = new ArrayList<NodeTuple>();

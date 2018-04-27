@@ -26,7 +26,7 @@ import org.snakeyaml.engine.exceptions.Mark;
 public final class AliasEvent extends NodeEvent {
     public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
-        if(!anchor.isPresent()) throw new NullPointerException("Anochor is required in AliasEvent");
+        if (!anchor.isPresent()) throw new NullPointerException("Anchor is required in AliasEvent");
     }
 
     @Override

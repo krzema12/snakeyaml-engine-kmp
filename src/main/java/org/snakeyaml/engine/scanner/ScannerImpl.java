@@ -170,7 +170,8 @@ public final class ScannerImpl implements Scanner {
             }
             // since profiler puts this method on top (it is used a lot), we
             // should not use 'foreach' here because of the performance reasons
-            Token.ID first = this.tokens.get(0).getTokenId();
+            Token firstToken = this.tokens.get(0);
+            Token.ID first = firstToken.getTokenId();
             for (int i = 0; i < choices.length; i++) {
                 if (first == choices[i]) {
                     return true;

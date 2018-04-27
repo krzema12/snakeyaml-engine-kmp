@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.events;
 
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.Anchor;
@@ -30,7 +31,7 @@ public abstract class NodeEvent extends Event {
 
     public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        if(anchor == null) throw new NullPointerException("Anchor cannot be null");
+        Objects.requireNonNull(anchor, "Anchor cannot be null");
         this.anchor = anchor;
     }
 

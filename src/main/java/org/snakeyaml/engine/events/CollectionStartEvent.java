@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.events;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.Anchor;
@@ -25,19 +26,20 @@ import org.snakeyaml.engine.exceptions.Mark;
  * Base class for the start events of the collection nodes.
  */
 public abstract class CollectionStartEvent extends NodeEvent {
-    private final String tag;
+    private final Optional<String> tag;
     // The implicit flag of a collection start event indicates if the tag may be
     // omitted when the collection is emitted
     private final boolean implicit;
     // flag indicates if a collection is block or flow
     private final FlowStyle flowStyle;
 
-    public CollectionStartEvent(Optional<Anchor> anchor, String tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
+    public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
                                 Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
+        Objects.requireNonNull(tag, "Tag must be provided.");
         this.tag = tag;
         this.implicit = implicit;
-        if (flowStyle == null) throw new NullPointerException("Flow style must be provided.");
+        Objects.requireNonNull(flowStyle,"Flow style must be provided.");
         this.flowStyle = flowStyle;
     }
 
@@ -47,7 +49,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
      * @return The tag of this collection, or <code>null</code> if no explicit
      * tag is available.
      */
-    public String getTag() {
+    public Optional<String> getTag() {
         return this.tag;
     }
 
@@ -78,12 +80,8 @@ public abstract class CollectionStartEvent extends NodeEvent {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("");
-        getAnchor().ifPresent(a ->  builder.append(" &"+a));
-        if (getTag() != null) {
-            builder.append(" <");
-            builder.append(getTag());
-            builder.append(">");
-        }
+        getAnchor().ifPresent(a -> builder.append(" &" + a));
+        getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         return builder.toString();
     }
 }

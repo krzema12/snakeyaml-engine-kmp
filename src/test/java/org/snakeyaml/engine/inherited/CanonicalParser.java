@@ -96,20 +96,20 @@ public class CanonicalParser implements Parser {
                 AnchorToken token = (AnchorToken) scanner.next();
                 anchor = Optional.of(token.getValue());
             }
-            String tag = null;
+            Optional<String> tag = Optional.empty();
             if (scanner.checkToken(Token.ID.Tag)) {
                 TagToken token = (TagToken) scanner.next();
-                tag = token.getValue().getHandle() + token.getValue().getSuffix();
+                tag = Optional.of(token.getValue().getHandle() + token.getValue().getSuffix());
             }
             if (scanner.checkToken(Token.ID.Scalar)) {
                 ScalarToken token = (ScalarToken) scanner.next();
                 events.add(new ScalarEvent(anchor, tag, new ImplicitTuple(false, false), token
                         .getValue(), ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
             } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {
-                events.add(new SequenceStartEvent(anchor, Tag.SEQ.getValue(), false, FlowStyle.AUTO, Optional.empty(), Optional.empty()));
+                events.add(new SequenceStartEvent(anchor, Optional.of(Tag.SEQ.getValue()), false, FlowStyle.AUTO, Optional.empty(), Optional.empty()));
                 parseSequence();
             } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
-                events.add(new MappingStartEvent(anchor, Tag.MAP.getValue(), false, FlowStyle.AUTO, Optional.empty(), Optional.empty()));
+                events.add(new MappingStartEvent(anchor, Optional.of(Tag.MAP.getValue()), false, FlowStyle.AUTO, Optional.empty(), Optional.empty()));
                 parseMapping();
             } else {
                 throw new CanonicalException("SCALAR, '[', or '{' is expected, got "

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.events;
 import static org.snakeyaml.engine.common.CharConstants.ESCAPES;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public final class ScalarEvent extends NodeEvent {
     private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet().stream()
             .filter(entry -> entry.getKey() != '"').collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-    private final String tag;
+    private final Optional<String> tag;
     // style flag of a scalar event indicates the style of the scalar. Possible
     // values are None, '', '\'', '"', '|', '>'
     private final ScalarStyle style;
@@ -44,15 +45,15 @@ public final class ScalarEvent extends NodeEvent {
     // and non-plain style correspondingly.
     private final ImplicitTuple implicit;
 
-    //TODO tag is optional ?
-    public ScalarEvent(Optional<Anchor> anchor, String tag, ImplicitTuple implicit, String value, ScalarStyle style,
+    public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style,
                        Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
+        Objects.requireNonNull(tag, "Tag must be provided.");
         this.tag = tag;
         this.implicit = implicit;
-        if (value == null) throw new NullPointerException("Value must be provided.");
+        Objects.requireNonNull(value,"Value must be provided.");
         this.value = value;
-        if (style == null) throw new NullPointerException("Style must be provided.");
+        Objects.requireNonNull(style, "Style must be provided.");
         this.style = style;
     }
 
@@ -62,7 +63,7 @@ public final class ScalarEvent extends NodeEvent {
      * @return The tag of this scalar, or <code>null</code> if no explicit tag
      * is available.
      */
-    public String getTag() {
+    public Optional<String> getTag() {
         return this.tag;
     }
 
@@ -115,12 +116,8 @@ public final class ScalarEvent extends NodeEvent {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
-        getAnchor().ifPresent(a ->  builder.append(" &" + a));
-        if (getTag() != null) {
-            builder.append(" <");
-            builder.append(getTag());
-            builder.append(">");
-        }
+        getAnchor().ifPresent(a -> builder.append(" &" + a));
+        getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         builder.append(" ");
         builder.append(getStyle().toString());
         //escape and drop surrogates

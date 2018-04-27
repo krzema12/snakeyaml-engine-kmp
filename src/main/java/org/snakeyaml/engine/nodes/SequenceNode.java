@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
@@ -30,18 +31,12 @@ import org.snakeyaml.engine.exceptions.Mark;
 public class SequenceNode extends CollectionNode<Node> {
     final private List<Node> value;
 
-    public SequenceNode(Tag tag, boolean resolved, List<Node> value, Optional<Mark> startMark, Optional<Mark> endMark,
-                        FlowStyle flowStyle) {
+    public SequenceNode(Tag tag, boolean resolved, List<Node> value,
+                        FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, startMark, endMark, flowStyle);
-        if (value == null) {
-            throw new NullPointerException("value in a Node is required.");
-        }
+            Objects.requireNonNull(value,"value in a Node is required.");
         this.value = value;
         this.resolved = resolved;
-    }
-
-    public SequenceNode(Tag tag, List<Node> value, FlowStyle flowStyle) {
-        this(tag, true, value, null, null, flowStyle);
     }
 
     @Override

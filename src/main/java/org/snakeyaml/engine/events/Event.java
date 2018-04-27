@@ -32,7 +32,7 @@ public abstract class Event {
     private final Optional<Mark> endMark;
 
     public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
-        if ((startMark == null && endMark != null) || (startMark != null && endMark == null)) {
+        if ((startMark.isPresent() && !endMark.isPresent()) || (!startMark.isPresent() && endMark.isPresent())) {
             throw new NullPointerException("Both marks must be either present or absent.");
         }
         this.startMark = startMark;

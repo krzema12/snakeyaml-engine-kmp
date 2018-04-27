@@ -19,6 +19,7 @@ package org.snakeyaml.engine.parser;
 import java.util.Iterator;
 
 import org.snakeyaml.engine.events.Event;
+import org.snakeyaml.engine.exceptions.ParserException;
 
 /**
  * This interface represents an input stream of {@link Event Events}.

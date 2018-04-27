@@ -76,7 +76,6 @@ public class CanonicalParser implements Parser {
             scanner.getToken(Token.ID.Directive);
         }
         scanner.getToken(Token.ID.DocumentStart);
-        //TODO version
         events.add(new DocumentStartEvent(true, new SpecVersion(1, 1), null, Optional.empty(), Optional.empty()));
         parseNode();
         if (scanner.checkToken(Token.ID.DocumentEnd)) {
@@ -131,7 +130,7 @@ public class CanonicalParser implements Parser {
             }
         }
         scanner.getToken(Token.ID.FlowSequenceEnd);
-        events.add(new SequenceEndEvent(null, null));
+        events.add(new SequenceEndEvent(Optional.empty(), Optional.empty()));
     }
 
     // mapping: MAPPING-START (map_entry (ENTRY map_entry)*)? ENTRY? MAPPING-END
@@ -147,7 +146,7 @@ public class CanonicalParser implements Parser {
             }
         }
         scanner.getToken(Token.ID.FlowMappingEnd);
-        events.add(new MappingEndEvent(null, null));
+        events.add(new MappingEndEvent(Optional.empty(), Optional.empty()));
     }
 
     // map_entry: KEY node VALUE node
@@ -188,6 +187,7 @@ public class CanonicalParser implements Parser {
     /**
      * Get the next event.
      */
+    //TODO event is optional
     public Event peekEvent() {
         if (!parsed) {
             parse();

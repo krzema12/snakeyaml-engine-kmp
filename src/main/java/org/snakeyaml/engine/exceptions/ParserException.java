@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.parser;
+package org.snakeyaml.engine.exceptions;
 
 
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.MarkedYamlEngineException;
+import org.snakeyaml.engine.parser.Parser;
 
 /**
  * Exception thrown by the {@link Parser} implementations in case of malformed
@@ -38,5 +39,9 @@ public class ParserException extends MarkedYamlEngineException {
      */
     public ParserException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         super(context, contextMark, problem, problemMark, null);
+    }
+
+    public ParserException(String problem, Optional<Mark> problemMark) {
+        super(null, Optional.empty(), problem, problemMark, null);
     }
 }

@@ -133,7 +133,7 @@ public class Composer implements Iterator<Node> {
             AliasEvent event = (AliasEvent) parser.next();
             Anchor anchor = event.getAnchor().get();
             if (!anchors.containsKey(anchor)) {
-                throw new ComposerException(null, Optional.empty(), "found undefined alias " + anchor, event.getStartMark());
+                throw new ComposerException("found undefined alias " + anchor, event.getStartMark());
             }
             node = anchors.get(anchor);
             if (recursiveNodes.remove(node)) {
@@ -183,8 +183,8 @@ public class Composer implements Iterator<Node> {
             nodeTag = new Tag(tag.get());
         }
         final ArrayList<Node> children = new ArrayList();
-        SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getStartMark(),
-                null, startEvent.getFlowStyle());
+        SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(),
+                Optional.empty());
         anchor.ifPresent(a -> anchors.put(a, node));
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             children.add(composeNode(node));
@@ -207,7 +207,7 @@ public class Composer implements Iterator<Node> {
         }
 
         final List<NodeTuple> children = new ArrayList<NodeTuple>();
-        MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), null);
+        MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), Optional.empty());
         anchor.ifPresent(a -> anchors.put(a, node));
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             composeMappingChildren(children, node);

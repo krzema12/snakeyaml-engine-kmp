@@ -28,7 +28,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.external_test_suite.SuiteData;
 import org.snakeyaml.engine.external_test_suite.SuiteUtils;
 import org.snakeyaml.engine.nodes.Node;
-import org.snakeyaml.engine.parser.ParserException;
+import org.snakeyaml.engine.exceptions.ParserException;
 
 @Tag("fast")
 class OptionalMarksTest {

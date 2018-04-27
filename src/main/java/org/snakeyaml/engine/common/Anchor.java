@@ -24,7 +24,8 @@ public class Anchor {
     private final String anchor;
 
     public Anchor(String anchor) {
-        if(anchor == null || anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
+        Objects.requireNonNull(anchor, "Anchor must be provided.");
+        if(anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
         this.anchor = anchor;
     }
 

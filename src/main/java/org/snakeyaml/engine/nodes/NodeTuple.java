@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.nodes;
 
+import java.util.Objects;
+
 /**
  * Stores one key value pair used in a map.
  */
@@ -24,9 +26,8 @@ public final class NodeTuple {
     private Node valueNode;
 
     public NodeTuple(Node keyNode, Node valueNode) {
-        if (keyNode == null || valueNode == null) {
-            throw new NullPointerException("Nodes must be provided.");
-        }
+        Objects.requireNonNull(keyNode, "keyNode must be provided.");
+        Objects.requireNonNull(valueNode, "value Node must be provided");
         this.keyNode = keyNode;
         this.valueNode = valueNode;
     }

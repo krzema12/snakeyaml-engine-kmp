@@ -39,6 +39,6 @@ public class ScannerException extends MarkedYamlEngineException {
     }
 
     public ScannerException(String problem, Optional<Mark> problemMark) {
-        super(null, null, problem, problemMark, null);
+        super(null, Optional.empty(), problem, problemMark, null);
     }
 }

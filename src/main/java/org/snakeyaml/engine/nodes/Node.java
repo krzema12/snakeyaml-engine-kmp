@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
@@ -42,7 +43,6 @@ public abstract class Node {
      * true when the tag is assigned by the resolver
      */
     protected boolean resolved;
-    protected Boolean useClassConstructor;
 
     public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
         setTag(tag);
@@ -51,7 +51,6 @@ public abstract class Node {
         this.type = Object.class;
         this.recursive = false;
         this.resolved = true;
-        this.useClassConstructor = null;
     }
 
     /**
@@ -79,9 +78,7 @@ public abstract class Node {
     }
 
     public void setTag(Tag tag) {
-        if (tag == null) {
-            throw new NullPointerException("tag in a Node is required.");
-        }
+            Objects.requireNonNull(tag, "tag in a Node is required.");
         this.tag = tag;
     }
 

@@ -39,6 +39,7 @@ import org.snakeyaml.engine.events.SequenceStartEvent;
 import org.snakeyaml.engine.events.StreamEndEvent;
 import org.snakeyaml.engine.events.StreamStartEvent;
 import org.snakeyaml.engine.exceptions.Mark;
+import org.snakeyaml.engine.exceptions.ParserException;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.scanner.Scanner;
@@ -141,7 +142,9 @@ public class ParserImpl implements Parser {
     public ParserImpl(Scanner scanner, LoadSettings settings) {
         this.scanner = scanner;
         this.settings = settings;
+        //TODO Optional
         currentEvent = null;
+        //TODO Optional version
         directives = new VersionTagsTuple(null, new HashMap<String, String>(DEFAULT_TAGS));
         states = new ArrayStack<Production>(100);
         marksStack = new ArrayStack(10);
@@ -234,7 +237,7 @@ public class ParserImpl implements Parser {
                 Optional<Mark> startMark = token.getStartMark();
                 VersionTagsTuple tuple = processDirectives();
                 if (!scanner.checkToken(Token.ID.DocumentStart)) {
-                    throw new ParserException(null, Optional.empty(), "expected '<document start>', but found '"
+                    throw new ParserException("expected '<document start>', but found '"
                             + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
                 }
                 token = scanner.next();
@@ -302,7 +305,7 @@ public class ParserImpl implements Parser {
             DirectiveToken token = (DirectiveToken) scanner.next();
             if (token.getName().equals("YAML")) {
                 if (yamlSpecVersion != null) {
-                    throw new ParserException(null, Optional.empty(), "found duplicate YAML directive",
+                    throw new ParserException("found duplicate YAML directive",
                             token.getStartMark());
                 }
                 List<Integer> value = (List<Integer>) token.getValue();
@@ -315,7 +318,7 @@ public class ParserImpl implements Parser {
                 String handle = value.get(0);
                 String prefix = value.get(1);
                 if (tagHandles.containsKey(handle)) {
-                    throw new ParserException(null, Optional.empty(), "duplicate tag handle " + handle,
+                    throw new ParserException("duplicate tag handle " + handle,
                             token.getStartMark());
                 }
                 tagHandles.put(handle, prefix);
@@ -370,9 +373,9 @@ public class ParserImpl implements Parser {
 
     private Event parseNode(boolean block, boolean indentlessSequence) {
         Event event;
-        Optional<Mark> startMark = null;
-        Optional<Mark> endMark = null;
-        Optional<Mark> tagMark = null;
+        Optional<Mark> startMark = Optional.empty();
+        Optional<Mark> endMark = Optional.empty();
+        Optional<Mark> tagMark = Optional.empty();
         if (scanner.checkToken(Token.ID.Alias)) {
             AliasToken token = (AliasToken) scanner.next();
             event = new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
@@ -417,10 +420,11 @@ public class ParserImpl implements Parser {
                     tag = Optional.of(suffix);
                 }
             }
-            if (startMark == null) {
+            if (!startMark.isPresent()) {
                 startMark = scanner.peekToken().getStartMark();
                 endMark = startMark;
             }
+            //TODO optional
             event = null;
             boolean implicit = !tag.isPresent() || tag.equals("!");
             if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
@@ -432,9 +436,9 @@ public class ParserImpl implements Parser {
                     ScalarToken token = (ScalarToken) scanner.next();
                     endMark = token.getEndMark();
                     ImplicitTuple implicitValues;
-                    if ((token.isPlain() && tag == null) || "!".equals(tag)) {
+                    if ((token.isPlain() && !tag.isPresent()) || "!".equals(tag)) {
                         implicitValues = new ImplicitTuple(true, false);
-                    } else if (tag == null) {
+                    } else if (!tag.isPresent()) {
                         implicitValues = new ImplicitTuple(false, true);
                     } else {
                         implicitValues = new ImplicitTuple(false, false);

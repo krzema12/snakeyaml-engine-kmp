@@ -15,10 +15,16 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class ComposerException extends MarkedYamlEngineException {
     public ComposerException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
         super(context, contextMark, problem, problemMark);
+        Objects.requireNonNull(context);
+    }
+
+    public ComposerException(String problem, Optional<Mark> problemMark) {
+        super("", Optional.empty(), problem, problemMark);
     }
 }

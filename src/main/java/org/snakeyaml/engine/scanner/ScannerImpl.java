@@ -356,7 +356,7 @@ public final class ScannerImpl implements Scanner {
         String text = String
                 .format("found character '%s' that cannot start any token. (Do not use %s for indentation)",
                         chRepresentation, chRepresentation);
-        throw new ScannerException("while scanning for the next token", null, text, reader.getMark());
+        throw new ScannerException("while scanning for the next token", Optional.empty(), text, reader.getMark());
     }
 
     // Simple keys treatment.
@@ -702,7 +702,7 @@ public final class ScannerImpl implements Scanner {
         if (this.flowLevel == 0) {
             // Are we allowed to start a new entry?
             if (!this.allowSimpleKey) {
-                throw new ScannerException(null, null, "sequence entries are not allowed here",
+                throw new ScannerException("", Optional.empty(), "sequence entries are not allowed here",
                         reader.getMark());
             }
 
@@ -737,7 +737,7 @@ public final class ScannerImpl implements Scanner {
         if (this.flowLevel == 0) {
             // Are we allowed to start a key (not necessary a simple)?
             if (!this.allowSimpleKey) {
-                throw new ScannerException(null, null, "mapping keys are not allowed here",
+                throw new ScannerException("mapping keys are not allowed here",
                         reader.getMark());
             }
             // We may need to add BLOCK-MAPPING-START.
@@ -791,8 +791,7 @@ public final class ScannerImpl implements Scanner {
                 // We are allowed to start a complex value if and only if we can
                 // start a simple key.
                 if (!this.allowSimpleKey) {
-                    throw new ScannerException(null, null, "mapping values are not allowed here",
-                            reader.getMark());
+                    throw new ScannerException("mapping values are not allowed here", reader.getMark());
                 }
             }
 

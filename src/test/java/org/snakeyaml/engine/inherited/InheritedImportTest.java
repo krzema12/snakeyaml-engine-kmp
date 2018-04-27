@@ -82,7 +82,7 @@ public abstract class InheritedImportTest {
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input), settings);
         Parser parser = new ParserImpl(reader, settings);
         List<Event> result = new ArrayList();
-        while (parser.peekEvent() != null) {
+        while (parser.hasNext()) {
             result.add(parser.next());
         }
         input.close();

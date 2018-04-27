@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.nodes;
 
+import java.util.Objects;
+
 import org.snakeyaml.engine.common.UriEncoder;
 
 public final class Tag {
@@ -34,9 +36,8 @@ public final class Tag {
     private boolean secondary = false; // see http://www.yaml.org/refcard.html
 
     public Tag(String tag) {
-        if (tag == null) {
-            throw new NullPointerException("Tag must be provided.");
-        } else if (tag.isEmpty()) {
+        Objects.requireNonNull(tag, "Tag must be provided.");
+        if (tag.isEmpty()) {
             throw new IllegalArgumentException("Tag must not be empty.");
         } else if (tag.trim().length() != tag.length()) {
             throw new IllegalArgumentException("Tag must not contain leading or trailing spaces.");

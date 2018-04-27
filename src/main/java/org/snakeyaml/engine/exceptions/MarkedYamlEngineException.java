@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.exceptions;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class MarkedYamlEngineException extends YamlEngineException {
@@ -27,9 +28,8 @@ public class MarkedYamlEngineException extends YamlEngineException {
     protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
                                         Optional<Mark> problemMark, Throwable cause) {
         super(context + "; " + problem + "; " + problemMark, cause);
-        if (contextMark == null || problemMark == null) {
-            throw new YamlEngineException("Marks cannot be null");
-        }
+        Objects.requireNonNull(contextMark, "contextMark must be provided");
+        Objects.requireNonNull(problemMark, "problemMark must be provided");
         this.context = context;
         this.contextMark = contextMark;
         this.problem = problem;

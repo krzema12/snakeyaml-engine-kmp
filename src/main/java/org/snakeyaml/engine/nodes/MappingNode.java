@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
@@ -34,15 +35,9 @@ public class MappingNode extends CollectionNode<NodeTuple> {
 
     public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, startMark, endMark, flowStyle);
-        if (value == null) {
-            throw new NullPointerException("value in a Node is required.");
-        }
+            Objects.requireNonNull("value in a Node is required.");
         this.value = value;
         this.resolved = resolved;
-    }
-
-    public MappingNode(Tag tag, List<NodeTuple> value, FlowStyle flowStyle) {
-        this(tag, true, value, flowStyle, null, null);
     }
 
     @Override

@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.nodes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
@@ -51,7 +52,7 @@ public abstract class CollectionNode<T> extends Node {
     }
 
     public void setFlowStyle(FlowStyle flowStyle) {
-        if (flowStyle == null) throw new NullPointerException("Flow style must be provided.");
+        Objects.requireNonNull(flowStyle, "Flow style must be provided.");
         this.flowStyle = flowStyle;
     }
 

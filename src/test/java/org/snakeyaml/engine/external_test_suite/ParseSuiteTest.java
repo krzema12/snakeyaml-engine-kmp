@@ -19,20 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.LoadSettings;
-import org.snakeyaml.engine.api.Parse;
+import org.snakeyaml.engine.api.lowlevel.Parse;
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.exceptions.YamlEngineException;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 
 @org.junit.jupiter.api.Tag("fast")

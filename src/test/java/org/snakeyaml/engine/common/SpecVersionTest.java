@@ -22,7 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.Compose;
+import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.exceptions.YamlVersionException;
 import org.snakeyaml.engine.nodes.ScalarNode;

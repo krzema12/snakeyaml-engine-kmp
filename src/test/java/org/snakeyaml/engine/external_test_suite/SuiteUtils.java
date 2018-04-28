@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.snakeyaml.engine.api.LoadSettings;
-import org.snakeyaml.engine.api.Parse;
+import org.snakeyaml.engine.api.lowlevel.Parse;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 

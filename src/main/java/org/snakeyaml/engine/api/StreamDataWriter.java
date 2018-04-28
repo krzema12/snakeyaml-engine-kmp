@@ -17,7 +17,7 @@ package org.snakeyaml.engine.api;
 
 
 /**
- * Writer with the same methods as in Writer but it does not throw IOException
+ * Writer with the same methods as in {@link java.io.Writer} but it does not throw IOException
  */
 public interface StreamDataWriter {
 

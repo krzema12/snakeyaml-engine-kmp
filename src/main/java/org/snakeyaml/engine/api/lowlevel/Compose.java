@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.api;
+package org.snakeyaml.engine.api.lowlevel;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.YamlUnicodeReader;
 import org.snakeyaml.engine.composer.Composer;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.parser.ParserImpl;

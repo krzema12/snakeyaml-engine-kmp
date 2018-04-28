@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.api;
+package org.snakeyaml.engine.api.lowlevel;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.serializer.Serializer;

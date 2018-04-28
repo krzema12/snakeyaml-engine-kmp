@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.api;
+package org.snakeyaml.engine.api.lowlevel;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
 
+import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.StreamDataWriter;
 import org.snakeyaml.engine.emitter.Emitter;
 import org.snakeyaml.engine.events.Event;
 
-public class Emit {
+/**
+ * Event -> Stream (opposite for Parse)
+ */
+public class Present {
 
     private final DumpSettings settings;
 
     /**
-     * Create
+     * Create Present (emitter)
      *
      * @param settings - configuration
      */
-    public Emit(DumpSettings settings) {
+    public Present(DumpSettings settings) {
         Objects.requireNonNull(settings, "DumpSettings cannot be null");
         this.settings = settings;
     }

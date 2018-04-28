@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.Compose;
+import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.DumpSettings;
-import org.snakeyaml.engine.api.Emit;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.lowlevel.Present;
 
 @org.junit.jupiter.api.Tag("fast")
 class EmitSuiteTest {
@@ -45,7 +45,7 @@ class EmitSuiteTest {
                 assertTrue(result.getError().isPresent(), "Expected error, but got none in file " + data.getName() + ", " +
                         data.getLabel() + "\n" + result.getEvents());
             } else {
-                Emit emit = new Emit(new DumpSettings());
+                Present emit = new Present(new DumpSettings());
                 //emit without errors
                 String yaml = emit.emitToString(result.getEvents());
                 //eat your own dog food

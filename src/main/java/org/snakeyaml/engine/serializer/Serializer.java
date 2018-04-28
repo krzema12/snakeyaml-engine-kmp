@@ -36,6 +36,8 @@ import org.snakeyaml.engine.events.MappingStartEvent;
 import org.snakeyaml.engine.events.ScalarEvent;
 import org.snakeyaml.engine.events.SequenceEndEvent;
 import org.snakeyaml.engine.events.SequenceStartEvent;
+import org.snakeyaml.engine.events.StreamEndEvent;
+import org.snakeyaml.engine.events.StreamStartEvent;
 import org.snakeyaml.engine.nodes.AnchorNode;
 import org.snakeyaml.engine.nodes.CollectionNode;
 import org.snakeyaml.engine.nodes.MappingNode;
@@ -58,7 +60,7 @@ public class Serializer {
         this.anchors = new HashMap<Node, Anchor>();
     }
 
-    public List<Event> serialize(Node node) {
+    public void serialize(Node node) {
         this.emitter.add(new DocumentStartEvent( settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
         anchorNode(node);
         settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
@@ -66,7 +68,18 @@ public class Serializer {
         this.emitter.add(new DocumentEndEvent(settings.isExplicitEnd()));
         this.serializedNodes.clear();
         this.anchors.clear();
+    }
+
+    public List<Event> getEmitter() {
         return emitter;
+    }
+
+    public void open() {
+            this.emitter.add(new StreamStartEvent());
+    }
+
+    public void close()  {
+            this.emitter.add(new StreamEndEvent());
     }
 
     private void anchorNode(Node node) {

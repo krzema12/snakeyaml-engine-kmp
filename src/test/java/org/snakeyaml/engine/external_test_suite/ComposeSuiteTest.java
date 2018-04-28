@@ -87,7 +87,33 @@ class ComposeSuiteTest {
     void runAllNonEmpty(TestInfo testInfo) {
         for (SuiteData data : allValidAndNonEmpty) {
             ComposeResult result = composeData(data);
-            assertFalse(result.getNode().isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            List<Node> nodes = result.getNode();
+            assertFalse(nodes.isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            //TODO
+            final List<String> tofix = Lists.newArrayList(
+                    "K4SU", "X38W", "6CK3", "8MK2", "J7VC", "7BMT", "735Y",
+                    "96L6", "4Q9F", "Z9M4", "V55R", "4V8U", "229Q", "9U5K", "SYW4",
+                    "6ZKB", "DHP8", "JS2J", "6WPF", "JHB9", "9DXL", "B3HG", "6LVF",
+                    "5WE3", "S4T7", "5TYM", "CC74", "H3Z8", "2LFX", "KSS4", "Q9WF",
+                    "RTP8", "6SLA", "M7NX", "77H8", "RZT7", "6BFJ", "35KP", "H2RW",
+                    "SKE5", "CN3R", "MYW6", "F2C7", "93WF", "T4YY", "J9HZ", "SSW6",
+                    "BU8L", "EXG3", "6JWB", "KMK3", "RZP5", "753E", "S4JQ", "C2DT",
+                    "XLQ9", "9TFX", "U3XV", "HMQ5", "6JQW", "PUW8", "27NA", "DFF7",
+                    "L94M", "9WXW", "3GZX", "LE5A", "RLU9", "EX5H", "PW8X", "ZF4X",
+                    "8CWC", "74H7", "T26H", "U3C3", "T5N4", "RR7F", "P76L", "UGM3",
+                    "FH7J", "26DV", "Q8AD", "J7PZ", "ZWK4", "ZH7C", "AZ63", "JTV5",
+                    "XW4D", "BEC7", "6FWR", "36F6", "7W2P", "F3CP", "2AUY", "7FWL",
+                    "CUP7", "U9NS", "YD5X", "57H4", "JDH8", "EHF6", "7TMG", "9KAX",
+                    "6WLZ", "52DL", "2XXW", "GH63", "7BUB", "W42U", "M29M", "C4HZ", "E76Z");
+            if (tofix.contains(data.getName())) continue;
+            DumpSettings settings = new DumpSettings();
+            settings.setExplicitStart(true);
+            settings.setExplicitEnd(true);
+            Serialize serialize = new Serialize(settings);
+            List<Event> events = serialize.serializeAll(nodes);
+            List<String> outEvents = events.stream().map(e -> e.toString()).collect(Collectors.toList());
+            assertEquals(data.getEvents().size(), events.size(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            //TODO assertEquals(data.getEvents(), outEvents, data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
         }
     }
 
@@ -98,11 +124,7 @@ class ComposeSuiteTest {
             ComposeResult result = composeData(data);
             List<Node> nodes = result.getNode();
             assertTrue(nodes.isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
-            for(Node node : nodes) {
-                Serialize serialize = new Serialize(new DumpSettings());
-                List<Event> events = serialize.serialize(node);
-                assertEquals(data.getEvents().size(), events.size());
-            }
+
         }
     }
 }
@@ -126,20 +148,3 @@ class ComposeResult {
     }
 }
 
-class ComposePair {
-    private Optional<Node> etalon;
-    private Event event;
-
-    public ComposePair(Optional<Node> etalon, Event event) {
-        this.etalon = etalon;
-        this.event = event;
-    }
-
-    public Optional<Node> getEtalon() {
-        return etalon;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-}

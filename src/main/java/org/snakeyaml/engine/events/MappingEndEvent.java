@@ -31,7 +31,7 @@ public final class MappingEndEvent extends CollectionEndEvent {
     }
 
     public MappingEndEvent() {
-        this(Optional.empty(), Optional.empty());
+        super();
     }
 
     @Override

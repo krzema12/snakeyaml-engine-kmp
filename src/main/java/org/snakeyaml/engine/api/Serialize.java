@@ -24,7 +24,7 @@ import org.snakeyaml.engine.serializer.Serializer;
 
 public class Serialize {
 
-    private DumpSettings settings;
+    private final DumpSettings settings;
 
     /**
      * Create
@@ -35,9 +35,20 @@ public class Serialize {
         this.settings = settings;
     }
 
-    public List<Event> serialize(Node node) {
+    //TODO iterator
+    public List<Event> serializeOne(Node node) {
+        return serializeAll(Collections.singletonList(node));
+    }
+
+    //TODO iterator
+    public List<Event> serializeAll(List<Node> nodes) {
         Serializer serializer = new Serializer(settings);
-        return serializer.serialize(node);
+        serializer.open();
+        for  (Node node : nodes) {
+            serializer.serialize(node);
+        }
+        serializer.close();
+        return serializer.getEmitter();
     }
 }
 

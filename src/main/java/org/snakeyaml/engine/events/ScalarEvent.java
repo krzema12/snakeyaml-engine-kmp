@@ -51,14 +51,13 @@ public final class ScalarEvent extends NodeEvent {
         Objects.requireNonNull(tag, "Tag must be provided.");
         this.tag = tag;
         this.implicit = implicit;
-        Objects.requireNonNull(value,"Value must be provided.");
+        Objects.requireNonNull(value, "Value must be provided.");
         this.value = value;
         Objects.requireNonNull(style, "Style must be provided.");
         this.style = style;
     }
 
     public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style) {
-        // TODO simple
         this(anchor, tag, implicit, value, style, Optional.empty(), Optional.empty());
     }
 
@@ -122,7 +121,7 @@ public final class ScalarEvent extends NodeEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
         getAnchor().ifPresent(a -> builder.append(" &" + a));
-        getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+        if (!implicit.canOmitTagInNonPlainScalar()) getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         builder.append(" ");
         builder.append(getStyle().toString());
         //escape and drop surrogates

@@ -39,7 +39,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
         Objects.requireNonNull(tag, "Tag must be provided.");
         this.tag = tag;
         this.implicit = implicit;
-        Objects.requireNonNull(flowStyle,"Flow style must be provided.");
+        Objects.requireNonNull(flowStyle, "Flow style must be provided.");
         this.flowStyle = flowStyle;
     }
 
@@ -81,7 +81,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("");
         getAnchor().ifPresent(a -> builder.append(" &" + a));
-        getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+        if(!implicit) getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         return builder.toString();
     }
 }

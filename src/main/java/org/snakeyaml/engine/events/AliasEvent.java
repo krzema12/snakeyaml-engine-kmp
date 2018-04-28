@@ -30,9 +30,7 @@ public final class AliasEvent extends NodeEvent {
     }
 
     public AliasEvent(Optional<Anchor> anchor) {
-    //TODO simple
-        super(anchor, Optional.empty(), Optional.empty());
-        if (!anchor.isPresent()) throw new NullPointerException("Anchor is required in AliasEvent");
+        this(anchor, Optional.empty(), Optional.empty());
     }
 
     @Override

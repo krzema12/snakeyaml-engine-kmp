@@ -35,6 +35,10 @@ public final class StreamEndEvent extends Event {
         super(startMark, endMark);
     }
 
+    public StreamEndEvent() {
+        super();
+    }
+
     @Override
     public boolean isEvent(Event.ID id) {
         return ID.StreamEnd == id;

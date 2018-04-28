@@ -15,13 +15,18 @@
  */
 package org.snakeyaml.engine.api;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.SpecVersion;
+import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.nodes.Tag;
+import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
 import org.snakeyaml.engine.serializer.AnchorGenerator;
+import org.snakeyaml.engine.serializer.NumberAnchorGenerator;
 
 /**
  * Fine tuning serializing/dumping
@@ -39,6 +44,10 @@ public final class DumpSettings {
 
     public DumpSettings() {
         this.label = "reader";
+        this.explicitRootTag = Optional.empty();
+        this.useTags = new HashMap<>();
+        this.scalarResolver = new JsonScalarResolver();
+        this.anchorGenerator = new NumberAnchorGenerator(1);
     }
 
     public String getLabel() {

@@ -31,13 +31,19 @@ public abstract class Event {
     private final Optional<Mark> startMark;
     private final Optional<Mark> endMark;
 
-    //TODO create constructot for emitter
     public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
         if ((startMark.isPresent() && !endMark.isPresent()) || (!startMark.isPresent() && endMark.isPresent())) {
             throw new NullPointerException("Both marks must be either present or absent.");
         }
         this.startMark = startMark;
         this.endMark = endMark;
+    }
+
+    /*
+     * Create Node for emitter
+     */
+    public Event() {
+        this(Optional.empty(), Optional.empty());
     }
 
     public Optional<Mark> getStartMark() {

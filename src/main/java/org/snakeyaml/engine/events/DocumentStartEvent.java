@@ -40,13 +40,8 @@ public final class DocumentStartEvent extends Event {
         this.tags = tags;
     }
 
-    //emitter
     public DocumentStartEvent(boolean explicit, SpecVersion specVersion, Map<String, String> tags) {
-        //TODO use empty super
-        super(Optional.empty(), Optional.empty());
-        this.explicit = explicit;
-        this.specVersion = specVersion;
-        this.tags = tags;
+        this(explicit, specVersion, tags, Optional.empty(), Optional.empty());
     }
 
     public boolean isExplicit() {

@@ -13,8 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.emitter;
+package org.snakeyaml.engine.api;
 
-interface EmitterState {
-    void expect();
+
+/**
+ * Writer with the same methods as in Writer but it does not throw IOException
+ */
+public interface StreamDataWriter {
+
+
+    /**
+     * Flushes this stream by writing any buffered output to the underlying stream.
+     */
+    void flush();
+
+    void write(char cbuf[]);
+
+    void write(String str);
+
+    void write(String str, int off, int len);
 }

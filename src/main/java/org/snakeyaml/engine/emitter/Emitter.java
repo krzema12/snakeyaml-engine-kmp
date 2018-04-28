@@ -15,8 +15,6 @@
  */
 package org.snakeyaml.engine.emitter;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -28,6 +26,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.StreamDataWriter;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -95,7 +94,7 @@ public final class Emitter {
     }
 
     // The stream should have the methods `write` and possibly `flush`.
-    private final Writer stream;
+    private final StreamDataWriter stream;
 
     // Encoding is defined by Writer (cannot be overriden by STREAM-START.)
     // private Charset encoding;
@@ -156,9 +155,9 @@ public final class Emitter {
     private ScalarAnalysis analysis;
     private ScalarStyle style;
 
-    public Emitter(DumpSettings opts, Writer stream) {
+    public Emitter(DumpSettings opts, StreamDataWriter stream) {
         // The stream should have the methods `write` and possibly `flush`.
-        this.stream =  stream;
+        this.stream = stream;
         // Emitter is a state machine with a stack of states to handle nested
         // structures.
         this.states = new ArrayStack<EmitterState>(100);
@@ -216,7 +215,7 @@ public final class Emitter {
         this.style = null;
     }
 
-    public void emit(Event event) throws IOException {
+    public void emit(Event event) {
         this.events.add(event);
         while (!needMoreEvents()) {
             this.event = this.events.poll();
@@ -281,7 +280,7 @@ public final class Emitter {
     // Stream handlers.
 
     private class ExpectStreamStart implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof StreamStartEvent) {
                 writeStreamStart();
                 state = new ExpectFirstDocumentStart();
@@ -292,7 +291,7 @@ public final class Emitter {
     }
 
     private class ExpectNothing implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             throw new EmitterException("expecting nothing, but got " + event);
         }
     }
@@ -300,7 +299,7 @@ public final class Emitter {
     // Document handlers.
 
     private class ExpectFirstDocumentStart implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             new ExpectDocumentStart(true).expect();
         }
     }
@@ -312,7 +311,7 @@ public final class Emitter {
             this.first = first;
         }
 
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof DocumentStartEvent) {
                 DocumentStartEvent ev = (DocumentStartEvent) event;
                 if ((ev.getSpecVersion() != null || ev.getTags() != null) && openEnded) {
@@ -361,7 +360,7 @@ public final class Emitter {
     }
 
     private class ExpectDocumentEnd implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof DocumentEndEvent) {
                 writeIndent();
                 if (((DocumentEndEvent) event).isExplicit()) {
@@ -377,7 +376,7 @@ public final class Emitter {
     }
 
     private class ExpectDocumentRoot implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             states.push(new ExpectDocumentEnd());
             expectNode(true, false, false);
         }
@@ -385,7 +384,7 @@ public final class Emitter {
 
     // Node handlers.
 
-    private void expectNode(boolean root, boolean mapping, boolean simpleKey) throws IOException {
+    private void expectNode(boolean root, boolean mapping, boolean simpleKey) {
         rootContext = root;
         mappingContext = mapping;
         simpleKeyContext = simpleKey;
@@ -416,7 +415,7 @@ public final class Emitter {
         }
     }
 
-    private void expectAlias() throws IOException {
+    private void expectAlias() {
         if (((NodeEvent) event).getAnchor() == null) {
             throw new EmitterException("anchor is not specified for alias");
         }
@@ -424,7 +423,7 @@ public final class Emitter {
         state = states.pop();
     }
 
-    private void expectScalar() throws IOException {
+    private void expectScalar() {
         increaseIndent(true, false);
         processScalar();
         indent = indents.pop();
@@ -433,7 +432,7 @@ public final class Emitter {
 
     // Flow sequence handlers.
 
-    private void expectFlowSequence() throws IOException {
+    private void expectFlowSequence() {
         writeIndicator("[", true, true, false);
         flowLevel++;
         increaseIndent(true, false);
@@ -444,7 +443,7 @@ public final class Emitter {
     }
 
     private class ExpectFirstFlowSequenceItem implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof SequenceEndEvent) {
                 indent = indents.pop();
                 flowLevel--;
@@ -461,7 +460,7 @@ public final class Emitter {
     }
 
     private class ExpectFlowSequenceItem implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof SequenceEndEvent) {
                 indent = indents.pop();
                 flowLevel--;
@@ -487,7 +486,7 @@ public final class Emitter {
 
     // Flow mapping handlers.
 
-    private void expectFlowMapping() throws IOException {
+    private void expectFlowMapping() {
         writeIndicator("{", true, true, false);
         flowLevel++;
         increaseIndent(true, false);
@@ -498,7 +497,7 @@ public final class Emitter {
     }
 
     private class ExpectFirstFlowMappingKey implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof MappingEndEvent) {
                 indent = indents.pop();
                 flowLevel--;
@@ -521,7 +520,7 @@ public final class Emitter {
     }
 
     private class ExpectFlowMappingKey implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (event instanceof MappingEndEvent) {
                 indent = indents.pop();
                 flowLevel--;
@@ -552,7 +551,7 @@ public final class Emitter {
     }
 
     private class ExpectFlowMappingSimpleValue implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             writeIndicator(":", false, false, false);
             states.push(new ExpectFlowMappingKey());
             expectNode(false, true, false);
@@ -560,7 +559,7 @@ public final class Emitter {
     }
 
     private class ExpectFlowMappingValue implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             if (canonical || (column > bestWidth) || prettyFlow) {
                 writeIndent();
             }
@@ -572,14 +571,14 @@ public final class Emitter {
 
     // Block sequence handlers.
 
-    private void expectBlockSequence() throws IOException {
+    private void expectBlockSequence() {
         boolean indentless = mappingContext && !indention;
         increaseIndent(false, indentless);
         state = new ExpectFirstBlockSequenceItem();
     }
 
     private class ExpectFirstBlockSequenceItem implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             new ExpectBlockSequenceItem(true).expect();
         }
     }
@@ -591,7 +590,7 @@ public final class Emitter {
             this.first = first;
         }
 
-        public void expect() throws IOException {
+        public void expect() {
             if (!this.first && event instanceof SequenceEndEvent) {
                 indent = indents.pop();
                 state = states.pop();
@@ -606,13 +605,13 @@ public final class Emitter {
     }
 
     // Block mapping handlers.
-    private void expectBlockMapping() throws IOException {
+    private void expectBlockMapping() {
         increaseIndent(false, false);
         state = new ExpectFirstBlockMappingKey();
     }
 
     private class ExpectFirstBlockMappingKey implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             new ExpectBlockMappingKey(true).expect();
         }
     }
@@ -624,7 +623,7 @@ public final class Emitter {
             this.first = first;
         }
 
-        public void expect() throws IOException {
+        public void expect() {
             if (!this.first && event instanceof MappingEndEvent) {
                 indent = indents.pop();
                 state = states.pop();
@@ -643,7 +642,7 @@ public final class Emitter {
     }
 
     private class ExpectBlockMappingSimpleValue implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             writeIndicator(":", false, false, false);
             states.push(new ExpectBlockMappingKey(false));
             expectNode(false, true, false);
@@ -651,7 +650,7 @@ public final class Emitter {
     }
 
     private class ExpectBlockMappingValue implements EmitterState {
-        public void expect() throws IOException {
+        public void expect() {
             writeIndent();
             writeIndicator(":", true, false, true);
             states.push(new ExpectBlockMappingKey(false));
@@ -715,7 +714,7 @@ public final class Emitter {
 
     // Anchor, Tag, and Scalar processors.
 
-    private void processAnchor(String indicator) throws IOException {
+    private void processAnchor(String indicator) {
         NodeEvent ev = (NodeEvent) event;
         if (ev.getAnchor() == null) {
             preparedAnchor = null;
@@ -728,7 +727,7 @@ public final class Emitter {
         preparedAnchor = null;
     }
 
-    private void processTag() throws IOException {
+    private void processTag() {
         String tag = null;
         if (event instanceof ScalarEvent) {
             ScalarEvent ev = (ScalarEvent) event;
@@ -791,7 +790,7 @@ public final class Emitter {
         return ScalarStyle.DOUBLE_QUOTED;
     }
 
-    private void processScalar() throws IOException {
+    private void processScalar() {
         ScalarEvent ev = (ScalarEvent) event;
         if (analysis == null) {
             analysis = analyzeScalar(ev.getValue());
@@ -1066,7 +1065,7 @@ public final class Emitter {
 
     // Writers.
 
-    void flushStream() throws IOException {
+    void flushStream() {
         stream.flush();
     }
 
@@ -1074,12 +1073,12 @@ public final class Emitter {
         // BOM is written by Writer.
     }
 
-    void writeStreamEnd() throws IOException {
+    void writeStreamEnd() {
         flushStream();
     }
 
     void writeIndicator(String indicator, boolean needWhitespace, boolean whitespace,
-                        boolean indentation) throws IOException {
+                        boolean indentation) {
         if (!this.whitespace && needWhitespace) {
             this.column++;
             stream.write(SPACE);
@@ -1091,7 +1090,7 @@ public final class Emitter {
         stream.write(indicator);
     }
 
-    void writeIndent() throws IOException {
+    void writeIndent() {
         int indent;
         if (this.indent != null) {
             indent = this.indent;
@@ -1106,7 +1105,7 @@ public final class Emitter {
         writeWhitespace(indent - this.column);
     }
 
-    private void writeWhitespace(int length) throws IOException {
+    private void writeWhitespace(int length) {
         if (length <= 0) {
             return;
         }
@@ -1119,7 +1118,7 @@ public final class Emitter {
         stream.write(data);
     }
 
-    private void writeLineBreak(String data) throws IOException {
+    private void writeLineBreak(String data) {
         this.whitespace = true;
         this.indention = true;
         this.column = 0;
@@ -1130,13 +1129,13 @@ public final class Emitter {
         }
     }
 
-    void writeVersionDirective(String versionText) throws IOException {
+    void writeVersionDirective(String versionText) {
         stream.write("%YAML ");
         stream.write(versionText);
         writeLineBreak(null);
     }
 
-    void writeTagDirective(String handleText, String prefixText) throws IOException {
+    void writeTagDirective(String handleText, String prefixText) {
         // XXX: not sure 4 invocations better then StringBuilders created by str
         // + str
         stream.write("%TAG ");
@@ -1147,7 +1146,7 @@ public final class Emitter {
     }
 
     // Scalar streams.
-    private void writeSingleQuoted(String text, boolean split) throws IOException {
+    private void writeSingleQuoted(String text, boolean split) {
         writeIndicator("'", true, false, false);
         boolean spaces = false;
         boolean breaks = false;
@@ -1210,7 +1209,7 @@ public final class Emitter {
         writeIndicator("'", false, false, false);
     }
 
-    private void writeDoubleQuoted(String text, boolean split) throws IOException {
+    private void writeDoubleQuoted(String text, boolean split) {
         writeIndicator("\"", true, false, false);
         int start = 0;
         int end = 0;
@@ -1299,7 +1298,7 @@ public final class Emitter {
         return hints.toString();
     }
 
-    void writeFolded(String text, boolean split) throws IOException {
+    void writeFolded(String text, boolean split) {
         String hints = determineBlockHints(text);
         writeIndicator(">" + hints, true, false, false);
         if (hints.length() > 0 && (hints.charAt(hints.length() - 1) == '+')) {
@@ -1364,7 +1363,7 @@ public final class Emitter {
         }
     }
 
-    void writeLiteral(String text) throws IOException {
+    void writeLiteral(String text) {
         String hints = determineBlockHints(text);
         writeIndicator("|" + hints, true, false, false);
         if (hints.length() > 0 && (hints.charAt(hints.length() - 1)) == '+') {
@@ -1409,7 +1408,7 @@ public final class Emitter {
         }
     }
 
-    void writePlain(String text, boolean split) throws IOException {
+    void writePlain(String text, boolean split) {
         if (rootContext) {
             openEnded = true;
         }

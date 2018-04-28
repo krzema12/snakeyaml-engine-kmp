@@ -39,11 +39,46 @@ public class Emit {
 
     //TODO iterator
     public String emit(List<Event> events) {
-        StringWriter writer = new StringWriter();
+        YamlStringWriterStream writer = new YamlStringWriterStream();
         final Emitter emitter = new Emitter(settings, writer);
-//        for (Event event : events) {
-//            emitter.emit(event);
-//        }
+        for (Event event : events) {
+            emitter.emit(event);
+        }
+        return writer.getString();
+    }
+
+
+}
+
+class YamlStringWriterStream implements StreamDataWriter {
+    StringWriter writer = new StringWriter();
+
+    @Override
+    public void flush() {
+        writer.flush();
+    }
+
+
+    @Override
+    public void write(char[] cbuf) {
+        try {
+            writer.write(cbuf);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void write(String str) {
+        writer.write(str);
+    }
+
+    @Override
+    public void write(String str, int off, int len) {
+        writer.write(str, off, len);
+    }
+
+    public String getString() {
         return writer.toString();
     }
 }

@@ -29,6 +29,7 @@ import org.snakeyaml.engine.exceptions.Mark;
  */
 public final class DocumentStartEvent extends Event {
     private final boolean explicit;
+    //TODO should be optional
     private final SpecVersion specVersion;
     private final Map<String, String> tags;
 

@@ -37,7 +37,6 @@ public final class SequenceStartEvent extends CollectionStartEvent {
     }
 
     public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle) {
-        //TODO emitter
         this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
     }
 

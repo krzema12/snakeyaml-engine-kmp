@@ -86,7 +86,8 @@ class ParseSuiteTest {
                     List<ParsePair> pairs = Streams.zip(data.getEvents().stream(), result.getEvents().stream(), ParsePair::new)
                             .collect(Collectors.toList());
                     for (ParsePair pair : pairs) {
-                        assertEquals(pair.getEtalon(), pair.getEvent().toString());
+                        EventRepresentation representation = new EventRepresentation(pair.getEvent());
+                        assertEquals(pair.getEtalon(), representation.getRepresentation());
                     }
                 }
             }

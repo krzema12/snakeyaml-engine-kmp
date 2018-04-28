@@ -121,13 +121,11 @@ public final class ScalarEvent extends NodeEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
         getAnchor().ifPresent(a -> builder.append(" &" + a));
-        if (!implicit.canOmitTagInNonPlainScalar()) getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+        if (!implicit.canOmitTagInNonPlainScalar() && !implicit.canOmitTagInPlainScalar())
+            getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         builder.append(" ");
         builder.append(getStyle().toString());
-        //escape and drop surrogates
-        String str = value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
-                .map(c -> escape(c)).collect(Collectors.joining(""));
-        builder.append(str);
+        builder.append(escapedValue());
         return builder.toString();
     }
 
@@ -143,5 +141,11 @@ public final class ScalarEvent extends NodeEvent {
         } else {
             return ch.toString();
         }
+    }
+
+    //escape and drop surrogates
+    public String escapedValue() {
+        return value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
+                .map(c -> escape(c)).collect(Collectors.joining(""));
     }
 }

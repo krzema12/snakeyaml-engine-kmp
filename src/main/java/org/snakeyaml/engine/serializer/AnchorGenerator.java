@@ -15,9 +15,10 @@
  */
 package org.snakeyaml.engine.serializer;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.nodes.Node;
 
 public interface AnchorGenerator {
 
-    String nextAnchor(Node node);
+    Anchor nextAnchor(Node node);
 }

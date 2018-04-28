@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.external_test_suite;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,7 +28,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Compose;
+import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.Serialize;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Node;
@@ -93,7 +96,13 @@ class ComposeSuiteTest {
     void runAllEmpty(TestInfo testInfo) {
         for (SuiteData data : allValidAndEmpty) {
             ComposeResult result = composeData(data);
-            assertTrue(result.getNode().isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            List<Node> nodes = result.getNode();
+            assertTrue(nodes.isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
+            for(Node node : nodes) {
+                Serialize serialize = new Serialize(new DumpSettings());
+                List<Event> events = serialize.serialize(node);
+                assertEquals(data.getEvents().size(), events.size());
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.nodes.Node;
+import org.snakeyaml.engine.serializer.Serializer;
 
 public class Serialize {
 
@@ -35,7 +36,8 @@ public class Serialize {
     }
 
     public List<Event> serialize(Node node) {
-        return Collections.emptyList();
+        Serializer serializer = new Serializer(settings);
+        return serializer.serialize(node);
     }
 }
 

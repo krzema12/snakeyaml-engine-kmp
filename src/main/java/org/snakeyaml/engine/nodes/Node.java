@@ -45,6 +45,9 @@ public abstract class Node {
 
     /**
      * Create Node to be parsed
+     * @param tag - the tag
+     * @param startMark - start mark when available
+     * @param endMark - end mark when available
      */
     public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
         setTag(tag);
@@ -56,7 +59,7 @@ public abstract class Node {
 
     /**
      * Create Node to be emitted
-     * @param tag
+     * @param tag - the tag to emit
      */
     public Node(Tag tag) {
         this(tag, Optional.empty(), Optional.empty());

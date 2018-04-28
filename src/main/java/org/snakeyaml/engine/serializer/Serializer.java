@@ -49,36 +49,36 @@ import org.snakeyaml.engine.nodes.Tag;
 
 public class Serializer {
     private final DumpSettings settings;
-    private final List<Event> emitter = new ArrayList();
+    private final List<Event> events = new ArrayList();
     private Set<Node> serializedNodes;
     private Map<Node, Anchor> anchors;
 
     public Serializer(DumpSettings settings) {
         this.settings = settings;
-        this.serializedNodes = new HashSet<Node>();
-        this.anchors = new HashMap<Node, Anchor>();
+        this.serializedNodes = new HashSet();
+        this.anchors = new HashMap();
     }
 
     public void serialize(Node node) {
-        this.emitter.add(new DocumentStartEvent(settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
+        this.events.add(new DocumentStartEvent(settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
         anchorNode(node);
         settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
         serializeNode(node, Optional.empty());
-        this.emitter.add(new DocumentEndEvent(settings.isExplicitEnd()));
+        this.events.add(new DocumentEndEvent(settings.isExplicitEnd()));
         this.serializedNodes.clear();
         this.anchors.clear();
     }
 
-    public List<Event> getEmitter() {
-        return emitter;
+    public List<Event> getEvents() {
+        return events;
     }
 
     public void open() {
-        this.emitter.add(new StreamStartEvent());
+        this.events.add(new StreamStartEvent());
     }
 
     public void close() {
-        this.emitter.add(new StreamEndEvent());
+        this.events.add(new StreamEndEvent());
     }
 
     private void anchorNode(Node node) {
@@ -122,7 +122,7 @@ public class Serializer {
         }
         Optional<Anchor> tAlias = Optional.ofNullable(this.anchors.get(node));
         if (this.serializedNodes.contains(node)) {
-            this.emitter.add(new AliasEvent(tAlias));
+            this.events.add(new AliasEvent(tAlias));
         } else {
             this.serializedNodes.add(node);
             switch (node.getNodeType()) {
@@ -134,22 +134,22 @@ public class Serializer {
                             .getTag().equals(defaultTag));
                     ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
                             scalarNode.getValue(), scalarNode.getStyle());
-                    this.emitter.add(event);
+                    this.events.add(event);
                     break;
                 case SEQUENCE:
                     SequenceNode seqNode = (SequenceNode) node;
                     boolean implicitS = node.getTag().equals(Tag.SEQ);
-                    this.emitter.add(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
+                    this.events.add(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
                             implicitS, seqNode.getFlowStyle()));
                     List<Node> list = seqNode.getValue();
                     for (Node item : list) {
                         serializeNode(item, Optional.of(node));
                     }
-                    this.emitter.add(new SequenceEndEvent());
+                    this.events.add(new SequenceEndEvent());
                     break;
                 default:// instance of MappingNode
                     boolean implicitM = node.getTag().equals(Tag.MAP);
-                    this.emitter.add(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
+                    this.events.add(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
                             implicitM, ((CollectionNode) node).getFlowStyle()));
                     MappingNode mappingNode = (MappingNode) node;
                     List<NodeTuple> map = mappingNode.getValue();
@@ -159,7 +159,7 @@ public class Serializer {
                         serializeNode(key, Optional.of(mappingNode));
                         serializeNode(value, Optional.of(mappingNode));
                     }
-                    this.emitter.add(new MappingEndEvent());
+                    this.events.add(new MappingEndEvent());
             }
         }
     }

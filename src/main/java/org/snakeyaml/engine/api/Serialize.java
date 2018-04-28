@@ -52,7 +52,7 @@ public class Serialize {
             serializer.serialize(node);
         }
         serializer.close();
-        return serializer.getEmitter();
+        return serializer.getEvents();
     }
 }
 

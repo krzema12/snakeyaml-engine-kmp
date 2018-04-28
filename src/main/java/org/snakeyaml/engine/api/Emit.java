@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.api;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +41,9 @@ public class Emit {
     public String emit(List<Event> events) {
         StringWriter writer = new StringWriter();
         final Emitter emitter = new Emitter(settings, writer);
+//        for (Event event : events) {
+//            emitter.emit(event);
+//        }
         return writer.toString();
     }
 }

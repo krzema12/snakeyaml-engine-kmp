@@ -38,7 +38,7 @@ public class Emit {
     }
 
     //TODO iterator
-    public String emit(List<Event> events) {
+    public String emitToString(List<Event> events) {
         YamlStringWriterStream writer = new YamlStringWriterStream();
         final Emitter emitter = new Emitter(settings, writer);
         for (Event event : events) {
@@ -46,7 +46,6 @@ public class Emit {
         }
         return writer.getString();
     }
-
 
 }
 

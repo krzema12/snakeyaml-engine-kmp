@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.StreamDataWriter;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -716,15 +717,17 @@ public final class Emitter {
 
     private void processAnchor(String indicator) {
         NodeEvent ev = (NodeEvent) event;
-        if (ev.getAnchor() == null) {
+        if (!ev.getAnchor().isPresent()) {
             preparedAnchor = null;
             return;
+        } else {
+            if (preparedAnchor == null) {
+                Anchor anchor = ev.getAnchor().get();
+                preparedAnchor = ((Anchor) anchor).getAnchor();//TODO optional
+            }
+            writeIndicator(indicator + preparedAnchor, true, false, false);
+            preparedAnchor = null;
         }
-        if (preparedAnchor == null) {
-            preparedAnchor = ev.getAnchor().map(a -> a.getAnchor()).orElse(null);//TODO optional
-        }
-        writeIndicator(indicator + preparedAnchor, true, false, false);
-        preparedAnchor = null;
     }
 
     private void processTag() {

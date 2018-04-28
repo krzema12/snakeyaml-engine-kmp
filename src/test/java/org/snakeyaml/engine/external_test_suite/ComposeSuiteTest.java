@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Compose;
 import org.snakeyaml.engine.api.DumpSettings;
-import org.snakeyaml.engine.api.Emit;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.api.Serialize;
 import org.snakeyaml.engine.events.Event;
@@ -104,11 +103,6 @@ class ComposeSuiteTest {
                         data.getName() + " -> " + data.getLabel() + "\n" +
                                 data.getInput() + "\n" + data.getEvents().get(i) + "\n" + events.get(i) + "\n");
             }
-            Emit emit = new Emit(settings);
-            //emit without errors
-            String yaml = emit.emitToString(events);
-            //eat your own dog food
-            new Compose(new LoadSettings()).composeAllFromString(yaml);
         }
     }
 

@@ -26,7 +26,7 @@ public final class AliasToken extends Token {
 
     public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        if(value == null) throw new NullPointerException("Value is required in AliasToken");
+        if (value == null) throw new NullPointerException("Value is required in AliasToken");
         this.value = value;
     }
 

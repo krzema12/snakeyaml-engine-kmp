@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.serializer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,7 +60,7 @@ public class Serializer {
     }
 
     public void serialize(Node node) {
-        this.emitter.add(new DocumentStartEvent( settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
+        this.emitter.add(new DocumentStartEvent(settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
         anchorNode(node);
         settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
         serializeNode(node, Optional.empty());
@@ -75,11 +74,11 @@ public class Serializer {
     }
 
     public void open() {
-            this.emitter.add(new StreamStartEvent());
+        this.emitter.add(new StreamStartEvent());
     }
 
-    public void close()  {
-            this.emitter.add(new StreamEndEvent());
+    public void close() {
+        this.emitter.add(new StreamEndEvent());
     }
 
     private void anchorNode(Node node) {
@@ -134,14 +133,14 @@ public class Serializer {
                     ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag), node
                             .getTag().equals(defaultTag));
                     ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
-                            scalarNode.getValue(),  scalarNode.getStyle());
+                            scalarNode.getValue(), scalarNode.getStyle());
                     this.emitter.add(event);
                     break;
                 case SEQUENCE:
                     SequenceNode seqNode = (SequenceNode) node;
                     boolean implicitS = node.getTag().equals(Tag.SEQ);
                     this.emitter.add(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
-                            implicitS,  seqNode.getFlowStyle()));
+                            implicitS, seqNode.getFlowStyle()));
                     List<Node> list = seqNode.getValue();
                     for (Node item : list) {
                         serializeNode(item, Optional.of(node));
@@ -151,7 +150,7 @@ public class Serializer {
                 default:// instance of MappingNode
                     boolean implicitM = node.getTag().equals(Tag.MAP);
                     this.emitter.add(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
-                            implicitM,  ((CollectionNode) node).getFlowStyle()));
+                            implicitM, ((CollectionNode) node).getFlowStyle()));
                     MappingNode mappingNode = (MappingNode) node;
                     List<NodeTuple> map = mappingNode.getValue();
                     for (NodeTuple entry : map) {

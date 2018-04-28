@@ -32,6 +32,10 @@ public class SpecVersion {
         return minor;
     }
 
+    public String getRepresentation() {
+        return major + "." + minor;
+    }
+
     @Override
     public String toString() {
         return "Version{" +

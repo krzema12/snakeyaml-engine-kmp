@@ -48,7 +48,7 @@ public class Serialize {
         Objects.requireNonNull(nodes, "Nodes cannot be null");
         Serializer serializer = new Serializer(settings);
         serializer.open();
-        for  (Node node : nodes) {
+        for (Node node : nodes) {
             serializer.serialize(node);
         }
         serializer.close();

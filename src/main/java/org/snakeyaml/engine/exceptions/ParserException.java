@@ -18,8 +18,6 @@ package org.snakeyaml.engine.exceptions;
 
 import java.util.Optional;
 
-import org.snakeyaml.engine.exceptions.Mark;
-import org.snakeyaml.engine.exceptions.MarkedYamlEngineException;
 import org.snakeyaml.engine.parser.Parser;
 
 /**

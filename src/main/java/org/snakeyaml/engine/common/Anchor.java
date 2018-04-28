@@ -15,7 +15,12 @@
  */
 package org.snakeyaml.engine.common;
 
+import static org.snakeyaml.engine.common.CharConstants.ANCHOR_FORMAT;
+
 import java.util.Objects;
+
+import org.snakeyaml.engine.exceptions.EmitterException;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 /**
  * Value inside Anchor and Alias
@@ -25,7 +30,10 @@ public class Anchor {
 
     public Anchor(String anchor) {
         Objects.requireNonNull(anchor, "Anchor must be provided.");
-        if(anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
+        if (anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
+        if (!ANCHOR_FORMAT.matcher(anchor).matches()) {
+            throw new YamlEngineException("invalid character in the anchor: " + anchor);
+        }
         this.anchor = anchor;
     }
 

@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.SpecVersion;
-import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
@@ -42,6 +40,17 @@ public final class DumpSettings {
     private Map<String, String> useTags;
     private ScalarResolver scalarResolver;
 
+    //emitter
+    private Optional<Tag> rootTag;
+    private boolean canonical;
+    private boolean prettyFlow;
+    private boolean useUnicodeEncoding;
+    private int indent;
+    private int indicatorIndent;
+    private int width;
+    private String bestLineBreak;
+    private boolean splitLines;
+
 
     public DumpSettings() {
         this.label = "reader";
@@ -49,6 +58,15 @@ public final class DumpSettings {
         this.useTags = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();
         this.anchorGenerator = new NumberAnchorGenerator(1);
+        this.bestLineBreak = "\n";
+        this.canonical = false;
+        this.useUnicodeEncoding = true;
+        this.indent = 2;
+        this.indicatorIndent = 0;
+        this.width = 80;
+        this.splitLines = true;
+        this.explicitStart = false;
+        this.explicitEnd = false;
     }
 
     public String getLabel() {
@@ -118,6 +136,80 @@ public final class DumpSettings {
     public void setUseTags(Map<String, String> useTags) {
         Objects.requireNonNull(useTags, "useTags cannot be null");
         this.useTags = useTags;
+    }
+
+    public Optional<Tag> getRootTag() {
+        return rootTag;
+    }
+
+    public void setRootTag(Optional<Tag> rootTag) {
+        Objects.requireNonNull(rootTag, "rootTag cannot be null");
+        this.rootTag = rootTag;
+    }
+
+    public boolean isCanonical() {
+        return canonical;
+    }
+
+    public void setCanonical(boolean canonical) {
+        this.canonical = canonical;
+    }
+
+    public boolean isPrettyFlow() {
+        return prettyFlow;
+    }
+
+    public void setPrettyFlow(boolean prettyFlow) {
+        this.prettyFlow = prettyFlow;
+    }
+
+    public boolean isUseUnicodeEncoding() {
+        return useUnicodeEncoding;
+    }
+
+    public void setUseUnicodeEncoding(boolean useUnicodeEncoding) {
+        this.useUnicodeEncoding = useUnicodeEncoding;
+    }
+
+    public int getIndent() {
+        return indent;
+    }
+
+    public void setIndent(int indent) {
+        this.indent = indent;
+    }
+
+    public int getIndicatorIndent() {
+        return indicatorIndent;
+    }
+
+    public void setIndicatorIndent(int indicatorIndent) {
+        this.indicatorIndent = indicatorIndent;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public String getBestLineBreak() {
+        return bestLineBreak;
+    }
+
+    public void setBestLineBreak(String bestLineBreak) {
+        Objects.requireNonNull(bestLineBreak, "bestLineBreak cannot be null");
+        this.bestLineBreak = bestLineBreak;
+    }
+
+    public boolean isSplitLines() {
+        return splitLines;
+    }
+
+    public void setSplitLines(boolean splitLines) {
+        this.splitLines = splitLines;
     }
 }
 

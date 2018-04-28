@@ -34,7 +34,7 @@ public class SequenceNode extends CollectionNode<Node> {
     public SequenceNode(Tag tag, boolean resolved, List<Node> value,
                         FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, flowStyle, startMark, endMark);
-            Objects.requireNonNull(value,"value in a Node is required.");
+        Objects.requireNonNull(value, "value in a Node is required.");
         this.value = value;
         this.resolved = resolved;
     }

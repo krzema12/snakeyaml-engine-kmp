@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.common.Anchor;
+import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.events.MappingStartEvent;
 import org.snakeyaml.engine.events.NodeEvent;

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.common;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class CharConstants {
     private final static String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
@@ -38,6 +39,7 @@ public final class CharConstants {
 
     public final static CharConstants ALPHA = new CharConstants(ALPHA_S);
 
+    public final static Pattern ANCHOR_FORMAT = Pattern.compile("^[-_\\w]*$");
 
     private final static int ASCII_SIZE = 128;
     boolean[] contains = new boolean[ASCII_SIZE];

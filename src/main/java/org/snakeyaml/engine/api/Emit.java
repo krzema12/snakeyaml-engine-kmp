@@ -15,13 +15,12 @@
  */
 package org.snakeyaml.engine.api;
 
-import java.util.Collections;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
 
+import org.snakeyaml.engine.emitter.Emitter;
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.nodes.Node;
-import org.snakeyaml.engine.serializer.Serializer;
 
 public class Emit {
 
@@ -39,7 +38,9 @@ public class Emit {
 
     //TODO iterator
     public String emit(List<Event> events) {
-        return "";
+        StringWriter writer = new StringWriter();
+        final Emitter emitter = new Emitter(settings, writer);
+        return writer.toString();
     }
 }
 

@@ -35,7 +35,7 @@ public class MappingNode extends CollectionNode<NodeTuple> {
 
     public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, flowStyle, startMark, endMark);
-            Objects.requireNonNull("value in a Node is required.");
+        Objects.requireNonNull("value in a Node is required.");
         this.value = value;
         this.resolved = resolved;
     }

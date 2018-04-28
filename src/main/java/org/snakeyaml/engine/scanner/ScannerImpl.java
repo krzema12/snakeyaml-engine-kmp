@@ -29,11 +29,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.UriEncoder;
-import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.exceptions.Mark;
 import org.snakeyaml.engine.exceptions.ScannerException;
 import org.snakeyaml.engine.exceptions.YamlEngineException;

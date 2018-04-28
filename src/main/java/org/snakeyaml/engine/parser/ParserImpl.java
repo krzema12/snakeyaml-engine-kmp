@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.events.AliasEvent;
-import org.snakeyaml.engine.common.Anchor;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
 import org.snakeyaml.engine.events.Event;

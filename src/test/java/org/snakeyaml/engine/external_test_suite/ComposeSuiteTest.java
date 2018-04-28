@@ -59,7 +59,6 @@ class ComposeSuiteTest {
     public static ComposeResult composeData(SuiteData data) {
         Optional<Exception> error = Optional.empty();
         List<Node> list = new ArrayList();
-
         try {
             LoadSettings settings = new LoadSettings();
             settings.setLabel(data.getLabel());

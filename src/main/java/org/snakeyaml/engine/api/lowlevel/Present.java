@@ -26,7 +26,7 @@ import org.snakeyaml.engine.emitter.Emitter;
 import org.snakeyaml.engine.events.Event;
 
 /**
- * Event -> Stream (opposite for Parse)
+ * Emit the events into a data stream (opposite for Parse)
  */
 public class Present {
 

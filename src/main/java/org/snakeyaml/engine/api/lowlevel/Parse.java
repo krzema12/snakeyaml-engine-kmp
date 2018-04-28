@@ -28,7 +28,7 @@ import org.snakeyaml.engine.parser.ParserImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
 
 /**
- * Stream -> events (opposite for Present or emit)
+ * Read the input stream and parse the content into events (opposite for Present or emit)
  */
 public class Parse {
 

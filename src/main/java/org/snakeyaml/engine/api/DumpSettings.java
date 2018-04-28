@@ -17,6 +17,7 @@ package org.snakeyaml.engine.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.Anchor;
@@ -71,6 +72,7 @@ public final class DumpSettings {
     }
 
     public void setAnchorGenerator(AnchorGenerator anchorGenerator) {
+        Objects.requireNonNull(anchorGenerator, "anchorGenerator cannot be null");
         this.anchorGenerator = anchorGenerator;
     }
 
@@ -79,6 +81,7 @@ public final class DumpSettings {
     }
 
     public void setScalarResolver(ScalarResolver scalarResolver) {
+        Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
         this.scalarResolver = scalarResolver;
     }
 
@@ -91,6 +94,7 @@ public final class DumpSettings {
     }
 
     public void setExplicitRootTag(Optional<Tag> explicitRootTag) {
+        Objects.requireNonNull(explicitRootTag, "explicitRootTag cannot be null");
         this.explicitRootTag = explicitRootTag;
     }
 
@@ -103,6 +107,7 @@ public final class DumpSettings {
     }
 
     public void setSpecVersion(SpecVersion specVersion) {
+        Objects.requireNonNull(specVersion, "specVersion cannot be null");
         this.specVersion = specVersion;
     }
 
@@ -111,6 +116,7 @@ public final class DumpSettings {
     }
 
     public void setUseTags(Map<String, String> useTags) {
+        Objects.requireNonNull(useTags, "useTags cannot be null");
         this.useTags = useTags;
     }
 }

@@ -15,5 +15,13 @@
  */
 package org.snakeyaml.engine.emitter;
 
+import org.snakeyaml.engine.api.DumpSettings;
+
 public class Emitter {
+
+    private final DumpSettings settings;
+
+    public Emitter(DumpSettings settings) {
+        this.settings = settings;
+    }
 }

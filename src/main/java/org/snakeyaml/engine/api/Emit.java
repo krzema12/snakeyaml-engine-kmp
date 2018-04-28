@@ -23,7 +23,7 @@ import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.serializer.Serializer;
 
-public class Serialize {
+public class Emit {
 
     private final DumpSettings settings;
 
@@ -32,27 +32,14 @@ public class Serialize {
      *
      * @param settings - configuration
      */
-    public Serialize(DumpSettings settings) {
+    public Emit(DumpSettings settings) {
         Objects.requireNonNull(settings, "DumpSettings cannot be null");
         this.settings = settings;
     }
 
     //TODO iterator
-    public List<Event> serializeOne(Node node) {
-        Objects.requireNonNull(node, "Node cannot be null");
-        return serializeAll(Collections.singletonList(node));
-    }
-
-    //TODO iterator
-    public List<Event> serializeAll(List<Node> nodes) {
-        Objects.requireNonNull(nodes, "Nodes cannot be null");
-        Serializer serializer = new Serializer(settings);
-        serializer.open();
-        for  (Node node : nodes) {
-            serializer.serialize(node);
-        }
-        serializer.close();
-        return serializer.getEmitter();
+    public String emit(List<Event> events) {
+        return "";
     }
 }
 

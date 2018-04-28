@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,8 +44,8 @@ public final class LoadSettings {
     private Function<Integer, Map> defaultMap;
     private Function<SpecVersion, SpecVersion> versionFunction;
     private Integer bufferSize;
-    private Boolean allowDuplicateKeys;
-    private Boolean useMarks;
+    private boolean allowDuplicateKeys;
+    private boolean useMarks;
 
     public LoadSettings() {
         this.label = "reader";
@@ -67,6 +68,7 @@ public final class LoadSettings {
     }
 
     public void setLabel(String label) {
+        Objects.requireNonNull(label, "label cannot be null");
         this.label = label;
     }
 
@@ -75,6 +77,7 @@ public final class LoadSettings {
     }
 
     public void setRootTag(Optional<Tag> rootTag) {
+        Objects.requireNonNull(rootTag, "rootTag cannot be null");
         this.rootTag = rootTag;
     }
 
@@ -83,6 +86,7 @@ public final class LoadSettings {
     }
 
     public void setScalarResolver(ScalarResolver scalarResolver) {
+        Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
         this.scalarResolver = scalarResolver;
     }
 
@@ -91,6 +95,7 @@ public final class LoadSettings {
     }
 
     public void setDefaultList(Function<Integer, List> defaultList) {
+        Objects.requireNonNull(defaultList, "defaultList cannot be null");
         this.defaultList = defaultList;
     }
 
@@ -99,6 +104,7 @@ public final class LoadSettings {
     }
 
     public void setDefaultSet(Function<Integer, Set> defaultSet) {
+        Objects.requireNonNull(defaultSet, "defaultSet cannot be null");
         this.defaultSet = defaultSet;
     }
 
@@ -107,6 +113,7 @@ public final class LoadSettings {
     }
 
     public void setDefaultMap(Function<Integer, Map> defaultMap) {
+        Objects.requireNonNull(defaultMap, "defaultMap cannot be null");
         this.defaultMap = defaultMap;
     }
 
@@ -118,19 +125,19 @@ public final class LoadSettings {
         this.bufferSize = bufferSize;
     }
 
-    public Boolean getAllowDuplicateKeys() {
+    public boolean getAllowDuplicateKeys() {
         return allowDuplicateKeys;
     }
 
-    public void setAllowDuplicateKeys(Boolean allowDuplicateKeys) {
+    public void setAllowDuplicateKeys(boolean allowDuplicateKeys) {
         this.allowDuplicateKeys = allowDuplicateKeys;
     }
 
-    public Boolean getUseMarks() {
+    public boolean getUseMarks() {
         return useMarks;
     }
 
-    public void setUseMarks(Boolean useMarks) {
+    public void setUseMarks(boolean useMarks) {
         this.useMarks = useMarks;
     }
 
@@ -139,6 +146,7 @@ public final class LoadSettings {
     }
 
     public void setVersionFunction(Function<SpecVersion, SpecVersion> versionFunction) {
+        Objects.requireNonNull(versionFunction, "versionFunction cannot be null");
         this.versionFunction = versionFunction;
     }
 }

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.parser.ParserImpl;
@@ -34,6 +35,7 @@ public class Parse {
      * @param settings - configuration
      */
     public Parse(LoadSettings settings) {
+        Objects.requireNonNull(settings, "LoadSettings cannot be null");
         this.settings = settings;
     }
 
@@ -46,6 +48,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseReader(InputStream yaml) {
+        Objects.requireNonNull(yaml, "InputStream cannot be null");
         return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings);
     }
 
@@ -57,6 +60,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseInputStream(Reader yaml) {
+        Objects.requireNonNull(yaml, "Reader cannot be null");
         return () -> new ParserImpl(new StreamReader(yaml, settings), settings);
     }
 
@@ -68,6 +72,7 @@ public class Parse {
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Iterable<Event> parseString(String yaml) {
+        Objects.requireNonNull(yaml, "String cannot be null");
         //do not use lambda to keep Iterable and Iterator visible
         return new Iterable() {
             public Iterator<Event> iterator() {

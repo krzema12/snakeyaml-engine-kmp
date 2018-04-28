@@ -36,6 +36,11 @@ public final class SequenceStartEvent extends CollectionStartEvent {
         super(anchor, tag, implicit, flowStyle, startMark, endMark);
     }
 
+    public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle) {
+        //TODO emitter
+        this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
+    }
+
     @Override
     public boolean isEvent(Event.ID id) {
         return ID.SequenceStart == id;

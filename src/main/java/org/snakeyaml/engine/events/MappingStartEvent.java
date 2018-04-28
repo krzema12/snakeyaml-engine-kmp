@@ -42,6 +42,10 @@ public final class MappingStartEvent extends CollectionStartEvent {
         super(anchor, tag, implicit, flowStyle, startMark, endMark);
     }
 
+    public MappingStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle) {
+        this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
+    }
+
     @Override
     public boolean isEvent(Event.ID id) {
         return ID.MappingStart == id;

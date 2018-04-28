@@ -57,6 +57,11 @@ public final class ScalarEvent extends NodeEvent {
         this.style = style;
     }
 
+    public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style) {
+        // TODO simple
+        this(anchor, tag, implicit, value, style, Optional.empty(), Optional.empty());
+    }
+
     /**
      * Tag of this scalar.
      *

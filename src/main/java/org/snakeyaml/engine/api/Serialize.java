@@ -13,11 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.nodes;
+package org.snakeyaml.engine.api;
 
-/**
- * Enum for the basic YAML types: scalar, sequence, mapping or anchor.
- */
-public enum NodeId {
-    scalar, sequence, mapping, anchor
+import java.util.Collections;
+import java.util.List;
+
+import org.snakeyaml.engine.events.Event;
+import org.snakeyaml.engine.nodes.Node;
+
+public class Serialize {
+
+    private DumpSettings settings;
+
+    /**
+     * Create
+     *
+     * @param settings - configuration
+     */
+    public Serialize(DumpSettings settings) {
+        this.settings = settings;
+    }
+
+    public List<Event> serialize(Node node) {
+        return Collections.emptyList();
+    }
 }
+

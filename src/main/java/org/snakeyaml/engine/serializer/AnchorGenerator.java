@@ -13,23 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.nodes;
+package org.snakeyaml.engine.serializer;
 
-public class AnchorNode extends Node {
+import org.snakeyaml.engine.nodes.Node;
 
-    private Node realNode;
+public interface AnchorGenerator {
 
-    public AnchorNode(Node realNode) {
-        super(realNode.getTag(), realNode.getStartMark(), realNode.getEndMark());
-        this.realNode = realNode;
-    }
-
-    @Override
-    public NodeType getNodeType() {
-        return NodeType.ANCHOR;
-    }
-
-    public Node getRealNode() {
-        return realNode;
-    }
+    String nextAnchor(Node node);
 }

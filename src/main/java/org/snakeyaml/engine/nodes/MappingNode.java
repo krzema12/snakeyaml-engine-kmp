@@ -34,15 +34,15 @@ public class MappingNode extends CollectionNode<NodeTuple> {
     private boolean merged = false;
 
     public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(tag, startMark, endMark, flowStyle);
+        super(tag, flowStyle, startMark, endMark);
             Objects.requireNonNull("value in a Node is required.");
         this.value = value;
         this.resolved = resolved;
     }
 
     @Override
-    public NodeId getNodeId() {
-        return NodeId.mapping;
+    public NodeType getNodeType() {
+        return NodeType.MAPPING;
     }
 
     /**
@@ -56,19 +56,6 @@ public class MappingNode extends CollectionNode<NodeTuple> {
 
     public void setValue(List<NodeTuple> mergedValue) {
         value = mergedValue;
-    }
-
-    public void setOnlyKeyType(Class<? extends Object> keyType) {
-        for (NodeTuple nodes : value) {
-            nodes.getKeyNode().setType(keyType);
-        }
-    }
-
-    public void setTypes(Class<? extends Object> keyType, Class<? extends Object> valueType) {
-        for (NodeTuple nodes : value) {
-            nodes.getValueNode().setType(valueType);
-            nodes.getKeyNode().setType(keyType);
-        }
     }
 
     @Override

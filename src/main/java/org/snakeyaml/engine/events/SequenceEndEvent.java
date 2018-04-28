@@ -30,6 +30,10 @@ public final class SequenceEndEvent extends CollectionEndEvent {
     public SequenceEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
     }
+    public SequenceEndEvent() {
+        //TODO emitter
+        this(Optional.empty(), Optional.empty());
+    }
 
     @Override
     public boolean isEvent(Event.ID id) {

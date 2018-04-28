@@ -36,7 +36,6 @@ public abstract class Node {
     private Tag tag;
     private Optional<Mark> startMark;
     protected Optional<Mark> endMark;
-    private Class<? extends Object> type;
     private boolean recursive;
 
     /**
@@ -44,13 +43,23 @@ public abstract class Node {
      */
     protected boolean resolved;
 
+    /**
+     * Create Node to be parsed
+     */
     public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
         setTag(tag);
         this.startMark = startMark;
         this.endMark = endMark;
-        this.type = Object.class;
         this.recursive = false;
         this.resolved = true;
+    }
+
+    /**
+     * Create Node to be emitted
+     * @param tag
+     */
+    public Node(Tag tag) {
+        this(tag, Optional.empty(), Optional.empty());
     }
 
     /**
@@ -71,7 +80,7 @@ public abstract class Node {
     /**
      * @return scalar, sequence, mapping
      */
-    public abstract NodeId getNodeId();
+    public abstract NodeType getNodeType();
 
     public Optional<Mark> getStartMark() {
         return startMark;
@@ -88,16 +97,6 @@ public abstract class Node {
     @Override
     public final boolean equals(Object obj) {
         return super.equals(obj);
-    }
-
-    public Class<? extends Object> getType() {
-        return type;
-    }
-
-    public void setType(Class<? extends Object> type) {
-        if (!type.isAssignableFrom(this.type)) {
-            this.type = type;
-        }
     }
 
     public void setRecursive(boolean recursive) {

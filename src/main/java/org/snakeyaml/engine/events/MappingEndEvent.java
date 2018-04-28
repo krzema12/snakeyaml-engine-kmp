@@ -30,6 +30,10 @@ public final class MappingEndEvent extends CollectionEndEvent {
         super(startMark, endMark);
     }
 
+    public MappingEndEvent() {
+        this(Optional.empty(), Optional.empty());
+    }
+
     @Override
     public boolean isEvent(Event.ID id) {
         return ID.MappingEnd == id;

@@ -33,6 +33,12 @@ public final class DocumentEndEvent extends Event {
         this.explicit = explicit;
     }
 
+    public DocumentEndEvent(boolean explicit) {
+        //TODO use empty super
+        super(Optional.empty(), Optional.empty());
+        this.explicit = explicit;
+    }
+
     public boolean isExplicit() {
         return explicit;
     }

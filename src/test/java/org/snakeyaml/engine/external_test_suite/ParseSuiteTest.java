@@ -37,27 +37,11 @@ import com.google.common.collect.Streams;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
-    public static final List<String> deviationsWithSuccess = Lists.newArrayList("9C9N", "SU5Z", "QB6E", "QLJ7", "EB22");
-    public static final List<String> deviationsWithError = Lists.newArrayList("CXX2", "KZN9", "J3BT", "DC7X", "6HB6", "2JQS", "6M2F", "S3PD", "Q5MG", "FRK4", "NHX8", "DBG4", "4ABK", "M7A3", "9MMW", "6BCT", "A2M4", "2SXE", "DK3J", "W5VH", "8XYN", "K54U", "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 
     private List<SuiteData> all = SuiteUtils.getAll().stream()
-            .filter(data -> !deviationsWithSuccess.contains(data.getName()))
-            .filter(data -> !deviationsWithError.contains(data.getName()))
+            .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
+            .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
-
-    public static ParseResult parseData(SuiteData data) {
-        Optional<Exception> error = Optional.empty();
-        List<Event> list = new ArrayList();
-        try {
-            LoadSettings settings = new LoadSettings();
-            settings.setLabel(data.getLabel());
-            Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
-            iterable.forEach(event -> list.add(event));
-        } catch (YamlEngineException e) {
-            error = Optional.of(e);
-        }
-        return new ParseResult(list, error);
-    }
 
     @Test
     @DisplayName("Parse: Run one test")
@@ -75,7 +59,7 @@ class ParseSuiteTest {
     @DisplayName("Run comprehensive test suite")
     void runAll(TestInfo testInfo) {
         for (SuiteData data : all) {
-            ParseResult result = parseData(data);
+            ParseResult result = SuiteUtils.parseData(data);
             if (data.getError()) {
                 assertTrue(result.getError().isPresent(), "Expected error, but got none in file " + data.getName() + ", " +
                         data.getLabel() + "\n" + result.getEvents());
@@ -95,24 +79,7 @@ class ParseSuiteTest {
     }
 }
 
-class ParseResult {
 
-    private final List<Event> events;
-    private final Optional<Exception> error;
-
-    public ParseResult(List<Event> events, Optional<Exception> error) {
-        this.events = events;
-        this.error = error;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public Optional<Exception> getError() {
-        return error;
-    }
-}
 
 
 class ParsePair {

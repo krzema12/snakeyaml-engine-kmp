@@ -43,8 +43,8 @@ class ComposeSuiteTest {
 
     private List<SuiteData> allValid = SuiteUtils.getAll().stream()
             .filter(data -> !data.getError())
-            .filter(data -> !ParseSuiteTest.deviationsWithSuccess.contains(data.getName()))
-            .filter(data -> !ParseSuiteTest.deviationsWithError.contains(data.getName()))
+            .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
+            .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
 
     private List<SuiteData> allValidAndNonEmpty = allValid.stream()

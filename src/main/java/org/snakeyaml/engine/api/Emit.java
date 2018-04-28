@@ -39,6 +39,7 @@ public class Emit {
 
     //TODO iterator
     public String emitToString(List<Event> events) {
+        Objects.requireNonNull(events, "events cannot be null");
         YamlStringWriterStream writer = new YamlStringWriterStream();
         final Emitter emitter = new Emitter(settings, writer);
         for (Event event : events) {

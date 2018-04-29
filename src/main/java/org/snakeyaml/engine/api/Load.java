@@ -15,22 +15,36 @@
  */
 package org.snakeyaml.engine.api;
 
+import java.io.Reader;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import org.snakeyaml.engine.nodes.Node;
 
-/**
- * Create a Node Graph out of the provided Native Data Structure (Java
- * instance).
- * (this is opposite to Construct)
- *
- * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
- */
-public interface RepresentToNode {
+public class Load {
+
+    private LoadSettings settings;
+
     /**
-     * Create a Node
-     *
-     * @param data the instance to represent
-     * @return Node to dump
+     * @param settings - configuration
      */
-    Node representData(Object data);
+    public Load(LoadSettings settings) {
+        Objects.requireNonNull(settings, "LoadSettings cannot be null");
+        this.settings = settings;
+    }
+
+    public Object load(Reader yaml) {
+        Objects.requireNonNull(yaml, "Reader cannot be null");
+        return null;
+    }
+
+    public List<Object> loadAll(Reader yaml) {
+        Objects.requireNonNull(yaml, "Reader cannot be null");
+        return Collections.emptyList();
+    }
 }
+
+
+
+

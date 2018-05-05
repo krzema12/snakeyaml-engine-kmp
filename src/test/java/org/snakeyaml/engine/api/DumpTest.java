@@ -16,26 +16,60 @@
 package org.snakeyaml.engine.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
 @Tag("fast")
 class DumpTest {
 
     @Test
     @DisplayName("Dump string")
-    void parseString(TestInfo testInfo) {
+    void dumpString(TestInfo testInfo) {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
-        String str = (String) dump.dumpToString("a");
+        String str = dump.dumpToString("a");
         assertEquals("a\n", str);
     }
 
+    @Test
+    @DisplayName("Dump int")
+    void dumpInteger(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = dump.dumpToString(new Integer(1));
+        assertEquals("1\n", str);
+    }
 
+    @Test
+    @DisplayName("Dump boolean")
+    void dumpBoolean(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = dump.dumpToString(Boolean.TRUE);
+        assertEquals("true\n", str);
+    }
 
+    @Test
+    @DisplayName("Dump seq")
+    void dumpSequence(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = dump.dumpToString(Lists.newArrayList(2, "a", Boolean.TRUE));
+        assertEquals("[2, a, true]\n", str);
+    }
+
+    @Test
+    @DisplayName("Dump map")
+    void dumpMapping(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
+        assertEquals("{x: 1, y: 2, z: 3}\n", str);
+    }
 }

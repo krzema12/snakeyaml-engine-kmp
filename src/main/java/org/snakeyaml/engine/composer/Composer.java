@@ -116,7 +116,7 @@ public class Composer implements Iterator<Node> {
         // Drop the DOCUMENT-START event.
         parser.next();
         // Compose the root node.
-        Node node = composeNode(null);
+        Node node = composeNode(Optional.empty());
         // Drop the DOCUMENT-END event.
         parser.next();
         this.anchors.clear();
@@ -125,9 +125,8 @@ public class Composer implements Iterator<Node> {
     }
 
 
-    //TODO Node is optional
-    private Node composeNode(Node parent) {
-        if (parent != null) recursiveNodes.add(parent);
+    private Node composeNode(Optional<Node> parent) {
+        parent.ifPresent(p -> recursiveNodes.add(p));//TODO add unit test for this line
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.next();
@@ -151,7 +150,7 @@ public class Composer implements Iterator<Node> {
                 node = composeMappingNode(anchor);
             }
         }
-        recursiveNodes.remove(parent);
+        parent.ifPresent(p -> recursiveNodes.remove(p));//TODO add unit test for this line
         return node;
     }
 
@@ -187,7 +186,7 @@ public class Composer implements Iterator<Node> {
                 Optional.empty());
         anchor.ifPresent(a -> anchors.put(a, node));
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
-            children.add(composeNode(node));
+            children.add(composeNode(Optional.of(node)));
         }
         Event endEvent = parser.next();
         node.setEndMark(endEvent.getEndMark());
@@ -227,10 +226,10 @@ public class Composer implements Iterator<Node> {
     }
 
     protected Node composeKeyNode(MappingNode node) {
-        return composeNode(node);
+        return composeNode(Optional.of(node));
     }
 
     protected Node composeValueNode(MappingNode node) {
-        return composeNode(node);
+        return composeNode(Optional.of(node));
     }
 }

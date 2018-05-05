@@ -25,7 +25,6 @@ public final class TagToken extends Token {
 
     public TagToken(TagTuple value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        //TODO use Objects.requireNonNull
         Objects.requireNonNull(value);
         this.value = value;
     }

@@ -130,7 +130,7 @@ public final class ScalarEvent extends NodeEvent {
     }
 
     /*
-     * TODO why the hel converting int -> string is so complex ?
+     * Escape char (prepending '\')
      * ch - the character to escape. Surrogates are not supported (because of int -> char conversion)
      */
     private String escape(Character ch) {

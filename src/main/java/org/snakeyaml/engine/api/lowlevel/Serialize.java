@@ -40,13 +40,11 @@ public class Serialize {
         this.settings = settings;
     }
 
-    //TODO iterator
     public List<Event> serializeOne(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
         return serializeAll(Collections.singletonList(node));
     }
 
-    //TODO iterator
     public List<Event> serializeAll(List<Node> nodes) {
         Objects.requireNonNull(nodes, "Nodes cannot be null");
         Events events = new Events();
@@ -58,8 +56,6 @@ public class Serialize {
         serializer.close();
         return events.getEvents();
     }
-
-
 }
 
 class Events implements Emitable {

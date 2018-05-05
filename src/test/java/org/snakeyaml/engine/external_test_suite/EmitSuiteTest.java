@@ -47,7 +47,7 @@ class EmitSuiteTest {
             } else {
                 Present emit = new Present(new DumpSettings());
                 //emit without errors
-                String yaml = emit.emitToString(result.getEvents());
+                String yaml = emit.emitToString(result.getEvents().iterator());
                 //eat your own dog food
                 new Compose(new LoadSettings()).composeAllFromString(yaml);
             }

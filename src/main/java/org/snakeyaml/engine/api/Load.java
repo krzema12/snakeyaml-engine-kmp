@@ -42,7 +42,8 @@ public class Load {
 
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
+        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(
+                new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }

@@ -13,6 +13,18 @@ SnakeYAML engine is a YAML processor for the Java Virtual Machine.
 * No support for all the [Recommended Schemas](http://yaml.org/spec/1.2/spec.html#Schema). Only JSON is supported.
 * Relatively sensible error messages (can be switched off to improve performance).
 
+## TODO
+* coverage
+* parse UUID
+* parse Optional
+* parse Iterator
+* parse Enum
+* fix issues with 1.2 spec (test-suite)
+* finish the public API
+* prepare Beans
+* fin TODOs in code 
+* add Javadoc for public methods
+
 ## Info ##
  * [Changes](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Changes)
  * [Documentation](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation)

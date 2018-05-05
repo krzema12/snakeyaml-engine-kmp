@@ -17,6 +17,7 @@ package org.snakeyaml.engine.api.lowlevel;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,13 +43,12 @@ public class Present {
         this.settings = settings;
     }
 
-    //TODO iterator
-    public String emitToString(List<Event> events) {
+    public String emitToString(Iterator<Event> events) {
         Objects.requireNonNull(events, "events cannot be null");
         YamlStringWriterStream writer = new YamlStringWriterStream();
         final Emitter emitter = new Emitter(settings, writer);
-        for (Event event : events) {
-            emitter.emit(event);
+        while (events.hasNext()) {
+            emitter.emit(events.next());
         }
         return writer.getString();
     }

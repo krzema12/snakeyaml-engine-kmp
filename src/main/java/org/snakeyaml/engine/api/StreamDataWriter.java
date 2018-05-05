@@ -25,8 +25,6 @@ public interface StreamDataWriter {
      */
     void flush();
 
-    void write(char cbuf[]);
-
     void write(String str);
 
     void write(String str, int off, int len);

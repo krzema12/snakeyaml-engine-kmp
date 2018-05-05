@@ -67,7 +67,7 @@ public final class Emitter implements Emitable {
     public static final int MIN_INDENT = 1;
     public static final int MAX_INDENT = 10;
 
-    private static final char[] SPACE = {' '};
+    private static final String SPACE = " ";
 
     static {
         ESCAPE_REPLACEMENTS.put('\0', "0");
@@ -142,7 +142,7 @@ public final class Emitter implements Emitable {
     private int bestIndent;
     private int indicatorIndent;
     private int bestWidth;
-    private char[] bestLineBreak;
+    private String bestLineBreak;
     private boolean splitLines;
 
     // Tag prefixes.
@@ -201,7 +201,7 @@ public final class Emitter implements Emitable {
         if (opts.getWidth() > this.bestIndent * 2) {
             this.bestWidth = opts.getWidth();
         }
-        this.bestLineBreak = opts.getBestLineBreak().toCharArray();
+        this.bestLineBreak = opts.getBestLineBreak();
         this.splitLines = opts.isSplitLines();
 
         // Tag prefixes.
@@ -1113,12 +1113,10 @@ public final class Emitter implements Emitable {
             return;
         }
         this.whitespace = true;
-        char[] data = new char[length];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = ' ';
+        for (int i = 0; i < length; i++) {
+            stream.write(" ");
         }
         this.column += length;
-        stream.write(data);
     }
 
     private void writeLineBreak(String data) {

@@ -15,8 +15,8 @@
  */
 package org.snakeyaml.engine.api;
 
-import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.Objects;
 
 import org.snakeyaml.engine.emitter.Emitter;
@@ -49,10 +49,22 @@ public class Dump {
 
     public void dump(Object yaml, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter();
-        Node node = representer.represent(yaml);
         Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
+        Node node = representer.represent(yaml);
         serializer.open();
         serializer.serialize(node);
+        serializer.close();
+    }
+
+    public void dumpAll(Iterator<Object> yamlIterator, StreamDataWriter streamDataWriter) {
+        StandardRepresenter representer = new StandardRepresenter();
+        Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
+        serializer.open();
+        while (yamlIterator.hasNext()) {
+            Object instance = yamlIterator.next();
+            Node node = representer.represent(instance);
+            serializer.serialize(node);
+        }
         serializer.close();
     }
 }
@@ -63,15 +75,6 @@ class StreamToString implements StreamDataWriter {
     @Override
     public void flush() {
         writer.flush();
-    }
-
-    @Override
-    public void write(char[] cbuf) {
-        try {
-            writer.write(cbuf);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

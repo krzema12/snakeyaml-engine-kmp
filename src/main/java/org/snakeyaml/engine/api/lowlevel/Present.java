@@ -63,16 +63,6 @@ class YamlStringWriterStream implements StreamDataWriter {
         writer.flush();
     }
 
-
-    @Override
-    public void write(char[] cbuf) {
-        try {
-            writer.write(cbuf);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void write(String str) {
         writer.write(str);

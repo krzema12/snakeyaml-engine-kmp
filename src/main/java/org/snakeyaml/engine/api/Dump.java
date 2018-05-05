@@ -44,7 +44,7 @@ public class Dump {
         Node node = representer.represent(yaml);
         serializer.serialize(node);
         serializer.close();
-        return writer.getData();
+        return writer.toString();
     }
 
     public void dump(Object yaml, StreamDataWriter streamDataWriter) {
@@ -56,12 +56,12 @@ public class Dump {
         serializer.close();
     }
 
-    public void dumpAll(Iterator<Object> yamlIterator, StreamDataWriter streamDataWriter) {
+    public void dumpAll(Iterator<Object> instancesIterator, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter();
         Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
         serializer.open();
-        while (yamlIterator.hasNext()) {
-            Object instance = yamlIterator.next();
+        while (instancesIterator.hasNext()) {
+            Object instance = instancesIterator.next();
             Node node = representer.represent(instance);
             serializer.serialize(node);
         }
@@ -69,27 +69,7 @@ public class Dump {
     }
 }
 
-class StreamToString implements StreamDataWriter {
-    private final StringWriter writer = new StringWriter();
-
-    @Override
-    public void flush() {
-        writer.flush();
-    }
-
-    @Override
-    public void write(String str) {
-        writer.write(str);
-    }
-
-    @Override
-    public void write(String str, int off, int len) {
-        writer.write(str, off, len);
-    }
-
-    public String getData() {
-        return writer.toString();
-    }
+class StreamToString extends StringWriter implements StreamDataWriter {
 }
 
 

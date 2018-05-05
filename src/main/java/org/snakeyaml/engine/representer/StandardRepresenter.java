@@ -217,7 +217,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
     /**
      * Represents primitive arrays, such as short[] and float[], by converting
-     * them into equivalent List<Short> and List<Float> using the appropriate
+     * them into equivalent {@link List} using the appropriate
      * autoboxing type.
      */
     protected class RepresentPrimitiveArray implements RepresentToNode {

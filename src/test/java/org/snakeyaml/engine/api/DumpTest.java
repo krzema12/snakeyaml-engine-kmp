@@ -84,7 +84,7 @@ class DumpTest {
         Dump dump = new Dump(settings);
         StreamToString streamToString = new StreamToString();
         dump.dump("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc", streamToString);
-        assertEquals("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc\n", streamToString.getData());
+        assertEquals("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc\n", streamToString.toString());
     }
 
     @Test

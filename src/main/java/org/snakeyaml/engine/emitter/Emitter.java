@@ -347,11 +347,6 @@ public final class Emitter implements Emitable {
                 }
                 state = new ExpectDocumentRoot();
             } else if (event instanceof StreamEndEvent) {
-                // TODO fix 313 PyYAML changeset
-                // if (openEnded) {
-                // writeIndicator("...", true, false, false);
-                // writeIndent();
-                // }
                 writeStreamEnd();
                 state = new ExpectNothing();
             } else {

@@ -33,7 +33,6 @@ public final class Tag {
     public static final Tag MAP = new Tag(PREFIX + "map");
 
     private final String value;
-    private boolean secondary = false; // see http://www.yaml.org/refcard.html
 
     public Tag(String tag) {
         Objects.requireNonNull(tag, "Tag must be provided.");
@@ -43,13 +42,8 @@ public final class Tag {
             throw new IllegalArgumentException("Tag must not contain leading or trailing spaces.");
         }
         this.value = UriEncoder.encode(tag);
-        this.secondary = !tag.startsWith(PREFIX);
     }
 
-
-    public boolean isSecondary() {
-        return secondary;
-    }
 
     public String getValue() {
         return value;

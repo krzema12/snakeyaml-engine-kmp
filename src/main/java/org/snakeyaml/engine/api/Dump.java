@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.api;
 
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -37,24 +38,22 @@ public class Dump {
     }
 
     public String dumpToString(Object yaml) {
-        StandardRepresenter representer = new StandardRepresenter();
         StreamToString writer = new StreamToString();
-        Serializer serializer = new Serializer(settings, new Emitter(settings, writer));
-        serializer.open();
-        Node node = representer.represent(yaml);
-        serializer.serialize(node);
-        serializer.close();
+        dump(yaml, writer);
         return writer.toString();
     }
 
+    /**
+     * Do we need this way ???
+     *
+     * @param yaml             - instance to serialize
+     * @param streamDataWriter - destination writer
+     */
     public void dump(Object yaml, StreamDataWriter streamDataWriter) {
-        StandardRepresenter representer = new StandardRepresenter();
-        Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
-        Node node = representer.represent(yaml);
-        serializer.open();
-        serializer.serialize(node);
-        serializer.close();
+        Iterator<? extends Object> iter = Collections.singleton(yaml).iterator();
+        dumpAll(iter, streamDataWriter);
     }
+
 
     public void dumpAll(Iterator<? extends Object> instancesIterator, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter();

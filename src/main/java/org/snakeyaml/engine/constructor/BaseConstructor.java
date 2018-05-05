@@ -140,7 +140,7 @@ public abstract class BaseConstructor {
     }
 
     /**
-     * TODO ???
+     * Select {@link ConstructNode} inside the provided {@link Node} or the one associated with the {@link Tag}
      *
      * @param node {@link Node} to construct an instance from
      * @return {@link ConstructNode} implementation for the specified node
@@ -149,11 +149,7 @@ public abstract class BaseConstructor {
         if (node.getConstruct().isPresent()) {
             return node.getConstruct().get();
         } else {
-            ConstructNode constructor = tagConstructors.get(node.getTag());
-            if (constructor == null) {
-                return getDefaultConstruct();
-            }
-            return constructor;
+            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct());
         }
     }
 

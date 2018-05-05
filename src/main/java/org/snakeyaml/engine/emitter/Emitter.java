@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
@@ -149,7 +150,7 @@ public final class Emitter implements Emitable {
     private Map<String, String> tagPrefixes;
 
     // Prepared anchor and tag.
-    private String preparedAnchor; //TODO optional
+    private Optional<Anchor> preparedAnchor = Optional.empty();
     private String preparedTag;
 
     // Scalar analysis and style.
@@ -208,7 +209,7 @@ public final class Emitter implements Emitable {
         this.tagPrefixes = new LinkedHashMap<String, String>();
 
         // Prepared anchor and tag.
-        this.preparedAnchor = null;
+        this.preparedAnchor = Optional.empty();
         this.preparedTag = null;
 
         // Scalar analysis and style.
@@ -680,20 +681,20 @@ public final class Emitter implements Emitable {
     private boolean checkSimpleKey() {
         int length = 0;
         if (event instanceof NodeEvent && ((NodeEvent) event).getAnchor().isPresent()) {
-            if (preparedAnchor == null) {
-                preparedAnchor = ((NodeEvent) event).getAnchor().get().getAnchor();
+            if (!preparedAnchor.isPresent()) {
+                preparedAnchor = ((NodeEvent) event).getAnchor();
             }
-            length += preparedAnchor.length();
+            length += preparedAnchor.get().getAnchor().length();
         }
-        String tag = null;//TODO optional
+        Optional<String> tag = Optional.empty();
         if (event instanceof ScalarEvent) {
-            tag = ((ScalarEvent) event).getTag().orElse(null);
+            tag = ((ScalarEvent) event).getTag();
         } else if (event instanceof CollectionStartEvent) {
-            tag = ((CollectionStartEvent) event).getTag().orElse(null);
+            tag = ((CollectionStartEvent) event).getTag();
         }
-        if (tag != null) {
+        if (tag.isPresent()) {
             if (preparedTag == null) {
-                preparedTag = prepareTag(tag);
+                preparedTag = prepareTag(tag.get());
             }
             length += preparedTag.length();
         }
@@ -713,15 +714,14 @@ public final class Emitter implements Emitable {
     private void processAnchor(String indicator) {
         NodeEvent ev = (NodeEvent) event;
         if (!ev.getAnchor().isPresent()) {
-            preparedAnchor = null;
+            preparedAnchor = Optional.empty();
             return;
         } else {
-            if (preparedAnchor == null) {
-                Anchor anchor = ev.getAnchor().get();
-                preparedAnchor = ((Anchor) anchor).getAnchor();//TODO optional
+            if (!preparedAnchor.isPresent()) {
+                preparedAnchor = ev.getAnchor();
             }
             writeIndicator(indicator + preparedAnchor, true, false, false);
-            preparedAnchor = null;
+            preparedAnchor = Optional.empty();
         }
     }
 

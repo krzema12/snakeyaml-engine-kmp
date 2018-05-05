@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.common.Anchor;
+import org.snakeyaml.engine.emitter.Emitable;
 import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
@@ -49,36 +50,33 @@ import org.snakeyaml.engine.nodes.Tag;
 
 public class Serializer {
     private final DumpSettings settings;
-    private final List<Event> events = new ArrayList();
+    private final Emitable emitable;
     private Set<Node> serializedNodes;
     private Map<Node, Anchor> anchors;
 
-    public Serializer(DumpSettings settings) {
+    public Serializer(DumpSettings settings, Emitable emitable) {
         this.settings = settings;
+        this.emitable = emitable;
         this.serializedNodes = new HashSet();
         this.anchors = new HashMap();
     }
 
     public void serialize(Node node) {
-        this.events.add(new DocumentStartEvent(settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
+        this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(), settings.getSpecVersion(), settings.getUseTags()));
         anchorNode(node);
         settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
         serializeNode(node, Optional.empty());
-        this.events.add(new DocumentEndEvent(settings.isExplicitEnd()));
+        this.emitable.emit(new DocumentEndEvent(settings.isExplicitEnd()));
         this.serializedNodes.clear();
         this.anchors.clear();
     }
 
-    public List<Event> getEvents() {
-        return events;
-    }
-
     public void open() {
-        this.events.add(new StreamStartEvent());
+        this.emitable.emit(new StreamStartEvent());
     }
 
     public void close() {
-        this.events.add(new StreamEndEvent());
+        this.emitable.emit(new StreamEndEvent());
     }
 
     private void anchorNode(Node node) {
@@ -122,7 +120,7 @@ public class Serializer {
         }
         Optional<Anchor> tAlias = Optional.ofNullable(this.anchors.get(node));
         if (this.serializedNodes.contains(node)) {
-            this.events.add(new AliasEvent(tAlias));
+            this.emitable.emit(new AliasEvent(tAlias));
         } else {
             this.serializedNodes.add(node);
             switch (node.getNodeType()) {
@@ -134,22 +132,22 @@ public class Serializer {
                             .getTag().equals(defaultTag));
                     ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
                             scalarNode.getValue(), scalarNode.getStyle());
-                    this.events.add(event);
+                    this.emitable.emit(event);
                     break;
                 case SEQUENCE:
                     SequenceNode seqNode = (SequenceNode) node;
                     boolean implicitS = node.getTag().equals(Tag.SEQ);
-                    this.events.add(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
+                    this.emitable.emit(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
                             implicitS, seqNode.getFlowStyle()));
                     List<Node> list = seqNode.getValue();
                     for (Node item : list) {
                         serializeNode(item, Optional.of(node));
                     }
-                    this.events.add(new SequenceEndEvent());
+                    this.emitable.emit(new SequenceEndEvent());
                     break;
                 default:// instance of MappingNode
                     boolean implicitM = node.getTag().equals(Tag.MAP);
-                    this.events.add(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
+                    this.emitable.emit(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
                             implicitM, ((CollectionNode) node).getFlowStyle()));
                     MappingNode mappingNode = (MappingNode) node;
                     List<NodeTuple> map = mappingNode.getValue();
@@ -159,7 +157,7 @@ public class Serializer {
                         serializeNode(key, Optional.of(mappingNode));
                         serializeNode(value, Optional.of(mappingNode));
                     }
-                    this.events.add(new MappingEndEvent());
+                    this.emitable.emit(new MappingEndEvent());
             }
         }
     }

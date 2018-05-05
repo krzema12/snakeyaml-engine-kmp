@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.api;
+package org.snakeyaml.engine.emitter;
 
-/**
- * Writer with the same methods as in {@link java.io.Writer} but it does not throw IOException
- */
-public interface StreamDataWriter {
+import org.snakeyaml.engine.events.Event;
 
-    /**
-     * Flushes this stream by writing any buffered output to the underlying stream.
-     */
-    void flush();
-
-    void write(char cbuf[]);
-
-    void write(String str);
-
-    void write(String str, int off, int len);
+public interface Emitable {
+    void emit(Event event);
 }

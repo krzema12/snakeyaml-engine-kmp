@@ -40,7 +40,7 @@ import org.snakeyaml.engine.scanner.StreamReader;
 /**
  * Represent standard Java classes
  */
-class StandardRepresenter extends BaseRepresenter {
+public class StandardRepresenter extends BaseRepresenter {
 
     protected Map<Class<? extends Object>, Tag> classTags;
     protected TimeZone timeZone = null;
@@ -93,6 +93,11 @@ class StandardRepresenter extends BaseRepresenter {
             throw new NullPointerException("Tag must be provided.");
         }
         return classTags.put(clazz, tag);
+    }
+
+    @Override
+    RepresentToNode getDefaultRepresent() {
+        throw new YamlEngineException("Representer is not defined.");
     }
 
     //remove and move to BaseRe

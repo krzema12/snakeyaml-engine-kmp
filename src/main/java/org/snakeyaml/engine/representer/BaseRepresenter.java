@@ -46,15 +46,16 @@ public abstract class BaseRepresenter {
     protected RepresentToNode nullRepresenter;
     // the order is important (map can be also a sequence of key-values)
     protected final Map<Class<?>, RepresentToNode> multiRepresenters = new LinkedHashMap();
-    protected ScalarStyle defaultScalarStyle = null; //not explicitly defined
+    protected ScalarStyle defaultScalarStyle = ScalarStyle.PLAIN;
     protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
     protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
-        private static final long serialVersionUID = -5576159264232131854L;
-
         public Node put(Object key, Node value) {
             return super.put(key, new AnchorNode(value));
         }
     };
+
+    abstract RepresentToNode getDefaultRepresent();
+
 
     protected Object objectToRepresent;
 
@@ -115,7 +116,7 @@ public abstract class BaseRepresenter {
     }
 
     protected Node representScalar(Tag tag, String value) {
-        return representScalar(tag, value, null);//TODO style
+        return representScalar(tag, value, ScalarStyle.PLAIN);
     }
 
     protected Node representSequence(Tag tag, Iterable<?> sequence, FlowStyle flowStyle) {

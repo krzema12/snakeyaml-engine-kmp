@@ -15,11 +15,13 @@
  */
 package org.snakeyaml.engine.api.lowlevel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.emitter.Emitable;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.serializer.Serializer;
@@ -47,13 +49,28 @@ public class Serialize {
     //TODO iterator
     public List<Event> serializeAll(List<Node> nodes) {
         Objects.requireNonNull(nodes, "Nodes cannot be null");
-        Serializer serializer = new Serializer(settings);
+        Events events = new Events();
+        Serializer serializer = new Serializer(settings, events);
         serializer.open();
         for (Node node : nodes) {
             serializer.serialize(node);
         }
         serializer.close();
-        return serializer.getEvents();
+        return events.getEvents();
+    }
+
+
+}
+
+class Events implements Emitable {
+    private List<Event> events = new ArrayList<>();
+    @Override
+    public void emit(Event event) {
+events.add(event);
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 }
 

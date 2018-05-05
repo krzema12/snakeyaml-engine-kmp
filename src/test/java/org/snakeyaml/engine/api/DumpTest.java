@@ -15,19 +15,27 @@
  */
 package org.snakeyaml.engine.api;
 
-/**
- * Writer with the same methods as in {@link java.io.Writer} but it does not throw IOException
- */
-public interface StreamDataWriter {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    /**
-     * Flushes this stream by writing any buffered output to the underlying stream.
-     */
-    void flush();
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-    void write(char cbuf[]);
+@Tag("fast")
+class DumpTest {
 
-    void write(String str);
+    @Test
+    @DisplayName("Dump string")
+    void parseString(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = (String) dump.dumpToString("a");
+        assertEquals("a\n", str);
+    }
 
-    void write(String str, int off, int len);
+
+
 }

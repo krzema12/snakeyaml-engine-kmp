@@ -151,13 +151,13 @@ public abstract class BaseConstructor {
         } else {
             ConstructNode constructor = tagConstructors.get(node.getTag());
             if (constructor == null) {
-                return getGeneralConstruct();
+                return getDefaultConstruct();
             }
             return constructor;
         }
     }
 
-    abstract ConstructNode getGeneralConstruct();
+    abstract ConstructNode getDefaultConstruct();
 
     protected String constructScalar(ScalarNode node) {
         return node.getValue();

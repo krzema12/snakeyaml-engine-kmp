@@ -168,7 +168,7 @@ public class StandardConstructor extends BaseConstructor {
     }
 
     @Override
-    ConstructNode getGeneralConstruct() {
+    ConstructNode getDefaultConstruct() {
         return new ConstructUndefined();
     }
 

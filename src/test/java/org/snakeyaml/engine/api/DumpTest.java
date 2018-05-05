@@ -97,4 +97,18 @@ class DumpTest {
                 dump.dump(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"), streamToString));
         assertEquals("Representer is not defined.", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Dump all instances")
+    void dumpAll(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        StreamToString streamToString = new StreamToString();
+        dump.dumpAll(Lists.newArrayList("a", null, Boolean.TRUE).iterator(), streamToString);
+        assertEquals("a\n" +
+                "...\n" +
+                "--- null\n" +
+                "...\n" +
+                "--- true\n", streamToString.toString());
+    }
 }

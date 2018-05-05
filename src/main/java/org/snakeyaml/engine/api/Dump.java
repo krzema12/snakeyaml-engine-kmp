@@ -56,7 +56,7 @@ public class Dump {
         serializer.close();
     }
 
-    public void dumpAll(Iterator<Object> instancesIterator, StreamDataWriter streamDataWriter) {
+    public void dumpAll(Iterator<? extends Object> instancesIterator, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter();
         Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
         serializer.open();

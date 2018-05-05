@@ -316,17 +316,14 @@ public final class Emitter implements Emitable {
         public void expect() {
             if (event instanceof DocumentStartEvent) {
                 DocumentStartEvent ev = (DocumentStartEvent) event;
-                if ((ev.getSpecVersion() != null || ev.getTags() != null) && openEnded) {
+                if ((ev.getSpecVersion().isPresent() || ev.getTags() != null) && openEnded) {
                     writeIndicator("...", true, false, false);
                     writeIndent();
                 }
-                if (ev.getSpecVersion() != null) {
-                    String versionText = prepareVersion(ev.getSpecVersion());
-                    writeVersionDirective(versionText);
-                }
-                tagPrefixes = new LinkedHashMap<String, String>(DEFAULT_TAG_PREFIXES);
+                ev.getSpecVersion().ifPresent(version -> writeVersionDirective(prepareVersion(version)));
+                tagPrefixes = new LinkedHashMap(DEFAULT_TAG_PREFIXES);
                 if (ev.getTags() != null) {
-                    Set<String> handles = new TreeSet<String>(ev.getTags().keySet());
+                    Set<String> handles = new TreeSet(ev.getTags().keySet());
                     for (String handle : handles) {
                         String prefix = ev.getTags().get(handle);
                         tagPrefixes.put(prefix, handle);
@@ -336,7 +333,7 @@ public final class Emitter implements Emitable {
                     }
                 }
                 boolean implicit = first && !ev.isExplicit() && !canonical
-                        && ev.getSpecVersion() == null
+                        && !ev.getSpecVersion().isPresent()
                         && (ev.getTags() == null || ev.getTags().isEmpty())
                         && !checkEmptyDocument();
                 if (!implicit) {

@@ -74,11 +74,11 @@ class EventRepresentationTest {
     @Test
     @DisplayName("Represent DocumentStartEvent")
     void testDocumentStartEvent(TestInfo testInfo) {
-        valid(new DocumentStartEvent(true, null, null), "+DOC ---");
-        valid(new DocumentStartEvent(true, null, null), "+DOC");
+        valid(new DocumentStartEvent(true, Optional.empty(), null), "+DOC ---");
+        valid(new DocumentStartEvent(true, Optional.empty(), null), "+DOC");
 
-        valid(new DocumentStartEvent(false, null, null), "+DOC");
-        valid(new DocumentStartEvent(false, null, null), "+DOC ---");
+        valid(new DocumentStartEvent(false, Optional.empty(), null), "+DOC");
+        valid(new DocumentStartEvent(false, Optional.empty(), null), "+DOC ---");
     }
 
     @Test

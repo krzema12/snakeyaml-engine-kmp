@@ -144,8 +144,7 @@ public class ParserImpl implements Parser {
         this.settings = settings;
         //TODO Optional
         currentEvent = null;
-        //TODO Optional version
-        directives = new VersionTagsTuple(null, new HashMap<String, String>(DEFAULT_TAGS));
+        directives = new VersionTagsTuple(Optional.empty(), new HashMap<String, String>(DEFAULT_TAGS));
         states = new ArrayStack<Production>(100);
         marksStack = new ArrayStack(10);
         state = new ParseStreamStart();
@@ -208,11 +207,11 @@ public class ParserImpl implements Parser {
         public Event produce() {
             // Parse an implicit document.
             if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
-                directives = new VersionTagsTuple(null, DEFAULT_TAGS);
+                directives = new VersionTagsTuple(Optional.empty(), DEFAULT_TAGS);
                 Token token = scanner.peekToken();
                 Optional<Mark> startMark = token.getStartMark();
                 Optional<Mark> endMark = startMark;
-                Event event = new DocumentStartEvent(false, null, null, startMark, endMark);
+                Event event = new DocumentStartEvent(false, Optional.empty(), null, startMark, endMark);
                 // Prepare the next state.
                 states.push(new ParseDocumentEnd());
                 state = new ParseBlockNode();
@@ -242,8 +241,7 @@ public class ParserImpl implements Parser {
                 }
                 token = scanner.next();
                 Optional<Mark> endMark = token.getEndMark();
-                event = new DocumentStartEvent(true, tuple.getSpecVersion(),
-                        tuple.getTags(), startMark, endMark);
+                event = new DocumentStartEvent(true, tuple.getSpecVersion(), tuple.getTags(), startMark, endMark);
                 states.push(new ParseDocumentEnd());
                 state = new ParseDocumentContent();
             } else {
@@ -298,21 +296,19 @@ public class ParserImpl implements Parser {
 
     @SuppressWarnings("unchecked")
     private VersionTagsTuple processDirectives() {
-        SpecVersion yamlSpecVersion = null;
+        Optional<SpecVersion> yamlSpecVersion = Optional.empty();
         HashMap<String, String> tagHandles = new HashMap<String, String>();
         while (scanner.checkToken(Token.ID.Directive)) {
             @SuppressWarnings("rawtypes")
             DirectiveToken token = (DirectiveToken) scanner.next();
             if (token.getName().equals("YAML")) {
-                if (yamlSpecVersion != null) {
-                    throw new ParserException("found duplicate YAML directive",
-                            token.getStartMark());
+                if (yamlSpecVersion.isPresent()) {
+                    throw new ParserException("found duplicate YAML directive", token.getStartMark());
                 }
                 List<Integer> value = (List<Integer>) token.getValue();
                 Integer major = value.get(0);
                 Integer minor = value.get(1);
-                yamlSpecVersion = new SpecVersion(major, minor);
-                settings.getVersionFunction().apply(yamlSpecVersion);
+                yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(new SpecVersion(major, minor)));
             } else if (token.getName().equals("TAG")) {
                 List<String> value = (List<String>) token.getValue();
                 String handle = value.get(0);
@@ -324,7 +320,7 @@ public class ParserImpl implements Parser {
                 tagHandles.put(handle, prefix);
             }
         }
-        if (yamlSpecVersion != null || !tagHandles.isEmpty()) {
+        if (!yamlSpecVersion.isPresent() || !tagHandles.isEmpty()) {
             // directives in the document found - drop the previous
             for (String key : DEFAULT_TAGS.keySet()) {
                 // do not overwrite re-defined tags

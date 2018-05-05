@@ -36,7 +36,7 @@ public final class DumpSettings {
     private boolean explicitEnd;
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
-    private SpecVersion specVersion;
+    private Optional<SpecVersion> specVersion;
     private Map<String, String> useTags;
     private ScalarResolver scalarResolver;
 
@@ -67,6 +67,7 @@ public final class DumpSettings {
         this.splitLines = true;
         this.explicitStart = false;
         this.explicitEnd = false;
+        this.specVersion = Optional.empty();
     }
 
     public String getLabel() {
@@ -120,11 +121,11 @@ public final class DumpSettings {
         this.explicitEnd = explicitEnd;
     }
 
-    public SpecVersion getSpecVersion() {
+    public Optional<SpecVersion> getSpecVersion() {
         return specVersion;
     }
 
-    public void setSpecVersion(SpecVersion specVersion) {
+    public void setSpecVersion(Optional<SpecVersion> specVersion) {
         Objects.requireNonNull(specVersion, "specVersion cannot be null");
         this.specVersion = specVersion;
     }

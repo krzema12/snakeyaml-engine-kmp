@@ -40,6 +40,10 @@ public class ScalarNode extends Node {
         this.resolved = resolved;
     }
 
+    public ScalarNode(Tag tag, String value, ScalarStyle style) {
+        this(tag, true, value, style, Optional.empty(), Optional.empty());
+    }
+
     /**
      * Get scalar style of this node.
      *

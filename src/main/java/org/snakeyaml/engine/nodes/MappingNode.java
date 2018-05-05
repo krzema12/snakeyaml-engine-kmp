@@ -40,6 +40,10 @@ public class MappingNode extends CollectionNode<NodeTuple> {
         this.resolved = resolved;
     }
 
+    public MappingNode(Tag tag,  List<NodeTuple> value, FlowStyle flowStyle) {
+        this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
+    }
+
     @Override
     public NodeType getNodeType() {
         return NodeType.MAPPING;

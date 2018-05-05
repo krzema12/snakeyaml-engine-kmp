@@ -39,6 +39,10 @@ public class SequenceNode extends CollectionNode<Node> {
         this.resolved = resolved;
     }
 
+    public SequenceNode(Tag tag, List<Node> value, FlowStyle flowStyle) {
+        this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
+    }
+
     @Override
     public NodeType getNodeType() {
         return NodeType.SEQUENCE;

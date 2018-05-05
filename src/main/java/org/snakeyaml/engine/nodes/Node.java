@@ -19,6 +19,7 @@ package org.snakeyaml.engine.nodes;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.snakeyaml.engine.api.ConstructNode;
 import org.snakeyaml.engine.exceptions.Mark;
 
 /**
@@ -37,6 +38,7 @@ public abstract class Node {
     private Optional<Mark> startMark;
     protected Optional<Mark> endMark;
     private boolean recursive;
+    private Optional<ConstructNode> construct;
 
     /**
      * true when the tag is assigned by the resolver
@@ -134,4 +136,11 @@ public abstract class Node {
         return super.hashCode();
     }
 
+    public Optional<ConstructNode> getConstruct() {
+        return construct;
+    }
+
+    public void setConstruct(ConstructNode construct) {
+        this.construct = Optional.of(construct);
+    }
 }

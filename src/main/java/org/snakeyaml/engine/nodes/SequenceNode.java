@@ -53,6 +53,10 @@ public class SequenceNode extends CollectionNode<Node> {
         return value;
     }
 
+    public List<Node> getSequence() {
+        return value;
+    }
+
     public String toString() {
         return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
                 + ")>";

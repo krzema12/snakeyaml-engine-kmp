@@ -47,7 +47,7 @@ class ParseSuiteTest {
         settings.setLabel(data.getLabel());
         Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
         for (Event event : iterable) {
-            System.out.println(event);
+            //System.out.println(event);
         }
     }
 
@@ -74,8 +74,6 @@ class ParseSuiteTest {
         }
     }
 }
-
-
 
 
 class ParsePair {

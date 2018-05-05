@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.lowlevel.Present;
 
 @org.junit.jupiter.api.Tag("fast")

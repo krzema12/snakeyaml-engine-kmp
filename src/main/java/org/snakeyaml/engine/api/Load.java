@@ -16,11 +16,17 @@
 package org.snakeyaml.engine.api;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import org.snakeyaml.engine.composer.Composer;
+import org.snakeyaml.engine.constructor.StandardConstructor;
 import org.snakeyaml.engine.nodes.Node;
+import org.snakeyaml.engine.parser.ParserImpl;
+import org.snakeyaml.engine.scanner.StreamReader;
 
 public class Load {
 
@@ -34,15 +40,13 @@ public class Load {
         this.settings = settings;
     }
 
-    public Object load(Reader yaml) {
-        Objects.requireNonNull(yaml, "Reader cannot be null");
-        return null;
+    public Object loadFromString(String yaml) {
+        Objects.requireNonNull(yaml, "String cannot be null");
+        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
+        StandardConstructor constructor = new StandardConstructor(settings);
+        return constructor.constructSingleDocument(nodeOptional);
     }
 
-    public List<Object> loadAll(Reader yaml) {
-        Objects.requireNonNull(yaml, "Reader cannot be null");
-        return Collections.emptyList();
-    }
 }
 
 

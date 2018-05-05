@@ -27,7 +27,6 @@ import java.util.function.Function;
 
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.exceptions.YamlVersionException;
-import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
 
@@ -37,7 +36,7 @@ import org.snakeyaml.engine.resolver.ScalarResolver;
  */
 public final class LoadSettings {
     private String label;
-    private Optional<Tag> rootTag;
+    private Optional<ConstructNode> rootConstructNode;
     private ScalarResolver scalarResolver;
     private Function<Integer, List> defaultList;
     private Function<Integer, Set> defaultSet;
@@ -49,7 +48,7 @@ public final class LoadSettings {
 
     public LoadSettings() {
         this.label = "reader";
-        this.rootTag = Optional.empty();
+        this.rootConstructNode = Optional.empty();
         this.scalarResolver = new JsonScalarResolver();
         this.defaultList = (initSize) -> new ArrayList(initSize);
         this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
@@ -72,13 +71,13 @@ public final class LoadSettings {
         this.label = label;
     }
 
-    public Optional<Tag> getRootTag() {
-        return rootTag;
+    public Optional<ConstructNode> getRootConstructNode() {
+        return rootConstructNode;
     }
 
-    public void setRootTag(Optional<Tag> rootTag) {
-        Objects.requireNonNull(rootTag, "rootTag cannot be null");
-        this.rootTag = rootTag;
+    public void setRootConstructNode(Optional<ConstructNode> rootConstructNode) {
+        Objects.requireNonNull(rootConstructNode, "rootConstructNode cannot be null");
+        this.rootConstructNode = rootConstructNode;
     }
 
     public ScalarResolver getScalarResolver() {

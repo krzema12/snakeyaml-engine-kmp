@@ -58,6 +58,7 @@ public abstract class Node {
         this.endMark = endMark;
         this.recursive = false;
         this.resolved = true;
+        this.construct = Optional.empty();
     }
 
     /**

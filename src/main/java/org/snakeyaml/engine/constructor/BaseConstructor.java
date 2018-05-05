@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ import org.snakeyaml.engine.nodes.ScalarNode;
 import org.snakeyaml.engine.nodes.SequenceNode;
 import org.snakeyaml.engine.nodes.Tag;
 
-public abstract class BaseConstructor implements ConstructNode {
+public abstract class BaseConstructor {
 
     /**
      * It maps the (explicit or implicit) tag to the Construct implementation.
@@ -60,6 +61,19 @@ public abstract class BaseConstructor implements ConstructNode {
         sets2fill = new ArrayList();
     }
 
+    /**
+     * Ensure that the stream contains a single document and construct it
+     * @param optionalNode - composed Node
+     * @return constructed instance
+     */
+    public Object constructSingleDocument(Optional<Node> optionalNode) {
+        if (!optionalNode.isPresent() || Tag.NULL.equals(optionalNode.get().getTag())) {
+            return null;
+        } else {
+            settings.getRootConstructNode().ifPresent(constructNode -> optionalNode.get().setConstruct(constructNode));
+            return construct(optionalNode.get());
+        }
+    }
 
     /**
      * Construct complete YAML document. Call the second step in case of
@@ -68,7 +82,7 @@ public abstract class BaseConstructor implements ConstructNode {
      * @param node root Node
      * @return Java instance
      */
-    public Object construct(Node node) {
+    protected Object construct(Node node) {
         Object data = constructObject(node);
         fillRecursive();
         constructedObjects.clear();
@@ -100,6 +114,7 @@ public abstract class BaseConstructor implements ConstructNode {
      * @return Java instance
      */
     protected Object constructObject(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
         if (constructedObjects.containsKey(node)) {
             return constructedObjects.get(node);
         }

@@ -16,11 +16,15 @@
 package org.snakeyaml.engine.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -71,5 +75,26 @@ class DumpTest {
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
         assertEquals("{x: 1, y: 2, z: 3}\n", str);
+    }
+
+    @Test
+    @DisplayName("Dump UUID as string")
+    void dumpUuid(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        StreamToString streamToString = new StreamToString();
+        dump.dump("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc", streamToString);
+        assertEquals("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc\n", streamToString.getData());
+    }
+
+    @Test
+    @DisplayName("Dump UUID as class")
+    void dumpUnknownClass(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        StreamToString streamToString = new StreamToString();
+        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
+                dump.dump(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"), streamToString));
+        assertEquals("Representer is not defined.", exception.getMessage());
     }
 }

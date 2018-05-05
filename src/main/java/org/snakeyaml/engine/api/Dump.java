@@ -54,7 +54,6 @@ public class Dump {
         serializer.open();
         serializer.serialize(node);
         serializer.close();
-        return;
     }
 }
 

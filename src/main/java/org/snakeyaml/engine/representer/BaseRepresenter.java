@@ -100,7 +100,7 @@ public abstract class BaseRepresenter {
                 RepresentToNode representer = multiRepresenters.get(null);
                 node = representer.representData(data);
             } else {
-                RepresentToNode representer = representers.get(null);
+                RepresentToNode representer = getDefaultRepresent();
                 node = representer.representData(data);
             }
         }

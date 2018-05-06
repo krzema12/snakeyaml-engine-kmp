@@ -17,15 +17,7 @@ package org.snakeyaml.engine.representer;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.api.RepresentToNode;
@@ -50,7 +42,7 @@ public class StandardRepresenter extends BaseRepresenter {
         this.representers.put(String.class, new RepresentString());
         this.representers.put(Boolean.class, new RepresentBoolean());
         this.representers.put(Character.class, new RepresentString());
-        //TODO this.representers.put(UUID.class, new RepresentUuid());
+        this.representers.put(UUID.class, new RepresentUuid());
         this.representers.put(byte[].class, new RepresentByteArray());
 
         RepresentToNode primitiveArray = new RepresentPrimitiveArray();
@@ -353,9 +345,9 @@ public class StandardRepresenter extends BaseRepresenter {
         this.timeZone = timeZone;
     }
 
-//    protected class RepresentUuid implements RepresentToNode {
-//        public Node representData(Object data) {
-//            return representScalar(getTag(data.getClass(), new Tag(UUID.class)), data.toString());
-//        }
-//    }
+    protected class RepresentUuid implements RepresentToNode {
+        public Node representData(Object data) {
+            return representScalar(getTag(data.getClass(), new Tag(UUID.class)), data.toString());
+        }
+    }
 }

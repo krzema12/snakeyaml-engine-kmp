@@ -24,7 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -83,19 +82,8 @@ class DumpTest {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
         StreamToString streamToString = new StreamToString();
-        dump.dump("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc", streamToString);
-        assertEquals("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc\n", streamToString.toString());
-    }
-
-    @Test
-    @DisplayName("Dump UUID as class")
-    void dumpUnknownClass(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
-        Dump dump = new Dump(settings);
-        StreamToString streamToString = new StreamToString();
-        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-                dump.dump(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"), streamToString));
-        assertEquals("Representer is not defined.", exception.getMessage());
+        dump.dump(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"), streamToString);
+        assertEquals("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n", streamToString.toString());
     }
 
     @Test

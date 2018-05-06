@@ -44,6 +44,14 @@ public final class Tag {
         this.value = UriEncoder.encode(tag);
     }
 
+    /**
+     * Create a global tag to dump the fully qualified class name
+     * @param clazz - the class to use the name
+     */
+    public Tag(Class<? extends Object> clazz) {
+        Objects.requireNonNull(clazz, "Class for tag must be provided.");
+        this.value = Tag.PREFIX + UriEncoder.encode(clazz.getName());
+    }
 
     public String getValue() {
         return value;

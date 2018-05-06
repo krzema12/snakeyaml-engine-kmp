@@ -43,6 +43,7 @@ public class StandardRepresenter extends BaseRepresenter {
         this.representers.put(Boolean.class, new RepresentBoolean());
         this.representers.put(Character.class, new RepresentString());
         this.representers.put(UUID.class, new RepresentUuid());
+        this.representers.put(Optional.class, new RepresentOptional());
         this.representers.put(byte[].class, new RepresentByteArray());
 
         RepresentToNode primitiveArray = new RepresentPrimitiveArray();
@@ -348,6 +349,18 @@ public class StandardRepresenter extends BaseRepresenter {
     protected class RepresentUuid implements RepresentToNode {
         public Node representData(Object data) {
             return representScalar(getTag(data.getClass(), new Tag(UUID.class)), data.toString());
+        }
+    }
+
+    protected class RepresentOptional implements RepresentToNode {
+        public Node representData(Object data) {
+            Optional<?> opt = (Optional<?>) data;
+            if(opt.isPresent()) {
+                return represent(opt.get());
+            } else {
+                //TODO should we call null representer ?
+                return representScalar(Tag.NULL, "null");
+            }
         }
     }
 }

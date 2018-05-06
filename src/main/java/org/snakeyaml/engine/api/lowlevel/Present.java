@@ -45,9 +45,7 @@ public class Present {
         Objects.requireNonNull(events, "events cannot be null");
         YamlStringWriterStream writer = new YamlStringWriterStream();
         final Emitter emitter = new Emitter(settings, writer);
-        while (events.hasNext()) {
-            emitter.emit(events.next());
-        }
+        events.forEachRemaining(emitter::emit);
         return writer.getString();
     }
 

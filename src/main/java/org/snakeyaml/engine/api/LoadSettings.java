@@ -35,6 +35,7 @@ import org.snakeyaml.engine.resolver.ScalarResolver;
 
 /**
  * Fine tuning parsing/loading
+ * TODO document options
  */
 public final class LoadSettings {
     private String label;

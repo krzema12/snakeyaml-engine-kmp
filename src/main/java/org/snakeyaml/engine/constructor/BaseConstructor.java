@@ -52,7 +52,7 @@ public abstract class BaseConstructor {
 
     public BaseConstructor(LoadSettings settings) {
         this.settings = settings;
-        tagConstructors = settings.getTagConstructors();
+        tagConstructors = new HashMap<>();
         constructedObjects = new HashMap();
         recursiveObjects = new HashSet();
         maps2fill = new ArrayList();
@@ -61,6 +61,7 @@ public abstract class BaseConstructor {
 
     /**
      * Ensure that the stream contains a single document and construct it
+     *
      * @param optionalNode - composed Node
      * @return constructed instance
      */
@@ -147,7 +148,11 @@ public abstract class BaseConstructor {
         if (node.getConstruct().isPresent()) {
             return node.getConstruct().get();
         } else {
-            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
+            if (settings.getTagConstructors().containsKey(node.getTag())) {
+                return settings.getTagConstructors().get(node.getTag());
+            } else {
+                return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
+            }
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.snakeyaml.engine.api.ConstructNode;
 import org.snakeyaml.engine.api.LoadSettings;
@@ -55,8 +56,9 @@ public class StandardConstructor extends BaseConstructor {
         this.tagConstructors.put(Tag.STR, new ConstructYamlStr());
         this.tagConstructors.put(Tag.SEQ, new ConstructYamlSeq());
         this.tagConstructors.put(Tag.MAP, new ConstructYamlMap());
-    }
 
+        this.tagConstructors.put(new Tag(UUID.class), new ConstructUuidClass());
+    }
 
     protected void flattenMapping(MappingNode node) {
         // perform merging only on nodes containing merge node(s)
@@ -301,12 +303,19 @@ public class StandardConstructor extends BaseConstructor {
         @Override
         public Object construct(Node node) {
             // Ignore white spaces for base64 encoded scalar
-            String noWhiteSpaces = constructScalar((ScalarNode) node).toString().replaceAll("\\s", "");
+            String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
             byte[] decoded = Base64Coder.decode(noWhiteSpaces.toCharArray());
             return decoded;
         }
     }
 
+    public class ConstructUuidClass implements ConstructNode {
+        @Override
+        public Object construct(Node node) {
+            String uuidValue = constructScalar((ScalarNode) node);
+            return UUID.fromString(uuidValue);
+        }
+    }
 
     public class ConstructYamlOmap implements ConstructNode {
         @Override

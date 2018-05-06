@@ -175,7 +175,7 @@ public class Composer implements Iterator<Node> {
         Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
-        if (!tag.isPresent() || tag.equals("!")) {
+        if (!tag.isPresent() || tag.get().equals("!")) {
             nodeTag = Tag.SEQ;
             resolved = true;
         } else {
@@ -198,7 +198,7 @@ public class Composer implements Iterator<Node> {
         Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
         boolean resolved = false;
-        if (!tag.isPresent() || tag.equals("!")) {
+        if (!tag.isPresent() || tag.get().equals("!")) {
             nodeTag = Tag.MAP;
             resolved = true;
         } else {

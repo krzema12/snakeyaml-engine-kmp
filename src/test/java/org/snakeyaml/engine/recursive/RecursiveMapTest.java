@@ -17,12 +17,15 @@ package org.snakeyaml.engine.recursive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.api.Dump;
+import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
 
@@ -45,6 +48,32 @@ class RecursiveMapTest {
                 "Override anchor", "Bar",
                 "Reuse anchor", "Bar");
         assertEquals(expected, map);
+    }
+
+    @Test
+    @DisplayName("Dump and Load map with recursive values")
+    void loadRecursiveMap2(TestInfo testInfo) {
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("name", "first");
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("name", "second");
+        map1.put("next", map2);
+        map2.put("next", map1);
+        Dump dump = new Dump(new DumpSettings());
+        String output1 = dump.dumpToString(map1);
+        assertEquals("&id002\n" +
+                "next:\n" +
+                "  next: *id002\n" +
+                "  name: second\n" +
+                "name: first\n", output1);
+
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Map<String, Object> parsed1 = (Map<String, Object>) load.loadFromString(output1);
+        assertEquals(2, parsed1.size());
+        assertEquals("first", parsed1.get("name"));
+        Map<String, Object> parsed2 = (Map<String, Object>) parsed1.get("next");
+        assertEquals("second", parsed2.get("name"));
     }
 
 }

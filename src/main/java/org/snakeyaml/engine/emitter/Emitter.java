@@ -717,7 +717,7 @@ public final class Emitter implements Emitable {
             if (!preparedAnchor.isPresent()) {
                 preparedAnchor = ev.getAnchor();
             }
-            writeIndicator(indicator + preparedAnchor, true, false, false);
+            writeIndicator(indicator + preparedAnchor.get(), true, false, false);
             preparedAnchor = Optional.empty();
         }
     }

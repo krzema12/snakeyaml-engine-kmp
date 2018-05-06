@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.RepresentToNode;
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
@@ -47,7 +48,10 @@ public class StandardRepresenter extends BaseRepresenter {
     protected Map<Class<? extends Object>, Tag> classTags;
     protected TimeZone timeZone = null;
 
-    public StandardRepresenter() {
+    public StandardRepresenter(DumpSettings settings) {
+        this.defaultFlowStyle = settings.getDefaultFlowStyle();
+        this.defaultScalarStyle = settings.getDefaultScalarStyle();
+
         this.nullRepresenter = new RepresentNull();
         this.representers.put(String.class, new RepresentString());
         this.representers.put(Boolean.class, new RepresentBoolean());
@@ -72,7 +76,7 @@ public class StandardRepresenter extends BaseRepresenter {
         this.multiRepresenters.put(Iterator.class, new RepresentIterator());
         this.multiRepresenters.put(new Object[0].getClass(), new RepresentArray());
         this.multiRepresenters.put(Enum.class, new RepresentEnum());
-        classTags = new HashMap<Class<? extends Object>, Tag>();
+        classTags = new HashMap();
     }
 
     protected Tag getTag(Class<?> clazz, Tag defaultTag) {

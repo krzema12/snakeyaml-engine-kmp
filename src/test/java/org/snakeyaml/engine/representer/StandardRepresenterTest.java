@@ -22,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Node;
 
@@ -29,7 +30,7 @@ import com.google.common.collect.TreeRangeSet;
 
 @Tag("fast")
 class StandardRepresenterTest {
-    private StandardRepresenter standardRepresenter = new StandardRepresenter();
+    private StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettings());
 
     @Test
     @DisplayName("Represent unknown class")

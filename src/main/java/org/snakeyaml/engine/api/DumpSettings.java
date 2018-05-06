@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.snakeyaml.engine.common.FlowStyle;
+import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonScalarResolver;
@@ -39,6 +41,8 @@ public final class DumpSettings {
     private Optional<SpecVersion> specVersion;
     private Map<String, String> useTags;
     private ScalarResolver scalarResolver;
+    private FlowStyle defaultFlowStyle;
+    private ScalarStyle defaultScalarStyle;
 
     //emitter
     private Optional<Tag> rootTag;
@@ -68,6 +72,24 @@ public final class DumpSettings {
         this.explicitStart = false;
         this.explicitEnd = false;
         this.specVersion = Optional.empty();
+        this.defaultFlowStyle = FlowStyle.AUTO;
+        this.defaultScalarStyle = ScalarStyle.PLAIN;
+    }
+
+    public FlowStyle getDefaultFlowStyle() {
+        return defaultFlowStyle;
+    }
+
+    public void setDefaultFlowStyle(FlowStyle defaultFlowStyle) {
+        this.defaultFlowStyle = defaultFlowStyle;
+    }
+
+    public ScalarStyle getDefaultScalarStyle() {
+        return defaultScalarStyle;
+    }
+
+    public void setDefaultScalarStyle(ScalarStyle defaultScalarStyle) {
+        this.defaultScalarStyle = defaultScalarStyle;
     }
 
     public String getLabel() {

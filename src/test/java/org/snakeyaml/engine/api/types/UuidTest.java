@@ -37,7 +37,7 @@ class UuidTest {
     @Test
     @DisplayName("Represent UUID as node with global tag")
     void representUUID(TestInfo testInfo) {
-        StandardRepresenter standardRepresenter = new StandardRepresenter();
+        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettings());
         Node node = standardRepresenter.represent(THE_UUID);
         assertEquals("tag:yaml.org,2002:java.util.UUID", node.getTag().getValue());
     }

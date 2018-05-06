@@ -21,20 +21,18 @@ import java.io.InputStreamReader;
 
 import com.google.common.io.CharStreams;
 
-public class TestUtils {
+public abstract class TestUtils {
 
     public static String getResource(String theName) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(theName);
         if (inputStream == null) {
             throw new RuntimeException("Resource not found: " + theName);
         }
-        String string = null;
         try {
-            string = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
+            return CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return string;
     }
 
 }

@@ -60,7 +60,7 @@ public class StandardRepresenter extends BaseRepresenter {
         this.multiRepresenters.put(Set.class, new RepresentSet());
         this.multiRepresenters.put(Iterator.class, new RepresentIterator());
         this.multiRepresenters.put(new Object[0].getClass(), new RepresentArray());
-        //TODO  this.multiRepresenters.put(Enum.class, new RepresentEnum());
+        this.multiRepresenters.put(Enum.class, new RepresentEnum());
         classTags = new HashMap<Class<? extends Object>, Tag>();
     }
 
@@ -323,12 +323,12 @@ public class StandardRepresenter extends BaseRepresenter {
     }
 
 
-//    protected class RepresentEnum implements RepresentToNode {
-//        public Node representData(Object data) {
-//            Tag tag = new Tag(data.getClass());
-//            return representScalar(getTag(data.getClass(), tag), ((Enum<?>) data).name());
-//        }
-//    }
+    protected class RepresentEnum implements RepresentToNode {
+        public Node representData(Object data) {
+            Tag tag = new Tag(data.getClass());
+            return representScalar(getTag(data.getClass(), tag), ((Enum<?>) data).name());
+        }
+    }
 
     protected class RepresentByteArray implements RepresentToNode {
         public Node representData(Object data) {

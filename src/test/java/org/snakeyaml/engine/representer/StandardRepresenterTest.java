@@ -47,4 +47,12 @@ class StandardRepresenterTest {
         assertEquals("Representer is not defined.", exception.getMessage());
     }
 
+    @Test
+    @DisplayName("Represent Enum as node with global tag")
+    void represenEnum(TestInfo testInfo) {
+        Node node = standardRepresenter.represent(FormatEnum.JSON);
+        assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.representer.FormatEnum",
+                node.getTag().getValue());
+    }
+
 }

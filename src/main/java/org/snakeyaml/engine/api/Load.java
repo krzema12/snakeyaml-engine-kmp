@@ -15,10 +15,7 @@
  */
 package org.snakeyaml.engine.api;
 
-import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 

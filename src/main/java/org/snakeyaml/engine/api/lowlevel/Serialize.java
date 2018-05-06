@@ -60,9 +60,10 @@ public class Serialize {
 
 class Events implements Emitable {
     private List<Event> events = new ArrayList<>();
+
     @Override
     public void emit(Event event) {
-events.add(event);
+        events.add(event);
     }
 
     public List<Event> getEvents() {

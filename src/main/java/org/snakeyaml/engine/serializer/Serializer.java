@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.serializer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +28,6 @@ import org.snakeyaml.engine.emitter.Emitable;
 import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
-import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.events.ImplicitTuple;
 import org.snakeyaml.engine.events.MappingEndEvent;
 import org.snakeyaml.engine.events.MappingStartEvent;

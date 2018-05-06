@@ -46,6 +46,7 @@ public final class Tag {
 
     /**
      * Create a global tag to dump the fully qualified class name
+     *
      * @param clazz - the class to use the name
      */
     public Tag(Class<? extends Object> clazz) {

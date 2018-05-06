@@ -17,7 +17,17 @@ package org.snakeyaml.engine.representer;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.api.RepresentToNode;
@@ -355,7 +365,7 @@ public class StandardRepresenter extends BaseRepresenter {
     protected class RepresentOptional implements RepresentToNode {
         public Node representData(Object data) {
             Optional<?> opt = (Optional<?>) data;
-            if(opt.isPresent()) {
+            if (opt.isPresent()) {
                 Node node = represent(opt.get());
                 node.setTag(new Tag(Optional.class));
                 return node;

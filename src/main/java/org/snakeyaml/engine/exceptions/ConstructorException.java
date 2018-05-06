@@ -21,12 +21,12 @@ import java.util.Optional;
 public class ConstructorException extends MarkedYamlEngineException {
 
     public ConstructorException(String context, Optional<Mark> contextMark, String problem,
-                                   Optional<Mark> problemMark, Throwable cause) {
+                                Optional<Mark> problemMark, Throwable cause) {
         super(context, contextMark, problem, problemMark, cause);
     }
 
-     public ConstructorException(String context, Optional<Mark> contextMark, String problem,
-                                   Optional<Mark> problemMark) {
+    public ConstructorException(String context, Optional<Mark> contextMark, String problem,
+                                Optional<Mark> problemMark) {
         this(context, contextMark, problem, problemMark, null);
     }
 }

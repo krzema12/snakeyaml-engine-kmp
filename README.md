@@ -15,14 +15,13 @@ SnakeYAML engine is a YAML processor for the Java Virtual Machine.
 
 ## TODO
 * coverage
-* parse UUID
-* parse Optional
+* parse Optional (non scalar)
 * parse Iterator
 * parse Enum
 * fix issues with 1.2 spec (test-suite)
 * finish the public API
 * prepare Beans
-* fin TODOs in code 
+* fix TODOs in code 
 * add Javadoc for public methods
 
 ## Info ##

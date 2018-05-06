@@ -17,7 +17,6 @@ package org.snakeyaml.engine.api.types;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +27,6 @@ import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.nodes.Node;
-import org.snakeyaml.engine.nodes.ScalarNode;
-import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 
 @org.junit.jupiter.api.Tag("fast")

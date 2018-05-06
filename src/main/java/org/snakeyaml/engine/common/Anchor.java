@@ -19,8 +19,6 @@ import static org.snakeyaml.engine.common.CharConstants.ANCHOR_FORMAT;
 
 import java.util.Objects;
 
-import org.snakeyaml.engine.exceptions.YamlEngineException;
-
 /**
  * Value inside Anchor and Alias
  */

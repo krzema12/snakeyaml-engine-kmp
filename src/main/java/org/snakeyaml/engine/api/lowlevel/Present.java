@@ -15,10 +15,8 @@
  */
 package org.snakeyaml.engine.api.lowlevel;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import org.snakeyaml.engine.api.DumpSettings;

@@ -82,7 +82,7 @@ class OptionalTest {
     void dumpListOfOptional2(TestInfo testInfo) {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
-        String str = dump.dumpToString(Optional.of(Lists.newArrayList(1,2)));
+        String str = dump.dumpToString(Optional.of(Lists.newArrayList(1, 2)));
         assertEquals("!!java.util.Optional [1, 2]\n", str);
     }
 

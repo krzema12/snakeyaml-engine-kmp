@@ -7,9 +7,10 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
 
 ## API
 
-* The Engine will parse/emit basic Java structures (String, List<Integer>, Map<String, Boolean>). JavaBeans or any other custom instances are explicitly out of scope.
-* Since the custom instances are not supported, parsing any YAML document is safe - there is no way for a hacker to inject
-code unless it is explicitly configured by the user 
+* The Engine will parse/emit basic Java structures (String, List<Integer>, Map<String, Boolean>). JavaBeans or any other 
+custom instances are explicitly out of scope.
+* Since the custom instances are not supported, parsing any YAML document is safe - the YAML input stream is not able 
+to instruct the Engine to call arbitrary Java constructors (unless it is explicitly enabled)
 * The project is at its early stage. The API might change. Feel free to review the code and propose features/changes.
 
 ## SnakeYAML Engine features ##
@@ -18,7 +19,8 @@ code unless it is explicitly configured by the user
 * Integrated tests from [YAML Test Suite - Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite)
 * Unicode support including UTF-8/UTF-16/UTF-32 input/output.
 * Low-level API for serializing and deserializing native Java objects.
-* Only [JSON Schema](http://yaml.org/spec/1.2/spec.html#id2803231) is supported. The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
+* Only [JSON Schema](http://yaml.org/spec/1.2/spec.html#id2803231) is supported. 
+The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
 * Relatively sensible error messages (can be switched off to improve performance).
 * Tested with Java 8, 9, 10 (thanks to Docker)
 

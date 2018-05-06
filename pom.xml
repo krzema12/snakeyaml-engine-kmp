@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.snakeyaml</groupId>
     <artifactId>snakeyaml-engine</artifactId>
-    <version>0.1-beta-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

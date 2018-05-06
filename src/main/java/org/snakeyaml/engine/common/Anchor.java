@@ -31,7 +31,7 @@ public class Anchor {
         Objects.requireNonNull(anchor, "Anchor must be provided.");
         if (anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
         if (!ANCHOR_FORMAT.matcher(anchor).matches()) {
-            throw new YamlEngineException("invalid character in the anchor: " + anchor);
+            throw new IllegalArgumentException("invalid character in the anchor: " + anchor);
         }
         this.anchor = anchor;
     }

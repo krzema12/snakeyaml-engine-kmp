@@ -51,7 +51,7 @@ public final class DocumentStartEvent extends Event {
     }
 
     /**
-     * YAML version the document conforms to.
+     * @return YAML version the document conforms to.
      */
     public Optional<SpecVersion> getSpecVersion() {
         return specVersion;

@@ -3,13 +3,14 @@
 ## Overview ##
 [YAML](http://yaml.org) is a data serialization format designed for human readability and interaction with scripting languages.
 
-SnakeYAML engine is a YAML processor for the Java Virtual Machine.
+SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 and higher.
 
 ## API
 
-The project is at its early stage. The API might change. Feel free to review the code and propose features/changes.
+* The Engine will parse/emit basic Java structures. JavaBeans or any other custom instances are explicitly out of scope. 
+* The project is at its early stage. The API might change. Feel free to review the code and propose features/changes.
 
-## SnakeYAML engine features ##
+## SnakeYAML Engine features ##
 
 * a **complete** [YAML 1.2 processor](http://yaml.org/spec/1.2/spec.html). In particular, SnakeYAML can parse all examples from the specification.
 * Integrated tests from [YAML Test Suite - Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite)

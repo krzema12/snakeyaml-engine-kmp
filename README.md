@@ -7,7 +7,9 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
 
 ## API
 
-* The Engine will parse/emit basic Java structures. JavaBeans or any other custom instances are explicitly out of scope. 
+* The Engine will parse/emit basic Java structures (String, List<Integer>, Map<String, Boolean>). JavaBeans or any other custom instances are explicitly out of scope.
+* Since the custom instances are not supported, parsing any YAML document is safe - there is no way for a hacker to inject
+code unless it is explicitly configured by the user 
 * The project is at its early stage. The API might change. Feel free to review the code and propose features/changes.
 
 ## SnakeYAML Engine features ##

@@ -17,8 +17,6 @@ package org.snakeyaml.engine.common;
 
 import java.util.Optional;
 
-import org.snakeyaml.engine.exceptions.YamlEngineException;
-
 /**
  * YAML provides a rich set of scalar styles. Block scalar styles include
  * the literal style and the folded style; flow scalar styles include the
@@ -31,12 +29,8 @@ public enum ScalarStyle {
     FOLDED(Optional.of('>')), PLAIN(Optional.empty());
     private Optional<Character> styleOpt;
 
-    private ScalarStyle(Optional<Character> style) {
+    ScalarStyle(Optional<Character> style) {
         this.styleOpt = style;
-    }
-
-    public Optional<Character> getChar() {
-        return styleOpt;
     }
 
     @Override
@@ -44,25 +38,5 @@ public enum ScalarStyle {
         if (styleOpt.isPresent()) {
             return String.valueOf(styleOpt.get());
         } else return ":";
-    }
-
-    public static ScalarStyle createStyle(Optional<Character> opt) {
-        if (!opt.isPresent()) {
-            return PLAIN;
-        } else {
-            Character style = opt.get();
-            switch (style) {
-                case '"':
-                    return DOUBLE_QUOTED;
-                case '\'':
-                    return SINGLE_QUOTED;
-                case '|':
-                    return LITERAL;
-                case '>':
-                    return FOLDED;
-                default:
-                    throw new YamlEngineException("Unknown scalar style character: " + style);
-            }
-        }
     }
 }

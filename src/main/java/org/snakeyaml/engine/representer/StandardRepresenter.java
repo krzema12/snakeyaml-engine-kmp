@@ -356,7 +356,9 @@ public class StandardRepresenter extends BaseRepresenter {
         public Node representData(Object data) {
             Optional<?> opt = (Optional<?>) data;
             if(opt.isPresent()) {
-                return represent(opt.get());
+                Node node = represent(opt.get());
+                node.setTag(new Tag(Optional.class));
+                return node;
             } else {
                 //TODO should we call null representer ?
                 return representScalar(Tag.NULL, "null");

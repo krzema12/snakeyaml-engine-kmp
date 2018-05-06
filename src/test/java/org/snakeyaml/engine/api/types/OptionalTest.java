@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Dump;
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.Load;
+import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 
@@ -37,7 +39,7 @@ class OptionalTest {
     void representOptional(TestInfo testInfo) {
         StandardRepresenter standardRepresenter = new StandardRepresenter();
         Node node = standardRepresenter.represent(Optional.of("a"));
-        assertEquals("tag:yaml.org,2002:str", node.getTag().getValue());
+        assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
     }
 
     @Test
@@ -54,11 +56,11 @@ class OptionalTest {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of("a"));
-        assertEquals("a\n", str);
+        assertEquals("!!java.util.Optional 'a'\n", str);
     }
 
     @Test
-    @DisplayName("Dump Optional as its value")
+    @DisplayName("Dump empty Optional as null")
     void dumpEmptyOptional(TestInfo testInfo) {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
@@ -72,7 +74,43 @@ class OptionalTest {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
-        assertEquals("[2, null, a]\n", str);
+        assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
     }
 
+    @Test
+    @DisplayName("Dump Optionals")
+    void dumpListOfOptional2(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        String str = dump.dumpToString(Optional.of(Lists.newArrayList(1,2)));
+        assertEquals("!!java.util.Optional [1, 2]\n", str);
+    }
+
+    // parse
+    @Test
+    @DisplayName("Optional 'a' is parsed")
+    void parseOptional(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional a");
+        assertEquals(Optional.of("a"), str);
+    }
+
+    @Test
+    @DisplayName("Empty Optional parsed")
+    void parseEmptyOptional(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional null");
+        assertEquals(Optional.empty(), str);
+    }
+
+    @Test
+    @DisplayName("Empty Optional parsed")
+    void parseEmptyOptional2(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional ");
+        assertEquals(Optional.empty(), str);
+    }
 }

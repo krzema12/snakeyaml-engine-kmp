@@ -36,6 +36,7 @@ import org.snakeyaml.engine.external.biz.base64Coder.Base64Coder;
 import org.snakeyaml.engine.nodes.MappingNode;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.nodes.NodeTuple;
+import org.snakeyaml.engine.nodes.NodeType;
 import org.snakeyaml.engine.nodes.ScalarNode;
 import org.snakeyaml.engine.nodes.SequenceNode;
 import org.snakeyaml.engine.nodes.Tag;
@@ -58,6 +59,7 @@ public class StandardConstructor extends BaseConstructor {
         this.tagConstructors.put(Tag.MAP, new ConstructYamlMap());
 
         this.tagConstructors.put(new Tag(UUID.class), new ConstructUuidClass());
+        this.tagConstructors.put(new Tag(Optional.class), new ConstructOptionalClass());
     }
 
     protected void flattenMapping(MappingNode node) {
@@ -314,6 +316,22 @@ public class StandardConstructor extends BaseConstructor {
         public Object construct(Node node) {
             String uuidValue = constructScalar((ScalarNode) node);
             return UUID.fromString(uuidValue);
+        }
+    }
+
+    public class ConstructOptionalClass implements ConstructNode {
+        @Override
+        public Object construct(Node node) {
+            if (node.getNodeType() != NodeType.SCALAR) {
+                throw new ConstructorException("while constructing Optional", Optional.empty(), "found non scalar node", node.getStartMark());
+            }
+            String value = constructScalar((ScalarNode) node);
+            Tag implicitTag = settings.getScalarResolver().resolve(value, true);
+            if (implicitTag.equals(Tag.NULL)) {
+                return Optional.empty();
+            } else {
+                return Optional.of(value);
+            }
         }
     }
 

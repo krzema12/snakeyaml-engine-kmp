@@ -15,7 +15,9 @@
  */
 package org.snakeyaml.engine.representer;
 
-import com.google.common.collect.TreeRangeSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,21 +25,11 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Node;
 
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.google.common.collect.TreeRangeSet;
 
 @Tag("fast")
 class StandardRepresenterTest {
     private StandardRepresenter standardRepresenter = new StandardRepresenter();
-
-    @Test
-    @DisplayName("Represent UUID as node with global tag")
-    void representUUID(TestInfo testInfo) {
-        Node node = standardRepresenter.represent(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"));
-        assertEquals("tag:yaml.org,2002:java.util.UUID", node.getTag().getValue());
-    }
 
     @Test
     @DisplayName("Represent unknown class")

@@ -40,14 +40,11 @@ import org.snakeyaml.engine.nodes.Tag;
 
 public abstract class BaseConstructor {
 
+    protected LoadSettings settings;
     /**
      * It maps the (explicit or implicit) tag to the Construct implementation.
      */
-    protected final Map<Tag, ConstructNode> tagConstructors = new HashMap();
-
-    protected LoadSettings settings;
-
-
+    protected final Map<Tag, ConstructNode> tagConstructors;
     final Map<Node, Object> constructedObjects;
     private final Set<Node> recursiveObjects;
     private final ArrayList<RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>> maps2fill;
@@ -55,6 +52,7 @@ public abstract class BaseConstructor {
 
     public BaseConstructor(LoadSettings settings) {
         this.settings = settings;
+        tagConstructors = settings.getTagConstructors();
         constructedObjects = new HashMap();
         recursiveObjects = new HashSet();
         maps2fill = new ArrayList();
@@ -149,11 +147,11 @@ public abstract class BaseConstructor {
         if (node.getConstruct().isPresent()) {
             return node.getConstruct().get();
         } else {
-            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct());
+            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
         }
     }
 
-    abstract ConstructNode getDefaultConstruct();
+    abstract ConstructNode getDefaultConstruct(Node node);
 
     protected String constructScalar(ScalarNode node) {
         return node.getValue();

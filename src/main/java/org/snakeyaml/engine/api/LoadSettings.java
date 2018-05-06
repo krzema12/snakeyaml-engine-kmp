@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.function.Function;
 
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.exceptions.YamlVersionException;
+import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
 
@@ -37,6 +39,7 @@ import org.snakeyaml.engine.resolver.ScalarResolver;
 public final class LoadSettings {
     private String label;
     private Optional<ConstructNode> rootConstructNode;
+    private Map<Tag, ConstructNode> tagConstructors;
     private ScalarResolver scalarResolver;
     private Function<Integer, List> defaultList;
     private Function<Integer, Set> defaultSet;
@@ -49,6 +52,7 @@ public final class LoadSettings {
     public LoadSettings() {
         this.label = "reader";
         this.rootConstructNode = Optional.empty();
+        this.tagConstructors = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();
         this.defaultList = (initSize) -> new ArrayList(initSize);
         this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
@@ -78,6 +82,14 @@ public final class LoadSettings {
     public void setRootConstructNode(Optional<ConstructNode> rootConstructNode) {
         Objects.requireNonNull(rootConstructNode, "rootConstructNode cannot be null");
         this.rootConstructNode = rootConstructNode;
+    }
+
+    public Map<Tag, ConstructNode> getTagConstructors() {
+        return tagConstructors;
+    }
+
+    public void setTagConstructors(Map<Tag, ConstructNode> tagConstructors) {
+        this.tagConstructors = tagConstructors;
     }
 
     public ScalarResolver getScalarResolver() {

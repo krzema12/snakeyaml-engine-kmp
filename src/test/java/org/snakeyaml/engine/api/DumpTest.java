@@ -16,9 +16,6 @@
 package org.snakeyaml.engine.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -74,16 +71,6 @@ class DumpTest {
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
         assertEquals("{x: 1, y: 2, z: 3}\n", str);
-    }
-
-    @Test
-    @DisplayName("Dump UUID as string")
-    void dumpUuid(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
-        Dump dump = new Dump(settings);
-        StreamToString streamToString = new StreamToString();
-        dump.dump(UUID.fromString("37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc"), streamToString);
-        assertEquals("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n", streamToString.toString());
     }
 
     @Test

@@ -168,7 +168,7 @@ public class StandardConstructor extends BaseConstructor {
     }
 
     @Override
-    ConstructNode getDefaultConstruct() {
+    ConstructNode getDefaultConstruct(Node node) {
         return new ConstructUndefined();
     }
 
@@ -210,7 +210,7 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlInt implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            String value = constructScalar((ScalarNode) node).toString().replaceAll("_", "");
+            String value = constructScalar((ScalarNode) node).replaceAll("_", "");
             int sign = +1;
             char first = value.charAt(0);
             if (first == '-') {
@@ -422,8 +422,7 @@ public class StandardConstructor extends BaseConstructor {
         @Override
         public Object construct(Node node) {
             throw new ConstructorException(null, Optional.empty(),
-                    "could not determine a constructor for the tag " + node.getTag(),
-                    node.getStartMark());
+                    "could not determine a constructor for the tag " + node.getTag(), node.getStartMark());
         }
     }
 }

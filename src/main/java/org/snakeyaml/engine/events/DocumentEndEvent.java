@@ -42,8 +42,8 @@ public final class DocumentEndEvent extends Event {
     }
 
     @Override
-    public boolean isEvent(Event.ID id) {
-        return ID.DocumentEnd == id;
+    public ID getEventId() {
+        return ID.DocumentEnd;
     }
 
     @Override

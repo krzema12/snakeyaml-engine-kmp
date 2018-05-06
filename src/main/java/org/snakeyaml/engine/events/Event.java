@@ -54,7 +54,11 @@ public abstract class Event {
         return endMark;
     }
 
-    public abstract boolean isEvent(Event.ID id);
+    public final boolean isEvent(Event.ID id) {
+        return getEventId() == id;
+    }
+
+    public abstract Event.ID getEventId();
 
     /*
      * for tests only

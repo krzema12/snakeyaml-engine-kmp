@@ -68,8 +68,8 @@ public final class DocumentStartEvent extends Event {
     }
 
     @Override
-    public boolean isEvent(Event.ID id) {
-        return ID.DocumentStart == id;
+    public ID getEventId() {
+        return ID.DocumentStart;
     }
 
     @Override

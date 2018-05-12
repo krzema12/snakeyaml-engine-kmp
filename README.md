@@ -24,7 +24,7 @@ The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be support
 * Relatively sensible error messages (can be switched off to improve performance).
 * Tested with Java 8, 9, 10 (thanks to Docker)
 
-## TODO (without priority)
+## TODO (without priority) ##
 * coverage
 * parse Optional (non scalar)
 * parse Iterator

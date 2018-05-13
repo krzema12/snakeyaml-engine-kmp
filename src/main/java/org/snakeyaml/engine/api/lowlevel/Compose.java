@@ -34,7 +34,7 @@ public class Compose {
     private LoadSettings settings;
 
     /**
-     * Create
+     * Create instance with provided {@link LoadSettings}
      *
      * @param settings - configuration
      */
@@ -47,7 +47,7 @@ public class Compose {
      * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present (it will be parsed as content)
-     * @return parsed events
+     * @return parsed {@link Node} if available
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeReader(Reader yaml) {
@@ -59,7 +59,7 @@ public class Compose {
      * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
-     * @return parsed events
+     * @return parsed {@link Node} if available
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeInputStream(InputStream yaml) {
@@ -71,7 +71,7 @@ public class Compose {
      * Parse a YAML stream and produce {@link Node}
      *
      * @param yaml - YAML document(s).
-     * @return parsed events
+     * @return parsed {@link Node} if available
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
     public Optional<Node> composeString(String yaml) {

@@ -28,14 +28,14 @@ import org.snakeyaml.engine.parser.ParserImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
 
 /**
- * Read the input stream and parse the content into events (opposite for Present or emit)
+ * Read the input stream and parse the content into events (opposite for Present or Emit)
  */
 public class Parse {
 
     private LoadSettings settings;
 
     /**
-     * Create
+     * Create instance with provided {@link LoadSettings}
      *
      * @param settings - configuration
      */
@@ -47,24 +47,24 @@ public class Parse {
     /**
      * Parse a YAML stream and produce parsing events.
      *
-     * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
-     *             (it will be parsed as content)
+     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
      * @return parsed events
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
-    public Iterable<Event> parseReader(InputStream yaml) {
+    public Iterable<Event> parseInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
         return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings);
     }
 
     /**
-     * Parse a YAML stream and produce parsing events.
+     * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM must not be present
+     * (it will be parsed as content)
      *
-     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
+     * @param yaml - YAML document(s).
      * @return parsed events
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
      */
-    public Iterable<Event> parseInputStream(Reader yaml) {
+    public Iterable<Event> parseReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
         return () -> new ParserImpl(new StreamReader(yaml, settings), settings);
     }

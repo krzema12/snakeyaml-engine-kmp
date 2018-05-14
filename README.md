@@ -35,6 +35,14 @@ The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be support
 * fix TODOs in code 
 * add Javadoc for public methods
 
+apps to support
+* jackson, java 8, no JavaBeans
+* testng, java 8, JavaBeans
+* spring boot -> jackson
+* swagger -> jackson
+* play -> no
+* Liquibase, java 7
+
 ## Info ##
  * [Changes](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Changes)
  * [Documentation](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation)

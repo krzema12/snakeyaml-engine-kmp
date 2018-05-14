@@ -18,6 +18,8 @@ package org.snakeyaml.engine.composer;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.exceptions.ComposerException;
+import org.snakeyaml.engine.nodes.Node;
+import org.snakeyaml.engine.utils.TestUtils;
 
 @Tag("fast")
 class ComposerTest {
@@ -38,5 +42,17 @@ class ComposerTest {
         assertTrue(exception.getMessage().contains("but found another document"));
     }
 
+    @Test
+    void failToComposeUnknownAlias(TestInfo testInfo) {
+        ComposerException exception = assertThrows(ComposerException.class, () ->
+                new Compose(new LoadSettings()).composeString("[a, *id b]"));
+        assertTrue(exception.getMessage().contains("found undefined alias id"), exception.getMessage());
+    }
 
+    @Test
+    void composeMergeExample(TestInfo testInfo) {
+        Compose compose = new Compose(new LoadSettings());
+        Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
+        assertTrue(node.isPresent());
+    }
 }

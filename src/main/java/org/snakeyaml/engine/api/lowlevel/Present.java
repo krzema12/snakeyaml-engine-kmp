@@ -55,11 +55,6 @@ class YamlStringWriterStream implements StreamDataWriter {
     StringWriter writer = new StringWriter();
 
     @Override
-    public void flush() {
-        writer.flush();
-    }
-
-    @Override
     public void write(String str) {
         writer.write(str);
     }

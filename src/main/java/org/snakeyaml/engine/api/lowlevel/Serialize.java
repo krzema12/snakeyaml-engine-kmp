@@ -31,7 +31,7 @@ public class Serialize {
     private final DumpSettings settings;
 
     /**
-     * Create
+     * Create instance with provided {@link DumpSettings}
      *
      * @param settings - configuration
      */
@@ -40,11 +40,25 @@ public class Serialize {
         this.settings = settings;
     }
 
+    /**
+     * Serialize a {@link Node} and produce events.
+     *
+     * @param node - {@link Node} to serialize
+     * @return serialized events
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+     */
     public List<Event> serializeOne(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
         return serializeAll(Collections.singletonList(node));
     }
 
+    /**
+     * Serialize {@link Node}s and produce events.
+     *
+     * @param nodes - {@link Node}s to serialize
+     * @return serialized events
+     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+     */
     public List<Event> serializeAll(List<Node> nodes) {
         Objects.requireNonNull(nodes, "Nodes cannot be null");
         Events events = new Events();

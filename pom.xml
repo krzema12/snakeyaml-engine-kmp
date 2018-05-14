@@ -268,7 +268,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>site</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>format</goal>
                         </goals>

@@ -233,11 +233,11 @@ public final class Emitter implements Emitable {
             return true;
         }
         Event event = events.peek();
-        if (event instanceof DocumentStartEvent) {
+        if (event.isEvent(Event.ID.DocumentStart)) {
             return needEvents(1);
-        } else if (event instanceof SequenceStartEvent) {
+        } else if (event.isEvent(Event.ID.SequenceStart)) {
             return needEvents(2);
-        } else if (event instanceof MappingStartEvent) {
+        } else if (event.isEvent(Event.ID.MappingStart)) {
             return needEvents(3);
         } else {
             return false;
@@ -250,11 +250,11 @@ public final class Emitter implements Emitable {
         iter.next();
         while (iter.hasNext()) {
             Event event = iter.next();
-            if (event instanceof DocumentStartEvent || event instanceof CollectionStartEvent) {
+            if (event.isEvent(Event.ID.DocumentStart) || event instanceof CollectionStartEvent) {
                 level++;
-            } else if (event instanceof DocumentEndEvent || event instanceof CollectionEndEvent) {
+            } else if (event.isEvent(Event.ID.DocumentEnd) || event instanceof CollectionEndEvent) {
                 level--;
-            } else if (event instanceof StreamEndEvent) {
+            } else if (event.isEvent(Event.ID.StreamEnd)) {
                 level = -1;
             }
             if (level < 0) {
@@ -283,7 +283,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectStreamStart implements EmitterState {
         public void expect() {
-            if (event instanceof StreamStartEvent) {
+            if (event.isEvent(Event.ID.StreamStart)) {
                 writeStreamStart();
                 state = new ExpectFirstDocumentStart();
             } else {
@@ -314,7 +314,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (event instanceof DocumentStartEvent) {
+            if (event.isEvent(Event.ID.DocumentStart)) {
                 DocumentStartEvent ev = (DocumentStartEvent) event;
                 if ((ev.getSpecVersion().isPresent() || ev.getTags() != null) && openEnded) {
                     writeIndicator("...", true, false, false);
@@ -344,7 +344,7 @@ public final class Emitter implements Emitable {
                     }
                 }
                 state = new ExpectDocumentRoot();
-            } else if (event instanceof StreamEndEvent) {
+            } else if (event.getEventId() == Event.ID.StreamEnd) {
                 writeStreamEnd();
                 state = new ExpectNothing();
             } else {
@@ -355,7 +355,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectDocumentEnd implements EmitterState {
         public void expect() {
-            if (event instanceof DocumentEndEvent) {
+            if (event.getEventId() == Event.ID.DocumentEnd) {
                 writeIndent();
                 if (((DocumentEndEvent) event).isExplicit()) {
                     writeIndicator("...", true, false, false);
@@ -382,14 +382,14 @@ public final class Emitter implements Emitable {
         rootContext = root;
         mappingContext = mapping;
         simpleKeyContext = simpleKey;
-        if (event instanceof AliasEvent) {
+        if (event.isEvent(Event.ID.Alias)) {
             expectAlias();
-        } else if (event instanceof ScalarEvent || event instanceof CollectionStartEvent) {
+        } else if (event.isEvent(Event.ID.Scalar) || event instanceof CollectionStartEvent) {
             processAnchor("&");
             processTag();
-            if (event instanceof ScalarEvent) {
+            if (event.isEvent(Event.ID.Scalar)) {
                 expectScalar();
-            } else if (event instanceof SequenceStartEvent) {
+            } else if (event.isEvent(Event.ID.SequenceStart)) {
                 if (flowLevel != 0 || canonical || ((SequenceStartEvent) event).isFlow()
                         || checkEmptySequence()) {
                     expectFlowSequence();
@@ -438,7 +438,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFirstFlowSequenceItem implements EmitterState {
         public void expect() {
-            if (event instanceof SequenceEndEvent) {
+            if (event.isEvent(Event.ID.SequenceEnd)) {
                 indent = indents.pop();
                 flowLevel--;
                 writeIndicator("]", false, false, false);
@@ -455,7 +455,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFlowSequenceItem implements EmitterState {
         public void expect() {
-            if (event instanceof SequenceEndEvent) {
+            if (event.isEvent(Event.ID.SequenceEnd)) {
                 indent = indents.pop();
                 flowLevel--;
                 if (canonical) {
@@ -492,7 +492,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFirstFlowMappingKey implements EmitterState {
         public void expect() {
-            if (event instanceof MappingEndEvent) {
+            if (event.isEvent(Event.ID.MappingEnd)) {
                 indent = indents.pop();
                 flowLevel--;
                 writeIndicator("}", false, false, false);
@@ -515,7 +515,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFlowMappingKey implements EmitterState {
         public void expect() {
-            if (event instanceof MappingEndEvent) {
+            if (event.isEvent(Event.ID.MappingEnd)) {
                 indent = indents.pop();
                 flowLevel--;
                 if (canonical) {
@@ -585,7 +585,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (!this.first && event instanceof SequenceEndEvent) {
+            if (!this.first && event.isEvent(Event.ID.SequenceEnd)) {
                 indent = indents.pop();
                 state = states.pop();
             } else {
@@ -618,7 +618,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (!this.first && event instanceof MappingEndEvent) {
+            if (!this.first && event.isEvent(Event.ID.MappingEnd)) {
                 indent = indents.pop();
                 state = states.pop();
             } else {
@@ -655,19 +655,19 @@ public final class Emitter implements Emitable {
     // Checkers.
 
     private boolean checkEmptySequence() {
-        return event instanceof SequenceStartEvent && !events.isEmpty() && events.peek() instanceof SequenceEndEvent;
+        return event.isEvent(Event.ID.SequenceStart) && !events.isEmpty() && events.peek().isEvent(Event.ID.SequenceEnd);
     }
 
     private boolean checkEmptyMapping() {
-        return event instanceof MappingStartEvent && !events.isEmpty() && events.peek() instanceof MappingEndEvent;
+        return event.isEvent(Event.ID.MappingStart) && !events.isEmpty() && events.peek().isEvent(Event.ID.MappingEnd);
     }
 
     private boolean checkEmptyDocument() {
-        if (!(event instanceof DocumentStartEvent) || events.isEmpty()) {
+        if (!(event.isEvent(Event.ID.DocumentStart)) || events.isEmpty()) {
             return false;
         }
         Event event = events.peek();
-        if (event instanceof ScalarEvent) {
+        if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent e = (ScalarEvent) event;
             return e.getAnchor() == null && e.getTag() == null && e.getImplicit() != null && e
                     .getValue().length() == 0;
@@ -684,7 +684,7 @@ public final class Emitter implements Emitable {
             length += preparedAnchor.get().getAnchor().length();
         }
         Optional<String> tag = Optional.empty();
-        if (event instanceof ScalarEvent) {
+        if (event.isEvent(Event.ID.Scalar)) {
             tag = ((ScalarEvent) event).getTag();
         } else if (event instanceof CollectionStartEvent) {
             tag = ((CollectionStartEvent) event).getTag();
@@ -695,14 +695,14 @@ public final class Emitter implements Emitable {
             }
             length += preparedTag.length();
         }
-        if (event instanceof ScalarEvent) {
+        if (event.isEvent(Event.ID.Scalar)) {
             if (analysis == null) {
                 analysis = analyzeScalar(((ScalarEvent) event).getValue());
             }
             length += analysis.scalar.length();
         }
-        return length < 128 && (event instanceof AliasEvent
-                || (event instanceof ScalarEvent && !analysis.empty && !analysis.multiline)
+        return length < 128 && (event.isEvent(Event.ID.Alias)
+                || (event.isEvent(Event.ID.Scalar) && !analysis.empty && !analysis.multiline)
                 || checkEmptySequence() || checkEmptyMapping());
     }
 
@@ -724,7 +724,7 @@ public final class Emitter implements Emitable {
 
     private void processTag() {
         String tag = null;
-        if (event instanceof ScalarEvent) {
+        if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent ev = (ScalarEvent) event;
             tag = ev.getTag().orElse(null);
             if (style == null) {

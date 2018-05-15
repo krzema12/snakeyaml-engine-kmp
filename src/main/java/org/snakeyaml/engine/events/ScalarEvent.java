@@ -121,8 +121,9 @@ public final class ScalarEvent extends NodeEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("=VAL");
         getAnchor().ifPresent(a -> builder.append(" &" + a));
-        if (!implicit.canOmitTagInNonPlainScalar() && !implicit.canOmitTagInPlainScalar())
+        if (implicit.bothFalse()) {
             getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+        }
         builder.append(" ");
         builder.append(getStyle().toString());
         builder.append(escapedValue());

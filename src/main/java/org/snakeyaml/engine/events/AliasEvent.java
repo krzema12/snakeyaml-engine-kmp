@@ -42,8 +42,4 @@ public final class AliasEvent extends NodeEvent {
     public String toString() {
         return "=ALI *" + getAnchor().get();
     }
-
-    public Anchor getAlias() {
-        return getAnchor().get();
-    }
 }

@@ -94,9 +94,8 @@ public class EventRepresentation {
             if (e.getTag().isPresent()) {
                 String tag = e.getTag().get();
                 ImplicitTuple implicit = e.getImplicit();
-                if (!implicit.canOmitTagInNonPlainScalar() && !implicit.canOmitTagInPlainScalar()) {
+                if (implicit.bothFalse()) {
                     if (!data.contains("<" + e.getTag().get() + ">")) return false;
-
                 }
             }
             String end = String.valueOf(e.getStyle() + e.escapedValue());
@@ -104,8 +103,6 @@ public class EventRepresentation {
                 return false;
             }
         }
-
         return true;
     }
-
 }

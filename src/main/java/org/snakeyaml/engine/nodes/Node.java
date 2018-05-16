@@ -62,15 +62,6 @@ public abstract class Node {
     }
 
     /**
-     * Create Node to be emitted
-     *
-     * @param tag - the tag to emit
-     */
-    public Node(Tag tag) {
-        this(tag, Optional.empty(), Optional.empty());
-    }
-
-    /**
      * Tag of this node.
      * <p>
      * Every node has a tag assigned. The tag is either local or global.

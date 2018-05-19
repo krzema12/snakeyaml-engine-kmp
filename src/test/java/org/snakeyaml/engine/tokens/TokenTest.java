@@ -16,11 +16,15 @@
 package org.snakeyaml.engine.tokens;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 @org.junit.jupiter.api.Tag("fast")
 class TokenTest {
@@ -28,6 +32,14 @@ class TokenTest {
     void toString(TestInfo testInfo) {
         Token token = new ScalarToken("a", true, Optional.empty(), Optional.empty());
         assertEquals("<scalar>", token.toString());
+    }
+
+    @Test
+    void invalidDirectiveToken(TestInfo testInfo) {
+        List<String> list = Collections.singletonList("key");
+        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
+                new DirectiveToken(DirectiveToken.YAML_DIRECTIVE, Optional.of(list), Optional.empty(), Optional.empty()));
+        assertEquals("Two strings/integers must be provided instead of 1", exception.getMessage());
     }
 }
 

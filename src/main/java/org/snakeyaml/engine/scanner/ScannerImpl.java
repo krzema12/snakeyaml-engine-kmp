@@ -1131,12 +1131,12 @@ public final class ScannerImpl implements Scanner {
         Optional<Mark> endMark;
         reader.forward();
         String name = scanDirectiveName(startMark);
-        List<?> value = null;
-        if ("YAML".equals(name)) {
-            value = scanYamlDirectiveValue(startMark);
+        Optional<List<?>> value;
+        if (DirectiveToken.YAML_DIRECTIVE.equals(name)) {
+            value = Optional.of(scanYamlDirectiveValue(startMark));
             endMark = reader.getMark();
-        } else if ("TAG".equals(name)) {
-            value = scanTagDirectiveValue(startMark);
+        } else if (DirectiveToken.TAG_DIRECTIVE.equals(name)) {
+            value = Optional.of(scanTagDirectiveValue(startMark));
             endMark = reader.getMark();
         } else {
             endMark = reader.getMark();
@@ -1147,6 +1147,7 @@ public final class ScannerImpl implements Scanner {
             if (ff > 0) {
                 reader.forward(ff);
             }
+            value = Optional.empty();
         }
         scanDirectiveIgnoredLine(startMark);
         return new DirectiveToken(name, value, startMark, endMark);

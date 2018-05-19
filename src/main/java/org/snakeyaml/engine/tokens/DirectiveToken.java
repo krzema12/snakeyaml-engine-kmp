@@ -17,6 +17,7 @@ package org.snakeyaml.engine.tokens;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
@@ -24,14 +25,18 @@ import org.snakeyaml.engine.exceptions.YamlEngineException;
 
 public final class DirectiveToken<T> extends Token {
     private final String name;
-    private final List<T> value;
+    private final Optional<List<T>> value;
 
-    public DirectiveToken(String name, List<T> value, Optional<Mark> startMark, Optional<Mark> endMark) {
+    public static final String YAML_DIRECTIVE = "YAML";
+    public static final String TAG_DIRECTIVE = "TAG";
+
+    public DirectiveToken(String name, Optional<List<T>> value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.name = name;
-        if (value != null && value.size() != 2) {
-            throw new YamlEngineException("Two strings must be provided instead of "
-                    + String.valueOf(value.size()));
+        Objects.requireNonNull(value);
+        if (value.isPresent() && value.get().size() != 2) {
+            throw new YamlEngineException("Two strings/integers must be provided instead of "
+                    + String.valueOf(value.get().size()));
         }
         this.value = value;
     }
@@ -40,7 +45,7 @@ public final class DirectiveToken<T> extends Token {
         return this.name;
     }
 
-    public List<T> getValue() {
+    public Optional<List<T>> getValue() {
         return this.value;
     }
 

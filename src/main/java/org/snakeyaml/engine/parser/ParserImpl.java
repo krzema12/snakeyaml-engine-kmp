@@ -301,16 +301,16 @@ public class ParserImpl implements Parser {
         while (scanner.checkToken(Token.ID.Directive)) {
             @SuppressWarnings("rawtypes")
             DirectiveToken token = (DirectiveToken) scanner.next();
-            if (token.getName().equals("YAML")) {
+            if (token.getName().equals(DirectiveToken.YAML_DIRECTIVE)) {
                 if (yamlSpecVersion.isPresent()) {
                     throw new ParserException("found duplicate YAML directive", token.getStartMark());
                 }
-                List<Integer> value = (List<Integer>) token.getValue();
+                List<Integer> value = (List<Integer>) token.getValue().get();
                 Integer major = value.get(0);
                 Integer minor = value.get(1);
                 yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(new SpecVersion(major, minor)));
-            } else if (token.getName().equals("TAG")) {
-                List<String> value = (List<String>) token.getValue();
+            } else if (token.getName().equals(DirectiveToken.TAG_DIRECTIVE)) {
+                List<String> value = (List<String>) token.getValue().get();
                 String handle = value.get(0);
                 String prefix = value.get(1);
                 if (tagHandles.containsKey(handle)) {

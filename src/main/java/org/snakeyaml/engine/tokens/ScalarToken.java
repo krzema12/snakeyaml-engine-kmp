@@ -26,10 +26,10 @@ public final class ScalarToken extends Token {
     private final ScalarStyle style;
 
     public ScalarToken(String value, boolean plain, Optional<Mark> startMark, Optional<Mark> endMark) {
-        this(value, plain, startMark, endMark, ScalarStyle.PLAIN);
+        this(value, plain, ScalarStyle.PLAIN, startMark, endMark);
     }
 
-    public ScalarToken(String value, boolean plain, Optional<Mark> startMark, Optional<Mark> endMark, ScalarStyle style) {
+    public ScalarToken(String value, boolean plain, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
         this.value = value;
         this.plain = plain;

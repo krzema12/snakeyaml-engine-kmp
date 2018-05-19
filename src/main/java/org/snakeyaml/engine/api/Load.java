@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.api;
 
-import java.io.StringReader;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +29,8 @@ public class Load {
     private LoadSettings settings;
 
     /**
+     * Create instance to parse the incoming YAML data and create Java instances
+     *
      * @param settings - configuration
      */
     public Load(LoadSettings settings) {
@@ -40,7 +41,7 @@ public class Load {
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
         Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(
-                new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
+                yaml, settings), settings), settings.getScalarResolver()).getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }

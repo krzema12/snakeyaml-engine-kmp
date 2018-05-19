@@ -344,7 +344,7 @@ public final class ScannerImpl implements Scanner {
             fetchPlain();
             return;
         }
-        // No? It's an error. Let's produce a nice error message.We do this by
+        // No? It's an error. Let's produce a nice error message. We do this by
         // converting escaped characters into their escape sequences. This is a
         // backwards use of the ESCAPE_REPLACEMENTS map.
         String chRepresentation = String.valueOf(Character.toChars(c));
@@ -1899,7 +1899,7 @@ public final class ScannerImpl implements Scanner {
                 break;
             }
         }
-        return new ScalarToken(chunks.toString(), startMark, endMark, true);
+        return new ScalarToken(chunks.toString(),true, startMark, endMark);
     }
 
     /**

@@ -15,23 +15,19 @@
  */
 package org.snakeyaml.engine.tokens;
 
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class TagTuple {
-    private final String handle;
-    private final String suffix;
+import java.util.Optional;
 
-    public TagTuple(String handle, String suffix) {
-        Objects.requireNonNull(suffix, "Suffix must be provided.");
-        this.handle = handle;
-        this.suffix = suffix;
-    }
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-    public String getHandle() {
-        return handle;
-    }
-
-    public String getSuffix() {
-        return suffix;
+@org.junit.jupiter.api.Tag("fast")
+class TokenTest {
+    @Test
+    void toString(TestInfo testInfo) {
+        Token token = new ScalarToken("a", true, Optional.empty(), Optional.empty());
+        assertEquals("<scalar>", token.toString());
     }
 }
+

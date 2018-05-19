@@ -343,7 +343,7 @@ public class CanonicalScanner implements Scanner {
         }
         chunks.append(data.substring(start, index));
         index += Character.charCount(data.codePointAt(index));
-        return new ScalarToken(chunks.toString(), mark, mark, false);
+        return new ScalarToken(chunks.toString(),false, mark, mark);
     }
 
     private void findToken() {

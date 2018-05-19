@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.tokens;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.exceptions.Mark;
@@ -59,9 +60,8 @@ public abstract class Token {
     private final Optional<Mark> endMark;
 
     public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
-        if (startMark == null || endMark == null) {
-            throw new YamlEngineException("Token requires marks.");
-        }
+        Objects.requireNonNull(startMark);
+        Objects.requireNonNull(endMark);
         this.startMark = startMark;
         this.endMark = endMark;
     }

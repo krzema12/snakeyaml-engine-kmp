@@ -69,6 +69,7 @@ public class JsonScalarResolver implements ScalarResolver {
     }
 
     protected void addImplicitResolvers() {
+        addImplicitResolver(Tag.NULL, EMPTY, null);
         addImplicitResolver(Tag.BOOL, BOOL, "tf");
         /*
          * INT must be before FLOAT because the regular expression for FLOAT
@@ -79,7 +80,6 @@ public class JsonScalarResolver implements ScalarResolver {
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
         addImplicitResolver(Tag.MERGE, MERGE, "<");
         addImplicitResolver(Tag.NULL, NULL, "n\u0000");
-        addImplicitResolver(Tag.NULL, EMPTY, null);
     }
 
     public JsonScalarResolver() {

@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.resolver;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.nodes.Tag;
@@ -25,9 +26,8 @@ final class ResolverTuple {
     private final Pattern regexp;
 
     public ResolverTuple(Tag tag, Pattern regexp) {
-        if (tag == null || regexp == null) {
-            throw new NullPointerException("Tag and regexp must be provided.");
-        }
+        Objects.requireNonNull(tag, "Tag must be provided");
+        Objects.requireNonNull(regexp, "regexp must be provided");
         this.tag = tag;
         this.regexp = regexp;
     }

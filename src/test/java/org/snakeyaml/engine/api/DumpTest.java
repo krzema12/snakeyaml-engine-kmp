@@ -86,4 +86,18 @@ class DumpTest {
                 "...\n" +
                 "--- true\n", streamToString.toString());
     }
+
+    @Test
+    @DisplayName("Dump all instances")
+    void dumpAllToString(TestInfo testInfo) {
+        DumpSettings settings = new DumpSettings();
+        Dump dump = new Dump(settings);
+        //StreamToString streamToString = new StreamToString();
+        String output = dump.dumpAllToString(Lists.newArrayList("a", null, Boolean.TRUE).iterator());
+        assertEquals("a\n" +
+                "...\n" +
+                "--- null\n" +
+                "...\n" +
+                "--- true\n", output);
+    }
 }

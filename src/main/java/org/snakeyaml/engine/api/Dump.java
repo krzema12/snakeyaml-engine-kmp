@@ -30,17 +30,12 @@ public class Dump {
     private DumpSettings settings;
 
     /**
+     * Create instance
      * @param settings - configuration
      */
     public Dump(DumpSettings settings) {
         Objects.requireNonNull(settings, "DumpSettings cannot be null");
         this.settings = settings;
-    }
-
-    public String dumpToString(Object yaml) {
-        StreamToString writer = new StreamToString();
-        dump(yaml, writer);
-        return writer.toString();
     }
 
     /**
@@ -54,6 +49,11 @@ public class Dump {
         dumpAll(iter, streamDataWriter);
     }
 
+    public String dumpToString(Object yaml) {
+        StreamToString writer = new StreamToString();
+        dump(yaml, writer);
+        return writer.toString();
+    }
 
     public void dumpAll(Iterator<? extends Object> instancesIterator, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter(settings);
@@ -65,6 +65,12 @@ public class Dump {
             serializer.serialize(node);
         }
         serializer.close();
+    }
+
+    public String dumpAllToString(Iterator<? extends Object> instancesIterator) {
+        StreamToString writer = new StreamToString();
+        dumpAll(instancesIterator, writer);
+        return writer.toString();
     }
 }
 

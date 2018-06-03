@@ -21,6 +21,7 @@
         <maven-site-plugin.version>3.6</maven-site-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <jdk9-illegal-access-level>deny</jdk9-illegal-access-level>
+        <guava.version>24.1-jre</guava.version>
     </properties>
     <name>SnakeYAML Engine</name>
     <description>Core YAML 1.2 parser and emitter for Java</description>
@@ -71,7 +72,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1-jre</version>
+            <version>${guava.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

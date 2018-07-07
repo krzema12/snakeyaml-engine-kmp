@@ -31,6 +31,7 @@ import org.snakeyaml.engine.serializer.NumberAnchorGenerator;
 
 /**
  * Fine tuning serializing/dumping
+ * TODO add JavaDoc for all methods
  */
 public final class DumpSettings {
     private String label;

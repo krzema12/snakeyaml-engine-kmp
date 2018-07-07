@@ -17,7 +17,7 @@ package org.snakeyaml.engine.exceptions;
 
 import org.snakeyaml.engine.common.SpecVersion;
 
-public class YamlVersionException extends RuntimeException {
+public class YamlVersionException extends YamlEngineException {
     private final SpecVersion specVersion;
 
     public YamlVersionException(SpecVersion specVersion) {

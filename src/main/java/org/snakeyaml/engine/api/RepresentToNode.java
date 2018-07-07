@@ -19,9 +19,8 @@ package org.snakeyaml.engine.api;
 import org.snakeyaml.engine.nodes.Node;
 
 /**
- * Create a Node Graph out of the provided Native Data Structure (Java
- * instance).
- * (this is opposite to Construct)
+ * Create a Node Graph out of the provided Native Data Structure (Java instance).
+ * (this is opposite to ConstructNode)
  *
  * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
  */

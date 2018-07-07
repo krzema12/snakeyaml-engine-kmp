@@ -24,6 +24,9 @@ import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.parser.ParserImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
 
+/**
+ * Common way to load any Java instance(s)
+ */
 public class Load {
 
     private LoadSettings settings;
@@ -38,6 +41,12 @@ public class Load {
         this.settings = settings;
     }
 
+    /**
+     * Parse a YAML document and create a Java instance
+     * @param yaml - YAML document
+     * @return parsed Java instance
+     * @throws org.snakeyaml.engine.exceptions.YamlEngineException if the YAML is not valid
+     */
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
         Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(
@@ -45,6 +54,9 @@ public class Load {
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
+
+    //TODO load from InputStream, from Reader
+    //TODO load iterator
 
 }
 

@@ -43,7 +43,7 @@ class EventTest {
     }
 
     @Test
-    void hashcodeiii(TestInfo testInfo) {
+    void bothMarks(TestInfo testInfo) {
         Mark fake = new Mark("a", 0,0,0, new int[0], 0);
         NullPointerException exception = assertThrows(NullPointerException.class, () ->
                 new StreamStartEvent(Optional.empty(), Optional.of(fake)));

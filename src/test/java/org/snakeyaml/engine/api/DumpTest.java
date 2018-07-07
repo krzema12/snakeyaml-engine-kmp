@@ -78,13 +78,13 @@ class DumpTest {
     void dumpAll(TestInfo testInfo) {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
-        StreamToString streamToString = new StreamToString();
-        dump.dumpAll(Lists.newArrayList("a", null, Boolean.TRUE).iterator(), streamToString);
+        StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
+        dump.dumpAll(Lists.newArrayList("a", null, Boolean.TRUE).iterator(), streamToStringWriter);
         assertEquals("a\n" +
                 "...\n" +
                 "--- null\n" +
                 "...\n" +
-                "--- true\n", streamToString.toString());
+                "--- true\n", streamToStringWriter.toString());
     }
 
     @Test
@@ -92,7 +92,7 @@ class DumpTest {
     void dumpAllToString(TestInfo testInfo) {
         DumpSettings settings = new DumpSettings();
         Dump dump = new Dump(settings);
-        //StreamToString streamToString = new StreamToString();
+        //StreamToStringWriter streamToString = new StreamToStringWriter();
         String output = dump.dumpAllToString(Lists.newArrayList("a", null, Boolean.TRUE).iterator());
         assertEquals("a\n" +
                 "...\n" +

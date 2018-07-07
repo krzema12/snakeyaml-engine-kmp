@@ -25,12 +25,16 @@ import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 import org.snakeyaml.engine.serializer.Serializer;
 
+/**
+ * Common way to serialize any Java instance(s)
+ */
 public class Dump {
 
     private DumpSettings settings;
 
     /**
      * Create instance
+     *
      * @param settings - configuration
      */
     public Dump(DumpSettings settings) {
@@ -39,22 +43,11 @@ public class Dump {
     }
 
     /**
-     * Do we need this way ???
+     * Dump all the instances from the iterator into a stream with every instance in a separate YAML document
      *
-     * @param yaml             - instance to serialize
-     * @param streamDataWriter - destination writer
+     * @param instancesIterator - instances to serialize
+     * @param streamDataWriter  - destination I/O writer
      */
-    public void dump(Object yaml, StreamDataWriter streamDataWriter) {
-        Iterator<? extends Object> iter = Collections.singleton(yaml).iterator();
-        dumpAll(iter, streamDataWriter);
-    }
-
-    public String dumpToString(Object yaml) {
-        StreamToString writer = new StreamToString();
-        dump(yaml, writer);
-        return writer.toString();
-    }
-
     public void dumpAll(Iterator<? extends Object> instancesIterator, StreamDataWriter streamDataWriter) {
         StandardRepresenter representer = new StandardRepresenter(settings);
         Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
@@ -67,14 +60,43 @@ public class Dump {
         serializer.close();
     }
 
+    /**
+     * Dump a single instance into a YAML document
+     *
+     * @param yaml             - instance to serialize
+     * @param streamDataWriter - destination I/O writer
+     */
+    public void dump(Object yaml, StreamDataWriter streamDataWriter) {
+        Iterator<? extends Object> iter = Collections.singleton(yaml).iterator();
+        dumpAll(iter, streamDataWriter);
+    }
+
+    /**
+     * Dump all the instances from the iterator into a stream with every instance in a separate YAML document
+     *
+     * @param instancesIterator - instances to serialize
+     * @return String representation of the YAML stream
+     */
     public String dumpAllToString(Iterator<? extends Object> instancesIterator) {
-        StreamToString writer = new StreamToString();
+        StreamToStringWriter writer = new StreamToStringWriter();
         dumpAll(instancesIterator, writer);
+        return writer.toString();
+    }
+
+    /**
+     * Dump all the instances from the iterator into a stream with every instance in a separate YAML document
+     *
+     * @param yaml - instance to serialize
+     * @return String representation of the YAML stream
+     */
+    public String dumpToString(Object yaml) {
+        StreamToStringWriter writer = new StreamToStringWriter();
+        dump(yaml, writer);
         return writer.toString();
     }
 }
 
-class StreamToString extends StringWriter implements StreamDataWriter {
+class StreamToStringWriter extends StringWriter implements StreamDataWriter {
 }
 
 

@@ -19,7 +19,7 @@ import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Node;
 
 /**
- * Provide a way to construct a Java instance out of the composed Node. Support
+ * Provide a way to construct a Java instance from the composed Node. Support
  * recursive objects if it is required. (create Native Data Structure out of
  * Node Graph)
  * (this is the opposite for Represent)

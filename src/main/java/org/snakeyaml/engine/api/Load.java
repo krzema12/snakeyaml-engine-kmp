@@ -15,6 +15,8 @@
  */
 package org.snakeyaml.engine.api;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,8 +43,25 @@ public class Load {
         this.settings = settings;
     }
 
+    public Object loadFromReader(Reader yamlReader) {
+        Objects.requireNonNull(yamlReader, "Reader cannot be null");
+        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(yamlReader,
+                settings), settings), settings.getScalarResolver()).getSingleNode();
+        StandardConstructor constructor = new StandardConstructor(settings);
+        return constructor.constructSingleDocument(nodeOptional);
+    }
+
+    public Object loadFromInputStream(InputStream yamlStream) {
+        Objects.requireNonNull(yamlStream, "InputStream cannot be null");
+        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yamlStream),
+                settings), settings), settings.getScalarResolver()).getSingleNode();
+        StandardConstructor constructor = new StandardConstructor(settings);
+        return constructor.constructSingleDocument(nodeOptional);
+    }
+
     /**
      * Parse a YAML document and create a Java instance
+     *
      * @param yaml - YAML document
      * @return parsed Java instance
      * @throws org.snakeyaml.engine.exceptions.YamlEngineException if the YAML is not valid

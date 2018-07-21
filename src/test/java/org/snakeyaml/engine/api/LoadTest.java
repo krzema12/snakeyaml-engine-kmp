@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -76,6 +79,24 @@ class LoadTest {
         Load load = new Load(settings);
         Double doubleValue = (Double) load.loadFromString("1.01");
         assertEquals(new Double(1.01), doubleValue);
+    }
+
+    @Test
+    @DisplayName("Load from InputStream")
+    void loadFromInputStream(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        String v = (String) load.loadFromInputStream(new ByteArrayInputStream("aaa".getBytes()));
+        assertEquals("aaa", v);
+    }
+
+    @Test
+    @DisplayName("Load from Reader")
+    void loadFromReader(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        String v = (String) load.loadFromReader(new StringReader("bbb"));
+        assertEquals("bbb", v);
     }
 
 }

@@ -83,7 +83,7 @@ public class Composer implements Iterator<Node> {
      * If the stream contains more than one document an exception is thrown.
      * </p>
      *
-     * @return The root node of the document or <code>null</code> if no document
+     * @return The root node of the document or <code>Optional.empty()</code> if no document
      * is available.
      */
     public Optional<Node> getSingleNode() {

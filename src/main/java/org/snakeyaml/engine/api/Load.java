@@ -17,6 +17,7 @@ package org.snakeyaml.engine.api;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ import org.snakeyaml.engine.parser.ParserImpl;
 import org.snakeyaml.engine.scanner.StreamReader;
 
 /**
- * Common way to load any Java instance(s)
+ * Common way to load Java instance(s)
  */
 public class Load {
 
@@ -43,18 +44,22 @@ public class Load {
         this.settings = settings;
     }
 
+    private Composer createComposer(LoadSettings settings, StreamReader streamReader) {
+        return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
+    }
+
+    //Load  a single document
+
     public Object loadFromReader(Reader yamlReader) {
         Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(yamlReader,
-                settings), settings), settings.getScalarResolver()).getSingleNode();
+        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(yamlReader, settings)).getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
 
     public Object loadFromInputStream(InputStream yamlStream) {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yamlStream),
-                settings), settings), settings.getScalarResolver()).getSingleNode();
+        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings)).getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
@@ -68,15 +73,72 @@ public class Load {
      */
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        Optional<Node> nodeOptional = new Composer(new ParserImpl(new StreamReader(
-                yaml, settings), settings), settings.getScalarResolver()).getSingleNode();
+        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(yaml, settings)).getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
 
-    //TODO load from InputStream, from Reader
-    //TODO load iterator
+    //Load all the documents
 
+    public Iterable<Object> loadAllFromInputStream(InputStream yamlStream) {
+        Composer composer = createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings));
+        StandardConstructor constructor = new StandardConstructor(settings);
+        Iterator<Object> result = new YamlIterator(composer, constructor);
+        return new YamlIterable(result);
+    }
+
+    public Iterable<Object> loadAllFromReader(Reader yamlReader) {
+        Composer composer = createComposer(settings, new StreamReader(yamlReader, settings));
+        StandardConstructor constructor = new StandardConstructor(settings);
+        Iterator<Object> result = new YamlIterator(composer, constructor);
+        return new YamlIterable(result);
+    }
+
+    public Iterable<Object> loadAllFromString(String yaml) {
+        Composer composer = createComposer(settings, new StreamReader(yaml, settings));
+        StandardConstructor constructor = new StandardConstructor(settings);
+        Iterator<Object> result = new YamlIterator(composer, constructor);
+        return new YamlIterable(result);
+    }
+
+    private static class YamlIterable implements Iterable<Object> {
+        private Iterator<Object> iterator;
+
+        public YamlIterable(Iterator<Object> iterator) {
+            this.iterator = iterator;
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+            return iterator;
+        }
+    }
+
+    private static class YamlIterator implements Iterator<Object> {
+        private Composer composer;
+        private StandardConstructor constructor;
+
+        public YamlIterator(Composer composer, StandardConstructor constructor) {
+            this.composer = composer;
+            this.constructor = constructor;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return composer.hasNext();
+        }
+
+        @Override
+        public Object next() {
+            Node node = composer.next();
+            return constructor.constructSingleDocument(Optional.of(node));
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Removing is not supported.");
+        }
+    }
 }
 
 

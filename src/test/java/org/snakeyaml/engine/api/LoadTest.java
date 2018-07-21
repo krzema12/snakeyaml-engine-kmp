@@ -16,11 +16,15 @@
 package org.snakeyaml.engine.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.util.Iterator;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -97,6 +101,52 @@ class LoadTest {
         Load load = new Load(settings);
         String v = (String) load.loadFromReader(new StringReader("bbb"));
         assertEquals("bbb", v);
+    }
+
+    @Test
+    @DisplayName("Load all from String")
+    void loadAllFromString(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        InputStream input = new ByteArrayInputStream("bbb\n---\nccc\n---\nddd".getBytes());
+        Iterable<Object> v = load.loadAllFromInputStream(input);
+        Iterator<Object> iter = v.iterator();
+        assertTrue(iter.hasNext());
+        Object o1 = iter.next();
+        assertEquals("bbb", o1);
+
+        assertTrue(iter.hasNext());
+        Object o2 = iter.next();
+        assertEquals("ccc", o2);
+
+        assertTrue(iter.hasNext());
+        Object o3 = iter.next();
+        assertEquals("ddd", o3);
+
+        assertFalse(iter.hasNext());
+    }
+
+    @Test
+    @DisplayName("Load all from String")
+    void loadIterableFromString(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Iterable<Object> v = (Iterable<Object>) load.loadAllFromString("1\n---\n2\n---\n3");
+        int counter = 1;
+        for (Object o : v) {
+            assertEquals(counter++, o);
+        }
+    }
+
+    @Test
+    @DisplayName("Throw UnsupportedOperationException if try to remove from iterator")
+    void loadAllFromStringWithUnsupportedOperationException(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Iterable<Object> v = load.loadAllFromString("bbb");
+        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () ->
+                v.iterator().remove());
+        assertEquals("Removing is not supported.", exception.getMessage());
     }
 
 }

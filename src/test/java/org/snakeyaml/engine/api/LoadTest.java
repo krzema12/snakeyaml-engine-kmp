@@ -131,11 +131,24 @@ class LoadTest {
     void loadIterableFromString(TestInfo testInfo) {
         LoadSettings settings = new LoadSettings();
         Load load = new Load(settings);
-        Iterable<Object> v = (Iterable<Object>) load.loadAllFromString("1\n---\n2\n---\n3");
+        Iterable<Object> v = load.loadAllFromString("1\n---\n2\n---\n3");
         int counter = 1;
         for (Object o : v) {
             assertEquals(counter++, o);
         }
+    }
+
+    @Test
+    @DisplayName("Load all from Reader")
+    void loadAllFromReader(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettings();
+        Load load = new Load(settings);
+        Iterable<Object> v = load.loadAllFromReader(new StringReader("bbb"));
+        Iterator<Object> iter = v.iterator();
+        assertTrue(iter.hasNext());
+        Object o1 = iter.next();
+        assertEquals("bbb", o1);
+        assertFalse(iter.hasNext());
     }
 
     @Test

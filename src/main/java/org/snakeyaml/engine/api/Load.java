@@ -48,57 +48,93 @@ public class Load {
         return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
     }
 
-    //Load  a single document
+    // Load  a single document
 
-    public Object loadFromReader(Reader yamlReader) {
-        Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(yamlReader, settings)).getSingleNode();
-        StandardConstructor constructor = new StandardConstructor(settings);
-        return constructor.constructSingleDocument(nodeOptional);
-    }
-
-    public Object loadFromInputStream(InputStream yamlStream) {
-        Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings)).getSingleNode();
+    private Object loadOne(Composer composer) {
+        Optional<Node> nodeOptional = composer.getSingleNode();
         StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
 
     /**
+     * Parse the only YAML document in a stream and produce the corresponding
+     * Java object.
+     *
+     * @param yamlStream - data to load from (BOM is respected to detect encoding and removed from the data)
+     * @return parsed Java instance
+     */
+    public Object loadFromInputStream(InputStream yamlStream) {
+        Objects.requireNonNull(yamlStream, "InputStream cannot be null");
+        return loadOne(createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings)));
+    }
+
+    /**
      * Parse a YAML document and create a Java instance
      *
-     * @param yaml - YAML document
+     * @param yamlReader - data to load from (BOM must not be present)
+     * @return parsed Java instance
+     */
+    public Object loadFromReader(Reader yamlReader) {
+        Objects.requireNonNull(yamlReader, "Reader cannot be null");
+        return loadOne(createComposer(settings, new StreamReader(yamlReader, settings)));
+    }
+
+    /**
+     * Parse a YAML document and create a Java instance
+     *
+     * @param yaml - YAML data to load from (BOM must not be present)
      * @return parsed Java instance
      * @throws org.snakeyaml.engine.exceptions.YamlEngineException if the YAML is not valid
      */
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        Optional<Node> nodeOptional = createComposer(settings, new StreamReader(yaml, settings)).getSingleNode();
-        StandardConstructor constructor = new StandardConstructor(settings);
-        return constructor.constructSingleDocument(nodeOptional);
+        return loadOne(createComposer(settings, new StreamReader(yaml, settings)));
     }
 
-    //Load all the documents
+    // Load all the documents
 
+    private Iterable<Object> loadAll(Composer composer) {
+        StandardConstructor constructor = new StandardConstructor(settings);
+        Iterator<Object> result = new YamlIterator(composer, constructor);
+        return new YamlIterable(result);
+    }
+
+    /**
+     * Parse all YAML documents in a stream and produce corresponding Java
+     * objects. The documents are parsed only when the iterator is invoked.
+     *
+     * @param yamlStream - YAML data to load from (BOM is respected to detect encoding and removed from the data)
+     * @return an Iterable over the parsed Java objects in this stream in proper sequence
+     */
     public Iterable<Object> loadAllFromInputStream(InputStream yamlStream) {
+        Objects.requireNonNull(yamlStream, "InputStream cannot be null");
         Composer composer = createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings));
-        StandardConstructor constructor = new StandardConstructor(settings);
-        Iterator<Object> result = new YamlIterator(composer, constructor);
-        return new YamlIterable(result);
+        return loadAll(composer);
     }
 
+    /**
+     * Parse all YAML documents in a String and produce corresponding Java
+     * objects. The documents are parsed only when the iterator is invoked.
+     * @param yamlReader - YAML data to load from (BOM must not be present)
+     * @return an Iterable over the parsed Java objects in this stream in proper sequence
+     */
     public Iterable<Object> loadAllFromReader(Reader yamlReader) {
+        Objects.requireNonNull(yamlReader, "Reader cannot be null");
         Composer composer = createComposer(settings, new StreamReader(yamlReader, settings));
-        StandardConstructor constructor = new StandardConstructor(settings);
-        Iterator<Object> result = new YamlIterator(composer, constructor);
-        return new YamlIterable(result);
+        return loadAll(composer);
     }
 
+    /**
+     * Parse all YAML documents in a String and produce corresponding Java
+     * objects. (Because the encoding in known BOM is not respected.) The
+     * documents are parsed only when the iterator is invoked.
+     * @param yaml - YAML data to load from (BOM must not be present)
+     * @return an Iterable over the parsed Java objects in this stream in proper sequence
+     */
     public Iterable<Object> loadAllFromString(String yaml) {
+        Objects.requireNonNull(yaml, "String cannot be null");
         Composer composer = createComposer(settings, new StreamReader(yaml, settings));
-        StandardConstructor constructor = new StandardConstructor(settings);
-        Iterator<Object> result = new YamlIterator(composer, constructor);
-        return new YamlIterable(result);
+        return loadAll(composer);
     }
 
     private static class YamlIterable implements Iterable<Object> {

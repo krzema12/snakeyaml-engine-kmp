@@ -46,7 +46,6 @@ import org.snakeyaml.engine.scanner.StreamReader;
 public class StandardRepresenter extends BaseRepresenter {
 
     protected Map<Class<? extends Object>, Tag> classTags;
-    protected TimeZone timeZone = null;
 
     public StandardRepresenter(DumpSettings settings) {
         this.defaultFlowStyle = settings.getDefaultFlowStyle();
@@ -350,14 +349,6 @@ public class StandardRepresenter extends BaseRepresenter {
             char[] binary = Base64Coder.encode((byte[]) data);
             return representScalar(Tag.BINARY, String.valueOf(binary), ScalarStyle.LITERAL);
         }
-    }
-
-    public TimeZone getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
     }
 
     protected class RepresentUuid implements RepresentToNode {

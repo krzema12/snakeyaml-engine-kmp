@@ -88,7 +88,7 @@ public final class ScalarEvent extends NodeEvent {
      *
      * @return Style of the scalar.
      */
-    public ScalarStyle getStyle() {
+    public ScalarStyle getScalarStyle() {
         return this.style;
     }
 
@@ -125,7 +125,7 @@ public final class ScalarEvent extends NodeEvent {
             getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
         }
         builder.append(" ");
-        builder.append(getStyle().toString());
+        builder.append(getScalarStyle().toString());
         builder.append(escapedValue());
         return builder.toString();
     }

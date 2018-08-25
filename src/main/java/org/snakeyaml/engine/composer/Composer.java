@@ -165,7 +165,7 @@ public class Composer implements Iterator<Node> {
         } else {
             nodeTag = new Tag(tag.get());
         }
-        Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStyle(), ev.getStartMark(), ev.getEndMark());
+        Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getScalarStyle(), ev.getStartMark(), ev.getEndMark());
         anchor.ifPresent(a -> anchors.put(a, node));
         return node;
     }

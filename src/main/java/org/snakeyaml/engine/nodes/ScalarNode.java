@@ -52,7 +52,7 @@ public class ScalarNode extends Node {
      * @see <a href="http://yaml.org/spec/1.1/#id903915">Chapter 9. Scalar
      * Styles</a>
      */
-    public ScalarStyle getStyle() {
+    public ScalarStyle getScalarStyle() {
         return style;
     }
 

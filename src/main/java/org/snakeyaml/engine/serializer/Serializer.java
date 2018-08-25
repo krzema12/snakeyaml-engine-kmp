@@ -129,7 +129,7 @@ public class Serializer {
                     ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag), node
                             .getTag().equals(defaultTag));
                     ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
-                            scalarNode.getValue(), scalarNode.getStyle());
+                            scalarNode.getValue(), scalarNode.getScalarStyle());
                     this.emitable.emit(event);
                     break;
                 case SEQUENCE:

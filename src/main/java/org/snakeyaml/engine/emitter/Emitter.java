@@ -33,20 +33,15 @@ import org.snakeyaml.engine.common.ArrayStack;
 import org.snakeyaml.engine.common.CharConstants;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
-import org.snakeyaml.engine.events.AliasEvent;
 import org.snakeyaml.engine.events.CollectionEndEvent;
 import org.snakeyaml.engine.events.CollectionStartEvent;
 import org.snakeyaml.engine.events.DocumentEndEvent;
 import org.snakeyaml.engine.events.DocumentStartEvent;
 import org.snakeyaml.engine.events.Event;
-import org.snakeyaml.engine.events.MappingEndEvent;
 import org.snakeyaml.engine.events.MappingStartEvent;
 import org.snakeyaml.engine.events.NodeEvent;
 import org.snakeyaml.engine.events.ScalarEvent;
-import org.snakeyaml.engine.events.SequenceEndEvent;
 import org.snakeyaml.engine.events.SequenceStartEvent;
-import org.snakeyaml.engine.events.StreamEndEvent;
-import org.snakeyaml.engine.events.StreamStartEvent;
 import org.snakeyaml.engine.exceptions.EmitterException;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
 import org.snakeyaml.engine.nodes.Tag;
@@ -763,7 +758,7 @@ public final class Emitter implements Emitable {
         if (analysis == null) {
             analysis = analyzeScalar(ev.getValue());
         }
-        if (!ev.isPlain() && ev.getStyle() == ScalarStyle.DOUBLE_QUOTED || this.canonical) {
+        if (!ev.isPlain() && ev.getScalarStyle() == ScalarStyle.DOUBLE_QUOTED || this.canonical) {
             return ScalarStyle.DOUBLE_QUOTED;
         }
         if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
@@ -772,12 +767,12 @@ public final class Emitter implements Emitable {
                 return null;
             }
         }
-        if (!ev.isPlain() && (ev.getStyle() == ScalarStyle.LITERAL || ev.getStyle() == ScalarStyle.FOLDED)) {
+        if (!ev.isPlain() && (ev.getScalarStyle() == ScalarStyle.LITERAL || ev.getScalarStyle() == ScalarStyle.FOLDED)) {
             if (flowLevel == 0 && !simpleKeyContext && analysis.allowBlock) {
-                return ev.getStyle();
+                return ev.getScalarStyle();
             }
         }
-        if (ev.isPlain() || ev.getStyle() == ScalarStyle.SINGLE_QUOTED) {
+        if (ev.isPlain() || ev.getScalarStyle() == ScalarStyle.SINGLE_QUOTED) {
             if (analysis.allowSingleQuoted && !(simpleKeyContext && analysis.multiline)) {
                 return ScalarStyle.SINGLE_QUOTED;
             }

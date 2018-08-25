@@ -98,7 +98,7 @@ public class EventRepresentation {
                     if (!data.contains("<" + e.getTag().get() + ">")) return false;
                 }
             }
-            String end = String.valueOf(e.getStyle() + e.escapedValue());
+            String end = String.valueOf(e.getScalarStyle() + e.escapedValue());
             if (!data.endsWith(end)) {
                 return false;
             }

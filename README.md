@@ -25,6 +25,7 @@ The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be support
 * Tested with Java 8, 9, 10 (thanks to Docker)
 
 ## TODO (without priority) ##
+* findbugs, pmd, sonarqube
 * coverage
 * parse Optional (non scalar)
 * parse Iterator

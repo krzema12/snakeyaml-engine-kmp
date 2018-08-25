@@ -41,8 +41,7 @@ Apps to support
 * testng -> java 8, JavaBeans
 * spring boot -> jackson
 * swagger -> jackson
-* play -> no
-* Liquibase, java 7
+* Liquibase -> java 8
 * RAML -> java 7, compose only
 
 ## Info ##

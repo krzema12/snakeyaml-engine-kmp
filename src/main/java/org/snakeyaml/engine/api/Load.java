@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.composer.Composer;
+import org.snakeyaml.engine.constructor.BaseConstructor;
 import org.snakeyaml.engine.constructor.StandardConstructor;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.parser.ParserImpl;
@@ -33,6 +34,7 @@ import org.snakeyaml.engine.scanner.StreamReader;
 public class Load {
 
     private LoadSettings settings;
+    private BaseConstructor constructor;
 
     /**
      * Create instance to parse the incoming YAML data and create Java instances
@@ -40,11 +42,22 @@ public class Load {
      * @param settings - configuration
      */
     public Load(LoadSettings settings) {
-        Objects.requireNonNull(settings, "LoadSettings cannot be null");
-        this.settings = settings;
+        this(settings, new StandardConstructor(settings));
     }
 
-    private Composer createComposer(LoadSettings settings, StreamReader streamReader) {
+    /**
+     * Create instance to parse the incoming YAML data and create Java instances
+     * @param settings - configuration
+     * @param constructor - custom YAML constructor
+     */
+    public Load(LoadSettings settings, BaseConstructor constructor) {
+        Objects.requireNonNull(settings, "LoadSettings cannot be null");
+        Objects.requireNonNull(constructor, "BaseConstructor cannot be null");
+        this.settings = settings;
+        this.constructor = constructor;
+    }
+
+    protected Composer createComposer(LoadSettings settings, StreamReader streamReader) {
         return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
     }
 
@@ -52,7 +65,6 @@ public class Load {
 
     private Object loadOne(Composer composer) {
         Optional<Node> nodeOptional = composer.getSingleNode();
-        StandardConstructor constructor = new StandardConstructor(settings);
         return constructor.constructSingleDocument(nodeOptional);
     }
 
@@ -94,7 +106,6 @@ public class Load {
     // Load all the documents
 
     private Iterable<Object> loadAll(Composer composer) {
-        StandardConstructor constructor = new StandardConstructor(settings);
         Iterator<Object> result = new YamlIterator(composer, constructor);
         return new YamlIterable(result);
     }
@@ -152,9 +163,9 @@ public class Load {
 
     private static class YamlIterator implements Iterator<Object> {
         private Composer composer;
-        private StandardConstructor constructor;
+        private BaseConstructor constructor;
 
-        public YamlIterator(Composer composer, StandardConstructor constructor) {
+        public YamlIterator(Composer composer, BaseConstructor constructor) {
             this.composer = composer;
             this.constructor = constructor;
         }

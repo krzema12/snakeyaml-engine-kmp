@@ -32,7 +32,7 @@ import org.snakeyaml.engine.serializer.Serializer;
 public class Dump {
 
     private DumpSettings settings;
-    private BaseRepresenter representer;//TODO BaseRepresenter or StandardRepresenter
+    private BaseRepresenter representer;
 
     /**
      * Create instance

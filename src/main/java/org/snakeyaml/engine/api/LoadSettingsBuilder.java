@@ -32,10 +32,8 @@ import org.snakeyaml.engine.nodes.Tag;
 import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
 
-
 /**
- * Fine tuning parsing/loading
- * TODO add JavaDoc for all methods
+ * Builder pattern implementation for LoadSettings
  */
 public final class LoadSettingsBuilder {
     private String label;
@@ -50,6 +48,9 @@ public final class LoadSettingsBuilder {
     private boolean allowDuplicateKeys;
     private boolean useMarks;
 
+    /**
+     * Create builder
+     */
     public LoadSettingsBuilder() {
         this.label = "reader";
         this.rootConstructNode = Optional.empty();
@@ -67,68 +68,135 @@ public final class LoadSettingsBuilder {
         this.useMarks = true;
     }
 
+    /**
+     * Label for the input data. Can be used to improve the error message.
+     * @param  label - meaningful label to indicate the input source
+     * @return provided label or 'reader' if not specified
+     */
     public LoadSettingsBuilder setLabel(String label) {
         Objects.requireNonNull(label, "label cannot be null");
         this.label = label;
         return this;
     }
 
+    /**
+     * Provide the factory to create Nodes.
+     * @param rootConstructNode - provided factory to create the root Node
+     * @return provided ConstructNode
+     */
     public LoadSettingsBuilder setRootConstructNode(Optional<ConstructNode> rootConstructNode) {
         Objects.requireNonNull(rootConstructNode, "rootConstructNode cannot be null");
         this.rootConstructNode = rootConstructNode;
         return this;
     }
 
+    /**
+     * Provide constructors for the specified tags.
+     * @param tagConstructors - the map from a Tag to its constructor
+     * @return provided constructors
+     */
     public LoadSettingsBuilder setTagConstructors(Map<Tag, ConstructNode> tagConstructors) {
         this.tagConstructors = tagConstructors;
         return this;
     }
 
+    /**
+     * Provide resolver to detect a tag by the value of a scalar
+     * @param scalarResolver - specified ScalarResolver
+     * @return provided ScalarResolver
+     */
     public LoadSettingsBuilder setScalarResolver(ScalarResolver scalarResolver) {
         Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
         this.scalarResolver = scalarResolver;
         return this;
     }
 
+    /**
+     * Provide default List implementation. {@link ArrayList} is used if nothing provided.
+     * @param defaultList - specified List implementation
+     * @return provided List implementation
+     */
     public LoadSettingsBuilder setDefaultList(Function<Integer, List> defaultList) {
         Objects.requireNonNull(defaultList, "defaultList cannot be null");
         this.defaultList = defaultList;
         return this;
     }
 
+    /**
+     * Provide default Set implementation. {@link LinkedHashSet} is used if nothing provided.
+     * @param defaultSet - specified Set implementation
+     * @return provided Set implementation
+     */
     public LoadSettingsBuilder setDefaultSet(Function<Integer, Set> defaultSet) {
         Objects.requireNonNull(defaultSet, "defaultSet cannot be null");
         this.defaultSet = defaultSet;
         return this;
     }
 
+    /**
+     * Provide default Map implementation. {@link LinkedHashMap} is used if nothing provided.
+     * @param defaultMap - specified Map implementation
+     * @return provided Map implementation
+     */
     public LoadSettingsBuilder setDefaultMap(Function<Integer, Map> defaultMap) {
         Objects.requireNonNull(defaultMap, "defaultMap cannot be null");
         this.defaultMap = defaultMap;
         return this;
     }
 
+    /**
+     * Buffer size for incoming data stream. If the incoming stream is already bufferred, then changing the buffer does
+     * not improve the performance
+     * @param bufferSize - buffer size (in bytes) for input data
+     * @return provided buffer size or 1024 if not provided
+     */
     public LoadSettingsBuilder setBufferSize(Integer bufferSize) {
         this.bufferSize = bufferSize;
         return this;
     }
 
+    /**
+     * YAML 1.2 does require unique keys. To support the backwards compatibility it is possible to select what should
+     * happend when non-unique keys are detected.
+     * @param allowDuplicateKeys - if true than the non-unique keys in a mapping are allowed (last key wins)
+     * @return true if non-unique keys are allowed (false by default)
+     */
     public LoadSettingsBuilder setAllowDuplicateKeys(boolean allowDuplicateKeys) {
         this.allowDuplicateKeys = allowDuplicateKeys;
         return this;
     }
 
+    /**
+     * Marks are only used for error messages. But they requires a lot of memory.
+     * @param useMarks - use false to save resources but use less informative error messages (no line and context)
+     * @return false to skip Marks generation (true by default)
+     */
     public LoadSettingsBuilder setUseMarks(boolean useMarks) {
         this.useMarks = useMarks;
         return this;
     }
 
+    /**
+     * Manage YAML directive value which defines the version of the YAML specification.
+     * This parser supports YAML 1.2 but it can parse most of YAML 1.1 and YAML 1.0
+     *
+     * This function allows to control the version management. For instance if the document contains old version the parser
+     * can be adapted to compensate the problem. Or it can fail to indicate that the incoming version is not supported.
+     *
+     * @param versionFunction - define the way to manage the YAML version. By default, 1.* versiona are accepted
+     *                        and treated as YAML 1.2. Other versions fail to parse (YamlVersionException is thown)
+     * @return provided function
+     */
     public LoadSettingsBuilder setVersionFunction(Function<SpecVersion, SpecVersion> versionFunction) {
         Objects.requireNonNull(versionFunction, "versionFunction cannot be null");
         this.versionFunction = versionFunction;
         return this;
     }
 
+    /**
+     * Build immutable LoadSettings
+     * @return immutable LoadSettings
+     */
     public LoadSettings build() {
         return new LoadSettings(label, rootConstructNode, tagConstructors,
                 scalarResolver, defaultList,

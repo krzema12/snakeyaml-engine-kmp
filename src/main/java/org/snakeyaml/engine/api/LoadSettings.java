@@ -27,7 +27,7 @@ import org.snakeyaml.engine.resolver.ScalarResolver;
 
 /**
  * Fine tuning parsing/loading
- * TODO add JavaDoc for all methods
+ * Description for all the fields can be found in the builder
  */
 public final class LoadSettings {
     private String label;

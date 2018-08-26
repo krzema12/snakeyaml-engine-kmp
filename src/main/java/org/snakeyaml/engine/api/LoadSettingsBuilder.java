@@ -71,7 +71,7 @@ public final class LoadSettingsBuilder {
     /**
      * Label for the input data. Can be used to improve the error message.
      * @param  label - meaningful label to indicate the input source
-     * @return provided label or 'reader' if not specified
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setLabel(String label) {
         Objects.requireNonNull(label, "label cannot be null");
@@ -82,7 +82,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide the factory to create Nodes.
      * @param rootConstructNode - provided factory to create the root Node
-     * @return provided ConstructNode
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setRootConstructNode(Optional<ConstructNode> rootConstructNode) {
         Objects.requireNonNull(rootConstructNode, "rootConstructNode cannot be null");
@@ -93,7 +93,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide constructors for the specified tags.
      * @param tagConstructors - the map from a Tag to its constructor
-     * @return provided constructors
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setTagConstructors(Map<Tag, ConstructNode> tagConstructors) {
         this.tagConstructors = tagConstructors;
@@ -103,7 +103,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide resolver to detect a tag by the value of a scalar
      * @param scalarResolver - specified ScalarResolver
-     * @return provided ScalarResolver
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setScalarResolver(ScalarResolver scalarResolver) {
         Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
@@ -114,7 +114,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide default List implementation. {@link ArrayList} is used if nothing provided.
      * @param defaultList - specified List implementation
-     * @return provided List implementation
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultList(Function<Integer, List> defaultList) {
         Objects.requireNonNull(defaultList, "defaultList cannot be null");
@@ -125,7 +125,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide default Set implementation. {@link LinkedHashSet} is used if nothing provided.
      * @param defaultSet - specified Set implementation
-     * @return provided Set implementation
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultSet(Function<Integer, Set> defaultSet) {
         Objects.requireNonNull(defaultSet, "defaultSet cannot be null");
@@ -136,7 +136,7 @@ public final class LoadSettingsBuilder {
     /**
      * Provide default Map implementation. {@link LinkedHashMap} is used if nothing provided.
      * @param defaultMap - specified Map implementation
-     * @return provided Map implementation
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultMap(Function<Integer, Map> defaultMap) {
         Objects.requireNonNull(defaultMap, "defaultMap cannot be null");
@@ -148,7 +148,7 @@ public final class LoadSettingsBuilder {
      * Buffer size for incoming data stream. If the incoming stream is already bufferred, then changing the buffer does
      * not improve the performance
      * @param bufferSize - buffer size (in bytes) for input data
-     * @return provided buffer size or 1024 if not provided
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setBufferSize(Integer bufferSize) {
         this.bufferSize = bufferSize;
@@ -158,8 +158,8 @@ public final class LoadSettingsBuilder {
     /**
      * YAML 1.2 does require unique keys. To support the backwards compatibility it is possible to select what should
      * happend when non-unique keys are detected.
-     * @param allowDuplicateKeys - if true than the non-unique keys in a mapping are allowed (last key wins)
-     * @return true if non-unique keys are allowed (false by default)
+     * @param allowDuplicateKeys - if true than the non-unique keys in a mapping are allowed (last key wins). False by default.
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setAllowDuplicateKeys(boolean allowDuplicateKeys) {
         this.allowDuplicateKeys = allowDuplicateKeys;
@@ -167,9 +167,9 @@ public final class LoadSettingsBuilder {
     }
 
     /**
-     * Marks are only used for error messages. But they requires a lot of memory.
+     * Marks are only used for error messages. But they requires a lot of memory. True by default.
      * @param useMarks - use false to save resources but use less informative error messages (no line and context)
-     * @return false to skip Marks generation (true by default)
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setUseMarks(boolean useMarks) {
         this.useMarks = useMarks;
@@ -183,9 +183,9 @@ public final class LoadSettingsBuilder {
      * This function allows to control the version management. For instance if the document contains old version the parser
      * can be adapted to compensate the problem. Or it can fail to indicate that the incoming version is not supported.
      *
-     * @param versionFunction - define the way to manage the YAML version. By default, 1.* versiona are accepted
+     * @param versionFunction - define the way to manage the YAML version. By default, 1.* versions are accepted
      *                        and treated as YAML 1.2. Other versions fail to parse (YamlVersionException is thown)
-     * @return provided function
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setVersionFunction(Function<SpecVersion, SpecVersion> versionFunction) {
         Objects.requireNonNull(versionFunction, "versionFunction cannot be null");

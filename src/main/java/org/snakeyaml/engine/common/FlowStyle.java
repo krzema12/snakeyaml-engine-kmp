@@ -21,5 +21,18 @@ package org.snakeyaml.engine.common;
  * nesting and scope.
  */
 public enum FlowStyle {
-    FLOW, BLOCK, AUTO
+    /**
+     * Flow style
+     */
+    FLOW,
+
+    /**
+     * Block style
+     */
+    BLOCK,
+
+    /**
+     * Block style for the root level and flow style for other levels
+     */
+    AUTO
 }

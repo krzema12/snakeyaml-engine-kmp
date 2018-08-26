@@ -27,7 +27,7 @@ import org.snakeyaml.engine.serializer.AnchorGenerator;
 
 /**
  * Fine tuning serializing/dumping
- * TODO add JavaDoc for all methods
+ * Description for all the fields can be found in the builder
  */
 public final class DumpSettings {
     private String label;
@@ -42,7 +42,6 @@ public final class DumpSettings {
     private ScalarStyle defaultScalarStyle;
 
     //emitter
-    private Optional<Tag> rootTag;
     private boolean canonical;
     private boolean prettyFlow;
     private boolean useUnicodeEncoding;
@@ -53,11 +52,11 @@ public final class DumpSettings {
     private boolean splitLines;
 
 
-    DumpSettings(String label, boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
+    DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
                  AnchorGenerator anchorGenerator, Optional<SpecVersion> specVersion, Map<String, String> useTags,
                  ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
                  //emitter
-                 Optional<Tag> rootTag, boolean canonical, boolean prettyFlow, boolean useUnicodeEncoding,
+                 boolean canonical, boolean prettyFlow, boolean useUnicodeEncoding,
                  int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines
     ) {
         this.label = label;
@@ -70,7 +69,6 @@ public final class DumpSettings {
         this.scalarResolver = scalarResolver;
         this.defaultFlowStyle = defaultFlowStyle;
         this.defaultScalarStyle = defaultScalarStyle;
-        this.rootTag = rootTag;
         this.canonical = canonical;
         this.prettyFlow = prettyFlow;
         this.useUnicodeEncoding = useUnicodeEncoding;
@@ -120,10 +118,6 @@ public final class DumpSettings {
 
     public Map<String, String> getUseTags() {
         return useTags;
-    }
-
-    public Optional<Tag> getRootTag() {
-        return rootTag;
     }
 
     public boolean isCanonical() {

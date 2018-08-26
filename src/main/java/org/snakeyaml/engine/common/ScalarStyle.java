@@ -25,8 +25,12 @@ import java.util.Optional;
  * expressive power and readability.
  */
 public enum ScalarStyle {
-    DOUBLE_QUOTED(Optional.of('"')), SINGLE_QUOTED(Optional.of('\'')), LITERAL(Optional.of('|')),
-    FOLDED(Optional.of('>')), PLAIN(Optional.empty());
+    DOUBLE_QUOTED(Optional.of('"')),
+    SINGLE_QUOTED(Optional.of('\'')),
+    LITERAL(Optional.of('|')),
+    FOLDED(Optional.of('>')),
+    PLAIN(Optional.empty());
+
     private Optional<Character> styleOpt;
 
     ScalarStyle(Optional<Character> style) {

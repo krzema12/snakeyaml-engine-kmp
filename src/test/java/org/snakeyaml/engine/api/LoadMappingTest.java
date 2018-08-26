@@ -33,16 +33,16 @@ class LoadMappingTest {
     @Test
     @DisplayName("Empty map {} is parsed")
     void parseEmptyMap(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadFromString("{}");
-        assertEquals(new LoadSettings().getDefaultMap().apply(0), map);
+        assertEquals(new LoadSettingsBuilder().build().getDefaultMap().apply(0), map);
     }
 
     @Test
     @DisplayName("map {a: 1} is parsed")
     void parseMap1(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1}");
         Map<String, Integer> expected = ImmutableMap.of("a", 1);
@@ -52,7 +52,7 @@ class LoadMappingTest {
     @Test
     @DisplayName("map {a: 1, b: 2} is parsed")
     void parseMap2(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));
         Map<String, Integer> expected = ImmutableMap.of("x", 1, "y", 2, "z", 3);

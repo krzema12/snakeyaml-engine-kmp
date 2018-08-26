@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.YamlUnicodeReader;
 import org.snakeyaml.engine.scanner.Scanner;
 import org.snakeyaml.engine.scanner.ScannerImpl;
@@ -82,7 +82,7 @@ public class InheritedTokensTest extends InheritedImportTest {
             //
             List<String> tokens1 = new ArrayList<String>();
             StreamReader reader = new StreamReader(new YamlUnicodeReader(new FileInputStream(
-                    getFileByName(dataName))), new LoadSettings());
+                    getFileByName(dataName))), new LoadSettingsBuilder().build());
             Scanner scanner = new ScannerImpl(reader);
             try {
                 while (scanner.checkToken(new Token.ID[0])) {
@@ -115,7 +115,7 @@ public class InheritedTokensTest extends InheritedImportTest {
         for (File file : files) {
             List<String> tokens = new ArrayList<String>();
             InputStream input = new FileInputStream(file);
-            StreamReader reader = new StreamReader(new YamlUnicodeReader(input), new LoadSettings());
+            StreamReader reader = new StreamReader(new YamlUnicodeReader(input), new LoadSettingsBuilder().build());
             Scanner scanner = new ScannerImpl(reader);
             try {
                 while (scanner.checkToken(new Token.ID[0])) {

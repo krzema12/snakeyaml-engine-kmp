@@ -27,6 +27,7 @@ import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 
@@ -91,7 +92,7 @@ class OptionalTest {
     @Test
     @DisplayName("Optional 'a' is parsed")
     void parseOptional(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional a");
         assertEquals(Optional.of("a"), str);
@@ -100,7 +101,7 @@ class OptionalTest {
     @Test
     @DisplayName("Empty Optional parsed")
     void parseEmptyOptional(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional null");
         assertEquals(Optional.empty(), str);
@@ -109,7 +110,7 @@ class OptionalTest {
     @Test
     @DisplayName("Empty Optional parsed")
     void parseEmptyOptional2(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional ");
         assertEquals(Optional.empty(), str);

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.YamlUnicodeReader;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.parser.Parser;
@@ -60,8 +61,7 @@ public abstract class InheritedImportTest {
     }
 
     protected List<Event> canonicalParse(InputStream input2, String label) throws IOException {
-        LoadSettings setting = new LoadSettings();
-        setting.setLabel(label);
+        LoadSettings setting = new LoadSettingsBuilder().setLabel(label).build();
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input2), setting);
         StringBuilder buffer = new StringBuilder();
         while (reader.peek() != '\0') {
@@ -78,7 +78,7 @@ public abstract class InheritedImportTest {
     }
 
     protected List<Event> parse(InputStream input) throws IOException {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input), settings);
         Parser parser = new ParserImpl(reader, settings);
         List<Event> result = new ArrayList();

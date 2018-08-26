@@ -28,6 +28,7 @@ import org.snakeyaml.engine.api.Dump;
 import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -37,7 +38,7 @@ class RecursiveMapTest {
     @Test
     @DisplayName("Load map with recursive values")
     void loadRecursiveMap(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<String, String> map = (Map<String, String>) load.loadFromString("First occurrence: &anchor Foo\n" +
                 "Second occurrence: *anchor\n" +
@@ -67,7 +68,7 @@ class RecursiveMapTest {
                 "  name: second\n" +
                 "name: first\n", output1);
 
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<String, Object> parsed1 = (Map<String, Object>) load.loadFromString(output1);
         assertEquals(2, parsed1.size());

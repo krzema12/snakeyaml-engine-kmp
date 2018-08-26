@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Parse;
 import org.snakeyaml.engine.events.Event;
 
@@ -43,8 +44,7 @@ class ParseSuiteTest {
     @DisplayName("Parse: Run one test")
     void runOne(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("6FWR");
-        LoadSettings settings = new LoadSettings();
-        settings.setLabel(data.getLabel());
+        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
         Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
         for (Event event : iterable) {
             //System.out.println(event);

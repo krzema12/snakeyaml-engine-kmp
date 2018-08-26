@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.events.StreamEndEvent;
 import org.snakeyaml.engine.events.StreamStartEvent;
@@ -37,7 +37,7 @@ class ParseTest {
 
     @Test
     void parseEmptyReader(TestInfo testInfo) throws IOException {
-        Parse parse = new Parse(new LoadSettings());
+        Parse parse = new Parse(new LoadSettingsBuilder().build());
         Iterable<Event> events = parse.parseReader(CharSource.wrap("").openStream());
         List<Event> list = Lists.newArrayList(events);
         assertEquals(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
@@ -45,7 +45,7 @@ class ParseTest {
 
     @Test
     void parseEmptyInputStream(TestInfo testInfo) {
-        Parse parse = new Parse(new LoadSettings());
+        Parse parse = new Parse(new LoadSettingsBuilder().build());
         Iterable<Event> events = parse.parseInputStream(new ByteArrayInputStream("".getBytes()));
         List<Event> list = Lists.newArrayList(events);
         assertEquals(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);

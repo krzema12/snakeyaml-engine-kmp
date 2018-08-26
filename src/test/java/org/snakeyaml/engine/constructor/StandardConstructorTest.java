@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.utils.TestUtils;
@@ -32,9 +32,9 @@ class StandardConstructorTest {
 
     @Test
     void constructMergeExample(TestInfo testInfo) {
-        Compose compose = new Compose(new LoadSettings());
+        Compose compose = new Compose(new LoadSettingsBuilder().build());
         Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
-        StandardConstructor constructor = new StandardConstructor(new LoadSettings());
+        StandardConstructor constructor = new StandardConstructor(new LoadSettingsBuilder().build());
         Object object = constructor.construct(node.get());
         assertNotNull(object);
     }

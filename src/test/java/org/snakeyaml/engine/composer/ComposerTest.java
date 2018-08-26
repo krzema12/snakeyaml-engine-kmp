@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.exceptions.ComposerException;
 import org.snakeyaml.engine.nodes.Node;
@@ -37,7 +37,7 @@ class ComposerTest {
     @DisplayName("Fail to Compose one document when more documents are provided.")
     void composeOne(TestInfo testInfo) {
         ComposerException exception = assertThrows(ComposerException.class, () ->
-                new Compose(new LoadSettings()).composeString("a\n---\nb\n"));
+                new Compose(new LoadSettingsBuilder().build()).composeString("a\n---\nb\n"));
         assertTrue(exception.getMessage().contains("expected a single document in the stream"));
         assertTrue(exception.getMessage().contains("but found another document"));
     }
@@ -45,13 +45,13 @@ class ComposerTest {
     @Test
     void failToComposeUnknownAlias(TestInfo testInfo) {
         ComposerException exception = assertThrows(ComposerException.class, () ->
-                new Compose(new LoadSettings()).composeString("[a, *id b]"));
+                new Compose(new LoadSettingsBuilder().build()).composeString("[a, *id b]"));
         assertTrue(exception.getMessage().contains("found undefined alias id"), exception.getMessage());
     }
 
     @Test
     void composeMergeExample(TestInfo testInfo) {
-        Compose compose = new Compose(new LoadSettings());
+        Compose compose = new Compose(new LoadSettingsBuilder().build());
         Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
         assertTrue(node.isPresent());
     }

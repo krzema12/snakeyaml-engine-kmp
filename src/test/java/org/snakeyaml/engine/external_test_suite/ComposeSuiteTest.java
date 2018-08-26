@@ -30,6 +30,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.lowlevel.Serialize;
 import org.snakeyaml.engine.events.Event;
@@ -61,8 +62,7 @@ class ComposeSuiteTest {
         Optional<Exception> error = Optional.empty();
         List<Node> list = new ArrayList();
         try {
-            LoadSettings settings = new LoadSettings();
-            settings.setLabel(data.getLabel());
+            LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
             Iterable<Node> iterable = new Compose(settings).composeAllFromString(data.getInput());
             iterable.forEach(event -> list.add(event));
         } catch (YamlEngineException e) {
@@ -75,8 +75,7 @@ class ComposeSuiteTest {
     @DisplayName("Compose: run one test")
     void runOne(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("C4HZ");
-        LoadSettings settings = new LoadSettings();
-        settings.setLabel(data.getLabel());
+        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
         Optional<Node> node = new Compose(settings).composeString(data.getInput());
         assertTrue(node.isPresent());
 //        System.out.println(node);

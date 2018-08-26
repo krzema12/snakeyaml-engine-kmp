@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Parse;
 import org.snakeyaml.engine.events.Event;
 import org.snakeyaml.engine.exceptions.YamlEngineException;
@@ -77,8 +78,7 @@ public class SuiteUtils {
         Optional<Exception> error = Optional.empty();
         List<Event> list = new ArrayList();
         try {
-            LoadSettings settings = new LoadSettings();
-            settings.setLabel(data.getLabel());
+            LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
             Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
             iterable.forEach(event -> list.add(event));
         } catch (YamlEngineException e) {

@@ -23,9 +23,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.lowlevel.Present;
 
@@ -50,7 +49,7 @@ class EmitSuiteTest {
                 //emit without errors
                 String yaml = emit.emitToString(result.getEvents().iterator());
                 //eat your own dog food
-                new Compose(new LoadSettings()).composeAllFromString(yaml);
+                new Compose(new LoadSettingsBuilder().build()).composeAllFromString(yaml);
             }
         }
     }

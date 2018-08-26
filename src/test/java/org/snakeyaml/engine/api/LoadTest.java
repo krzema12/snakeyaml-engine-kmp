@@ -37,7 +37,7 @@ class LoadTest {
     @Test
     @DisplayName("String 'a' is parsed")
     void parseString(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         String str = (String) load.loadFromString("a");
         assertEquals("a", str);
@@ -46,7 +46,7 @@ class LoadTest {
     @Test
     @DisplayName("Integer 1 is parsed")
     void parseInteger(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Integer integer = (Integer) load.loadFromString("1");
         assertEquals(new Integer(1), integer);
@@ -55,7 +55,7 @@ class LoadTest {
     @Test
     @DisplayName("Boolean true is parsed")
     void parseBoolean(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         assertTrue((Boolean) load.loadFromString("true"));
     }
@@ -63,7 +63,7 @@ class LoadTest {
     @Test
     @DisplayName("null is parsed")
     void parseNull(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         assertNull(load.loadFromString(""));
     }
@@ -71,7 +71,7 @@ class LoadTest {
     @Test
     @DisplayName("null tag is parsed")
     void parseNullTag(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         assertNull(load.loadFromString("!!null"));
     }
@@ -79,7 +79,7 @@ class LoadTest {
     @Test
     @DisplayName("Float is parsed")
     void parseFloat(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Double doubleValue = (Double) load.loadFromString("1.01");
         assertEquals(new Double(1.01), doubleValue);
@@ -88,7 +88,7 @@ class LoadTest {
     @Test
     @DisplayName("Load from InputStream")
     void loadFromInputStream(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         String v = (String) load.loadFromInputStream(new ByteArrayInputStream("aaa".getBytes()));
         assertEquals("aaa", v);
@@ -97,7 +97,7 @@ class LoadTest {
     @Test
     @DisplayName("Load from Reader")
     void loadFromReader(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         String v = (String) load.loadFromReader(new StringReader("bbb"));
         assertEquals("bbb", v);
@@ -106,7 +106,7 @@ class LoadTest {
     @Test
     @DisplayName("Load all from String")
     void loadAllFromString(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         InputStream input = new ByteArrayInputStream("bbb\n---\nccc\n---\nddd".getBytes());
         Iterable<Object> v = load.loadAllFromInputStream(input);
@@ -129,7 +129,7 @@ class LoadTest {
     @Test
     @DisplayName("Load all from String")
     void loadIterableFromString(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Iterable<Object> v = load.loadAllFromString("1\n---\n2\n---\n3");
         int counter = 1;
@@ -141,7 +141,7 @@ class LoadTest {
     @Test
     @DisplayName("Load all from Reader")
     void loadAllFromReader(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Iterable<Object> v = load.loadAllFromReader(new StringReader("bbb"));
         Iterator<Object> iter = v.iterator();
@@ -154,7 +154,7 @@ class LoadTest {
     @Test
     @DisplayName("Throw UnsupportedOperationException if try to remove from iterator")
     void loadAllFromStringWithUnsupportedOperationException(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Iterable<Object> v = load.loadAllFromString("bbb");
         UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () ->

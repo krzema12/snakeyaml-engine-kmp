@@ -27,6 +27,7 @@ import org.snakeyaml.engine.api.DumpSettings;
 import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
+import org.snakeyaml.engine.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.nodes.Node;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 
@@ -55,7 +56,7 @@ class UuidTest {
     @Test
     @DisplayName("Parse UUID")
     void parseUuid(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         UUID uuid = (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
         assertEquals(THE_UUID, uuid);
@@ -64,7 +65,7 @@ class UuidTest {
     @Test
     @DisplayName("Parse UUID as root")
     void parseUuidAsRoot(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettings();
+        LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         UUID uuid = (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
         assertEquals(THE_UUID, uuid);

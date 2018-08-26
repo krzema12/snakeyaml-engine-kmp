@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Dump;
-import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
 
@@ -59,7 +59,7 @@ class RecursiveMapTest {
         map2.put("name", "second");
         map1.put("next", map2);
         map2.put("next", map1);
-        Dump dump = new Dump(new DumpSettings());
+        Dump dump = new Dump(new DumpSettingsBuilder().build());
         String output1 = dump.dumpToString(map1);
         assertEquals("&id002\n" +
                 "next:\n" +

@@ -31,7 +31,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump string")
     void dumpString(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString("a");
         assertEquals("a\n", str);
@@ -40,7 +40,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump int")
     void dumpInteger(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(new Integer(1));
         assertEquals("1\n", str);
@@ -49,7 +49,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump boolean")
     void dumpBoolean(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Boolean.TRUE);
         assertEquals("true\n", str);
@@ -58,7 +58,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump seq")
     void dumpSequence(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(2, "a", Boolean.TRUE));
         assertEquals("[2, a, true]\n", str);
@@ -67,7 +67,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump map")
     void dumpMapping(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
         assertEquals("{x: 1, y: 2, z: 3}\n", str);
@@ -76,7 +76,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump all instances")
     void dumpAll(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
         dump.dumpAll(Lists.newArrayList("a", null, Boolean.TRUE).iterator(), streamToStringWriter);
@@ -90,7 +90,7 @@ class DumpTest {
     @Test
     @DisplayName("Dump all instances")
     void dumpAllToString(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         //StreamToStringWriter streamToString = new StreamToStringWriter();
         String output = dump.dumpAllToString(Lists.newArrayList("a", null, Boolean.TRUE).iterator());

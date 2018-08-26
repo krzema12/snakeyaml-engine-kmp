@@ -28,6 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.api.lowlevel.Compose;
 import org.snakeyaml.engine.api.lowlevel.Serialize;
@@ -89,9 +90,7 @@ class ComposeSuiteTest {
             ComposeResult result = composeData(data);
             List<Node> nodes = result.getNode();
             assertFalse(nodes.isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
-            DumpSettings settings = new DumpSettings();
-            settings.setExplicitStart(true);
-            settings.setExplicitEnd(true);
+            DumpSettings settings = new DumpSettingsBuilder().setExplicitStart(true).setExplicitEnd(true).build();
             Serialize serialize = new Serialize(settings);
             List<Event> events = serialize.serializeAll(nodes);
             assertEquals(data.getEvents().size(), events.size(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());

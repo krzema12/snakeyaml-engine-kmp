@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Dump;
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.api.Load;
 import org.snakeyaml.engine.api.LoadSettings;
 import org.snakeyaml.engine.nodes.Node;
@@ -37,7 +38,7 @@ class OptionalTest {
     @Test
     @DisplayName("Represent Optional as value")
     void representOptional(TestInfo testInfo) {
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettings());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
         Node node = standardRepresenter.represent(Optional.of("a"));
         assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
     }
@@ -45,7 +46,7 @@ class OptionalTest {
     @Test
     @DisplayName("Represent Optional.empty as null")
     void representEmptyOptional(TestInfo testInfo) {
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettings());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
         Node node = standardRepresenter.represent(Optional.empty());
         assertEquals("tag:yaml.org,2002:null", node.getTag().getValue());
     }
@@ -53,7 +54,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optional as its value")
     void dumpOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of("a"));
         assertEquals("!!java.util.Optional 'a'\n", str);
@@ -62,7 +63,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump empty Optional as null")
     void dumpEmptyOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.empty());
         assertEquals("null\n", str);
@@ -71,7 +72,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optionals")
     void dumpListOfOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
         assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
@@ -80,7 +81,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optionals")
     void dumpListOfOptional2(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
+        DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of(Lists.newArrayList(1, 2)));
         assertEquals("!!java.util.Optional [1, 2]\n", str);

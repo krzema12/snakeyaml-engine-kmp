@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.api.Dump;
 import org.snakeyaml.engine.api.DumpSettings;
+import org.snakeyaml.engine.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.nodes.ScalarNode;
 
@@ -32,8 +33,7 @@ class EnumRepresenterTest {
     @Test
     @DisplayName("Represent Enum as node with global tag")
     void represenEnum(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
-        settings.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
+        DumpSettings settings = new DumpSettingsBuilder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         StandardRepresenter standardRepresenter = new StandardRepresenter(settings);
         ScalarNode node = (ScalarNode) standardRepresenter.represent(FormatEnum.JSON);
         assertEquals(ScalarStyle.DOUBLE_QUOTED, node.getScalarStyle());
@@ -43,8 +43,7 @@ class EnumRepresenterTest {
     @Test
     @DisplayName("Dump Enum with ScalarStyle.DOUBLE_QUOTED")
     void dumpEnum(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
-        settings.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
+        DumpSettings settings = new DumpSettingsBuilder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         Dump dumper = new Dump(settings);
         String node = dumper.dumpToString(FormatEnum.JSON);
         assertEquals("!!org.snakeyaml.engine.representer.FormatEnum \"JSON\"\n", node);

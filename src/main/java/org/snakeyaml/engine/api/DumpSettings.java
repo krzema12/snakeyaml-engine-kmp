@@ -15,19 +15,15 @@
  */
 package org.snakeyaml.engine.api;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.FlowStyle;
 import org.snakeyaml.engine.common.ScalarStyle;
 import org.snakeyaml.engine.common.SpecVersion;
 import org.snakeyaml.engine.nodes.Tag;
-import org.snakeyaml.engine.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.resolver.ScalarResolver;
 import org.snakeyaml.engine.serializer.AnchorGenerator;
-import org.snakeyaml.engine.serializer.NumberAnchorGenerator;
 
 /**
  * Fine tuning serializing/dumping
@@ -57,74 +53,57 @@ public final class DumpSettings {
     private boolean splitLines;
 
 
-    public DumpSettings() {
-        this.label = "reader";
-        this.explicitRootTag = Optional.empty();
-        this.useTags = new HashMap<>();
-        this.scalarResolver = new JsonScalarResolver();
-        this.anchorGenerator = new NumberAnchorGenerator(1);
-        this.bestLineBreak = "\n";
-        this.canonical = false;
-        this.useUnicodeEncoding = true;
-        this.indent = 2;
-        this.indicatorIndent = 0;
-        this.width = 80;
-        this.splitLines = true;
-        this.explicitStart = false;
-        this.explicitEnd = false;
-        this.specVersion = Optional.empty();
-        this.defaultFlowStyle = FlowStyle.AUTO;
-        this.defaultScalarStyle = ScalarStyle.PLAIN;
+    DumpSettings(String label, boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
+                 AnchorGenerator anchorGenerator, Optional<SpecVersion> specVersion, Map<String, String> useTags,
+                 ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
+                 //emitter
+                 Optional<Tag> rootTag, boolean canonical, boolean prettyFlow, boolean useUnicodeEncoding,
+                 int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines
+    ) {
+        this.label = label;
+        this.explicitStart = explicitStart;
+        this.explicitEnd = explicitEnd;
+        this.explicitRootTag = explicitRootTag;
+        this.anchorGenerator = anchorGenerator;
+        this.specVersion = specVersion;
+        this.useTags = useTags;
+        this.scalarResolver = scalarResolver;
+        this.defaultFlowStyle = defaultFlowStyle;
+        this.defaultScalarStyle = defaultScalarStyle;
+        this.rootTag = rootTag;
+        this.canonical = canonical;
+        this.prettyFlow = prettyFlow;
+        this.useUnicodeEncoding = useUnicodeEncoding;
+        this.indent = indent;
+        this.indicatorIndent = indicatorIndent;
+        this.width = width;
+        this.bestLineBreak = bestLineBreak;
+        this.splitLines = splitLines;
     }
+
 
     public FlowStyle getDefaultFlowStyle() {
         return defaultFlowStyle;
-    }
-
-    public void setDefaultFlowStyle(FlowStyle defaultFlowStyle) {
-        this.defaultFlowStyle = defaultFlowStyle;
     }
 
     public ScalarStyle getDefaultScalarStyle() {
         return defaultScalarStyle;
     }
 
-    public void setDefaultScalarStyle(ScalarStyle defaultScalarStyle) {
-        this.defaultScalarStyle = defaultScalarStyle;
-    }
-
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public boolean isExplicitStart() {
         return explicitStart;
     }
 
-    public void setExplicitStart(boolean explicitStart) {
-        this.explicitStart = explicitStart;
-    }
-
     public AnchorGenerator getAnchorGenerator() {
         return anchorGenerator;
     }
 
-    public void setAnchorGenerator(AnchorGenerator anchorGenerator) {
-        Objects.requireNonNull(anchorGenerator, "anchorGenerator cannot be null");
-        this.anchorGenerator = anchorGenerator;
-    }
-
     public ScalarResolver getScalarResolver() {
         return scalarResolver;
-    }
-
-    public void setScalarResolver(ScalarResolver scalarResolver) {
-        Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
-        this.scalarResolver = scalarResolver;
     }
 
     public boolean isExplicitEnd() {
@@ -135,105 +114,49 @@ public final class DumpSettings {
         return explicitRootTag;
     }
 
-    public void setExplicitRootTag(Optional<Tag> explicitRootTag) {
-        Objects.requireNonNull(explicitRootTag, "explicitRootTag cannot be null");
-        this.explicitRootTag = explicitRootTag;
-    }
-
-    public void setExplicitEnd(boolean explicitEnd) {
-        this.explicitEnd = explicitEnd;
-    }
-
     public Optional<SpecVersion> getSpecVersion() {
         return specVersion;
-    }
-
-    public void setSpecVersion(Optional<SpecVersion> specVersion) {
-        Objects.requireNonNull(specVersion, "specVersion cannot be null");
-        this.specVersion = specVersion;
     }
 
     public Map<String, String> getUseTags() {
         return useTags;
     }
 
-    public void setUseTags(Map<String, String> useTags) {
-        Objects.requireNonNull(useTags, "useTags cannot be null");
-        this.useTags = useTags;
-    }
-
     public Optional<Tag> getRootTag() {
         return rootTag;
-    }
-
-    public void setRootTag(Optional<Tag> rootTag) {
-        Objects.requireNonNull(rootTag, "rootTag cannot be null");
-        this.rootTag = rootTag;
     }
 
     public boolean isCanonical() {
         return canonical;
     }
 
-    public void setCanonical(boolean canonical) {
-        this.canonical = canonical;
-    }
-
     public boolean isPrettyFlow() {
         return prettyFlow;
-    }
-
-    public void setPrettyFlow(boolean prettyFlow) {
-        this.prettyFlow = prettyFlow;
     }
 
     public boolean isUseUnicodeEncoding() {
         return useUnicodeEncoding;
     }
 
-    public void setUseUnicodeEncoding(boolean useUnicodeEncoding) {
-        this.useUnicodeEncoding = useUnicodeEncoding;
-    }
-
     public int getIndent() {
         return indent;
-    }
-
-    public void setIndent(int indent) {
-        this.indent = indent;
     }
 
     public int getIndicatorIndent() {
         return indicatorIndent;
     }
 
-    public void setIndicatorIndent(int indicatorIndent) {
-        this.indicatorIndent = indicatorIndent;
-    }
-
     public int getWidth() {
         return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     public String getBestLineBreak() {
         return bestLineBreak;
     }
 
-    public void setBestLineBreak(String bestLineBreak) {
-        Objects.requireNonNull(bestLineBreak, "bestLineBreak cannot be null");
-        this.bestLineBreak = bestLineBreak;
-    }
-
     public boolean isSplitLines() {
         return splitLines;
     }
 
-    public void setSplitLines(boolean splitLines) {
-        this.splitLines = splitLines;
-    }
 }
 

@@ -31,8 +31,7 @@ class DumpSettingsTest {
     @Test
     @DisplayName("Dump explicit version")
     void dumpVersion(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettings();
-        settings.setSpecVersion(Optional.of(new SpecVersion(1, 2)));
+        DumpSettings settings = new DumpSettingsBuilder().setSpecVersion(Optional.of(new SpecVersion(1, 2))).build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString("a");
         assertEquals("%YAML 1.2\n" +

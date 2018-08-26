@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.snakeyaml.engine.emitter.Emitter;
 import org.snakeyaml.engine.nodes.Node;
+import org.snakeyaml.engine.representer.BaseRepresenter;
 import org.snakeyaml.engine.representer.StandardRepresenter;
 import org.snakeyaml.engine.serializer.Serializer;
 
@@ -31,6 +32,7 @@ import org.snakeyaml.engine.serializer.Serializer;
 public class Dump {
 
     private DumpSettings settings;
+    private BaseRepresenter representer;//TODO BaseRepresenter or StandardRepresenter
 
     /**
      * Create instance
@@ -38,8 +40,19 @@ public class Dump {
      * @param settings - configuration
      */
     public Dump(DumpSettings settings) {
+        this(settings, new StandardRepresenter(settings));
+    }
+
+    /**
+     * Create instance
+     * @param settings - configuration
+     * @param representer - custom representer
+     */
+    public Dump(DumpSettings settings, BaseRepresenter representer) {
         Objects.requireNonNull(settings, "DumpSettings cannot be null");
+        Objects.requireNonNull(representer, "Representer cannot be null");
         this.settings = settings;
+        this.representer = representer;
     }
 
     /**
@@ -49,7 +62,6 @@ public class Dump {
      * @param streamDataWriter  - destination I/O writer
      */
     public void dumpAll(Iterator<? extends Object> instancesIterator, StreamDataWriter streamDataWriter) {
-        StandardRepresenter representer = new StandardRepresenter(settings);
         Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
         serializer.open();
         while (instancesIterator.hasNext()) {

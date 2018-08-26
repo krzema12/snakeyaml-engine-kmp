@@ -718,7 +718,7 @@ public final class Emitter implements Emitable {
     }
 
     private void processTag() {
-        String tag = null;
+        String tag; //TODO remove null as value
         if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent ev = (ScalarEvent) event;
             tag = ev.getTag().orElse(null);
@@ -764,7 +764,7 @@ public final class Emitter implements Emitable {
         if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis.empty || analysis.multiline))
                     && ((flowLevel != 0 && analysis.allowFlowPlain) || (flowLevel == 0 && analysis.allowBlockPlain))) {
-                return null;
+                return null; //TODO do not use null
             }
         }
         if (!ev.isPlain() && (ev.getScalarStyle() == ScalarStyle.LITERAL || ev.getScalarStyle() == ScalarStyle.FOLDED)) {

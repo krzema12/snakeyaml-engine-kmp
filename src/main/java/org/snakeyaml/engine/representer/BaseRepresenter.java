@@ -108,7 +108,7 @@ public abstract class BaseRepresenter {
     }
 
     protected Node representScalar(Tag tag, String value, ScalarStyle style) {
-        if (style == null) {
+        if (style == ScalarStyle.PLAIN) {
             style = this.defaultScalarStyle;
         }
         Node node = new ScalarNode(tag, value, style);

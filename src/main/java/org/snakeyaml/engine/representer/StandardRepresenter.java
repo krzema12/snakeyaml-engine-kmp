@@ -118,7 +118,7 @@ public class StandardRepresenter extends BaseRepresenter {
     protected class RepresentString implements RepresentToNode {
         public Node representData(Object data) {
             Tag tag = Tag.STR;
-            ScalarStyle style = null;//not defined
+            ScalarStyle style = ScalarStyle.PLAIN;
             String value = data.toString();
             if (!StreamReader.isPrintable(value)) {
                 tag = Tag.BINARY;

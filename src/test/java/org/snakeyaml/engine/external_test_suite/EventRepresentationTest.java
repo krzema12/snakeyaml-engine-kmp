@@ -18,6 +18,7 @@ package org.snakeyaml.engine.external_test_suite;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -74,11 +75,11 @@ class EventRepresentationTest {
     @Test
     @DisplayName("Represent DocumentStartEvent")
     void testDocumentStartEvent(TestInfo testInfo) {
-        valid(new DocumentStartEvent(true, Optional.empty(), null), "+DOC ---");
-        valid(new DocumentStartEvent(true, Optional.empty(), null), "+DOC");
+        valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC ---");
+        valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC");
 
-        valid(new DocumentStartEvent(false, Optional.empty(), null), "+DOC");
-        valid(new DocumentStartEvent(false, Optional.empty(), null), "+DOC ---");
+        valid(new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap()), "+DOC");
+        valid(new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap()), "+DOC ---");
     }
 
     @Test

@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.parser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,7 +215,7 @@ public class ParserImpl implements Parser {
                 Token token = scanner.peekToken();
                 Optional<Mark> startMark = token.getStartMark();
                 Optional<Mark> endMark = startMark;
-                Event event = new DocumentStartEvent(false, Optional.empty(), null, startMark, endMark);
+                Event event = new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap(), startMark, endMark);
                 // Prepare the next state.
                 states.push(new ParseDocumentEnd());
                 state = Optional.of(new ParseBlockNode());

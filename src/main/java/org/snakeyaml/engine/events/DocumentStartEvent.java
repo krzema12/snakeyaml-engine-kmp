@@ -39,6 +39,7 @@ public final class DocumentStartEvent extends Event {
         this.explicit = explicit;
         Objects.requireNonNull(specVersion);
         this.specVersion = specVersion;
+        Objects.requireNonNull(tags);
         this.tags = tags;
     }
 

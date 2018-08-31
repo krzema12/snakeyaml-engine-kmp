@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.inherited;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.snakeyaml.engine.common.Anchor;
@@ -76,7 +77,7 @@ public class CanonicalParser implements Parser {
             scanner.getToken(Token.ID.Directive);
         }
         scanner.getToken(Token.ID.DocumentStart);
-        events.add(new DocumentStartEvent(true, Optional.of(new SpecVersion(1, 2)), null, Optional.empty(), Optional.empty()));
+        events.add(new DocumentStartEvent(true, Optional.of(new SpecVersion(1, 2)), Collections.emptyMap(), Optional.empty(), Optional.empty()));
         parseNode();
         if (scanner.checkToken(Token.ID.DocumentEnd)) {
             scanner.getToken(Token.ID.DocumentEnd);

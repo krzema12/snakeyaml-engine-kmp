@@ -129,7 +129,7 @@ public class ParserImpl implements Parser {
 
     protected final Scanner scanner;
     private final LoadSettings settings;
-    private Event currentEvent;
+    private Optional<Event> currentEvent;
     private final ArrayStack<Production> states;
     private final ArrayStack<Optional<Mark>> marksStack;
     private Production state;
@@ -142,10 +142,9 @@ public class ParserImpl implements Parser {
     public ParserImpl(Scanner scanner, LoadSettings settings) {
         this.scanner = scanner;
         this.settings = settings;
-        //TODO Optional
-        currentEvent = null;
-        directives = new VersionTagsTuple(Optional.empty(), new HashMap<String, String>(DEFAULT_TAGS));
-        states = new ArrayStack<Production>(100);
+        currentEvent = Optional.empty();
+        directives = new VersionTagsTuple(Optional.empty(), new HashMap(DEFAULT_TAGS));
+        states = new ArrayStack(100);
         marksStack = new ArrayStack(10);
         state = new ParseStreamStart();
     }
@@ -155,12 +154,13 @@ public class ParserImpl implements Parser {
      */
     public boolean checkEvent(Event.ID choice) {
         peekEvent();
-        return currentEvent != null && currentEvent.isEvent(choice);
+//        return currentEvent.filter(event -> event.isEvent(choice)).isPresent();
+        return currentEvent.isPresent() && currentEvent.get().isEvent(choice);
     }
 
     private void produce() {
-        if (currentEvent == null && state != null) {
-            currentEvent = state.produce();
+        if (!currentEvent.isPresent() && state != null) {
+            currentEvent = Optional.of(state.produce());
         }
     }
 
@@ -169,11 +169,7 @@ public class ParserImpl implements Parser {
      */
     public Event peekEvent() {
         produce();
-        if (currentEvent == null) {
-            throw new ParserException("Event expected.", Optional.empty());
-        } else {
-            return currentEvent;
-        }
+        return currentEvent.orElseThrow(() -> new ParserException("Event expected.", Optional.empty()));
     }
 
     /**
@@ -181,15 +177,15 @@ public class ParserImpl implements Parser {
      */
     public Event next() {
         peekEvent();
-        Event value = currentEvent;
-        currentEvent = null;
+        Event value = currentEvent.get();
+        currentEvent = Optional.empty();
         return value;
     }
 
     @Override
     public boolean hasNext() {
         produce();
-        return currentEvent != null;
+        return currentEvent.isPresent();
     }
 
     /**

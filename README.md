@@ -45,9 +45,6 @@ Apps to support
 * Liquibase -> java 8
 * RAML -> java 7, compose only
 
-## Info ##
- * [Changes](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Changes)
- * [Documentation](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation)
 
 ## Contribute ##
 * Mercurial DVCS is used to dance with the [source code](https://bitbucket.org/asomov/snakeyaml-engine/src).

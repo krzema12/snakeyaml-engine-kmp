@@ -158,16 +158,22 @@ public class ParserImpl implements Parser {
         return currentEvent != null && currentEvent.isEvent(choice);
     }
 
+    private void produce() {
+        if (currentEvent == null && state != null) {
+            currentEvent = state.produce();
+        }
+    }
+
     /**
      * Get the next event.
      */
     public Event peekEvent() {
+        produce();
         if (currentEvent == null) {
-            if (state != null) {
-                currentEvent = state.produce();
-            }
+            throw new ParserException("Event expected.", Optional.empty());
+        } else {
+            return currentEvent;
         }
-        return currentEvent;
     }
 
     /**
@@ -182,7 +188,8 @@ public class ParserImpl implements Parser {
 
     @Override
     public boolean hasNext() {
-        return peekEvent() != null;
+        produce();
+        return currentEvent != null;
     }
 
     /**

@@ -187,7 +187,6 @@ public class CanonicalParser implements Parser {
     /**
      * Get the next event.
      */
-    //TODO event is optional
     public Event peekEvent() {
         if (!parsed) {
             parse();

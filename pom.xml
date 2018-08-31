@@ -13,8 +13,8 @@
         <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots/</snapshot.repo.url>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.jupiter.version>5.2.0-M1</junit.jupiter.version>
-        <junit.platform.version>1.1.0</junit.platform.version>
+        <junit.jupiter.version>5.2.0</junit.jupiter.version>
+        <junit.platform.version>1.2.0</junit.platform.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <maven-bundle-plugin.version>3.5.0</maven-bundle-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>

@@ -39,7 +39,7 @@ public final class DumpSettingsBuilder {
     private boolean explicitEnd;
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
-    private Optional<SpecVersion> specVersion; //TODO rename to yamlDirective
+    private Optional<SpecVersion> yamlDirective;
     private Map<String, String> useTags; //TODO rename to tagDirective
     private ScalarResolver scalarResolver;
     private FlowStyle defaultFlowStyle;
@@ -73,7 +73,7 @@ public final class DumpSettingsBuilder {
         this.splitLines = true;
         this.explicitStart = false;
         this.explicitEnd = false;
-        this.specVersion = Optional.empty();
+        this.yamlDirective = Optional.empty();
         this.defaultFlowStyle = FlowStyle.AUTO;
         this.defaultScalarStyle = ScalarStyle.PLAIN;
     }
@@ -153,12 +153,12 @@ public final class DumpSettingsBuilder {
 
     /**
      * Add YAML directive (http://yaml.org/spec/1.2/spec.html#id2781553)
-     * @param specVersion - the version to be used in the directive
+     * @param yamlDirective - the version to be used in the directive
      * @return the builder with the provided value
      */
-    public DumpSettingsBuilder setSpecVersion(Optional<SpecVersion> specVersion) {
-        Objects.requireNonNull(specVersion, "specVersion cannot be null");
-        this.specVersion = specVersion;
+    public DumpSettingsBuilder setYamlDirective(Optional<SpecVersion> yamlDirective) {
+        Objects.requireNonNull(yamlDirective, "yamlDirective cannot be null");
+        this.yamlDirective = yamlDirective;
         return this;
     }
 
@@ -276,7 +276,7 @@ public final class DumpSettingsBuilder {
      */
     public DumpSettings build() {
         return new DumpSettings(explicitStart, explicitEnd, explicitRootTag,
-                anchorGenerator, specVersion, useTags,
+                anchorGenerator, yamlDirective, useTags,
                 scalarResolver, defaultFlowStyle, defaultScalarStyle,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,

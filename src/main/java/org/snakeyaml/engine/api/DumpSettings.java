@@ -35,7 +35,7 @@ public final class DumpSettings {
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
     private Optional<SpecVersion> yamlDirective;
-    private Map<String, String> useTags;
+    private Map<String, String> tagDirective;
     private ScalarResolver scalarResolver;
     private FlowStyle defaultFlowStyle;
     private ScalarStyle defaultScalarStyle;
@@ -52,7 +52,7 @@ public final class DumpSettings {
 
 
     DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
-                 AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective, Map<String, String> useTags,
+                 AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective, Map<String, String> tagDirective,
                  ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
                  //emitter
                  boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
@@ -63,7 +63,7 @@ public final class DumpSettings {
         this.explicitRootTag = explicitRootTag;
         this.anchorGenerator = anchorGenerator;
         this.yamlDirective = yamlDirective;
-        this.useTags = useTags;
+        this.tagDirective = tagDirective;
         this.scalarResolver = scalarResolver;
         this.defaultFlowStyle = defaultFlowStyle;
         this.defaultScalarStyle = defaultScalarStyle;
@@ -110,8 +110,8 @@ public final class DumpSettings {
         return yamlDirective;
     }
 
-    public Map<String, String> getUseTags() {
-        return useTags;
+    public Map<String, String> getTagDirective() {
+        return tagDirective;
     }
 
     public boolean isCanonical() {

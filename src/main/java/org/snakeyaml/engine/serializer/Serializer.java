@@ -60,7 +60,7 @@ public class Serializer {
     }
 
     public void serialize(Node node) {
-        this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(), settings.getYamlDirective(), settings.getUseTags()));
+        this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(), settings.getYamlDirective(), settings.getTagDirective()));
         anchorNode(node);
         settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
         serializeNode(node, Optional.empty());

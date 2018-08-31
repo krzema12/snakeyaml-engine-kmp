@@ -40,7 +40,7 @@ public final class DumpSettingsBuilder {
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
     private Optional<SpecVersion> yamlDirective;
-    private Map<String, String> useTags; //TODO rename to tagDirective
+    private Map<String, String> tagDirective;
     private ScalarResolver scalarResolver;
     private FlowStyle defaultFlowStyle;
     private ScalarStyle defaultScalarStyle;
@@ -61,7 +61,7 @@ public final class DumpSettingsBuilder {
      */
     public DumpSettingsBuilder() {
         this.explicitRootTag = Optional.empty();
-        this.useTags = new HashMap<>();
+        this.tagDirective = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();
         this.anchorGenerator = new NumberAnchorGenerator(1);
         this.bestLineBreak = "\n";
@@ -164,12 +164,12 @@ public final class DumpSettingsBuilder {
 
     /**
      * Add TAG directive (http://yaml.org/spec/1.2/spec.html#id2782090)
-     * @param useTags - the data to create TAG directive
+     * @param tagDirective - the data to create TAG directive
      * @return the builder with the provided value
      */
-    public DumpSettingsBuilder setUseTags(Map<String, String> useTags) {
-        Objects.requireNonNull(useTags, "useTags cannot be null");
-        this.useTags = useTags;
+    public DumpSettingsBuilder setTagDirective(Map<String, String> tagDirective) {
+        Objects.requireNonNull(tagDirective, "tagDirective cannot be null");
+        this.tagDirective = tagDirective;
         return this;
     }
 
@@ -276,7 +276,7 @@ public final class DumpSettingsBuilder {
      */
     public DumpSettings build() {
         return new DumpSettings(explicitStart, explicitEnd, explicitRootTag,
-                anchorGenerator, yamlDirective, useTags,
+                anchorGenerator, yamlDirective, tagDirective,
                 scalarResolver, defaultFlowStyle, defaultScalarStyle,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,

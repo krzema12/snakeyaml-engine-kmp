@@ -424,8 +424,6 @@ public class ParserImpl implements Parser {
                 startMark = scanner.peekToken().getStartMark();
                 endMark = startMark;
             }
-            //TODO optional
-            event = null;
             boolean implicit = !tag.isPresent() || tag.equals("!");
             if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
                 endMark = scanner.peekToken().getEndMark();

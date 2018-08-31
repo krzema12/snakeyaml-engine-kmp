@@ -186,7 +186,7 @@ public final class Emitter implements Emitable {
 
         // Formatting details.
         this.canonical = opts.isCanonical();
-        this.prettyFlow = opts.isPrettyFlow();
+        this.prettyFlow = opts.isMultiLineFlow();
         this.allowUnicode = opts.isUseUnicodeEncoding();
         this.bestIndent = 2;
         if ((opts.getIndent() > MIN_INDENT) && (opts.getIndent() < MAX_INDENT)) {

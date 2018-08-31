@@ -30,7 +30,6 @@ import org.snakeyaml.engine.serializer.AnchorGenerator;
  * Description for all the fields can be found in the builder
  */
 public final class DumpSettings {
-    private String label;
     private boolean explicitStart;
     private boolean explicitEnd;
     private Optional<Tag> explicitRootTag;
@@ -43,7 +42,7 @@ public final class DumpSettings {
 
     //emitter
     private boolean canonical;
-    private boolean prettyFlow;
+    private boolean multiLineFlow;
     private boolean useUnicodeEncoding;
     private int indent;
     private int indicatorIndent;
@@ -56,10 +55,9 @@ public final class DumpSettings {
                  AnchorGenerator anchorGenerator, Optional<SpecVersion> specVersion, Map<String, String> useTags,
                  ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
                  //emitter
-                 boolean canonical, boolean prettyFlow, boolean useUnicodeEncoding,
+                 boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
                  int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines
     ) {
-        this.label = label;
         this.explicitStart = explicitStart;
         this.explicitEnd = explicitEnd;
         this.explicitRootTag = explicitRootTag;
@@ -70,7 +68,7 @@ public final class DumpSettings {
         this.defaultFlowStyle = defaultFlowStyle;
         this.defaultScalarStyle = defaultScalarStyle;
         this.canonical = canonical;
-        this.prettyFlow = prettyFlow;
+        this.multiLineFlow = multiLineFlow;
         this.useUnicodeEncoding = useUnicodeEncoding;
         this.indent = indent;
         this.indicatorIndent = indicatorIndent;
@@ -86,10 +84,6 @@ public final class DumpSettings {
 
     public ScalarStyle getDefaultScalarStyle() {
         return defaultScalarStyle;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
     public boolean isExplicitStart() {
@@ -124,8 +118,8 @@ public final class DumpSettings {
         return canonical;
     }
 
-    public boolean isPrettyFlow() {
-        return prettyFlow;
+    public boolean isMultiLineFlow() {
+        return multiLineFlow;
     }
 
     public boolean isUseUnicodeEncoding() {

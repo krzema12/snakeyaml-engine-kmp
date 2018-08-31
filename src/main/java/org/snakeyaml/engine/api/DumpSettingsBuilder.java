@@ -47,7 +47,7 @@ public final class DumpSettingsBuilder {
 
     //emitter
     private boolean canonical;
-    private boolean prettyFlow;
+    private boolean multiLineFlow;
     private boolean useUnicodeEncoding;
     private int indent;
     private int indicatorIndent;
@@ -184,12 +184,12 @@ public final class DumpSettingsBuilder {
     }
 
     /**
-     * Use pretty flow style (TODO add example ?)
-     * @param prettyFlow - specify if pretty flow should be used
+     * Use pretty flow style when every value in the flow context gets a separate line.
+     * @param multiLineFlow - set false to output all values in a single line.
      * @return the builder with the provided value
      */
-    public DumpSettingsBuilder setPrettyFlow(boolean prettyFlow) {
-        this.prettyFlow = prettyFlow;
+    public DumpSettingsBuilder setMultiLineFlow(boolean multiLineFlow) {
+        this.multiLineFlow = multiLineFlow;
         return this;
     }
 
@@ -279,7 +279,7 @@ public final class DumpSettingsBuilder {
                 anchorGenerator, specVersion, useTags,
                 scalarResolver, defaultFlowStyle, defaultScalarStyle,
                 //emitter
-                canonical, prettyFlow, useUnicodeEncoding,
+                canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines);
     }
 }

@@ -150,20 +150,20 @@ public final class Emitter implements Emitable {
 
     // Scalar analysis and style.
     private ScalarAnalysis analysis;
-    private ScalarStyle style;
+    private Optional<ScalarStyle> scalarStyle;
 
     public Emitter(DumpSettings opts, StreamDataWriter stream) {
         // The stream should have the methods `write` and possibly `flush`.
         this.stream = stream;
         // Emitter is a state machine with a stack of states to handle nested
         // structures.
-        this.states = new ArrayStack<EmitterState>(100);
+        this.states = new ArrayStack(100);
         this.state = new ExpectStreamStart();
         // Current event and the event queue.
-        this.events = new ArrayBlockingQueue<Event>(100);
+        this.events = new ArrayBlockingQueue(100);
         this.event = null;
         // The current indentation level and the stack of previous indents.
-        this.indents = new ArrayStack<Integer>(10);
+        this.indents = new ArrayStack(10);
         this.indent = null;
         // Flow level.
         this.flowLevel = 0;
@@ -209,7 +209,7 @@ public final class Emitter implements Emitable {
 
         // Scalar analysis and style.
         this.analysis = null;
-        this.style = null;
+        this.scalarStyle = Optional.empty();
     }
 
     public void emit(Event event) {
@@ -722,11 +722,11 @@ public final class Emitter implements Emitable {
         if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent ev = (ScalarEvent) event;
             tag = ev.getTag().orElse(null);
-            if (style == null) {
-                style = chooseScalarStyle();
+            if (!scalarStyle.isPresent()) {
+                scalarStyle = chooseScalarStyle();
             }
-            if ((!canonical || tag == null) && ((style == null && ev.getImplicit()
-                    .canOmitTagInPlainScalar()) || (style != null && ev.getImplicit()
+            if ((!canonical || tag == null) && ((!scalarStyle.isPresent() && ev.getImplicit()
+                    .canOmitTagInPlainScalar()) || (scalarStyle.isPresent() && ev.getImplicit()
                     .canOmitTagInNonPlainScalar()))) {
                 preparedTag = null;
                 return;
@@ -753,31 +753,31 @@ public final class Emitter implements Emitable {
         preparedTag = null;
     }
 
-    private ScalarStyle chooseScalarStyle() {
+    private Optional<ScalarStyle> chooseScalarStyle() {
         ScalarEvent ev = (ScalarEvent) event;
         if (analysis == null) {
             analysis = analyzeScalar(ev.getValue());
         }
         if (!ev.isPlain() && ev.getScalarStyle() == ScalarStyle.DOUBLE_QUOTED || this.canonical) {
-            return ScalarStyle.DOUBLE_QUOTED;
+            return Optional.of(ScalarStyle.DOUBLE_QUOTED);
         }
         if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis.empty || analysis.multiline))
                     && ((flowLevel != 0 && analysis.allowFlowPlain) || (flowLevel == 0 && analysis.allowBlockPlain))) {
-                return null; //TODO do not use null
+                return Optional.empty();
             }
         }
         if (!ev.isPlain() && (ev.getScalarStyle() == ScalarStyle.LITERAL || ev.getScalarStyle() == ScalarStyle.FOLDED)) {
             if (flowLevel == 0 && !simpleKeyContext && analysis.allowBlock) {
-                return ev.getScalarStyle();
+                return Optional.of(ev.getScalarStyle());
             }
         }
         if (ev.isPlain() || ev.getScalarStyle() == ScalarStyle.SINGLE_QUOTED) {
             if (analysis.allowSingleQuoted && !(simpleKeyContext && analysis.multiline)) {
-                return ScalarStyle.SINGLE_QUOTED;
+                return Optional.of(ScalarStyle.SINGLE_QUOTED);
             }
         }
-        return ScalarStyle.DOUBLE_QUOTED;
+        return Optional.of(ScalarStyle.DOUBLE_QUOTED);
     }
 
     private void processScalar() {
@@ -785,14 +785,14 @@ public final class Emitter implements Emitable {
         if (analysis == null) {
             analysis = analyzeScalar(ev.getValue());
         }
-        if (style == null) {
-            style = chooseScalarStyle();
+        if (!scalarStyle.isPresent()) {
+            scalarStyle = chooseScalarStyle();
         }
         boolean split = !simpleKeyContext && splitLines;
-        if (style == null) {
+        if (!scalarStyle.isPresent()) {
             writePlain(analysis.scalar, split);
         } else {
-            switch (style) {
+            switch (scalarStyle.get()) {
                 case DOUBLE_QUOTED:
                     writeDoubleQuoted(analysis.scalar, split);
                     break;
@@ -806,11 +806,11 @@ public final class Emitter implements Emitable {
                     writeLiteral(analysis.scalar);
                     break;
                 default:
-                    throw new YamlEngineException("Unexpected style: " + style);
+                    throw new YamlEngineException("Unexpected scalarStyle: " + scalarStyle);
             }
         }
         analysis = null;
-        style = null;
+        scalarStyle = Optional.empty();
     }
 
     // Analyzers.

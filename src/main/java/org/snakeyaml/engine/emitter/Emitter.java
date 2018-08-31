@@ -132,7 +132,7 @@ public final class Emitter implements Emitable {
     // Formatting details.
     private Boolean canonical;
     // pretty print flow by adding extra line breaks
-    private Boolean prettyFlow;
+    private Boolean multiLineFlow;
 
     private boolean allowUnicode;
     private int bestIndent;
@@ -186,7 +186,7 @@ public final class Emitter implements Emitable {
 
         // Formatting details.
         this.canonical = opts.isCanonical();
-        this.prettyFlow = opts.isMultiLineFlow();
+        this.multiLineFlow = opts.isMultiLineFlow();
         this.allowUnicode = opts.isUseUnicodeEncoding();
         this.bestIndent = 2;
         if ((opts.getIndent() > MIN_INDENT) && (opts.getIndent() < MAX_INDENT)) {
@@ -425,7 +425,7 @@ public final class Emitter implements Emitable {
         writeIndicator("[", true, true, false);
         flowLevel++;
         increaseIndent(true, false);
-        if (prettyFlow) {
+        if (multiLineFlow) {
             writeIndent();
         }
         state = new ExpectFirstFlowSequenceItem();
@@ -439,7 +439,7 @@ public final class Emitter implements Emitable {
                 writeIndicator("]", false, false, false);
                 state = states.pop();
             } else {
-                if (canonical || (column > bestWidth && splitLines) || prettyFlow) {
+                if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
                     writeIndent();
                 }
                 states.push(new ExpectFlowSequenceItem());
@@ -458,13 +458,13 @@ public final class Emitter implements Emitable {
                     writeIndent();
                 }
                 writeIndicator("]", false, false, false);
-                if (prettyFlow) {
+                if (multiLineFlow) {
                     writeIndent();
                 }
                 state = states.pop();
             } else {
                 writeIndicator(",", false, false, false);
-                if (canonical || (column > bestWidth && splitLines) || prettyFlow) {
+                if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
                     writeIndent();
                 }
                 states.push(new ExpectFlowSequenceItem());
@@ -479,7 +479,7 @@ public final class Emitter implements Emitable {
         writeIndicator("{", true, true, false);
         flowLevel++;
         increaseIndent(true, false);
-        if (prettyFlow) {
+        if (multiLineFlow) {
             writeIndent();
         }
         state = new ExpectFirstFlowMappingKey();
@@ -493,7 +493,7 @@ public final class Emitter implements Emitable {
                 writeIndicator("}", false, false, false);
                 state = states.pop();
             } else {
-                if (canonical || (column > bestWidth && splitLines) || prettyFlow) {
+                if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
                     writeIndent();
                 }
                 if (!canonical && checkSimpleKey()) {
@@ -517,14 +517,14 @@ public final class Emitter implements Emitable {
                     writeIndicator(",", false, false, false);
                     writeIndent();
                 }
-                if (prettyFlow) {
+                if (multiLineFlow) {
                     writeIndent();
                 }
                 writeIndicator("}", false, false, false);
                 state = states.pop();
             } else {
                 writeIndicator(",", false, false, false);
-                if (canonical || (column > bestWidth && splitLines) || prettyFlow) {
+                if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
                     writeIndent();
                 }
                 if (!canonical && checkSimpleKey()) {
@@ -549,7 +549,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFlowMappingValue implements EmitterState {
         public void expect() {
-            if (canonical || (column > bestWidth) || prettyFlow) {
+            if (canonical || (column > bestWidth) || multiLineFlow) {
                 writeIndent();
             }
             writeIndicator(":", true, false, false);

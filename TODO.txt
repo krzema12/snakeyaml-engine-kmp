@@ -1,0 +1,22 @@
+## TODO (without priority) ##
+* findbugs, pmd, sonarqube
+* coverage
+* parse Optional (non scalar)
+* parse Iterator
+* parse Enum
+* fix issues with 1.2 spec (test-suite)
+* finish the public API
+* prepare Beans
+* fix TODOs in code
+* add Javadoc for public methods
+* Tested with Java 8, 11
+
+
+Apps to support
+
+* jackson -> java 8, no JavaBeans
+* testng -> java 8, JavaBeans
+* spring boot -> jackson
+* swagger -> jackson
+* Liquibase -> java 8
+* RAML -> java 7, compose only

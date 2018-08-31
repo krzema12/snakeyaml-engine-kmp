@@ -20,31 +20,8 @@ to instruct the Engine to call arbitrary Java constructors (unless it is explici
 * Unicode support including UTF-8/UTF-16/UTF-32 input/output.
 * Low-level API for serializing and deserializing native Java objects.
 * Only [JSON Schema](http://yaml.org/spec/1.2/spec.html#id2803231) is supported. 
-The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
+* The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
 * Relatively sensible error messages (can be switched off to improve performance).
-* Tested with Java 8, 9, 10 (thanks to Docker)
-
-## TODO (without priority) ##
-* findbugs, pmd, sonarqube
-* coverage
-* parse Optional (non scalar)
-* parse Iterator
-* parse Enum
-* fix issues with 1.2 spec (test-suite)
-* finish the public API
-* prepare Beans
-* fix TODOs in code 
-* add Javadoc for public methods
-
-Apps to support
-
-* jackson -> java 8, no JavaBeans
-* testng -> java 8, JavaBeans
-* spring boot -> jackson
-* swagger -> jackson
-* Liquibase -> java 8
-* RAML -> java 7, compose only
-
 
 ## Contribute ##
 * Mercurial DVCS is used to dance with the [source code](https://bitbucket.org/asomov/snakeyaml-engine/src).

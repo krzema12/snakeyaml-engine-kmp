@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.snakeyaml</groupId>
     <artifactId>snakeyaml-engine</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,6 @@
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <maven-site-plugin.version>3.6</maven-site-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-        <jdk9-illegal-access-level>deny</jdk9-illegal-access-level>
         <guava.version>24.1-jre</guava.version>
     </properties>
     <name>SnakeYAML Engine</name>

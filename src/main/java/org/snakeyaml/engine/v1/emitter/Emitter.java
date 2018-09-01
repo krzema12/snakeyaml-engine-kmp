@@ -59,7 +59,7 @@ import org.snakeyaml.engine.v1.scanner.StreamReader;
  * </pre>
  */
 public final class Emitter implements Emitable {
-    private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<Character, String>();
+    private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
     public static final int MIN_INDENT = 1;
     public static final int MAX_INDENT = 10;
 
@@ -145,7 +145,7 @@ public final class Emitter implements Emitable {
     private Map<String, String> tagPrefixes;
 
     // Prepared anchor and tag.
-    private Optional<Anchor> preparedAnchor = Optional.empty();
+    private Optional<Anchor> preparedAnchor;
     private String preparedTag;
 
     // Scalar analysis and style.
@@ -201,7 +201,7 @@ public final class Emitter implements Emitable {
         this.splitLines = opts.isSplitLines();
 
         // Tag prefixes.
-        this.tagPrefixes = new LinkedHashMap<String, String>();
+        this.tagPrefixes = new LinkedHashMap();
 
         // Prepared anchor and tag.
         this.preparedAnchor = Optional.empty();
@@ -718,36 +718,36 @@ public final class Emitter implements Emitable {
     }
 
     private void processTag() {
-        String tag; //TODO remove null as value
+        Optional<String> tag;
         if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent ev = (ScalarEvent) event;
-            tag = ev.getTag().orElse(null);
+            tag = ev.getTag();
             if (!scalarStyle.isPresent()) {
                 scalarStyle = chooseScalarStyle();
             }
-            if ((!canonical || tag == null) && ((!scalarStyle.isPresent() && ev.getImplicit()
+            if ((!canonical || !tag.isPresent()) && ((!scalarStyle.isPresent() && ev.getImplicit()
                     .canOmitTagInPlainScalar()) || (scalarStyle.isPresent() && ev.getImplicit()
                     .canOmitTagInNonPlainScalar()))) {
                 preparedTag = null;
                 return;
             }
-            if (ev.getImplicit().canOmitTagInPlainScalar() && tag == null) {
-                tag = "!";
+            if (ev.getImplicit().canOmitTagInPlainScalar() && !tag.isPresent()) {
+                tag = Optional.of("!");
                 preparedTag = null;
             }
         } else {
             CollectionStartEvent ev = (CollectionStartEvent) event;
-            tag = ev.getTag().orElse(null);
-            if ((!canonical || tag == null) && ev.isImplicit()) {
+            tag = ev.getTag();
+            if ((!canonical || !tag.isPresent()) && ev.isImplicit()) {
                 preparedTag = null;
                 return;
             }
         }
-        if (tag == null) {
+        if (!tag.isPresent()) {
             throw new EmitterException("tag is not specified");
         }
         if (preparedTag == null) {
-            preparedTag = prepareTag(tag);
+            preparedTag = prepareTag(tag.get());
         }
         writeIndicator(preparedTag, true, false, false);
         preparedTag = null;

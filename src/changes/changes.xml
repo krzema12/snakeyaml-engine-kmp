@@ -5,7 +5,13 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="0.1" date="in Mercurial" description="Fork from SnakeYAML">
+        <release version="0.9-SNAPSHOT" date="in Mercurial" description="The Public API is ready">
+            <action dev="asomov" type="add">
+                Promote project to Sonatype https://issues.sonatype.org/browse/OSSRH-39762 (2018-09-03)
+                (https://central.sonatype.org/pages/ossrh-guide.html)
+            </action>
+        </release>
+        <release version="0.1-SNAPHOT" date="in Mercurial" description="Fork from SnakeYAML">
             <action dev="asomov" type="add">
                 Create project (2018-04-22)
             </action>

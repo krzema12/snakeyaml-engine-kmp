@@ -23,6 +23,10 @@ to instruct the Engine to call arbitrary Java constructors (unless it is explici
 * The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
 * Relatively sensible error messages (can be switched off to improve performance).
 
+## Info ##
+ * [Changes](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Changes)
+ * [Documentation](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation)
+
 ## Contribute ##
 * Mercurial DVCS is used to dance with the [source code](https://bitbucket.org/asomov/snakeyaml-engine/src).
 * If you find a bug in SnakeYAML, please [file a bug report](https://bitbucket.org/asomov/snakeyaml-engine/issues?status=new&status=open).

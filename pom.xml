@@ -235,7 +235,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <links>
-                        <link>https://docs.oracle.com/javase/6/docs/api/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
                     </links>
                 </configuration>
                 <executions>
@@ -285,8 +285,8 @@
                     <instructions>
                         <_nouses>true</_nouses>
                         <Export-Package>
-                            !org.yaml.snakeyaml.external*,
-                            org.yaml.snakeyaml.*;version=${project.version}
+                            !org.snakeyaml.engine.external.*,
+                            org.snakeyaml.engine.v1.*;version=${project.version}
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -391,7 +391,7 @@
                             </formats>
                             <instrumentation>
                                 <excludes>
-                                    <exclude>org/yaml/snakeyaml/external/**</exclude>
+                                    <exclude>org/snakeyaml/engine/external/**</exclude>
                                 </excludes>
                             </instrumentation>
                         </configuration>

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.colon_in_flow_context;
+package org.snakeyaml.engine.usecases.colon_in_flow_context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -25,27 +26,26 @@ import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 @org.junit.jupiter.api.Tag("fast")
-class ColonInFlowContextInListTest {
+class ColonInFlowContextInMapTest {
     @Test
-    void withSpacesAround(TestInfo testInfo) {
+    void withSeparation(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
-        assertTrue(list.contains("http://foo"));
+        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
+        assertEquals(new Integer(1), map.get("a"));
     }
 
     @Test
-    void withoutSpacesAround(TestInfo testInfo) {
+    void withoutEmptyValue(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        List<String> list = (List<String>) loader.loadFromString("[http://foo]");
-        assertTrue(list.contains("http://foo"));
+        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:}");
+        assertTrue(map.containsKey("a"));
     }
 
     @Test
-    void twoValues(TestInfo testInfo) {
+    void withoutSeparation(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
-        assertTrue(list.contains("http://foo"));
-        assertTrue(list.contains("http://bar"));
+        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:1}");
+        assertTrue(map.containsKey("a:1"));
     }
 }
 

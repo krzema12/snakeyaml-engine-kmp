@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.lowlevel.Compose;
 import org.snakeyaml.engine.v1.exceptions.ParserException;
-import org.snakeyaml.engine.v1.external_test_suite.SuiteData;
-import org.snakeyaml.engine.v1.external_test_suite.SuiteUtils;
+import org.snakeyaml.engine.usecases.external_test_suite.SuiteData;
+import org.snakeyaml.engine.usecases.external_test_suite.SuiteUtils;
 import org.snakeyaml.engine.v1.nodes.Node;
 
 @Tag("fast")

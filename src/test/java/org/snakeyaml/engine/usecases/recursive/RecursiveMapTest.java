@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.v1.recursive;
+package org.snakeyaml.engine.usecases.recursive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

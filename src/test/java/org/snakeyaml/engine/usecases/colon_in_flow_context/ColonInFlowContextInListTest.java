@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.colon_in_flow_context;
+package org.snakeyaml.engine.usecases.colon_in_flow_context;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -26,26 +25,27 @@ import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 @org.junit.jupiter.api.Tag("fast")
-class ColonInFlowContextInMapTest {
+class ColonInFlowContextInListTest {
     @Test
-    void withSeparation(TestInfo testInfo) {
+    void withSpacesAround(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
-        assertEquals(new Integer(1), map.get("a"));
+        List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
+        assertTrue(list.contains("http://foo"));
     }
 
     @Test
-    void withoutEmptyValue(TestInfo testInfo) {
+    void withoutSpacesAround(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:}");
-        assertTrue(map.containsKey("a"));
+        List<String> list = (List<String>) loader.loadFromString("[http://foo]");
+        assertTrue(list.contains("http://foo"));
     }
 
     @Test
-    void withoutSeparation(TestInfo testInfo) {
+    void twoValues(TestInfo testInfo) {
         Load loader = new Load(new LoadSettingsBuilder().build());
-        Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:1}");
-        assertTrue(map.containsKey("a:1"));
+        List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
+        assertTrue(list.contains("http://foo"));
+        assertTrue(list.contains("http://bar"));
     }
 }
 

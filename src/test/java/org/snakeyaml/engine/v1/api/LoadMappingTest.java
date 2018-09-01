@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.utils.TestUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 @Tag("fast")
@@ -52,6 +53,17 @@ class LoadMappingTest {
     @Test
     @DisplayName("map {a: 1, b: 2} is parsed")
     void parseMap2(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettingsBuilder().build();
+        Load load = new Load(settings);
+        Map<String, Object> map = (Map<String, Object>) load.loadFromString("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
+        Map<String, Object> expected = ImmutableMap.of("a", 1, "b", 2, "c", ImmutableList.of("aaa", "bbb"));
+        assertEquals(expected, map);
+        //assertEquals("{a=1, b=2, c=[aaa, bbb]}", map.toString());
+    }
+
+    @Test
+    @DisplayName("map {x: 1, y: 2, z:3} is parsed")
+    void parseMap3(TestInfo testInfo) {
         LoadSettings settings = new LoadSettingsBuilder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));

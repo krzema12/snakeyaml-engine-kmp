@@ -69,8 +69,8 @@ class DumpTest {
     void dumpMapping(TestInfo testInfo) {
         DumpSettings settings = new DumpSettingsBuilder().build();
         Dump dump = new Dump(settings);
-        String str = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
-        assertEquals("{x: 1, y: 2, z: 3}\n", str);
+        String output = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
+        assertEquals("{x: 1, y: 2, z: 3}\n", output);
     }
 
     @Test

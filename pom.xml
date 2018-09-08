@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.snakeyaml</groupId>
     <artifactId>snakeyaml-engine</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,7 +41,7 @@
         <connection>scm:hg:http://bitbucket.org/asomov/snakeyaml-engine</connection>
         <developerConnection>scm:hg:ssh://hg@bitbucket.org/asomov/snakeyaml-engine</developerConnection>
         <url>https://bitbucket.org/asomov/snakeyaml-engine/src</url>
-        <tag>snakeyaml-engine-1.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <licenses>
         <license>

@@ -67,7 +67,8 @@ public abstract class BaseConstructor {
      */
     public Object constructSingleDocument(Optional<Node> optionalNode) {
         if (!optionalNode.isPresent() || Tag.NULL.equals(optionalNode.get().getTag())) {
-            return null;
+            ConstructNode construct = tagConstructors.get(Tag.NULL);
+            return construct.construct(optionalNode.orElse(null));
         } else {
             settings.getRootConstructNode().ifPresent(constructNode -> optionalNode.get().setConstruct(constructNode));
             return construct(optionalNode.get());

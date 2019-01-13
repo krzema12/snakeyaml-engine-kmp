@@ -5,13 +5,18 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="1.0" date="2008-09-08" description="The Public API is ready">
+        <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="fix" issue="1">
+                Null tag constructor not called when parsing top-level null value (2019-01-13)
+            </action>
+        </release>
+        <release version="1.0" date="2018-09-08" description="The Public API is ready">
             <action dev="asomov" type="add">
                 Promote project to Sonatype https://issues.sonatype.org/browse/OSSRH-39762 (2018-09-03)
                 See https://central.sonatype.org/pages/ossrh-guide.html
             </action>
         </release>
-        <release version="0.1-SNAPHOT" date="in Mercurial" description="Fork from SnakeYAML">
+        <release version="0.1-SNAPHOT" date="2018" description="Fork from SnakeYAML">
             <action dev="asomov" type="add">
                 Create project (2018-04-22)
             </action>

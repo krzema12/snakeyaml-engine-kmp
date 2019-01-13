@@ -60,6 +60,8 @@ public class StandardConstructor extends BaseConstructor {
 
         this.tagConstructors.put(new Tag(UUID.class), new ConstructUuidClass());
         this.tagConstructors.put(new Tag(Optional.class), new ConstructOptionalClass());
+
+        this.tagConstructors.putAll(settings.getTagConstructors());
     }
 
     protected void flattenMapping(MappingNode node) {
@@ -191,7 +193,7 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlNull implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            constructScalar((ScalarNode) node);
+            if (node != null ) constructScalar((ScalarNode) node);
             return null;
         }
     }

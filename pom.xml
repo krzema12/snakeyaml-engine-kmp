@@ -285,6 +285,7 @@
                             !org.snakeyaml.engine.external.*,
                             org.snakeyaml.engine.v1.*;version=${project.version}
                         </Export-Package>
+                        <Automatic-Module-Name>org.snakeyaml.engine.v1</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

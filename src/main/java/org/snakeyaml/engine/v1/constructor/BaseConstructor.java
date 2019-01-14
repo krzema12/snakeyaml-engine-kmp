@@ -91,7 +91,11 @@ public abstract class BaseConstructor {
             recursiveObjects.clear();
             return data;
         } catch (RuntimeException e) {
-            throw new YamlEngineException(e);
+            if (e instanceof YamlEngineException) {
+                throw e;
+            } else {
+                throw new YamlEngineException(e);
+            }
         }
     }
 

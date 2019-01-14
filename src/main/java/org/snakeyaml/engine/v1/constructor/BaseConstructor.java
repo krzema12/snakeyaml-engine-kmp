@@ -31,6 +31,7 @@ import java.util.Set;
 import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.exceptions.ConstructorException;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.MappingNode;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.NodeTuple;
@@ -83,11 +84,15 @@ public abstract class BaseConstructor {
      * @return Java instance
      */
     protected Object construct(Node node) {
-        Object data = constructObject(node);
-        fillRecursive();
-        constructedObjects.clear();
-        recursiveObjects.clear();
-        return data;
+        try {
+            Object data = constructObject(node);
+            fillRecursive();
+            constructedObjects.clear();
+            recursiveObjects.clear();
+            return data;
+        } catch (RuntimeException e) {
+            throw new YamlEngineException(e);
+        }
     }
 
     private void fillRecursive() {

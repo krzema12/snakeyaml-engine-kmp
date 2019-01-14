@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="fix" issue="3">
+                Wrap runtime exceptions into YamlEngineException (2019-01-14)
+            </action>
             <action dev="asomov" type="fix" issue="1">
                 Null tag constructor not called when parsing top-level null value (2019-01-13)
             </action>

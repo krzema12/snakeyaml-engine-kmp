@@ -25,6 +25,7 @@ import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.common.SpecVersion;
 import org.snakeyaml.engine.v1.emitter.Emitter;
 import org.snakeyaml.engine.v1.exceptions.EmitterException;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v1.resolver.ScalarResolver;
@@ -54,6 +55,7 @@ public final class DumpSettingsBuilder {
     private int width;
     private String bestLineBreak;
     private boolean splitLines;
+    private int maxSimpleKeyLength;
 
 
     /**
@@ -76,6 +78,7 @@ public final class DumpSettingsBuilder {
         this.yamlDirective = Optional.empty();
         this.defaultFlowStyle = FlowStyle.AUTO;
         this.defaultScalarStyle = ScalarStyle.PLAIN;
+        this.maxSimpleKeyLength = 128;
     }
 
     /**
@@ -271,6 +274,19 @@ public final class DumpSettingsBuilder {
     }
 
     /**
+     * Define max key length to use simple key (without '?')
+     * More info https://yaml.org/spec/1.1/#id934537
+     * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
+     */
+    public DumpSettingsBuilder setMaxSimpleKeyLength(int maxSimpleKeyLength) {
+        if(maxSimpleKeyLength > 1024) {
+            throw new YamlEngineException("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.1/#id934537");
+        }
+        this.maxSimpleKeyLength = maxSimpleKeyLength;
+        return this;
+    }
+
+    /**
      * Create immutable DumpSettings
      * @return DumpSettings with the provided values
      */
@@ -280,7 +296,7 @@ public final class DumpSettingsBuilder {
                 scalarResolver, defaultFlowStyle, defaultScalarStyle,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
-                indent, indicatorIndent, width, bestLineBreak, splitLines);
+                indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength);
     }
 }
 

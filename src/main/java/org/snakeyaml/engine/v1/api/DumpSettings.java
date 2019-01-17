@@ -49,6 +49,7 @@ public final class DumpSettings {
     private int width;
     private String bestLineBreak;
     private boolean splitLines;
+    private int maxSimpleKeyLength;
 
 
     DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
@@ -56,7 +57,7 @@ public final class DumpSettings {
                  ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
                  //emitter
                  boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
-                 int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines
+                 int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines, int maxSimpleKeyLength
     ) {
         this.explicitStart = explicitStart;
         this.explicitEnd = explicitEnd;
@@ -75,6 +76,7 @@ public final class DumpSettings {
         this.width = width;
         this.bestLineBreak = bestLineBreak;
         this.splitLines = splitLines;
+        this.maxSimpleKeyLength = maxSimpleKeyLength;
     }
 
 
@@ -146,5 +148,8 @@ public final class DumpSettings {
         return splitLines;
     }
 
+    public int getMaxSimpleKeyLength() {
+        return maxSimpleKeyLength;
+    }
 }
 

@@ -46,6 +46,7 @@ public final class LoadSettingsBuilder {
     private Function<SpecVersion, SpecVersion> versionFunction;
     private Integer bufferSize;
     private boolean allowDuplicateKeys;
+    private boolean allowRecursiveKeys;
     private boolean useMarks;
 
     /**
@@ -65,6 +66,7 @@ public final class LoadSettingsBuilder {
         };
         this.bufferSize = 1024;
         this.allowDuplicateKeys = false;
+        this.allowRecursiveKeys = false;
         this.useMarks = true;
     }
 
@@ -167,6 +169,17 @@ public final class LoadSettingsBuilder {
     }
 
     /**
+     * Allow only non-recursive keys for maps and sets. By default is it not allowed.
+     * Even though YAML allows to use anything as a key, it may cause unexpected issues when loading recursive structures.
+     *
+     * @param allowRecursiveKeys - true to allow recursive structures as keys
+     */
+    public LoadSettingsBuilder setAllowRecursiveKeys(boolean allowRecursiveKeys) {
+        this.allowRecursiveKeys = allowRecursiveKeys;
+        return this;
+    }
+
+    /**
      * Marks are only used for error messages. But they requires a lot of memory. True by default.
      * @param useMarks - use false to save resources but use less informative error messages (no line and context)
      * @return the builder with the provided value
@@ -202,7 +215,7 @@ public final class LoadSettingsBuilder {
                 scalarResolver, defaultList,
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,
-                allowDuplicateKeys, useMarks);
+                allowDuplicateKeys, allowRecursiveKeys, useMarks);
     }
 }
 

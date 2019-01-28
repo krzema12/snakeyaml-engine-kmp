@@ -240,7 +240,11 @@ public abstract class BaseConstructor {
             }
             Object value = constructObject(valueNode);
             if (keyNode.isRecursive()) {
-                postponeMapFilling(mapping, key, value);
+                if (settings.getAllowRecursiveKeys()) {
+                    postponeMapFilling(mapping, key, value);
+                } else {
+                    throw new YamlEngineException("Recursive key for mapping is detected but it is not configured to be allowed.");
+                }
             } else {
                 mapping.put(key, value);
             }
@@ -248,7 +252,7 @@ public abstract class BaseConstructor {
     }
 
 
-    /**
+    /*
      * if keyObject is created it 2 steps we should postpone putting
      * it in map because it may have different hash after
      * initialization compared to clean just created one. And map of
@@ -272,14 +276,18 @@ public abstract class BaseConstructor {
                 }
             }
             if (keyNode.isRecursive()) {
-                postponeSetFilling(set, key);
+                if (settings.getAllowRecursiveKeys()) {
+                    postponeSetFilling(set, key);
+                } else {
+                    throw new YamlEngineException("Recursive key for mapping is detected but it is not configured to be allowed.");
+                }
             } else {
                 set.add(key);
             }
         }
     }
 
-    /**
+    /*
      * if keyObject is created it 2 steps we should postpone putting
      * it into the set because it may have different hash after
      * initialization compared to clean just created one. And set of

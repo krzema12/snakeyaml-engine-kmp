@@ -7,6 +7,9 @@
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="update">
+                Do not allow recursive keys by default (2019-01-28)
+            </action>
+            <action dev="asomov" type="update">
                 Refactor BaseConstructor: Factored out postponed mapping logic so subclasses can effectively
                 override constructMapping2ndStep() and delegate to the postponed mapping logic. (2019-01-22)
             </action>

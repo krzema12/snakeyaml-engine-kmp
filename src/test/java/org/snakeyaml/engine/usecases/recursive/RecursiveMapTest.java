@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.usecases.recursive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -77,4 +79,26 @@ class RecursiveMapTest {
         assertEquals("second", parsed2.get("name"));
     }
 
+    @Test
+    @DisplayName("Fail to load map with recursive keys")
+    void failToLoadRecursiveMapByDefault(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettingsBuilder().build();
+        Load load = new Load(settings);
+        //fail to load map which has only one key - reference to itself
+        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
+                load.loadFromString("&id002\n" +
+                        "*id002: foo"));
+        assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Load map with recursive keys if it is explicitly allowed")
+    void loadRecursiveMapIfAllowed(TestInfo testInfo) {
+        LoadSettings settings = new LoadSettingsBuilder().setAllowRecursiveKeys(true).build();
+        Load load = new Load(settings);
+        //load map which has only one key - reference to itself
+        Map<Object, Object> recursive = (Map<Object, Object>) load.loadFromString("&id002\n" +
+                "*id002: foo");
+        assertEquals(1, recursive.size());
+    }
 }

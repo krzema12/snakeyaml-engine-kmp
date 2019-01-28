@@ -40,13 +40,14 @@ public final class LoadSettings {
     private Function<SpecVersion, SpecVersion> versionFunction;
     private Integer bufferSize;
     private boolean allowDuplicateKeys;
+    private boolean allowRecursiveKeys;
     private boolean useMarks;
 
     LoadSettings(String label, Optional<ConstructNode> rootConstructNode, Map<Tag, ConstructNode> tagConstructors,
                  ScalarResolver scalarResolver, Function<Integer, List> defaultList,
                  Function<Integer, Set> defaultSet, Function<Integer, Map> defaultMap,
                  Function<SpecVersion, SpecVersion> versionFunction, Integer bufferSize,
-                 boolean allowDuplicateKeys, boolean useMarks) {
+                 boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks) {
         this.label = label;
         this.rootConstructNode = rootConstructNode;
         this.tagConstructors = tagConstructors;
@@ -57,6 +58,7 @@ public final class LoadSettings {
         this.versionFunction = versionFunction;
         this.bufferSize = bufferSize;
         this.allowDuplicateKeys = allowDuplicateKeys;
+        this.allowRecursiveKeys = allowRecursiveKeys;
         this.useMarks = useMarks;
     }
 
@@ -94,6 +96,10 @@ public final class LoadSettings {
 
     public boolean getAllowDuplicateKeys() {
         return allowDuplicateKeys;
+    }
+
+    public boolean getAllowRecursiveKeys() {
+        return allowRecursiveKeys;
     }
 
     public boolean getUseMarks() {

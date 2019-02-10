@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="fix" issue="7">
+                Allow TAB to precede a token (2019-02-10)
+            </action>
             <action dev="asomov" type="update">
                 Do not allow recursive keys by default (2019-01-28)
             </action>

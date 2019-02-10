@@ -35,7 +35,7 @@ import com.google.common.io.Files;
 
 public class SuiteUtils {
     public static final List<String> deviationsWithSuccess = Lists.newArrayList("9C9N", "SU5Z", "QB6E", "QLJ7", "EB22");
-    public static final List<String> deviationsWithError = Lists.newArrayList("CXX2", "KZN9", "J3BT", "DC7X", "6HB6", "2JQS", "6M2F", "S3PD", "Q5MG", "FRK4", "NHX8", "DBG4", "4ABK", "M7A3", "9MMW", "6BCT", "A2M4", "2SXE", "DK3J", "W5VH", "8XYN", "K54U", "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
+    public static final List<String> deviationsWithError = Lists.newArrayList("CXX2", "KZN9", "DC7X", "6HB6", "2JQS", "6M2F", "S3PD", "Q5MG", "FRK4", "NHX8", "DBG4", "4ABK", "M7A3", "9MMW", "6BCT", "A2M4", "2SXE", "DK3J", "W5VH", "8XYN", "K54U", "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 
 
     public static final String FOLDER_NAME = "src/test/resources/comprehensive-test-suite-data";

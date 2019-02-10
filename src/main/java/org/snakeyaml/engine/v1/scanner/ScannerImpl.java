@@ -1091,7 +1091,8 @@ public final class ScannerImpl implements Scanner {
             int ff = 0;
             // Peek ahead until we find the first non-space character, then
             // move forward directly to that character.
-            while (reader.peek(ff) == ' ') {
+            // (allow TAB to precede a token, test J3BT)
+            while (reader.peek(ff) == ' ' || reader.peek(ff) == '\t') {
                 ff++;
             }
             if (ff > 0) {

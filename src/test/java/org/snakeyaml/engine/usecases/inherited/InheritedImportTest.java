@@ -35,7 +35,7 @@ import org.snakeyaml.engine.v1.utils.TestUtils;
 
 
 public abstract class InheritedImportTest {
-    public static final String PATH = "inherited";
+    public static final String PATH = "inherited_yaml_1_1";
 
 
     protected String getResource(String theName) {
@@ -47,14 +47,14 @@ public abstract class InheritedImportTest {
     }
 
     protected File[] getStreamsByExtension(String extention, boolean onlyIfCanonicalPresent) {
-        File file = new File("src/test/resources/inherited");
+        File file = new File("src/test/resources/" + PATH);
         assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
         assertTrue(file.isDirectory());
         return file.listFiles(new InheritedFilenameFilter(extention, onlyIfCanonicalPresent));
     }
 
     protected File getFileByName(String name) {
-        File file = new File("src/test/resources/inherited/" + name);
+        File file = new File("src/test/resources/" + PATH + "/" + name);
         assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
         assertTrue(file.isFile());
         return file;

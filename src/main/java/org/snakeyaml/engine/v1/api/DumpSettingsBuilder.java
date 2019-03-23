@@ -277,6 +277,7 @@ public final class DumpSettingsBuilder {
      * Define max key length to use simple key (without '?')
      * More info https://yaml.org/spec/1.1/#id934537
      * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
+     * @return the builder with the provided value
      */
     public DumpSettingsBuilder setMaxSimpleKeyLength(int maxSimpleKeyLength) {
         if(maxSimpleKeyLength > 1024) {

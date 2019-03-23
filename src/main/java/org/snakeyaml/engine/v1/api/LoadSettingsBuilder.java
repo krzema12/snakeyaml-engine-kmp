@@ -173,6 +173,7 @@ public final class LoadSettingsBuilder {
      * Even though YAML allows to use anything as a key, it may cause unexpected issues when loading recursive structures.
      *
      * @param allowRecursiveKeys - true to allow recursive structures as keys
+     * @return the builder with the provided value
      */
     public LoadSettingsBuilder setAllowRecursiveKeys(boolean allowRecursiveKeys) {
         this.allowRecursiveKeys = allowRecursiveKeys;

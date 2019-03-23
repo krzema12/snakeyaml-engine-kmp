@@ -25,12 +25,15 @@ import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.events.Event;
 import org.snakeyaml.engine.v1.events.ImplicitTuple;
 import org.snakeyaml.engine.v1.events.ScalarEvent;
+import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.NodeType;
 import org.snakeyaml.engine.v1.nodes.ScalarNode;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.representer.StandardRepresenter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,7 +43,7 @@ public class BinaryRoundTripTest {
 
     @Test
     public void testBinary() {
-        Dump dumper = new Dump(new DumpSettingsBuilder().build());
+        Dump dumper = new Dump(new DumpSettingsBuilder().setConvertNonPrintableToBinary(true).build());
         String source = "\u0096";
         String serialized = dumper.dumpToString(source);
         assertEquals("!!binary |-\n" +
@@ -54,7 +57,7 @@ public class BinaryRoundTripTest {
     @Test
     public void testBinaryNode() {
         String source = "\u0096";
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().setConvertNonPrintableToBinary(true).build());
         ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
         //check Node
         assertEquals(org.snakeyaml.engine.v1.nodes.Tag.BINARY, scalar.getTag());
@@ -74,30 +77,27 @@ public class BinaryRoundTripTest {
         assertFalse(implicit.canOmitTagInNonPlainScalar());
     }
 
-    /*
+    @Test
     public void testStrNode() {
-        DumperOptions options = new DumperOptions();
-        options.setKeepBinaryString(true);
-        Yaml underTest = new Yaml(options);
+        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
         String source = "\u0096";
-        Node node = underTest.represent(source);
+        ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
+        Node node = standardRepresenter.represent(source);
         assertEquals(Tag.STR, node.getTag());
-        assertEquals(NodeId.scalar, node.getNodeId());
-        ScalarNode scalar = (ScalarNode) node;
+        assertEquals(NodeType.SCALAR, node.getNodeType());
         assertEquals("\u0096", scalar.getValue());
     }
 
+    @Test
     public void testRoundTripBinary() {
-        DumperOptions options = new DumperOptions();
-        options.setKeepBinaryString(true);
-        Yaml underTest = new Yaml(options);
+        Dump dumper = new Dump(new DumpSettingsBuilder().setConvertNonPrintableToBinary(false).build());
         Map<String, String> toSerialized = new HashMap<>();
         toSerialized.put("key", "a\u0096b");
-        String output = underTest.dump(toSerialized);
+        String output = dumper.dumpToString(toSerialized);
         assertEquals("{key: \"a\\x96b\"}\n", output);
-        Map<String, String> parsed = underTest.load(output);
+        Load loader = new Load(new LoadSettingsBuilder().build());
+        Map<String, String> parsed = (Map<String, String>) loader.loadFromString(output);
         assertEquals(toSerialized.get("key"), parsed.get("key"));
         assertEquals(toSerialized, parsed);
     }
-    */
 }

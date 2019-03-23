@@ -38,6 +38,7 @@ import org.snakeyaml.engine.v1.serializer.NumberAnchorGenerator;
 public final class DumpSettingsBuilder {
     private boolean explicitStart;
     private boolean explicitEnd;
+    private boolean convertNonPrintableToBinary;
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
     private Optional<SpecVersion> yamlDirective;
@@ -294,10 +295,22 @@ public final class DumpSettingsBuilder {
     public DumpSettings build() {
         return new DumpSettings(explicitStart, explicitEnd, explicitRootTag,
                 anchorGenerator, yamlDirective, tagDirective,
-                scalarResolver, defaultFlowStyle, defaultScalarStyle,
+                scalarResolver, defaultFlowStyle, defaultScalarStyle, convertNonPrintableToBinary,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength);
+    }
+
+    /**
+     * When String object contains non-printable characters, they are escaped with \\u or \\x notation.
+     * Sometimes it is better to transform this data to binary (with the !!binary tag).
+     * String objects with printable data are non affected by this setting.
+     * @param convertNonPrintableToBinary - set this to true to force non-printable String to represented as binary (byte array)
+     * @return the builder with the provided value
+     */
+    public DumpSettingsBuilder setConvertNonPrintableToBinary(boolean convertNonPrintableToBinary) {
+        this.convertNonPrintableToBinary = convertNonPrintableToBinary;
+        return this;
     }
 }
 

@@ -45,6 +45,7 @@ import org.snakeyaml.engine.v1.scanner.StreamReader;
 public class StandardRepresenter extends BaseRepresenter {
 
     protected Map<Class<? extends Object>, Tag> classTags;
+    protected DumpSettings settings;
 
     public StandardRepresenter(DumpSettings settings) {
         this.defaultFlowStyle = settings.getDefaultFlowStyle();
@@ -75,6 +76,7 @@ public class StandardRepresenter extends BaseRepresenter {
         this.multiRepresenters.put(new Object[0].getClass(), new RepresentArray());
         this.multiRepresenters.put(Enum.class, new RepresentEnum());
         classTags = new HashMap();
+        this.settings = settings;
     }
 
     protected Tag getTag(Class<?> clazz, Tag defaultTag) {
@@ -119,7 +121,7 @@ public class StandardRepresenter extends BaseRepresenter {
             Tag tag = Tag.STR;
             ScalarStyle style = ScalarStyle.PLAIN;
             String value = data.toString();
-            if (!StreamReader.isPrintable(value)) {
+            if (settings.isConvertNonPrintableToBinary() && !StreamReader.isPrintable(value)) {
                 tag = Tag.BINARY;
                 char[] binary;
                 try {

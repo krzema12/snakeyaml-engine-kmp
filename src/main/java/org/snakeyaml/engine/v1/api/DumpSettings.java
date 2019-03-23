@@ -32,6 +32,7 @@ import org.snakeyaml.engine.v1.serializer.AnchorGenerator;
 public final class DumpSettings {
     private boolean explicitStart;
     private boolean explicitEnd;
+    private boolean convertNonPrintableToBinary;
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
     private Optional<SpecVersion> yamlDirective;
@@ -55,12 +56,14 @@ public final class DumpSettings {
     DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
                  AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective, Map<String, String> tagDirective,
                  ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
+                 boolean convertNonPrintableToBinary,
                  //emitter
                  boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
                  int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines, int maxSimpleKeyLength
     ) {
         this.explicitStart = explicitStart;
         this.explicitEnd = explicitEnd;
+        this.convertNonPrintableToBinary = convertNonPrintableToBinary;
         this.explicitRootTag = explicitRootTag;
         this.anchorGenerator = anchorGenerator;
         this.yamlDirective = yamlDirective;
@@ -150,6 +153,10 @@ public final class DumpSettings {
 
     public int getMaxSimpleKeyLength() {
         return maxSimpleKeyLength;
+    }
+
+    public boolean isConvertNonPrintableToBinary() {
+        return convertNonPrintableToBinary;
     }
 }
 

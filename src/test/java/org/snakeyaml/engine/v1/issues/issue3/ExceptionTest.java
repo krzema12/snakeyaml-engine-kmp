@@ -15,14 +15,13 @@
  */
 package org.snakeyaml.engine.v1.issues.issue3;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ExceptionTest {
@@ -32,7 +31,10 @@ class ExceptionTest {
         Load load = new Load(new LoadSettingsBuilder().build());
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 load.loadFromString("!!seq abc"));
-        assertEquals("java.lang.ClassCastException: org.snakeyaml.engine.v1.nodes.ScalarNode cannot be cast to org.snakeyaml.engine.v1.nodes.SequenceNode", exception.getMessage());
+        assertTrue( exception.getMessage().contains("java.lang.ClassCastException"));
+        assertTrue( exception.getMessage().contains("org.snakeyaml.engine.v1.nodes.ScalarNode"));
+        assertTrue( exception.getMessage().contains("cannot be cast to"));
+        assertTrue( exception.getMessage().contains("org.snakeyaml.engine.v1.nodes.SequenceNode"));
     }
 
     @Test

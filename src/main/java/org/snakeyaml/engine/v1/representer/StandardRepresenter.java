@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.RepresentToNode;
 import org.snakeyaml.engine.v1.common.FlowStyle;
+import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.external.biz.base64Coder.Base64Coder;
@@ -121,7 +122,7 @@ public class StandardRepresenter extends BaseRepresenter {
             Tag tag = Tag.STR;
             ScalarStyle style = ScalarStyle.PLAIN;
             String value = data.toString();
-            if (settings.isConvertNonPrintableToBinary() && !StreamReader.isPrintable(value)) {
+            if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY && !StreamReader.isPrintable(value)) {
                 tag = Tag.BINARY;
                 char[] binary;
                 try {

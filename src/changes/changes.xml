@@ -7,7 +7,7 @@
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="fix" issue="7">
-                Introduce convertNonPrintableToBinary setting. This is deviation from SnakeYAML
+                Introduce NonPrintableStyle setting. This is deviation from SnakeYAML
                 where the default is the opposite (2019-03-23)
             </action>
             <action dev="asomov" type="fix" issue="7">

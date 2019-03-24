@@ -21,6 +21,7 @@ import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.lowlevel.Serialize;
+import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.events.Event;
 import org.snakeyaml.engine.v1.events.ImplicitTuple;
@@ -43,7 +44,7 @@ public class BinaryRoundTripTest {
 
     @Test
     public void testBinary() {
-        Dump dumper = new Dump(new DumpSettingsBuilder().setConvertNonPrintableToBinary(true).build());
+        Dump dumper = new Dump(new DumpSettingsBuilder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
         String source = "\u0096";
         String serialized = dumper.dumpToString(source);
         assertEquals("!!binary |-\n" +
@@ -57,7 +58,8 @@ public class BinaryRoundTripTest {
     @Test
     public void testBinaryNode() {
         String source = "\u0096";
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().setConvertNonPrintableToBinary(true).build());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(
+                new DumpSettingsBuilder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
         ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
         //check Node
         assertEquals(org.snakeyaml.engine.v1.nodes.Tag.BINARY, scalar.getTag());
@@ -90,7 +92,7 @@ public class BinaryRoundTripTest {
 
     @Test
     public void testRoundTripBinary() {
-        Dump dumper = new Dump(new DumpSettingsBuilder().setConvertNonPrintableToBinary(false).build());
+        Dump dumper = new Dump(new DumpSettingsBuilder().setNonPrintableStyle(NonPrintableStyle.ESCAPE).build());
         Map<String, String> toSerialized = new HashMap<>();
         toSerialized.put("key", "a\u0096b");
         String output = dumper.dumpToString(toSerialized);

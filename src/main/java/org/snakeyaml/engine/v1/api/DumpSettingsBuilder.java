@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.v1.common.FlowStyle;
+import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.common.SpecVersion;
 import org.snakeyaml.engine.v1.emitter.Emitter;
@@ -38,7 +39,7 @@ import org.snakeyaml.engine.v1.serializer.NumberAnchorGenerator;
 public final class DumpSettingsBuilder {
     private boolean explicitStart;
     private boolean explicitEnd;
-    private boolean convertNonPrintableToBinary;
+    private NonPrintableStyle nonPrintableStyle;
     private Optional<Tag> explicitRootTag;
     private AnchorGenerator anchorGenerator;
     private Optional<SpecVersion> yamlDirective;
@@ -295,7 +296,7 @@ public final class DumpSettingsBuilder {
     public DumpSettings build() {
         return new DumpSettings(explicitStart, explicitEnd, explicitRootTag,
                 anchorGenerator, yamlDirective, tagDirective,
-                scalarResolver, defaultFlowStyle, defaultScalarStyle, convertNonPrintableToBinary,
+                scalarResolver, defaultFlowStyle, defaultScalarStyle, nonPrintableStyle,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength);
@@ -305,11 +306,11 @@ public final class DumpSettingsBuilder {
      * When String object contains non-printable characters, they are escaped with \\u or \\x notation.
      * Sometimes it is better to transform this data to binary (with the !!binary tag).
      * String objects with printable data are non affected by this setting.
-     * @param convertNonPrintableToBinary - set this to true to force non-printable String to represented as binary (byte array)
+     * @param nonPrintableStyle - set this to BINARY to force non-printable String to represented as binary (byte array)
      * @return the builder with the provided value
      */
-    public DumpSettingsBuilder setConvertNonPrintableToBinary(boolean convertNonPrintableToBinary) {
-        this.convertNonPrintableToBinary = convertNonPrintableToBinary;
+    public DumpSettingsBuilder setNonPrintableStyle(NonPrintableStyle nonPrintableStyle) {
+        this.nonPrintableStyle = nonPrintableStyle;
         return this;
     }
 }

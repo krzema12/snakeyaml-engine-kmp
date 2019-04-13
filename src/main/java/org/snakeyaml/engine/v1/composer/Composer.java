@@ -154,6 +154,11 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
+    private void registerAnchor(Anchor anchor, Node node) {
+        anchors.put(anchor, node);
+        node.setAnchor(Optional.of(anchor));
+    }
+
     protected Node composeScalarNode(Optional<Anchor> anchor) {
         ScalarEvent ev = (ScalarEvent) parser.next();
         Optional<String> tag = ev.getTag();
@@ -166,7 +171,7 @@ public class Composer implements Iterator<Node> {
             nodeTag = new Tag(tag.get());
         }
         Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getScalarStyle(), ev.getStartMark(), ev.getEndMark());
-        anchor.ifPresent(a -> anchors.put(a, node));
+        anchor.ifPresent(a -> registerAnchor(a, node));
         return node;
     }
 
@@ -184,7 +189,7 @@ public class Composer implements Iterator<Node> {
         final ArrayList<Node> children = new ArrayList();
         SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(),
                 Optional.empty());
-        anchor.ifPresent(a -> anchors.put(a, node));
+        anchor.ifPresent(a -> registerAnchor(a, node));
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             children.add(composeNode(Optional.of(node)));
         }
@@ -207,7 +212,7 @@ public class Composer implements Iterator<Node> {
 
         final List<NodeTuple> children = new ArrayList<NodeTuple>();
         MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), Optional.empty());
-        anchor.ifPresent(a -> anchors.put(a, node));
+        anchor.ifPresent(a -> registerAnchor(a, node));
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             composeMappingChildren(children, node);
         }

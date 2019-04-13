@@ -6,6 +6,10 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="add">
+                Add the way to get anchor for a Node. It is a consequence
+                of issue 441 in SnakeYAML (2019-04-13)
+            </action>
             <action dev="asomov" type="fix" issue="7">
                 Introduce NonPrintableStyle setting. This is deviation from SnakeYAML
                 where the default is the opposite (2019-03-23)

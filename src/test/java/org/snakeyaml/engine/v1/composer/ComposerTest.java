@@ -15,9 +15,6 @@
  */
 package org.snakeyaml.engine.v1.composer;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +26,8 @@ import org.snakeyaml.engine.v1.api.lowlevel.Compose;
 import org.snakeyaml.engine.v1.exceptions.ComposerException;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.utils.TestUtils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class ComposerTest {
@@ -54,5 +53,15 @@ class ComposerTest {
         Compose compose = new Compose(new LoadSettingsBuilder().build());
         Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
         assertTrue(node.isPresent());
+    }
+
+    @Test
+    void composeAnchor(TestInfo testInfo) {
+        String data = "--- &113\n{name: Bill, age: 18}";
+        Compose compose = new Compose(new LoadSettingsBuilder().build());
+        Optional<Node> optionalNode = compose.composeString(data);
+        assertTrue(optionalNode.isPresent());
+        Node node = optionalNode.get();
+        assertEquals("113", node.getAnchor().get().getAnchor());
     }
 }

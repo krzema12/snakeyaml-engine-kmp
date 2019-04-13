@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.snakeyaml.engine.v1.api.ConstructNode;
+import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 
 /**
@@ -39,6 +40,7 @@ public abstract class Node {
     protected Optional<Mark> endMark;
     private boolean recursive;
     private Optional<ConstructNode> construct;
+    private Optional<Anchor> anchor;
 
     /**
      * true when the tag is assigned by the resolver
@@ -59,6 +61,7 @@ public abstract class Node {
         this.recursive = false;
         this.resolved = true;
         this.construct = Optional.empty();
+        this.anchor = Optional.empty();
     }
 
     /**
@@ -134,5 +137,13 @@ public abstract class Node {
 
     public void setConstruct(ConstructNode construct) {
         this.construct = Optional.of(construct);
+    }
+
+    public Optional<Anchor> getAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(Optional<Anchor> anchor) {
+        this.anchor = anchor;
     }
 }

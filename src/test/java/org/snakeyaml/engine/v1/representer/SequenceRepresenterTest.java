@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SequenceRepresenterTest {
 
     @Test
-    @DisplayName("Dump block map seq")
-    void dumpBlockMappingSequence(TestInfo testInfo) {
+    @DisplayName("Dump block map seq with default indent settings")
+    void dumpBlockMappingSequenceWithDefaultSettings(TestInfo testInfo) {
         DumpSettingsBuilder builder = new DumpSettingsBuilder();
         builder.setDefaultFlowStyle(FlowStyle.BLOCK);
         DumpSettings settings = builder.build();
@@ -61,8 +61,8 @@ class SequenceRepresenterTest {
     }
 
     @Test
-    @DisplayName("Dump block seq map")
-    void dumpBlockSequenceMapping(TestInfo testInfo) {
+    @DisplayName("Dump block seq map with default indent settings")
+    void dumpBlockSequenceMappingWithDefaultSettings(TestInfo testInfo) {
         DumpSettingsBuilder builder = new DumpSettingsBuilder();
         builder.setDefaultFlowStyle(FlowStyle.BLOCK);
         DumpSettings settings = builder.build();
@@ -81,5 +81,31 @@ class SequenceRepresenterTest {
                 "  key2: value2\n" +
                 "- key3: value3\n" +
                 "  key4: value4\n", output);
+    }
+
+    @Test
+    @DisplayName("Dump block map seq with specified indicator indent")
+    void dumpBlockMappingSequence(TestInfo testInfo) {
+        DumpSettingsBuilder builder = new DumpSettingsBuilder();
+        builder.setDefaultFlowStyle(FlowStyle.BLOCK);
+        builder.setIndicatorIndent(2);
+        DumpSettings settings = builder.build();
+        Dump dump = new Dump(settings);
+        LinkedHashMap<Object, Object> mapping = new LinkedHashMap();
+        ArrayList<Object> sequence1 = new ArrayList();
+        sequence1.add("value1");
+        sequence1.add("value2");
+        mapping.put("key1", sequence1);
+        ArrayList<Object> sequence2 = new ArrayList();
+        sequence2.add("value3");
+        sequence2.add("value4");
+        mapping.put("key2", sequence2);
+        String output = dump.dumpToString(mapping);
+        assertEquals("key1:\n" +
+                "  - value1\n" +
+                "  - value2\n" +
+                "key2:\n" +
+                "  - value3\n" +
+                "  - value4\n", output);
     }
 }

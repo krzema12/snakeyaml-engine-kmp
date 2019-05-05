@@ -17,16 +17,7 @@ package org.snakeyaml.engine.v1.representer;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.snakeyaml.engine.v1.api.DumpSettings;
@@ -35,7 +26,6 @@ import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.external.biz.base64Coder.Base64Coder;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
@@ -124,7 +114,6 @@ public class StandardRepresenter extends BaseRepresenter {
             String value = data.toString();
             if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY && !StreamReader.isPrintable(value)) {
                 tag = Tag.BINARY;
-                char[] binary;
                 try {
                     final byte[] bytes = value.getBytes("UTF-8");
                     // sometimes above will just silently fail - it will return incomplete data
@@ -134,11 +123,10 @@ public class StandardRepresenter extends BaseRepresenter {
                     if (!checkValue.equals(value)) {
                         throw new YamlEngineException("invalid string value has occurred");
                     }
-                    binary = Base64Coder.encode(bytes);
+                    value = Base64.getEncoder().encodeToString(bytes);
                 } catch (UnsupportedEncodingException e) {
                     throw new YamlEngineException(e);
                 }
-                value = String.valueOf(binary);
                 style = ScalarStyle.LITERAL;
             }
             // if no other scalar style is explicitly set, use literal style for
@@ -348,8 +336,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
     protected class RepresentByteArray implements RepresentToNode {
         public Node representData(Object data) {
-            char[] binary = Base64Coder.encode((byte[]) data);
-            return representScalar(Tag.BINARY, String.valueOf(binary), ScalarStyle.LITERAL);
+            return representScalar(Tag.BINARY, Base64.getEncoder().encodeToString((byte[]) data), ScalarStyle.LITERAL);
         }
     }
 

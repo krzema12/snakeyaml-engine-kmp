@@ -16,23 +16,13 @@
 package org.snakeyaml.engine.v1.constructor;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.exceptions.ConstructorException;
 import org.snakeyaml.engine.v1.exceptions.DuplicateKeyException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.external.biz.base64Coder.Base64Coder;
 import org.snakeyaml.engine.v1.nodes.MappingNode;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.NodeTuple;
@@ -308,9 +298,7 @@ public class StandardConstructor extends BaseConstructor {
         public Object construct(Node node) {
             // Ignore white spaces for base64 encoded scalar
             String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
-            byte[] decoded = Base64Coder.decode(noWhiteSpaces.toCharArray());
-            return decoded;
-        }
+            return Base64.getDecoder().decode(noWhiteSpaces);        }
     }
 
     public class ConstructUuidClass implements ConstructNode {

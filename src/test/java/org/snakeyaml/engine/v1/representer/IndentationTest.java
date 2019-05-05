@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Test for issue https://bitbucket.org/asomov/snakeyaml-engine/issues/9/indentation-before-sequence
  */
 @Tag("fast")
-class SequenceRepresenterTest {
+class IndentationTest {
 
     @Test
     @DisplayName("Dump block map seq with default indent settings")

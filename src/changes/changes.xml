@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="add">
+                Add examples for custom default collections (2019-06-14)
+            </action>
             <action dev="asomov" type="remove">
                 Use Base64 encoding provided by the JDK 8 (2019-05-05)
             </action>

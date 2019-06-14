@@ -115,7 +115,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default List implementation. {@link ArrayList} is used if nothing provided.
-     * @param defaultList - specified List implementation
+     * @param defaultList - specified List implementation (as a function from init size)
      * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultList(Function<Integer, List> defaultList) {
@@ -126,7 +126,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default Set implementation. {@link LinkedHashSet} is used if nothing provided.
-     * @param defaultSet - specified Set implementation
+     * @param defaultSet - specified Set implementation (as a function from init size)
      * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultSet(Function<Integer, Set> defaultSet) {
@@ -137,7 +137,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default Map implementation. {@link LinkedHashMap} is used if nothing provided.
-     * @param defaultMap - specified Map implementation
+     * @param defaultMap - specified Map implementation (as a function from init size)
      * @return the builder with the provided value
      */
     public LoadSettingsBuilder setDefaultMap(Function<Integer, Map> defaultMap) {

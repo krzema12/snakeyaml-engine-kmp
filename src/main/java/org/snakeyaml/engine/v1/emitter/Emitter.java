@@ -121,9 +121,7 @@ public final class Emitter implements Emitable {
     // Characteristics of the last emitted character:
     // - current position.
     // - is it a whitespace?
-    // - is it an indention character
-    // (indentation space, '-', '?', or ':')?
-    // private int line; this variable is not used
+    // - is it an indention character (indentation space, '-', '?', or ':')?
     private int column;
     private boolean whitespace;
     private boolean indention;
@@ -261,10 +259,10 @@ public final class Emitter implements Emitable {
         return events.size() < count + 1;
     }
 
-    private void increaseIndent(boolean flow, boolean indentless) {
+    private void increaseIndent(boolean isFlow, boolean indentless) {
         indents.push(indent);
         if (indent == null) {
-            if (flow) {
+            if (isFlow) {
                 indent = bestIndent;
             } else {
                 indent = 0;

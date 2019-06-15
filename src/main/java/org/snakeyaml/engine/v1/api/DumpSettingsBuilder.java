@@ -226,7 +226,10 @@ public final class DumpSettingsBuilder {
     }
 
     /**
+     * It adds the specified indent for sequence indicator in the block flow.
      * Default is 0.
+     * For better visual results it should be by 2 less than the indent (which is 2 by default)
+     * It is 2 chars less because the first char is '-' and the second char is the space after it.
      * @param indicatorIndent - must be non-negative and less than org.snakeyaml.engine.v1.emitter.Emitter.MAX_INDENT - 1
      * @return the builder with the provided value
      */

@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="fix" issue="9">
+                Improve Javadoc and add examples for identation in block flow (2019-06-15)
+            </action>
             <action dev="asomov" type="add">
                 Add examples for custom default collections (2019-06-14)
             </action>

@@ -45,7 +45,8 @@ public class Dump {
 
     /**
      * Create instance
-     * @param settings - configuration
+     *
+     * @param settings    - configuration
      * @param representer - custom representer
      */
     public Dump(DumpSettings settings, BaseRepresenter representer) {

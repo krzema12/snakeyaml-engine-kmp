@@ -15,19 +15,17 @@
  */
 package org.snakeyaml.engine.v1.representer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import com.google.common.collect.TreeRangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.DumpSettings;
-import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.Node;
 
-import com.google.common.collect.TreeRangeSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("fast")
 class StandardRepresenterTest {

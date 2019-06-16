@@ -15,21 +15,19 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.lowlevel.Compose;
-import org.snakeyaml.engine.v1.exceptions.ParserException;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteData;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteUtils;
+import org.snakeyaml.engine.v1.api.lowlevel.Compose;
+import org.snakeyaml.engine.v1.exceptions.ParserException;
 import org.snakeyaml.engine.v1.nodes.Node;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class OptionalMarksTest {

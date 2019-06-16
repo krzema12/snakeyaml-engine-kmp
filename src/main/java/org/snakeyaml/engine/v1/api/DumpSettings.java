@@ -15,9 +15,6 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
@@ -25,6 +22,9 @@ import org.snakeyaml.engine.v1.common.SpecVersion;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.resolver.ScalarResolver;
 import org.snakeyaml.engine.v1.serializer.AnchorGenerator;
+
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Fine tuning serializing/dumping

@@ -15,16 +15,16 @@
  */
 package org.snakeyaml.engine.v1.events;
 
-import static org.snakeyaml.engine.v1.common.CharConstants.ESCAPES;
+import org.snakeyaml.engine.v1.common.Anchor;
+import org.snakeyaml.engine.v1.common.ScalarStyle;
+import org.snakeyaml.engine.v1.exceptions.Mark;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.exceptions.Mark;
+import static org.snakeyaml.engine.v1.common.CharConstants.ESCAPES;
 
 /**
  * Marks a scalar value.

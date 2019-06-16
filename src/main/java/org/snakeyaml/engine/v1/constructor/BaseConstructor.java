@@ -15,29 +15,14 @@
  */
 package org.snakeyaml.engine.v1.constructor;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
 import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.exceptions.ConstructorException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v1.nodes.MappingNode;
-import org.snakeyaml.engine.v1.nodes.Node;
-import org.snakeyaml.engine.v1.nodes.NodeTuple;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.SequenceNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.nodes.*;
+
+import java.lang.reflect.Array;
+import java.util.*;
 
 public abstract class BaseConstructor {
 

@@ -15,22 +15,21 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
+import org.snakeyaml.engine.v1.exceptions.ReaderException;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v1.scanner.StreamReader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v1.exceptions.ReaderException;
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v1.scanner.StreamReader;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedReaderTest extends InheritedImportTest {

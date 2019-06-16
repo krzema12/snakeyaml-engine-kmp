@@ -16,12 +16,12 @@
 package org.snakeyaml.engine.v1.nodes;
 
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Base class for all nodes.

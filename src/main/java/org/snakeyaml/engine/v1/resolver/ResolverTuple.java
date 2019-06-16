@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.v1.resolver;
 
+import org.snakeyaml.engine.v1.nodes.Tag;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import org.snakeyaml.engine.v1.nodes.Tag;
 
 
 final class ResolverTuple {

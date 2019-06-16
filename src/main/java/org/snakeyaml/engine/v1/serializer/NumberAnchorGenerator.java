@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.v1.serializer;
 
-import java.text.NumberFormat;
-
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.nodes.Node;
+
+import java.text.NumberFormat;
 
 public class NumberAnchorGenerator implements AnchorGenerator {
 

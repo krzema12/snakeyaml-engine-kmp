@@ -15,37 +15,18 @@
  */
 package org.snakeyaml.engine.v1.emitter;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.regex.Pattern;
-
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.StreamDataWriter;
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.ArrayStack;
-import org.snakeyaml.engine.v1.common.CharConstants;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.common.SpecVersion;
-import org.snakeyaml.engine.v1.events.CollectionEndEvent;
-import org.snakeyaml.engine.v1.events.CollectionStartEvent;
-import org.snakeyaml.engine.v1.events.DocumentEndEvent;
-import org.snakeyaml.engine.v1.events.DocumentStartEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.NodeEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
+import org.snakeyaml.engine.v1.common.*;
+import org.snakeyaml.engine.v1.events.*;
 import org.snakeyaml.engine.v1.exceptions.EmitterException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
+
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.regex.Pattern;
 
 
 /**

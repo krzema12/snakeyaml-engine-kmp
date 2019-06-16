@@ -15,30 +15,9 @@
  */
 package org.snakeyaml.engine.v1.parser;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.ArrayStack;
-import org.snakeyaml.engine.v1.common.FlowStyle;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.common.SpecVersion;
-import org.snakeyaml.engine.v1.events.AliasEvent;
-import org.snakeyaml.engine.v1.events.DocumentEndEvent;
-import org.snakeyaml.engine.v1.events.DocumentStartEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.ImplicitTuple;
-import org.snakeyaml.engine.v1.events.MappingEndEvent;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceEndEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
-import org.snakeyaml.engine.v1.events.StreamEndEvent;
-import org.snakeyaml.engine.v1.events.StreamStartEvent;
+import org.snakeyaml.engine.v1.common.*;
+import org.snakeyaml.engine.v1.events.*;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 import org.snakeyaml.engine.v1.exceptions.ParserException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
@@ -46,16 +25,9 @@ import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.Scanner;
 import org.snakeyaml.engine.v1.scanner.ScannerImpl;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
-import org.snakeyaml.engine.v1.tokens.AliasToken;
-import org.snakeyaml.engine.v1.tokens.AnchorToken;
-import org.snakeyaml.engine.v1.tokens.BlockEntryToken;
-import org.snakeyaml.engine.v1.tokens.DirectiveToken;
-import org.snakeyaml.engine.v1.tokens.ScalarToken;
-import org.snakeyaml.engine.v1.tokens.StreamEndToken;
-import org.snakeyaml.engine.v1.tokens.StreamStartToken;
-import org.snakeyaml.engine.v1.tokens.TagToken;
-import org.snakeyaml.engine.v1.tokens.TagTuple;
-import org.snakeyaml.engine.v1.tokens.Token;
+import org.snakeyaml.engine.v1.tokens.*;
+
+import java.util.*;
 
 /**
  * <pre>

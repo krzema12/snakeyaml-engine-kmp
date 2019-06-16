@@ -16,10 +16,10 @@
 package org.snakeyaml.engine.v1.tokens;
 
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Optional;
 
 public final class AnchorToken extends Token {
     private final Anchor value;

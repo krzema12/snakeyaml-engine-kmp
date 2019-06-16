@@ -15,29 +15,19 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.events.AliasEvent;
-import org.snakeyaml.engine.v1.events.DocumentEndEvent;
-import org.snakeyaml.engine.v1.events.DocumentStartEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.ImplicitTuple;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceEndEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
-import org.snakeyaml.engine.v1.events.StreamEndEvent;
-import org.snakeyaml.engine.v1.events.StreamStartEvent;
+import org.snakeyaml.engine.v1.events.*;
+
+import java.util.Collections;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 class EventRepresentationTest {

@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.exceptions;
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.scanner.Scanner;
+
+import java.util.Optional;
 
 /**
  * Exception thrown by the {@link Scanner} implementations in case of malformed

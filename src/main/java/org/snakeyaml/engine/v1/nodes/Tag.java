@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.nodes;
 
-import java.util.Objects;
-
 import org.snakeyaml.engine.v1.common.UriEncoder;
+
+import java.util.Objects;
 
 public final class Tag {
     public static final String PREFIX = "tag:yaml.org,2002:";

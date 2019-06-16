@@ -15,7 +15,13 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
+import org.snakeyaml.engine.v1.events.Event;
+import org.snakeyaml.engine.v1.parser.Parser;
+import org.snakeyaml.engine.v1.parser.ParserImpl;
+import org.snakeyaml.engine.v1.scanner.StreamReader;
+import org.snakeyaml.engine.v1.utils.TestUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -24,14 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.parser.Parser;
-import org.snakeyaml.engine.v1.parser.ParserImpl;
-import org.snakeyaml.engine.v1.scanner.StreamReader;
-import org.snakeyaml.engine.v1.utils.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public abstract class InheritedImportTest {

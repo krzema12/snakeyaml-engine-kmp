@@ -15,8 +15,10 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v1.events.Event;
+import org.snakeyaml.engine.v1.tokens.Token;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,10 +27,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.tokens.Token;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedCanonicalTest extends InheritedImportTest {

@@ -15,19 +15,11 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
-import java.util.List;
-
-import org.snakeyaml.engine.v1.events.AliasEvent;
-import org.snakeyaml.engine.v1.events.CollectionStartEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.ImplicitTuple;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.NodeEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
+import com.google.common.base.Splitter;
+import org.snakeyaml.engine.v1.events.*;
 import org.snakeyaml.engine.v1.nodes.Tag;
 
-import com.google.common.base.Splitter;
+import java.util.List;
 
 /**
  * Event representation for the external test suite

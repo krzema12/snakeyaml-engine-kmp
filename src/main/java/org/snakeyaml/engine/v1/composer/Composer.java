@@ -15,32 +15,15 @@
  */
 package org.snakeyaml.engine.v1.composer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.events.AliasEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.NodeEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
+import org.snakeyaml.engine.v1.events.*;
 import org.snakeyaml.engine.v1.exceptions.ComposerException;
 import org.snakeyaml.engine.v1.exceptions.Mark;
-import org.snakeyaml.engine.v1.nodes.MappingNode;
-import org.snakeyaml.engine.v1.nodes.Node;
-import org.snakeyaml.engine.v1.nodes.NodeTuple;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.SequenceNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.nodes.*;
 import org.snakeyaml.engine.v1.parser.Parser;
 import org.snakeyaml.engine.v1.resolver.ScalarResolver;
+
+import java.util.*;
 
 
 /**

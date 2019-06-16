@@ -16,10 +16,10 @@
 package org.snakeyaml.engine.v1.scanner;
 
 
-import java.util.Iterator;
-
 import org.snakeyaml.engine.v1.exceptions.ScannerException;
 import org.snakeyaml.engine.v1.tokens.Token;
+
+import java.util.Iterator;
 
 /**
  * This interface represents an input stream of {@link Token}s.

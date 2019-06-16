@@ -15,19 +15,19 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v1.composer.Composer;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.parser.ParserImpl;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Compose {
 

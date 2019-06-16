@@ -15,12 +15,12 @@
  */
 package org.snakeyaml.engine.v1.events;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Base class for the start events of the collection nodes.

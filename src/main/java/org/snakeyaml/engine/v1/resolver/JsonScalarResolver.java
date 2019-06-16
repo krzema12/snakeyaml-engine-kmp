@@ -15,13 +15,13 @@
  */
 package org.snakeyaml.engine.v1.resolver;
 
+import org.snakeyaml.engine.v1.nodes.Tag;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.snakeyaml.engine.v1.nodes.Tag;
 
 /**
  * ScalarResolver for JSON Schema

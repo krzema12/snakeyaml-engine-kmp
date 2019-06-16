@@ -15,11 +15,11 @@
  */
 package org.snakeyaml.engine.v1.nodes;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents a scalar node.

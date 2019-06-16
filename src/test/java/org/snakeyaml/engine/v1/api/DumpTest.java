@@ -15,15 +15,14 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("fast")
 class DumpTest {

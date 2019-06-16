@@ -15,16 +15,16 @@
  */
 package org.snakeyaml.engine.v1.tokens;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @org.junit.jupiter.api.Tag("fast")
 class TokenTest {

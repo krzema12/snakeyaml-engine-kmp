@@ -15,11 +15,11 @@
  */
 package org.snakeyaml.engine.v1.parser;
 
+import org.snakeyaml.engine.v1.common.SpecVersion;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.snakeyaml.engine.v1.common.SpecVersion;
 
 /**
  * Store the internal state for directives

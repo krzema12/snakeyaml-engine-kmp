@@ -15,15 +15,15 @@
  */
 package org.snakeyaml.engine.v1.api;
 
+import org.snakeyaml.engine.v1.common.SpecVersion;
+import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.resolver.ScalarResolver;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-
-import org.snakeyaml.engine.v1.common.SpecVersion;
-import org.snakeyaml.engine.v1.nodes.Tag;
-import org.snakeyaml.engine.v1.resolver.ScalarResolver;
 
 /**
  * Fine tuning parsing/loading

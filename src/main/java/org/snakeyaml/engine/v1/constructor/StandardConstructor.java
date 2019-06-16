@@ -15,21 +15,15 @@
  */
 package org.snakeyaml.engine.v1.constructor;
 
-import java.math.BigInteger;
-import java.util.*;
-
 import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.exceptions.ConstructorException;
 import org.snakeyaml.engine.v1.exceptions.DuplicateKeyException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v1.nodes.MappingNode;
-import org.snakeyaml.engine.v1.nodes.Node;
-import org.snakeyaml.engine.v1.nodes.NodeTuple;
-import org.snakeyaml.engine.v1.nodes.NodeType;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.SequenceNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.nodes.*;
+
+import java.math.BigInteger;
+import java.util.*;
 
 /**
  * Construct standard Java classes

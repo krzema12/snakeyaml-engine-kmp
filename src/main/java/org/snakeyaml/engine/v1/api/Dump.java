@@ -15,16 +15,16 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import java.io.StringWriter;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Objects;
-
 import org.snakeyaml.engine.v1.emitter.Emitter;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.representer.BaseRepresenter;
 import org.snakeyaml.engine.v1.representer.StandardRepresenter;
 import org.snakeyaml.engine.v1.serializer.Serializer;
+
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Common way to serialize any Java instance(s)

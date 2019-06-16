@@ -15,34 +15,13 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.Scanner;
-import org.snakeyaml.engine.v1.tokens.AliasToken;
-import org.snakeyaml.engine.v1.tokens.AnchorToken;
-import org.snakeyaml.engine.v1.tokens.DirectiveToken;
-import org.snakeyaml.engine.v1.tokens.DocumentEndToken;
-import org.snakeyaml.engine.v1.tokens.DocumentStartToken;
-import org.snakeyaml.engine.v1.tokens.FlowEntryToken;
-import org.snakeyaml.engine.v1.tokens.FlowMappingEndToken;
-import org.snakeyaml.engine.v1.tokens.FlowMappingStartToken;
-import org.snakeyaml.engine.v1.tokens.FlowSequenceEndToken;
-import org.snakeyaml.engine.v1.tokens.FlowSequenceStartToken;
-import org.snakeyaml.engine.v1.tokens.KeyToken;
-import org.snakeyaml.engine.v1.tokens.ScalarToken;
-import org.snakeyaml.engine.v1.tokens.StreamEndToken;
-import org.snakeyaml.engine.v1.tokens.StreamStartToken;
-import org.snakeyaml.engine.v1.tokens.TagToken;
-import org.snakeyaml.engine.v1.tokens.TagTuple;
-import org.snakeyaml.engine.v1.tokens.Token;
-import org.snakeyaml.engine.v1.tokens.ValueToken;
+import org.snakeyaml.engine.v1.tokens.*;
+
+import java.util.*;
 
 public class CanonicalScanner implements Scanner {
     private static final String DIRECTIVE = "%YAML 1.2";

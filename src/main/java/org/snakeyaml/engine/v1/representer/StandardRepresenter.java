@@ -15,11 +15,6 @@
  */
 package org.snakeyaml.engine.v1.representer;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.regex.Pattern;
-
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.RepresentToNode;
 import org.snakeyaml.engine.v1.common.FlowStyle;
@@ -29,6 +24,11 @@ import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Represent standard Java classes

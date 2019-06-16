@@ -15,50 +15,18 @@
  */
 package org.snakeyaml.engine.v1.scanner;
 
-import static org.snakeyaml.engine.v1.common.CharConstants.ESCAPES;
-import static org.snakeyaml.engine.v1.common.CharConstants.ESCAPE_CODES;
-import static org.snakeyaml.engine.v1.common.CharConstants.ESCAPE_REPLACEMENTS;
-
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.ArrayStack;
-import org.snakeyaml.engine.v1.common.CharConstants;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.common.UriEncoder;
+import org.snakeyaml.engine.v1.common.*;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 import org.snakeyaml.engine.v1.exceptions.ScannerException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v1.tokens.AliasToken;
-import org.snakeyaml.engine.v1.tokens.AnchorToken;
-import org.snakeyaml.engine.v1.tokens.BlockEndToken;
-import org.snakeyaml.engine.v1.tokens.BlockEntryToken;
-import org.snakeyaml.engine.v1.tokens.BlockMappingStartToken;
-import org.snakeyaml.engine.v1.tokens.BlockSequenceStartToken;
-import org.snakeyaml.engine.v1.tokens.DirectiveToken;
-import org.snakeyaml.engine.v1.tokens.DocumentEndToken;
-import org.snakeyaml.engine.v1.tokens.DocumentStartToken;
-import org.snakeyaml.engine.v1.tokens.FlowEntryToken;
-import org.snakeyaml.engine.v1.tokens.FlowMappingEndToken;
-import org.snakeyaml.engine.v1.tokens.FlowMappingStartToken;
-import org.snakeyaml.engine.v1.tokens.FlowSequenceEndToken;
-import org.snakeyaml.engine.v1.tokens.FlowSequenceStartToken;
-import org.snakeyaml.engine.v1.tokens.KeyToken;
-import org.snakeyaml.engine.v1.tokens.ScalarToken;
-import org.snakeyaml.engine.v1.tokens.StreamEndToken;
-import org.snakeyaml.engine.v1.tokens.StreamStartToken;
-import org.snakeyaml.engine.v1.tokens.TagToken;
-import org.snakeyaml.engine.v1.tokens.TagTuple;
-import org.snakeyaml.engine.v1.tokens.Token;
-import org.snakeyaml.engine.v1.tokens.ValueToken;
+import org.snakeyaml.engine.v1.tokens.*;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.snakeyaml.engine.v1.common.CharConstants.*;
 
 /**
  * <pre>

@@ -15,12 +15,12 @@
  */
 package org.snakeyaml.engine.v1.nodes;
 
+import org.snakeyaml.engine.v1.common.FlowStyle;
+import org.snakeyaml.engine.v1.exceptions.Mark;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.snakeyaml.engine.v1.common.FlowStyle;
-import org.snakeyaml.engine.v1.exceptions.Mark;
 
 /**
  * Base class for the two collection types {@link MappingNode mapping} and

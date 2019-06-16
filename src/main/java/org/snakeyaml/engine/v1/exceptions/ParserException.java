@@ -16,9 +16,9 @@
 package org.snakeyaml.engine.v1.exceptions;
 
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.parser.Parser;
+
+import java.util.Optional;
 
 /**
  * Exception thrown by the {@link Parser} implementations in case of malformed

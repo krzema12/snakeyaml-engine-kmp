@@ -16,7 +16,10 @@
 package org.snakeyaml.engine.usecases.binary;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.api.*;
+import org.snakeyaml.engine.v1.api.Dump;
+import org.snakeyaml.engine.v1.api.DumpSettings;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.lowlevel.Serialize;
 import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;

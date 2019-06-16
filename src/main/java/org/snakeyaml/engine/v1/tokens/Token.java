@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.v1.tokens;
 
+import org.snakeyaml.engine.v1.exceptions.Mark;
+
 import java.util.Objects;
 import java.util.Optional;
-
-import org.snakeyaml.engine.v1.exceptions.Mark;
 
 public abstract class Token {
     public enum ID {

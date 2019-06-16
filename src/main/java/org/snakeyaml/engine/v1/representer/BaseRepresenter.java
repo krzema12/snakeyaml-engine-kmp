@@ -15,23 +15,12 @@
  */
 package org.snakeyaml.engine.v1.representer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.snakeyaml.engine.v1.api.RepresentToNode;
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.nodes.AnchorNode;
-import org.snakeyaml.engine.v1.nodes.MappingNode;
-import org.snakeyaml.engine.v1.nodes.Node;
-import org.snakeyaml.engine.v1.nodes.NodeTuple;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.SequenceNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.nodes.*;
+
+import java.util.*;
 
 /**
  * Represent basic YAML structures: scalar, sequence, mapping

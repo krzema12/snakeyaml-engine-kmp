@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.exceptions;
 
-import java.io.Serializable;
-
 import org.snakeyaml.engine.v1.common.CharConstants;
+
+import java.io.Serializable;
 
 /**
  * It's just a record and its only use is producing nice error messages. Parser

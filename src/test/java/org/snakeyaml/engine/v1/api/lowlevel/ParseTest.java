@@ -15,23 +15,21 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.common.collect.Lists;
+import com.google.common.io.CharSource;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.events.Event;
+import org.snakeyaml.engine.v1.events.StreamEndEvent;
+import org.snakeyaml.engine.v1.events.StreamStartEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.StreamEndEvent;
-import org.snakeyaml.engine.v1.events.StreamStartEvent;
-
-import com.google.common.collect.Lists;
-import com.google.common.io.CharSource;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("fast")
 class ParseTest {

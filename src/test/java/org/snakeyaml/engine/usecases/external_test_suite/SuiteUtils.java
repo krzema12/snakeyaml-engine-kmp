@@ -15,6 +15,14 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.lowlevel.Parse;
+import org.snakeyaml.engine.v1.events.Event;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,16 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.api.lowlevel.Parse;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 public class SuiteUtils {
     public static final List<String> deviationsWithSuccess = Lists.newArrayList("9C9N", "SU5Z", "QB6E", "QLJ7", "EB22");

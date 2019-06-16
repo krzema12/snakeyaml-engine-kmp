@@ -15,11 +15,6 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.NonPrintableStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
@@ -32,6 +27,11 @@ import org.snakeyaml.engine.v1.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v1.resolver.ScalarResolver;
 import org.snakeyaml.engine.v1.serializer.AnchorGenerator;
 import org.snakeyaml.engine.v1.serializer.NumberAnchorGenerator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Builder pattern implementation for DumpSettings

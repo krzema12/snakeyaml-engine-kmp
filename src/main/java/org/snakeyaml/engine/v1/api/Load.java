@@ -15,18 +15,18 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.composer.Composer;
 import org.snakeyaml.engine.v1.constructor.BaseConstructor;
 import org.snakeyaml.engine.v1.constructor.StandardConstructor;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.parser.ParserImpl;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Common way to load Java instance(s)

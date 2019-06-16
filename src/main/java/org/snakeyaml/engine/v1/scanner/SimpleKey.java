@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.scanner;
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Optional;
 
 /**
  * Simple keys treatment.

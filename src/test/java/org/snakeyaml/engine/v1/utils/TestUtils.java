@@ -15,11 +15,11 @@
  */
 package org.snakeyaml.engine.v1.utils;
 
+import com.google.common.io.CharStreams;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import com.google.common.io.CharStreams;
 
 public abstract class TestUtils {
 

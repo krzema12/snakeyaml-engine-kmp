@@ -15,12 +15,7 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.common.FlowStyle;
@@ -31,7 +26,9 @@ import org.snakeyaml.engine.v1.nodes.ScalarNode;
 import org.snakeyaml.engine.v1.nodes.SequenceNode;
 import org.snakeyaml.engine.v1.nodes.Tag;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ConstructNodeTest {

@@ -15,16 +15,16 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.emitter.Emitable;
 import org.snakeyaml.engine.v1.events.Event;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.serializer.Serializer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class Serialize {
 

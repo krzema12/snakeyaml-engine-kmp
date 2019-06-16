@@ -15,18 +15,17 @@
  */
 package org.snakeyaml.engine.v1.constructor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.lowlevel.Compose;
 import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.utils.TestUtils;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Tag("fast")
 class StandardConstructorTest {

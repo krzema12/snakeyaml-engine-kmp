@@ -15,29 +15,21 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.common.collect.Lists;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.api.DumpSettings;
+import org.snakeyaml.engine.v1.common.ScalarStyle;
+import org.snakeyaml.engine.v1.events.*;
+import org.snakeyaml.engine.v1.nodes.ScalarNode;
+import org.snakeyaml.engine.v1.nodes.Tag;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.DumpSettings;
-import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.events.DocumentEndEvent;
-import org.snakeyaml.engine.v1.events.DocumentStartEvent;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.events.ImplicitTuple;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.StreamEndEvent;
-import org.snakeyaml.engine.v1.events.StreamStartEvent;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
-
-import com.google.common.collect.Lists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class SerializeTest {

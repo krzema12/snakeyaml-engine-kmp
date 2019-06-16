@@ -15,36 +15,13 @@
  */
 package org.snakeyaml.engine.v1.serializer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.emitter.Emitable;
-import org.snakeyaml.engine.v1.events.AliasEvent;
-import org.snakeyaml.engine.v1.events.DocumentEndEvent;
-import org.snakeyaml.engine.v1.events.DocumentStartEvent;
-import org.snakeyaml.engine.v1.events.ImplicitTuple;
-import org.snakeyaml.engine.v1.events.MappingEndEvent;
-import org.snakeyaml.engine.v1.events.MappingStartEvent;
-import org.snakeyaml.engine.v1.events.ScalarEvent;
-import org.snakeyaml.engine.v1.events.SequenceEndEvent;
-import org.snakeyaml.engine.v1.events.SequenceStartEvent;
-import org.snakeyaml.engine.v1.events.StreamEndEvent;
-import org.snakeyaml.engine.v1.events.StreamStartEvent;
-import org.snakeyaml.engine.v1.nodes.AnchorNode;
-import org.snakeyaml.engine.v1.nodes.CollectionNode;
-import org.snakeyaml.engine.v1.nodes.MappingNode;
-import org.snakeyaml.engine.v1.nodes.Node;
-import org.snakeyaml.engine.v1.nodes.NodeTuple;
-import org.snakeyaml.engine.v1.nodes.NodeType;
-import org.snakeyaml.engine.v1.nodes.ScalarNode;
-import org.snakeyaml.engine.v1.nodes.SequenceNode;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v1.events.*;
+import org.snakeyaml.engine.v1.nodes.*;
+
+import java.util.*;
 
 public class Serializer {
     private final DumpSettings settings;

@@ -15,17 +15,17 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.Objects;
-
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v1.events.Event;
 import org.snakeyaml.engine.v1.parser.ParserImpl;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Read the input stream and parse the content into events (opposite for Present or Emit)

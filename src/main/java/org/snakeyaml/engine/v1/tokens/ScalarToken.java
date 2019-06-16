@@ -15,10 +15,10 @@
  */
 package org.snakeyaml.engine.v1.tokens;
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Optional;
 
 public final class ScalarToken extends Token {
     private final String value;

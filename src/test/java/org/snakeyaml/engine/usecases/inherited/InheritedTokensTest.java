@@ -15,24 +15,9 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v1.scanner.Scanner;
 import org.snakeyaml.engine.v1.scanner.ScannerImpl;
@@ -40,6 +25,14 @@ import org.snakeyaml.engine.v1.scanner.StreamReader;
 import org.snakeyaml.engine.v1.tokens.StreamEndToken;
 import org.snakeyaml.engine.v1.tokens.StreamStartToken;
 import org.snakeyaml.engine.v1.tokens.Token;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedTokensTest extends InheritedImportTest {

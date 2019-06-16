@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.common;
 
-import static org.snakeyaml.engine.v1.common.CharConstants.ANCHOR_FORMAT;
-
 import java.util.Objects;
+
+import static org.snakeyaml.engine.v1.common.CharConstants.ANCHOR_FORMAT;
 
 /**
  * Value inside Anchor and Alias

@@ -15,22 +15,14 @@
  */
 package org.snakeyaml.engine.v1.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-
 import org.snakeyaml.engine.v1.common.SpecVersion;
 import org.snakeyaml.engine.v1.exceptions.YamlVersionException;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v1.resolver.ScalarResolver;
+
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * Builder pattern implementation for LoadSettings

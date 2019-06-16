@@ -15,17 +15,17 @@
  */
 package org.snakeyaml.engine.v1.scanner;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.common.CharConstants;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 import org.snakeyaml.engine.v1.exceptions.ReaderException;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Reader: checks if code points are in allowed range. Returns '\0' when end of

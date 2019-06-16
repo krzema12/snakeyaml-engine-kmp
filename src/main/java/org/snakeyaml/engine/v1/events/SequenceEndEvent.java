@@ -16,9 +16,9 @@
 package org.snakeyaml.engine.v1.events;
 
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Optional;
 
 /**
  * Marks the end of a sequence.

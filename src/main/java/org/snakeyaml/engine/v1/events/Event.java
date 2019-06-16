@@ -15,9 +15,9 @@
  */
 package org.snakeyaml.engine.v1.events;
 
-import java.util.Optional;
-
 import org.snakeyaml.engine.v1.exceptions.Mark;
+
+import java.util.Optional;
 
 /**
  * Basic unit of output from a {@link org.snakeyaml.engine.v1.parser.Parser} or input

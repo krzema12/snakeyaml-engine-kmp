@@ -15,14 +15,14 @@
  */
 package org.snakeyaml.engine.v1.api.lowlevel;
 
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.Objects;
-
 import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.StreamDataWriter;
 import org.snakeyaml.engine.v1.emitter.Emitter;
 import org.snakeyaml.engine.v1.events.Event;
+
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Emit the events into a data stream (opposite for Parse)

@@ -97,7 +97,7 @@ class IndentationTest {
     }
 
     @Test
-    @DisplayName("Dump block map seq with specified indicator indent")
+    @DisplayName("Dump block seq map with specified indicator indent")
     void dumpBlockMappingSequence(TestInfo testInfo) {
         Dump dump = createDump(2);
         String output = dump.dumpToString(createMap());

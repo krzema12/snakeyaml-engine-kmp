@@ -57,7 +57,7 @@ public class Load {
         this.constructor = constructor;
     }
 
-    protected Composer createComposer(LoadSettings settings, StreamReader streamReader) {
+    protected Composer createComposer(StreamReader streamReader) {
         return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
     }
 
@@ -77,7 +77,7 @@ public class Load {
      */
     public Object loadFromInputStream(InputStream yamlStream) {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        return loadOne(createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings)));
+        return loadOne(createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings)));
     }
 
     /**
@@ -88,7 +88,7 @@ public class Load {
      */
     public Object loadFromReader(Reader yamlReader) {
         Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        return loadOne(createComposer(settings, new StreamReader(yamlReader, settings)));
+        return loadOne(createComposer(new StreamReader(yamlReader, settings)));
     }
 
     /**
@@ -100,7 +100,7 @@ public class Load {
      */
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        return loadOne(createComposer(settings, new StreamReader(yaml, settings)));
+        return loadOne(createComposer(new StreamReader(yaml, settings)));
     }
 
     // Load all the documents
@@ -119,7 +119,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromInputStream(InputStream yamlStream) {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        Composer composer = createComposer(settings, new StreamReader(new YamlUnicodeReader(yamlStream), settings));
+        Composer composer = createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings));
         return loadAll(composer);
     }
 
@@ -131,7 +131,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromReader(Reader yamlReader) {
         Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        Composer composer = createComposer(settings, new StreamReader(yamlReader, settings));
+        Composer composer = createComposer(new StreamReader(yamlReader, settings));
         return loadAll(composer);
     }
 
@@ -144,7 +144,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        Composer composer = createComposer(settings, new StreamReader(yaml, settings));
+        Composer composer = createComposer(new StreamReader(yaml, settings));
         return loadAll(composer);
     }
 

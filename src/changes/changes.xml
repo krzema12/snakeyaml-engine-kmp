@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="remove">
+                Remove redundant LoadSettings from Load.createComposer() method (2019-06-16)
+            </action>
             <action dev="asomov" type="add">
                 Introduce static methods to create builders for settings (2019-06-16)
             </action>

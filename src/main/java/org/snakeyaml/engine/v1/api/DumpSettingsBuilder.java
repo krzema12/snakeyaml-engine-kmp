@@ -62,7 +62,9 @@ public final class DumpSettingsBuilder {
 
     /**
      * Create builder
+     * @deprecated use DumpSettings.builder() instead
      */
+    @Deprecated
     public DumpSettingsBuilder() {
         this.explicitRootTag = Optional.empty();
         this.tagDirective = new HashMap<>();
@@ -293,6 +295,18 @@ public final class DumpSettingsBuilder {
     }
 
     /**
+     * When String object contains non-printable characters, they are escaped with \\u or \\x notation.
+     * Sometimes it is better to transform this data to binary (with the !!binary tag).
+     * String objects with printable data are non affected by this setting.
+     * @param nonPrintableStyle - set this to BINARY to force non-printable String to represented as binary (byte array)
+     * @return the builder with the provided value
+     */
+    public DumpSettingsBuilder setNonPrintableStyle(NonPrintableStyle nonPrintableStyle) {
+        this.nonPrintableStyle = nonPrintableStyle;
+        return this;
+    }
+
+    /**
      * Create immutable DumpSettings
      * @return DumpSettings with the provided values
      */
@@ -303,18 +317,6 @@ public final class DumpSettingsBuilder {
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength);
-    }
-
-    /**
-     * When String object contains non-printable characters, they are escaped with \\u or \\x notation.
-     * Sometimes it is better to transform this data to binary (with the !!binary tag).
-     * String objects with printable data are non affected by this setting.
-     * @param nonPrintableStyle - set this to BINARY to force non-printable String to represented as binary (byte array)
-     * @return the builder with the provided value
-     */
-    public DumpSettingsBuilder setNonPrintableStyle(NonPrintableStyle nonPrintableStyle) {
-        this.nonPrintableStyle = nonPrintableStyle;
-        return this;
     }
 }
 

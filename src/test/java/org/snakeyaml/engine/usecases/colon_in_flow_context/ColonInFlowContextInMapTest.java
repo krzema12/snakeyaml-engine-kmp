@@ -23,27 +23,28 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInMapTest {
     @Test
     void withSeparation(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
         assertEquals(new Integer(1), map.get("a"));
     }
 
     @Test
     void withoutEmptyValue(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:}");
         assertTrue(map.containsKey("a"));
     }
 
     @Test
     void withoutSeparation(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:1}");
         assertTrue(map.containsKey("a:1"));
     }

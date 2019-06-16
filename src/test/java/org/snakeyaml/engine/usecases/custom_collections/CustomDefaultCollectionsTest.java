@@ -34,7 +34,7 @@ class CustomDefaultCollectionsTest {
     @DisplayName("Create LinkedList by default")
     void createLinkedListByDefault(TestInfo testInfo) {
         //init size is not used in LinkedList
-        LoadSettings settings = new LoadSettingsBuilder().setDefaultList((initSize) -> new LinkedList()).build();
+        LoadSettings settings = LoadSettings.builder().setDefaultList((initSize) -> new LinkedList()).build();
         Load load = new Load(settings);
         LinkedList<String> list = (LinkedList<String>) load.loadFromString("- a\n- b");
         assertEquals(2, list.size());
@@ -44,7 +44,7 @@ class CustomDefaultCollectionsTest {
     @DisplayName("Create TreeMap by default")
     void createTreeMapByDefault(TestInfo testInfo) {
         //init size is not used in TreeMap
-        LoadSettings settings = new LoadSettingsBuilder().setDefaultMap((initSize) -> new TreeMap()).build();
+        LoadSettings settings = LoadSettings.builder().setDefaultMap((initSize) -> new TreeMap()).build();
         Load load = new Load(settings);
         TreeMap<String, String> list = (TreeMap<String, String>) load.loadFromString("{k1: v1, k2: v2}");
         assertEquals(2, list.size());

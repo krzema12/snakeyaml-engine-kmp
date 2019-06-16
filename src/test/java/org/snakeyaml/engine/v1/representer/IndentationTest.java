@@ -63,7 +63,7 @@ class IndentationTest {
     }
 
     private Dump createDump(int indicatorIndent) {
-        DumpSettingsBuilder builder = new DumpSettingsBuilder();
+        DumpSettingsBuilder builder = DumpSettings.builder();
         builder.setDefaultFlowStyle(FlowStyle.BLOCK);
         builder.setIndicatorIndent(indicatorIndent);
         builder.setIndent(indicatorIndent + 2);

@@ -25,11 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.Dump;
-import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v1.api.*;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 
 import com.google.common.collect.ImmutableMap;
@@ -40,7 +36,7 @@ class RecursiveMapTest {
     @Test
     @DisplayName("Load map with recursive values")
     void loadRecursiveMap(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, String> map = (Map<String, String>) load.loadFromString("First occurrence: &anchor Foo\n" +
                 "Second occurrence: *anchor\n" +
@@ -62,7 +58,7 @@ class RecursiveMapTest {
         map2.put("name", "second");
         map1.put("next", map2);
         map2.put("next", map1);
-        Dump dump = new Dump(new DumpSettingsBuilder().build());
+        Dump dump = new Dump(DumpSettings.builder().build());
         String output1 = dump.dumpToString(map1);
         assertEquals("&id002\n" +
                 "next:\n" +
@@ -70,7 +66,7 @@ class RecursiveMapTest {
                 "  name: second\n" +
                 "name: first\n", output1);
 
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Object> parsed1 = (Map<String, Object>) load.loadFromString(output1);
         assertEquals(2, parsed1.size());
@@ -82,7 +78,7 @@ class RecursiveMapTest {
     @Test
     @DisplayName("Fail to load map with recursive keys")
     void failToLoadRecursiveMapByDefault(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         //fail to load map which has only one key - reference to itself
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
@@ -94,7 +90,7 @@ class RecursiveMapTest {
     @Test
     @DisplayName("Load map with recursive keys if it is explicitly allowed")
     void loadRecursiveMapIfAllowed(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().setAllowRecursiveKeys(true).build();
+        LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
         Load load = new Load(settings);
         //load map which has only one key - reference to itself
         Map<Object, Object> recursive = (Map<Object, Object>) load.loadFromString("&id002\n" +

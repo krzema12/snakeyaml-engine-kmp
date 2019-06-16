@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v1.exceptions.ReaderException;
@@ -41,7 +42,7 @@ public class InheritedReaderTest extends InheritedImportTest {
         for (int i = 0; i < inputs.length; i++) {
             InputStream input = new FileInputStream(inputs[i]);
             YamlUnicodeReader unicodeReader = new YamlUnicodeReader(input);
-            StreamReader stream = new StreamReader(unicodeReader, new LoadSettingsBuilder().build());
+            StreamReader stream = new StreamReader(unicodeReader, LoadSettings.builder().build());
             try {
                 while (stream.peek() != '\u0000') {
                     stream.forward();

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 import org.snakeyaml.engine.v1.events.DocumentEndEvent;
@@ -43,7 +44,7 @@ class SerializeTest {
 
     @Test
     void serializeOneScalar(TestInfo testInfo) throws IOException {
-        Serialize serialize = new Serialize(new DumpSettingsBuilder().build());
+        Serialize serialize = new Serialize(DumpSettings.builder().build());
         Iterable<Event> events = serialize.serializeOne(new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN));
         List<Event> list = Lists.newArrayList(events);
         assertEquals(Lists.newArrayList(new StreamStartEvent(),

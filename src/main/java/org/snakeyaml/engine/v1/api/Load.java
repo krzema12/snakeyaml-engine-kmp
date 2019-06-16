@@ -63,7 +63,7 @@ public class Load {
 
     // Load  a single document
 
-    private Object loadOne(Composer composer) {
+    protected Object loadOne(Composer composer) {
         Optional<Node> nodeOptional = composer.getSingleNode();
         return constructor.constructSingleDocument(nodeOptional);
     }

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.v1.issues.issue3;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 
@@ -28,7 +29,7 @@ class ExceptionTest {
 
     @Test
     void sequenceException(TestInfo testInfo) {
-        Load load = new Load(new LoadSettingsBuilder().build());
+        Load load = new Load(LoadSettings.builder().build());
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 load.loadFromString("!!seq abc"));
         assertTrue( exception.getMessage().contains("java.lang.ClassCastException"));
@@ -39,7 +40,7 @@ class ExceptionTest {
 
     @Test
     void intException(TestInfo testInfo) {
-        Load load = new Load(new LoadSettingsBuilder().build());
+        Load load = new Load(LoadSettings.builder().build());
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 load.loadFromString("!!int abc"));
         assertEquals("java.lang.NumberFormatException: For input string: \"abc\"", exception.getMessage());

@@ -39,7 +39,7 @@ class OptionalTest {
     @Test
     @DisplayName("Represent Optional as value")
     void representOptional(TestInfo testInfo) {
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
         Node node = standardRepresenter.represent(Optional.of("a"));
         assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
     }
@@ -47,7 +47,7 @@ class OptionalTest {
     @Test
     @DisplayName("Represent Optional.empty as null")
     void representEmptyOptional(TestInfo testInfo) {
-        StandardRepresenter standardRepresenter = new StandardRepresenter(new DumpSettingsBuilder().build());
+        StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
         Node node = standardRepresenter.represent(Optional.empty());
         assertEquals("tag:yaml.org,2002:null", node.getTag().getValue());
     }
@@ -55,7 +55,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optional as its value")
     void dumpOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().build();
+        DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of("a"));
         assertEquals("!!java.util.Optional 'a'\n", str);
@@ -64,7 +64,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump empty Optional as null")
     void dumpEmptyOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().build();
+        DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.empty());
         assertEquals("null\n", str);
@@ -73,7 +73,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optionals")
     void dumpListOfOptional(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().build();
+        DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
         assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
@@ -82,7 +82,7 @@ class OptionalTest {
     @Test
     @DisplayName("Dump Optionals")
     void dumpListOfOptional2(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().build();
+        DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of(Lists.newArrayList(1, 2)));
         assertEquals("!!java.util.Optional [1, 2]\n", str);
@@ -92,7 +92,7 @@ class OptionalTest {
     @Test
     @DisplayName("Optional 'a' is parsed")
     void parseOptional(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional a");
         assertEquals(Optional.of("a"), str);
@@ -101,7 +101,7 @@ class OptionalTest {
     @Test
     @DisplayName("Empty Optional parsed")
     void parseEmptyOptional(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional null");
         assertEquals(Optional.empty(), str);
@@ -110,7 +110,7 @@ class OptionalTest {
     @Test
     @DisplayName("Empty Optional parsed")
     void parseEmptyOptional2(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional ");
         assertEquals(Optional.empty(), str);

@@ -61,7 +61,7 @@ public abstract class InheritedImportTest {
     }
 
     protected List<Event> canonicalParse(InputStream input2, String label) throws IOException {
-        LoadSettings setting = new LoadSettingsBuilder().setLabel(label).build();
+        LoadSettings setting = LoadSettings.builder().setLabel(label).build();
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input2), setting);
         StringBuilder buffer = new StringBuilder();
         while (reader.peek() != '\0') {
@@ -78,7 +78,7 @@ public abstract class InheritedImportTest {
     }
 
     protected List<Event> parse(InputStream input) throws IOException {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         StreamReader reader = new StreamReader(new YamlUnicodeReader(input), settings);
         Parser parser = new ParserImpl(reader, settings);
         List<Event> result = new ArrayList();

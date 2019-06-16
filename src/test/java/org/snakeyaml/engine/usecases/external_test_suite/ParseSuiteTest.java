@@ -44,7 +44,7 @@ class ParseSuiteTest {
     @DisplayName("Parse: Run one test")
     void runOne(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("6FWR");
-        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
+        LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
         Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
         for (Event event : iterable) {
             //System.out.println(event);

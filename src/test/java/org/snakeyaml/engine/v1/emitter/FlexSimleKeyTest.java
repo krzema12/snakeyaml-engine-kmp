@@ -67,7 +67,7 @@ public class FlexSimleKeyTest {
     }
 
     private DumpSettings createOptions(int len) {
-        return new DumpSettingsBuilder().setMaxSimpleKeyLength(len).build();
+        return DumpSettings.builder().setMaxSimpleKeyLength(len).build();
     }
 
     private String createKey(int length) {

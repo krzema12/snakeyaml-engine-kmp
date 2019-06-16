@@ -33,7 +33,7 @@ class EnumRepresenterTest {
     @Test
     @DisplayName("Represent Enum as node with global tag")
     void represenEnum(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
+        DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         StandardRepresenter standardRepresenter = new StandardRepresenter(settings);
         ScalarNode node = (ScalarNode) standardRepresenter.represent(FormatEnum.JSON);
         assertEquals(ScalarStyle.DOUBLE_QUOTED, node.getScalarStyle());
@@ -43,7 +43,7 @@ class EnumRepresenterTest {
     @Test
     @DisplayName("Dump Enum with ScalarStyle.DOUBLE_QUOTED")
     void dumpEnum(TestInfo testInfo) {
-        DumpSettings settings = new DumpSettingsBuilder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
+        DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         Dump dumper = new Dump(settings);
         String node = dumper.dumpToString(FormatEnum.JSON);
         assertEquals("!!org.snakeyaml.engine.v1.representer.FormatEnum \"JSON\"\n", node);

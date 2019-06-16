@@ -21,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.lowlevel.Compose;
 import org.snakeyaml.engine.v1.exceptions.ComposerException;
@@ -36,7 +37,7 @@ class ComposerTest {
     @DisplayName("Fail to Compose one document when more documents are provided.")
     void composeOne(TestInfo testInfo) {
         ComposerException exception = assertThrows(ComposerException.class, () ->
-                new Compose(new LoadSettingsBuilder().build()).composeString("a\n---\nb\n"));
+                new Compose(LoadSettings.builder().build()).composeString("a\n---\nb\n"));
         assertTrue(exception.getMessage().contains("expected a single document in the stream"));
         assertTrue(exception.getMessage().contains("but found another document"));
     }
@@ -44,13 +45,13 @@ class ComposerTest {
     @Test
     void failToComposeUnknownAlias(TestInfo testInfo) {
         ComposerException exception = assertThrows(ComposerException.class, () ->
-                new Compose(new LoadSettingsBuilder().build()).composeString("[a, *id b]"));
+                new Compose(LoadSettings.builder().build()).composeString("[a, *id b]"));
         assertTrue(exception.getMessage().contains("found undefined alias id"), exception.getMessage());
     }
 
     @Test
     void composeMergeExample(TestInfo testInfo) {
-        Compose compose = new Compose(new LoadSettingsBuilder().build());
+        Compose compose = new Compose(LoadSettings.builder().build());
         Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
         assertTrue(node.isPresent());
     }
@@ -58,7 +59,7 @@ class ComposerTest {
     @Test
     void composeAnchor(TestInfo testInfo) {
         String data = "--- &113\n{name: Bill, age: 18}";
-        Compose compose = new Compose(new LoadSettingsBuilder().build());
+        Compose compose = new Compose(LoadSettings.builder().build());
         Optional<Node> optionalNode = compose.composeString(data);
         assertTrue(optionalNode.isPresent());
         Node node = optionalNode.get();

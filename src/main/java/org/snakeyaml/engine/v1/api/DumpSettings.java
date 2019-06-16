@@ -83,6 +83,9 @@ public final class DumpSettings {
         this.maxSimpleKeyLength = maxSimpleKeyLength;
     }
 
+    public static final DumpSettingsBuilder builder() {
+        return new DumpSettingsBuilder();
+    }
 
     public FlowStyle getDefaultFlowStyle() {
         return defaultFlowStyle;

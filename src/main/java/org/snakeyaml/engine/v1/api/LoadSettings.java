@@ -62,6 +62,10 @@ public final class LoadSettings {
         this.useMarks = useMarks;
     }
 
+    public static final LoadSettingsBuilder builder() {
+        return new LoadSettingsBuilder();
+    }
+
     public String getLabel() {
         return label;
     }

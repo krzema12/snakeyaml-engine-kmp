@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.snakeyaml.engine.v1.api.DumpSettings;
 import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.api.lowlevel.Compose;
 import org.snakeyaml.engine.v1.api.lowlevel.Present;
@@ -45,11 +47,11 @@ class EmitSuiteTest {
                 assertTrue(result.getError().isPresent(), "Expected error, but got none in file " + data.getName() + ", " +
                         data.getLabel() + "\n" + result.getEvents());
             } else {
-                Present emit = new Present(new DumpSettingsBuilder().build());
+                Present emit = new Present(DumpSettings.builder().build());
                 //emit without errors
                 String yaml = emit.emitToString(result.getEvents().iterator());
                 //eat your own dog food
-                new Compose(new LoadSettingsBuilder().build()).composeAllFromString(yaml);
+                new Compose(LoadSettings.builder().build()).composeAllFromString(yaml);
             }
         }
     }

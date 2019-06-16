@@ -37,7 +37,7 @@ class NullConstructorTest {
     void customConstructorMustBeCalledWithoutNode(TestInfo testInfo) {
         Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
         tagConstructors.put(Tag.NULL, new MyConstructNull());
-        LoadSettings settings = new LoadSettingsBuilder().setTagConstructors(tagConstructors).build();
+        LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
         Load loader = new Load(settings);
         assertNotNull(loader.loadFromString(""), "Expected MyConstructNull to be called.");
         assertEquals("absent", loader.loadFromString(""), "Expected MyConstructNull to be called.");
@@ -47,7 +47,7 @@ class NullConstructorTest {
     void customConstructorMustBeCalledWithNode(TestInfo testInfo) {
         Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
         tagConstructors.put(Tag.NULL, new MyConstructNull());
-        LoadSettings settings = new LoadSettingsBuilder().setTagConstructors(tagConstructors).build();
+        LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
         Load loader = new Load(settings);
         assertEquals("present", loader.loadFromString("!!null null"), "Expected MyConstructNull to be called.");
     }

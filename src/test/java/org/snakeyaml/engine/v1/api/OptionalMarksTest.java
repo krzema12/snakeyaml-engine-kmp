@@ -38,7 +38,7 @@ class OptionalMarksTest {
     @DisplayName("Compose: no marks")
     void composeWithoutMarks(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("2AUY");
-        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).setUseMarks(false).build();
+        LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
         Optional<Node> node = new Compose(settings).composeString("{a: 4}");
         assertTrue(node.isPresent());
     }
@@ -47,7 +47,7 @@ class OptionalMarksTest {
     @DisplayName("Compose: failure with marks")
     void composeErrorWithoutMarks2(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("2AUY");
-        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).setUseMarks(true).build();
+        LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(true).build();
         ParserException exception = assertThrows(ParserException.class, () ->
                 new Compose(settings).composeString("{a: 4}}"));
         assertTrue(exception.getMessage().contains("line 1, column 7:"), "The error must contain Mark data.");
@@ -58,7 +58,7 @@ class OptionalMarksTest {
     @DisplayName("Compose: failure without marks")
     void composeErrorWithoutMarks(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("2AUY");
-        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).setUseMarks(false).build();
+        LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
         ParserException exception = assertThrows(ParserException.class, () ->
                 new Compose(settings).composeString("{a: 4}}"));
         assertEquals("expected '<document start>', but found '}'\n", exception.getMessage());

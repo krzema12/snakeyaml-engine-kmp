@@ -51,7 +51,9 @@ public final class LoadSettingsBuilder {
 
     /**
      * Create builder
+     * @deprecated use LoadSettings.builder() instead
      */
+    @Deprecated
     public LoadSettingsBuilder() {
         this.label = "reader";
         this.rootConstructNode = Optional.empty();

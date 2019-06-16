@@ -62,7 +62,7 @@ class ComposeSuiteTest {
         Optional<Exception> error = Optional.empty();
         List<Node> list = new ArrayList();
         try {
-            LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
+            LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
             Iterable<Node> iterable = new Compose(settings).composeAllFromString(data.getInput());
             iterable.forEach(event -> list.add(event));
         } catch (YamlEngineException e) {
@@ -75,7 +75,7 @@ class ComposeSuiteTest {
     @DisplayName("Compose: run one test")
     void runOne(TestInfo testInfo) {
         SuiteData data = SuiteUtils.getOne("C4HZ");
-        LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
+        LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
         Optional<Node> node = new Compose(settings).composeString(data.getInput());
         assertTrue(node.isPresent());
 //        System.out.println(node);
@@ -89,7 +89,7 @@ class ComposeSuiteTest {
             ComposeResult result = composeData(data);
             List<Node> nodes = result.getNode();
             assertFalse(nodes.isEmpty(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
-            DumpSettings settings = new DumpSettingsBuilder().setExplicitStart(true).setExplicitEnd(true).build();
+            DumpSettings settings = DumpSettings.builder().setExplicitStart(true).setExplicitEnd(true).build();
             Serialize serialize = new Serialize(settings);
             List<Event> events = serialize.serializeAll(nodes);
             assertEquals(data.getEvents().size(), events.size(), data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());

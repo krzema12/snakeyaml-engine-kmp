@@ -34,16 +34,16 @@ class LoadMappingTest {
     @Test
     @DisplayName("Empty map {} is parsed")
     void parseEmptyMap(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadFromString("{}");
-        assertEquals(new LoadSettingsBuilder().build().getDefaultMap().apply(0), map);
+        assertEquals(LoadSettings.builder().build().getDefaultMap().apply(0), map);
     }
 
     @Test
     @DisplayName("map {a: 1} is parsed")
     void parseMap1(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1}");
         Map<String, Integer> expected = ImmutableMap.of("a", 1);
@@ -53,7 +53,7 @@ class LoadMappingTest {
     @Test
     @DisplayName("map {a: 1, b: 2} is parsed")
     void parseMap2(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Object> map = (Map<String, Object>) load.loadFromString("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
         Map<String, Object> expected = ImmutableMap.of("a", 1, "b", 2, "c", ImmutableList.of("aaa", "bbb"));
@@ -64,7 +64,7 @@ class LoadMappingTest {
     @Test
     @DisplayName("map {x: 1, y: 2, z:3} is parsed")
     void parseMap3(TestInfo testInfo) {
-        LoadSettings settings = new LoadSettingsBuilder().build();
+        LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));
         Map<String, Integer> expected = ImmutableMap.of("x", 1, "y", 2, "z", 3);

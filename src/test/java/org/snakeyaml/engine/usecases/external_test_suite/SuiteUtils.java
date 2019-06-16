@@ -78,7 +78,7 @@ public class SuiteUtils {
         Optional<Exception> error = Optional.empty();
         List<Event> list = new ArrayList();
         try {
-            LoadSettings settings = new LoadSettingsBuilder().setLabel(data.getLabel()).build();
+            LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
             Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
             iterable.forEach(event -> list.add(event));
         } catch (YamlEngineException e) {

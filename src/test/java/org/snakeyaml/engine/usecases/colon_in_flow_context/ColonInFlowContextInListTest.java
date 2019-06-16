@@ -22,27 +22,27 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v1.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInListTest {
     @Test
     void withSpacesAround(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
         assertTrue(list.contains("http://foo"));
     }
 
     @Test
     void withoutSpacesAround(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[http://foo]");
         assertTrue(list.contains("http://foo"));
     }
 
     @Test
     void twoValues(TestInfo testInfo) {
-        Load loader = new Load(new LoadSettingsBuilder().build());
+        Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
         assertTrue(list.contains("http://foo"));
         assertTrue(list.contains("http://bar"));

@@ -57,8 +57,20 @@ public class Load {
         this.constructor = constructor;
     }
 
-    protected Composer createComposer(StreamReader streamReader) {
+    private Composer createComposer(StreamReader streamReader) {
         return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
+    }
+
+    protected Composer createComposer(InputStream yamlStream) {
+        return createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings));
+    }
+
+    protected Composer createComposer(String yaml) {
+        return createComposer(new StreamReader(yaml, settings));
+    }
+
+    protected Composer createComposer(Reader yamlReader) {
+        return createComposer(new StreamReader(yamlReader, settings));
     }
 
     // Load  a single document
@@ -77,7 +89,7 @@ public class Load {
      */
     public Object loadFromInputStream(InputStream yamlStream) {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        return loadOne(createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings)));
+        return loadOne(createComposer(yamlStream));
     }
 
     /**
@@ -88,7 +100,7 @@ public class Load {
      */
     public Object loadFromReader(Reader yamlReader) {
         Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        return loadOne(createComposer(new StreamReader(yamlReader, settings)));
+        return loadOne(createComposer(yamlReader));
     }
 
     /**
@@ -100,7 +112,7 @@ public class Load {
      */
     public Object loadFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        return loadOne(createComposer(new StreamReader(yaml, settings)));
+        return loadOne(createComposer(yaml));
     }
 
     // Load all the documents

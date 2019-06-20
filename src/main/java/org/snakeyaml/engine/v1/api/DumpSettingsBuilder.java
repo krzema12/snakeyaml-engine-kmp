@@ -282,13 +282,13 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define max key length to use simple key (without '?')
-     * More info https://yaml.org/spec/1.1/#id934537
+     * More info https://yaml.org/spec/1.2/spec.html#id2798057
      * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
      * @return the builder with the provided value
      */
     public DumpSettingsBuilder setMaxSimpleKeyLength(int maxSimpleKeyLength) {
         if(maxSimpleKeyLength > 1024) {
-            throw new YamlEngineException("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.1/#id934537");
+            throw new YamlEngineException("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057");
         }
         this.maxSimpleKeyLength = maxSimpleKeyLength;
         return this;

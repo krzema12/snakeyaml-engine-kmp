@@ -5,8 +5,8 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="1.1" date="in Mercurial" description="Maintenance">
-            <action dev="asomov" type="remove">
+        <release version="1.1" date="in Mercurial" description="Add support for the Beans project">
+            <action dev="asomov" type="add">
                 Add protected methods to create Composer to support Engine (2019-06-16)
             </action>
             <action dev="asomov" type="remove">

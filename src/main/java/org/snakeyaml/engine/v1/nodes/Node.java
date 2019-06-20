@@ -27,7 +27,7 @@ import java.util.Optional;
  * Base class for all nodes.
  * <p>
  * The nodes form the node-graph described in the <a
- * href="http://yaml.org/spec/1.1/">YAML Specification</a>.
+ * href="https://yaml.org/spec/1.2/spec.html">YAML Specification</a>.
  * </p>
  * <p>
  * While loading, the node graph is usually created by the

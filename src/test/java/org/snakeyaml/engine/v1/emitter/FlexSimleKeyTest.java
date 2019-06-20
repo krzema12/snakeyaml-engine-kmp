@@ -61,7 +61,7 @@ public class FlexSimleKeyTest {
             createOptions(1024 + 1);
             fail("Length must be restricted to 1024 chars");
         } catch (YamlEngineException e) {
-            assertEquals("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.1/#id934537", e.getMessage());
+            assertEquals("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057", e.getMessage());
         }
     }
 

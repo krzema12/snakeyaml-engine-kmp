@@ -20,6 +20,8 @@ import org.snakeyaml.engine.v1.api.ConstructNode;
 import org.snakeyaml.engine.v1.common.Anchor;
 import org.snakeyaml.engine.v1.exceptions.Mark;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,6 +43,7 @@ public abstract class Node {
     private boolean recursive;
     private Optional<ConstructNode> construct;
     private Optional<Anchor> anchor;
+    private Map<String, Object> properties;
 
     /**
      * true when the tag is assigned by the resolver
@@ -62,6 +65,7 @@ public abstract class Node {
         this.resolved = true;
         this.construct = Optional.empty();
         this.anchor = Optional.empty();
+        this.properties = null;
     }
 
     /**
@@ -131,19 +135,65 @@ public abstract class Node {
         return super.hashCode();
     }
 
+    /**
+     * Add possibility to define a custom way to construct the Java instance for this Node
+     * TODO do we need it ?
+     * @return custom ConstructNode if it was specified
+     */
     public Optional<ConstructNode> getConstruct() {
         return construct;
     }
 
+    /**
+     * Add possibility to define a custom way to construct the Java instance for this Node
+     * TODO do we need it ?
+     * @param construct - the custom way to create a Java instance for this Node
+     */
     public void setConstruct(ConstructNode construct) {
         this.construct = Optional.of(construct);
     }
 
+    /**
+     * Get the anchor if it was defined for this Node
+     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
+     * @return the Anchor if available
+     */
     public Optional<Anchor> getAnchor() {
         return anchor;
     }
 
+    /**
+     * Set the anchor for this Node
+     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
+     * @param anchor - the Anchor for this Node
+     */
     public void setAnchor(Optional<Anchor> anchor) {
         this.anchor = anchor;
+    }
+
+    /**
+     * Define a custom runtime property. It is not used by Engine but may be used by other tools.
+     * @param key - the key for the custom property
+     * @param value - the value for the custom property
+     * @return the previous value for the provided key if it was defined
+     */
+    public Object setProperty(String key, Object value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        return properties.put(key, value);
+    }
+
+    /**
+     * Get the custom runtime property.
+     * @param key - the key of the runtime property
+     * @return the value if it was specified
+     */
+    public Object getProperty(String key) {
+        if (properties == null) {
+            return null;
+        } else {
+            return properties.get(key);
+        }
     }
 }

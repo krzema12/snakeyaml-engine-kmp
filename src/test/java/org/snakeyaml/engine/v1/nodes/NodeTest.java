@@ -19,8 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class NodeTest {
@@ -37,5 +36,13 @@ class NodeTest {
     void equalsToItself(TestInfo testInfo) {
         Node node = new ScalarNode(org.snakeyaml.engine.v1.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
         assertTrue(node.equals(node));
+    }
+
+    @Test
+    void properties(TestInfo testInfo) {
+        Node node = new ScalarNode(org.snakeyaml.engine.v1.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
+        assertNull(node.getProperty("p"));
+        assertNull(node.setProperty("p", "value"));
+        assertEquals("value", node.getProperty("p"));
     }
 }

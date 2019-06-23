@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Add support for the Beans project">
+            <action dev="asomov" type="update">
+                Deprecate using ConstructNode in the Node (2019-06-23)
+            </action>
             <action dev="asomov" type="add">
                 Add custom runtime properties to Node to support Engine (2019-06-20)
             </action>

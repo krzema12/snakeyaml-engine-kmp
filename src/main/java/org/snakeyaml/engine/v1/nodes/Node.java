@@ -139,7 +139,9 @@ public abstract class Node {
      * Add possibility to define a custom way to construct the Java instance for this Node
      * TODO do we need it ?
      * @return custom ConstructNode if it was specified
+     * @deprecated it will removed in the future
      */
+    @Deprecated
     public Optional<ConstructNode> getConstruct() {
         return construct;
     }
@@ -148,7 +150,9 @@ public abstract class Node {
      * Add possibility to define a custom way to construct the Java instance for this Node
      * TODO do we need it ?
      * @param construct - the custom way to create a Java instance for this Node
+     * @deprecated it will removed in the future
      */
+    @Deprecated
     public void setConstruct(ConstructNode construct) {
         this.construct = Optional.of(construct);
     }

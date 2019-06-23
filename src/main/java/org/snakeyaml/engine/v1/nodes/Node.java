@@ -136,28 +136,6 @@ public abstract class Node {
     }
 
     /**
-     * Add possibility to define a custom way to construct the Java instance for this Node
-     * TODO do we need it ?
-     * @return custom ConstructNode if it was specified
-     * @deprecated it will removed in the future
-     */
-    @Deprecated
-    public Optional<ConstructNode> getConstruct() {
-        return construct;
-    }
-
-    /**
-     * Add possibility to define a custom way to construct the Java instance for this Node
-     * TODO do we need it ?
-     * @param construct - the custom way to create a Java instance for this Node
-     * @deprecated it will removed in the future
-     */
-    @Deprecated
-    public void setConstruct(ConstructNode construct) {
-        this.construct = Optional.of(construct);
-    }
-
-    /**
      * Get the anchor if it was defined for this Node
      * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
      * @return the Anchor if available

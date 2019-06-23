@@ -56,7 +56,6 @@ public abstract class BaseConstructor {
             ConstructNode construct = tagConstructors.get(Tag.NULL);
             return construct.construct(optionalNode.orElse(null));
         } else {
-            settings.getRootConstructNode().ifPresent(constructNode -> optionalNode.get().setConstruct(constructNode));
             return construct(optionalNode.get());
         }
     }
@@ -140,14 +139,10 @@ public abstract class BaseConstructor {
      * @return {@link ConstructNode} implementation for the specified node
      */
     protected ConstructNode getConstructor(Node node) {
-        if (node.getConstruct().isPresent()) {
-            return node.getConstruct().get();
+        if (settings.getTagConstructors().containsKey(node.getTag())) {
+            return settings.getTagConstructors().get(node.getTag());
         } else {
-            if (settings.getTagConstructors().containsKey(node.getTag())) {
-                return settings.getTagConstructors().get(node.getTag());
-            } else {
-                return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
-            }
+            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
         }
     }
 

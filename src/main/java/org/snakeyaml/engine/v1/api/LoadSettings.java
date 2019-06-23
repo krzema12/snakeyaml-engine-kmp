@@ -31,7 +31,6 @@ import java.util.function.Function;
  */
 public final class LoadSettings {
     private String label;
-    private Optional<ConstructNode> rootConstructNode;
     private Map<Tag, ConstructNode> tagConstructors;
     private ScalarResolver scalarResolver;
     private Function<Integer, List> defaultList;
@@ -43,13 +42,12 @@ public final class LoadSettings {
     private boolean allowRecursiveKeys;
     private boolean useMarks;
 
-    LoadSettings(String label, Optional<ConstructNode> rootConstructNode, Map<Tag, ConstructNode> tagConstructors,
+    LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
                  ScalarResolver scalarResolver, Function<Integer, List> defaultList,
                  Function<Integer, Set> defaultSet, Function<Integer, Map> defaultMap,
                  Function<SpecVersion, SpecVersion> versionFunction, Integer bufferSize,
                  boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks) {
         this.label = label;
-        this.rootConstructNode = rootConstructNode;
         this.tagConstructors = tagConstructors;
         this.scalarResolver = scalarResolver;
         this.defaultList = defaultList;
@@ -68,10 +66,6 @@ public final class LoadSettings {
 
     public String getLabel() {
         return label;
-    }
-
-    public Optional<ConstructNode> getRootConstructNode() {
-        return rootConstructNode;
     }
 
     public Map<Tag, ConstructNode> getTagConstructors() {

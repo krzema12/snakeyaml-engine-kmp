@@ -29,7 +29,6 @@ import java.util.function.Function;
  */
 public final class LoadSettingsBuilder {
     private String label;
-    private Optional<ConstructNode> rootConstructNode;
     private Map<Tag, ConstructNode> tagConstructors;
     private ScalarResolver scalarResolver;
     private Function<Integer, List> defaultList;
@@ -48,7 +47,6 @@ public final class LoadSettingsBuilder {
     @Deprecated
     public LoadSettingsBuilder() {
         this.label = "reader";
-        this.rootConstructNode = Optional.empty();
         this.tagConstructors = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();
         this.defaultList = (initSize) -> new ArrayList(initSize);
@@ -72,17 +70,6 @@ public final class LoadSettingsBuilder {
     public LoadSettingsBuilder setLabel(String label) {
         Objects.requireNonNull(label, "label cannot be null");
         this.label = label;
-        return this;
-    }
-
-    /**
-     * Provide the factory to create Nodes.
-     * @param rootConstructNode - provided factory to create the root Node
-     * @return the builder with the provided value
-     */
-    public LoadSettingsBuilder setRootConstructNode(Optional<ConstructNode> rootConstructNode) {
-        Objects.requireNonNull(rootConstructNode, "rootConstructNode cannot be null");
-        this.rootConstructNode = rootConstructNode;
         return this;
     }
 
@@ -206,7 +193,7 @@ public final class LoadSettingsBuilder {
      * @return immutable LoadSettings
      */
     public LoadSettings build() {
-        return new LoadSettings(label, rootConstructNode, tagConstructors,
+        return new LoadSettings(label, tagConstructors,
                 scalarResolver, defaultList,
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,

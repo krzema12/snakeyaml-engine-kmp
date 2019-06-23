@@ -7,6 +7,9 @@
     <body>
         <release version="2.0" date="in Mercurial" description="Add support for the Beans project">
             <action dev="asomov" type="remove">
+                Refactor the way the getDefaultConstruct() is used (2019-06-23)
+            </action>
+            <action dev="asomov" type="remove">
                 Remove optional ConstructNode as the root factory method (2019-06-23)
             </action>
             <action dev="asomov" type="add">

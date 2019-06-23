@@ -157,6 +157,12 @@ public class StandardConstructor extends BaseConstructor {
         return values;
     }
 
+    /**
+     * Provide ConstructNode when no other could be found for the Node's Tag.
+     * (neither in setting nor in this.tagConstructors)
+     * @param node - the Node instance with the unexpected Tag
+     * @return ConstructNode which can either create an instance of fail
+     */
     @Override
     ConstructNode getDefaultConstruct(Node node) {
         return new ConstructUndefined();
@@ -177,7 +183,7 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlNull implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            if (node != null ) constructScalar((ScalarNode) node);
+            if (node != null) constructScalar((ScalarNode) node);
             return null;
         }
     }
@@ -292,7 +298,8 @@ public class StandardConstructor extends BaseConstructor {
         public Object construct(Node node) {
             // Ignore white spaces for base64 encoded scalar
             String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
-            return Base64.getDecoder().decode(noWhiteSpaces);        }
+            return Base64.getDecoder().decode(noWhiteSpaces);
+        }
     }
 
     public class ConstructUuidClass implements ConstructNode {

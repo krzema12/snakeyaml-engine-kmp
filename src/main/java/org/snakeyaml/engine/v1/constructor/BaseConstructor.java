@@ -139,10 +139,15 @@ public abstract class BaseConstructor {
      * @return {@link ConstructNode} implementation for the specified node
      */
     protected ConstructNode getConstructor(Node node) {
-        if (settings.getTagConstructors().containsKey(node.getTag())) {
-            return settings.getTagConstructors().get(node.getTag());
+        Tag tag = node.getTag();
+        if (settings.getTagConstructors().containsKey(tag)) {
+            return settings.getTagConstructors().get(tag);
         } else {
-            return tagConstructors.getOrDefault(node.getTag(), getDefaultConstruct(node));
+            if (tagConstructors.containsKey(tag)) {
+                return tagConstructors.get(tag);
+            } else {
+                return getDefaultConstruct(node);
+            }
         }
     }
 

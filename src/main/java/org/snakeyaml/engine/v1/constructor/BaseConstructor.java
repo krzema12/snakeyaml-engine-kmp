@@ -151,6 +151,12 @@ public abstract class BaseConstructor {
         }
     }
 
+    /**
+     * Provide ConstructNode when no other could be found for the Node's Tag.
+     * (neither in setting nor in this.tagConstructors)
+     * @param node - the Node instance with the unexpected Tag
+     * @return ConstructNode which can either create an instance of fail
+     */
     abstract ConstructNode getDefaultConstruct(Node node);
 
     protected String constructScalar(ScalarNode node) {

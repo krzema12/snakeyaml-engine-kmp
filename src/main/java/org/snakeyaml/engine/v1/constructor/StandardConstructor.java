@@ -158,10 +158,9 @@ public class StandardConstructor extends BaseConstructor {
     }
 
     /**
-     * Provide ConstructNode when no other could be found for the Node's Tag.
-     * (neither in setting nor in this.tagConstructors)
-     * @param node - the Node instance with the unexpected Tag
-     * @return ConstructNode which can either create an instance of fail
+     * Throw an exception when no ConstructNode could be found for the Node's Tag.
+     * @param node - the Node instance with the unexpected Tag (ignored)
+     * @throws ConstructorException
      */
     @Override
     ConstructNode getDefaultConstruct(Node node) {

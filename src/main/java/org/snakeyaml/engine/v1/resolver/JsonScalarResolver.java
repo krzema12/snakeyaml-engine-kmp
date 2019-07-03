@@ -36,7 +36,6 @@ public class JsonScalarResolver implements ScalarResolver {
     public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
     public static final Pattern FLOAT = Pattern.compile("^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)$");
     public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[0-9][0-9]*))$");
-    public static final Pattern MERGE = Pattern.compile("^(?:<<)$");
     public static final Pattern NULL = Pattern.compile("^(?:null)$");
     public static final Pattern EMPTY = Pattern.compile("^$");
 
@@ -78,7 +77,6 @@ public class JsonScalarResolver implements ScalarResolver {
          */
         addImplicitResolver(Tag.INT, INT, "-0123456789");
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
-        addImplicitResolver(Tag.MERGE, MERGE, "<");
         addImplicitResolver(Tag.NULL, NULL, "n\u0000");
     }
 

@@ -25,8 +25,8 @@ import org.snakeyaml.engine.v1.nodes.Node;
 import org.snakeyaml.engine.v1.nodes.Tag;
 import org.snakeyaml.engine.v1.scanner.StreamReader;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -59,13 +59,13 @@ public class StandardRepresenter extends BaseRepresenter {
         representers.put(char[].class, primitiveArray);
         representers.put(boolean[].class, primitiveArray);
 
-        this.multiRepresenters.put(Number.class, new RepresentNumber());
-        this.multiRepresenters.put(List.class, new RepresentList());
-        this.multiRepresenters.put(Map.class, new RepresentMap());
-        this.multiRepresenters.put(Set.class, new RepresentSet());
-        this.multiRepresenters.put(Iterator.class, new RepresentIterator());
-        this.multiRepresenters.put(new Object[0].getClass(), new RepresentArray());
-        this.multiRepresenters.put(Enum.class, new RepresentEnum());
+        this.parentClassRepresenters.put(Number.class, new RepresentNumber());
+        this.parentClassRepresenters.put(List.class, new RepresentList());
+        this.parentClassRepresenters.put(Map.class, new RepresentMap());
+        this.parentClassRepresenters.put(Set.class, new RepresentSet());
+        this.parentClassRepresenters.put(Iterator.class, new RepresentIterator());
+        this.parentClassRepresenters.put(new Object[0].getClass(), new RepresentArray());
+        this.parentClassRepresenters.put(Enum.class, new RepresentEnum());
         classTags = new HashMap();
         this.settings = settings;
     }
@@ -94,8 +94,8 @@ public class StandardRepresenter extends BaseRepresenter {
     }
 
     @Override
-    RepresentToNode getDefaultRepresent() {
-        throw new YamlEngineException("Representer is not defined.");
+    RepresentToNode getDefaultRepresentFor(Class clazz) {
+        throw new YamlEngineException("Representer is not defined for " + clazz);
     }
 
     //remove and move to BaseRe
@@ -114,19 +114,15 @@ public class StandardRepresenter extends BaseRepresenter {
             String value = data.toString();
             if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY && !StreamReader.isPrintable(value)) {
                 tag = Tag.BINARY;
-                try {
-                    final byte[] bytes = value.getBytes("UTF-8");
-                    // sometimes above will just silently fail - it will return incomplete data
-                    // it happens when String has invalid code points
-                    // (for example half surrogate character without other half)
-                    final String checkValue = new String(bytes, "UTF-8");
-                    if (!checkValue.equals(value)) {
-                        throw new YamlEngineException("invalid string value has occurred");
-                    }
-                    value = Base64.getEncoder().encodeToString(bytes);
-                } catch (UnsupportedEncodingException e) {
-                    throw new YamlEngineException(e);
+                final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+                // sometimes above will just silently fail - it will return incomplete data
+                // it happens when String has invalid code points
+                // (for example half surrogate character without other half)
+                final String checkValue = new String(bytes, StandardCharsets.UTF_8);
+                if (!checkValue.equals(value)) {
+                    throw new YamlEngineException("invalid string value has occurred");
                 }
+                value = Base64.getEncoder().encodeToString(bytes);
                 style = ScalarStyle.LITERAL;
             }
             // if no other scalar style is explicitly set, use literal style for

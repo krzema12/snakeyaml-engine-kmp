@@ -26,6 +26,9 @@ import java.util.*;
  * Represent basic YAML structures: scalar, sequence, mapping
  */
 public abstract class BaseRepresenter {
+    /**
+     * Keep representers which must match the class exactly
+     */
     protected final Map<Class<?>, RepresentToNode> representers = new HashMap();
     /**
      * in Java 'null' is not a type. So we have to keep the null representer
@@ -34,7 +37,10 @@ public abstract class BaseRepresenter {
      */
     protected RepresentToNode nullRepresenter;
     // the order is important (map can be also a sequence of key-values)
-    protected final Map<Class<?>, RepresentToNode> multiRepresenters = new LinkedHashMap();
+    /**
+     * Keep representers which match a parent of the class to be represented
+     */
+    protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap();
     protected ScalarStyle defaultScalarStyle = ScalarStyle.PLAIN;
     protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
     protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
@@ -43,8 +49,7 @@ public abstract class BaseRepresenter {
         }
     };
 
-    abstract RepresentToNode getDefaultRepresent();
-
+    abstract RepresentToNode getDefaultRepresentFor(Class clazz);
 
     protected Object objectToRepresent;
 
@@ -55,6 +60,23 @@ public abstract class BaseRepresenter {
         return node;
     }
 
+    protected RepresentToNode getRepresenter(Object data) {
+        Class<?> clazz = data.getClass();
+        // check the same class
+        if (representers.containsKey(clazz)) {
+            return representers.get(clazz);
+        } else {
+            // check the parents
+            for (Class<?> parentRepresenter : parentClassRepresenters.keySet()) {
+                if (parentRepresenter.isInstance(data)) {
+                    return parentClassRepresenters.get(parentRepresenter);
+                }
+            }
+            // use defaults
+            return getDefaultRepresentFor(clazz);
+        }
+    }
+
     protected final Node representData(Object data) {
         objectToRepresent = data;
         // check for identity
@@ -62,38 +84,13 @@ public abstract class BaseRepresenter {
             Node node = representedObjects.get(objectToRepresent);
             return node;
         }
-        // }
         // check for null first
         if (data == null) {
             Node node = nullRepresenter.representData(null);
             return node;
         }
-        // check the same class
-        Node node;
-        Class<?> clazz = data.getClass();
-        if (representers.containsKey(clazz)) {
-            RepresentToNode representer = representers.get(clazz);
-            node = representer.representData(data);
-        } else {
-            // check the parents
-            for (Class<?> repr : multiRepresenters.keySet()) {
-                if (repr != null && repr.isInstance(data)) {
-                    RepresentToNode representer = multiRepresenters.get(repr);
-                    node = representer.representData(data);
-                    return node;
-                }
-            }
-
-            // check defaults
-            if (multiRepresenters.containsKey(null)) {
-                RepresentToNode representer = multiRepresenters.get(null);
-                node = representer.representData(data);
-            } else {
-                RepresentToNode representer = getDefaultRepresent();
-                node = representer.representData(data);
-            }
-        }
-        return node;
+        RepresentToNode representer = getRepresenter(data);
+        return representer.representData(data);
     }
 
     protected Node representScalar(Tag tag, String value, ScalarStyle style) {

@@ -36,7 +36,7 @@ class StandardRepresenterTest {
     void representUnknownClass(TestInfo testInfo) {
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 standardRepresenter.represent(TreeRangeSet.create()));
-        assertEquals("Representer is not defined.", exception.getMessage());
+        assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet", exception.getMessage());
     }
 
     @Test
@@ -46,5 +46,4 @@ class StandardRepresenterTest {
         assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v1.representer.FormatEnum",
                 node.getTag().getValue());
     }
-
 }

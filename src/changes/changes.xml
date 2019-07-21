@@ -5,7 +5,10 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="2.0" date="in Mercurial" description="Add support for the Beans project">
+        <release version="1.1" date="in Mercurial" description="Add support for the Beans project">
+            <action dev="asomov" type="update">
+                Refactor BaseRepresenter to introduce protected method getRepresenter() (2019-07-21)
+            </action>
             <action dev="asomov" type="remove">
                 Simplify parsing integers and floats removing YAML 1.1 types (2019-07-21)
             </action>

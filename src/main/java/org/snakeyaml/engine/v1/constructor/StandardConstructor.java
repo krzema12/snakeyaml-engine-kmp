@@ -159,6 +159,7 @@ public class StandardConstructor extends BaseConstructor {
 
     /**
      * Throw an exception when no ConstructNode could be found for the Node's Tag.
+     *
      * @param node - the Node instance with the unexpected Tag (ignored)
      * @throws ConstructorException
      */
@@ -205,55 +206,23 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlInt implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            String value = constructScalar((ScalarNode) node).replaceAll("_", "");
-            int sign = +1;
-            char first = value.charAt(0);
-            if (first == '-') {
-                sign = -1;
-                value = value.substring(1);
-            } else if (first == '+') {
-                value = value.substring(1);
-            }
-            int base = 10;
-            if ("0".equals(value)) {
-                return Integer.valueOf(0);
-            } else if (value.startsWith("0b")) {
-                value = value.substring(2);
-                base = 2;
-            } else if (value.startsWith("0x")) {
-                value = value.substring(2);
-                base = 16;
-            } else if (value.startsWith("0")) {
-                value = value.substring(1);
-                base = 8;
-            } else if (value.indexOf(':') != -1) {
-                String[] digits = value.split(":");
-                int bes = 1;
-                int val = 0;
-                for (int i = 0, j = digits.length; i < j; i++) {
-                    val += Long.parseLong(digits[j - i - 1]) * bes;
-                    bes *= 60;
-                }
-                return createNumber(sign, String.valueOf(val), 10);
-            } else {
-                return createNumber(sign, value, 10);
-            }
-            return createNumber(sign, value, base);
+            String value = constructScalar((ScalarNode) node);
+            return createIntNumber(value);
         }
     }
 
-    private Number createNumber(int sign, String number, int radix) {
+    private Number createIntNumber(String number) {
         Number result;
-        if (sign < 0) {
-            number = "-" + number;
-        }
         try {
-            result = Integer.valueOf(number, radix);
+            //first try integer
+            result = Integer.valueOf(number);
         } catch (NumberFormatException e) {
             try {
-                result = Long.valueOf(number, radix);
+                //then Long
+                result = Long.valueOf(number);
             } catch (NumberFormatException e1) {
-                result = new BigInteger(number, radix);
+                //and BigInteger as the last resource
+                result = new BigInteger(number);
             }
         }
         return result;
@@ -262,33 +231,8 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlFloat implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            String value = constructScalar((ScalarNode) node).toString().replaceAll("_", "");
-            int sign = +1;
-            char first = value.charAt(0);
-            if (first == '-') {
-                sign = -1;
-                value = value.substring(1);
-            } else if (first == '+') {
-                value = value.substring(1);
-            }
-            String valLower = value.toLowerCase();
-            if (".inf".equals(valLower)) {
-                return Double.valueOf(sign == -1 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
-            } else if (".nan".equals(valLower)) {
-                return Double.valueOf(Double.NaN);
-            } else if (value.indexOf(':') != -1) {
-                String[] digits = value.split(":");
-                int bes = 1;
-                double val = 0.0;
-                for (int i = 0, j = digits.length; i < j; i++) {
-                    val += Double.parseDouble(digits[j - i - 1]) * bes;
-                    bes *= 60;
-                }
-                return Double.valueOf(sign * val);
-            } else {
-                Double d = Double.valueOf(value);
-                return Double.valueOf(d.doubleValue() * sign);
-            }
+            String value = constructScalar((ScalarNode) node);
+            return Double.valueOf(value);
         }
     }
 

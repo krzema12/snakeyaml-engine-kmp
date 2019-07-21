@@ -93,11 +93,6 @@ public class StandardRepresenter extends BaseRepresenter {
         return classTags.put(clazz, tag);
     }
 
-    @Override
-    RepresentToNode getDefaultRepresentFor(Class clazz) {
-        throw new YamlEngineException("Representer is not defined for " + clazz);
-    }
-
     //remove and move to BaseRe
     protected class RepresentNull implements RepresentToNode {
         public Node representData(Object data) {

@@ -18,6 +18,7 @@ package org.snakeyaml.engine.v1.representer;
 import org.snakeyaml.engine.v1.api.RepresentToNode;
 import org.snakeyaml.engine.v1.common.FlowStyle;
 import org.snakeyaml.engine.v1.common.ScalarStyle;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.*;
 
 import java.util.*;
@@ -49,10 +50,13 @@ public abstract class BaseRepresenter {
         }
     };
 
-    abstract RepresentToNode getDefaultRepresentFor(Class clazz);
-
     protected Object objectToRepresent;
 
+    /**
+     * Represent the provided Java instance to a Node
+     * @param data - Java instance to be represented
+     * @return The Node to be serialized
+     */
     public Node represent(Object data) {
         Node node = representData(data);
         representedObjects.clear();
@@ -60,6 +64,12 @@ public abstract class BaseRepresenter {
         return node;
     }
 
+    /**
+     * Find the representer which is suitable to represent the internal structure of the provided instance to
+     * a Node
+     * @param data - the data to be serialized
+     * @return RepresentToNode to call to create a Node
+     */
     protected RepresentToNode getRepresenter(Object data) {
         Class<?> clazz = data.getClass();
         // check the same class
@@ -72,8 +82,7 @@ public abstract class BaseRepresenter {
                     return parentClassRepresenters.get(parentRepresenter);
                 }
             }
-            // use defaults
-            return getDefaultRepresentFor(clazz);
+            throw new YamlEngineException("Representer is not defined for " + clazz);
         }
     }
 

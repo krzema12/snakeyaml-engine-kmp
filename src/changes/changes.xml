@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="1.1" date="in Mercurial" description="Add support for the Beans project">
+            <action dev="asomov" type="remove">
+                Remove unused abstract method from BaseRepresenter (2019-07-21)
+            </action>
             <action dev="asomov" type="update">
                 Refactor BaseRepresenter to introduce protected method getRepresenter() (2019-07-21)
             </action>

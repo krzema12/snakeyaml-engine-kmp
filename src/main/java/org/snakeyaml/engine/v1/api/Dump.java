@@ -31,8 +31,8 @@ import java.util.Objects;
  */
 public class Dump {
 
-    private DumpSettings settings;
-    private BaseRepresenter representer;
+    protected DumpSettings settings;
+    protected BaseRepresenter representer;
 
     /**
      * Create instance

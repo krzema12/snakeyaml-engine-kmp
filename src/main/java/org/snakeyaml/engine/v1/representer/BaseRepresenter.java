@@ -54,6 +54,7 @@ public abstract class BaseRepresenter {
 
     /**
      * Represent the provided Java instance to a Node
+     *
      * @param data - Java instance to be represented
      * @return The Node to be serialized
      */
@@ -67,22 +68,23 @@ public abstract class BaseRepresenter {
     /**
      * Find the representer which is suitable to represent the internal structure of the provided instance to
      * a Node
+     *
      * @param data - the data to be serialized
      * @return RepresentToNode to call to create a Node
      */
-    protected RepresentToNode getRepresenter(Object data) {
+    protected Optional<RepresentToNode> findRepresenterFor(Object data) {
         Class<?> clazz = data.getClass();
         // check the same class
         if (representers.containsKey(clazz)) {
-            return representers.get(clazz);
+            return Optional.of(representers.get(clazz));
         } else {
             // check the parents
             for (Class<?> parentRepresenter : parentClassRepresenters.keySet()) {
                 if (parentRepresenter.isInstance(data)) {
-                    return parentClassRepresenters.get(parentRepresenter);
+                    return Optional.of(parentClassRepresenters.get(parentRepresenter));
                 }
             }
-            throw new YamlEngineException("Representer is not defined for " + clazz);
+            return Optional.empty();
         }
     }
 
@@ -98,7 +100,8 @@ public abstract class BaseRepresenter {
             Node node = nullRepresenter.representData(null);
             return node;
         }
-        RepresentToNode representer = getRepresenter(data);
+        RepresentToNode representer = findRepresenterFor(data)
+                .orElseThrow(() -> new YamlEngineException("Representer is not defined for " + data.getClass()));
         return representer.representData(data);
     }
 

@@ -16,8 +16,8 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import org.snakeyaml.engine.v1.events.*;
-import org.snakeyaml.engine.v1.nodes.Tag;
+import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.List;
 

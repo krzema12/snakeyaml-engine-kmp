@@ -18,10 +18,10 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.FlowStyle;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.events.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.events.*;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -123,7 +123,7 @@ class EventRepresentationTest {
     void testMappingStartEvent(TestInfo testInfo) {
         invalid(new MappingStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
                 "+MAP");
-        valid(new MappingStartEvent(Optional.empty(), Optional.of(org.snakeyaml.engine.v1.nodes.Tag.MAP.getValue()), false, FlowStyle.FLOW),
+        valid(new MappingStartEvent(Optional.empty(), Optional.of(org.snakeyaml.engine.v2.nodes.Tag.MAP.getValue()), false, FlowStyle.FLOW),
                 "+MAP");
         valid(new MappingStartEvent(Optional.empty(), Optional.empty(), false, FlowStyle.FLOW),
                 "+MAP");

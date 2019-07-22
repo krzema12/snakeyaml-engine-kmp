@@ -15,7 +15,7 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 public class CanonicalException extends YamlEngineException {
 

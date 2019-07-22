@@ -19,9 +19,9 @@ import com.google.common.collect.Streams;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.lowlevel.Parse;
-import org.snakeyaml.engine.v1.events.Event;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.api.lowlevel.Parse;
+import org.snakeyaml.engine.v2.events.Event;
 
 import java.util.List;
 import java.util.stream.Collectors;

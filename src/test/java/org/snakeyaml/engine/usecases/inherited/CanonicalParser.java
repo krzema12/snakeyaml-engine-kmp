@@ -15,14 +15,14 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.common.FlowStyle;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
-import org.snakeyaml.engine.v1.common.SpecVersion;
-import org.snakeyaml.engine.v1.events.*;
-import org.snakeyaml.engine.v1.nodes.Tag;
-import org.snakeyaml.engine.v1.parser.Parser;
-import org.snakeyaml.engine.v1.tokens.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.parser.Parser;
+import org.snakeyaml.engine.v2.tokens.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

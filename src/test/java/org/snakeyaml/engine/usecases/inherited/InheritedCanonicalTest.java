@@ -17,8 +17,8 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.events.Event;
-import org.snakeyaml.engine.v1.tokens.Token;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -17,11 +17,11 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v1.exceptions.ReaderException;
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v1.scanner.StreamReader;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
+import org.snakeyaml.engine.v2.exceptions.ReaderException;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v2.scanner.StreamReader;
 
 import java.io.File;
 import java.io.FileInputStream;

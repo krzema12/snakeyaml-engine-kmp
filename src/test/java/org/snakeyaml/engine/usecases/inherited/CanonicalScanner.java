@@ -15,11 +15,11 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.snakeyaml.engine.v1.common.Anchor;
-import org.snakeyaml.engine.v1.exceptions.Mark;
-import org.snakeyaml.engine.v1.nodes.Tag;
-import org.snakeyaml.engine.v1.scanner.Scanner;
-import org.snakeyaml.engine.v1.tokens.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.scanner.Scanner;
+import org.snakeyaml.engine.v2.tokens.*;
 
 import java.util.*;
 

@@ -18,8 +18,8 @@ package org.snakeyaml.engine.core_schema;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.math.BigInteger;
 

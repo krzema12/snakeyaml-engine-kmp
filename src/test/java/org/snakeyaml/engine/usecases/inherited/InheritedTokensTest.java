@@ -17,14 +17,14 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v1.scanner.Scanner;
-import org.snakeyaml.engine.v1.scanner.ScannerImpl;
-import org.snakeyaml.engine.v1.scanner.StreamReader;
-import org.snakeyaml.engine.v1.tokens.StreamEndToken;
-import org.snakeyaml.engine.v1.tokens.StreamStartToken;
-import org.snakeyaml.engine.v1.tokens.Token;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
+import org.snakeyaml.engine.v2.scanner.Scanner;
+import org.snakeyaml.engine.v2.scanner.ScannerImpl;
+import org.snakeyaml.engine.v2.scanner.StreamReader;
+import org.snakeyaml.engine.v2.tokens.StreamEndToken;
+import org.snakeyaml.engine.v2.tokens.StreamStartToken;
+import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.io.*;
 import java.util.ArrayList;

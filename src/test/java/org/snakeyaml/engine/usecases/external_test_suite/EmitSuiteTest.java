@@ -18,10 +18,10 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.snakeyaml.engine.v1.api.DumpSettings;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.lowlevel.Compose;
-import org.snakeyaml.engine.v1.api.lowlevel.Present;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.api.lowlevel.Compose;
+import org.snakeyaml.engine.v2.api.lowlevel.Present;
 
 import java.util.List;
 import java.util.stream.Collectors;

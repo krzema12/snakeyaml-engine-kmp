@@ -157,17 +157,6 @@ public class StandardConstructor extends BaseConstructor {
         return values;
     }
 
-    /**
-     * Throw an exception when no ConstructNode could be found for the Node's Tag.
-     *
-     * @param node - the Node instance with the unexpected Tag (ignored)
-     * @throws ConstructorException
-     */
-    @Override
-    ConstructNode getDefaultConstruct(Node node) {
-        return new ConstructUndefined();
-    }
-
     @Override
     protected void constructMapping2ndStep(MappingNode node, Map<Object, Object> mapping) {
         flattenMapping(node);
@@ -376,14 +365,6 @@ public class StandardConstructor extends BaseConstructor {
             } else {
                 throw new YamlEngineException("Unexpected recursive mapping structure. Node: " + node);
             }
-        }
-    }
-
-    public static final class ConstructUndefined implements ConstructNode {
-        @Override
-        public Object construct(Node node) {
-            throw new ConstructorException(null, Optional.empty(),
-                    "could not determine a constructor for the tag " + node.getTag(), node.getStartMark());
         }
     }
 }

@@ -7,6 +7,9 @@
     <body>
         <release version="1.1" date="in Mercurial" description="Add support for the Beans project">
             <action dev="asomov" type="update">
+                Refactor BaseConstructor to use method findConstructorFor() (2019-07-22)
+            </action>
+            <action dev="asomov" type="update">
                 Dump: use protected fields to give access to them in the beans project (2019-07-22)
             </action>
             <action dev="asomov" type="remove">

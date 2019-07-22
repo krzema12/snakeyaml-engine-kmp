@@ -120,7 +120,8 @@ public abstract class BaseConstructor {
                     node.getStartMark());
         }
         recursiveObjects.add(node);
-        ConstructNode constructor = getConstructor(node);
+        ConstructNode constructor = findConstructorFor(node).orElseThrow(() -> new ConstructorException(null, Optional.empty(),
+                "could not determine a constructor for the tag " + node.getTag(), node.getStartMark()));
         Object data = (constructedObjects.containsKey(node)) ? constructedObjects.get(node)
                 : constructor.construct(node);
 
@@ -138,26 +139,20 @@ public abstract class BaseConstructor {
      * @param node {@link Node} to construct an instance from
      * @return {@link ConstructNode} implementation for the specified node
      */
-    protected ConstructNode getConstructor(Node node) {
+    protected Optional<ConstructNode> findConstructorFor(Node node) {
         Tag tag = node.getTag();
         if (settings.getTagConstructors().containsKey(tag)) {
-            return settings.getTagConstructors().get(tag);
+            return Optional.of(settings.getTagConstructors().get(tag));
         } else {
             if (tagConstructors.containsKey(tag)) {
-                return tagConstructors.get(tag);
+                return Optional.of(tagConstructors.get(tag));
             } else {
-                return getDefaultConstruct(node);
+                return Optional.empty();
             }
         }
     }
 
-    /**
-     * Provide ConstructNode when no other could be found for the Node's Tag.
-     * (neither in setting nor in this.tagConstructors)
-     * @param node - the Node instance with the unexpected Tag
-     * @return ConstructNode which can either create an instance of fail
-     */
-    abstract ConstructNode getDefaultConstruct(Node node);
+
 
     protected String constructScalar(ScalarNode node) {
         return node.getValue();

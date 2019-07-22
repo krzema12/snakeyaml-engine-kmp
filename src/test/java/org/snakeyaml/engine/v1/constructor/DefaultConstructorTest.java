@@ -24,6 +24,8 @@ import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v1.nodes.Node;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
@@ -57,7 +59,7 @@ class MagicNullConstructor extends StandardConstructor {
     }
 
     @Override
-    ConstructNode getDefaultConstruct(Node node) {
-        return new ConstructYamlNull();
+    public Optional<ConstructNode> findConstructorFor(Node node) {
+        return Optional.of(new ConstructYamlNull());
     }
 }

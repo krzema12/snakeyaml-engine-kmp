@@ -22,7 +22,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class DumpTest {
@@ -98,5 +103,25 @@ class DumpTest {
                 "--- null\n" +
                 "...\n" +
                 "--- true\n", output);
+    }
+
+    @Test
+    @DisplayName("Dump to File")
+    void dumpToFile(TestInfo testInfo) throws IOException {
+        DumpSettings settings = DumpSettings.builder().build();
+        Dump dump = new Dump(settings);
+        File file = new File("target/temp.yaml");
+        assertFalse(file.exists());
+        file.createNewFile();
+        StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file),
+                StandardCharsets.UTF_8) {
+            @Override
+            public void processIOException(IOException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        dump.dump(ImmutableMap.of("x", 1, "y", 2, "z", 3), writer);
+        assertTrue(file.exists());
+        file.delete();
     }
 }

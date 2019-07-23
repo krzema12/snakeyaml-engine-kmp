@@ -111,6 +111,7 @@ class DumpTest {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         File file = new File("target/temp.yaml");
+        file.delete();
         assertFalse(file.exists());
         file.createNewFile();
         StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file),
@@ -122,6 +123,6 @@ class DumpTest {
         };
         dump.dump(ImmutableMap.of("x", 1, "y", 2, "z", 3), writer);
         assertTrue(file.exists());
-        file.delete();
+        file.delete();//on Windows the file is not deleted
     }
 }

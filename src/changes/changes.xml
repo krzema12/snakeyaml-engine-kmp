@@ -28,10 +28,10 @@
                 Remove optional ConstructNode as the root factory method (2019-06-23)
             </action>
             <action dev="asomov" type="add">
-                Add custom runtime properties to Node to support Engine (2019-06-20)
+                Add custom runtime properties to Node to support the Beans project (2019-06-20)
             </action>
             <action dev="asomov" type="add">
-                Add protected methods to create Composer to support Engine (2019-06-16)
+                Add protected methods to create Composer to support the Beans project (2019-06-16)
             </action>
             <action dev="asomov" type="remove">
                 Remove redundant LoadSettings from Load.createComposer() method (2019-06-16)

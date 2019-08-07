@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.v2.nodes;
 
 
-import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -41,7 +40,6 @@ public abstract class Node {
     private Optional<Mark> startMark;
     protected Optional<Mark> endMark;
     private boolean recursive;
-    private Optional<ConstructNode> construct;
     private Optional<Anchor> anchor;
     private Map<String, Object> properties;
 
@@ -63,7 +61,6 @@ public abstract class Node {
         this.endMark = endMark;
         this.recursive = false;
         this.resolved = true;
-        this.construct = Optional.empty();
         this.anchor = Optional.empty();
         this.properties = null;
     }
@@ -137,8 +134,9 @@ public abstract class Node {
 
     /**
      * Get the anchor if it was defined for this Node
-     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
+     *
      * @return the Anchor if available
+     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
      */
     public Optional<Anchor> getAnchor() {
         return anchor;
@@ -146,8 +144,9 @@ public abstract class Node {
 
     /**
      * Set the anchor for this Node
-     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
+     *
      * @param anchor - the Anchor for this Node
+     * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
      */
     public void setAnchor(Optional<Anchor> anchor) {
         this.anchor = anchor;
@@ -155,7 +154,8 @@ public abstract class Node {
 
     /**
      * Define a custom runtime property. It is not used by Engine but may be used by other tools.
-     * @param key - the key for the custom property
+     *
+     * @param key   - the key for the custom property
      * @param value - the value for the custom property
      * @return the previous value for the provided key if it was defined
      */
@@ -168,6 +168,7 @@ public abstract class Node {
 
     /**
      * Get the custom runtime property.
+     *
      * @param key - the key of the runtime property
      * @return the value if it was specified
      */

@@ -42,10 +42,8 @@ public final class LoadSettingsBuilder {
 
     /**
      * Create builder
-     * @deprecated use LoadSettings.builder() instead
      */
-    @Deprecated
-    public LoadSettingsBuilder() {
+    LoadSettingsBuilder() {
         this.label = "reader";
         this.tagConstructors = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();

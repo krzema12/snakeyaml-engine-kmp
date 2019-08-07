@@ -62,10 +62,8 @@ public final class DumpSettingsBuilder {
 
     /**
      * Create builder
-     * @deprecated use DumpSettings.builder() instead
      */
-    @Deprecated
-    public DumpSettingsBuilder() {
+    DumpSettingsBuilder() {
         this.explicitRootTag = Optional.empty();
         this.tagDirective = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();

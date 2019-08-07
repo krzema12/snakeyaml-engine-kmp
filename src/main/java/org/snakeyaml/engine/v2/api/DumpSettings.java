@@ -23,6 +23,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,6 +54,8 @@ public final class DumpSettings {
     private boolean splitLines;
     private int maxSimpleKeyLength;
 
+    //general
+    Map<SettingKey, Object> customProperties = new HashMap();
 
     DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
                  AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective, Map<String, String> tagDirective,
@@ -60,7 +63,8 @@ public final class DumpSettings {
                  NonPrintableStyle nonPrintableStyle,
                  //emitter
                  boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
-                 int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines, int maxSimpleKeyLength
+                 int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines, int maxSimpleKeyLength,
+                 Map<SettingKey, Object> customProperties
     ) {
         this.explicitStart = explicitStart;
         this.explicitEnd = explicitEnd;
@@ -161,6 +165,10 @@ public final class DumpSettings {
 
     public NonPrintableStyle getNonPrintableStyle() {
         return nonPrintableStyle;
+    }
+
+    public Object getCustomProperty(SettingKey key) {
+        return customProperties.get(key);
     }
 }
 

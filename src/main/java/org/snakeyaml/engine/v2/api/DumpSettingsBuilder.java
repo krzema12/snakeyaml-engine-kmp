@@ -59,6 +59,8 @@ public final class DumpSettingsBuilder {
     private boolean splitLines;
     private int maxSimpleKeyLength;
 
+    //general
+    Map<SettingKey, Object> customProperties = new HashMap();
 
     /**
      * Create builder
@@ -304,6 +306,11 @@ public final class DumpSettingsBuilder {
         return this;
     }
 
+    public DumpSettingsBuilder setCustomProperty(SettingKey key, Object value) {
+        customProperties.put(key, value);
+        return this;
+    }
+
     /**
      * Create immutable DumpSettings
      * @return DumpSettings with the provided values
@@ -314,7 +321,8 @@ public final class DumpSettingsBuilder {
                 scalarResolver, defaultFlowStyle, defaultScalarStyle, nonPrintableStyle,
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
-                indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength);
+                indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength,
+                customProperties);
     }
 }
 

@@ -19,6 +19,7 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,11 +42,15 @@ public final class LoadSettings {
     private boolean allowRecursiveKeys;
     private boolean useMarks;
 
+    //general
+    Map<SettingKey, Object> customProperties = new HashMap();
+
     LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
                  ScalarResolver scalarResolver, Function<Integer, List> defaultList,
                  Function<Integer, Set> defaultSet, Function<Integer, Map> defaultMap,
                  Function<SpecVersion, SpecVersion> versionFunction, Integer bufferSize,
-                 boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks) {
+                 boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks,
+                 Map<SettingKey, Object> customProperties) {
         this.label = label;
         this.tagConstructors = tagConstructors;
         this.scalarResolver = scalarResolver;
@@ -105,6 +110,10 @@ public final class LoadSettings {
 
     public Function<SpecVersion, SpecVersion> getVersionFunction() {
         return versionFunction;
+    }
+
+    public Object getCustomProperty(SettingKey key) {
+        return customProperties.get(key);
     }
 }
 

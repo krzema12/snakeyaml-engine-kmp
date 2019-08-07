@@ -40,6 +40,9 @@ public final class LoadSettingsBuilder {
     private boolean allowRecursiveKeys;
     private boolean useMarks;
 
+    //general
+    Map<SettingKey, Object> customProperties = new HashMap();
+
     /**
      * Create builder
      */
@@ -186,6 +189,11 @@ public final class LoadSettingsBuilder {
         return this;
     }
 
+    public LoadSettingsBuilder setCustomProperty(SettingKey key, Object value) {
+        customProperties.put(key, value);
+        return this;
+    }
+
     /**
      * Build immutable LoadSettings
      * @return immutable LoadSettings
@@ -195,7 +203,8 @@ public final class LoadSettingsBuilder {
                 scalarResolver, defaultList,
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,
-                allowDuplicateKeys, allowRecursiveKeys, useMarks);
+                allowDuplicateKeys, allowRecursiveKeys, useMarks,
+                customProperties);
     }
 }
 

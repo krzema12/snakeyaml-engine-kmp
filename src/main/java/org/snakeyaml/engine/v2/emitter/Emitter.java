@@ -675,10 +675,10 @@ public final class Emitter implements Emitable {
             if (analysis == null) {
                 analysis = analyzeScalar(((ScalarEvent) event).getValue());
             }
-            length += analysis.scalar.length();
+            length += analysis.getScalar().length();
         }
         return length < maxSimpleKeyLength && (event.isEvent(Event.ID.Alias)
-                || (event.isEvent(Event.ID.Scalar) && !analysis.empty && !analysis.multiline)
+                || (event.isEvent(Event.ID.Scalar) && !analysis.isEmpty() && !analysis.isMultiline())
                 || checkEmptySequence() || checkEmptyMapping());
     }
 
@@ -743,18 +743,18 @@ public final class Emitter implements Emitable {
             return Optional.of(ScalarStyle.DOUBLE_QUOTED);
         }
         if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
-            if (!(simpleKeyContext && (analysis.empty || analysis.multiline))
-                    && ((flowLevel != 0 && analysis.allowFlowPlain) || (flowLevel == 0 && analysis.allowBlockPlain))) {
+            if (!(simpleKeyContext && (analysis.isEmpty() || analysis.isMultiline()))
+                    && ((flowLevel != 0 && analysis.isAllowFlowPlain()) || (flowLevel == 0 && analysis.isAllowBlockPlain()))) {
                 return Optional.empty();
             }
         }
         if (!ev.isPlain() && (ev.getScalarStyle() == ScalarStyle.LITERAL || ev.getScalarStyle() == ScalarStyle.FOLDED)) {
-            if (flowLevel == 0 && !simpleKeyContext && analysis.allowBlock) {
+            if (flowLevel == 0 && !simpleKeyContext && analysis.isAllowBlock()) {
                 return Optional.of(ev.getScalarStyle());
             }
         }
         if (ev.isPlain() || ev.getScalarStyle() == ScalarStyle.SINGLE_QUOTED) {
-            if (analysis.allowSingleQuoted && !(simpleKeyContext && analysis.multiline)) {
+            if (analysis.isAllowSingleQuoted() && !(simpleKeyContext && analysis.isMultiline())) {
                 return Optional.of(ScalarStyle.SINGLE_QUOTED);
             }
         }
@@ -771,20 +771,20 @@ public final class Emitter implements Emitable {
         }
         boolean split = !simpleKeyContext && splitLines;
         if (!scalarStyle.isPresent()) {
-            writePlain(analysis.scalar, split);
+            writePlain(analysis.getScalar(), split);
         } else {
             switch (scalarStyle.get()) {
                 case DOUBLE_QUOTED:
-                    writeDoubleQuoted(analysis.scalar, split);
+                    writeDoubleQuoted(analysis.getScalar(), split);
                     break;
                 case SINGLE_QUOTED:
-                    writeSingleQuoted(analysis.scalar, split);
+                    writeSingleQuoted(analysis.getScalar(), split);
                     break;
                 case FOLDED:
-                    writeFolded(analysis.scalar, split);
+                    writeFolded(analysis.getScalar(), split);
                     break;
                 case LITERAL:
-                    writeLiteral(analysis.scalar);
+                    writeLiteral(analysis.getScalar());
                     break;
                 default:
                     throw new YamlEngineException("Unexpected scalarStyle: " + scalarStyle);

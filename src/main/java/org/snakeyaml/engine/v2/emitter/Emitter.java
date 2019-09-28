@@ -704,7 +704,7 @@ public final class Emitter implements Emitable {
             ScalarEvent ev = (ScalarEvent) event;
             tag = ev.getTag();
             if (!scalarStyle.isPresent()) {
-                scalarStyle = chooseScalarStyle();
+                scalarStyle = chooseScalarStyle(ev);
             }
             if ((!canonical || !tag.isPresent()) && ((!scalarStyle.isPresent() && ev.getImplicit()
                     .canOmitTagInPlainScalar()) || (scalarStyle.isPresent() && ev.getImplicit()
@@ -734,8 +734,7 @@ public final class Emitter implements Emitable {
         preparedTag = null;
     }
 
-    private Optional<ScalarStyle> chooseScalarStyle() {
-        ScalarEvent ev = (ScalarEvent) event;
+    private Optional<ScalarStyle> chooseScalarStyle(ScalarEvent ev) {
         if (analysis == null) {
             analysis = analyzeScalar(ev.getValue());
         }
@@ -767,7 +766,7 @@ public final class Emitter implements Emitable {
             analysis = analyzeScalar(ev.getValue());
         }
         if (!scalarStyle.isPresent()) {
-            scalarStyle = chooseScalarStyle();
+            scalarStyle = chooseScalarStyle(ev);
         }
         boolean split = !simpleKeyContext && splitLines;
         if (!scalarStyle.isPresent()) {

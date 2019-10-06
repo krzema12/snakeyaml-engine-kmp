@@ -17,14 +17,34 @@ package org.snakeyaml.engine.v2.emitter;
 
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.common.*;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.ArrayStack;
+import org.snakeyaml.engine.v2.common.CharConstants;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.CollectionEndEvent;
+import org.snakeyaml.engine.v2.events.CollectionStartEvent;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.NodeEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
@@ -646,19 +666,22 @@ public final class Emitter implements Emitable {
         Event event = events.peek();
         if (event.isEvent(Event.ID.Scalar)) {
             ScalarEvent e = (ScalarEvent) event;
-            return e.getAnchor() == null && e.getTag() == null && e.getImplicit() != null && e
-                    .getValue().length() == 0;
+            return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null &&
+                    e.getValue().length() == 0;
         }
         return false;
     }
 
     private boolean checkSimpleKey() {
         int length = 0;
-        if (event instanceof NodeEvent && ((NodeEvent) event).getAnchor().isPresent()) {
-            if (!preparedAnchor.isPresent()) {
-                preparedAnchor = ((NodeEvent) event).getAnchor();
+        if (event instanceof NodeEvent) {
+            Optional<Anchor> anchorOpt = ((NodeEvent) event).getAnchor();
+            if (anchorOpt.isPresent()) {
+                if (!preparedAnchor.isPresent()) {
+                    preparedAnchor = anchorOpt;
+                }
+                length += anchorOpt.get().getAnchor().length();
             }
-            length += preparedAnchor.get().getAnchor().length();
         }
         Optional<String> tag = Optional.empty();
         if (event.isEvent(Event.ID.Scalar)) {
@@ -687,15 +710,17 @@ public final class Emitter implements Emitable {
 
     private void processAnchor(String indicator) {
         NodeEvent ev = (NodeEvent) event;
-        if (!ev.getAnchor().isPresent()) {
+        Optional<Anchor> anchorOption = ev.getAnchor();
+        if (anchorOption.isPresent()) {
+            Anchor anchor = anchorOption.get();
+            if (!preparedAnchor.isPresent()) {
+                preparedAnchor = anchorOption;
+            }
+            writeIndicator(indicator + anchor, true, false, false);
+            preparedAnchor = Optional.empty();
+        } else {
             preparedAnchor = Optional.empty();
             return;
-        } else {
-            if (!preparedAnchor.isPresent()) {
-                preparedAnchor = ev.getAnchor();
-            }
-            writeIndicator(indicator + preparedAnchor.get(), true, false, false);
-            preparedAnchor = Optional.empty();
         }
     }
 

@@ -100,7 +100,7 @@ public class StandardRepresenter extends BaseRepresenter {
         }
     }
 
-    public static Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
+    public final static Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
 
     protected class RepresentString implements RepresentToNode {
         public Node representData(Object data) {

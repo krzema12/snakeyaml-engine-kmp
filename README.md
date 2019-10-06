@@ -5,6 +5,8 @@
 
 SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 and higher.
 
+Latest release is 2.0
+
 ## API
 
 * The Engine will parse/emit basic Java structures (String, List<Integer>, Map<String, Boolean>). JavaBeans or any other 

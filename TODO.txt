@@ -9,9 +9,7 @@
 * prepare Beans
 * fix TODOs in code
 * add Javadoc for public methods
-* Tested with Java 8, 11
 * dump as JSON
-
 
 Apps to support
 

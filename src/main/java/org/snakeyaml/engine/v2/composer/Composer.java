@@ -113,7 +113,7 @@ public class Composer implements Iterator<Node> {
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.next();
-            Anchor anchor = event.getAnchor().get();
+            Anchor anchor = event.getAlias();
             if (!anchors.containsKey(anchor)) {
                 throw new ComposerException("found undefined alias " + anchor, event.getStartMark());
             }

@@ -24,9 +24,15 @@ import java.util.Optional;
  * Marks the inclusion of a previously anchored node.
  */
 public final class AliasEvent extends NodeEvent {
+    private Anchor alias;
+
     public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
-        if (!anchor.isPresent()) throw new NullPointerException("Anchor is required in AliasEvent");
+        if (!anchor.isPresent()) {
+            throw new NullPointerException("Anchor is required in AliasEvent");
+        } else {
+            alias = anchor.get();
+        }
     }
 
     public AliasEvent(Optional<Anchor> anchor) {
@@ -40,6 +46,10 @@ public final class AliasEvent extends NodeEvent {
 
     @Override
     public String toString() {
-        return "=ALI *" + getAnchor().get();
+        return "=ALI *" + alias;
+    }
+
+    public Anchor getAlias() {
+        return alias;
     }
 }

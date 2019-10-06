@@ -386,11 +386,12 @@ public final class Emitter implements Emitable {
     }
 
     private void expectAlias() {
-        if (((NodeEvent) event).getAnchor() == null) {
-            throw new EmitterException("anchor is not specified for alias");
+        if (event instanceof AliasEvent) {
+            processAnchor("*");
+            state = states.pop();
+        } else {
+            throw new EmitterException("Expecting Alias.");
         }
-        processAnchor("*");
-        state = states.pop();
     }
 
     private void expectScalar() {

@@ -5,7 +5,12 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="2.0" date="in Mercurial" description="Add support for the Beans project">
+        <release version="2.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="update">
+                Update Maven plugins (2019-10-06)
+            </action>
+        </release>
+        <release version="2.0" date="2019-10-06" description="Add support for the Beans project">
             <action dev="asomov" type="update">
                 Refactor BaseConstructor to use method findConstructorFor() (2019-07-22)
             </action>

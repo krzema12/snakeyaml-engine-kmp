@@ -7,6 +7,9 @@
     <body>
         <release version="2.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="add">
+                Add possibility to test JDK 8, JDK 11, JDK 13 via a docker container (2019-10-06)
+            </action>
+            <action dev="asomov" type="add">
                 Add example to test Unicode escaping (2019-10-06)
             </action>
             <action dev="asomov" type="update">

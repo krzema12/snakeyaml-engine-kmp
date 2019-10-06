@@ -201,8 +201,13 @@ public final class DumpSettingsBuilder {
     }
 
     /**
-     * Define whether Unicode char or escape sequence starting with '\\u'
+     * Specify whether to emit non-ASCII printable Unicode characters
+     * (emit Unicode char or escape sequence starting with '\\u')
+     * The default value is true.
+     * When set to false then printable non-ASCII characters (Cyrillic, Chinese etc)
+     * will be not printed but escaped (to support ASCII terminals)
      * @param useUnicodeEncoding - true to use Unicode for "�", false to use "\ufffd" for the same char
+     *                           (if useUnicodeEncoding is false then all non-ASCII characters are escaped)
      * @return the builder with the provided value
      */
     public DumpSettingsBuilder setUseUnicodeEncoding(boolean useUnicodeEncoding) {

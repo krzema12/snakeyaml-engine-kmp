@@ -54,10 +54,10 @@ public abstract class Event {
         return endMark;
     }
 
-    public final boolean isEvent(Event.ID id) {
-        return getEventId() == id;
-    }
-
+    /**
+     * Get the type (kind) if this Event
+     * @return the ID of this Event
+     */
     public abstract Event.ID getEventId();
 
     /*

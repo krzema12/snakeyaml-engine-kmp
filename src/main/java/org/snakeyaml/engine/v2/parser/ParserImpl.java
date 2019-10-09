@@ -128,7 +128,7 @@ public class ParserImpl implements Parser {
     public boolean checkEvent(Event.ID choice) {
         peekEvent();
 //        return currentEvent.filter(event -> event.isEvent(choice)).isPresent();
-        return currentEvent.isPresent() && currentEvent.get().isEvent(choice);
+        return currentEvent.isPresent() && currentEvent.get().getEventId() == choice;
     }
 
     private void produce() {
@@ -396,7 +396,7 @@ public class ParserImpl implements Parser {
                 startMark = scanner.peekToken().getStartMark();
                 endMark = startMark;
             }
-            boolean implicit = !tag.isPresent() || tag.equals("!");
+            boolean implicit = (!tag.isPresent() || tag.equals("!"));//TODO tag1.get().equals("!"));
             if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
                 endMark = scanner.peekToken().getEndMark();
                 event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);

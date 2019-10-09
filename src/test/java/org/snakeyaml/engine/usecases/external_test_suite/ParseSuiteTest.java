@@ -26,7 +26,9 @@ import org.snakeyaml.engine.v2.events.Event;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
@@ -63,7 +65,7 @@ class ParseSuiteTest {
                             .collect(Collectors.toList());
                     for (ParsePair pair : pairs) {
                         EventRepresentation representation = new EventRepresentation(pair.getEvent());
-                        assertEquals(pair.getEtalon(), representation.getRepresentation());
+                        assertEquals(pair.getEtalon(), representation.getRepresentation(), "Failure in " + data.getName());
                     }
                 }
             }

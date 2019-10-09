@@ -229,11 +229,11 @@ public final class Emitter implements Emitable {
             return true;
         }
         Event event = events.peek();
-        if (event.isEvent(Event.ID.DocumentStart)) {
+        if (event.getEventId() == Event.ID.DocumentStart) {
             return needEvents(1);
-        } else if (event.isEvent(Event.ID.SequenceStart)) {
+        } else if (event.getEventId() == Event.ID.SequenceStart) {
             return needEvents(2);
-        } else if (event.isEvent(Event.ID.MappingStart)) {
+        } else if (event.getEventId() == Event.ID.MappingStart) {
             return needEvents(3);
         } else {
             return false;
@@ -246,11 +246,11 @@ public final class Emitter implements Emitable {
         iter.next();
         while (iter.hasNext()) {
             Event event = iter.next();
-            if (event.isEvent(Event.ID.DocumentStart) || event instanceof CollectionStartEvent) {
+            if (event.getEventId() == Event.ID.DocumentStart || event instanceof CollectionStartEvent) {
                 level++;
-            } else if (event.isEvent(Event.ID.DocumentEnd) || event instanceof CollectionEndEvent) {
+            } else if (event.getEventId() == Event.ID.DocumentEnd || event instanceof CollectionEndEvent) {
                 level--;
-            } else if (event.isEvent(Event.ID.StreamEnd)) {
+            } else if (event.getEventId() == Event.ID.StreamEnd) {
                 level = -1;
             }
             if (level < 0) {
@@ -279,7 +279,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectStreamStart implements EmitterState {
         public void expect() {
-            if (event.isEvent(Event.ID.StreamStart)) {
+            if (event.getEventId() == Event.ID.StreamStart) {
                 writeStreamStart();
                 state = new ExpectFirstDocumentStart();
             } else {
@@ -310,7 +310,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (event.isEvent(Event.ID.DocumentStart)) {
+            if (event.getEventId() == Event.ID.DocumentStart) {
                 DocumentStartEvent ev = (DocumentStartEvent) event;
                 if ((ev.getSpecVersion().isPresent() || ev.getTags() != null) && openEnded) {
                     writeIndicator("...", true, false, false);
@@ -378,14 +378,14 @@ public final class Emitter implements Emitable {
         rootContext = root;
         mappingContext = mapping;
         simpleKeyContext = simpleKey;
-        if (event.isEvent(Event.ID.Alias)) {
+        if (event.getEventId() == Event.ID.Alias) {
             expectAlias();
-        } else if (event.isEvent(Event.ID.Scalar) || event instanceof CollectionStartEvent) {
+        } else if (event.getEventId() == Event.ID.Scalar || event instanceof CollectionStartEvent) {
             processAnchor("&");
             processTag();
-            if (event.isEvent(Event.ID.Scalar)) {
+            if (event.getEventId() == Event.ID.Scalar) {
                 expectScalar();
-            } else if (event.isEvent(Event.ID.SequenceStart)) {
+            } else if (event.getEventId() == Event.ID.SequenceStart) {
                 if (flowLevel != 0 || canonical || ((SequenceStartEvent) event).isFlow()
                         || checkEmptySequence()) {
                     expectFlowSequence();
@@ -435,7 +435,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFirstFlowSequenceItem implements EmitterState {
         public void expect() {
-            if (event.isEvent(Event.ID.SequenceEnd)) {
+            if (event.getEventId() == Event.ID.SequenceEnd) {
                 indent = indents.pop();
                 flowLevel--;
                 writeIndicator("]", false, false, false);
@@ -452,7 +452,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFlowSequenceItem implements EmitterState {
         public void expect() {
-            if (event.isEvent(Event.ID.SequenceEnd)) {
+            if (event.getEventId() == Event.ID.SequenceEnd) {
                 indent = indents.pop();
                 flowLevel--;
                 if (canonical) {
@@ -489,7 +489,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFirstFlowMappingKey implements EmitterState {
         public void expect() {
-            if (event.isEvent(Event.ID.MappingEnd)) {
+            if (event.getEventId() == Event.ID.MappingEnd) {
                 indent = indents.pop();
                 flowLevel--;
                 writeIndicator("}", false, false, false);
@@ -512,7 +512,7 @@ public final class Emitter implements Emitable {
 
     private class ExpectFlowMappingKey implements EmitterState {
         public void expect() {
-            if (event.isEvent(Event.ID.MappingEnd)) {
+            if (event.getEventId() == Event.ID.MappingEnd) {
                 indent = indents.pop();
                 flowLevel--;
                 if (canonical) {
@@ -582,7 +582,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (!this.first && event.isEvent(Event.ID.SequenceEnd)) {
+            if (!this.first && event.getEventId() == Event.ID.SequenceEnd) {
                 indent = indents.pop();
                 state = states.pop();
             } else {
@@ -615,7 +615,7 @@ public final class Emitter implements Emitable {
         }
 
         public void expect() {
-            if (!this.first && event.isEvent(Event.ID.MappingEnd)) {
+            if (!this.first && event.getEventId() == Event.ID.MappingEnd) {
                 indent = indents.pop();
                 state = states.pop();
             } else {
@@ -652,19 +652,21 @@ public final class Emitter implements Emitable {
     // Checkers.
 
     private boolean checkEmptySequence() {
-        return event.isEvent(Event.ID.SequenceStart) && !events.isEmpty() && events.peek().isEvent(Event.ID.SequenceEnd);
+        return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty() &&
+                events.peek().getEventId() == Event.ID.SequenceEnd;
     }
 
     private boolean checkEmptyMapping() {
-        return event.isEvent(Event.ID.MappingStart) && !events.isEmpty() && events.peek().isEvent(Event.ID.MappingEnd);
+        return event.getEventId() == Event.ID.MappingStart && !events.isEmpty() &&
+                events.peek().getEventId() == Event.ID.MappingEnd;
     }
 
     private boolean checkEmptyDocument() {
-        if (!(event.isEvent(Event.ID.DocumentStart)) || events.isEmpty()) {
+        if (!(event.getEventId() == Event.ID.DocumentStart) || events.isEmpty()) {
             return false;
         }
         Event event = events.peek();
-        if (event.isEvent(Event.ID.Scalar)) {
+        if (event.getEventId() == Event.ID.Scalar) {
             ScalarEvent e = (ScalarEvent) event;
             return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null &&
                     e.getValue().length() == 0;
@@ -684,7 +686,7 @@ public final class Emitter implements Emitable {
             }
         }
         Optional<String> tag = Optional.empty();
-        if (event.isEvent(Event.ID.Scalar)) {
+        if (event.getEventId() == Event.ID.Scalar) {
             tag = ((ScalarEvent) event).getTag();
         } else if (event instanceof CollectionStartEvent) {
             tag = ((CollectionStartEvent) event).getTag();
@@ -695,14 +697,14 @@ public final class Emitter implements Emitable {
             }
             length += preparedTag.length();
         }
-        if (event.isEvent(Event.ID.Scalar)) {
+        if (event.getEventId() == Event.ID.Scalar) {
             if (analysis == null) {
                 analysis = analyzeScalar(((ScalarEvent) event).getValue());
             }
             length += analysis.getScalar().length();
         }
-        return length < maxSimpleKeyLength && (event.isEvent(Event.ID.Alias)
-                || (event.isEvent(Event.ID.Scalar) && !analysis.isEmpty() && !analysis.isMultiline())
+        return length < maxSimpleKeyLength && (event.getEventId() == Event.ID.Alias
+                || (event.getEventId() == Event.ID.Scalar && !analysis.isEmpty() && !analysis.isMultiline())
                 || checkEmptySequence() || checkEmptyMapping());
     }
 
@@ -726,7 +728,7 @@ public final class Emitter implements Emitable {
 
     private void processTag() {
         Optional<String> tag;
-        if (event.isEvent(Event.ID.Scalar)) {
+        if (event.getEventId() == Event.ID.Scalar) {
             ScalarEvent ev = (ScalarEvent) event;
             tag = ev.getTag();
             if (!scalarStyle.isPresent()) {

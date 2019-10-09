@@ -19,10 +19,25 @@ import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingEndEvent;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceEndEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.events.StreamEndEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.parser.Parser;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.AliasToken;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.TagToken;
+import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -163,9 +178,7 @@ public class CanonicalParser implements Parser {
             parse();
         }
         if (!events.isEmpty()) {
-            if (events.get(0).isEvent(choice)) {
-                return true;
-            }
+            return events.get(0).getEventId() == choice;
         }
         return false;
     }

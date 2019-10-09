@@ -16,7 +16,14 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.CollectionStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.NodeEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.List;
@@ -90,10 +97,8 @@ public class EventRepresentation {
                     if (!data.contains("<" + e.getTag().get() + ">")) return false;
                 }
             }
-            String end = String.valueOf(e.getScalarStyle() + e.escapedValue());
-            if (!data.endsWith(end)) {
-                return false;
-            }
+            String end = e.getScalarStyle() + e.escapedValue();
+            return data.endsWith(end);
         }
         return true;
     }

@@ -19,3 +19,6 @@ Apps to support
 * swagger -> jackson
 * Liquibase -> java 8
 * RAML -> java 7, compose only
+
+issue 459 in snakeyaml
+spec-06-28.data -> ! tag is not parsed properly (it must create string)

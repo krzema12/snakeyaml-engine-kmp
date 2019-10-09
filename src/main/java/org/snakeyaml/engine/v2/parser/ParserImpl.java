@@ -16,8 +16,23 @@
 package org.snakeyaml.engine.v2.parser;
 
 import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.common.*;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.ArrayStack;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingEndEvent;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceEndEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.events.StreamEndEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ParserException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -25,9 +40,23 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.scanner.Scanner;
 import org.snakeyaml.engine.v2.scanner.ScannerImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.AliasToken;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
+import org.snakeyaml.engine.v2.tokens.BlockEntryToken;
+import org.snakeyaml.engine.v2.tokens.DirectiveToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.StreamEndToken;
+import org.snakeyaml.engine.v2.tokens.StreamStartToken;
+import org.snakeyaml.engine.v2.tokens.TagToken;
+import org.snakeyaml.engine.v2.tokens.TagTuple;
+import org.snakeyaml.engine.v2.tokens.Token;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * <pre>
@@ -277,23 +306,28 @@ public class ParserImpl implements Parser {
         while (scanner.checkToken(Token.ID.Directive)) {
             @SuppressWarnings("rawtypes")
             DirectiveToken token = (DirectiveToken) scanner.next();
-            if (token.getName().equals(DirectiveToken.YAML_DIRECTIVE)) {
-                if (yamlSpecVersion.isPresent()) {
-                    throw new ParserException("found duplicate YAML directive", token.getStartMark());
+            Optional<List<?>> dirOption = token.getValue();
+            if (dirOption.isPresent()) {
+                //the value must be present
+                List<?> directiveValue = dirOption.get();
+                if (token.getName().equals(DirectiveToken.YAML_DIRECTIVE)) {
+                    if (yamlSpecVersion.isPresent()) {
+                        throw new ParserException("found duplicate YAML directive", token.getStartMark());
+                    }
+                    List<Integer> value = (List<Integer>) directiveValue;
+                    Integer major = value.get(0);
+                    Integer minor = value.get(1);
+                    yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(new SpecVersion(major, minor)));
+                } else if (token.getName().equals(DirectiveToken.TAG_DIRECTIVE)) {
+                    List<String> value = (List<String>) directiveValue;
+                    String handle = value.get(0);
+                    String prefix = value.get(1);
+                    if (tagHandles.containsKey(handle)) {
+                        throw new ParserException("duplicate tag handle " + handle,
+                                token.getStartMark());
+                    }
+                    tagHandles.put(handle, prefix);
                 }
-                List<Integer> value = (List<Integer>) token.getValue().get();
-                Integer major = value.get(0);
-                Integer minor = value.get(1);
-                yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(new SpecVersion(major, minor)));
-            } else if (token.getName().equals(DirectiveToken.TAG_DIRECTIVE)) {
-                List<String> value = (List<String>) token.getValue().get();
-                String handle = value.get(0);
-                String prefix = value.get(1);
-                if (tagHandles.containsKey(handle)) {
-                    throw new ParserException("duplicate tag handle " + handle,
-                            token.getStartMark());
-                }
-                tagHandles.put(handle, prefix);
             }
         }
         if (!yamlSpecVersion.isPresent() || !tagHandles.isEmpty()) {

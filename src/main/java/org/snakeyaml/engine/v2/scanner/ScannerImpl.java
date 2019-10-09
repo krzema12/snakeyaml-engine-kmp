@@ -15,18 +15,51 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
-import org.snakeyaml.engine.v2.common.*;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.ArrayStack;
+import org.snakeyaml.engine.v2.common.CharConstants;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.AliasToken;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
+import org.snakeyaml.engine.v2.tokens.BlockEndToken;
+import org.snakeyaml.engine.v2.tokens.BlockEntryToken;
+import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken;
+import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken;
+import org.snakeyaml.engine.v2.tokens.DirectiveToken;
+import org.snakeyaml.engine.v2.tokens.DocumentEndToken;
+import org.snakeyaml.engine.v2.tokens.DocumentStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowEntryToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken;
+import org.snakeyaml.engine.v2.tokens.KeyToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.StreamEndToken;
+import org.snakeyaml.engine.v2.tokens.StreamStartToken;
+import org.snakeyaml.engine.v2.tokens.TagToken;
+import org.snakeyaml.engine.v2.tokens.TagTuple;
+import org.snakeyaml.engine.v2.tokens.Token;
+import org.snakeyaml.engine.v2.tokens.ValueToken;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static org.snakeyaml.engine.v2.common.CharConstants.*;
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_CODES;
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
 
 /**
  * <pre>
@@ -169,7 +202,11 @@ public final class ScannerImpl implements Scanner {
      */
     public Token next() {
         this.tokensTaken++;
-        return this.tokens.remove(0);
+        if (this.tokens.isEmpty()) {
+            throw new NoSuchElementException("No more Tokens found.");
+        } else {
+            return this.tokens.remove(0);
+        }
     }
 
     // Private methods.
@@ -942,9 +979,7 @@ public final class ScannerImpl implements Scanner {
     private boolean checkDocumentStart() {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         if (reader.getColumn() == 0) {
-            if ("---".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
-                return true;
-            }
+            return "---".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3));
         }
         return false;
     }
@@ -956,9 +991,7 @@ public final class ScannerImpl implements Scanner {
     private boolean checkDocumentEnd() {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         if (reader.getColumn() == 0) {
-            if ("...".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
-                return true;
-            }
+            return "...".equals(reader.prefix(3)) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3));
         }
         return false;
     }
@@ -1676,23 +1709,18 @@ public final class ScannerImpl implements Scanner {
      * that document separators are not included in scalars.
      * </pre>
      */
-    private Token scanFlowScalar(ScalarStyle style) {
-        boolean _double;
+    private Token scanFlowScalar(final ScalarStyle style) {
         // The style will be either single- or double-quoted; we determine this
         // by the first character in the entry (supplied)
-        if (style == ScalarStyle.DOUBLE_QUOTED) {
-            _double = true;
-        } else {
-            _double = false;
-        }
+        final boolean doubleValue = style == ScalarStyle.DOUBLE_QUOTED;
         StringBuilder chunks = new StringBuilder();
         Optional<Mark> startMark = reader.getMark();
         int quote = reader.peek();
         reader.forward();
-        chunks.append(scanFlowScalarNonSpaces(_double, startMark));
+        chunks.append(scanFlowScalarNonSpaces(doubleValue, startMark));
         while (reader.peek() != quote) {
             chunks.append(scanFlowScalarSpaces(startMark));
-            chunks.append(scanFlowScalarNonSpaces(_double, startMark));
+            chunks.append(scanFlowScalarNonSpaces(doubleValue, startMark));
         }
         reader.forward();
         Optional<Mark> endMark = reader.getMark();
@@ -1869,7 +1897,7 @@ public final class ScannerImpl implements Scanner {
                 break;
             }
         }
-        return new ScalarToken(chunks.toString(),true, startMark, endMark);
+        return new ScalarToken(chunks.toString(), true, startMark, endMark);
     }
 
     /**

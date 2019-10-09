@@ -142,7 +142,7 @@ public class ParserImpl implements Parser {
      */
     public Event peekEvent() {
         produce();
-        return currentEvent.orElseThrow(() -> new ParserException("Event expected.", Optional.empty()));
+        return currentEvent.orElseThrow(() -> new NoSuchElementException("No more Events found."));
     }
 
     /**
@@ -150,7 +150,7 @@ public class ParserImpl implements Parser {
      */
     public Event next() {
         peekEvent();
-        Event value = currentEvent.get();
+        Event value = currentEvent.orElseThrow(() -> new NoSuchElementException("No more Events found."));
         currentEvent = Optional.empty();
         return value;
     }

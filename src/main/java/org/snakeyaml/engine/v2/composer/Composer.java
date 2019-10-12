@@ -80,7 +80,7 @@ public class Composer implements Iterator<Node> {
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             Event event = parser.next();
-            Optional<Mark> previousDocMark = document.flatMap(d -> d.getStartMark());
+            Optional<Mark> previousDocMark = document.flatMap(Node::getStartMark);
             throw new ComposerException("expected a single document in the stream", previousDocMark,
                     "but found another document", event.getStartMark());
         }
@@ -109,7 +109,7 @@ public class Composer implements Iterator<Node> {
 
 
     private Node composeNode(Optional<Node> parent) {
-        parent.ifPresent(p -> recursiveNodes.add(p));//TODO add unit test for this line
+        parent.ifPresent(recursiveNodes::add);//TODO add unit test for this line
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.next();
@@ -133,7 +133,7 @@ public class Composer implements Iterator<Node> {
                 node = composeMappingNode(anchor);
             }
         }
-        parent.ifPresent(p -> recursiveNodes.remove(p));//TODO add unit test for this line
+        parent.ifPresent(recursiveNodes::remove);//TODO add unit test for this line
         return node;
     }
 
@@ -193,7 +193,7 @@ public class Composer implements Iterator<Node> {
             nodeTag = new Tag(tag.get());
         }
 
-        final List<NodeTuple> children = new ArrayList<NodeTuple>();
+        final List<NodeTuple> children = new ArrayList<>();
         MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), Optional.empty());
         anchor.ifPresent(a -> registerAnchor(a, node));
         while (!parser.checkEvent(Event.ID.MappingEnd)) {

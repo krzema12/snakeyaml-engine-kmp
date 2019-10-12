@@ -19,16 +19,34 @@ import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.ConstructorException;
 import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.*;
+import org.snakeyaml.engine.v2.nodes.MappingNode;
+import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.NodeTuple;
+import org.snakeyaml.engine.v2.nodes.NodeType;
+import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.nodes.SequenceNode;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * Construct standard Java classes
  */
 public class StandardConstructor extends BaseConstructor {
+    private static final String ERROR_PREFIX = "while constructing a mapping";
 
     public StandardConstructor(LoadSettings settings) {
         super(settings);
@@ -52,30 +70,20 @@ public class StandardConstructor extends BaseConstructor {
         // perform merging only on nodes containing merge node(s)
         processDuplicateKeys(node);
         if (node.isMerged()) {
-            node.setValue(mergeNode(node, true, new HashMap<Object, Integer>(),
-                    new ArrayList<NodeTuple>()));
+            node.setValue(mergeNode(node, true, new HashMap<>(),
+                    new ArrayList<>()));
         }
     }
 
     protected void processDuplicateKeys(MappingNode node) {
         List<NodeTuple> nodeValue = node.getValue();
-        Map<Object, Integer> keys = new HashMap<Object, Integer>(nodeValue.size());
-        TreeSet<Integer> toRemove = new TreeSet<Integer>();
+        Map<Object, Integer> keys = new HashMap<>(nodeValue.size());
+        TreeSet<Integer> toRemove = new TreeSet<>();
         int i = 0;
         for (NodeTuple tuple : nodeValue) {
             Node keyNode = tuple.getKeyNode();
             if (!keyNode.getTag().equals(Tag.MERGE)) {
-                Object key = constructObject(keyNode);
-                if (key != null) {
-                    try {
-                        key.hashCode();// check circular dependencies
-                    } catch (Exception e) {
-                        throw new ConstructorException("while constructing a mapping",
-                                node.getStartMark(), "found unacceptable key " + key,
-                                tuple.getKeyNode().getStartMark(), e);
-                    }
-                }
-
+                Object key = constructKey(keyNode, node.getStartMark(), tuple.getKeyNode().getStartMark());
                 Integer prevIndex = keys.put(key, i);
                 if (prevIndex != null) {
                     if (!settings.getAllowDuplicateKeys()) {
@@ -94,17 +102,31 @@ public class StandardConstructor extends BaseConstructor {
         }
     }
 
+    private Object constructKey(Node keyNode, Optional<Mark> contextMark, Optional<Mark> problemMark) {
+        Object key = constructObject(keyNode);
+        if (key != null) {
+            try {
+                key.hashCode();// check circular dependencies
+            } catch (Exception e) {
+                throw new ConstructorException(ERROR_PREFIX,
+                        contextMark, "found unacceptable key " + key,
+                        problemMark, e);
+            }
+        }
+        return key;
+    }
+
     /**
      * Does merge for supplied mapping node.
      *
      * @param node        where to merge
-     * @param isPreffered true if keys of node should take precedence over others...
+     * @param isPreferred true if keys of node should take precedence over others...
      * @param key2index   maps already merged keys to index from values
      * @param values      collects merged NodeTuple
      * @return list of the merged NodeTuple (to be set as value for the
      * MappingNode)
      */
-    private List<NodeTuple> mergeNode(MappingNode node, boolean isPreffered,
+    private List<NodeTuple> mergeNode(MappingNode node, boolean isPreferred,
                                       Map<Object, Integer> key2index, List<NodeTuple> values) {
         Iterator<NodeTuple> iter = node.getValue().iterator();
         while (iter.hasNext()) {
@@ -123,7 +145,7 @@ public class StandardConstructor extends BaseConstructor {
                         List<Node> vals = sn.getValue();
                         for (Node subnode : vals) {
                             if (!(subnode instanceof MappingNode)) {
-                                throw new ConstructorException("while constructing a mapping",
+                                throw new ConstructorException(ERROR_PREFIX,
                                         node.getStartMark(),
                                         "expected a mapping for merging, but found "
                                                 + subnode.getNodeType(),
@@ -134,7 +156,7 @@ public class StandardConstructor extends BaseConstructor {
                         }
                         break;
                     default:
-                        throw new ConstructorException("while constructing a mapping",
+                        throw new ConstructorException(ERROR_PREFIX,
                                 node.getStartMark(),
                                 "expected a mapping or list of mappings for merging, but found "
                                         + valueNode.getNodeType(),
@@ -147,7 +169,7 @@ public class StandardConstructor extends BaseConstructor {
                     values.add(nodeTuple);
                     // keep track where tuple for the key is
                     key2index.put(key, values.size() - 1);
-                } else if (isPreffered) { // there is value for the key, but we
+                } else if (isPreferred) { // there is value for the key, but we
                     // need to override it
                     // change value for the key using saved position
                     values.set(key2index.get(key), nodeTuple);
@@ -263,21 +285,21 @@ public class StandardConstructor extends BaseConstructor {
         public Object construct(Node node) {
             // Note: we do not check for duplicate keys, because it's too
             // CPU-expensive.
-            Map<Object, Object> omap = new LinkedHashMap<Object, Object>();
+            Map<Object, Object> omap = new LinkedHashMap<>();
             if (!(node instanceof SequenceNode)) {
                 throw new ConstructorException("while constructing an ordered map",
                         node.getStartMark(), "expected a sequence, but found " + node.getNodeType(),
                         node.getStartMark());
             }
             SequenceNode snode = (SequenceNode) node;
-            for (Node subnode : snode.getValue()) {
-                if (!(subnode instanceof MappingNode)) {
+            for (Node subNode : snode.getValue()) {
+                if (!(subNode instanceof MappingNode)) {
                     throw new ConstructorException("while constructing an ordered map",
                             node.getStartMark(),
-                            "expected a mapping of length 1, but found " + subnode.getNodeType(),
-                            subnode.getStartMark());
+                            "expected a mapping of length 1, but found " + subNode.getNodeType(),
+                            subNode.getStartMark());
                 }
-                MappingNode mnode = (MappingNode) subnode;
+                MappingNode mnode = (MappingNode) subNode;
                 if (mnode.getValue().size() != 1) {
                     throw new ConstructorException("while constructing an ordered map",
                             node.getStartMark(), "expected a single mapping item, but found "
@@ -349,11 +371,11 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlMap implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            MappingNode mnode = (MappingNode) node;
+            MappingNode mappingNode = (MappingNode) node;
             if (node.isRecursive()) {
-                return createDefaultMap(mnode.getValue().size());
+                return createDefaultMap(mappingNode.getValue().size());
             } else {
-                return constructMapping(mnode);
+                return constructMapping(mappingNode);
             }
         }
 

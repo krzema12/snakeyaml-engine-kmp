@@ -19,10 +19,25 @@ import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.ConstructorException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.*;
+import org.snakeyaml.engine.v2.nodes.MappingNode;
+import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.NodeTuple;
+import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.nodes.SequenceNode;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class BaseConstructor {
 
@@ -74,26 +89,24 @@ public abstract class BaseConstructor {
             constructedObjects.clear();
             recursiveObjects.clear();
             return data;
+        } catch (YamlEngineException e) {
+            throw e;
         } catch (RuntimeException e) {
-            if (e instanceof YamlEngineException) {
-                throw e;
-            } else {
-                throw new YamlEngineException(e);
-            }
+            throw new YamlEngineException(e);
         }
     }
 
     private void fillRecursive() {
         if (!maps2fill.isEmpty()) {
             for (RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>> entry : maps2fill) {
-                RecursiveTuple<Object, Object> key_value = entry._2();
-                entry._1().put(key_value._1(), key_value._2());
+                RecursiveTuple<Object, Object> keyValueTuple = entry.getValue2();
+                entry.getValue1().put(keyValueTuple.getValue1(), keyValueTuple.getValue2());
             }
             maps2fill.clear();
         }
         if (!sets2fill.isEmpty()) {
             for (RecursiveTuple<Set<Object>, Object> value : sets2fill) {
-                value._1().add(value._2());
+                value.getValue1().add(value.getValue2());
             }
             sets2fill.clear();
         }
@@ -153,23 +166,22 @@ public abstract class BaseConstructor {
     }
 
 
-
     protected String constructScalar(ScalarNode node) {
         return node.getValue();
     }
 
     // >>>> DEFAULTS >>>>
     protected List<Object> createDefaultList(int initSize) {
-        return new ArrayList<Object>(initSize);
+        return new ArrayList<>(initSize);
     }
 
     protected Set<Object> createDefaultSet(int initSize) {
-        return new LinkedHashSet<Object>(initSize);
+        return new LinkedHashSet<>(initSize);
     }
 
     protected Map<Object, Object> createDefaultMap(int initSize) {
         // respect order from YAML document
-        return new LinkedHashMap<Object, Object>(initSize);
+        return new LinkedHashMap<>(initSize);
     }
 
     protected Object createArray(Class<?> type, int size) {
@@ -178,14 +190,11 @@ public abstract class BaseConstructor {
 
     // <<<< DEFAULTS <<<<
 
-    //TODOprotected Object finalizeConstruction(Node node, Object data) {
-
-
     // <<<< NEW instance
 
     // >>>> Construct => NEW, 2ndStep(filling)
-    protected List<? extends Object> constructSequence(SequenceNode node) {
-        List<Object> result = settings.getDefaultList().apply(node.getSequence().size());
+    protected List<Object> constructSequence(SequenceNode node) {
+        List<Object> result = settings.getDefaultList().apply(node.getValue().size());
         constructSequenceStep2(node, result);
         return result;
     }
@@ -198,13 +207,13 @@ public abstract class BaseConstructor {
     }
 
     protected Set<Object> constructSet(MappingNode node) {
-        final Set<Object> set = settings.getDefaultSet().apply(node.getMapping().size());
+        final Set<Object> set = settings.getDefaultSet().apply(node.getValue().size());
         constructSet2ndStep(node, set);
         return set;
     }
 
     protected Map<Object, Object> constructMapping(MappingNode node) {
-        final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getMapping().size());
+        final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getValue().size());
         constructMapping2ndStep(node, mapping);
         return mapping;
     }
@@ -280,27 +289,24 @@ public abstract class BaseConstructor {
      * course does not observe value hashCode changes.
      */
     protected void postponeSetFilling(Set<Object> set, Object key) {
-        sets2fill.add(0, new RecursiveTuple<Set<Object>, Object>(set, key));
+        sets2fill.add(0, new RecursiveTuple<>(set, key));
     }
 
-    // <<<< Costruct => NEW, 2ndStep(filling)
-
-
     private static class RecursiveTuple<T, K> {
-        private final T _1;
-        private final K _2;
+        private final T value1;
+        private final K value2;
 
-        public RecursiveTuple(T _1, K _2) {
-            this._1 = _1;
-            this._2 = _2;
+        public RecursiveTuple(T value1, K value2) {
+            this.value1 = value1;
+            this.value2 = value2;
         }
 
-        public K _2() {
-            return _2;
+        public K getValue2() {
+            return value2;
         }
 
-        public T _1() {
-            return _1;
+        public T getValue1() {
+            return value1;
         }
     }
 }

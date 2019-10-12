@@ -61,18 +61,18 @@ public class Serialize {
      */
     public List<Event> serializeAll(List<Node> nodes) {
         Objects.requireNonNull(nodes, "Nodes cannot be null");
-        Events events = new Events();
-        Serializer serializer = new Serializer(settings, events);
+        EmitableEvents emitableEvents = new EmitableEvents();
+        Serializer serializer = new Serializer(settings, emitableEvents);
         serializer.open();
         for (Node node : nodes) {
             serializer.serialize(node);
         }
         serializer.close();
-        return events.getEvents();
+        return emitableEvents.getEvents();
     }
 }
 
-class Events implements Emitable {
+class EmitableEvents implements Emitable {
     private List<Event> events = new ArrayList<>();
 
     @Override

@@ -122,7 +122,7 @@ public final class ScalarEvent extends NodeEvent {
         StringBuilder builder = new StringBuilder("=VAL");
         getAnchor().ifPresent(a -> builder.append(" &" + a));
         if (implicit.bothFalse()) {
-            getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+            getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
         }
         builder.append(" ");
         builder.append(getScalarStyle().toString());
@@ -147,6 +147,6 @@ public final class ScalarEvent extends NodeEvent {
     //escape and drop surrogates
     public String escapedValue() {
         return value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
-                .map(c -> escape(c)).collect(Collectors.joining(""));
+                .map(this::escape).collect(Collectors.joining(""));
     }
 }

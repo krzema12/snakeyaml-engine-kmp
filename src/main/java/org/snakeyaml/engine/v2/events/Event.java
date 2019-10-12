@@ -25,7 +25,7 @@ import java.util.Optional;
  */
 public abstract class Event {
     public enum ID {
-        Alias, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart
+        Alias, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
     }
 
     private final Optional<Mark> startMark;
@@ -56,27 +56,8 @@ public abstract class Event {
 
     /**
      * Get the type (kind) if this Event
+     *
      * @return the ID of this Event
      */
     public abstract Event.ID getEventId();
-
-    /*
-     * for tests only
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Event) {
-            return toString().equals(obj.toString());
-        } else {
-            return false;
-        }
-    }
-
-    /*
-     * for tests only
-     */
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
 }

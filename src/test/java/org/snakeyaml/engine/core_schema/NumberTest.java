@@ -36,7 +36,7 @@ public class NumberTest {
         assertEquals(new Integer(-1), loader.loadFromString("-1"));
         assertEquals(new Integer(0), loader.loadFromString("0"));
         assertEquals(new Integer(0), loader.loadFromString("-0"));
-        assertEquals(new Integer(12), loader.loadFromString("012"));
+        assertEquals("012", loader.loadFromString("012"), "Leading zeros are not allowed.");
         assertEquals(new Integer(1234567890), loader.loadFromString("1234567890"));
         assertEquals(new Long(12345678901L), loader.loadFromString("12345678901"));
         assertEquals(new BigInteger("1234567890123456789123"), loader.loadFromString("1234567890123456789123"));
@@ -56,17 +56,29 @@ public class NumberTest {
         assertEquals("+.inf", loader.loadFromString("+.inf"));
         assertEquals("-.inf", loader.loadFromString("-.inf"));
         assertEquals(".nan", loader.loadFromString(".nan"));
+
+        //start with +
+        assertEquals("+1", loader.loadFromString("+1"));
+        assertEquals("+1223344", loader.loadFromString("+1223344"));
+        assertEquals("+12.23344", loader.loadFromString("+12.23344"));
+        assertEquals("+0.23344", loader.loadFromString("+0.23344"));
+        assertEquals("+0", loader.loadFromString("+0"));
+
+        //leading zero
+        assertEquals("03", loader.loadFromString("03"));
+        assertEquals("03.67", loader.loadFromString("03.67"));
     }
 
     @Test
     @DisplayName("Test all doubles which are define in the core schema & JSON")
     void parseDouble(TestInfo testInfo) {
         Load loader = new Load(LoadSettings.builder().build());
-        assertEquals(new Double(1), loader.loadFromString("+1"));
-        assertEquals(new Double(0), loader.loadFromString("+0"));
+        assertEquals(new Double(-1.345), loader.loadFromString("-1.345"));
+        assertEquals(new Double(-0.0), loader.loadFromString("-0.0"));
         assertEquals(new Double(0.123), loader.loadFromString("0.123"));
         assertEquals(new Double(1.23E-6), loader.loadFromString("1.23e-6"));
         assertEquals(new Double(1.23E6), loader.loadFromString("1.23e+6"));
         assertEquals(new Double(1.23E6), loader.loadFromString("1.23E6"));
+        assertEquals(new Double(-1.23E6), loader.loadFromString("-1.23E6"));
     }
 }

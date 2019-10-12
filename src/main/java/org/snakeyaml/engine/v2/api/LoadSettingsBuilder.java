@@ -21,8 +21,16 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 
 /**
  * Builder pattern implementation for LoadSettings
@@ -31,17 +39,17 @@ public final class LoadSettingsBuilder {
     private String label;
     private Map<Tag, ConstructNode> tagConstructors;
     private ScalarResolver scalarResolver;
-    private Function<Integer, List> defaultList;
-    private Function<Integer, Set> defaultSet;
-    private Function<Integer, Map> defaultMap;
-    private Function<SpecVersion, SpecVersion> versionFunction;
+    private IntFunction<List> defaultList;
+    private IntFunction<Set> defaultSet;
+    private IntFunction<Map> defaultMap;
+    private UnaryOperator<SpecVersion> versionFunction;
     private Integer bufferSize;
     private boolean allowDuplicateKeys;
     private boolean allowRecursiveKeys;
     private boolean useMarks;
 
     //general
-    Map<SettingKey, Object> customProperties = new HashMap();
+    private Map<SettingKey, Object> customProperties = new HashMap();
 
     /**
      * Create builder
@@ -50,10 +58,10 @@ public final class LoadSettingsBuilder {
         this.label = "reader";
         this.tagConstructors = new HashMap<>();
         this.scalarResolver = new JsonScalarResolver();
-        this.defaultList = (initSize) -> new ArrayList(initSize);
-        this.defaultSet = (initSize) -> new LinkedHashSet(initSize);
-        this.defaultMap = (initSize) -> new LinkedHashMap(initSize);
-        this.versionFunction = (version) -> {
+        this.defaultList = ArrayList::new;    // same as new ArrayList(initSize)
+        this.defaultSet = LinkedHashSet::new; // same as new LinkedHashSet(initSize)
+        this.defaultMap = LinkedHashMap::new; // same as new LinkedHashMap(initSize)
+        this.versionFunction = version -> {
             if (version.getMajor() != 1) throw new YamlVersionException(version);
             return version;
         };
@@ -65,7 +73,8 @@ public final class LoadSettingsBuilder {
 
     /**
      * Label for the input data. Can be used to improve the error message.
-     * @param  label - meaningful label to indicate the input source
+     *
+     * @param label - meaningful label to indicate the input source
      * @return the builder with the provided value
      */
     public LoadSettingsBuilder setLabel(String label) {
@@ -76,6 +85,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide constructors for the specified tags.
+     *
      * @param tagConstructors - the map from a Tag to its constructor
      * @return the builder with the provided value
      */
@@ -86,6 +96,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide resolver to detect a tag by the value of a scalar
+     *
      * @param scalarResolver - specified ScalarResolver
      * @return the builder with the provided value
      */
@@ -97,10 +108,11 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default List implementation. {@link ArrayList} is used if nothing provided.
+     *
      * @param defaultList - specified List implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    public LoadSettingsBuilder setDefaultList(Function<Integer, List> defaultList) {
+    public LoadSettingsBuilder setDefaultList(IntFunction<List> defaultList) {
         Objects.requireNonNull(defaultList, "defaultList cannot be null");
         this.defaultList = defaultList;
         return this;
@@ -108,10 +120,11 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default Set implementation. {@link LinkedHashSet} is used if nothing provided.
+     *
      * @param defaultSet - specified Set implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    public LoadSettingsBuilder setDefaultSet(Function<Integer, Set> defaultSet) {
+    public LoadSettingsBuilder setDefaultSet(IntFunction<Set> defaultSet) {
         Objects.requireNonNull(defaultSet, "defaultSet cannot be null");
         this.defaultSet = defaultSet;
         return this;
@@ -119,18 +132,20 @@ public final class LoadSettingsBuilder {
 
     /**
      * Provide default Map implementation. {@link LinkedHashMap} is used if nothing provided.
+     *
      * @param defaultMap - specified Map implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    public LoadSettingsBuilder setDefaultMap(Function<Integer, Map> defaultMap) {
+    public LoadSettingsBuilder setDefaultMap(IntFunction<Map> defaultMap) {
         Objects.requireNonNull(defaultMap, "defaultMap cannot be null");
         this.defaultMap = defaultMap;
         return this;
     }
 
     /**
-     * Buffer size for incoming data stream. If the incoming stream is already bufferred, then changing the buffer does
+     * Buffer size for incoming data stream. If the incoming stream is already buffered, then changing the buffer does
      * not improve the performance
+     *
      * @param bufferSize - buffer size (in bytes) for input data
      * @return the builder with the provided value
      */
@@ -142,6 +157,7 @@ public final class LoadSettingsBuilder {
     /**
      * YAML 1.2 does require unique keys. To support the backwards compatibility it is possible to select what should
      * happend when non-unique keys are detected.
+     *
      * @param allowDuplicateKeys - if true than the non-unique keys in a mapping are allowed (last key wins). False by default.
      * @return the builder with the provided value
      */
@@ -164,6 +180,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Marks are only used for error messages. But they requires a lot of memory. True by default.
+     *
      * @param useMarks - use false to save resources but use less informative error messages (no line and context)
      * @return the builder with the provided value
      */
@@ -175,7 +192,7 @@ public final class LoadSettingsBuilder {
     /**
      * Manage YAML directive value which defines the version of the YAML specification.
      * This parser supports YAML 1.2 but it can parse most of YAML 1.1 and YAML 1.0
-     *
+     * <p>
      * This function allows to control the version management. For instance if the document contains old version the parser
      * can be adapted to compensate the problem. Or it can fail to indicate that the incoming version is not supported.
      *
@@ -183,7 +200,7 @@ public final class LoadSettingsBuilder {
      *                        and treated as YAML 1.2. Other versions fail to parse (YamlVersionException is thown)
      * @return the builder with the provided value
      */
-    public LoadSettingsBuilder setVersionFunction(Function<SpecVersion, SpecVersion> versionFunction) {
+    public LoadSettingsBuilder setVersionFunction(UnaryOperator<SpecVersion> versionFunction) {
         Objects.requireNonNull(versionFunction, "versionFunction cannot be null");
         this.versionFunction = versionFunction;
         return this;
@@ -196,6 +213,7 @@ public final class LoadSettingsBuilder {
 
     /**
      * Build immutable LoadSettings
+     *
      * @return immutable LoadSettings
      */
     public LoadSettings build() {

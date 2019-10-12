@@ -33,10 +33,13 @@ public final class Mark implements Serializable {
 
     private static int[] toCodePoints(char[] str) {
         int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];
-        for (int i = 0, c = 0; i < str.length; c++) {
+        int i = 0;
+        int c = 0;
+        while (i < str.length) {
             int cp = Character.codePointAt(str, i);
             codePoints[c] = cp;
             i += Character.charCount(cp);
+            c++;
         }
         return codePoints;
     }

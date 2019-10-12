@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.1" date="in Mercurial" description="Maintenance">
+            <action dev="asomov" type="fix">
+                Fix numbers format. Number may not begin with '+' and it may not have a leading 0 (2019-10-13)
+            </action>
             <action dev="asomov" type="update">
                 Refactor Event: removed redundant Event.isEvent(Event.ID) method  (2019-10-06)
             </action>

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,12 +84,17 @@ class DumpTest {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
-        dump.dumpAll(Lists.newArrayList("a", null, Boolean.TRUE).iterator(), streamToStringWriter);
+        List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
+        dump.dumpAll(list.iterator(), streamToStringWriter);
         assertEquals("a\n" +
-                "...\n" +
                 "--- null\n" +
-                "...\n" +
                 "--- true\n", streamToStringWriter.toString());
+        //load back
+        LoadSettings loadSettings = LoadSettings.builder().build();
+        Load load = new Load(loadSettings);
+        for (Object obj: load.loadAllFromString(streamToStringWriter.toString())) {
+            assertEquals(list.remove(0), obj);
+        }
     }
 
     @Test
@@ -96,13 +102,17 @@ class DumpTest {
     void dumpAllToString(TestInfo testInfo) {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
-        //StreamToStringWriter streamToString = new StreamToStringWriter();
-        String output = dump.dumpAllToString(Lists.newArrayList("a", null, Boolean.TRUE).iterator());
+        List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
+        String output = dump.dumpAllToString(list.iterator());
         assertEquals("a\n" +
-                "...\n" +
                 "--- null\n" +
-                "...\n" +
                 "--- true\n", output);
+        //load back
+        LoadSettings loadSettings = LoadSettings.builder().build();
+        Load load = new Load(loadSettings);
+        for (Object obj: load.loadAllFromString(output)) {
+            assertEquals(list.remove(0), obj);
+        }
     }
 
     @Test

@@ -58,10 +58,6 @@ public class MappingNode extends CollectionNode<NodeTuple> {
         return value;
     }
 
-    public List<NodeTuple> getMapping() {
-        return value;
-    }
-
     public void setValue(List<NodeTuple> mergedValue) {
         value = mergedValue;
     }

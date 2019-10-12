@@ -24,6 +24,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.StreamEndEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +40,8 @@ class ParseTest {
         Parse parse = new Parse(LoadSettings.builder().build());
         Iterable<Event> events = parse.parseReader(CharSource.wrap("").openStream());
         List<Event> list = Lists.newArrayList(events);
-        assertEquals(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
+        assertEquals(2, list.size());
+        TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
     }
 
     @Test
@@ -47,6 +49,7 @@ class ParseTest {
         Parse parse = new Parse(LoadSettings.builder().build());
         Iterable<Event> events = parse.parseInputStream(new ByteArrayInputStream("".getBytes()));
         List<Event> list = Lists.newArrayList(events);
-        assertEquals(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
+        assertEquals(2, list.size());
+        TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
     }
 }

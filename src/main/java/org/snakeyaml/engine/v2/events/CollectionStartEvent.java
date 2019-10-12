@@ -33,8 +33,8 @@ public abstract class CollectionStartEvent extends NodeEvent {
     // flag indicates if a collection is block or flow
     private final FlowStyle flowStyle;
 
-    public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
-                                Optional<Mark> endMark) {
+    public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
+                                FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
         Objects.requireNonNull(tag, "Tag must be provided.");
         this.tag = tag;
@@ -46,8 +46,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
     /**
      * Tag of this collection.
      *
-     * @return The tag of this collection, or <code>null</code> if no explicit
-     * tag is available.
+     * @return The tag of this collection, or <code>empty</code> if no explicit tag is available.
      */
     public Optional<String> getTag() {
         return this.tag;
@@ -79,9 +78,9 @@ public abstract class CollectionStartEvent extends NodeEvent {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         getAnchor().ifPresent(a -> builder.append(" &" + a));
-        if (!implicit) getTag().ifPresent(tag -> builder.append(" <" + tag + ">"));
+        if (!implicit) getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
         return builder.toString();
     }
 }

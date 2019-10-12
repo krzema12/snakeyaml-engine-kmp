@@ -23,7 +23,6 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,30 +31,30 @@ import java.util.Optional;
  * Description for all the fields can be found in the builder
  */
 public final class DumpSettings {
-    private boolean explicitStart;
-    private boolean explicitEnd;
-    private NonPrintableStyle nonPrintableStyle;
-    private Optional<Tag> explicitRootTag;
-    private AnchorGenerator anchorGenerator;
-    private Optional<SpecVersion> yamlDirective;
-    private Map<String, String> tagDirective;
-    private ScalarResolver scalarResolver;
-    private FlowStyle defaultFlowStyle;
-    private ScalarStyle defaultScalarStyle;
+    private final boolean explicitStart;
+    private final boolean explicitEnd;
+    private final NonPrintableStyle nonPrintableStyle;
+    private final Optional<Tag> explicitRootTag;
+    private final AnchorGenerator anchorGenerator;
+    private final Optional<SpecVersion> yamlDirective;
+    private final Map<String, String> tagDirective;
+    private final ScalarResolver scalarResolver;
+    private final FlowStyle defaultFlowStyle;
+    private final ScalarStyle defaultScalarStyle;
 
     //emitter
-    private boolean canonical;
-    private boolean multiLineFlow;
-    private boolean useUnicodeEncoding;
-    private int indent;
-    private int indicatorIndent;
-    private int width;
-    private String bestLineBreak;
-    private boolean splitLines;
-    private int maxSimpleKeyLength;
+    private final boolean canonical;
+    private final boolean multiLineFlow;
+    private final boolean useUnicodeEncoding;
+    private final int indent;
+    private final int indicatorIndent;
+    private final int width;
+    private final String bestLineBreak;
+    private final boolean splitLines;
+    private final int maxSimpleKeyLength;
 
     //general
-    Map<SettingKey, Object> customProperties = new HashMap();
+    private final Map<SettingKey, Object> customProperties;
 
     DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
                  AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective, Map<String, String> tagDirective,
@@ -85,6 +84,7 @@ public final class DumpSettings {
         this.bestLineBreak = bestLineBreak;
         this.splitLines = splitLines;
         this.maxSimpleKeyLength = maxSimpleKeyLength;
+        this.customProperties = customProperties;
     }
 
     public static final DumpSettingsBuilder builder() {

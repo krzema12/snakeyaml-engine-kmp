@@ -24,7 +24,7 @@ import java.util.Optional;
  * Exception thrown by the {@link Parser} implementations in case of malformed
  * input.
  */
-public class ParserException extends MarkedYamlEngineException {
+public class ParserException extends MarkedYamlEngineException { //NOSONAR
 
     /**
      * Constructs an instance.

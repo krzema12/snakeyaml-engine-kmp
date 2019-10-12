@@ -28,7 +28,7 @@ public abstract class YamlOutputStreamWriter extends OutputStreamWriter implemen
         super(out, cs);
     }
 
-    abstract public void processIOException(IOException e) ;
+    public abstract void processIOException(IOException e);
 
     @Override
     public void flush() {

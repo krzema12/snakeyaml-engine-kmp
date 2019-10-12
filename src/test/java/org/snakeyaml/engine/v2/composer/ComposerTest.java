@@ -62,6 +62,6 @@ class ComposerTest {
         Optional<Node> optionalNode = compose.composeString(data);
         assertTrue(optionalNode.isPresent());
         Node node = optionalNode.get();
-        assertEquals("113", node.getAnchor().get().getAnchor());
+        assertEquals("113", node.getAnchor().get().getValue());
     }
 }

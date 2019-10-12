@@ -17,6 +17,9 @@ package org.snakeyaml.engine.v2.exceptions;
 
 import org.snakeyaml.engine.v2.common.SpecVersion;
 
+/**
+ * Indication of invalid YAML version
+ */
 public class YamlVersionException extends YamlEngineException {
     private final SpecVersion specVersion;
 

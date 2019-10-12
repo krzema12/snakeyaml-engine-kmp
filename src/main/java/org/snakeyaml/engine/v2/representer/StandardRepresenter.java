@@ -100,7 +100,7 @@ public class StandardRepresenter extends BaseRepresenter {
         }
     }
 
-    public final static Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
+    public static final Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
 
     protected class RepresentString implements RepresentToNode {
         public Node representData(Object data) {
@@ -234,7 +234,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Byte> asByteList(Object in) {
             byte[] array = (byte[]) in;
-            List<Byte> list = new ArrayList<Byte>(array.length);
+            List<Byte> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -242,7 +242,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Short> asShortList(Object in) {
             short[] array = (short[]) in;
-            List<Short> list = new ArrayList<Short>(array.length);
+            List<Short> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -250,7 +250,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Integer> asIntList(Object in) {
             int[] array = (int[]) in;
-            List<Integer> list = new ArrayList<Integer>(array.length);
+            List<Integer> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -258,7 +258,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Long> asLongList(Object in) {
             long[] array = (long[]) in;
-            List<Long> list = new ArrayList<Long>(array.length);
+            List<Long> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -266,7 +266,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Float> asFloatList(Object in) {
             float[] array = (float[]) in;
-            List<Float> list = new ArrayList<Float>(array.length);
+            List<Float> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -274,7 +274,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Double> asDoubleList(Object in) {
             double[] array = (double[]) in;
-            List<Double> list = new ArrayList<Double>(array.length);
+            List<Double> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -282,7 +282,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Character> asCharList(Object in) {
             char[] array = (char[]) in;
-            List<Character> list = new ArrayList<Character>(array.length);
+            List<Character> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -290,7 +290,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Boolean> asBooleanList(Object in) {
             boolean[] array = (boolean[]) in;
-            List<Boolean> list = new ArrayList<Boolean>(array.length);
+            List<Boolean> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -308,7 +308,7 @@ public class StandardRepresenter extends BaseRepresenter {
     protected class RepresentSet implements RepresentToNode {
         @SuppressWarnings("unchecked")
         public Node representData(Object data) {
-            Map<Object, Object> value = new LinkedHashMap<Object, Object>();
+            Map<Object, Object> value = new LinkedHashMap<>();
             Set<Object> set = (Set<Object>) data;
             for (Object key : set) {
                 value.put(key, null);
@@ -345,7 +345,6 @@ public class StandardRepresenter extends BaseRepresenter {
                 node.setTag(new Tag(Optional.class));
                 return node;
             } else {
-                //TODO should we call null representer ?
                 return representScalar(Tag.NULL, "null");
             }
         }

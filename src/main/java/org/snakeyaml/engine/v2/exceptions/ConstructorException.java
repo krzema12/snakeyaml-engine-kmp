@@ -15,10 +15,12 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
-
 import java.util.Optional;
 
-public class ConstructorException extends MarkedYamlEngineException {
+/**
+ * General exception during construction step
+ */
+public class ConstructorException extends MarkedYamlEngineException { //NOSONAR
 
     public ConstructorException(String context, Optional<Mark> contextMark, String problem,
                                 Optional<Mark> problemMark, Throwable cause) {

@@ -15,8 +15,10 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+/**
+ * General exception for during emitting
+ */
 public class EmitterException extends YamlEngineException {
-
     public EmitterException(String msg) {
         super(msg);
     }

@@ -17,7 +17,10 @@ package org.snakeyaml.engine.v2.exceptions;
 
 import java.util.Optional;
 
-public class DuplicateKeyException extends ConstructorException {
+/**
+ * Indicate duplicate keys in the same mapping
+ */
+public class DuplicateKeyException extends ConstructorException { //NOSONAR
 
     public DuplicateKeyException(Optional<Mark> contextMark, Object key,
                                  Optional<Mark> problemMark) {

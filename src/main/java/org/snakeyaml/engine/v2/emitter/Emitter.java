@@ -84,21 +84,17 @@ public final class Emitter implements Emitable {
         ESCAPE_REPLACEMENTS.put('\u2029', "P");
     }
 
-    private final static Map<String, String> DEFAULT_TAG_PREFIXES = new LinkedHashMap<String, String>();
+    private static final Map<String, String> DEFAULT_TAG_PREFIXES = new LinkedHashMap<>();
 
     static {
         DEFAULT_TAG_PREFIXES.put("!", "!");
         DEFAULT_TAG_PREFIXES.put(Tag.PREFIX, "!!");
     }
 
-    // The stream should have the methods `write` and possibly `flush`.
+    // The stream should have the methods `write` and `flush`.
     private final StreamDataWriter stream;
 
-    // Encoding is defined by Writer (cannot be overriden by STREAM-START.)
-    // private Charset encoding;
-
-    // Emitter is a state machine with a stack of states to handle nested
-    // structures.
+    // Emitter is a state machine with a stack of states to handle nested structures.
     private final ArrayStack<EmitterState> states;
     private EmitterState state;
 
@@ -228,12 +224,12 @@ public final class Emitter implements Emitable {
         if (events.isEmpty()) {
             return true;
         }
-        Event event = events.peek();
-        if (event.getEventId() == Event.ID.DocumentStart) {
+        Event nextEvent = events.peek();
+        if (nextEvent.getEventId() == Event.ID.DocumentStart) {
             return needEvents(1);
-        } else if (event.getEventId() == Event.ID.SequenceStart) {
+        } else if (nextEvent.getEventId() == Event.ID.SequenceStart) {
             return needEvents(2);
-        } else if (event.getEventId() == Event.ID.MappingStart) {
+        } else if (nextEvent.getEventId() == Event.ID.MappingStart) {
             return needEvents(3);
         } else {
             return false;
@@ -245,12 +241,12 @@ public final class Emitter implements Emitable {
         Iterator<Event> iter = events.iterator();
         iter.next();
         while (iter.hasNext()) {
-            Event event = iter.next();
-            if (event.getEventId() == Event.ID.DocumentStart || event instanceof CollectionStartEvent) {
+            Event nextEvent = iter.next();
+            if (nextEvent.getEventId() == Event.ID.DocumentStart || nextEvent instanceof CollectionStartEvent) {
                 level++;
-            } else if (event.getEventId() == Event.ID.DocumentEnd || event instanceof CollectionEndEvent) {
+            } else if (nextEvent.getEventId() == Event.ID.DocumentEnd || nextEvent instanceof CollectionEndEvent) {
                 level--;
-            } else if (event.getEventId() == Event.ID.StreamEnd) {
+            } else if (nextEvent.getEventId() == Event.ID.StreamEnd) {
                 level = -1;
             }
             if (level < 0) {
@@ -312,33 +308,7 @@ public final class Emitter implements Emitable {
         public void expect() {
             if (event.getEventId() == Event.ID.DocumentStart) {
                 DocumentStartEvent ev = (DocumentStartEvent) event;
-                if ((ev.getSpecVersion().isPresent() || ev.getTags() != null) && openEnded) {
-                    writeIndicator("...", true, false, false);
-                    writeIndent();
-                }
-                ev.getSpecVersion().ifPresent(version -> writeVersionDirective(prepareVersion(version)));
-                tagPrefixes = new LinkedHashMap(DEFAULT_TAG_PREFIXES);
-                if (ev.getTags() != null) {
-                    Set<String> handles = new TreeSet(ev.getTags().keySet());
-                    for (String handle : handles) {
-                        String prefix = ev.getTags().get(handle);
-                        tagPrefixes.put(prefix, handle);
-                        String handleText = prepareTagHandle(handle);
-                        String prefixText = prepareTagPrefix(prefix);
-                        writeTagDirective(handleText, prefixText);
-                    }
-                }
-                boolean implicit = first && !ev.isExplicit() && !canonical
-                        && !ev.getSpecVersion().isPresent()
-                        && (ev.getTags() == null || ev.getTags().isEmpty())
-                        && !checkEmptyDocument();
-                if (!implicit) {
-                    writeIndent();
-                    writeIndicator("---", true, false, false);
-                    if (canonical) {
-                        writeIndent();
-                    }
-                }
+                handleDocumentStartEvent(ev);
                 state = new ExpectDocumentRoot();
             } else if (event.getEventId() == Event.ID.StreamEnd) {
                 writeStreamEnd();
@@ -346,6 +316,53 @@ public final class Emitter implements Emitable {
             } else {
                 throw new EmitterException("expected DocumentStartEvent, but got " + event);
             }
+        }
+
+        private void handleDocumentStartEvent(DocumentStartEvent ev) {
+            if ((ev.getSpecVersion().isPresent() || !ev.getTags().isEmpty()) && openEnded) {
+                writeIndicator("...", true, false, false);
+                writeIndent();
+            }
+            ev.getSpecVersion().ifPresent(version -> writeVersionDirective(prepareVersion(version)));
+            tagPrefixes = new LinkedHashMap(DEFAULT_TAG_PREFIXES);
+            if (!ev.getTags().isEmpty()) {
+                handleTagDirectives(ev.getTags());
+            }
+            boolean implicit = first && !ev.isExplicit() && !canonical
+                    && !ev.getSpecVersion().isPresent()
+                    && (ev.getTags().isEmpty())
+                    && !checkEmptyDocument();
+            if (!implicit) {
+                writeIndent();
+                writeIndicator("---", true, false, false);
+                if (canonical) {
+                    writeIndent();
+                }
+            }
+        }
+
+        private void handleTagDirectives(Map<String, String> tags) {
+            Set<String> handles = new TreeSet(tags.keySet());
+            for (String handle : handles) {
+                String prefix = tags.get(handle);
+                tagPrefixes.put(prefix, handle);
+                String handleText = prepareTagHandle(handle);
+                String prefixText = prepareTagPrefix(prefix);
+                writeTagDirective(handleText, prefixText);
+            }
+        }
+
+        private boolean checkEmptyDocument() {
+            if (event.getEventId() != Event.ID.DocumentStart || events.isEmpty()) {
+                return false;
+            }
+            Event nextEvent = events.peek();
+            if (nextEvent.getEventId() == Event.ID.Scalar) {
+                ScalarEvent e = (ScalarEvent) nextEvent;
+                return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null &&
+                        e.getValue().length() == 0;
+            }
+            return false;
         }
     }
 
@@ -380,28 +397,40 @@ public final class Emitter implements Emitable {
         simpleKeyContext = simpleKey;
         if (event.getEventId() == Event.ID.Alias) {
             expectAlias();
-        } else if (event.getEventId() == Event.ID.Scalar || event instanceof CollectionStartEvent) {
+        } else if (event.getEventId() == Event.ID.Scalar ||
+                event.getEventId() == Event.ID.SequenceStart ||
+                event.getEventId() == Event.ID.MappingStart) {
             processAnchor("&");
             processTag();
-            if (event.getEventId() == Event.ID.Scalar) {
+            handleNodeEvent(event.getEventId());
+        } else {
+            throw new EmitterException("expected NodeEvent, but got " + event);
+        }
+    }
+
+    private void handleNodeEvent(Event.ID id) {
+        switch (id) {
+            case Scalar:
                 expectScalar();
-            } else if (event.getEventId() == Event.ID.SequenceStart) {
+                break;
+            case SequenceStart:
                 if (flowLevel != 0 || canonical || ((SequenceStartEvent) event).isFlow()
                         || checkEmptySequence()) {
                     expectFlowSequence();
                 } else {
                     expectBlockSequence();
                 }
-            } else {// MappingStartEvent
+                break;
+            case MappingStart:
                 if (flowLevel != 0 || canonical || ((MappingStartEvent) event).isFlow()
                         || checkEmptyMapping()) {
                     expectFlowMapping();
                 } else {
                     expectBlockMapping();
                 }
-            }
-        } else {
-            throw new EmitterException("expected NodeEvent, but got " + event);
+                break;
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -661,19 +690,6 @@ public final class Emitter implements Emitable {
                 events.peek().getEventId() == Event.ID.MappingEnd;
     }
 
-    private boolean checkEmptyDocument() {
-        if (!(event.getEventId() == Event.ID.DocumentStart) || events.isEmpty()) {
-            return false;
-        }
-        Event event = events.peek();
-        if (event.getEventId() == Event.ID.Scalar) {
-            ScalarEvent e = (ScalarEvent) event;
-            return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null &&
-                    e.getValue().length() == 0;
-        }
-        return false;
-    }
-
     private boolean checkSimpleKey() {
         int length = 0;
         if (event instanceof NodeEvent) {
@@ -682,7 +698,7 @@ public final class Emitter implements Emitable {
                 if (!preparedAnchor.isPresent()) {
                     preparedAnchor = anchorOpt;
                 }
-                length += anchorOpt.get().getAnchor().length();
+                length += anchorOpt.get().getValue().length();
             }
         }
         Optional<String> tag = Optional.empty();
@@ -830,7 +846,7 @@ public final class Emitter implements Emitable {
         return version.getRepresentation();
     }
 
-    private final static Pattern HANDLE_FORMAT = Pattern.compile("^![-_\\w]*!$");
+    private static final Pattern HANDLE_FORMAT = Pattern.compile("^![-_\\w]*!$");
 
     private String prepareTagHandle(String handle) {
         if (handle.length() == 0) {

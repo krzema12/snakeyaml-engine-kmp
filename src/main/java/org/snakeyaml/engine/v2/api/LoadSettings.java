@@ -19,36 +19,37 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 
 /**
  * Fine tuning parsing/loading
  * Description for all the fields can be found in the builder
  */
 public final class LoadSettings {
-    private String label;
-    private Map<Tag, ConstructNode> tagConstructors;
-    private ScalarResolver scalarResolver;
-    private Function<Integer, List> defaultList;
-    private Function<Integer, Set> defaultSet;
-    private Function<Integer, Map> defaultMap;
-    private Function<SpecVersion, SpecVersion> versionFunction;
-    private Integer bufferSize;
-    private boolean allowDuplicateKeys;
-    private boolean allowRecursiveKeys;
-    private boolean useMarks;
+    private final String label;
+    private final Map<Tag, ConstructNode> tagConstructors;
+    private final ScalarResolver scalarResolver;
+    private final IntFunction<List> defaultList;
+    private final IntFunction<Set> defaultSet;
+    private final IntFunction<Map> defaultMap;
+    private final UnaryOperator<SpecVersion> versionFunction;
+    private final Integer bufferSize;
+    private final boolean allowDuplicateKeys;
+    private final boolean allowRecursiveKeys;
+    private final boolean useMarks;
 
     //general
-    Map<SettingKey, Object> customProperties = new HashMap();
+    private final Map<SettingKey, Object> customProperties;
 
     LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
-                 ScalarResolver scalarResolver, Function<Integer, List> defaultList,
-                 Function<Integer, Set> defaultSet, Function<Integer, Map> defaultMap,
-                 Function<SpecVersion, SpecVersion> versionFunction, Integer bufferSize,
+                 ScalarResolver scalarResolver, IntFunction<List> defaultList,
+                 IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
+                 UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
                  boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks,
                  Map<SettingKey, Object> customProperties) {
         this.label = label;
@@ -62,6 +63,7 @@ public final class LoadSettings {
         this.allowDuplicateKeys = allowDuplicateKeys;
         this.allowRecursiveKeys = allowRecursiveKeys;
         this.useMarks = useMarks;
+        this.customProperties = customProperties;
     }
 
     public static final LoadSettingsBuilder builder() {
@@ -80,15 +82,15 @@ public final class LoadSettings {
         return scalarResolver;
     }
 
-    public Function<Integer, List> getDefaultList() {
+    public IntFunction<List> getDefaultList() {
         return defaultList;
     }
 
-    public Function<Integer, Set> getDefaultSet() {
+    public IntFunction<Set> getDefaultSet() {
         return defaultSet;
     }
 
-    public Function<Integer, Map> getDefaultMap() {
+    public IntFunction<Map> getDefaultMap() {
         return defaultMap;
     }
 

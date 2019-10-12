@@ -19,16 +19,36 @@ import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.scanner.Scanner;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.AliasToken;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
+import org.snakeyaml.engine.v2.tokens.DirectiveToken;
+import org.snakeyaml.engine.v2.tokens.DocumentEndToken;
+import org.snakeyaml.engine.v2.tokens.DocumentStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowEntryToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken;
+import org.snakeyaml.engine.v2.tokens.KeyToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.StreamEndToken;
+import org.snakeyaml.engine.v2.tokens.StreamStartToken;
+import org.snakeyaml.engine.v2.tokens.TagToken;
+import org.snakeyaml.engine.v2.tokens.TagTuple;
+import org.snakeyaml.engine.v2.tokens.Token;
+import org.snakeyaml.engine.v2.tokens.ValueToken;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class CanonicalScanner implements Scanner {
     private static final String DIRECTIVE = "%YAML 1.2";
 
-    private final static Map<Character, Integer> ESCAPE_CODES = new HashMap();
-    public final static Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
-
+    private static final Map<Character, Integer> ESCAPE_CODES = new HashMap();
+    public static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
 
     static {
         // ASCII null
@@ -241,11 +261,7 @@ public class CanonicalScanner implements Scanner {
     private Token scanAlias() {
         boolean isTokenClassAlias;
         final int c = data.codePointAt(index);
-        if (c == '*') {
-            isTokenClassAlias = true;
-        } else {
-            isTokenClassAlias = false;
-        }
+        isTokenClassAlias = c == '*';
         index += Character.charCount(c);
         int start = index;
         while (", \n\0".indexOf(data.charAt(index)) == -1) {
@@ -288,19 +304,19 @@ public class CanonicalScanner implements Scanner {
         while (data.charAt(index) != '"') {
             if (data.charAt(index) == '\\') {
                 ignoreSpaces = false;
-                chunks.append(data.substring(start, index));
+                chunks.append(data, start, index);
                 index += Character.charCount(data.codePointAt(index));
                 int c = data.codePointAt(index);
                 index += Character.charCount(data.codePointAt(index));
                 if (c == '\n') {
                     ignoreSpaces = true;
-                } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.keySet().contains((char) c)) {
+                } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.containsKey((char) c)) {
                     int length = ESCAPE_CODES.get((char) c);
                     int code = Integer.parseInt(data.substring(index, index + length), 16);
-                    chunks.append(String.valueOf((char) code));
+                    chunks.append((char) code);
                     index += length;
                 } else {
-                    if (Character.isSupplementaryCodePoint(c) || !ESCAPE_REPLACEMENTS.keySet().contains((char) c)) {
+                    if (Character.isSupplementaryCodePoint(c) || !ESCAPE_REPLACEMENTS.containsKey((char) c)) {
                         throw new CanonicalException("invalid escape code");
                     }
                     chunks.append(ESCAPE_REPLACEMENTS.get((char) c));
@@ -322,7 +338,7 @@ public class CanonicalScanner implements Scanner {
         }
         chunks.append(data.substring(start, index));
         index += Character.charCount(data.codePointAt(index));
-        return new ScalarToken(chunks.toString(),false, mark, mark);
+        return new ScalarToken(chunks.toString(), false, mark, mark);
     }
 
     private void findToken() {

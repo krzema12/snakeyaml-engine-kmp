@@ -194,7 +194,7 @@ public abstract class BaseConstructor {
 
     // >>>> Construct => NEW, 2ndStep(filling)
     protected List<Object> constructSequence(SequenceNode node) {
-        List<Object> result = settings.getDefaultList().apply(node.getSequence().size());
+        List<Object> result = settings.getDefaultList().apply(node.getValue().size());
         constructSequenceStep2(node, result);
         return result;
     }

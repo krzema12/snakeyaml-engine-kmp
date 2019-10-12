@@ -317,7 +317,7 @@ public class StandardConstructor extends BaseConstructor {
         public Object construct(Node node) {
             SequenceNode seqNode = (SequenceNode) node;
             if (node.isRecursive()) {
-                return settings.getDefaultList().apply(seqNode.getSequence().size());
+                return settings.getDefaultList().apply(seqNode.getValue().size());
             } else {
                 return constructSequence(seqNode);
             }

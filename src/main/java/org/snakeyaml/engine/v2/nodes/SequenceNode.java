@@ -29,7 +29,7 @@ import java.util.Optional;
  * </p>
  */
 public class SequenceNode extends CollectionNode<Node> {
-    final private List<Node> value;
+    private final List<Node> value;
 
     public SequenceNode(Tag tag, boolean resolved, List<Node> value,
                         FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
@@ -54,10 +54,6 @@ public class SequenceNode extends CollectionNode<Node> {
      * @return Nodes in the specified order.
      */
     public List<Node> getValue() {
-        return value;
-    }
-
-    public List<Node> getSequence() {
         return value;
     }
 

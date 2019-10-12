@@ -42,11 +42,7 @@ public class JsonScalarResolver implements ScalarResolver {
 
     public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
         if (first == null) {
-            List<ResolverTuple> curr = yamlImplicitResolvers.get(null);
-            if (curr == null) {
-                curr = new ArrayList();
-                yamlImplicitResolvers.put(null, curr);
-            }
+            List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList());
             curr.add(new ResolverTuple(tag, regexp));
         } else {
             char[] chrs = first.toCharArray();

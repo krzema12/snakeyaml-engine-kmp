@@ -207,13 +207,13 @@ public abstract class BaseConstructor {
     }
 
     protected Set<Object> constructSet(MappingNode node) {
-        final Set<Object> set = settings.getDefaultSet().apply(node.getMapping().size());
+        final Set<Object> set = settings.getDefaultSet().apply(node.getValue().size());
         constructSet2ndStep(node, set);
         return set;
     }
 
     protected Map<Object, Object> constructMapping(MappingNode node) {
-        final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getMapping().size());
+        final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getValue().size());
         constructMapping2ndStep(node, mapping);
         return mapping;
     }

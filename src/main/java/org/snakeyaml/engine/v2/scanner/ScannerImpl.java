@@ -92,7 +92,7 @@ public final class ScannerImpl implements Scanner {
      * A regular expression matching characters which are not in the hexadecimal
      * set (0-9, A-F, a-f).
      */
-    private final static Pattern NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]");
+    private static final Pattern NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]");
 
     private final StreamReader reader;
     // Had we reached the end of the stream?

@@ -177,7 +177,7 @@ public class StandardConstructor extends BaseConstructor {
         }
     }
 
-    private final static Map<String, Boolean> BOOL_VALUES = new HashMap();
+    private static final Map<String, Boolean> BOOL_VALUES = new HashMap();
 
     static {
         BOOL_VALUES.put("true", Boolean.TRUE);

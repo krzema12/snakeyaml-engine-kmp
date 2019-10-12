@@ -22,27 +22,27 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public final class CharConstants {
-    private final static String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+    private static final String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
-    private final static String LINEBR_S = "\n\r";
-    private final static String NULL_OR_LINEBR_S = "\0" + LINEBR_S;
-    private final static String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
-    private final static String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;
-    private final static String NULL_BL_T_S = "\0 \t";
-    private final static String URI_CHARS_S = ALPHA_S + "-;/?:@&=+$,_.!~*\'()[]%";
+    private static final String LINEBR_S = "\n\r";
+    private static final String NULL_OR_LINEBR_S = "\0" + LINEBR_S;
+    private static final String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
+    private static final String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;
+    private static final String NULL_BL_T_S = "\0 \t";
+    private static final String URI_CHARS_S = ALPHA_S + "-;/?:@&=+$,_.!~*\'()[]%";
 
-    public final static CharConstants LINEBR = new CharConstants(LINEBR_S);
-    public final static CharConstants NULL_OR_LINEBR = new CharConstants(NULL_OR_LINEBR_S);
-    public final static CharConstants NULL_BL_LINEBR = new CharConstants(NULL_BL_LINEBR_S);
-    public final static CharConstants NULL_BL_T_LINEBR = new CharConstants(NULL_BL_T_LINEBR_S);
-    public final static CharConstants NULL_BL_T = new CharConstants(NULL_BL_T_S);
-    public final static CharConstants URI_CHARS = new CharConstants(URI_CHARS_S);
+    public static final CharConstants LINEBR = new CharConstants(LINEBR_S);
+    public static final CharConstants NULL_OR_LINEBR = new CharConstants(NULL_OR_LINEBR_S);
+    public static final CharConstants NULL_BL_LINEBR = new CharConstants(NULL_BL_LINEBR_S);
+    public static final CharConstants NULL_BL_T_LINEBR = new CharConstants(NULL_BL_T_LINEBR_S);
+    public static final CharConstants NULL_BL_T = new CharConstants(NULL_BL_T_S);
+    public static final CharConstants URI_CHARS = new CharConstants(URI_CHARS_S);
 
-    public final static CharConstants ALPHA = new CharConstants(ALPHA_S);
+    public static final CharConstants ALPHA = new CharConstants(ALPHA_S);
 
-    public final static Pattern ANCHOR_FORMAT = Pattern.compile("^[-_\\w]*$");
+    public static final Pattern ANCHOR_FORMAT = Pattern.compile("^[-_\\w]*$");
 
-    private final static int ASCII_SIZE = 128;
+    private static final int ASCII_SIZE = 128;
     boolean[] contains = new boolean[ASCII_SIZE];
 
     private CharConstants(String content) {
@@ -75,7 +75,7 @@ public final class CharConstants {
      * <p>
      * YAML defines several common and a few uncommon escape sequences.
      */
-    public final static Map<Integer, Character> ESCAPE_REPLACEMENTS;
+    public static final Map<Integer, Character> ESCAPE_REPLACEMENTS;
 
     /**
      * A mapping from a character to be escaped to its code in the output stream. (used for emitting)
@@ -85,7 +85,7 @@ public final class CharConstants {
      *
      * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2776092">5.7. Escaped Characters</a>
      */
-    public final static Map<Character, Integer> ESCAPES;
+    public static final Map<Character, Integer> ESCAPES;
 
     /**
      * A mapping from a character to a number of bytes to read-ahead for that
@@ -97,7 +97,7 @@ public final class CharConstants {
      * &#92;UHHHHHHHH   : escaped 32-bit Unicode character
      * </pre>
      */
-    public final static Map<Character, Integer> ESCAPE_CODES;
+    public static final Map<Character, Integer> ESCAPE_CODES;
 
     static {
         Map<Integer, Character> escapeReplacements = new HashMap();

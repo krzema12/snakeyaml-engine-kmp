@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.v2.common;
 
-
 import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
 import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -25,17 +24,20 @@ import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 
 public abstract class UriEncoder {
-    private static final CharsetDecoder UTF8Decoder = Charset.forName("UTF-8").newDecoder()
+    private static final CharsetDecoder UTF8Decoder = StandardCharsets.UTF_8.newDecoder()
             .onMalformedInput(CodingErrorAction.REPORT);
     // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
     // its escape as required by spec. See
     private static final String SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/";
     private static final Escaper escaper = new PercentEscaper(SAFE_CHARS, false);
+
+    private UriEncoder() {
+    }
 
     /**
      * Escape special characters with '%'

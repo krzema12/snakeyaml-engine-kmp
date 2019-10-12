@@ -23,6 +23,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.util.LinkedList;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,7 +34,7 @@ class CustomDefaultCollectionsTest {
     @DisplayName("Create LinkedList by default")
     void createLinkedListByDefault(TestInfo testInfo) {
         //init size is not used in LinkedList
-        LoadSettings settings = LoadSettings.builder().setDefaultList((initSize) -> new LinkedList()).build();
+        LoadSettings settings = LoadSettings.builder().setDefaultList(initSize -> new LinkedList()).build();
         Load load = new Load(settings);
         LinkedList<String> list = (LinkedList<String>) load.loadFromString("- a\n- b");
         assertEquals(2, list.size());
@@ -43,10 +44,22 @@ class CustomDefaultCollectionsTest {
     @DisplayName("Create TreeMap by default")
     void createTreeMapByDefault(TestInfo testInfo) {
         //init size is not used in TreeMap
-        LoadSettings settings = LoadSettings.builder().setDefaultMap((initSize) -> new TreeMap()).build();
+        LoadSettings settings = LoadSettings.builder().setDefaultMap(initSize -> new TreeMap()).build();
         Load load = new Load(settings);
-        TreeMap<String, String> list = (TreeMap<String, String>) load.loadFromString("{k1: v1, k2: v2}");
-        assertEquals(2, list.size());
+        TreeMap<String, String> map = (TreeMap<String, String>) load.loadFromString("{k1: v1, k2: v2}");
+        assertEquals(2, map.size());
+    }
+
+    @Test
+    @DisplayName("Create TreeSet by default")
+    void createTreeSetByDefault(TestInfo testInfo) {
+        LoadSettings settings = LoadSettings.builder().setDefaultSet(initSize -> new TreeSet()).build();
+        Load load = new Load(settings);
+        TreeSet<String> set = (TreeSet<String>) load.loadFromString("!!set\n? foo\n? bar");
+        assertEquals(2, set.size());
+        //must be re-ordered
+        assertEquals("bar", set.first());
+        assertEquals("foo", set.last());
     }
 }
 

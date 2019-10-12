@@ -38,13 +38,13 @@ public class JsonScalarResolver implements ScalarResolver {
     public static final Pattern NULL = Pattern.compile("^(?:null)$");
     public static final Pattern EMPTY = Pattern.compile("^$");
 
-    protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<Character, List<ResolverTuple>>();
+    protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
 
     public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
         if (first == null) {
             List<ResolverTuple> curr = yamlImplicitResolvers.get(null);
             if (curr == null) {
-                curr = new ArrayList<ResolverTuple>();
+                curr = new ArrayList();
                 yamlImplicitResolvers.put(null, curr);
             }
             curr.add(new ResolverTuple(tag, regexp));
@@ -58,7 +58,7 @@ public class JsonScalarResolver implements ScalarResolver {
                 }
                 List<ResolverTuple> curr = yamlImplicitResolvers.get(theC);
                 if (curr == null) {
-                    curr = new ArrayList<ResolverTuple>();
+                    curr = new ArrayList();
                     yamlImplicitResolvers.put(theC, curr);
                 }
                 curr.add(new ResolverTuple(tag, regexp));
@@ -75,7 +75,7 @@ public class JsonScalarResolver implements ScalarResolver {
          * http://code.google.com/p/snakeyaml/issues/detail?id=130
          */
         addImplicitResolver(Tag.INT, INT, "-0123456789");
-        addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
+        addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.");
         addImplicitResolver(Tag.NULL, NULL, "n\u0000");
     }
 

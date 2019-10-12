@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 
 /**
  * Fine tuning parsing/loading
@@ -32,10 +34,10 @@ public final class LoadSettings {
     private final String label;
     private final Map<Tag, ConstructNode> tagConstructors;
     private final ScalarResolver scalarResolver;
-    private final Function<Integer, List> defaultList;
-    private final Function<Integer, Set> defaultSet;
-    private final Function<Integer, Map> defaultMap;
-    private final Function<SpecVersion, SpecVersion> versionFunction;
+    private final IntFunction<List> defaultList;
+    private final IntFunction<Set> defaultSet;
+    private final IntFunction<Map> defaultMap;
+    private final UnaryOperator<SpecVersion> versionFunction;
     private final Integer bufferSize;
     private final boolean allowDuplicateKeys;
     private final boolean allowRecursiveKeys;
@@ -45,9 +47,9 @@ public final class LoadSettings {
     private final Map<SettingKey, Object> customProperties;
 
     LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
-                 ScalarResolver scalarResolver, Function<Integer, List> defaultList,
-                 Function<Integer, Set> defaultSet, Function<Integer, Map> defaultMap,
-                 Function<SpecVersion, SpecVersion> versionFunction, Integer bufferSize,
+                 ScalarResolver scalarResolver, IntFunction<List> defaultList,
+                 IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
+                 UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
                  boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks,
                  Map<SettingKey, Object> customProperties) {
         this.label = label;
@@ -80,15 +82,15 @@ public final class LoadSettings {
         return scalarResolver;
     }
 
-    public Function<Integer, List> getDefaultList() {
+    public IntFunction<List> getDefaultList() {
         return defaultList;
     }
 
-    public Function<Integer, Set> getDefaultSet() {
+    public IntFunction<Set> getDefaultSet() {
         return defaultSet;
     }
 
-    public Function<Integer, Map> getDefaultMap() {
+    public IntFunction<Map> getDefaultMap() {
         return defaultMap;
     }
 

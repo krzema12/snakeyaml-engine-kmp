@@ -24,6 +24,10 @@
         <required.maven.version>3.5.0</required.maven.version>
 
         <sonar.exclusions>**/*google*/**.java</sonar.exclusions>
+        <!-- Methods should not have too many parameters -->
+        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.e1.ruleKey>squid:S00107</sonar.issue.ignore.multicriteria.e1.ruleKey>
+        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
     </properties>
     <name>SnakeYAML Engine</name>
     <description>Core YAML 1.2 parser and emitter for Java</description>

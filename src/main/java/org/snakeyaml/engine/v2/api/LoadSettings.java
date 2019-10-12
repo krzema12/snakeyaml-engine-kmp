@@ -19,7 +19,6 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,20 +29,20 @@ import java.util.function.Function;
  * Description for all the fields can be found in the builder
  */
 public final class LoadSettings {
-    private String label;
-    private Map<Tag, ConstructNode> tagConstructors;
-    private ScalarResolver scalarResolver;
-    private Function<Integer, List> defaultList;
-    private Function<Integer, Set> defaultSet;
-    private Function<Integer, Map> defaultMap;
-    private Function<SpecVersion, SpecVersion> versionFunction;
-    private Integer bufferSize;
-    private boolean allowDuplicateKeys;
-    private boolean allowRecursiveKeys;
-    private boolean useMarks;
+    private final String label;
+    private final Map<Tag, ConstructNode> tagConstructors;
+    private final ScalarResolver scalarResolver;
+    private final Function<Integer, List> defaultList;
+    private final Function<Integer, Set> defaultSet;
+    private final Function<Integer, Map> defaultMap;
+    private final Function<SpecVersion, SpecVersion> versionFunction;
+    private final Integer bufferSize;
+    private final boolean allowDuplicateKeys;
+    private final boolean allowRecursiveKeys;
+    private final boolean useMarks;
 
     //general
-    Map<SettingKey, Object> customProperties = new HashMap();
+    private final Map<SettingKey, Object> customProperties;
 
     LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
                  ScalarResolver scalarResolver, Function<Integer, List> defaultList,
@@ -62,6 +61,7 @@ public final class LoadSettings {
         this.allowDuplicateKeys = allowDuplicateKeys;
         this.allowRecursiveKeys = allowRecursiveKeys;
         this.useMarks = useMarks;
+        this.customProperties = customProperties;
     }
 
     public static final LoadSettingsBuilder builder() {

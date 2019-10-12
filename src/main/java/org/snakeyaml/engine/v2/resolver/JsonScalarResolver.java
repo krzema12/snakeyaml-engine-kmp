@@ -25,17 +25,16 @@ import java.util.regex.Pattern;
 
 /**
  * ScalarResolver for JSON Schema
- * The scherma is NOT the same as in YAML 1.2 but identical to JSON,
+ * The schema is NOT the same as in YAML 1.2 but identical to JSON,
  * 1) .inf, -.inf, .nan values are not used,
- * 2) integers may have a leading 0
  *
  * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2803231">Chapter 10.2. JSON Schema</a>
  */
 public class JsonScalarResolver implements ScalarResolver {
 
     public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
-    public static final Pattern FLOAT = Pattern.compile("^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)$");
-    public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[0-9][0-9]*))$");
+    public static final Pattern FLOAT = Pattern.compile("^(-?(0?\\.[0-9]+|[1-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)$"); //NOSONAR
+    public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
     public static final Pattern NULL = Pattern.compile("^(?:null)$");
     public static final Pattern EMPTY = Pattern.compile("^$");
 

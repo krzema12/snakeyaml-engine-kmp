@@ -23,7 +23,7 @@ import java.util.Optional;
  * Exception thrown by the {@link Scanner} implementations in case of malformed
  * input.
  */
-public class ScannerException extends MarkedYamlEngineException {
+public class ScannerException extends MarkedYamlEngineException { //NOSONAR
 
     /**
      * Constructs an instance.

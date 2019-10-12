@@ -20,10 +20,10 @@ import java.util.Optional;
 
 public class MarkedYamlEngineException extends YamlEngineException {
 
-    private String context;
-    private Optional<Mark> contextMark;
-    private String problem;
-    private Optional<Mark> problemMark;
+    private final String context;
+    private final Optional<Mark> contextMark;
+    private final String problem;
+    private final Optional<Mark> problemMark;
 
     protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
                                         Optional<Mark> problemMark, Throwable cause) {

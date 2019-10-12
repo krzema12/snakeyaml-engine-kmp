@@ -258,7 +258,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Long> asLongList(Object in) {
             long[] array = (long[]) in;
-            List<Long> list = new ArrayList<Long>(array.length);
+            List<Long> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -274,7 +274,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Double> asDoubleList(Object in) {
             double[] array = (double[]) in;
-            List<Double> list = new ArrayList<Double>(array.length);
+            List<Double> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -308,7 +308,7 @@ public class StandardRepresenter extends BaseRepresenter {
     protected class RepresentSet implements RepresentToNode {
         @SuppressWarnings("unchecked")
         public Node representData(Object data) {
-            Map<Object, Object> value = new LinkedHashMap<Object, Object>();
+            Map<Object, Object> value = new LinkedHashMap<>();
             Set<Object> set = (Set<Object>) data;
             for (Object key : set) {
                 value.put(key, null);
@@ -345,7 +345,6 @@ public class StandardRepresenter extends BaseRepresenter {
                 node.setTag(new Tag(Optional.class));
                 return node;
             } else {
-                //TODO should we call null representer ?
                 return representScalar(Tag.NULL, "null");
             }
         }

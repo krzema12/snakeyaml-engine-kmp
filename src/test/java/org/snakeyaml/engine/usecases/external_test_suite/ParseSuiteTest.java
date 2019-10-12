@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -39,12 +40,16 @@ class ParseSuiteTest {
 
     @Test
     @DisplayName("Parse: Run one test")
+    /**
+     * This test is used to debug one test (which is given explicitly)
+     */
     void runOne() {
         SuiteData data = SuiteUtils.getOne("6FWR");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
         Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
         for (Event event : iterable) {
-            //System.out.println(event);
+            assertNotNull(event);
+            System.out.println(event);
         }
     }
 
@@ -64,7 +69,7 @@ class ParseSuiteTest {
                             .collect(Collectors.toList());
                     for (ParsePair pair : pairs) {
                         EventRepresentation representation = new EventRepresentation(pair.getEvent());
-                        assertEquals(pair.getEtalon(), representation.getRepresentation(), "Failure in " + data.getName());
+                        assertEquals(pair.getExpected(), representation.getRepresentation(), "Failure in " + data.getName());
                     }
                 }
             }
@@ -74,16 +79,16 @@ class ParseSuiteTest {
 
 
 class ParsePair {
-    private String etalon;
+    private String expected;
     private Event event;
 
-    public ParsePair(String etalon, Event event) {
-        this.etalon = etalon;
+    public ParsePair(String expected, Event event) {
+        this.expected = expected;
         this.event = event;
     }
 
-    public String getEtalon() {
-        return etalon;
+    public String getExpected() {
+        return expected;
     }
 
     public Event getEvent() {

@@ -45,6 +45,7 @@ public abstract class BaseRepresenter {
     protected ScalarStyle defaultScalarStyle = ScalarStyle.PLAIN;
     protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
     protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
+        @Override
         public Node put(Object key, Node value) {
             return super.put(key, new AnchorNode(value));
         }
@@ -79,9 +80,9 @@ public abstract class BaseRepresenter {
             return Optional.of(representers.get(clazz));
         } else {
             // check the parents
-            for (Class<?> parentRepresenter : parentClassRepresenters.keySet()) {
-                if (parentRepresenter.isInstance(data)) {
-                    return Optional.of(parentClassRepresenters.get(parentRepresenter));
+            for (Map.Entry<Class<?>, RepresentToNode> parentRepresenterEntry : parentClassRepresenters.entrySet()) {
+                if (parentRepresenterEntry.getKey().isInstance(data)) {
+                    return Optional.of(parentRepresenterEntry.getValue());
                 }
             }
             return Optional.empty();
@@ -92,13 +93,11 @@ public abstract class BaseRepresenter {
         objectToRepresent = data;
         // check for identity
         if (representedObjects.containsKey(objectToRepresent)) {
-            Node node = representedObjects.get(objectToRepresent);
-            return node;
+            return representedObjects.get(objectToRepresent);
         }
         // check for null first
         if (data == null) {
-            Node node = nullRepresenter.representData(null);
-            return node;
+            return nullRepresenter.representData(null);
         }
         RepresentToNode representer = findRepresenterFor(data)
                 .orElseThrow(() -> new YamlEngineException("Representer is not defined for " + data.getClass()));
@@ -109,8 +108,7 @@ public abstract class BaseRepresenter {
         if (style == ScalarStyle.PLAIN) {
             style = this.defaultScalarStyle;
         }
-        Node node = new ScalarNode(tag, value, style);
-        return node;
+        return new ScalarNode(tag, value, style);
     }
 
     protected Node representScalar(Tag tag, String value) {
@@ -122,7 +120,7 @@ public abstract class BaseRepresenter {
         if (sequence instanceof List<?>) {
             size = ((List<?>) sequence).size();
         }
-        List<Node> value = new ArrayList<Node>(size);
+        List<Node> value = new ArrayList<>(size);
         SequenceNode node = new SequenceNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
         FlowStyle bestStyle = FlowStyle.FLOW;
@@ -144,7 +142,7 @@ public abstract class BaseRepresenter {
     }
 
     protected Node representMapping(Tag tag, Map<?, ?> mapping, FlowStyle flowStyle) {
-        List<NodeTuple> value = new ArrayList<NodeTuple>(mapping.size());
+        List<NodeTuple> value = new ArrayList<>(mapping.size());
         MappingNode node = new MappingNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
         FlowStyle bestStyle = FlowStyle.FLOW;

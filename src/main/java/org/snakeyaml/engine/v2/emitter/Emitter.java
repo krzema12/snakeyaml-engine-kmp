@@ -104,6 +104,7 @@ public final class Emitter implements Emitable {
 
     // The current indentation level and the stack of previous indents.
     private final ArrayStack<Integer> indents;
+    //TODO should it be Optional ?
     private Integer indent;
 
     // Flow level.
@@ -735,11 +736,8 @@ public final class Emitter implements Emitable {
                 preparedAnchor = anchorOption;
             }
             writeIndicator(indicator + anchor, true, false, false);
-            preparedAnchor = Optional.empty();
-        } else {
-            preparedAnchor = Optional.empty();
-            return;
         }
+        preparedAnchor = Optional.empty();
     }
 
     private void processTag() {
@@ -1105,18 +1103,16 @@ public final class Emitter implements Emitable {
     }
 
     void writeIndent() {
-        int indent;
+        final int indentToWrite;
         if (this.indent != null) {
-            indent = this.indent;
+            indentToWrite = this.indent;
         } else {
-            indent = 0;
+            indentToWrite = 0;
         }
-
-        if (!this.indention || this.column > indent || (this.column == indent && !this.whitespace)) {
+        if (!this.indention || this.column > indentToWrite || (this.column == indentToWrite && !this.whitespace)) {
             writeLineBreak(null);
         }
-
-        writeWhitespace(indent - this.column);
+        writeWhitespace(indentToWrite - this.column);
     }
 
     private void writeWhitespace(int length) {
@@ -1162,7 +1158,8 @@ public final class Emitter implements Emitable {
         writeIndicator("'", true, false, false);
         boolean spaces = false;
         boolean breaks = false;
-        int start = 0, end = 0;
+        int start = 0;
+        int end = 0;
         char ch;
         while (end <= text.length()) {
             ch = 0;
@@ -1320,7 +1317,8 @@ public final class Emitter implements Emitable {
         boolean leadingSpace = true;
         boolean spaces = false;
         boolean breaks = true;
-        int start = 0, end = 0;
+        int start = 0;
+        int end = 0;
         while (end <= text.length()) {
             char ch = 0;
             if (end < text.length()) {
@@ -1383,7 +1381,8 @@ public final class Emitter implements Emitable {
         }
         writeLineBreak(null);
         boolean breaks = true;
-        int start = 0, end = 0;
+        int start = 0;
+        int end = 0;
         while (end <= text.length()) {
             char ch = 0;
             if (end < text.length()) {
@@ -1435,7 +1434,8 @@ public final class Emitter implements Emitable {
         this.indention = false;
         boolean spaces = false;
         boolean breaks = false;
-        int start = 0, end = 0;
+        int start = 0;
+        int end = 0;
         while (end <= text.length()) {
             char ch = 0;
             if (end < text.length()) {

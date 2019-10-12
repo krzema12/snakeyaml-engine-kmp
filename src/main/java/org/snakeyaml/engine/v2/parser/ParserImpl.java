@@ -156,7 +156,6 @@ public class ParserImpl implements Parser {
      */
     public boolean checkEvent(Event.ID choice) {
         peekEvent();
-//        return currentEvent.filter(event -> event.isEvent(choice)).isPresent();
         return currentEvent.isPresent() && currentEvent.get().getEventId() == choice;
     }
 
@@ -302,7 +301,7 @@ public class ParserImpl implements Parser {
     @SuppressWarnings("unchecked")
     private VersionTagsTuple processDirectives() {
         Optional<SpecVersion> yamlSpecVersion = Optional.empty();
-        HashMap<String, String> tagHandles = new HashMap<String, String>();
+        HashMap<String, String> tagHandles = new HashMap<>();
         while (scanner.checkToken(Token.ID.Directive)) {
             @SuppressWarnings("rawtypes")
             DirectiveToken token = (DirectiveToken) scanner.next();
@@ -623,7 +622,7 @@ public class ParserImpl implements Parser {
     }
 
     private class ParseFlowSequenceEntry implements Production {
-        private boolean first = false;
+        private final boolean first;
 
         public ParseFlowSequenceEntry(boolean first) {
             this.first = first;
@@ -718,7 +717,7 @@ public class ParserImpl implements Parser {
     }
 
     private class ParseFlowMappingKey implements Production {
-        private boolean first = false;
+        private final boolean first;
 
         public ParseFlowMappingKey(boolean first) {
             this.first = first;

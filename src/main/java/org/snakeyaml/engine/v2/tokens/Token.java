@@ -22,26 +22,26 @@ import java.util.Optional;
 
 public abstract class Token {
     public enum ID {
-        Alias("<alias>"),
-        Anchor("<anchor>"),
-        BlockEnd("<block end>"),
-        BlockEntry("-"),
-        BlockMappingStart("<block mapping start>"),
-        BlockSequenceStart("<block sequence start>"),
-        Directive("<directive>"),
-        DocumentEnd("<document end>"),
-        DocumentStart("<document start>"),
-        FlowEntry(","),
-        FlowMappingEnd("}"),
-        FlowMappingStart("{"),
-        FlowSequenceEnd("]"),
-        FlowSequenceStart("["),
-        Key("?"),
-        Scalar("<scalar>"),
-        StreamEnd("<stream end>"),
-        StreamStart("<stream start>"),
-        Tag("<tag>"),
-        Value(":");
+        Alias("<alias>"), //NOSONAR
+        Anchor("<anchor>"), //NOSONAR
+        BlockEnd("<block end>"), //NOSONAR
+        BlockEntry("-"), //NOSONAR
+        BlockMappingStart("<block mapping start>"), //NOSONAR
+        BlockSequenceStart("<block sequence start>"), //NOSONAR
+        Directive("<directive>"), //NOSONAR
+        DocumentEnd("<document end>"), //NOSONAR
+        DocumentStart("<document start>"), //NOSONAR
+        FlowEntry(","), //NOSONAR
+        FlowMappingEnd("}"), //NOSONAR
+        FlowMappingStart("{"), //NOSONAR
+        FlowSequenceEnd("]"), //NOSONAR
+        FlowSequenceStart("["), //NOSONAR
+        Key("?"), //NOSONAR
+        Scalar("<scalar>"), //NOSONAR
+        StreamEnd("<stream end>"), //NOSONAR
+        StreamStart("<stream start>"), //NOSONAR
+        Tag("<tag>"), //NOSONAR
+        Value(":"); //NOSONAR
 
         private final String description;
 

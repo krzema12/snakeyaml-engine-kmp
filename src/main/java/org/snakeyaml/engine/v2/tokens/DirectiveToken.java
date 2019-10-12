@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
-
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
@@ -32,11 +31,11 @@ public final class DirectiveToken<T> extends Token {
 
     public DirectiveToken(String name, Optional<List<T>> value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
+        Objects.requireNonNull(name);
         this.name = name;
         Objects.requireNonNull(value);
         if (value.isPresent() && value.get().size() != 2) {
-            throw new YamlEngineException("Two strings/integers must be provided instead of "
-                    + String.valueOf(value.get().size()));
+            throw new YamlEngineException("Two strings/integers must be provided instead of " + value.get().size());
         }
         this.value = value;
     }

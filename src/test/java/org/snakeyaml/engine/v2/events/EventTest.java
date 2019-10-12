@@ -37,7 +37,7 @@ class EventTest {
     @Test
     void hashcode(TestInfo testInfo) {
         Event alias = new AliasEvent(Optional.of(new Anchor("111")));
-        assertEquals(alias.toString().hashCode(), alias.hashCode());
+        assertEquals(new AliasEvent(Optional.of(new Anchor("111"))).hashCode(), alias.hashCode());
     }
 
     @Test

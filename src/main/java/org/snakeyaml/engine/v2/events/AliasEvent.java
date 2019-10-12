@@ -18,6 +18,7 @@ package org.snakeyaml.engine.v2.events;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -51,5 +52,19 @@ public final class AliasEvent extends NodeEvent {
 
     public Anchor getAlias() {
         return alias;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AliasEvent that = (AliasEvent) o;
+        return alias.equals(that.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), alias);
     }
 }

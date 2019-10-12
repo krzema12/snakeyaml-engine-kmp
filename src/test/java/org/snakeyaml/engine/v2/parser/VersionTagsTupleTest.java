@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.parser;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class VersionTagsTupleTest {
 
     @Test
-    void toString(TestInfo testInfo) {
+    void testToString() {
         VersionTagsTuple tuple = new VersionTagsTuple(Optional.empty(), ImmutableMap.of());
         assertEquals("VersionTagsTuple<Optional.empty, {}>", tuple.toString());
     }

@@ -18,9 +18,10 @@ package org.snakeyaml.engine.v2.common;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
 import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
 
@@ -29,7 +30,7 @@ class CharConstantsTest {
 
     @Test
     @DisplayName("LINEBR contains only LF and CR: http://www.yaml.org/spec/1.2/spec.html#id2774608")
-    void lineBreaks(TestInfo testInfo) {
+    void lineBreaks() {
         assertTrue(CharConstants.LINEBR.has('\n'), "LF must be included");
         assertTrue(CharConstants.LINEBR.has('\r'), "CR must not be included");
         assertTrue(CharConstants.LINEBR.hasNo('\u0085'), "85 (next line) must not be included in 1.2");
@@ -40,7 +41,7 @@ class CharConstantsTest {
 
     @Test
     @DisplayName("NULL_OR_LINEBR contains 3 chars")
-    void lineBreaksAndNulls(TestInfo testInfo) {
+    void lineBreaksAndNulls() {
         assertTrue(CharConstants.NULL_OR_LINEBR.has('\n'));
         assertTrue(CharConstants.NULL_OR_LINEBR.has('\r'));
         assertTrue(CharConstants.NULL_OR_LINEBR.has('\u0000'));
@@ -52,7 +53,7 @@ class CharConstantsTest {
 
     @Test
     @DisplayName("additional chars")
-    void lineBreaksAndNullsAndSpace(TestInfo testInfo) {
+    void lineBreaksAndNullsAndSpace() {
         assertTrue(CharConstants.NULL_BL_LINEBR.hasNo('1'));
         assertTrue(CharConstants.NULL_BL_LINEBR.has('1', "123"));
         assertTrue(CharConstants.NULL_BL_LINEBR.hasNo('4', "123"));
@@ -61,7 +62,7 @@ class CharConstantsTest {
 
     @Test
     @DisplayName("ESCAPE_REPLACEMENTS")
-    void ESCAPE_REPLACEMENTS(TestInfo testInfo) {
+    void ESCAPE_REPLACEMENTS() {
         assertEquals(Integer.valueOf(97), Integer.valueOf('a'));
         assertEquals(17, ESCAPE_REPLACEMENTS.size());
         assertEquals(15, ESCAPES.size());

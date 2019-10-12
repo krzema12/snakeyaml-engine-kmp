@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.usecases.colon_in_flow_context;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -28,21 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInMapTest {
     @Test
-    void withSeparation(TestInfo testInfo) {
+    void withSeparation() {
         Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
         assertEquals(new Integer(1), map.get("a"));
     }
 
     @Test
-    void withoutEmptyValue(TestInfo testInfo) {
+    void withoutEmptyValue() {
         Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:}");
         assertTrue(map.containsKey("a"));
     }
 
     @Test
-    void withoutSeparation(TestInfo testInfo) {
+    void withoutSeparation() {
         Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:1}");
         assertTrue(map.containsKey("a:1"));

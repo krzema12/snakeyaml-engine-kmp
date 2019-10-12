@@ -323,7 +323,7 @@ public class CanonicalScanner implements Scanner {
                 }
                 start = index;
             } else if (data.charAt(index) == '\n') {
-                chunks.append(data.substring(start, index));
+                chunks.append(data, start, index);
                 chunks.append(" ");
                 index += Character.charCount(data.codePointAt(index));
                 start = index;
@@ -336,7 +336,7 @@ public class CanonicalScanner implements Scanner {
                 index += Character.charCount(data.codePointAt(index));
             }
         }
-        chunks.append(data.substring(start, index));
+        chunks.append(data, start, index);
         index += Character.charCount(data.codePointAt(index));
         return new ScalarToken(chunks.toString(), false, mark, mark);
     }

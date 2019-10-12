@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
@@ -37,7 +36,7 @@ class RecursiveMapTest {
 
     @Test
     @DisplayName("Load map with recursive values")
-    void loadRecursiveMap(TestInfo testInfo) {
+    void loadRecursiveMap() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, String> map = (Map<String, String>) load.loadFromString("First occurrence: &anchor Foo\n" +
@@ -53,7 +52,7 @@ class RecursiveMapTest {
 
     @Test
     @DisplayName("Dump and Load map with recursive values")
-    void loadRecursiveMap2(TestInfo testInfo) {
+    void loadRecursiveMap2() {
         Map<String, Object> map1 = new HashMap<>();
         map1.put("name", "first");
         Map<String, Object> map2 = new HashMap<>();
@@ -79,7 +78,7 @@ class RecursiveMapTest {
 
     @Test
     @DisplayName("Fail to load map with recursive keys")
-    void failToLoadRecursiveMapByDefault(TestInfo testInfo) {
+    void failToLoadRecursiveMapByDefault() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         //fail to load map which has only one key - reference to itself
@@ -91,7 +90,7 @@ class RecursiveMapTest {
 
     @Test
     @DisplayName("Load map with recursive keys if it is explicitly allowed")
-    void loadRecursiveMapIfAllowed(TestInfo testInfo) {
+    void loadRecursiveMapIfAllowed() {
         LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
         Load load = new Load(settings);
         //load map which has only one key - reference to itself

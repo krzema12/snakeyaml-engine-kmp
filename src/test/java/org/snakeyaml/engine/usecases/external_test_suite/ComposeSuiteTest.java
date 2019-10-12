@@ -18,7 +18,6 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
@@ -32,7 +31,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 class ComposeSuiteTest {
@@ -68,7 +69,7 @@ class ComposeSuiteTest {
 
     @Test
     @DisplayName("Compose: run one test")
-    void runOne(TestInfo testInfo) {
+    void runOne() {
         SuiteData data = SuiteUtils.getOne("C4HZ");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
         Optional<Node> node = new Compose(settings).composeString(data.getInput());
@@ -78,7 +79,7 @@ class ComposeSuiteTest {
 
     @Test
     @DisplayName("Compose: Run comprehensive test suite for non empty Nodes")
-    void runAllNonEmpty(TestInfo testInfo) {
+    void runAllNonEmpty() {
         for (SuiteData data : allValidAndNonEmpty) {
 //            if (!"C4HZ".equals(data.getName())) continue;
             ComposeResult result = composeData(data);
@@ -101,7 +102,7 @@ class ComposeSuiteTest {
 
     @Test
     @DisplayName("Compose: Run comprehensive test suite for empty Nodes")
-    void runAllEmpty(TestInfo testInfo) {
+    void runAllEmpty() {
         for (SuiteData data : allValidAndEmpty) {
             ComposeResult result = composeData(data);
             List<Node> nodes = result.getNode();

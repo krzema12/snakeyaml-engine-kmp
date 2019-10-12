@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.v2.nodes;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MappingNodeTest {
 
     @Test
-    void toString(TestInfo testInfo) {
+    void testToString() {
         NodeTuple tuple1 = new NodeTuple(new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN), new ScalarNode(Tag.INT, "1", ScalarStyle.PLAIN));
         List list = new ArrayList();
         list.add(tuple1);

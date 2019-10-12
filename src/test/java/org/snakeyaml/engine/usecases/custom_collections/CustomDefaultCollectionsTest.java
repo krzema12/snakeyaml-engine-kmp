@@ -17,7 +17,6 @@ package org.snakeyaml.engine.usecases.custom_collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -32,7 +31,7 @@ class CustomDefaultCollectionsTest {
 
     @Test
     @DisplayName("Create LinkedList by default")
-    void createLinkedListByDefault(TestInfo testInfo) {
+    void createLinkedListByDefault() {
         //init size is not used in LinkedList
         LoadSettings settings = LoadSettings.builder().setDefaultList(initSize -> new LinkedList()).build();
         Load load = new Load(settings);
@@ -42,7 +41,7 @@ class CustomDefaultCollectionsTest {
 
     @Test
     @DisplayName("Create TreeMap by default")
-    void createTreeMapByDefault(TestInfo testInfo) {
+    void createTreeMapByDefault() {
         //init size is not used in TreeMap
         LoadSettings settings = LoadSettings.builder().setDefaultMap(initSize -> new TreeMap()).build();
         Load load = new Load(settings);
@@ -52,7 +51,7 @@ class CustomDefaultCollectionsTest {
 
     @Test
     @DisplayName("Create TreeSet by default")
-    void createTreeSetByDefault(TestInfo testInfo) {
+    void createTreeSetByDefault() {
         LoadSettings settings = LoadSettings.builder().setDefaultSet(initSize -> new TreeSet()).build();
         Load load = new Load(settings);
         TreeSet<String> set = (TreeSet<String>) load.loadFromString("!!set\n? foo\n? bar");

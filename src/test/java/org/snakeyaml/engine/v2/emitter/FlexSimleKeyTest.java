@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.emitter;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -34,7 +33,7 @@ public class FlexSimleKeyTest {
     private int len = 130;
 
     @Test
-    public void testLongKey(TestInfo testInfo) {
+    public void testLongKey() {
         Dump dump = new Dump(createOptions(len));
         Map<String, Object> root = new HashMap();
         Map<String, String> map = new HashMap<>();
@@ -45,7 +44,7 @@ public class FlexSimleKeyTest {
     }
 
     @Test
-    public void testForceLongKeyToBeImplicit(TestInfo testInfo) {
+    public void testForceLongKeyToBeImplicit() {
         Dump dump = new Dump(createOptions(len + 10));
         Map<String, Object> root = new HashMap();
         Map<String, String> map = new HashMap<>();

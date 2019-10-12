@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.api;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteData;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteUtils;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
@@ -27,14 +26,16 @@ import org.snakeyaml.engine.v2.nodes.Node;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("fast")
 class OptionalMarksTest {
 
     @Test
     @DisplayName("Compose: no marks")
-    void composeWithoutMarks(TestInfo testInfo) {
+    void composeWithoutMarks() {
         SuiteData data = SuiteUtils.getOne("2AUY");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
         Optional<Node> node = new Compose(settings).composeString("{a: 4}");
@@ -43,7 +44,7 @@ class OptionalMarksTest {
 
     @Test
     @DisplayName("Compose: failure with marks")
-    void composeErrorWithoutMarks2(TestInfo testInfo) {
+    void composeErrorWithoutMarks2() {
         SuiteData data = SuiteUtils.getOne("2AUY");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(true).build();
         ParserException exception = assertThrows(ParserException.class, () ->
@@ -54,7 +55,7 @@ class OptionalMarksTest {
 
     @Test
     @DisplayName("Compose: failure without marks")
-    void composeErrorWithoutMarks(TestInfo testInfo) {
+    void composeErrorWithoutMarks() {
         SuiteData data = SuiteUtils.getOne("2AUY");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
         ParserException exception = assertThrows(ParserException.class, () ->

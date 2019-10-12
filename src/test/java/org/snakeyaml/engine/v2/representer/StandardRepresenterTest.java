@@ -19,7 +19,6 @@ import com.google.common.collect.TreeRangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
@@ -33,7 +32,7 @@ class StandardRepresenterTest {
 
     @Test
     @DisplayName("Represent unknown class")
-    void representUnknownClass(TestInfo testInfo) {
+    void representUnknownClass() {
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 standardRepresenter.represent(TreeRangeSet.create()));
         assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet", exception.getMessage());
@@ -41,7 +40,7 @@ class StandardRepresenterTest {
 
     @Test
     @DisplayName("Represent Enum as node with global tag")
-    void represenEnum(TestInfo testInfo) {
+    void represenEnum() {
         Node node = standardRepresenter.represent(FormatEnum.JSON);
         assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
                 node.getTag().getValue());

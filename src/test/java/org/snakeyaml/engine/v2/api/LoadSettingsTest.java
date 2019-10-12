@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.api;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
@@ -35,7 +34,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Accept only YAML 1.2")
-    void acceptOnly12(TestInfo testInfo) {
+    void acceptOnly12() {
         UnaryOperator<SpecVersion> strict12 = t -> {
             if (t.getMajor() != 1 || t.getMinor() != 2) {
                 throw new IllegalArgumentException("Only 1.2 is supported.");
@@ -58,7 +57,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Do not allow duplicate keys")
-    void doNotAllowDuplicateKeys(TestInfo testInfo) {
+    void doNotAllowDuplicateKeys() {
         LoadSettings settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
                 .build();
@@ -73,7 +72,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Do not allow duplicate keys by default")
-    void doNotAllowDuplicateKeysByDefault(TestInfo testInfo) {
+    void doNotAllowDuplicateKeysByDefault() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         try {
@@ -86,7 +85,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Allow duplicate keys")
-    void allowDuplicateKeysWhenSpecified(TestInfo testInfo) {
+    void allowDuplicateKeysWhenSpecified() {
         LoadSettings settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(true)
                 .build();
@@ -97,7 +96,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Set and get custom property")
-    void customProperty(TestInfo testInfo) {
+    void customProperty() {
         SomeKey key = new SomeKey();
         LoadSettings settings = LoadSettings.builder()
                 .setCustomProperty(key, "foo")
@@ -117,7 +116,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Set and get custom I/O buffer size")
-    void bufferSize(TestInfo testInfo) {
+    void bufferSize() {
         LoadSettings settings = LoadSettings.builder()
                 .setBufferSize(4096)
                 .build();
@@ -126,7 +125,7 @@ class LoadSettingsTest {
 
     @Test
     @DisplayName("Use custom ScalarResolver")
-    void customScalarResolver(TestInfo testInfo) {
+    void customScalarResolver() {
         LoadSettings settings = LoadSettings.builder()
                 .setScalarResolver(new SomeScalarResolver())
                 .build();

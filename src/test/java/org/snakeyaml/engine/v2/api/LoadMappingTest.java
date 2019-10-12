@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.util.Map;
@@ -32,7 +31,7 @@ class LoadMappingTest {
 
     @Test
     @DisplayName("Empty map {} is parsed")
-    void parseEmptyMap(TestInfo testInfo) {
+    void parseEmptyMap() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadFromString("{}");
@@ -41,7 +40,7 @@ class LoadMappingTest {
 
     @Test
     @DisplayName("map {a: 1} is parsed")
-    void parseMap1(TestInfo testInfo) {
+    void parseMap1() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1}");
@@ -51,7 +50,7 @@ class LoadMappingTest {
 
     @Test
     @DisplayName("map {a: 1, b: 2} is parsed")
-    void parseMap2(TestInfo testInfo) {
+    void parseMap2() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Object> map = (Map<String, Object>) load.loadFromString("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
@@ -62,7 +61,7 @@ class LoadMappingTest {
 
     @Test
     @DisplayName("map {x: 1, y: 2, z:3} is parsed")
-    void parseMap3(TestInfo testInfo) {
+    void parseMap3() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));

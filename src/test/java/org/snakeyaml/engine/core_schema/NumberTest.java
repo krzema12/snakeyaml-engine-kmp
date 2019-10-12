@@ -17,7 +17,6 @@ package org.snakeyaml.engine.core_schema;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -30,7 +29,7 @@ public class NumberTest {
 
     @Test
     @DisplayName("Test all integers which are define in the core schema & JSON")
-    void parseInteger(TestInfo testInfo) {
+    void parseInteger() {
         Load loader = new Load(LoadSettings.builder().build());
         assertEquals(new Integer(1), loader.loadFromString("1"));
         assertEquals(new Integer(-1), loader.loadFromString("-1"));
@@ -44,7 +43,7 @@ public class NumberTest {
 
     @Test
     @DisplayName("Test all strings which WERE integers or doubles in YAML 1.1")
-    void parseString(TestInfo testInfo) {
+    void parseString() {
         Load loader = new Load(LoadSettings.builder().build());
         assertEquals("12:10:02", loader.loadFromString("12:10:02"));
         assertEquals("0b1010", loader.loadFromString("0b1010"));
@@ -71,7 +70,7 @@ public class NumberTest {
 
     @Test
     @DisplayName("Test all doubles which are define in the core schema & JSON")
-    void parseDouble(TestInfo testInfo) {
+    void parseDouble() {
         Load loader = new Load(LoadSettings.builder().build());
         assertEquals(new Double(-1.345), loader.loadFromString("-1.345"));
         assertEquals(new Double(-0.0), loader.loadFromString("-0.0"));

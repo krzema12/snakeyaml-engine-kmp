@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.resolver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,13 +27,13 @@ class JsonScalarResolverTest {
 
     @Test
     @DisplayName("Resolve explicit scalar")
-    void resolveExplicitScalar(TestInfo testInfo) {
+    void resolveExplicitScalar() {
         assertEquals(Tag.STR, scalarResolver.resolve("1", false));
     }
 
     @Test
     @DisplayName("Resolve implicit integer")
-    void resolveImplicitInteger(TestInfo testInfo) {
+    void resolveImplicitInteger() {
         assertEquals(Tag.INT, scalarResolver.resolve("1", true));
         assertEquals(Tag.INT, scalarResolver.resolve("112233", true));
         assertEquals(Tag.INT, scalarResolver.resolve("-1", true));
@@ -46,7 +45,7 @@ class JsonScalarResolverTest {
 
     @Test
     @DisplayName("Resolve implicit float")
-    void resolveImplicitFloat(TestInfo testInfo) {
+    void resolveImplicitFloat() {
         assertEquals(Tag.FLOAT, scalarResolver.resolve("1.0", true));
         assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.3", true));
         assertEquals(Tag.STR, scalarResolver.resolve("+01.445", true));
@@ -58,7 +57,7 @@ class JsonScalarResolverTest {
 
     @Test
     @DisplayName("Resolve implicit boolean")
-    void resolveImplicitBoolean(TestInfo testInfo) {
+    void resolveImplicitBoolean() {
         assertEquals(Tag.BOOL, scalarResolver.resolve("true", true));
         assertEquals(Tag.BOOL, scalarResolver.resolve("false", true));
         assertEquals(Tag.STR, scalarResolver.resolve("False", true));
@@ -69,14 +68,14 @@ class JsonScalarResolverTest {
 
     @Test
     @DisplayName("Resolve implicit null")
-    void resolveImplicitNull(TestInfo testInfo) {
+    void resolveImplicitNull() {
         assertEquals(Tag.NULL, scalarResolver.resolve("null", true));
         assertEquals(Tag.NULL, scalarResolver.resolve("", true));
     }
 
     @Test
     @DisplayName("Resolve implicit strings")
-    void resolveImplicitStrings(TestInfo testInfo) {
+    void resolveImplicitStrings() {
         assertEquals(Tag.STR, scalarResolver.resolve(".inf", true));
         assertEquals(Tag.STR, scalarResolver.resolve("0xFF", true));
         assertEquals(Tag.STR, scalarResolver.resolve("True", true));

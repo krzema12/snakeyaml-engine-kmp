@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.api.types;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
@@ -36,7 +35,7 @@ class UuidTest {
 
     @Test
     @DisplayName("Represent UUID as node with global tag")
-    void representUUID(TestInfo testInfo) {
+    void representUUID() {
         StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
         Node node = standardRepresenter.represent(THE_UUID);
         assertEquals("tag:yaml.org,2002:java.util.UUID", node.getTag().getValue());
@@ -44,7 +43,7 @@ class UuidTest {
 
     @Test
     @DisplayName("Dump UUID as string")
-    void dumpUuid(TestInfo testInfo) {
+    void dumpUuid() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String output = dump.dumpToString(THE_UUID);
@@ -53,7 +52,7 @@ class UuidTest {
 
     @Test
     @DisplayName("Parse UUID")
-    void parseUuid(TestInfo testInfo) {
+    void parseUuid() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         UUID uuid = (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
@@ -62,7 +61,7 @@ class UuidTest {
 
     @Test
     @DisplayName("Parse UUID as root")
-    void parseUuidAsRoot(TestInfo testInfo) {
+    void parseUuidAsRoot() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         UUID uuid = (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");

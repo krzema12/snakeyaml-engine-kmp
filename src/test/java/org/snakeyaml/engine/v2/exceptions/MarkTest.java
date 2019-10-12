@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.exceptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,7 +27,7 @@ class MarkTest {
 
     @Test
     @DisplayName("Mark snippet")
-    void testGet_snippet(TestInfo testInfo) {
+    void testGet_snippet() {
         Mark mark = new Mark("test1", 0, 0, 0, "*The first line.\nThe last line.".toCharArray(), 0);
         assertEquals("    *The first line.\n    ^", mark.createSnippet());
         mark = new Mark("test1", 0, 0, 0, "The first*line.\nThe last line.".toCharArray(), 9);

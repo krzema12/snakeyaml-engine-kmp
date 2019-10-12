@@ -17,7 +17,6 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
@@ -38,7 +37,7 @@ class EmitSuiteTest {
 
     @Test
     @DisplayName("Emit test suite")
-    void runAll(TestInfo testInfo) {
+    void runAll() {
         for (SuiteData data : all) {
             ParseResult result = SuiteUtils.parseData(data);
             if (data.getError()) {

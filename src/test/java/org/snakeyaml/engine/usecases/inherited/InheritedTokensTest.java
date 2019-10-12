@@ -26,13 +26,19 @@ import org.snakeyaml.engine.v2.tokens.StreamEndToken;
 import org.snakeyaml.engine.v2.tokens.StreamStartToken;
 import org.snakeyaml.engine.v2.tokens.Token;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedTokensTest extends InheritedImportTest {
@@ -79,7 +85,7 @@ public class InheritedTokensTest extends InheritedImportTest {
                     getFileByName(dataName))), LoadSettings.builder().build());
             Scanner scanner = new ScannerImpl(reader);
             try {
-                while (scanner.checkToken(new Token.ID[0])) {
+                while (scanner.checkToken()) {
                     Token token = scanner.next();
                     if (!(token instanceof StreamStartToken || token instanceof StreamEndToken)) {
                         String replacement = replaces.get(token.getTokenId());
@@ -112,7 +118,7 @@ public class InheritedTokensTest extends InheritedImportTest {
             StreamReader reader = new StreamReader(new YamlUnicodeReader(input), LoadSettings.builder().build());
             Scanner scanner = new ScannerImpl(reader);
             try {
-                while (scanner.checkToken(new Token.ID[0])) {
+                while (scanner.checkToken()) {
                     Token token = scanner.next();
                     tokens.add(token.getClass().getName());
                 }

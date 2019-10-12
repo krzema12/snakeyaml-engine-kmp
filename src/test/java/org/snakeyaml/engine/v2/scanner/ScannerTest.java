@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.scanner;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.tokens.Token;
 
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class ScannerTest {
     @Test
     @DisplayName("Expected NoSuchElementException after all the tokens are finished.")
-    void toString(TestInfo testInfo) {
+    void testToString() {
         StreamReader reader = new StreamReader("444222", LoadSettings.builder().build());
         ScannerImpl scanner = new ScannerImpl(reader);
         assertTrue(scanner.hasNext());

@@ -17,10 +17,15 @@ package org.snakeyaml.engine.v2.api.lowlevel;
 
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.StreamEndEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.utils.TestUtils;
@@ -35,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SerializeTest {
 
     @Test
-    void serializeOneScalar(TestInfo testInfo) {
+    void serializeOneScalar() {
         Serialize serialize = new Serialize(DumpSettings.builder().build());
         Iterable<Event> events = serialize.serializeOne(new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN));
         List<Event> list = Lists.newArrayList(events);

@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.emitter;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UseUnicodeEncodingTest {
 
     @Test
-    public void testEmitUnicode(TestInfo testInfo) {
+    public void testEmitUnicode() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String russianUnicode = "Пушкин - это наше всё! 😊";
@@ -35,7 +34,7 @@ public class UseUnicodeEncodingTest {
     }
 
     @Test
-    public void testEscapeUnicode(TestInfo testInfo) {
+    public void testEscapeUnicode() {
         DumpSettings settings = DumpSettings.builder()
                 .setUseUnicodeEncoding(false)
                 .build();

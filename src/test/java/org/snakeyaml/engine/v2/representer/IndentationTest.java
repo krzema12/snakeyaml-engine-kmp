@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.representer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
@@ -74,7 +73,7 @@ class IndentationTest {
 
     @Test
     @DisplayName("Dump block map seq with default indent settings")
-    void dumpBlockMappingSequenceWithDefaultSettings(TestInfo testInfo) {
+    void dumpBlockMappingSequenceWithDefaultSettings() {
         Dump dump = createDump(0);
         String output = dump.dumpToString(createMap());
         assertEquals("key1:\n" +
@@ -87,7 +86,7 @@ class IndentationTest {
 
     @Test
     @DisplayName("Dump block seq map with default indent settings")
-    void dumpBlockSequenceMappingWithDefaultSettings(TestInfo testInfo) {
+    void dumpBlockSequenceMappingWithDefaultSettings() {
         Dump dump = createDump(0);
         String output = dump.dumpToString(createSequence());
         assertEquals("- key1: value1\n" +
@@ -98,7 +97,7 @@ class IndentationTest {
 
     @Test
     @DisplayName("Dump block seq map with specified indicator indent")
-    void dumpBlockMappingSequence(TestInfo testInfo) {
+    void dumpBlockMappingSequence() {
         Dump dump = createDump(2);
         String output = dump.dumpToString(createMap());
         assertEquals("key1:\n" +
@@ -111,7 +110,7 @@ class IndentationTest {
 
     @Test
     @DisplayName("Dump block seq map with indicatorIndent=2")
-    void dumpBlockSequenceMapping(TestInfo testInfo) {
+    void dumpBlockSequenceMapping() {
         Dump dump = createDump(2);
         String output = dump.dumpToString(createSequence());
         assertEquals("  - key1: value1\n" +

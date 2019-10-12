@@ -17,11 +17,20 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.*;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceEndEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.events.StreamEndEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -33,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EventRepresentationTest {
     @Test
     @DisplayName("Represent StreamStartEvent")
-    void testStreamStartEvent(TestInfo testInfo) {
+    void testStreamStartEvent() {
         StreamStartEvent event = new StreamStartEvent();
         EventRepresentation representation = new EventRepresentation(event);
         assertTrue(representation.isSameAs("+STR"));
@@ -43,7 +52,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent StreamEndEvent")
-    void testStreamEndEvent(TestInfo testInfo) {
+    void testStreamEndEvent() {
         StreamEndEvent event = new StreamEndEvent();
         EventRepresentation representation = new EventRepresentation(event);
         assertTrue(representation.isSameAs("-STR"));
@@ -52,7 +61,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent AliasEvent")
-    void testAliasEvent(TestInfo testInfo) {
+    void testAliasEvent() {
         AliasEvent event = new AliasEvent(Optional.of(new Anchor("a")));
         EventRepresentation representation = new EventRepresentation(event);
         assertTrue(representation.isSameAs("=ALI *a"));
@@ -64,7 +73,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent DocumentStartEvent")
-    void testDocumentStartEvent(TestInfo testInfo) {
+    void testDocumentStartEvent() {
         valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC ---");
         valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC");
 
@@ -74,7 +83,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent DocumentEndEvent")
-    void testDocumentEndEvent(TestInfo testInfo) {
+    void testDocumentEndEvent() {
         valid(new DocumentEndEvent(true), "-DOC ...");
         valid(new DocumentEndEvent(true), "-DOC");
         invalid(new DocumentEndEvent(true), "+DOC ---");
@@ -82,7 +91,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent SequenceStartEvent")
-    void testSequenceStartEvent(TestInfo testInfo) {
+    void testSequenceStartEvent() {
         valid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
                 "+SEQ &a <ttt>");
         invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
@@ -97,14 +106,14 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent SequenceEndEvent")
-    void testSequenceEndEvent(TestInfo testInfo) {
+    void testSequenceEndEvent() {
         valid(new SequenceEndEvent(), "-SEQ");
         invalid(new SequenceEndEvent(), "-MAP");
     }
 
     @Test
     @DisplayName("Represent ScalarEvent")
-    void testScalarEvent(TestInfo testInfo) {
+    void testScalarEvent() {
         valid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), new ImplicitTuple(false, false), "v1", ScalarStyle.FOLDED),
                 "=VAL &a <ttt> >v1");
 
@@ -120,7 +129,7 @@ class EventRepresentationTest {
 
     @Test
     @DisplayName("Represent MappingStartEvent")
-    void testMappingStartEvent(TestInfo testInfo) {
+    void testMappingStartEvent() {
         invalid(new MappingStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
                 "+MAP");
         valid(new MappingStartEvent(Optional.empty(), Optional.of(org.snakeyaml.engine.v2.nodes.Tag.MAP.getValue()), false, FlowStyle.FLOW),

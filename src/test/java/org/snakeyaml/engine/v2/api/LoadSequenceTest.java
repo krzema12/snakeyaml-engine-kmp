@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ class LoadSequenceTest {
 
     @Test
     @DisplayName("Empty list [] is parsed")
-    void parseEmptyList(TestInfo testInfo) {
+    void parseEmptyList() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Integer> list = (List<Integer>) load.loadFromString("[]");
@@ -42,7 +41,7 @@ class LoadSequenceTest {
 
     @Test
     @DisplayName("list [2] is parsed")
-    void parseList1(TestInfo testInfo) {
+    void parseList1() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Integer> list = (List<Integer>) load.loadFromString("[2]");
@@ -51,7 +50,7 @@ class LoadSequenceTest {
 
     @Test
     @DisplayName("list [2,3] is parsed")
-    void parseList2(TestInfo testInfo) {
+    void parseList2() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Integer> list = (List<Integer>) load.loadFromString("[2,3]");
@@ -60,7 +59,7 @@ class LoadSequenceTest {
 
     @Test
     @DisplayName("list [2,a,true] is parsed")
-    void parseList3(TestInfo testInfo) {
+    void parseList3() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Object> list = (List<Object>) load.loadFromString("[2,a,true]");
@@ -69,7 +68,7 @@ class LoadSequenceTest {
 
     @Test
     @DisplayName("list is parsed")
-    void parseList4(TestInfo testInfo) {
+    void parseList4() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Object> list = (List<Object>) load.loadFromString(TestUtils.getResource("load/list1.yaml"));

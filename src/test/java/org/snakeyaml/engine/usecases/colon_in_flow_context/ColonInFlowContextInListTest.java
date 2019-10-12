@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.usecases.colon_in_flow_context;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -27,21 +26,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInListTest {
     @Test
-    void withSpacesAround(TestInfo testInfo) {
+    void withSpacesAround() {
         Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
         assertTrue(list.contains("http://foo"));
     }
 
     @Test
-    void withoutSpacesAround(TestInfo testInfo) {
+    void withoutSpacesAround() {
         Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[http://foo]");
         assertTrue(list.contains("http://foo"));
     }
 
     @Test
-    void twoValues(TestInfo testInfo) {
+    void twoValues() {
         Load loader = new Load(LoadSettings.builder().build());
         List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
         assertTrue(list.contains("http://foo"));

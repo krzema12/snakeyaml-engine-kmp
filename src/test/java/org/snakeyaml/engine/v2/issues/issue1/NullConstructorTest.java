@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.v2.issues.issue1;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -33,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class NullConstructorTest {
 
     @Test
-    void customConstructorMustBeCalledWithoutNode(TestInfo testInfo) {
+    void customConstructorMustBeCalledWithoutNode() {
         Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
         tagConstructors.put(Tag.NULL, new MyConstructNull());
         LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
@@ -43,7 +42,7 @@ class NullConstructorTest {
     }
 
     @Test
-    void customConstructorMustBeCalledWithNode(TestInfo testInfo) {
+    void customConstructorMustBeCalledWithNode() {
         Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
         tagConstructors.put(Tag.NULL, new MyConstructNull());
         LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();

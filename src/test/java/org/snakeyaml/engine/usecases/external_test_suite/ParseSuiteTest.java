@@ -18,7 +18,6 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 import com.google.common.collect.Streams;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Parse;
 import org.snakeyaml.engine.v2.events.Event;
@@ -40,7 +39,7 @@ class ParseSuiteTest {
 
     @Test
     @DisplayName("Parse: Run one test")
-    void runOne(TestInfo testInfo) {
+    void runOne() {
         SuiteData data = SuiteUtils.getOne("6FWR");
         LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
         Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
@@ -51,7 +50,7 @@ class ParseSuiteTest {
 
     @Test
     @DisplayName("Run comprehensive test suite")
-    void runAll(TestInfo testInfo) {
+    void runAll() {
         for (SuiteData data : all) {
             ParseResult result = SuiteUtils.parseData(data);
             if (data.getError()) {

@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.common;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +27,7 @@ class AnchorTest {
 
     @Test
     @DisplayName("Anchor cannot be null")
-    void testNull(TestInfo testInfo) {
+    void testNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () ->
                 new Anchor(null));
         assertEquals("Anchor must be provided.", exception.getMessage());
@@ -36,7 +35,7 @@ class AnchorTest {
 
     @Test
     @DisplayName("Anchor cannot be empty")
-    void testEmpty(TestInfo testInfo) {
+    void testEmpty() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 new Anchor(""));
         assertEquals("Empty anchor.", exception.getMessage());
@@ -44,7 +43,7 @@ class AnchorTest {
 
     @Test
     @DisplayName("Anchor cannot contain &")
-    void testInvalid1(TestInfo testInfo) {
+    void testInvalid1() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 new Anchor("q&"));
         assertEquals("invalid character in the anchor: q&", exception.getMessage());
@@ -52,7 +51,7 @@ class AnchorTest {
 
     @Test
     @DisplayName("Anchor cannot contain *")
-    void testInvalid2(TestInfo testInfo) {
+    void testInvalid2() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 new Anchor("q*"));
         assertEquals("invalid character in the anchor: q*", exception.getMessage());

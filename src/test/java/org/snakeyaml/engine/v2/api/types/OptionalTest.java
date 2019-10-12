@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.api.types;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
@@ -35,7 +34,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Represent Optional as value")
-    void representOptional(TestInfo testInfo) {
+    void representOptional() {
         StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
         Node node = standardRepresenter.represent(Optional.of("a"));
         assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
@@ -43,7 +42,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Represent Optional.empty as null")
-    void representEmptyOptional(TestInfo testInfo) {
+    void representEmptyOptional() {
         StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
         Node node = standardRepresenter.represent(Optional.empty());
         assertEquals("tag:yaml.org,2002:null", node.getTag().getValue());
@@ -51,7 +50,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Dump Optional as its value")
-    void dumpOptional(TestInfo testInfo) {
+    void dumpOptional() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of("a"));
@@ -60,7 +59,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Dump empty Optional as null")
-    void dumpEmptyOptional(TestInfo testInfo) {
+    void dumpEmptyOptional() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.empty());
@@ -69,7 +68,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Dump Optionals")
-    void dumpListOfOptional(TestInfo testInfo) {
+    void dumpListOfOptional() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
@@ -78,7 +77,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Dump Optionals")
-    void dumpListOfOptional2(TestInfo testInfo) {
+    void dumpListOfOptional2() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Optional.of(Lists.newArrayList(1, 2)));
@@ -88,7 +87,7 @@ class OptionalTest {
     // parse
     @Test
     @DisplayName("Optional 'a' is parsed")
-    void parseOptional(TestInfo testInfo) {
+    void parseOptional() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional a");
@@ -97,7 +96,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Empty Optional parsed")
-    void parseEmptyOptional(TestInfo testInfo) {
+    void parseEmptyOptional() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional null");
@@ -106,7 +105,7 @@ class OptionalTest {
 
     @Test
     @DisplayName("Empty Optional parsed")
-    void parseEmptyOptional2(TestInfo testInfo) {
+    void parseEmptyOptional2() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional ");

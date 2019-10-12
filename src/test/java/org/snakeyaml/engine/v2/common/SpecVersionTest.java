@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.common;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
 import org.snakeyaml.engine.v2.exceptions.YamlVersionException;
@@ -32,7 +31,7 @@ class SpecVersionTest {
 
     @Test
     @DisplayName("Version 1.2 is accepted")
-    void version12(TestInfo testInfo) {
+    void version12() {
         LoadSettings settings = LoadSettings.builder().setLabel("spec 1.2").build();
         ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.2\n---\nfoo").get();
         assertEquals("foo", node.getValue());
@@ -40,7 +39,7 @@ class SpecVersionTest {
 
     @Test
     @DisplayName("Version 1.3 is accepted by default")
-    void version13(TestInfo testInfo) {
+    void version13() {
         LoadSettings settings = LoadSettings.builder().setLabel("spec 1.3").build();
         ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.3\n---\nfoo").get();
         assertEquals("foo", node.getValue());
@@ -48,7 +47,7 @@ class SpecVersionTest {
 
     @Test
     @DisplayName("Version 1.3 is rejected if configured")
-    void version13rejected(TestInfo testInfo) {
+    void version13rejected() {
         LoadSettings settings = LoadSettings.builder().setLabel("spec 1.3")
                 .setVersionFunction(version -> {
                     if (version.getMinor() > 2) throw new IllegalArgumentException("Too high.");
@@ -62,7 +61,7 @@ class SpecVersionTest {
 
     @Test
     @DisplayName("Version 2.0 is rejected")
-    void version20(TestInfo testInfo) {
+    void version20() {
         LoadSettings settings = LoadSettings.builder().setLabel("spec 2.0").build();
         YamlVersionException exception = assertThrows(YamlVersionException.class, () ->
                 new Compose(settings).composeString("%YAML 2.0\n---\nfoo").get());

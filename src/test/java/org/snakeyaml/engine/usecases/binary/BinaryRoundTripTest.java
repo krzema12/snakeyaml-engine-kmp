@@ -33,6 +33,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.representer.StandardRepresenter;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class BinaryRoundTripTest {
         //parse back to bytes
         Load loader = new Load(LoadSettings.builder().build());
         byte[] deserialized = (byte[]) loader.loadFromString(serialized);
-        assertEquals(source, new String(deserialized, "UTF-8"));
+        assertEquals(source, new String(deserialized, StandardCharsets.UTF_8));
     }
 
     @Test

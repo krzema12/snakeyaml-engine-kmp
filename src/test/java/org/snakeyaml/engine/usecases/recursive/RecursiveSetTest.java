@@ -18,7 +18,6 @@ package org.snakeyaml.engine.usecases.recursive;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -34,7 +33,7 @@ class RecursiveSetTest {
 
     @Test
     @DisplayName("Fail to load map with recursive keys")
-    void failToLoadRecursiveSetByDefault(TestInfo testInfo) {
+    void failToLoadRecursiveSetByDefault() {
         String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
@@ -45,7 +44,7 @@ class RecursiveSetTest {
 
     @Test
     @DisplayName("Load map with recursive keys if it is explicitly allowed")
-    void loadRecursiveSetIfAllowed(TestInfo testInfo) {
+    void loadRecursiveSetIfAllowed() {
         String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
         LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
         Load load = new Load(settings);

@@ -17,12 +17,10 @@ package org.snakeyaml.engine.v2.parser;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.scanner.ScannerImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.util.NoSuchElementException;
 
@@ -35,9 +33,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 class ParserTest {
     @Test
     @DisplayName("Expected NoSuchElementException after all the events are finished.")
-    void toString(TestInfo testInfo) {
-        LoadSettings settings =  LoadSettings.builder().build();
-        StreamReader reader = new StreamReader("444333",settings);
+    void testToString() {
+        LoadSettings settings = LoadSettings.builder().build();
+        StreamReader reader = new StreamReader("444333", settings);
         ScannerImpl scanner = new ScannerImpl(reader);
         Parser parser = new ParserImpl(scanner, settings);
         assertTrue(parser.hasNext());

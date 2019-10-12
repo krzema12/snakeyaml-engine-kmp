@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.resolver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.regex.Pattern;
@@ -29,7 +28,7 @@ class ScalarResolverTupleTest {
 
     @Test
     @DisplayName("ResolverTuple.toString()")
-    void resolveMap(TestInfo testInfo) {
+    void resolveMap() {
         assertEquals("Tuple tag=tag:yaml.org,2002:str regexp=^(?:true|false)$", new ResolverTuple(Tag.STR, Pattern.compile("^(?:true|false)$")).toString());
     }
 }

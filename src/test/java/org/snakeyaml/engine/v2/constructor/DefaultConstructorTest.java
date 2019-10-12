@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.constructor;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -26,13 +25,15 @@ import org.snakeyaml.engine.v2.nodes.Node;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("fast")
 class DefaultConstructorTest {
 
     @Test
-    void constructNullWhenUnknown(TestInfo testInfo) {
+    void constructNullWhenUnknown() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings, new MagicNullConstructor(settings));
         String str = (String) load.loadFromString("!unknownLocalTag a");
@@ -40,7 +41,7 @@ class DefaultConstructorTest {
     }
 
     @Test
-    void failWhenUnknown(TestInfo testInfo) {
+    void failWhenUnknown() {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->

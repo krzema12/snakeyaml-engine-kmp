@@ -21,6 +21,7 @@ import org.snakeyaml.engine.v2.events.Event;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +34,7 @@ public abstract class TestUtils {
             throw new RuntimeException("Resource not found: " + theName);
         }
         try {
-            return CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
+            return CharStreams.toString(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +42,7 @@ public abstract class TestUtils {
 
     public static void compareEvents(List<Event> list1, List<Event> list2) {
         assertEquals(list1.size(), list2.size());
-        for(Event event1: list1) {
+        for (Event event1 : list1) {
             Event event2 = list2.remove(0);
             String ev1 = event1.toString();
             String ev2 = event2.toString();

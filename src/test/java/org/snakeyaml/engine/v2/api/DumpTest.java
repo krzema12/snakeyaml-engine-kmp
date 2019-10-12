@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,14 +27,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("fast")
 class DumpTest {
 
     @Test
     @DisplayName("Dump string")
-    void dumpString(TestInfo testInfo) {
+    void dumpString() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString("a");
@@ -44,7 +45,7 @@ class DumpTest {
 
     @Test
     @DisplayName("Dump int")
-    void dumpInteger(TestInfo testInfo) {
+    void dumpInteger() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(new Integer(1));
@@ -53,7 +54,7 @@ class DumpTest {
 
     @Test
     @DisplayName("Dump boolean")
-    void dumpBoolean(TestInfo testInfo) {
+    void dumpBoolean() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Boolean.TRUE);
@@ -62,7 +63,7 @@ class DumpTest {
 
     @Test
     @DisplayName("Dump seq")
-    void dumpSequence(TestInfo testInfo) {
+    void dumpSequence() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString(Lists.newArrayList(2, "a", Boolean.TRUE));
@@ -71,7 +72,7 @@ class DumpTest {
 
     @Test
     @DisplayName("Dump map")
-    void dumpMapping(TestInfo testInfo) {
+    void dumpMapping() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         String output = dump.dumpToString(ImmutableMap.of("x", 1, "y", 2, "z", 3));
@@ -80,7 +81,7 @@ class DumpTest {
 
     @Test
     @DisplayName("Dump all instances")
-    void dumpAll(TestInfo testInfo) {
+    void dumpAll() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
@@ -92,14 +93,14 @@ class DumpTest {
         //load back
         LoadSettings loadSettings = LoadSettings.builder().build();
         Load load = new Load(loadSettings);
-        for (Object obj: load.loadAllFromString(streamToStringWriter.toString())) {
+        for (Object obj : load.loadAllFromString(streamToStringWriter.toString())) {
             assertEquals(list.remove(0), obj);
         }
     }
 
     @Test
     @DisplayName("Dump all instances")
-    void dumpAllToString(TestInfo testInfo) {
+    void dumpAllToString() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
@@ -110,14 +111,14 @@ class DumpTest {
         //load back
         LoadSettings loadSettings = LoadSettings.builder().build();
         Load load = new Load(loadSettings);
-        for (Object obj: load.loadAllFromString(output)) {
+        for (Object obj : load.loadAllFromString(output)) {
             assertEquals(list.remove(0), obj);
         }
     }
 
     @Test
     @DisplayName("Dump to File")
-    void dumpToFile(TestInfo testInfo) throws IOException {
+    void dumpToFile() throws IOException {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
         File file = new File("target/temp.yaml");

@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.api.lowlevel;
 import com.google.common.io.CharSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Node;
 
@@ -33,28 +32,28 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class ComposeTest {
 
     @Test
-    void composeEmptyReader(TestInfo testInfo) throws IOException {
+    void composeEmptyReader() throws IOException {
         Compose compose = new Compose(LoadSettings.builder().build());
         Optional<Node> node = compose.composeReader(CharSource.wrap("").openStream());
         assertEquals(Optional.empty(), node);
     }
 
     @Test
-    void composeEmptyInputStream(TestInfo testInfo) {
+    void composeEmptyInputStream() {
         Compose compose = new Compose(LoadSettings.builder().build());
         Optional<Node> node = compose.composeInputStream(new ByteArrayInputStream("".getBytes()));
         assertEquals(Optional.empty(), node);
     }
 
     @Test
-    void composeAllFromEmptyReader(TestInfo testInfo) throws IOException {
+    void composeAllFromEmptyReader() throws IOException {
         Compose compose = new Compose(LoadSettings.builder().build());
         Iterable<Node> nodes = compose.composeAllFromReader(CharSource.wrap("").openStream());
         assertFalse(nodes.iterator().hasNext());
     }
 
     @Test
-    void composeAllFromEmptyInputStream(TestInfo testInfo) {
+    void composeAllFromEmptyInputStream() {
         Compose compose = new Compose(LoadSettings.builder().build());
         Iterable<Node> nodes = compose.composeAllFromInputStream(new ByteArrayInputStream("".getBytes()));
         assertFalse(nodes.iterator().hasNext());

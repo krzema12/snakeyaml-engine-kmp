@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.api;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 
 import java.util.Optional;
@@ -30,7 +29,7 @@ class DumpSettingsTest {
 
     @Test
     @DisplayName("Dump explicit version")
-    void dumpVersion(TestInfo testInfo) {
+    void dumpVersion() {
         DumpSettings settings = DumpSettings.builder().setYamlDirective(Optional.of(new SpecVersion(1, 2))).build();
         Dump dump = new Dump(settings);
         String str = dump.dumpToString("a");

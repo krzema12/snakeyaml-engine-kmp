@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.common;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +27,7 @@ class UriEncoderTest {
 
     @Test
     @DisplayName("Encode-decode")
-    void encodeDecodeString(TestInfo testInfo) {
+    void encodeDecodeString() {
         String encoded = UriEncoder.encode(" +%");
         assertEquals("%20%2B%25", encoded);
         String decoded = UriEncoder.decode(encoded);
@@ -37,7 +36,7 @@ class UriEncoderTest {
 
     @Test
     @DisplayName("Invalid decode")
-    void testInvalidDecode(TestInfo testInfo) {
+    void testInvalidDecode() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 UriEncoder.decode("%2"));
         assertEquals("URLDecoder: Incomplete trailing escape (%) pattern", exception.getMessage());

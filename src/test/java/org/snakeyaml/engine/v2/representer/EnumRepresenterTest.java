@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.representer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -31,7 +30,7 @@ class EnumRepresenterTest {
 
     @Test
     @DisplayName("Represent Enum as node with global tag")
-    void represenEnum(TestInfo testInfo) {
+    void represenEnum() {
         DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         StandardRepresenter standardRepresenter = new StandardRepresenter(settings);
         ScalarNode node = (ScalarNode) standardRepresenter.represent(FormatEnum.JSON);
@@ -41,7 +40,7 @@ class EnumRepresenterTest {
 
     @Test
     @DisplayName("Dump Enum with ScalarStyle.DOUBLE_QUOTED")
-    void dumpEnum(TestInfo testInfo) {
+    void dumpEnum() {
         DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
         Dump dumper = new Dump(settings);
         String node = dumper.dumpToString(FormatEnum.JSON);

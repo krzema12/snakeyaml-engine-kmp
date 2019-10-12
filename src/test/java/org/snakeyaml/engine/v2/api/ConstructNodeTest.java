@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.api;
 
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -28,13 +27,15 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 class ConstructNodeTest {
 
     @Test
-    void failToConstructRecursive(TestInfo testInfo) {
+    void failToConstructRecursive() {
         ConstructNode constructNode = new ConstructNode() {
 
             @Override
@@ -51,7 +52,7 @@ class ConstructNodeTest {
     }
 
     @Test
-    void failToConstructNonRecursive(TestInfo testInfo) {
+    void failToConstructNonRecursive() {
         ConstructNode constructNode = new ConstructNode() {
 
             @Override

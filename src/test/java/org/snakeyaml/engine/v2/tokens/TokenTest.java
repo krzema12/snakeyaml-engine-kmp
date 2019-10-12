@@ -16,7 +16,6 @@
 package org.snakeyaml.engine.v2.tokens;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 import java.util.Collections;
@@ -29,13 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @org.junit.jupiter.api.Tag("fast")
 class TokenTest {
     @Test
-    void toString(TestInfo testInfo) {
+    void testToString() {
         Token token = new ScalarToken("a", true, Optional.empty(), Optional.empty());
         assertEquals("<scalar>", token.toString());
     }
 
     @Test
-    void invalidDirectiveToken(TestInfo testInfo) {
+    void invalidDirectiveToken() {
         List<String> list = Collections.singletonList("key");
         YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
                 new DirectiveToken(DirectiveToken.YAML_DIRECTIVE, Optional.of(list), Optional.empty(), Optional.empty()));

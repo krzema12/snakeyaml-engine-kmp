@@ -17,7 +17,6 @@ package org.snakeyaml.engine.v2.events;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ImplicitTupleTest {
 
     @Test
-    void toString(TestInfo testInfo) {
+    void testToString() {
         assertEquals("implicit=[true, false]", new ImplicitTuple(true, false).toString());
     }
 }

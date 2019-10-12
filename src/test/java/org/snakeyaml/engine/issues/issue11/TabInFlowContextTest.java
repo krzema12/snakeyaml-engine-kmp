@@ -17,7 +17,6 @@ package org.snakeyaml.engine.issues.issue11;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -30,7 +29,7 @@ public class TabInFlowContextTest {
 
     @Test
     @DisplayName("Do not fail to parse if TAB is used (issue 11)")
-    void parseTabInFlowContext(TestInfo testInfo) {
+    void parseTabInFlowContext() {
         Load loader = new Load(LoadSettings.builder().build());
         Map<String, String> list = (Map<String, String>) loader.loadFromString("{\n\t\"x\": \"y\"\n}");
         assertEquals(1, list.size());

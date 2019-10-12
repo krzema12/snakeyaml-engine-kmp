@@ -88,6 +88,11 @@ import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
  * </pre>
  */
 public final class ScannerImpl implements Scanner {
+
+    private static final String DIRECTIVE_PREFIX = "while scanning a directive";
+    private static final String EXPECTED_ALPHA_ERROR_PREFIX = "expected alphabetic or numeric character, but found ";
+    private static final String SCANNING_SCALAR = "while scanning a block scalar";
+    private static final String SCANNING_PREFIX = "while scanning a ";
     /**
      * A regular expression matching characters which are not in the hexadecimal
      * set (0-9, A-F, a-f).
@@ -151,10 +156,10 @@ public final class ScannerImpl implements Scanner {
 
     public ScannerImpl(StreamReader reader) {
         this.reader = reader;
-        this.tokens = new ArrayList<Token>(100);
-        this.indents = new ArrayStack<Integer>(10);
+        this.tokens = new ArrayList<>(100);
+        this.indents = new ArrayStack<>(10);
         // The order in possibleSimpleKeys is kept for nextPossibleSimpleKey()
-        this.possibleSimpleKeys = new LinkedHashMap<Integer, SimpleKey>();
+        this.possibleSimpleKeys = new LinkedHashMap<>();
         fetchStreamStart();// Add the STREAM-START token.
     }
 
@@ -273,7 +278,6 @@ public final class ScannerImpl implements Scanner {
                     return;
                 }
                 break;
-            // TODO support for BOM within a stream.
             case '[':
                 // Is it the flow sequence start indicator?
                 fetchFlowSequenceStart();
@@ -343,8 +347,9 @@ public final class ScannerImpl implements Scanner {
                 // Is it a double quoted scalar?
                 fetchDouble();
                 return;
+            default:
+                // It must be a plain scalar then.
         }
-        // It must be a plain scalar then.
         if (checkPlain()) {
             fetchPlain();
             return;
@@ -778,11 +783,9 @@ public final class ScannerImpl implements Scanner {
 
             // If this key starts a new block mapping, we need to add
             // BLOCK-MAPPING-START.
-            if (this.flowLevel == 0) {
-                if (addIndent(key.getColumn())) {
-                    this.tokens.add(key.getTokenNumber() - this.tokensTaken,
-                            new BlockMappingStartToken(key.getMark(), key.getMark()));
-                }
+            if (this.flowLevel == 0 && addIndent(key.getColumn())) {
+                this.tokens.add(key.getTokenNumber() - this.tokensTaken,
+                        new BlockMappingStartToken(key.getMark(), key.getMark()));
             }
             // There cannot be two simple keys one after another.
             this.allowSimpleKey = false;
@@ -792,7 +795,6 @@ public final class ScannerImpl implements Scanner {
             // Block context needs additional checks. Do we really need them?
             // They will be caught by the scanner anyway.
             if (this.flowLevel == 0) {
-
                 // We are allowed to start a complex value if and only if we can
                 // start a simple key.
                 if (!this.allowSimpleKey) {
@@ -803,11 +805,9 @@ public final class ScannerImpl implements Scanner {
             // If this value starts a new block mapping, we need to add
             // BLOCK-MAPPING-START. It will be detected as an error later by
             // the scanner.
-            if (flowLevel == 0) {
-                if (addIndent(reader.getColumn())) {
-                    Optional<Mark> mark = reader.getMark();
-                    this.tokens.add(new BlockMappingStartToken(mark, mark));
-                }
+            if (flowLevel == 0 && addIndent(reader.getColumn())) {
+                Optional<Mark> mark = reader.getMark();
+                this.tokens.add(new BlockMappingStartToken(mark, mark));
             }
 
             // Simple keys are allowed after ':' in the block context.
@@ -1164,7 +1164,7 @@ public final class ScannerImpl implements Scanner {
         int length = 0;
         // A Directive-name is a sequence of alphanumeric characters
         // (a-z,A-Z,0-9). We scan until we find something that isn't.
-        // FIXME this disagrees with the specification.
+        // This disagrees with the specification.
         int c = reader.peek(length);
         while (CharConstants.ALPHA.has(c)) {
             length++;
@@ -1173,16 +1173,16 @@ public final class ScannerImpl implements Scanner {
         // If the name would be empty, an error occurs.
         if (length == 0) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
-                    "expected alphabetic or numeric character, but found " + s + "(" + c
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
+                    EXPECTED_ALPHA_ERROR_PREFIX + s + "(" + c
                             + ")", reader.getMark());
         }
         String value = reader.prefixForward(length);
         c = reader.peek();
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
-                    "expected alphabetic or numeric character, but found " + s + "(" + c
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
+                    EXPECTED_ALPHA_ERROR_PREFIX + s + "(" + c
                             + ")", reader.getMark());
         }
         return value;
@@ -1197,7 +1197,7 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         if (c != '.') {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected a digit or '.', but found " + s + "("
                             + c + ")", reader.getMark());
         }
@@ -1206,11 +1206,11 @@ public final class ScannerImpl implements Scanner {
         c = reader.peek();
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected a digit or ' ', but found " + s + "("
                             + c + ")", reader.getMark());
         }
-        List<Integer> result = new ArrayList<Integer>(2);
+        List<Integer> result = new ArrayList<>(2);
         result.add(major);
         result.add(minor);
         return result;
@@ -1225,15 +1225,14 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         if (!Character.isDigit(c)) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected a digit, but found " + s + "(" + (c) + ")", reader.getMark());
         }
         int length = 0;
         while (Character.isDigit(reader.peek(length))) {
             length++;
         }
-        Integer value = Integer.parseInt(reader.prefixForward(length));
-        return value;
+        return Integer.parseInt(reader.prefixForward(length));
     }
 
     /**
@@ -1256,7 +1255,7 @@ public final class ScannerImpl implements Scanner {
             reader.forward();
         }
         String prefix = scanTagDirectivePrefix(startMark);
-        List<String> result = new ArrayList<String>(2);
+        List<String> result = new ArrayList<>(2);
         result.add(handle);
         result.add(prefix);
         return result;
@@ -1274,7 +1273,7 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         if (c != ' ') {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected ' ', but found " + s + "(" + c + ")", reader.getMark());
         }
         return value;
@@ -1289,7 +1288,7 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected ' ', but found " + s + "(" + c + ")",
                     reader.getMark());
         }
@@ -1310,7 +1309,7 @@ public final class ScannerImpl implements Scanner {
         String lineBreak = scanLineBreak();
         if (lineBreak.length() == 0 && c != '\0') {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a directive", startMark,
+            throw new ScannerException(DIRECTIVE_PREFIX, startMark,
                     "expected a comment or a line break, but found " + s + "(" + c + ")",
                     reader.getMark());
         }
@@ -1342,7 +1341,7 @@ public final class ScannerImpl implements Scanner {
         if (length == 0) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning an " + name, startMark,
-                    "expected alphabetic or numeric character, but found " + s + "("
+                    EXPECTED_ALPHA_ERROR_PREFIX + s + "("
                             + c + ")", reader.getMark());
         }
         String value = reader.prefixForward(length);
@@ -1350,7 +1349,7 @@ public final class ScannerImpl implements Scanner {
         if (CharConstants.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning an " + name, startMark,
-                    "expected alphabetic or numeric character, but found " + s + "("
+                    EXPECTED_ALPHA_ERROR_PREFIX + s + "("
                             + c + ")", reader.getMark());
         }
         Optional<Mark> endMark = reader.getMark();
@@ -1449,8 +1448,7 @@ public final class ScannerImpl implements Scanner {
             suffix = scanTagUri("tag", startMark);
         }
         c = reader.peek();
-        // Check that the next character is allowed to follow a tag-property;
-        // if it is not, raise the error.
+        // Check that the next character is allowed to follow a tag-property, if it is not, raise the error.
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
             throw new ScannerException("while scanning a tag", startMark,
@@ -1463,13 +1461,12 @@ public final class ScannerImpl implements Scanner {
 
     private Token scanBlockScalar(ScalarStyle style) {
         // See the specification for details.
-        boolean folded;
         StringBuilder chunks = new StringBuilder();
         Optional<Mark> startMark = reader.getMark();
         // Scan the header.
         reader.forward();
-        Chomping chompi = scanBlockScalarIndicators(startMark);
-        int increment = chompi.getIncrement();
+        Chomping chomping = scanBlockScalarIndicators(startMark);
+        int increment = chomping.getIncrement();
         scanBlockScalarIgnoredLine(startMark);
 
         // Determine the indentation level and go to the first non-empty line.
@@ -1479,17 +1476,17 @@ public final class ScannerImpl implements Scanner {
         }
         String breaks;
         int maxIndent;
-        int indent;
+        int blockIndent;
         Optional<Mark> endMark;
         if (increment == -1) {
             Object[] brme = scanBlockScalarIndentation();
             breaks = (String) brme[0];
             maxIndent = ((Integer) brme[1]).intValue();
             endMark = (Optional<Mark>) brme[2];
-            indent = Math.max(minIndent, maxIndent);
+            blockIndent = Math.max(minIndent, maxIndent);
         } else {
-            indent = minIndent + increment - 1;
-            Object[] brme = scanBlockScalarBreaks(indent);
+            blockIndent = minIndent + increment - 1;
+            Object[] brme = scanBlockScalarBreaks(blockIndent);
             breaks = (String) brme[0];
             endMark = (Optional<Mark>) brme[1];
         }
@@ -1497,7 +1494,7 @@ public final class ScannerImpl implements Scanner {
         String lineBreak = "";
 
         // Scan the inner part of the block scalar.
-        while (this.reader.getColumn() == indent && reader.peek() != '\0') {
+        while (this.reader.getColumn() == blockIndent && reader.peek() != '\0') {
             chunks.append(breaks);
             boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
             int length = 0;
@@ -1506,10 +1503,10 @@ public final class ScannerImpl implements Scanner {
             }
             chunks.append(reader.prefixForward(length));
             lineBreak = scanLineBreak();
-            Object[] brme = scanBlockScalarBreaks(indent);
+            Object[] brme = scanBlockScalarBreaks(blockIndent);
             breaks = (String) brme[0];
             endMark = (Optional<Mark>) brme[1];
-            if (this.reader.getColumn() == indent && reader.peek() != '\0') {
+            if (this.reader.getColumn() == blockIndent && reader.peek() != '\0') {
 
                 // Unfortunately, folding rules are ambiguous.
                 //
@@ -1527,10 +1524,10 @@ public final class ScannerImpl implements Scanner {
             }
         }
         // Chomp the tail.
-        if (chompi.chompTailIsNotFalse()) {
+        if (chomping.chompTailIsNotFalse()) {
             chunks.append(lineBreak);
         }
-        if (chompi.chompTailIsTrue()) {
+        if (chomping.chompTailIsTrue()) {
             chunks.append(breaks);
         }
         // We are done.
@@ -1565,7 +1562,7 @@ public final class ScannerImpl implements Scanner {
                 final String s = String.valueOf(Character.toChars(c));
                 increment = Integer.parseInt(s);
                 if (increment == 0) {
-                    throw new ScannerException("while scanning a block scalar", startMark,
+                    throw new ScannerException(SCANNING_SCALAR, startMark,
                             "expected indentation indicator in the range 1-9, but found 0",
                             reader.getMark());
                 }
@@ -1575,7 +1572,7 @@ public final class ScannerImpl implements Scanner {
             final String s = String.valueOf(Character.toChars(c));
             increment = Integer.parseInt(s);
             if (increment == 0) {
-                throw new ScannerException("while scanning a block scalar", startMark,
+                throw new ScannerException(SCANNING_SCALAR, startMark,
                         "expected indentation indicator in the range 1-9, but found 0",
                         reader.getMark());
             }
@@ -1593,7 +1590,7 @@ public final class ScannerImpl implements Scanner {
         c = reader.peek();
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a block scalar", startMark,
+            throw new ScannerException(SCANNING_SCALAR, startMark,
                     "expected chomping or indentation indicators, but found " + s + "("
                             + c + ")", reader.getMark());
         }
@@ -1624,7 +1621,7 @@ public final class ScannerImpl implements Scanner {
         String lineBreak = scanLineBreak();
         if (lineBreak.length() == 0 && c != '\0') {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a block scalar", startMark,
+            throw new ScannerException(SCANNING_SCALAR, startMark,
                     "expected a comment or a line break, but found " + s + "("
                             + c + ")", reader.getMark());
         }
@@ -1865,7 +1862,7 @@ public final class ScannerImpl implements Scanner {
         StringBuilder chunks = new StringBuilder();
         Optional<Mark> startMark = reader.getMark();
         Optional<Mark> endMark = startMark;
-        int indent = this.indent + 1;
+        int plainIndent = this.indent + 1;
         String spaces = "";
         while (true) {
             int c;
@@ -1891,9 +1888,8 @@ public final class ScannerImpl implements Scanner {
             chunks.append(reader.prefixForward(length));
             endMark = reader.getMark();
             spaces = scanPlainSpaces();
-            // System.out.printf("spaces[%s]\n", spaces);
             if (spaces.length() == 0 || reader.peek() == '#'
-                    || (this.flowLevel == 0 && this.reader.getColumn() < indent)) {
+                    || (this.flowLevel == 0 && this.reader.getColumn() < plainIndent)) {
                 break;
             }
         }
@@ -1970,7 +1966,7 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         if (c != '!') {
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a " + name, startMark,
+            throw new ScannerException(SCANNING_PREFIX + name, startMark,
                     "expected '!', but found " + s + "(" + (c) + ")", reader.getMark());
         }
         // Look for the next '!' in the stream, stopping if we hit a
@@ -1980,7 +1976,7 @@ public final class ScannerImpl implements Scanner {
         c = reader.peek(length);
         if (c != ' ') {
             // Scan through 0+ alphabetic characters.
-            // FIXME According to the specification, these should be
+            // According to the specification, these should be
             // ns-word-char only, which prohibits '_'. This might be a
             // candidate for a configuration option.
             while (CharConstants.ALPHA.has(c)) {
@@ -1993,13 +1989,12 @@ public final class ScannerImpl implements Scanner {
             if (c != '!') {
                 reader.forward(length);
                 final String s = String.valueOf(Character.toChars(c));
-                throw new ScannerException("while scanning a " + name, startMark,
+                throw new ScannerException(SCANNING_PREFIX + name, startMark,
                         "expected '!', but found " + s + "(" + (c) + ")", reader.getMark());
             }
             length++;
         }
-        String value = reader.prefixForward(length);
-        return value;
+        return reader.prefixForward(length);
     }
 
     /**
@@ -2042,7 +2037,7 @@ public final class ScannerImpl implements Scanner {
         if (chunks.length() == 0) {
             // If no URI was found, an error has occurred.
             final String s = String.valueOf(Character.toChars(c));
-            throw new ScannerException("while scanning a " + name, startMark,
+            throw new ScannerException(SCANNING_PREFIX + name, startMark,
                     "expected URI, but found " + s + "(" + (c) + ")", reader.getMark());
         }
         return chunks.toString();
@@ -2054,7 +2049,7 @@ public final class ScannerImpl implements Scanner {
      * String representing the unescaped values.
      * </p>
      * <p>
-     * FIXME This method fails for more than 256 bytes' worth of URI-encoded
+     * This method fails for more than 256 bytes' worth of URI-encoded
      * characters in a row. Is this possible? Is this a use-case?
      */
     private String scanUriEscapes(String name, Optional<Mark> startMark) {
@@ -2080,7 +2075,7 @@ public final class ScannerImpl implements Scanner {
                 final String s1 = String.valueOf(Character.toChars(c1));
                 int c2 = reader.peek(1);
                 final String s2 = String.valueOf(Character.toChars(c2));
-                throw new ScannerException("while scanning a " + name, startMark,
+                throw new ScannerException(SCANNING_PREFIX + name, startMark,
                         "expected URI escape sequence of 2 hexadecimal numbers, but found "
                                 + s1 + "(" + c1 + ") and "
                                 + s2 + "(" + c2 + ")",
@@ -2092,7 +2087,7 @@ public final class ScannerImpl implements Scanner {
         try {
             return UriEncoder.decode(buff);
         } catch (CharacterCodingException e) {
-            throw new ScannerException("while scanning a " + name, startMark,
+            throw new ScannerException(SCANNING_PREFIX + name, startMark,
                     "expected URI in UTF-8: " + e.getMessage(), beginningMark);
         }
     }

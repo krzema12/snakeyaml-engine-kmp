@@ -77,16 +77,14 @@ public final class StreamReader {
 
     public static final boolean isPrintable(final String data) {
         final int length = data.length();
-        for (int offset = 0; offset < length; ) {
+        int offset = 0;
+        while (offset < length) {
             final int codePoint = data.codePointAt(offset);
-
             if (!isPrintable(codePoint)) {
                 return false;
             }
-
             offset += Character.charCount(codePoint);
         }
-
         return true;
     }
 
@@ -199,7 +197,8 @@ public final class StreamReader {
                 }
 
                 int nonPrintable = ' ';
-                for (int i = 0; i < read; cpIndex++) {
+                int i = 0;
+                while (i < read) {
                     int codePoint = Character.codePointAt(buffer, i);
                     dataWindow[cpIndex] = codePoint;
                     if (isPrintable(codePoint)) {
@@ -208,6 +207,7 @@ public final class StreamReader {
                         nonPrintable = codePoint;
                         i = read;
                     }
+                    cpIndex++;
                 }
 
                 dataLength = cpIndex;

@@ -206,9 +206,6 @@ public class Composer implements Iterator<Node> {
 
     protected void composeMappingChildren(List<NodeTuple> children, MappingNode node) {
         Node itemKey = composeKeyNode(node);
-        if (itemKey.getTag().equals(Tag.MERGE)) {
-            node.setMerged(true);
-        }
         Node itemValue = composeValueNode(node);
         children.add(new NodeTuple(itemKey, itemValue));
     }

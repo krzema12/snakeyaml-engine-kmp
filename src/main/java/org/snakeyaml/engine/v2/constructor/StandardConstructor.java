@@ -46,7 +46,8 @@ import java.util.UUID;
  * Construct standard Java classes
  */
 public class StandardConstructor extends BaseConstructor {
-    private static final String ERROR_PREFIX = "while constructing a mapping";
+
+    private static final String ERROR_PREFIX = "while constructing an ordered map";
 
     public StandardConstructor(LoadSettings settings) {
         super(settings);
@@ -82,23 +83,21 @@ public class StandardConstructor extends BaseConstructor {
         int i = 0;
         for (NodeTuple tuple : nodeValue) {
             Node keyNode = tuple.getKeyNode();
-            if (!keyNode.getTag().equals(Tag.MERGE)) {
-                Object key = constructKey(keyNode, node.getStartMark(), tuple.getKeyNode().getStartMark());
-                Integer prevIndex = keys.put(key, i);
-                if (prevIndex != null) {
-                    if (!settings.getAllowDuplicateKeys()) {
-                        throw new DuplicateKeyException(node.getStartMark(), key,
-                                tuple.getKeyNode().getStartMark());
-                    }
-                    toRemove.add(prevIndex);
+            Object key = constructKey(keyNode, node.getStartMark(), tuple.getKeyNode().getStartMark());
+            Integer prevIndex = keys.put(key, i);
+            if (prevIndex != null) {
+                if (!settings.getAllowDuplicateKeys()) {
+                    throw new DuplicateKeyException(node.getStartMark(), key,
+                            tuple.getKeyNode().getStartMark());
                 }
+                toRemove.add(prevIndex);
             }
             i = i + 1;
         }
 
-        Iterator<Integer> indicies2remove = toRemove.descendingIterator();
-        while (indicies2remove.hasNext()) {
-            nodeValue.remove(indicies2remove.next().intValue());
+        Iterator<Integer> indices2remove = toRemove.descendingIterator();
+        while (indices2remove.hasNext()) {
+            nodeValue.remove(indices2remove.next().intValue());
         }
     }
 
@@ -108,7 +107,7 @@ public class StandardConstructor extends BaseConstructor {
             try {
                 key.hashCode();// check circular dependencies
             } catch (Exception e) {
-                throw new ConstructorException(ERROR_PREFIX,
+                throw new ConstructorException("while constructing a mapping",
                         contextMark, "found unacceptable key " + key,
                         problemMark, e);
             }
@@ -123,8 +122,7 @@ public class StandardConstructor extends BaseConstructor {
      * @param isPreferred true if keys of node should take precedence over others...
      * @param key2index   maps already merged keys to index from values
      * @param values      collects merged NodeTuple
-     * @return list of the merged NodeTuple (to be set as value for the
-     * MappingNode)
+     * @return list of the merged NodeTuple (to be set as value for the MappingNode)
      */
     private List<NodeTuple> mergeNode(MappingNode node, boolean isPreferred,
                                       Map<Object, Integer> key2index, List<NodeTuple> values) {
@@ -132,48 +130,16 @@ public class StandardConstructor extends BaseConstructor {
         while (iter.hasNext()) {
             final NodeTuple nodeTuple = iter.next();
             final Node keyNode = nodeTuple.getKeyNode();
-            final Node valueNode = nodeTuple.getValueNode();
-            if (keyNode.getTag().equals(Tag.MERGE)) {
-                iter.remove();
-                switch (valueNode.getNodeType()) {
-                    case MAPPING:
-                        MappingNode mn = (MappingNode) valueNode;
-                        mergeNode(mn, false, key2index, values);
-                        break;
-                    case SEQUENCE:
-                        SequenceNode sn = (SequenceNode) valueNode;
-                        List<Node> vals = sn.getValue();
-                        for (Node subnode : vals) {
-                            if (!(subnode instanceof MappingNode)) {
-                                throw new ConstructorException(ERROR_PREFIX,
-                                        node.getStartMark(),
-                                        "expected a mapping for merging, but found "
-                                                + subnode.getNodeType(),
-                                        subnode.getStartMark());
-                            }
-                            MappingNode mnode = (MappingNode) subnode;
-                            mergeNode(mnode, false, key2index, values);
-                        }
-                        break;
-                    default:
-                        throw new ConstructorException(ERROR_PREFIX,
-                                node.getStartMark(),
-                                "expected a mapping or list of mappings for merging, but found "
-                                        + valueNode.getNodeType(),
-                                valueNode.getStartMark());
-                }
-            } else {
-                // we need to construct keys to avoid duplications
-                Object key = constructObject(keyNode);
-                if (!key2index.containsKey(key)) { // 1st time merging key
-                    values.add(nodeTuple);
-                    // keep track where tuple for the key is
-                    key2index.put(key, values.size() - 1);
-                } else if (isPreferred) { // there is value for the key, but we
-                    // need to override it
-                    // change value for the key using saved position
-                    values.set(key2index.get(key), nodeTuple);
-                }
+            // we need to construct keys to avoid duplications
+            Object key = constructObject(keyNode);
+            if (!key2index.containsKey(key)) { // 1st time merging key
+                values.add(nodeTuple);
+                // keep track where tuple for the key is
+                key2index.put(key, values.size() - 1);
+            } else if (isPreferred) { // there is value for the key, but we
+                // need to override it
+                // change value for the key using saved position
+                values.set(key2index.get(key), nodeTuple);
             }
         }
         return values;
@@ -220,24 +186,26 @@ public class StandardConstructor extends BaseConstructor {
             String value = constructScalar((ScalarNode) node);
             return createIntNumber(value);
         }
+
+        protected Number createIntNumber(String number) {
+            Number result;
+            try {
+                //first try integer
+                result = Integer.valueOf(number);
+            } catch (NumberFormatException e) {
+                try {
+                    //then Long
+                    result = Long.valueOf(number);
+                } catch (NumberFormatException e1) {
+                    //and BigInteger as the last resource
+                    result = new BigInteger(number);
+                }
+            }
+            return result;
+        }
     }
 
-    private Number createIntNumber(String number) {
-        Number result;
-        try {
-            //first try integer
-            result = Integer.valueOf(number);
-        } catch (NumberFormatException e) {
-            try {
-                //then Long
-                result = Long.valueOf(number);
-            } catch (NumberFormatException e1) {
-                //and BigInteger as the last resource
-                result = new BigInteger(number);
-            }
-        }
-        return result;
-    }
+
 
     public class ConstructYamlFloat implements ConstructNode {
         @Override
@@ -283,31 +251,29 @@ public class StandardConstructor extends BaseConstructor {
     public class ConstructYamlOmap implements ConstructNode {
         @Override
         public Object construct(Node node) {
-            // Note: we do not check for duplicate keys, because it's too
-            // CPU-expensive.
             Map<Object, Object> omap = new LinkedHashMap<>();
             if (!(node instanceof SequenceNode)) {
-                throw new ConstructorException("while constructing an ordered map",
+                throw new ConstructorException(ERROR_PREFIX,
                         node.getStartMark(), "expected a sequence, but found " + node.getNodeType(),
                         node.getStartMark());
             }
-            SequenceNode snode = (SequenceNode) node;
-            for (Node subNode : snode.getValue()) {
+            SequenceNode sequenceNode = (SequenceNode) node;
+            for (Node subNode : sequenceNode.getValue()) {
                 if (!(subNode instanceof MappingNode)) {
-                    throw new ConstructorException("while constructing an ordered map",
+                    throw new ConstructorException(ERROR_PREFIX,
                             node.getStartMark(),
                             "expected a mapping of length 1, but found " + subNode.getNodeType(),
                             subNode.getStartMark());
                 }
-                MappingNode mnode = (MappingNode) subNode;
-                if (mnode.getValue().size() != 1) {
-                    throw new ConstructorException("while constructing an ordered map",
+                MappingNode mappingNode = (MappingNode) subNode;
+                if (mappingNode.getValue().size() != 1) {
+                    throw new ConstructorException(ERROR_PREFIX,
                             node.getStartMark(), "expected a single mapping item, but found "
-                            + mnode.getValue().size() + " items",
-                            mnode.getStartMark());
+                            + mappingNode.getValue().size() + " items",
+                            mappingNode.getStartMark());
                 }
-                Node keyNode = mnode.getValue().get(0).getKeyNode();
-                Node valueNode = mnode.getValue().get(0).getValueNode();
+                Node keyNode = mappingNode.getValue().get(0).getKeyNode();
+                Node valueNode = mappingNode.getValue().get(0).getValueNode();
                 Object key = constructObject(keyNode);
                 Object value = constructObject(valueNode);
                 omap.put(key, value);

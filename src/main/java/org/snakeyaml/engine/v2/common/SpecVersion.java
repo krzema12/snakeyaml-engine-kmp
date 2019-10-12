@@ -15,7 +15,9 @@
  */
 package org.snakeyaml.engine.v2.common;
 
-public class SpecVersion {
+import java.io.Serializable;
+
+public class SpecVersion implements Serializable {
     private final int major;
     private final int minor;
 

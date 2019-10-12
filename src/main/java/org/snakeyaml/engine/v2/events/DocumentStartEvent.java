@@ -81,4 +81,20 @@ public final class DocumentStartEvent extends Event {
         }
         return builder.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DocumentStartEvent that = (DocumentStartEvent) o;
+        return explicit == that.explicit &&
+                specVersion.equals(that.specVersion) &&
+                tags.equals(that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), explicit, specVersion, tags);
+    }
 }

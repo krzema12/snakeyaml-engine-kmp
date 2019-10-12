@@ -262,6 +262,10 @@ public class ParserImpl implements Parser {
             }
             return event;
         }
+
+        private boolean markEmpty() {
+            return marksStack.isEmpty();
+        }
     }
 
     private class ParseDocumentEnd implements Production {
@@ -331,10 +335,10 @@ public class ParserImpl implements Parser {
         }
         if (!yamlSpecVersion.isPresent() || !tagHandles.isEmpty()) {
             // directives in the document found - drop the previous
-            for (String key : DEFAULT_TAGS.keySet()) {
+            for (Map.Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
                 // do not overwrite re-defined tags
-                if (!tagHandles.containsKey(key)) {
-                    tagHandles.put(key, DEFAULT_TAGS.get(key));
+                if (!tagHandles.containsKey(entry.getKey())) {
+                    tagHandles.put(entry.getKey(), entry.getValue());
                 }
             }
             directives = new VersionTagsTuple(yamlSpecVersion, tagHandles);
@@ -803,10 +807,4 @@ public class ParserImpl implements Parser {
     private void markPush(Optional<Mark> mark) {
         marksStack.push(mark);
     }
-
-    private boolean markEmpty() {
-        return marksStack.isEmpty();
-    }
-
-
 }

@@ -81,29 +81,30 @@ public class JsonScalarResolver implements ScalarResolver {
 
     @Override
     public Tag resolve(String value, Boolean implicit) {
-        if (implicit) {
-            final List<ResolverTuple> resolvers;
-            if (value.length() == 0) {
-                resolvers = yamlImplicitResolvers.get('\0');
-            } else {
-                resolvers = yamlImplicitResolvers.get(value.charAt(0));
-            }
-            if (resolvers != null) {
-                for (ResolverTuple v : resolvers) {
-                    Tag tag = v.getTag();
-                    Pattern regexp = v.getRegexp();
-                    if (regexp.matcher(value).matches()) {
-                        return tag;
-                    }
+        if (!implicit) {
+            return Tag.STR;
+        }
+        final List<ResolverTuple> resolvers;
+        if (value.length() == 0) {
+            resolvers = yamlImplicitResolvers.get('\0');
+        } else {
+            resolvers = yamlImplicitResolvers.get(value.charAt(0));
+        }
+        if (resolvers != null) {
+            for (ResolverTuple v : resolvers) {
+                Tag tag = v.getTag();
+                Pattern regexp = v.getRegexp();
+                if (regexp.matcher(value).matches()) {
+                    return tag;
                 }
             }
-            if (yamlImplicitResolvers.containsKey(null)) {
-                for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
-                    Tag tag = v.getTag();
-                    Pattern regexp = v.getRegexp();
-                    if (regexp.matcher(value).matches()) {
-                        return tag;
-                    }
+        }
+        if (yamlImplicitResolvers.containsKey(null)) {
+            for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
+                Tag tag = v.getTag();
+                Pattern regexp = v.getRegexp();
+                if (regexp.matcher(value).matches()) {
+                    return tag;
                 }
             }
         }

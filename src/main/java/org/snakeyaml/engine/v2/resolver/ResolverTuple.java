@@ -20,7 +20,6 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-
 final class ResolverTuple {
     private final Tag tag;
     private final Pattern regexp;

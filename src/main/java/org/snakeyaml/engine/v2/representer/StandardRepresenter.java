@@ -234,7 +234,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Byte> asByteList(Object in) {
             byte[] array = (byte[]) in;
-            List<Byte> list = new ArrayList<Byte>(array.length);
+            List<Byte> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -242,7 +242,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Short> asShortList(Object in) {
             short[] array = (short[]) in;
-            List<Short> list = new ArrayList<Short>(array.length);
+            List<Short> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -250,7 +250,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Integer> asIntList(Object in) {
             int[] array = (int[]) in;
-            List<Integer> list = new ArrayList<Integer>(array.length);
+            List<Integer> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -266,7 +266,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Float> asFloatList(Object in) {
             float[] array = (float[]) in;
-            List<Float> list = new ArrayList<Float>(array.length);
+            List<Float> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -282,7 +282,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Character> asCharList(Object in) {
             char[] array = (char[]) in;
-            List<Character> list = new ArrayList<Character>(array.length);
+            List<Character> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;
@@ -290,7 +290,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
         private List<Boolean> asBooleanList(Object in) {
             boolean[] array = (boolean[]) in;
-            List<Boolean> list = new ArrayList<Boolean>(array.length);
+            List<Boolean> list = new ArrayList<>(array.length);
             for (int i = 0; i < array.length; ++i)
                 list.add(array[i]);
             return list;

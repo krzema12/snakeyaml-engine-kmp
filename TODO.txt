@@ -22,3 +22,4 @@ Apps to support
 
 issue 459 in snakeyaml
 spec-06-28.data -> ! tag is not parsed properly (it must create string)
+YAML processors should resolve nodes having the “!” non-specific tag as “tag:yaml.org,2002:seq”, “tag:yaml.org,2002:map” or “tag:yaml.org,2002:str” depending on their kind.

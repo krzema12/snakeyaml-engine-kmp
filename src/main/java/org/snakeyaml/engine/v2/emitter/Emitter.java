@@ -682,7 +682,7 @@ public final class Emitter implements Emitable {
                 if (!preparedAnchor.isPresent()) {
                     preparedAnchor = anchorOpt;
                 }
-                length += anchorOpt.get().getAnchor().length();
+                length += anchorOpt.get().getValue().length();
             }
         }
         Optional<String> tag = Optional.empty();

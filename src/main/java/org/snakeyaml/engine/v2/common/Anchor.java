@@ -23,24 +23,24 @@ import static org.snakeyaml.engine.v2.common.CharConstants.ANCHOR_FORMAT;
  * Value inside Anchor and Alias
  */
 public class Anchor {
-    private final String anchor;
+    private final String value;
 
-    public Anchor(String anchor) {
-        Objects.requireNonNull(anchor, "Anchor must be provided.");
-        if (anchor.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
-        if (!ANCHOR_FORMAT.matcher(anchor).matches()) {
-            throw new IllegalArgumentException("invalid character in the anchor: " + anchor);
+    public Anchor(String value) {
+        Objects.requireNonNull(value, "Anchor must be provided.");
+        if (value.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
+        if (!ANCHOR_FORMAT.matcher(value).matches()) {
+            throw new IllegalArgumentException("invalid character in the anchor: " + value);
         }
-        this.anchor = anchor;
+        this.value = value;
     }
 
-    public String getAnchor() {
-        return anchor;
+    public String getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return anchor;
+        return value;
     }
 
     @Override
@@ -48,11 +48,11 @@ public class Anchor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Anchor anchor1 = (Anchor) o;
-        return Objects.equals(anchor, anchor1.anchor);
+        return Objects.equals(value, anchor1.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(anchor);
+        return Objects.hash(value);
     }
 }

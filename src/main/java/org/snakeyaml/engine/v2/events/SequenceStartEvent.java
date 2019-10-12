@@ -49,7 +49,7 @@ public final class SequenceStartEvent extends CollectionStartEvent {
     public String toString() {
         StringBuilder builder = new StringBuilder("+SEQ");
         if (getFlowStyle() == FlowStyle.FLOW) {
-            //TODO builder.append(" []");
+            //TODO builder.append(" []") is better visually, but the tests data do not use it yet
         }
         builder.append(super.toString());
         return builder.toString();

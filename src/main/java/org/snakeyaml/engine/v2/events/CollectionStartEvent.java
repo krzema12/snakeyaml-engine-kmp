@@ -83,20 +83,4 @@ public abstract class CollectionStartEvent extends NodeEvent {
         if (!implicit) getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
         return builder.toString();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        CollectionStartEvent that = (CollectionStartEvent) o;
-        return implicit == that.implicit &&
-                tag.equals(that.tag) &&
-                flowStyle == that.flowStyle;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), tag, implicit, flowStyle);
-    }
 }

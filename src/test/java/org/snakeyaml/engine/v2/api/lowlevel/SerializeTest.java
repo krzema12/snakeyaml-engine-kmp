@@ -23,8 +23,8 @@ import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.utils.TestUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SerializeTest {
 
     @Test
-    void serializeOneScalar(TestInfo testInfo) throws IOException {
+    void serializeOneScalar(TestInfo testInfo) {
         Serialize serialize = new Serialize(DumpSettings.builder().build());
         Iterable<Event> events = serialize.serializeOne(new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN));
         List<Event> list = Lists.newArrayList(events);
-        assertEquals(Lists.newArrayList(new StreamStartEvent(),
+        assertEquals(5, list.size());
+        TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(),
                 new DocumentStartEvent(false, Optional.empty(), new HashMap<>()),
                 new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(false, false), "a", ScalarStyle.PLAIN),
                 new DocumentEndEvent(false),

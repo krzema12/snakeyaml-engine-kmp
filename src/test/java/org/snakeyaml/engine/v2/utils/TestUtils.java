@@ -16,10 +16,14 @@
 package org.snakeyaml.engine.v2.utils;
 
 import com.google.common.io.CharStreams;
+import org.snakeyaml.engine.v2.events.Event;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class TestUtils {
 
@@ -32,6 +36,16 @@ public abstract class TestUtils {
             return CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void compareEvents(List<Event> list1, List<Event> list2) {
+        assertEquals(list1.size(), list2.size());
+        for(Event event1: list1) {
+            Event event2 = list2.remove(0);
+            String ev1 = event1.toString();
+            String ev2 = event2.toString();
+            assertEquals(ev1, ev2);
         }
     }
 

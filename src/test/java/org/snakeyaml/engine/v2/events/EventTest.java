@@ -35,12 +35,6 @@ class EventTest {
     }
 
     @Test
-    void hashcode(TestInfo testInfo) {
-        Event alias = new AliasEvent(Optional.of(new Anchor("111")));
-        assertEquals(new AliasEvent(Optional.of(new Anchor("111"))).hashCode(), alias.hashCode());
-    }
-
-    @Test
     void bothMarks(TestInfo testInfo) {
         Mark fake = new Mark("a", 0,0,0, new int[0], 0);
         NullPointerException exception = assertThrows(NullPointerException.class, () ->

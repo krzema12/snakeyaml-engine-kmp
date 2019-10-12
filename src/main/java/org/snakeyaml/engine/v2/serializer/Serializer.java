@@ -18,16 +18,39 @@ package org.snakeyaml.engine.v2.serializer;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.emitter.Emitable;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.*;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.DocumentEndEvent;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingEndEvent;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceEndEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.events.StreamEndEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.nodes.AnchorNode;
+import org.snakeyaml.engine.v2.nodes.CollectionNode;
+import org.snakeyaml.engine.v2.nodes.MappingNode;
+import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.NodeTuple;
+import org.snakeyaml.engine.v2.nodes.NodeType;
+import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.nodes.SequenceNode;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class Serializer {
     private final DumpSettings settings;
     private final Emitable emitable;
-    private Set<Node> serializedNodes;
-    private Map<Node, Anchor> anchors;
+    private final Set<Node> serializedNodes;
+    private final Map<Node, Anchor> anchors;
 
     public Serializer(DumpSettings settings, Emitable emitable) {
         this.settings = settings;
@@ -39,8 +62,8 @@ public class Serializer {
     public void serialize(Node node) {
         this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(), settings.getYamlDirective(), settings.getTagDirective()));
         anchorNode(node);
-        settings.getExplicitRootTag().ifPresent(tag -> node.setTag(tag));
-        serializeNode(node, Optional.empty());
+        settings.getExplicitRootTag().ifPresent(node::setTag);
+        serializeNode(node);
         this.emitable.emit(new DocumentEndEvent(settings.isExplicitEnd()));
         this.serializedNodes.clear();
         this.anchors.clear();
@@ -55,28 +78,29 @@ public class Serializer {
     }
 
     private void anchorNode(Node node) {
+        final Node realNode;
         if (node.getNodeType() == NodeType.ANCHOR) {
-            node = ((AnchorNode) node).getRealNode();
-        }
-        if (this.anchors.containsKey(node)) {
-            Anchor anchor = this.anchors.get(node);
-            if (null == anchor) {
-                anchor = settings.getAnchorGenerator().nextAnchor(node);
-                this.anchors.put(node, anchor);
-            }
+            realNode = ((AnchorNode) node).getRealNode();
         } else {
-            this.anchors.put(node, null);
-            switch (node.getNodeType()) {
+            realNode = node;
+        }
+        if (this.anchors.containsKey(realNode)) {
+            //it looks weird, anchors does contain the key node but we call computeIfAbsent()
+            // this is because the value is null (HashMap permits values to be null)
+            this.anchors.computeIfAbsent(realNode, a -> settings.getAnchorGenerator().nextAnchor(realNode));
+        } else {
+            this.anchors.put(realNode, null);
+            switch (realNode.getNodeType()) {
                 case SEQUENCE:
-                    SequenceNode seqNode = (SequenceNode) node;
+                    SequenceNode seqNode = (SequenceNode) realNode;
                     List<Node> list = seqNode.getValue();
                     for (Node item : list) {
                         anchorNode(item);
                     }
                     break;
                 case MAPPING:
-                    MappingNode mnode = (MappingNode) node;
-                    List<NodeTuple> map = mnode.getValue();
+                    MappingNode mappingNode = (MappingNode) realNode;
+                    List<NodeTuple> map = mappingNode.getValue();
                     for (NodeTuple object : map) {
                         Node key = object.getKeyNode();
                         Node value = object.getValueNode();
@@ -84,12 +108,12 @@ public class Serializer {
                         anchorNode(value);
                     }
                     break;
+                default: // no further action required for non-collections
             }
         }
     }
 
-    // parent is not used
-    private void serializeNode(Node node, Optional<Node> parent) {
+    private void serializeNode(Node node) {
         if (node.getNodeType() == NodeType.ANCHOR) {
             node = ((AnchorNode) node).getRealNode();
         }
@@ -116,7 +140,7 @@ public class Serializer {
                             implicitS, seqNode.getFlowStyle()));
                     List<Node> list = seqNode.getValue();
                     for (Node item : list) {
-                        serializeNode(item, Optional.of(node));
+                        serializeNode(item);
                     }
                     this.emitable.emit(new SequenceEndEvent());
                     break;
@@ -129,8 +153,8 @@ public class Serializer {
                     for (NodeTuple entry : map) {
                         Node key = entry.getKeyNode();
                         Node value = entry.getValueNode();
-                        serializeNode(key, Optional.of(mappingNode));
-                        serializeNode(value, Optional.of(mappingNode));
+                        serializeNode(key);
+                        serializeNode(value);
                     }
                     this.emitable.emit(new MappingEndEvent());
             }

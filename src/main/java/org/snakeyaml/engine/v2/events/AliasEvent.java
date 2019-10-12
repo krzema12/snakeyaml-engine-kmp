@@ -25,7 +25,7 @@ import java.util.Optional;
  * Marks the inclusion of a previously anchored node.
  */
 public final class AliasEvent extends NodeEvent {
-    private Anchor alias;
+    private final Anchor alias;
 
     public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);

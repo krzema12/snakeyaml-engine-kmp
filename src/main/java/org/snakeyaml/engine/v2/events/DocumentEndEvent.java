@@ -17,6 +17,7 @@ package org.snakeyaml.engine.v2.events;
 
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -53,5 +54,19 @@ public final class DocumentEndEvent extends Event {
             builder.append(" ...");
         }
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DocumentEndEvent that = (DocumentEndEvent) o;
+        return explicit == that.explicit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), explicit);
     }
 }

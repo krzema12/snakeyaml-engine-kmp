@@ -22,6 +22,8 @@
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
         <guava.version>26.0-jre</guava.version>
         <required.maven.version>3.5.0</required.maven.version>
+
+        <sonar.exclusions>**/*google*/**.java</sonar.exclusions>
     </properties>
     <name>SnakeYAML Engine</name>
     <description>Core YAML 1.2 parser and emitter for Java</description>

@@ -79,5 +79,7 @@ public class NumberTest {
         assertEquals(new Double(1.23E6), loader.loadFromString("1.23e+6"));
         assertEquals(new Double(1.23E6), loader.loadFromString("1.23E6"));
         assertEquals(new Double(-1.23E6), loader.loadFromString("-1.23E6"));
+        assertEquals(new Double(1000.25), loader.loadFromString("1000.25"));
+        assertEquals(new Double(9000.0), loader.loadFromString("9000.00"));
     }
 }

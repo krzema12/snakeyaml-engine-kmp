@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class JsonScalarResolver implements ScalarResolver {
 
     public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
-    public static final Pattern FLOAT = Pattern.compile("^(-?(0?\\.[0-9]+|[1-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)$"); //NOSONAR
+    public static final Pattern FLOAT = Pattern.compile("^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)$"); //NOSONAR
     public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
     public static final Pattern NULL = Pattern.compile("^(?:null)$");
     public static final Pattern EMPTY = Pattern.compile("^$");

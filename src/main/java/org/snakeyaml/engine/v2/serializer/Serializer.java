@@ -75,6 +75,9 @@ public class Serializer {
 
     public void close() {
         this.emitable.emit(new StreamEndEvent());
+        // clean up the resources
+        this.anchors.clear();
+        this.serializedNodes.clear();
     }
 
     private void anchorNode(Node node) {

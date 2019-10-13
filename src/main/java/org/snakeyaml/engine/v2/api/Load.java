@@ -29,7 +29,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Common way to load Java instance(s)
+ * Common way to load Java instance(s). This class is not thread-safe. Which means that all the methods of the same
+ * instance can be called only by one thread.
+ * It is better to create an instance for every YAML stream. If the same instance is used to parse many YAML streams
+ * then the clear method must be called to released unused resources
  */
 public class Load {
 
@@ -47,7 +50,8 @@ public class Load {
 
     /**
      * Create instance to parse the incoming YAML data and create Java instances
-     * @param settings - configuration
+     *
+     * @param settings    - configuration
      * @param constructor - custom YAML constructor
      */
     public Load(LoadSettings settings, BaseConstructor constructor) {
@@ -138,6 +142,7 @@ public class Load {
     /**
      * Parse all YAML documents in a String and produce corresponding Java
      * objects. The documents are parsed only when the iterator is invoked.
+     *
      * @param yamlReader - YAML data to load from (BOM must not be present)
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
@@ -151,6 +156,7 @@ public class Load {
      * Parse all YAML documents in a String and produce corresponding Java
      * objects. (Because the encoding in known BOM is not respected.) The
      * documents are parsed only when the iterator is invoked.
+     *
      * @param yaml - YAML data to load from (BOM must not be present)
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */

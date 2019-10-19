@@ -50,13 +50,6 @@ class ComposerTest {
     }
 
     @Test
-    void composeMergeExample() {
-        Compose compose = new Compose(LoadSettings.builder().build());
-        Optional<Node> node = compose.composeString(TestUtils.getResource("merge/example.yaml"));
-        assertTrue(node.isPresent());
-    }
-
-    @Test
     void composeAnchor() {
         String data = "--- &113\n{name: Bill, age: 18}";
         Compose compose = new Compose(LoadSettings.builder().build());

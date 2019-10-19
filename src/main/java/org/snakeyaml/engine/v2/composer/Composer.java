@@ -103,7 +103,7 @@ public class Composer implements Iterator<Node> {
         // Drop the DOCUMENT-END event.
         parser.next();
         this.anchors.clear();
-        recursiveNodes.clear();
+        this.recursiveNodes.clear();
         return node;
     }
 

@@ -86,13 +86,14 @@ public abstract class BaseConstructor {
         try {
             Object data = constructObject(node);
             fillRecursive();
-            constructedObjects.clear();
-            recursiveObjects.clear();
             return data;
         } catch (YamlEngineException e) {
             throw e;
         } catch (RuntimeException e) {
             throw new YamlEngineException(e);
+        } finally {
+            constructedObjects.clear();
+            recursiveObjects.clear();
         }
     }
 

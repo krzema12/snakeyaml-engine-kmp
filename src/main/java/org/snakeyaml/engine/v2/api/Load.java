@@ -31,8 +31,7 @@ import java.util.Optional;
 /**
  * Common way to load Java instance(s). This class is not thread-safe. Which means that all the methods of the same
  * instance can be called only by one thread.
- * It is better to create an instance for every YAML stream. If the same instance is used to parse many YAML streams
- * then the clear method must be called to released unused resources
+ * It is better to create an instance for every YAML stream.
  */
 public class Load {
 

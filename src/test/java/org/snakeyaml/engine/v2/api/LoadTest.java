@@ -27,6 +27,7 @@ import java.util.Iterator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -151,6 +152,21 @@ class LoadTest {
     }
 
     @Test
+    @DisplayName("Load a lot of documents from the same Load instance (not recommended)")
+    void loadManyFromTheSameInstance() {
+        LoadSettings settings = LoadSettings.builder().build();
+        Load load = new Load(settings);
+        for (int i = 0; i < 100000; i++) {
+            Iterable<Object> v = load.loadAllFromReader(new StringReader("{foo: bar, list: [1, 2, 3]}"));
+            Iterator<Object> iter = v.iterator();
+            assertTrue(iter.hasNext());
+            Object o1 = iter.next();
+            assertNotNull(o1);
+            assertFalse(iter.hasNext());
+        }
+    }
+
+    @Test
     @DisplayName("Throw UnsupportedOperationException if try to remove from iterator")
     void loadAllFromStringWithUnsupportedOperationException() {
         LoadSettings settings = LoadSettings.builder().build();
@@ -160,5 +176,4 @@ class LoadTest {
                 v.iterator().remove());
         assertEquals("Removing is not supported.", exception.getMessage());
     }
-
 }

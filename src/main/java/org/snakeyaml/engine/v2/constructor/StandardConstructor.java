@@ -205,8 +205,6 @@ public class StandardConstructor extends BaseConstructor {
         }
     }
 
-
-
     public class ConstructYamlFloat implements ConstructNode {
         @Override
         public Object construct(Node node) {

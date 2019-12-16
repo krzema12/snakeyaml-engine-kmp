@@ -7,6 +7,9 @@
     <body>
         <release version="2.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="update">
+                Add a test for Billion_laughs_attack (2019-12-16)
+            </action>
+            <action dev="asomov" type="update">
                 A lot of improvements according to Sonarqube
             </action>
             <action dev="asomov" type="fix">

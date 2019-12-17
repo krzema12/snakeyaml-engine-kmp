@@ -15,10 +15,12 @@
  */
 package org.snakeyaml.engine.v2.composer;
 
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.exceptions.ComposerException;
 import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.*;
 import org.snakeyaml.engine.v2.parser.Parser;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
@@ -38,10 +40,13 @@ public class Composer implements Iterator<Node> {
     private final ScalarResolver scalarResolver;
     private final Map<Anchor, Node> anchors;
     private final Set<Node> recursiveNodes;
+    private int nonScalarAliasesCount = 0;
+    private final LoadSettings settings;
 
-    public Composer(Parser parser, ScalarResolver scalarResolver) {
+    public Composer(Parser parser, LoadSettings settings) {
         this.parser = parser;
-        this.scalarResolver = scalarResolver;
+        this.scalarResolver = settings.getScalarResolver();
+        this.settings = settings;
         this.anchors = new HashMap();
         this.recursiveNodes = new HashSet();
     }
@@ -104,6 +109,7 @@ public class Composer implements Iterator<Node> {
         parser.next();
         this.anchors.clear();
         this.recursiveNodes.clear();
+        this.nonScalarAliasesCount = 0;
         return node;
     }
 
@@ -118,6 +124,12 @@ public class Composer implements Iterator<Node> {
                 throw new ComposerException("found undefined alias " + anchor, event.getStartMark());
             }
             node = anchors.get(anchor);
+            if (node.getNodeType() != NodeType.SCALAR) {
+                this.nonScalarAliasesCount++;
+                if (this.nonScalarAliasesCount > settings.getMaxAliasesForCollections()) {
+                    throw new YamlEngineException("Number of aliases for non-scalar nodes exceeds the specified max=" + settings.getMaxAliasesForCollections());
+                }
+            }
             if (recursiveNodes.remove(node)) {
                 node.setRecursive(true);
             }

@@ -52,7 +52,8 @@ public class Compose {
      */
     public Optional<Node> composeReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getScalarResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(yaml, settings), settings),
+                settings).getSingleNode();
     }
 
     /**
@@ -64,7 +65,8 @@ public class Compose {
      */
     public Optional<Node> composeInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings),
+                settings).getSingleNode();
     }
 
     /**
@@ -76,7 +78,8 @@ public class Compose {
      */
     public Optional<Node> composeString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver()).getSingleNode();
+        return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings),
+                settings).getSingleNode();
     }
 
     // Compose all documents
@@ -90,7 +93,7 @@ public class Compose {
      */
     public Iterable<Node> composeAllFromReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
-        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings.getScalarResolver());
+        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings);
     }
 
     /**
@@ -102,7 +105,7 @@ public class Compose {
      */
     public Iterable<Node> composeAllFromInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings.getScalarResolver());
+        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings);
     }
 
     /**
@@ -118,7 +121,7 @@ public class Compose {
         return new Iterable() {
             public Iterator<Node> iterator() {
                 return new Composer(new ParserImpl(
-                        new StreamReader(new StringReader(yaml), settings), settings), settings.getScalarResolver());
+                        new StreamReader(new StringReader(yaml), settings), settings), settings);
             }
         };
     }

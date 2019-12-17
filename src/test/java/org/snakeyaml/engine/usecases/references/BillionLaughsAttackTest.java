@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 import java.util.Map;
 
@@ -40,10 +41,20 @@ public class BillionLaughsAttackTest {
             "h: &h [*g,*g,*g,*g,*g,*g,*g,*g,*g]\n" +
             "i: &i [*h,*h,*h,*h,*h,*h,*h,*h,*h]";
 
+    public static final String scalarAliasesData = "a: &a foo\n" +
+            "b:  *a\n" +
+            "c:  *a\n" +
+            "d:  *a\n" +
+            "e:  *a\n" +
+            "f:  *a\n" +
+            "g:  *a\n";
+
     @Test
-    @DisplayName("Billion_laughs_attack")
-    public void billionLaughsAttack() {
-        LoadSettings settings = LoadSettings.builder().build();
+    @DisplayName("Load many aliases if explicitly allowed")
+    public void billionLaughsAttackLoaded() {
+        LoadSettings settings = LoadSettings.builder()
+                .setMaxAliasesForCollections(72)
+                .build();
         Load load = new Load(settings);
         Map map = (Map) load.loadFromString(data);
         assertNotNull(map);
@@ -52,15 +63,40 @@ public class BillionLaughsAttackTest {
     @Test
     @DisplayName("Billion_laughs_attack if data expanded")
     public void billionLaughsAttackExpanded() {
-        LoadSettings settings = LoadSettings.builder().build();
+        LoadSettings settings = LoadSettings.builder()
+                .setMaxAliasesForCollections(100)
+                .build();
         Load load = new Load(settings);
         Map map = (Map) load.loadFromString(data);
         assertNotNull(map);
         try {
             map.toString();
-            fail();
+            fail("Expected overflow");
         } catch (Throwable e) {
             assertTrue(e.getMessage().contains("heap"));
         }
+    }
+
+    @Test
+    @DisplayName("Prevent Billion_laughs_attack by default")
+    public void billionLaughsAttackWithRestrictedAliases() {
+        LoadSettings settings = LoadSettings.builder().build();
+        Load load = new Load(settings);
+        try {
+            load.loadFromString(data);
+            fail();
+        } catch (YamlEngineException e) {
+            assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=50", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Number of aliases for scalar nodes is not restricted")
+    public void doNotRestrictScalarAliases() {
+        LoadSettings settings = LoadSettings.builder()
+                .setMaxAliasesForCollections(5) //smaller than number of aliases for scalars
+                .build();
+        Load load = new Load(settings);
+        load.loadFromString(scalarAliasesData);
     }
 }

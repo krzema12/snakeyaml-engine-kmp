@@ -46,6 +46,7 @@ public final class LoadSettingsBuilder {
     private Integer bufferSize;
     private boolean allowDuplicateKeys;
     private boolean allowRecursiveKeys;
+    private int maxAliasesForCollections;
     private boolean useMarks;
 
     //general
@@ -68,6 +69,7 @@ public final class LoadSettingsBuilder {
         this.bufferSize = 1024;
         this.allowDuplicateKeys = false;
         this.allowRecursiveKeys = false;
+        this.maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
         this.useMarks = true;
     }
 
@@ -179,6 +181,19 @@ public final class LoadSettingsBuilder {
     }
 
     /**
+     * Restrict the number of aliases for collection nodes to prevent Billion laughs attack.
+     * Aliases for scalar nodes do not count because they do not grow exponentially.
+     *
+     * @param maxAliasesForCollections - max number of aliases. More than 10 is suspicious,
+     *                                 more then 50 is very dangerous. Default is 50
+     * @return the builder with the provided value
+     */
+    public LoadSettingsBuilder setMaxAliasesForCollections(int maxAliasesForCollections) {
+        this.maxAliasesForCollections = maxAliasesForCollections;
+        return this;
+    }
+
+    /**
      * Marks are only used for error messages. But they requires a lot of memory. True by default.
      *
      * @param useMarks - use false to save resources but use less informative error messages (no line and context)
@@ -221,7 +236,7 @@ public final class LoadSettingsBuilder {
                 scalarResolver, defaultList,
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,
-                allowDuplicateKeys, allowRecursiveKeys, useMarks,
+                allowDuplicateKeys, allowRecursiveKeys, maxAliasesForCollections, useMarks,
                 customProperties);
     }
 }

@@ -41,6 +41,7 @@ public final class LoadSettings {
     private final Integer bufferSize;
     private final boolean allowDuplicateKeys;
     private final boolean allowRecursiveKeys;
+    private final int maxAliasesForCollections;
     private final boolean useMarks;
 
     //general
@@ -50,7 +51,8 @@ public final class LoadSettings {
                  ScalarResolver scalarResolver, IntFunction<List> defaultList,
                  IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
                  UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
-                 boolean allowDuplicateKeys, boolean allowRecursiveKeys, boolean useMarks,
+                 boolean allowDuplicateKeys, boolean allowRecursiveKeys, int maxAliasesForCollections,
+                 boolean useMarks,
                  Map<SettingKey, Object> customProperties) {
         this.label = label;
         this.tagConstructors = tagConstructors;
@@ -62,6 +64,7 @@ public final class LoadSettings {
         this.bufferSize = bufferSize;
         this.allowDuplicateKeys = allowDuplicateKeys;
         this.allowRecursiveKeys = allowRecursiveKeys;
+        this.maxAliasesForCollections = maxAliasesForCollections;
         this.useMarks = useMarks;
         this.customProperties = customProperties;
     }
@@ -116,6 +119,10 @@ public final class LoadSettings {
 
     public Object getCustomProperty(SettingKey key) {
         return customProperties.get(key);
+    }
+
+    public int getMaxAliasesForCollections() {
+        return maxAliasesForCollections;
     }
 }
 

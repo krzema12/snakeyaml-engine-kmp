@@ -87,6 +87,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define flow style
+     *
      * @param defaultFlowStyle - specify the style
      * @return the builder with the provided value
      */
@@ -97,6 +98,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define default scalar style
+     *
      * @param defaultScalarStyle - specify the scalar style
      * @return the builder with the provided value
      */
@@ -107,6 +109,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Add '---' in the beginning of the document
+     *
      * @param explicitStart - true if the document start must be explicitly indicated
      * @return the builder with the provided value
      */
@@ -117,6 +120,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define anchor name generator (by default 'id' + number)
+     *
      * @param anchorGenerator - specified function to create anchor names
      * @return the builder with the provided value
      */
@@ -128,6 +132,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define {@link ScalarResolver} or use JSON resolver by default
+     *
      * @param scalarResolver - specify the scalar resolver
      * @return the builder with the provided value
      */
@@ -139,6 +144,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define root {@link Tag} or let the tag to be detected automatically
+     *
      * @param explicitRootTag - specify the root tag
      * @return the builder with the provided value
      */
@@ -149,7 +155,8 @@ public final class DumpSettingsBuilder {
     }
 
     /**
-     *  Add '...' in the end of the document
+     * Add '...' in the end of the document
+     *
      * @param explicitEnd - true if the document end must be explicitly indicated
      * @return the builder with the provided value
      */
@@ -160,6 +167,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Add YAML directive (http://yaml.org/spec/1.2/spec.html#id2781553)
+     *
      * @param yamlDirective - the version to be used in the directive
      * @return the builder with the provided value
      */
@@ -171,6 +179,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Add TAG directive (http://yaml.org/spec/1.2/spec.html#id2782090)
+     *
      * @param tagDirective - the data to create TAG directive
      * @return the builder with the provided value
      */
@@ -182,6 +191,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Enforce canonical representation
+     *
      * @param canonical - specify if the canonical representation must be used
      * @return the builder with the provided value
      */
@@ -192,6 +202,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Use pretty flow style when every value in the flow context gets a separate line.
+     *
      * @param multiLineFlow - set false to output all values in a single line.
      * @return the builder with the provided value
      */
@@ -206,6 +217,7 @@ public final class DumpSettingsBuilder {
      * The default value is true.
      * When set to false then printable non-ASCII characters (Cyrillic, Chinese etc)
      * will be not printed but escaped (to support ASCII terminals)
+     *
      * @param useUnicodeEncoding - true to use Unicode for "�", false to use "\ufffd" for the same char
      *                           (if useUnicodeEncoding is false then all non-ASCII characters are escaped)
      * @return the builder with the provided value
@@ -217,6 +229,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define the amount of the spaces for the indent in the block flow style. Default is 2.
+     *
      * @param indent - the number of spaces. Must be within the range org.snakeyaml.engine.v2.emitter.Emitter.MIN_INDENT
      *               and org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT
      * @return the builder with the provided value
@@ -237,6 +250,7 @@ public final class DumpSettingsBuilder {
      * Default is 0.
      * For better visual results it should be by 2 less than the indent (which is 2 by default)
      * It is 2 chars less because the first char is '-' and the second char is the space after it.
+     *
      * @param indicatorIndent - must be non-negative and less than org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT - 1
      * @return the builder with the provided value
      */
@@ -255,6 +269,7 @@ public final class DumpSettingsBuilder {
      * Set max width for literal scalars. When the scalar
      * representation takes more then the preferred with the scalar will be
      * split into a few lines. The default is 80.
+     *
      * @param width - the width
      * @return the builder with the provided value
      */
@@ -266,6 +281,7 @@ public final class DumpSettingsBuilder {
     /**
      * If the YAML is created for another platform (for instance on Windows to be consumed under Linux) than
      * this setting is used to define the line ending. The platform line end is used by default.
+     *
      * @param bestLineBreak -  "\r\n" or "\n"
      * @return the builder with the provided value
      */
@@ -277,6 +293,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Define whether to split long lines
+     *
      * @param splitLines - true to split long lines
      * @return the builder with the provided value
      */
@@ -288,11 +305,12 @@ public final class DumpSettingsBuilder {
     /**
      * Define max key length to use simple key (without '?')
      * More info https://yaml.org/spec/1.2/spec.html#id2798057
+     *
      * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
      * @return the builder with the provided value
      */
     public DumpSettingsBuilder setMaxSimpleKeyLength(int maxSimpleKeyLength) {
-        if(maxSimpleKeyLength > 1024) {
+        if (maxSimpleKeyLength > 1024) {
             throw new YamlEngineException("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057");
         }
         this.maxSimpleKeyLength = maxSimpleKeyLength;
@@ -303,6 +321,7 @@ public final class DumpSettingsBuilder {
      * When String object contains non-printable characters, they are escaped with \\u or \\x notation.
      * Sometimes it is better to transform this data to binary (with the !!binary tag).
      * String objects with printable data are non affected by this setting.
+     *
      * @param nonPrintableStyle - set this to BINARY to force non-printable String to represented as binary (byte array)
      * @return the builder with the provided value
      */
@@ -318,6 +337,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Create immutable DumpSettings
+     *
      * @return DumpSettings with the provided values
      */
     public DumpSettings build() {

@@ -61,7 +61,7 @@ public class Load {
     }
 
     private Composer createComposer(StreamReader streamReader) {
-        return new Composer(new ParserImpl(streamReader, settings), settings.getScalarResolver());
+        return new Composer(new ParserImpl(streamReader, settings), settings);
     }
 
     protected Composer createComposer(InputStream yamlStream) {

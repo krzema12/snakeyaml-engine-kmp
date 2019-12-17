@@ -23,14 +23,13 @@ import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 public class ReferencesTest {
 
-    private String createDump(DumpSettings dumpSettings) {
+    private String createDump() {
         HashMap root = new HashMap();
         HashMap s1, s2, t1, t2;
         s1 = root;
@@ -73,7 +72,7 @@ public class ReferencesTest {
         f.put(f, "a");
         f.put("g", root);
 
-        Dump dump = new Dump(dumpSettings);
+        Dump dump = new Dump(DumpSettings.builder().build());
         String output = dump.dumpToString(f);
         return output;
     }
@@ -81,7 +80,7 @@ public class ReferencesTest {
 
     @Test
     public void referencesWithRecursiveKeysNotAllowedByDefault() {
-        String output = createDump(DumpSettings.builder().build());
+        String output = createDump();
         //System.out.println(output);
 
         // Load
@@ -97,15 +96,33 @@ public class ReferencesTest {
 
     @Test
     public void referencesWithAllowRecursiveKeys() {
-        String output = createDump(DumpSettings.builder().build());
-        //System.out.println(output);
-
+        String output = createDump();
         // Load
         long time1 = System.currentTimeMillis();
-        LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
+        LoadSettings settings = LoadSettings.builder()
+                .setAllowRecursiveKeys(true)
+                .setMaxAliasesForCollections(50)
+                .build();
         Load load = new Load(settings);
         load.loadFromString(output);
         long time2 = System.currentTimeMillis();
         System.out.println("Time was " + ((time2 - time1) / 1000) + " seconds.");
+    }
+
+    @Test
+    public void referencesWithRestrictedAliases() {
+        String output = createDump();
+        // Load
+        LoadSettings settings = LoadSettings.builder()
+                .setAllowRecursiveKeys(true)
+                .setMaxAliasesForCollections(40)
+                .build();
+        Load load = new Load(settings);
+        try {
+            load.loadFromString(output);
+            fail();
+        } catch (Exception e) {
+            assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=40", e.getMessage());
+        }
     }
 }

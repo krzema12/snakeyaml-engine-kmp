@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.usecases.references;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("fast")
 public class ReferencesTest {
 
-    private String createDump() {
+    private String createDump(int size) {
         HashMap root = new HashMap();
         HashMap s1, s2, t1, t2;
         s1 = root;
@@ -48,8 +49,7 @@ public class ReferencesTest {
         33 -> 245
         34 -> 500
          */
-        int SIZE = 25;
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < size; i++) {
 
             t1 = new HashMap();
             t2 = new HashMap();
@@ -65,9 +65,8 @@ public class ReferencesTest {
             s2 = t2;
         }
 
-        //FIXME
         // this is VERY BAD code
-        // the map has itself as a key (no idea why it may be used)
+        // the map has itself as a key (no idea why it may be used except DoS attack)
         HashMap f = new HashMap();
         f.put(f, "a");
         f.put("g", root);
@@ -80,11 +79,13 @@ public class ReferencesTest {
 
     @Test
     public void referencesWithRecursiveKeysNotAllowedByDefault() {
-        String output = createDump();
+        String output = createDump(30);
         //System.out.println(output);
-
+        long time1 = System.currentTimeMillis();
         // Load
-        LoadSettings settings = LoadSettings.builder().build();
+        LoadSettings settings = LoadSettings.builder()
+                .setMaxAliasesForCollections(150)
+                .build();
         Load load = new Load(settings);
         try {
             load.loadFromString(output);
@@ -92,11 +93,15 @@ public class ReferencesTest {
         } catch (Exception e) {
             assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.", e.getMessage());
         }
+        long time2 = System.currentTimeMillis();
+        float duration = (time2 - time1) / 1000;
+        assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
     }
 
     @Test
-    public void referencesWithAllowRecursiveKeys() {
-        String output = createDump();
+    @DisplayName("Parsing with aliases may take a lot of time, CPU and memory")
+    public void parseManyAliasesForCollections() {
+        String output = createDump(25);
         // Load
         long time1 = System.currentTimeMillis();
         LoadSettings settings = LoadSettings.builder()
@@ -106,23 +111,31 @@ public class ReferencesTest {
         Load load = new Load(settings);
         load.loadFromString(output);
         long time2 = System.currentTimeMillis();
-        System.out.println("Time was " + ((time2 - time1) / 1000) + " seconds.");
+        float duration = (time2 - time1) / 1000;
+        assertTrue(duration > 1.0, "It should take time. Time was " + duration + " seconds.");
+        assertTrue(duration < 5.0, "Time was " + duration + " seconds.");
     }
 
     @Test
+    @DisplayName("Prevent DoS attack by failing early")
     public void referencesWithRestrictedAliases() {
-        String output = createDump();
+        // without alias restriction this size should occupy tons of CPU, memory and time to parse
+        String bigYAML = createDump(35);
         // Load
+        long time1 = System.currentTimeMillis();
         LoadSettings settings = LoadSettings.builder()
                 .setAllowRecursiveKeys(true)
                 .setMaxAliasesForCollections(40)
                 .build();
         Load load = new Load(settings);
         try {
-            load.loadFromString(output);
+            load.loadFromString(bigYAML);
             fail();
         } catch (Exception e) {
             assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=40", e.getMessage());
         }
+        long time2 = System.currentTimeMillis();
+        float duration = (time2 - time1) / 1000;
+        assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
     }
 }

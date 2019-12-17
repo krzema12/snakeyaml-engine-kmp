@@ -182,10 +182,11 @@ public final class LoadSettingsBuilder {
 
     /**
      * Restrict the number of aliases for collection nodes to prevent Billion laughs attack.
+     * The purpose of this setting is to force SnakeYAML to fail before a lot of
+     * CPU and memory resources are allocated for the parser.
      * Aliases for scalar nodes do not count because they do not grow exponentially.
      *
-     * @param maxAliasesForCollections - max number of aliases. More than 10 is suspicious,
-     *                                 more then 50 is very dangerous. Default is 50
+     * @param maxAliasesForCollections - max number of aliases. More then 50 might be very dangerous. Default is 50
      * @return the builder with the provided value
      */
     public LoadSettingsBuilder setMaxAliasesForCollections(int maxAliasesForCollections) {

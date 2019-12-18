@@ -30,6 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("fast")
 public class ReferencesTest {
 
+    /**
+     * Create data which is difficult to parse.
+     * @param size - size of the map, defines the complexity
+     * @return YAML to parse
+     */
     private String createDump(int size) {
         HashMap root = new HashMap();
         HashMap s1, s2, t1, t2;
@@ -66,7 +71,7 @@ public class ReferencesTest {
         }
 
         // this is VERY BAD code
-        // the map has itself as a key (no idea why it may be used except DoS attack)
+        // the map has itself as a key (no idea why it may be used except of a DoS attack)
         HashMap f = new HashMap();
         f.put(f, "a");
         f.put("g", root);
@@ -75,7 +80,6 @@ public class ReferencesTest {
         String output = dump.dumpToString(f);
         return output;
     }
-
 
     @Test
     public void referencesWithRecursiveKeysNotAllowedByDefault() {

@@ -22,7 +22,6 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
 import org.snakeyaml.engine.v2.exceptions.ComposerException;
 import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.util.Optional;
 

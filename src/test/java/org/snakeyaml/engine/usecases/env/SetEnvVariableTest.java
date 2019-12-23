@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.usecases.env;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.utils.SystemProperty;
 

@@ -24,7 +24,10 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * https://en.wikipedia.org/wiki/Billion_laughs_attack#Variations

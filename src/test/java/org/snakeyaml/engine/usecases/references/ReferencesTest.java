@@ -25,13 +25,16 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("fast")
 public class ReferencesTest {
 
     /**
      * Create data which is difficult to parse.
+     *
      * @param size - size of the map, defines the complexity
      * @return YAML to parse
      */

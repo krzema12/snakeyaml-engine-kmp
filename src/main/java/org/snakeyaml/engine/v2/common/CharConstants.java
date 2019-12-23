@@ -40,8 +40,6 @@ public final class CharConstants {
 
     public static final CharConstants ALPHA = new CharConstants(ALPHA_S);
 
-    public static final Pattern ANCHOR_FORMAT = Pattern.compile("^[-_\\w]*$");
-
     private static final int ASCII_SIZE = 128;
     boolean[] contains = new boolean[ASCII_SIZE];
 

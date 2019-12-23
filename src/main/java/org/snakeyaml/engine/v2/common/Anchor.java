@@ -17,8 +17,6 @@ package org.snakeyaml.engine.v2.common;
 
 import java.util.Objects;
 
-import static org.snakeyaml.engine.v2.common.CharConstants.ANCHOR_FORMAT;
-
 /**
  * Value inside Anchor and Alias
  */
@@ -28,9 +26,6 @@ public class Anchor {
     public Anchor(String value) {
         Objects.requireNonNull(value, "Anchor must be provided.");
         if (value.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
-        if (!ANCHOR_FORMAT.matcher(value).matches()) {
-            throw new IllegalArgumentException("invalid character in the anchor: " + value);
-        }
         this.value = value;
     }
 

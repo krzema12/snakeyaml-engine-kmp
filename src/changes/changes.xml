@@ -7,6 +7,9 @@
     <body>
         <release version="2.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="update">
+                Backported from SnakeYAML: Allow non ASCII characters in the anchor names (2019-12-23)
+            </action>
+            <action dev="asomov" type="update">
                 Restrict the total number of aliases for non-scalar nodes (mappings and sequences).
                 The aliases for scalar nodes are not restricted
                 because they do not grow exponentially (2019-12-17)

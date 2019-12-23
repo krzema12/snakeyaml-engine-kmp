@@ -40,20 +40,4 @@ class AnchorTest {
                 new Anchor(""));
         assertEquals("Empty anchor.", exception.getMessage());
     }
-
-    @Test
-    @DisplayName("Anchor cannot contain &")
-    void testInvalid1() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                new Anchor("q&"));
-        assertEquals("invalid character in the anchor: q&", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Anchor cannot contain *")
-    void testInvalid2() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                new Anchor("q*"));
-        assertEquals("invalid character in the anchor: q*", exception.getMessage());
-    }
 }

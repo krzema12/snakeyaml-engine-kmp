@@ -21,6 +21,7 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -43,6 +44,7 @@ public final class LoadSettings {
     private final boolean allowRecursiveKeys;
     private final int maxAliasesForCollections;
     private final boolean useMarks;
+    private final Optional<EnvConfig> envConfig;
 
     //general
     private final Map<SettingKey, Object> customProperties;
@@ -52,8 +54,7 @@ public final class LoadSettings {
                  IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
                  UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
                  boolean allowDuplicateKeys, boolean allowRecursiveKeys, int maxAliasesForCollections,
-                 boolean useMarks,
-                 Map<SettingKey, Object> customProperties) {
+                 boolean useMarks, Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig) {
         this.label = label;
         this.tagConstructors = tagConstructors;
         this.scalarResolver = scalarResolver;
@@ -67,6 +68,7 @@ public final class LoadSettings {
         this.maxAliasesForCollections = maxAliasesForCollections;
         this.useMarks = useMarks;
         this.customProperties = customProperties;
+        this.envConfig = envConfig;
     }
 
     public static final LoadSettingsBuilder builder() {
@@ -123,6 +125,10 @@ public final class LoadSettings {
 
     public int getMaxAliasesForCollections() {
         return maxAliasesForCollections;
+    }
+
+    public Optional<EnvConfig> getEnvConfig() {
+        return envConfig;
     }
 }
 

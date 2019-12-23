@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
@@ -48,6 +49,8 @@ public final class LoadSettingsBuilder {
     private boolean allowRecursiveKeys;
     private int maxAliasesForCollections;
     private boolean useMarks;
+    private Optional<EnvConfig> envConfig;
+
 
     //general
     private Map<SettingKey, Object> customProperties = new HashMap();
@@ -71,6 +74,8 @@ public final class LoadSettingsBuilder {
         this.allowRecursiveKeys = false;
         this.maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
         this.useMarks = true;
+        this.envConfig = Optional.empty(); // no ENV substitution by default
+
     }
 
     /**
@@ -222,6 +227,16 @@ public final class LoadSettingsBuilder {
         return this;
     }
 
+    /**
+     * Define EnvConfig to parse EVN format
+     *
+     * @param envConfig - configuration
+     * @see <a href=https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
+     */
+    public void setEnvConfig(Optional<EnvConfig> envConfig) {
+        this.envConfig = envConfig;
+    }
+
     public LoadSettingsBuilder setCustomProperty(SettingKey key, Object value) {
         customProperties.put(key, value);
         return this;
@@ -238,7 +253,7 @@ public final class LoadSettingsBuilder {
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,
                 allowDuplicateKeys, allowRecursiveKeys, maxAliasesForCollections, useMarks,
-                customProperties);
+                customProperties, envConfig);
     }
 }
 

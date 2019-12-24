@@ -45,7 +45,7 @@ class LoadSequenceTest {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         List<Integer> list = (List<Integer>) load.loadFromString("[2]");
-        assertEquals(Collections.singletonList(new Integer(2)), list);
+        assertEquals(Collections.singletonList(Integer.valueOf(2)), list);
     }
 
     @Test

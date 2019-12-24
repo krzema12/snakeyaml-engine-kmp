@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.v2.api;
 
 import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.exceptions.YamlVersionException;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;

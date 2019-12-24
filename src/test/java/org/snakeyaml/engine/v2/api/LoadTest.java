@@ -49,7 +49,7 @@ class LoadTest {
         LoadSettings settings = LoadSettings.builder().build();
         Load load = new Load(settings);
         Integer integer = (Integer) load.loadFromString("1");
-        assertEquals(new Integer(1), integer);
+        assertEquals(Integer.valueOf(1), integer);
     }
 
     @Test

@@ -91,7 +91,7 @@ class LoadSettingsTest {
                 .build();
         Load load = new Load(settings);
         Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1, a: 2}");
-        assertEquals(new Integer(2), map.get("a"));
+        assertEquals(Integer.valueOf(2), map.get("a"));
     }
 
     @Test
@@ -120,7 +120,7 @@ class LoadSettingsTest {
         LoadSettings settings = LoadSettings.builder()
                 .setBufferSize(4096)
                 .build();
-        assertEquals(new Integer(4096), settings.getBufferSize());
+        assertEquals(Integer.valueOf(4096), settings.getBufferSize());
     }
 
     @Test
@@ -131,7 +131,7 @@ class LoadSettingsTest {
                 .build();
         Load load = new Load(settings);
         assertEquals("false", load.loadFromString("false"));
-        assertEquals(new Integer(1024), settings.getBufferSize());
+        assertEquals(Integer.valueOf(1024), settings.getBufferSize());
     }
 
     public static final class SomeScalarResolver extends JsonScalarResolver {

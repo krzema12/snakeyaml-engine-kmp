@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.env;
 
 import java.util.Map;
 
+/**
+ * Configurator for ENV format
+ *
+ * @see <a href=https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
+ */
 public class EnvConfig {
     public EnvConfig(Map<String, String> undefined) {
         this.undefined = undefined;

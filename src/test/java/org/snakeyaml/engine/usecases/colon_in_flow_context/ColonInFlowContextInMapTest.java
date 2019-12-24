@@ -30,7 +30,7 @@ class ColonInFlowContextInMapTest {
     void withSeparation() {
         Load loader = new Load(LoadSettings.builder().build());
         Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
-        assertEquals(new Integer(1), map.get("a"));
+        assertEquals(Integer.valueOf(1), map.get("a"));
     }
 
     @Test

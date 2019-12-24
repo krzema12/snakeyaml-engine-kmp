@@ -31,13 +31,13 @@ public class NumberTest {
     @DisplayName("Test all integers which are define in the core schema & JSON")
     void parseInteger() {
         Load loader = new Load(LoadSettings.builder().build());
-        assertEquals(new Integer(1), loader.loadFromString("1"));
-        assertEquals(new Integer(-1), loader.loadFromString("-1"));
-        assertEquals(new Integer(0), loader.loadFromString("0"));
-        assertEquals(new Integer(0), loader.loadFromString("-0"));
+        assertEquals(Integer.valueOf(1), loader.loadFromString("1"));
+        assertEquals(Integer.valueOf(-1), loader.loadFromString("-1"));
+        assertEquals(Integer.valueOf(0), loader.loadFromString("0"));
+        assertEquals(Integer.valueOf(0), loader.loadFromString("-0"));
         assertEquals("012", loader.loadFromString("012"), "Leading zeros are not allowed.");
-        assertEquals(new Integer(1234567890), loader.loadFromString("1234567890"));
-        assertEquals(new Long(12345678901L), loader.loadFromString("12345678901"));
+        assertEquals(Integer.valueOf(1234567890), loader.loadFromString("1234567890"));
+        assertEquals(Long.valueOf(12345678901L), loader.loadFromString("12345678901"));
         assertEquals(new BigInteger("1234567890123456789123"), loader.loadFromString("1234567890123456789123"));
     }
 

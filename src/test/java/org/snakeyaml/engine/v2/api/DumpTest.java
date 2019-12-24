@@ -48,7 +48,7 @@ class DumpTest {
     void dumpInteger() {
         DumpSettings settings = DumpSettings.builder().build();
         Dump dump = new Dump(settings);
-        String str = dump.dumpToString(new Integer(1));
+        String str = dump.dumpToString(Integer.valueOf(1));
         assertEquals("1\n", str);
     }
 

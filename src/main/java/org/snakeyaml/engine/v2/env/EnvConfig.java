@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Configurator for ENV format
  *
- * @see <a href=https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
+ * @see <a href="https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
  */
 public class EnvConfig {
     public EnvConfig(Map<String, String> undefined) {
@@ -34,12 +34,12 @@ public class EnvConfig {
      *
      * @param key          - environment variable name
      * @param value        - the value of the ENV variable
-     * @param errorMessage - the error defined in ${VARIABLE:?err} format
+     * @param backup - the default value or the error defined in the template
      * @param emptyAllowed - true for either ${VARIABLE:-default} or ${VARIABLE:?err} formats. It indicates that
      *                     the provided default or error must be appied also if the ENV defined as empty
      * @return value to be returned by the parser
      */
-    public String getValueFor(String key, String value, String defaultValue, String errorMessage, boolean emptyAllowed) {
+    public String getValueFor(String key, String value, String backup, boolean emptyAllowed) {
         if (value == null || value.isEmpty()) {
             return undefined.get(key);
         } else {

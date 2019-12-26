@@ -17,9 +17,11 @@ package org.snakeyaml.engine.v2.constructor;
 
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.exceptions.ConstructorException;
 import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
 import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.MissingEnvironmentVariableException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
 import org.snakeyaml.engine.v2.nodes.Node;
@@ -28,6 +30,7 @@ import org.snakeyaml.engine.v2.nodes.NodeType;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 /**
  * Construct standard Java classes
@@ -60,6 +64,7 @@ public class StandardConstructor extends BaseConstructor {
         this.tagConstructors.put(Tag.STR, new ConstructYamlStr());
         this.tagConstructors.put(Tag.SEQ, new ConstructYamlSeq());
         this.tagConstructors.put(Tag.MAP, new ConstructYamlMap());
+        this.tagConstructors.put(Tag.ENV_TAG, new ConstructEnv());
 
         this.tagConstructors.put(new Tag(UUID.class), new ConstructUuidClass());
         this.tagConstructors.put(new Tag(Optional.class), new ConstructOptionalClass());
@@ -351,6 +356,82 @@ public class StandardConstructor extends BaseConstructor {
             } else {
                 throw new YamlEngineException("Unexpected recursive mapping structure. Node: " + node);
             }
+        }
+    }
+
+    /**
+     * Construct scalar for format ${VARIABLE} replacing the template with the value from environment.
+     *
+     * @see <a href="https://bitbucket.org/asomov/snakeyaml/wiki/Variable%20substitution">Variable substitution</a>
+     * @see <a href="https://docs.docker.com/compose/compose-file/#variable-substitution">Variable substitution</a>
+     */
+    public class ConstructEnv implements ConstructNode {
+        public Object construct(Node node) {
+            String val = constructScalar((ScalarNode) node);
+            Optional<EnvConfig> opt = settings.getEnvConfig();
+            if (opt.isPresent()) {
+                EnvConfig config = opt.get();
+                Matcher matcher = JsonScalarResolver.ENV_FORMAT.matcher(val);
+                matcher.matches();
+                String name = matcher.group("name");
+                String value = matcher.group("value");
+                String nonNullValue = value != null ? value : "";
+                String separator = matcher.group("separator");
+                String env = getEnv(name);
+                Optional<String> overruled = config.getValueFor(name, separator, nonNullValue, env);
+                if (overruled.isPresent())
+                    return overruled.get();
+                else
+                    return apply(name, separator, nonNullValue, env);
+            } else {
+                return val;
+            }
+        }
+
+        /**
+         * Implement the logic for missing and unset variables
+         *
+         * @param name        - variable name in the template
+         * @param separator   - separator in the template, can be :-, -, :?, ?
+         * @param value       - default value or the error in the template
+         * @param environment - the value from environment for the provided variable
+         * @return the value to apply in the template
+         */
+        public String apply(String name, String separator, String value, String environment) {
+            if (environment != null && !environment.isEmpty()) return environment;
+            // variable is either unset or empty
+            if (separator != null) {
+                //there is a default value or error
+                if (separator.equals("?")) {
+                    if (environment == null)
+                        throw new MissingEnvironmentVariableException("Missing mandatory variable " + name + ": " + value);
+                }
+                if (separator.equals(":?")) {
+                    if (environment == null)
+                        throw new MissingEnvironmentVariableException("Missing mandatory variable " + name + ": " + value);
+                    if (environment.isEmpty())
+                        throw new MissingEnvironmentVariableException("Empty mandatory variable " + name + ": " + value);
+                }
+                if (separator.startsWith(":")) {
+                    if (environment == null || environment.isEmpty())
+                        return value;
+                } else {
+                    if (environment == null)
+                        return value;
+                }
+            }
+            return "";
+        }
+
+        /**
+         * Get value of the environment variable
+         *
+         * @param key - the name of the variable
+         * @return value or null if not set
+         */
+        @java.lang.SuppressWarnings("squid:S5304")
+        public String getEnv(String key) {
+            return System.getenv(key);
         }
     }
 }

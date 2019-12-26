@@ -7,6 +7,9 @@
     <body>
         <release version="2.1" date="in Mercurial" description="Maintenance">
             <action dev="asomov" type="update">
+                Backported from SnakeYAML: allow ENV variable substitution (2019-12-26)
+            </action>
+            <action dev="asomov" type="update">
                 Backported from SnakeYAML: Allow non ASCII characters in the anchor names (2019-12-23)
             </action>
             <action dev="asomov" type="update">

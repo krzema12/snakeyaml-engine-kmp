@@ -38,6 +38,9 @@ public class JsonScalarResolver implements ScalarResolver {
     public static final Pattern NULL = Pattern.compile("^(?:null)$");
     public static final Pattern EMPTY = Pattern.compile("^$");
 
+    @java.lang.SuppressWarnings("squid:S4784")
+    public static final Pattern ENV_FORMAT = Pattern.compile("^\\$\\{\\s*((?<name>\\w+)((?<separator>:?(-|\\?))(?<value>\\w+)?)?)\\s*\\}$");
+
     protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
 
     public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
@@ -73,6 +76,7 @@ public class JsonScalarResolver implements ScalarResolver {
         addImplicitResolver(Tag.INT, INT, "-0123456789");
         addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.");
         addImplicitResolver(Tag.NULL, NULL, "n\u0000");
+        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
     }
 
     public JsonScalarResolver() {

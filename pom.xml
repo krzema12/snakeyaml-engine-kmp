@@ -182,6 +182,10 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <environmentVariables>
+                        <EnvironmentKey1>EnvironmentValue1</EnvironmentKey1>
+                        <EnvironmentEmpty></EnvironmentEmpty>
+                    </environmentVariables>
                 </configuration>
                 <dependencies>
                     <dependency>

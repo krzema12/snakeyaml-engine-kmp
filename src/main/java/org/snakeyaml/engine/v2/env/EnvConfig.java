@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.v2.env;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Configurator for ENV format
@@ -23,27 +24,30 @@ import java.util.Map;
  * @see <a href="https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
  */
 public class EnvConfig {
-    public EnvConfig(Map<String, String> undefined) {
-        this.undefined = undefined;
+    public EnvConfig(Map<String, String> provided) {
+        this.provided = provided;
     }
 
-    private final Map<String, String> undefined;
+    private final Map<String, String> provided;
 
     /**
-     * Select the value to be parsed
+     * Implement deviation from the standard logic. It chooses the value from the provided map or
+     * follows the standard logic if the map does not have the key.
+     * It can be overridden to implement the custom logic for variable substitution
+     * (for instance to use system properties)
+     * TODO implement wiki page
      *
-     * @param key          - environment variable name
-     * @param value        - the value of the ENV variable
-     * @param backup - the default value or the error defined in the template
-     * @param emptyAllowed - true for either ${VARIABLE:-default} or ${VARIABLE:?err} formats. It indicates that
-     *                     the provided default or error must be appied also if the ENV defined as empty
-     * @return value to be returned by the parser
+     * @param name        - variable name in the template
+     * @param separator   - separator in the template, can be :-, -, :?, ? or null if not present
+     * @param value       - default value or the error in the template or empty if not present
+     * @param environment - the value from environment for the provided variable or null if unset
+     * @return the value to apply in the template or empty to follow the standard logic
      */
-    public String getValueFor(String key, String value, String backup, boolean emptyAllowed) {
-        if (value == null || value.isEmpty()) {
-            return undefined.get(key);
+    public Optional<String> getValueFor(String name, String separator, String value, String environment) {
+        if (provided.containsKey(name)) {
+            return Optional.of(provided.get(name));
         } else {
-            return value;
+            return Optional.empty();
         }
     }
 }

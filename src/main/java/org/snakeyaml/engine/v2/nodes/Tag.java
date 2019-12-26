@@ -31,6 +31,8 @@ public final class Tag {
     public static final Tag SEQ = new Tag(PREFIX + "seq");
     public static final Tag MAP = new Tag(PREFIX + "map");
 
+    public static final Tag ENV_TAG = new Tag("!ENV_VARIABLE");
+
     private final String value;
 
     public Tag(String tag) {

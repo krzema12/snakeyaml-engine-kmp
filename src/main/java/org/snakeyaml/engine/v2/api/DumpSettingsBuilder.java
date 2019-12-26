@@ -218,7 +218,7 @@ public final class DumpSettingsBuilder {
      * When set to false then printable non-ASCII characters (Cyrillic, Chinese etc)
      * will be not printed but escaped (to support ASCII terminals)
      *
-     * @param useUnicodeEncoding - true to use Unicode for "�", false to use "\ufffd" for the same char
+     * @param useUnicodeEncoding - true to use Unicode for "Я", false to use "\u0427" for the same char
      *                           (if useUnicodeEncoding is false then all non-ASCII characters are escaped)
      * @return the builder with the provided value
      */

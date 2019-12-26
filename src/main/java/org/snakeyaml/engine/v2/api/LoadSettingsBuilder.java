@@ -233,9 +233,11 @@ public final class LoadSettingsBuilder {
      *
      * @param envConfig - configuration
      * @see <a href="https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
+     * @return the builder with the provided value
      */
-    public void setEnvConfig(Optional<EnvConfig> envConfig) {
+    public LoadSettingsBuilder setEnvConfig(Optional<EnvConfig> envConfig) {
         this.envConfig = envConfig;
+        return this;
     }
 
     public LoadSettingsBuilder setCustomProperty(SettingKey key, Object value) {

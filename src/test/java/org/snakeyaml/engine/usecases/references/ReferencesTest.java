@@ -118,7 +118,7 @@ public class ReferencesTest {
         Load load = new Load(settings);
         load.loadFromString(output);
         long time2 = System.currentTimeMillis();
-        float duration = (time2 - time1) / 1000;
+        double duration = (time2 - time1) / 1000.0;
         assertTrue(duration > 1.0, "It should take time. Time was " + duration + " seconds.");
         assertTrue(duration < 5.0, "Time was " + duration + " seconds.");
     }

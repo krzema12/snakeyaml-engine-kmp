@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.v2.env;
+package org.snakeyaml.engine.usecases.env;
 
+import org.snakeyaml.engine.v2.env.EnvConfig;
+
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -22,11 +25,17 @@ import java.util.Optional;
  *
  * @see <a href="https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable substitution</a>
  */
-public interface EnvConfig {
+public class CustomEnvConfig implements EnvConfig {
+    public CustomEnvConfig(Map<String, String> provided) {
+        this.provided = provided;
+    }
+
+    private final Map<String, String> provided;
 
     /**
-     * Implement deviation from the standard logic.
-     * TODO implement wiki page
+     * Implement deviation from the standard logic. It chooses the value from the provided map,
+     * if not found than check the system property, if not found than
+     * follow the standard logic.
      *
      * @param name        - variable name in the template
      * @param separator   - separator in the template, can be :-, -, :?, ? or null if not present
@@ -34,7 +43,13 @@ public interface EnvConfig {
      * @param environment - the value from environment for the provided variable or null if unset
      * @return the value to apply in the template or empty to follow the standard logic
      */
-    default Optional<String> getValueFor(String name, String separator, String value, String environment) {
-        return Optional.empty();
+    public Optional<String> getValueFor(String name, String separator, String value, String environment) {
+        if (provided.containsKey(name)) {
+            return Optional.of(provided.get(name));
+        } else if (System.getProperty(name) != null) {
+            return Optional.of(System.getProperty(name));
+        } else {
+            return Optional.empty();
+        }
     }
 }

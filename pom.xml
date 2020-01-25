@@ -318,7 +318,7 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>android,release</releaseProfiles>
+                    <releaseProfiles>release</releaseProfiles>
                     <goals>deploy nexus-staging:release</goals>
                 </configuration>
             </plugin>

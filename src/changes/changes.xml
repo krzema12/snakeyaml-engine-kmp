@@ -5,7 +5,7 @@
         <title>YAML 1.2 parser and emitter for Java 8</title>
     </properties>
     <body>
-        <release version="2.1" date="in Mercurial" description="Maintenance">
+        <release version="2.1" date="2020-01-25" description="Maintenance">
             <action dev="asomov" type="update">
                 Allow ENV variable substitution (2019-12-26)
             </action>

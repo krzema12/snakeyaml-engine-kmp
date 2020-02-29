@@ -30,7 +30,7 @@ to instruct the Engine to call arbitrary Java constructors (unless it is explici
  * [Documentation](https://bitbucket.org/asomov/snakeyaml-engine/wiki/Documentation)
 
 ## Contribute ##
-* Mercurial DVCS is used to dance with the [source code](https://bitbucket.org/asomov/snakeyaml-engine/src).
+* GIT is used to dance with the [source code](https://bitbucket.org/asomov/snakeyaml-engine/src).
 * If you find a bug in SnakeYAML, please [file a bug report](https://bitbucket.org/asomov/snakeyaml-engine/issues?status=new&status=open).
 * You may discuss SnakeYAML engine at [the mailing list](http://groups.google.com/group/snakeyaml-core).
 * Feel free to join the [YAML-dev Telegram group](https://t.me/joinchat/A6K7rhBzRfHcP-0XnTxnhA)

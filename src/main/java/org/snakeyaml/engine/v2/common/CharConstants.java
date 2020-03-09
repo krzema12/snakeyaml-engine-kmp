@@ -23,7 +23,7 @@ import java.util.Map;
 public final class CharConstants {
     private static final String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
-    private static final String LINEBR_S = "\n\r";
+    private static final String LINEBR_S = "\n";
     private static final String NULL_OR_LINEBR_S = "\0" + LINEBR_S;
     private static final String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
     private static final String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;

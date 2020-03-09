@@ -116,6 +116,7 @@ public final class StreamReader {
             int c = dataWindow[pointer++];
             this.index++;
             if (CharConstants.LINEBR.has(c)
+                    // do not count CR if it is followed by LF
                     || (c == '\r' && (ensureEnoughData() && dataWindow[pointer] != '\n'))) {
                 this.line++;
                 this.column = 0;

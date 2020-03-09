@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix" issue="17">
+                Report proper line number for Windows (2020-03-09)
+            </action>
             <action dev="asomov" type="update">
                 Migrate to GIT (2020-02-29)
             </action>

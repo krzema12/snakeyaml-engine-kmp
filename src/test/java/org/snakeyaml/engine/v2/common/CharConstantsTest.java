@@ -32,7 +32,7 @@ class CharConstantsTest {
     @DisplayName("LINEBR contains only LF and CR: http://www.yaml.org/spec/1.2/spec.html#id2774608")
     void lineBreaks() {
         assertTrue(CharConstants.LINEBR.has('\n'), "LF must be included");
-        assertTrue(CharConstants.LINEBR.has('\r'), "CR must not be included");
+        assertFalse(CharConstants.LINEBR.has('\r'), "CR must not be included");
         assertTrue(CharConstants.LINEBR.hasNo('\u0085'), "85 (next line) must not be included in 1.2");
         assertTrue(CharConstants.LINEBR.hasNo('\u2028'), "2028 (line separator) must not be included in 1.2");
         assertTrue(CharConstants.LINEBR.hasNo('\u2029'), "2029 (paragraph separator) must not be included in 1.2");
@@ -43,7 +43,7 @@ class CharConstantsTest {
     @DisplayName("NULL_OR_LINEBR contains 3 chars")
     void lineBreaksAndNulls() {
         assertTrue(CharConstants.NULL_OR_LINEBR.has('\n'));
-        assertTrue(CharConstants.NULL_OR_LINEBR.has('\r'));
+        assertFalse(CharConstants.NULL_OR_LINEBR.has('\r'));
         assertTrue(CharConstants.NULL_OR_LINEBR.has('\u0000'));
         assertFalse(CharConstants.NULL_OR_LINEBR.has('\u0085'), "85 (next line) must not be included in 1.2");
         assertFalse(CharConstants.NULL_OR_LINEBR.has('\u2028'), "2028 (line separator) must not be included in 1.2");

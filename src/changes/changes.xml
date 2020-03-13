@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="add" issue="19">
+                Add an example of parsing explicit !!timestamp tag (2020-03-13)
+            </action>
             <action dev="asomov" type="fix" issue="17">
                 Report proper line number for Windows (2020-03-09)
             </action>

@@ -50,8 +50,16 @@ class JsonScalarResolverTest {
         assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.3", true));
         assertEquals(Tag.STR, scalarResolver.resolve("+01.445", true));
         assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455e45", true));
-        assertEquals(Tag.FLOAT, scalarResolver.resolve("1.455E-045", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455e-45", true));
+        assertEquals(Tag.STR, scalarResolver.resolve("-1.455E045", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("1.4e4", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("1e4", true));
         assertEquals(Tag.FLOAT, scalarResolver.resolve("0.0", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve(".inf", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("-.inf", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve(".nan", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("1000.25", true));
+        assertEquals(Tag.FLOAT, scalarResolver.resolve("1.", true));
         assertEquals(Tag.STR, scalarResolver.resolve("+1", true));
     }
 
@@ -76,7 +84,10 @@ class JsonScalarResolverTest {
     @Test
     @DisplayName("Resolve implicit strings")
     void resolveImplicitStrings() {
-        assertEquals(Tag.STR, scalarResolver.resolve(".inf", true));
+        assertEquals(Tag.STR, scalarResolver.resolve("+.inf", true));
+        assertEquals(Tag.STR, scalarResolver.resolve(".Inf", true));
+        assertEquals(Tag.STR, scalarResolver.resolve(".INF", true));
+        assertEquals(Tag.STR, scalarResolver.resolve(".NAN", true));
         assertEquals(Tag.STR, scalarResolver.resolve("0xFF", true));
         assertEquals(Tag.STR, scalarResolver.resolve("True", true));
         assertEquals(Tag.STR, scalarResolver.resolve("TRUE", true));

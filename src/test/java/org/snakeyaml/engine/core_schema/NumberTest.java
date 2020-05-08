@@ -23,6 +23,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 public class NumberTest {
@@ -51,10 +52,7 @@ public class NumberTest {
         assertEquals("1_000", loader.loadFromString("1_000"));
 
         assertEquals("1_000.5", loader.loadFromString("1_000.5"));
-        assertEquals(".inf", loader.loadFromString(".inf"));
         assertEquals("+.inf", loader.loadFromString("+.inf"));
-        assertEquals("-.inf", loader.loadFromString("-.inf"));
-        assertEquals(".nan", loader.loadFromString(".nan"));
 
         //start with +
         assertEquals("+1", loader.loadFromString("+1"));
@@ -77,9 +75,13 @@ public class NumberTest {
         assertEquals(new Double(0.123), loader.loadFromString("0.123"));
         assertEquals(new Double(1.23E-6), loader.loadFromString("1.23e-6"));
         assertEquals(new Double(1.23E6), loader.loadFromString("1.23e+6"));
-        assertEquals(new Double(1.23E6), loader.loadFromString("1.23E6"));
-        assertEquals(new Double(-1.23E6), loader.loadFromString("-1.23E6"));
+        assertEquals(new Double(1.23E6), loader.loadFromString("1.23e6"));
+        assertEquals(new Double(-1.23E6), loader.loadFromString("-1.23e6"));
         assertEquals(new Double(1000.25), loader.loadFromString("1000.25"));
         assertEquals(new Double(9000.0), loader.loadFromString("9000.00"));
+        assertEquals(new Double(1.0), loader.loadFromString("1."));
+        assertTrue( ((Double)loader.loadFromString(".inf")).isInfinite());
+        assertTrue( ((Double)loader.loadFromString("-.inf")).isInfinite());
+        assertTrue( ((Double)loader.loadFromString(".nan")).isNaN());
     }
 }

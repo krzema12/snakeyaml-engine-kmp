@@ -214,7 +214,22 @@ public class StandardConstructor extends BaseConstructor {
         @Override
         public Object construct(Node node) {
             String value = constructScalar((ScalarNode) node);
-            return Double.valueOf(value);
+            int sign = +1;
+            char first = value.charAt(0);
+            if (first == '-') {
+                sign = -1;
+                value = value.substring(1);
+            } else if (first == '+') {
+                value = value.substring(1);
+            }
+            if (".inf".equals(value)) {
+                return Double.valueOf(sign == -1 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
+            } else if (".nan".equals(value)) {
+                return Double.valueOf(Double.NaN);
+            } else {
+                Double d = Double.valueOf(value);
+                return Double.valueOf(d.doubleValue() * sign);
+            }
         }
     }
 

@@ -40,4 +40,20 @@ class AnchorTest {
                 new Anchor(""));
         assertEquals("Empty anchor.", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Anchor cannot contains some characters")
+    void testAllInvalid() {
+        assertEquals("Invalid char in anchor: [", checkChar('[').getMessage());
+        assertEquals("Invalid char in anchor: ]", checkChar(']').getMessage());
+        assertEquals("Invalid char in anchor: {", checkChar('{').getMessage());
+        assertEquals("Invalid char in anchor: }", checkChar('}').getMessage());
+        assertEquals("Invalid char in anchor: *", checkChar('*').getMessage());
+        assertEquals("Invalid char in anchor: &", checkChar('&').getMessage());
+    }
+
+    private IllegalArgumentException checkChar(Character ch) {
+        return assertThrows(IllegalArgumentException.class, () ->
+                new Anchor("anchor" + ch));
+    }
 }

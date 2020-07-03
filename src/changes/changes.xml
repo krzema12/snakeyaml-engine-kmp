@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix">
+                Do not allow Anchor to contain special characters (2020-07-03)
+            </action>
             <action dev="asomov" type="fix" issue="21">
                 .inf, -.inf, .nan should be parsed as Number (2020-05-08)
             </action>

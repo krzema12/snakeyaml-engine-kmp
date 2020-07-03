@@ -15,17 +15,36 @@
  */
 package org.snakeyaml.engine.v2.common;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Value inside Anchor and Alias
  */
 public class Anchor {
+    private static final Set<Character> INVALID_ANCHOR = new HashSet();
+
+    static {
+        INVALID_ANCHOR.add('[');
+        INVALID_ANCHOR.add(']');
+        INVALID_ANCHOR.add('{');
+        INVALID_ANCHOR.add('}');
+        INVALID_ANCHOR.add(',');
+        INVALID_ANCHOR.add('*');
+        INVALID_ANCHOR.add('&');
+    }
+
     private final String value;
 
     public Anchor(String value) {
         Objects.requireNonNull(value, "Anchor must be provided.");
         if (value.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
+        for (int i = 0; i < value.length(); i++) {
+            if (INVALID_ANCHOR.contains(value.charAt(i))) {
+                throw new IllegalArgumentException("Invalid char in anchor: " + value.charAt(i));
+            }
+        }
         this.value = value;
     }
 

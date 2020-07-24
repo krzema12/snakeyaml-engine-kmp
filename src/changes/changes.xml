@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="update">
+                Add test for issue 23 (2020-07-24)
+            </action>
             <action dev="asomov" type="fix">
                 Do not allow Anchor to contain special characters (2020-07-03)
             </action>

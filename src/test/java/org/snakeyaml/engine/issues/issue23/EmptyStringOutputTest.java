@@ -30,4 +30,11 @@ public class EmptyStringOutputTest {
         String output = loader.dumpToString("");
         assertEquals("''\n", output, "The output must not contain ---");
     }
+
+    @Test
+    void outputEmptyStringWithExplicitStart() {
+        Dump loader = new Dump(DumpSettings.builder().setExplicitStart(true).build());
+        String output = loader.dumpToString("");
+        assertEquals("--- ''\n", output, "The output must contain ---");
+    }
 }

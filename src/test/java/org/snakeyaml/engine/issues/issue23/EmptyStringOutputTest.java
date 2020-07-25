@@ -18,6 +18,7 @@ package org.snakeyaml.engine.issues.issue23;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.emitter.Emitter;
 import org.snakeyaml.engine.v2.events.DocumentStartEvent;
@@ -25,6 +26,7 @@ import org.snakeyaml.engine.v2.events.ImplicitTuple;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -49,25 +51,24 @@ public class EmptyStringOutputTest {
 
     @Test
     void outputEmptyStringWithEmitter() {
-        DumpSettings settings = DumpSettings.builder().setExplicitStart(false).build();
-        MyWriter writer = new MyWriter();
-        Emitter emitter = new Emitter(settings, writer);
-        emitter.emit(new StreamStartEvent());
-        emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>()));
-        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true), "theValue123", ScalarStyle.DOUBLE_QUOTED));
-        String output = writer.toString();
-        assertEquals("\"theValue123\"", output, "The output must NOT contain ---");
+        assertEquals("--- \"\"", dump(""), "The output must contain ---");
     }
 
     @Test
-    void outputEmptyStringWithEmitterWithDefaultSettings() {
+    void outputStringWithEmitter() {
+        assertEquals("\"v1234512345\"", dump("v1234512345"), "The output must NOT contain ---");
+    }
+
+    private String dump(String value) {
         DumpSettings settings = DumpSettings.builder().build();
         MyWriter writer = new MyWriter();
         Emitter emitter = new Emitter(settings, writer);
         emitter.emit(new StreamStartEvent());
         emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>()));
-        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true), "theValue123", ScalarStyle.DOUBLE_QUOTED));
-        String output = writer.toString();
-        assertEquals("\"theValue123\"", output, "The output must NOT contain ---");
+        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true), value, ScalarStyle.DOUBLE_QUOTED));
+        return writer.toString();
     }
+}
+
+class MyWriter extends StringWriter implements StreamDataWriter {
 }

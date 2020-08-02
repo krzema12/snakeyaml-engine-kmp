@@ -17,12 +17,15 @@ to instruct the Engine to call arbitrary Java constructors (unless it is explici
 
 ## SnakeYAML Engine features ##
 
-* a **complete** [YAML 1.2 processor](http://yaml.org/spec/1.2/spec.html). In particular, SnakeYAML can parse (almost) all examples from the specification.
+* a **complete** [YAML 1.2 processor](http://yaml.org/spec/1.2/spec.html). In particular, 
+  SnakeYAML can parse (almost) all examples from the specification.
 * Integrated tests from [YAML Test Suite - Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite)
 * Unicode support including UTF-8/UTF-16/UTF-32 input/output.
 * Low-level API for serializing and deserializing native Java objects.
 * Only [JSON Schema](http://yaml.org/spec/1.2/spec.html#id2803231) is supported. 
-* The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later. If anyone needs it. No one so far requested it. 
+* The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later.
+  If anyone needs it. No one so far requested it. 
+  (A good [introduction to schemas](http://blogs.perl.org/users/tinita/2018/01/introduction-to-yaml-schemas-and-tags.html))
 * Relatively sensible error messages (can be switched off to improve performance).
 
 ## Info ##

@@ -28,7 +28,7 @@ public final class CharConstants {
     private static final String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
     private static final String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;
     private static final String NULL_BL_T_S = "\0 \t";
-    private static final String URI_CHARS_S = ALPHA_S + "-;/?:@&=+$,_.!~*\'()[]%";
+    private static final String URI_CHARS_S = ALPHA_S + "-;/?:@&=+$,_.!~*'()[]%";
 
     public static final CharConstants LINEBR = new CharConstants(LINEBR_S);
     public static final CharConstants NULL_OR_LINEBR = new CharConstants(NULL_OR_LINEBR_S);

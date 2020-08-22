@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.api.StreamDataWriter;
 
 import java.io.StringWriter;
 
-public class MyWriter extends StringWriter  implements StreamDataWriter {
+public class MyWriter extends StringWriter implements StreamDataWriter {
     public void flush() {
     }
 }

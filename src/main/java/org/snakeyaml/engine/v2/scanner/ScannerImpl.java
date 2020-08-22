@@ -23,7 +23,28 @@ import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.AliasToken;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
+import org.snakeyaml.engine.v2.tokens.BlockEndToken;
+import org.snakeyaml.engine.v2.tokens.BlockEntryToken;
+import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken;
+import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken;
+import org.snakeyaml.engine.v2.tokens.DirectiveToken;
+import org.snakeyaml.engine.v2.tokens.DocumentEndToken;
+import org.snakeyaml.engine.v2.tokens.DocumentStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowEntryToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken;
+import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken;
+import org.snakeyaml.engine.v2.tokens.KeyToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.StreamEndToken;
+import org.snakeyaml.engine.v2.tokens.StreamStartToken;
+import org.snakeyaml.engine.v2.tokens.TagToken;
+import org.snakeyaml.engine.v2.tokens.TagTuple;
+import org.snakeyaml.engine.v2.tokens.Token;
+import org.snakeyaml.engine.v2.tokens.ValueToken;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -1032,7 +1053,7 @@ public final class ScannerImpl implements Scanner {
         int c = reader.peek();
         // If the next char is NOT one of the forbidden chars above or
         // whitespace, then this is the start of a plain scalar.
-        return CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>\'\"%@`")
+        return CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`")
                 || (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && (c == '-' || (this.flowLevel == 0 && "?:"
                 .indexOf(c) != -1)));
     }
@@ -1700,7 +1721,7 @@ public final class ScannerImpl implements Scanner {
             // Scan through any number of characters which are not: NUL, blank,
             // tabs, line breaks, single-quotes, double-quotes, or backslashes.
             int length = 0;
-            while (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(length), "\'\"\\")) {
+            while (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(length), "'\"\\")) {
                 length++;
             }
             if (length != 0) {

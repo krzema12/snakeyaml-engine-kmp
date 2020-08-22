@@ -21,7 +21,10 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
 ${VARIABLE:-default} evaluates to default if VARIABLE is unset or empty in the environment.

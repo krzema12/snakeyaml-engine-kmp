@@ -871,7 +871,7 @@ public final class Emitter implements Emitable {
             end++;
         }
         if (start < end) {
-            chunks.append(prefix.substring(start, end));
+            chunks.append(prefix, start, end);
         }
         return chunks.toString();
     }
@@ -946,7 +946,7 @@ public final class Emitter implements Emitable {
             // Check for indicators.
             if (index == 0) {
                 // Leading indicators are special characters.
-                if ("#,[]{}&*!|>\'\"%@`".indexOf(c) != -1) {
+                if ("#,[]{}&*!|>'\"%@`".indexOf(c) != -1) {
                     flowIndicators = true;
                     blockIndicators = true;
                 }
@@ -1195,7 +1195,7 @@ public final class Emitter implements Emitable {
                     start = end;
                 }
             } else {
-                if (CharConstants.LINEBR.has(ch, "\0 \'")) {
+                if (CharConstants.LINEBR.has(ch, "\0 '")) {
                     if (start < end) {
                         int len = end - start;
                         this.column += len;

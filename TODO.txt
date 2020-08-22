@@ -1,4 +1,7 @@
 ## TODO (without priority) ##
+* import 416 from snakeyaml (indent with indicator
+* import  issue #481: Dump anchors that is not used by any alias
+
 * Documentation
 * findbugs, pmd, sonarqube
 * coverage

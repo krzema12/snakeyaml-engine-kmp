@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.issues.issue25;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
@@ -23,12 +24,14 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
 public class DumpToStringTest {
 
     @Test
+    @DisplayName("If Dump instance is called more then once then the results are not predictable.")
     void dumpToStringTwice() {
         ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
         DumpSettings dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build();
@@ -45,11 +48,7 @@ public class DumpToStringTest {
         } catch (YamlEngineException e) {
             assertEquals("Representer is not defined for class org.snakeyaml.engine.issues.issue25.DumpToStringTest$1Something", e.getMessage());
         }
-        try {
-            String output = dump.dumpToString(data);
-            //TODO fail("Something must not be accepted without Representer: " + output);
-        } catch (YamlEngineException e) {
-            assertEquals("Representer is not defined for class org.snakeyaml.engine.issues.issue25.issue23.DumpToStringTest$1Something", e.getMessage());
-        }
+        String output = dump.dumpToString(data);
+        assertEquals("before: bla\n", output);
     }
 }

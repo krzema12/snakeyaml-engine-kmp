@@ -61,7 +61,7 @@ public interface Escaper {
      * @throws IllegalArgumentException if {@code string} contains badly formed UTF-16 or cannot be
      *                                  escaped for any other reason
      */
-    public String escape(String string);
+    String escape(String string);
 
     /**
      * Returns an {@code Appendable} instance which automatically escapes all
@@ -86,5 +86,5 @@ public interface Escaper {
      * @return an {@code Appendable} which passes text to {@code out} after
      * escaping it.
      */
-    public Appendable escape(Appendable out);
+    Appendable escape(Appendable out);
 }

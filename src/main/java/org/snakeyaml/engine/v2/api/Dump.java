@@ -28,6 +28,7 @@ import java.util.Objects;
 
 /**
  * Common way to serialize any Java instance(s)
+ * The instance is stateful. Only one of the 'dump' methods may be called and it may be called only once.
  */
 public class Dump {
 

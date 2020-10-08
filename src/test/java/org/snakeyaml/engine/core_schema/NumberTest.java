@@ -80,8 +80,8 @@ public class NumberTest {
         assertEquals(new Double(1000.25), loader.loadFromString("1000.25"));
         assertEquals(new Double(9000.0), loader.loadFromString("9000.00"));
         assertEquals(new Double(1.0), loader.loadFromString("1."));
-        assertTrue( ((Double)loader.loadFromString(".inf")).isInfinite());
-        assertTrue( ((Double)loader.loadFromString("-.inf")).isInfinite());
-        assertTrue( ((Double)loader.loadFromString(".nan")).isNaN());
+        assertTrue(((Double) loader.loadFromString(".inf")).isInfinite());
+        assertTrue(((Double) loader.loadFromString("-.inf")).isInfinite());
+        assertTrue(((Double) loader.loadFromString(".nan")).isNaN());
     }
 }

@@ -108,6 +108,18 @@ public class Dump {
         dump(yaml, writer);
         return writer.toString();
     }
+
+    /**
+     * Dump the provided Node into a YAML stream.
+     * @param node - YAML node to be serialized to YAML
+     * @param streamDataWriter - stream to write to
+     */
+    public void dumpNode(Node node, StreamDataWriter streamDataWriter) {
+        Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
+        serializer.open();
+        serializer.serialize(node);
+        serializer.close();
+    }
 }
 
 class StreamToStringWriter extends StringWriter implements StreamDataWriter {

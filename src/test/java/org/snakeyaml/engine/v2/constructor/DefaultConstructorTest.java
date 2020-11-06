@@ -51,7 +51,7 @@ class DefaultConstructorTest {
 }
 
 /**
- * Make NULL if the tag is not recognised
+ * Make NULL if the tag is not recognized
  */
 class MagicNullConstructor extends StandardConstructor {
 

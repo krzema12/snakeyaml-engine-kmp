@@ -58,6 +58,7 @@ public final class DumpSettingsBuilder {
     private String bestLineBreak;
     private boolean splitLines;
     private int maxSimpleKeyLength;
+    private boolean indentWithIndicator;
 
     //general
     Map<SettingKey, Object> customProperties = new HashMap();
@@ -83,6 +84,7 @@ public final class DumpSettingsBuilder {
         this.defaultFlowStyle = FlowStyle.AUTO;
         this.defaultScalarStyle = ScalarStyle.PLAIN;
         this.maxSimpleKeyLength = 128;
+        this.indentWithIndicator = false;
     }
 
     /**
@@ -336,6 +338,15 @@ public final class DumpSettingsBuilder {
     }
 
     /**
+     * Set to true to add the indent for sequences to the general indent
+     * @param indentWithIndicator - true when indent for sequences is added to general
+     */
+    public DumpSettingsBuilder setIndentWithIndicator(boolean indentWithIndicator) {
+        this.indentWithIndicator = indentWithIndicator;
+        return this;
+    }
+
+    /**
      * Create immutable DumpSettings
      *
      * @return DumpSettings with the provided values
@@ -347,7 +358,7 @@ public final class DumpSettingsBuilder {
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength,
-                customProperties);
+                customProperties, indentWithIndicator);
     }
 }
 

@@ -6,6 +6,15 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="add">
+                Port issue 416 from SnakeYAML (2020-11-06)
+            </action>
+            <action dev="asomov" type="fix" issue="481">
+                Serialize anchors that are not used by any alias
+            </action>
+            <action dev="asomov" type="add">
+                Add test for different Line Break Characters in the error message
+            </action>
             <action dev="asomov" type="update">
                 Add test for issue 23 (2020-07-24)
             </action>

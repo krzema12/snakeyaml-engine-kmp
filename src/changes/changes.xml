@@ -6,14 +6,14 @@
     </properties>
     <body>
         <release version="2.2" date="in GIT" description="Maintenance">
-            <action dev="asomov" type="fix" issue="485">
+            <action dev="asomov" type="fix">
                 Alias names are too permissive compared to libyaml and future spec.
                 Follow https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md (2020-10-06)
             </action>
             <action dev="asomov" type="add">
                 Port issue 416 from SnakeYAML (2020-11-06)
             </action>
-            <action dev="asomov" type="fix" issue="481">
+            <action dev="asomov" type="fix">
                 Serialize anchors that are not used by any alias
             </action>
             <action dev="asomov" type="add">

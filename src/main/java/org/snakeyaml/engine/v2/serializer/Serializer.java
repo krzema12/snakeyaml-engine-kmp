@@ -92,7 +92,7 @@ public class Serializer {
             // this is because the value is null (HashMap permits values to be null)
             this.anchors.computeIfAbsent(realNode, a -> settings.getAnchorGenerator().nextAnchor(realNode));
         } else {
-            this.anchors.put(realNode, null);
+            this.anchors.put(realNode, realNode.getAnchor().isPresent() ? settings.getAnchorGenerator().nextAnchor(realNode) : null);
             switch (realNode.getNodeType()) {
                 case SEQUENCE:
                     SequenceNode seqNode = (SequenceNode) realNode;

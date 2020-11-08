@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008, http://www.snakeyaml.org
+ * Copyright (c) 2018, http://www.snakeyaml.org
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.usecases.references;
 
 
+import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @org.junit.jupiter.api.Tag("fast")
 public class DumpAnchorTest {
 
+    @Test
     public void test_anchor_test() {
         String str = TestUtils.getResource("anchor/issue481.yaml");
         Compose compose = new Compose(LoadSettings.builder().build());

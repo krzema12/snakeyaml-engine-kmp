@@ -39,17 +39,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ComposeSuiteTest {
     public static final List<String> emptyNodes = Lists.newArrayList("AVM7", "8G76", "98YD");
 
-    private List<SuiteData> allValid = SuiteUtils.getAll().stream()
+    private final List<SuiteData> allValid = SuiteUtils.getAll().stream()
             .filter(data -> !data.getError())
             .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
             .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
 
-    private List<SuiteData> allValidAndNonEmpty = allValid.stream()
+    private final List<SuiteData> allValidAndNonEmpty = allValid.stream()
             .filter(data -> !emptyNodes.contains(data.getName()))
             .collect(Collectors.toList());
 
-    private List<SuiteData> allValidAndEmpty = allValid.stream()
+    private final List<SuiteData> allValidAndEmpty = allValid.stream()
             .filter(data -> emptyNodes.contains(data.getName()))
             .collect(Collectors.toList());
 

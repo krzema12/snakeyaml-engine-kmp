@@ -36,8 +36,8 @@ import java.util.Optional;
  */
 public class Load {
 
-    private LoadSettings settings;
-    private BaseConstructor constructor;
+    private final LoadSettings settings;
+    private final BaseConstructor constructor;
 
     /**
      * Create instance to parse the incoming YAML data and create Java instances
@@ -167,7 +167,7 @@ public class Load {
     }
 
     private static class YamlIterable implements Iterable<Object> {
-        private Iterator<Object> iterator;
+        private final Iterator<Object> iterator;
 
         public YamlIterable(Iterator<Object> iterator) {
             this.iterator = iterator;
@@ -180,8 +180,8 @@ public class Load {
     }
 
     private static class YamlIterator implements Iterator<Object> {
-        private Composer composer;
-        private BaseConstructor constructor;
+        private final Composer composer;
+        private final BaseConstructor constructor;
 
         public YamlIterator(Composer composer, BaseConstructor constructor) {
             this.composer = composer;

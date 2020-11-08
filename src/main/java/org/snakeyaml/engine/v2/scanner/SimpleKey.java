@@ -28,12 +28,12 @@ import java.util.Optional;
  * @see ScannerImpl
  */
 final class SimpleKey {
-    private int tokenNumber;
-    private boolean required;
-    private int index;
-    private int line;
-    private int column;
-    private Optional<Mark> mark;
+    private final int tokenNumber;
+    private final boolean required;
+    private final int index;
+    private final int line;
+    private final int column;
+    private final Optional<Mark> mark;
 
     public SimpleKey(int tokenNumber, boolean required, int index, int line, int column, Optional<Mark> mark) {
         this.tokenNumber = tokenNumber;

@@ -193,7 +193,7 @@ public class StandardRepresenter extends BaseRepresenter {
     }
 
     private static class IteratorWrapper implements Iterable<Object> {
-        private Iterator<Object> iter;
+        private final Iterator<Object> iter;
 
         public IteratorWrapper(Iterator<Object> iter) {
             this.iter = iter;

@@ -339,6 +339,7 @@ public final class DumpSettingsBuilder {
 
     /**
      * Set to true to add the indent for sequences to the general indent
+     *
      * @param indentWithIndicator - true when indent for sequences is added to general
      */
     public DumpSettingsBuilder setIndentWithIndicator(boolean indentWithIndicator) {

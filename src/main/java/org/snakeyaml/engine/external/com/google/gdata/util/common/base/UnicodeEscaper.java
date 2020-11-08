@@ -270,7 +270,7 @@ public abstract class UnicodeEscaper implements Escaper {
 
         return new Appendable() {
             int pendingHighSurrogate = -1;
-            char[] decodedChars = new char[2];
+            final char[] decodedChars = new char[2];
 
             public Appendable append(CharSequence csq) throws IOException {
                 return append(csq, 0, csq.length());

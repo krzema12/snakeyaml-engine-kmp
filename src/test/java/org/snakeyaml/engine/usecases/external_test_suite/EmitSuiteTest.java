@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @org.junit.jupiter.api.Tag("fast")
 class EmitSuiteTest {
 
-    private List<SuiteData> all = SuiteUtils.getAll().stream()
+    private final List<SuiteData> all = SuiteUtils.getAll().stream()
             .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
             .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());

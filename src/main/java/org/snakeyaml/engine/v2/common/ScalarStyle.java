@@ -31,7 +31,7 @@ public enum ScalarStyle {
     FOLDED(Optional.of('>')),
     PLAIN(Optional.empty());
 
-    private Optional<Character> styleOpt;
+    private final Optional<Character> styleOpt;
 
     ScalarStyle(Optional<Character> style) {
         this.styleOpt = style;

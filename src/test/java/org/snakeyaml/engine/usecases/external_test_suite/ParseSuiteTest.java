@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
 
-    private List<SuiteData> all = SuiteUtils.getAll().stream()
+    private final List<SuiteData> all = SuiteUtils.getAll().stream()
             .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
             .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
             .collect(Collectors.toList());
@@ -79,8 +79,8 @@ class ParseSuiteTest {
 
 
 class ParsePair {
-    private String expected;
-    private Event event;
+    private final String expected;
+    private final Event event;
 
     public ParsePair(String expected, Event event) {
         this.expected = expected;

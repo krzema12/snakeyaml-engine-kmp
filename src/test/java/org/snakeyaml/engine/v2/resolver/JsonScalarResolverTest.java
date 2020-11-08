@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class JsonScalarResolverTest {
-    private ScalarResolver scalarResolver = new JsonScalarResolver();
+    private final ScalarResolver scalarResolver = new JsonScalarResolver();
 
     @Test
     @DisplayName("Resolve explicit scalar")

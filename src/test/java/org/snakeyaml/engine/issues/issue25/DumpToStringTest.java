@@ -37,7 +37,7 @@ public class DumpToStringTest {
         DumpSettings dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build();
         Dump dump = new Dump(dumpSettings);
         class Something {
-            int doesntmatter = 0;
+            final int doesntmatter = 0;
         }
         Something something = new Something();
         data.put("before", "bla");

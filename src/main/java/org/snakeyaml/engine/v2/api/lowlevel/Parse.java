@@ -32,7 +32,7 @@ import java.util.Objects;
  */
 public class Parse {
 
-    private LoadSettings settings;
+    private final LoadSettings settings;
 
     /**
      * Create instance with provided {@link LoadSettings}

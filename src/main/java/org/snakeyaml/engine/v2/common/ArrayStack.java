@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * General stack implementation.
  */
 public class ArrayStack<T> {
-    private ArrayList<T> stack;
+    private final ArrayList<T> stack;
 
     /**
      * Create empty stack

@@ -89,8 +89,8 @@ public abstract class InheritedImportTest {
     }
 
     private class InheritedFilenameFilter implements FilenameFilter {
-        private String extension;
-        private boolean onlyIfCanonicalPresent;
+        private final String extension;
+        private final boolean onlyIfCanonicalPresent;
 
         public InheritedFilenameFilter(String extension, boolean onlyIfCanonicalPresent) {
             this.extension = extension;

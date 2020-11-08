@@ -32,7 +32,7 @@ import java.util.Optional;
  * data has been reached.
  */
 public final class StreamReader {
-    private String name;
+    private final String name;
     private final Reader stream;
     /**
      * Read data (as a moving window for input stream)
@@ -56,9 +56,9 @@ public final class StreamReader {
     private int index = 0; // in code points
     private int line = 0;
     private int column = 0; //in code points
-    private int bufferSize;
-    private char[] buffer; // temp buffer for one read operation (to avoid creating the array in stack)
-    private boolean useMarks;
+    private final int bufferSize;
+    private final char[] buffer; // temp buffer for one read operation (to avoid creating the array in stack)
+    private final boolean useMarks;
 
     public StreamReader(Reader reader, LoadSettings loadSettings) {
         this.name = loadSettings.getLabel();

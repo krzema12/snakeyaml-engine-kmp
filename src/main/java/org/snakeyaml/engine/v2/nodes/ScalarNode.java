@@ -28,8 +28,8 @@ import java.util.Optional;
  * </p>
  */
 public class ScalarNode extends Node {
-    private ScalarStyle style;
-    private String value;
+    private final ScalarStyle style;
+    private final String value;
 
     public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, startMark, endMark);

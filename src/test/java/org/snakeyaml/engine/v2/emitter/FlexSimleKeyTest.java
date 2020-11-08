@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Tag("fast")
 public class FlexSimleKeyTest {
 
-    private int len = 130;
+    private final int len = 130;
 
     @Test
     public void testLongKey() {

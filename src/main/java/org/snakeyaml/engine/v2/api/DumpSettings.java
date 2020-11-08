@@ -52,7 +52,7 @@ public final class DumpSettings {
     private final String bestLineBreak;
     private final boolean splitLines;
     private final int maxSimpleKeyLength;
-    private boolean indentWithIndicator;
+    private final boolean indentWithIndicator;
 
     //general
     private final Map<SettingKey, Object> customProperties;

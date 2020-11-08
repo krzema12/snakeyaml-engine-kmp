@@ -111,7 +111,8 @@ public class Dump {
 
     /**
      * Dump the provided Node into a YAML stream.
-     * @param node - YAML node to be serialized to YAML
+     *
+     * @param node             - YAML node to be serialized to YAML
      * @param streamDataWriter - stream to write to
      */
     public void dumpNode(Node node, StreamDataWriter streamDataWriter) {

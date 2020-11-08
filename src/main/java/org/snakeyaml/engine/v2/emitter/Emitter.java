@@ -126,18 +126,18 @@ public final class Emitter implements Emitable {
     private boolean openEnded;
 
     // Formatting details.
-    private Boolean canonical;
+    private final Boolean canonical;
     // pretty print flow by adding extra line breaks
-    private Boolean multiLineFlow;
+    private final Boolean multiLineFlow;
 
-    private boolean allowUnicode;
+    private final boolean allowUnicode;
     private int bestIndent;
-    private int indicatorIndent;
+    private final int indicatorIndent;
     private final boolean indentWithIndicator;
     private int bestWidth;
-    private String bestLineBreak;
-    private boolean splitLines;
-    private int maxSimpleKeyLength;
+    private final String bestLineBreak;
+    private final boolean splitLines;
+    private final int maxSimpleKeyLength;
 
     // Tag prefixes.
     private Map<String, String> tagPrefixes;
@@ -302,7 +302,7 @@ public final class Emitter implements Emitable {
     }
 
     private class ExpectDocumentStart implements EmitterState {
-        private boolean first;
+        private final boolean first;
 
         public ExpectDocumentStart(boolean first) {
             this.first = first;
@@ -607,7 +607,7 @@ public final class Emitter implements Emitable {
     }
 
     private class ExpectBlockSequenceItem implements EmitterState {
-        private boolean first;
+        private final boolean first;
 
         public ExpectBlockSequenceItem(boolean first) {
             this.first = first;
@@ -645,7 +645,7 @@ public final class Emitter implements Emitable {
     }
 
     private class ExpectBlockMappingKey implements EmitterState {
-        private boolean first;
+        private final boolean first;
 
         public ExpectBlockMappingKey(boolean first) {
             this.first = first;

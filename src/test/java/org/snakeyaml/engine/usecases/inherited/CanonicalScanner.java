@@ -92,12 +92,12 @@ public class CanonicalScanner implements Scanner {
         ESCAPE_CODES.put(Character.valueOf('U'), 8);
     }
 
-    private String data;
-    private String label;
+    private final String data;
+    private final String label;
     private int index;
     public ArrayList<Token> tokens;
     private boolean scanned;
-    private Optional<Mark> mark;
+    private final Optional<Mark> mark;
 
     public CanonicalScanner(String data, String label) {
         this.data = data + "\0";

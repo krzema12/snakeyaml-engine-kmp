@@ -44,10 +44,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class CanonicalParser implements Parser {
-    private String label;
-    private ArrayList<Event> events;
+    private final String label;
+    private final ArrayList<Event> events;
     private boolean parsed;
-    private CanonicalScanner scanner;
+    private final CanonicalScanner scanner;
 
     public CanonicalParser(String data, String label) {
         this.label = label;

@@ -25,8 +25,8 @@ import java.util.Optional;
  * Store the internal state for directives
  */
 class VersionTagsTuple {
-    private Optional<SpecVersion> specVersion;
-    private Map<String, String> tags;
+    private final Optional<SpecVersion> specVersion;
+    private final Map<String, String> tags;
 
     public VersionTagsTuple(Optional<SpecVersion> specVersion, Map<String, String> tags) {
         Objects.requireNonNull(specVersion);

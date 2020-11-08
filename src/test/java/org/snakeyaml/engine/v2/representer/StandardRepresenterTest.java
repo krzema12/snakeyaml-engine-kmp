@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("fast")
 class StandardRepresenterTest {
-    private StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
+    private final StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
 
     @Test
     @DisplayName("Represent unknown class")

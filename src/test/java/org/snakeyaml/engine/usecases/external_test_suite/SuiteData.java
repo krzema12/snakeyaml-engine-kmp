@@ -22,7 +22,7 @@ public class SuiteData {
     private final String label;
     private final String input;
     private final List<String> events;
-    private Boolean error;
+    private final Boolean error;
 
     public SuiteData(String name, String label, String input, List<String> events, Boolean error) {
         this.name = name;

@@ -108,7 +108,7 @@ public final class ScannerImpl implements Scanner {
     private int flowLevel = 0;
 
     // List of processed tokens that are not yet emitted.
-    private List<Token> tokens;
+    private final List<Token> tokens;
 
     // Number of tokens that were emitted through the `get_token` method.
     private int tokensTaken = 0;
@@ -117,7 +117,7 @@ public final class ScannerImpl implements Scanner {
     private int indent = -1;
 
     // Past indentation levels.
-    private ArrayStack<Integer> indents;
+    private final ArrayStack<Integer> indents;
 
     // Variables related to simple keys treatment.
 
@@ -152,7 +152,7 @@ public final class ScannerImpl implements Scanner {
      * line, column, mark) A simple key may start with ALIAS, ANCHOR, TAG,
      * SCALAR(flow), '[', or '{' tokens.
      */
-    private Map<Integer, SimpleKey> possibleSimpleKeys;
+    private final Map<Integer, SimpleKey> possibleSimpleKeys;
 
     public ScannerImpl(StreamReader reader) {
         this.reader = reader;

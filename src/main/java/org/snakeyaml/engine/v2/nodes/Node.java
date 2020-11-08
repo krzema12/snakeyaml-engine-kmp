@@ -37,7 +37,7 @@ import java.util.Optional;
  */
 public abstract class Node {
     private Tag tag;
-    private Optional<Mark> startMark;
+    private final Optional<Mark> startMark;
     protected Optional<Mark> endMark;
     private boolean recursive;
     private Optional<Anchor> anchor;

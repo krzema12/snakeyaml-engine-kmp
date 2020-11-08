@@ -22,8 +22,8 @@ import java.util.Objects;
  */
 public final class NodeTuple {
 
-    private Node keyNode;
-    private Node valueNode;
+    private final Node keyNode;
+    private final Node valueNode;
 
     public NodeTuple(Node keyNode, Node valueNode) {
         Objects.requireNonNull(keyNode, "keyNode must be provided.");

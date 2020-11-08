@@ -73,7 +73,7 @@ public class Serialize {
 }
 
 class EmitableEvents implements Emitable {
-    private List<Event> events = new ArrayList<>();
+    private final List<Event> events = new ArrayList<>();
 
     @Override
     public void emit(Event event) {

@@ -54,7 +54,7 @@ public final class LoadSettingsBuilder {
 
 
     //general
-    private Map<SettingKey, Object> customProperties = new HashMap();
+    private final Map<SettingKey, Object> customProperties = new HashMap();
 
     /**
      * Create builder

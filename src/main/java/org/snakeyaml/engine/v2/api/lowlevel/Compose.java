@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class Compose {
 
-    private LoadSettings settings;
+    private final LoadSettings settings;
 
     /**
      * Create instance with provided {@link LoadSettings}

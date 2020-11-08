@@ -24,12 +24,12 @@ import java.io.Serializable;
  * does not use it for any other purposes.
  */
 public final class Mark implements Serializable {
-    private String name;
-    private int index;
-    private int line;
-    private int column;
-    private int[] buffer;
-    private int pointer;
+    private final String name;
+    private final int index;
+    private final int line;
+    private final int column;
+    private final int[] buffer;
+    private final int pointer;
 
     private static int[] toCodePoints(char[] str) {
         int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];

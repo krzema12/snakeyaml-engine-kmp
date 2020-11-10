@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-./docker-run.sh 8 $@
+./maven-docker-run.sh jdk-8-slim $@

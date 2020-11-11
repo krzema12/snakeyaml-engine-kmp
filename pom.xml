@@ -44,8 +44,8 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>scm:git:git@bitbucket.org:asomov/snakeyaml-engine.git</connection>
-        <developerConnection>scm:git:git@bitbucket.org:asomov/snakeyaml-engine.git</developerConnection>
+        <connection>scm:git:http://bitbucket.org/asomov/snakeyaml-engine</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.org/asomov/snakeyaml-engine</developerConnection>
         <url>https://bitbucket.org/asomov/snakeyaml-engine/src</url>
         <tag>HEAD</tag>
     </scm>

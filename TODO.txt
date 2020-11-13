@@ -1,5 +1,4 @@
 ## TODO (without priority) ##
-
 * Documentation
 * findbugs, pmd, sonarqube
 * coverage

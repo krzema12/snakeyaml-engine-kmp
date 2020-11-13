@@ -1,7 +1,4 @@
 ## TODO (without priority) ##
-* import 416 from snakeyaml (indent with indicator
-* import  issue #481: Dump anchors that is not used by any alias
-
 * Documentation
 * findbugs, pmd, sonarqube
 * coverage
@@ -16,13 +13,11 @@
 
 Apps to support
 
-* jackson -> java 8, no JavaBeans
 * testng -> java 8, JavaBeans
 * spring boot -> jackson
 * swagger -> jackson
 * Liquibase -> java 8
 * RAML -> java 7, compose only
 
-issue 459 in snakeyaml
 spec-06-28.data -> ! tag is not parsed properly (it must create string)
 YAML processors should resolve nodes having the “!” non-specific tag as “tag:yaml.org,2002:seq”, “tag:yaml.org,2002:map” or “tag:yaml.org,2002:str” depending on their kind.

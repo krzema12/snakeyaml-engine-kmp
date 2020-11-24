@@ -5,7 +5,17 @@
         <title>YAML 1.2 parser and emitter for Java 8+</title>
     </properties>
     <body>
-        <release version="2.2" date="in GIT" description="Maintenance">
+        <release version="2.3" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="add">
+                Import read and write YAML with Comments (2020-11-??)
+            </action>
+        </release>
+        <release version="2.2.1" date="2020-11-24" description="Fix Windows new lines">
+            <action dev="asomov" type="fix" issue="29">
+                ScannerException with CRLF (2020-11-24)
+            </action>
+        </release>
+        <release version="2.2" date="2020-11-11" description="Maintenance">
             <action dev="asomov" type="update">
                 Run tests with JDK 15 (2020-11-10)
             </action>

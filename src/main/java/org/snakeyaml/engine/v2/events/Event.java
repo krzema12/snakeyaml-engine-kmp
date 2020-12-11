@@ -25,7 +25,7 @@ import java.util.Optional;
  */
 public abstract class Event {
     public enum ID {
-        Alias, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
+        Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
     }
 
     private final Optional<Mark> startMark;

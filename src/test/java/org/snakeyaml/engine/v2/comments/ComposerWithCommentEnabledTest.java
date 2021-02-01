@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.v2.comments;
 
-
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.composer.Composer;
@@ -38,8 +37,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class ComposerWithCommentEnabledTest {
+    private final boolean DEBUG = false;
 
     private void printBlockComment(Node node, int level, PrintStream out) {
         if (node.getBlockComments() != null) {
@@ -115,17 +114,19 @@ public class ComposerWithCommentEnabledTest {
     }
 
     private void printNodeList(List<Node> nodeList) {
-        System.out.println("BEGIN");
-        boolean first = true;
-        for (Node node : nodeList) {
-            if (first) {
-                first = false;
-            } else {
-                System.out.println("---");
+        if (DEBUG) {
+            System.out.println("BEGIN");
+            boolean first = true;
+            for (Node node : nodeList) {
+                if (first) {
+                    first = false;
+                } else {
+                    System.out.println("---");
+                }
+                printNodeInternal(node, 1, System.out);
             }
-            printNodeInternal(node, 1, System.out);
+            System.out.println("DONE\n");
         }
-        System.out.println("DONE\n");
     }
 
     private List<Node> getNodeList(Composer composer) {

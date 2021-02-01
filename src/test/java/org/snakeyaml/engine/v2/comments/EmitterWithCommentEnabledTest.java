@@ -25,7 +25,6 @@ import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.composer.Composer;
 import org.snakeyaml.engine.v2.emitter.Emitter;
 import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.parser.ParserImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 import org.snakeyaml.engine.v2.serializer.Serializer;
@@ -186,7 +185,7 @@ public class EmitterWithCommentEnabledTest {
 
         assertEquals(data, result);
     }
-    
+
     @Test
     public void testMultiDoc() throws Exception {
         String data = "" + //

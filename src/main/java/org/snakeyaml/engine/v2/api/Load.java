@@ -62,19 +62,19 @@ public class Load {
     }
 
     private Composer createComposer(StreamReader streamReader) {
-        return new Composer(new ParserImpl(streamReader, settings), settings);
+        return new Composer(settings, new ParserImpl(settings, streamReader));
     }
 
     protected Composer createComposer(InputStream yamlStream) {
-        return createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings));
+        return createComposer(new StreamReader(settings, new YamlUnicodeReader(yamlStream)));
     }
 
     protected Composer createComposer(String yaml) {
-        return createComposer(new StreamReader(yaml, settings));
+        return createComposer(new StreamReader(settings, yaml));
     }
 
     protected Composer createComposer(Reader yamlReader) {
-        return createComposer(new StreamReader(yamlReader, settings));
+        return createComposer(new StreamReader(settings, yamlReader));
     }
 
     // Load  a single document
@@ -135,7 +135,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromInputStream(InputStream yamlStream) {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-        Composer composer = createComposer(new StreamReader(new YamlUnicodeReader(yamlStream), settings));
+        Composer composer = createComposer(new StreamReader(settings, new YamlUnicodeReader(yamlStream)));
         return loadAll(composer);
     }
 
@@ -148,7 +148,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromReader(Reader yamlReader) {
         Objects.requireNonNull(yamlReader, "Reader cannot be null");
-        Composer composer = createComposer(new StreamReader(yamlReader, settings));
+        Composer composer = createComposer(new StreamReader(settings, yamlReader));
         return loadAll(composer);
     }
 
@@ -162,7 +162,7 @@ public class Load {
      */
     public Iterable<Object> loadAllFromString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        Composer composer = createComposer(new StreamReader(yaml, settings));
+        Composer composer = createComposer(new StreamReader(settings, yaml));
         return loadAll(composer);
     }
 

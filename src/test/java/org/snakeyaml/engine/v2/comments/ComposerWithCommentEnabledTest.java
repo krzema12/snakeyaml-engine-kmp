@@ -160,7 +160,7 @@ public class ComposerWithCommentEnabledTest {
 
     public Composer newComposerWithCommentsEnabled(String data) {
         LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
-        return new Composer(new ParserImpl(new StreamReader(data, settings), settings), settings);
+        return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, data)));
     }
 
     @Test

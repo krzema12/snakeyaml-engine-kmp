@@ -68,7 +68,7 @@ public class ParserWithCommentEnabledTest {
 
     private Parser createParser(String data) {
         LoadSettings loadSettings = LoadSettings.builder().setParseComments(true).build();
-        Parser sut = new ParserImpl(new StreamReader(data, loadSettings), loadSettings);
+        Parser sut = new ParserImpl(loadSettings, new StreamReader(loadSettings, data));
         return sut;
     }
 

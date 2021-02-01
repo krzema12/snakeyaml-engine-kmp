@@ -32,8 +32,9 @@ class ScannerTest {
     @Test
     @DisplayName("Expected NoSuchElementException after all the tokens are finished.")
     void testToString() {
-        StreamReader reader = new StreamReader("444222", LoadSettings.builder().build());
-        ScannerImpl scanner = new ScannerImpl(reader);
+        LoadSettings settings = LoadSettings.builder().build();
+        StreamReader reader = new StreamReader(settings, "444222");
+        ScannerImpl scanner = new ScannerImpl(settings, reader);
         assertTrue(scanner.hasNext());
         assertEquals(Token.ID.StreamStart, scanner.next().getTokenId());
         assertTrue(scanner.hasNext());

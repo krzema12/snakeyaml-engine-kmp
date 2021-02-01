@@ -52,8 +52,8 @@ public class Compose {
      */
     public Optional<Node> composeReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(yaml, settings), settings),
-                settings).getSingleNode();
+        return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml))
+        ).getSingleNode();
     }
 
     /**
@@ -65,8 +65,8 @@ public class Compose {
      */
     public Optional<Node> composeInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings),
-                settings).getSingleNode();
+        return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml)))
+        ).getSingleNode();
     }
 
     /**
@@ -78,8 +78,8 @@ public class Compose {
      */
     public Optional<Node> composeString(String yaml) {
         Objects.requireNonNull(yaml, "String cannot be null");
-        return new Composer(new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings),
-                settings).getSingleNode();
+        return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)))
+        ).getSingleNode();
     }
 
     // Compose all documents
@@ -93,7 +93,7 @@ public class Compose {
      */
     public Iterable<Node> composeAllFromReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
-        return () -> new Composer(new ParserImpl(new StreamReader(yaml, settings), settings), settings);
+        return () -> new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml)));
     }
 
     /**
@@ -105,7 +105,7 @@ public class Compose {
      */
     public Iterable<Node> composeAllFromInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return () -> new Composer(new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings), settings);
+        return () -> new Composer(settings, new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml))));
     }
 
     /**
@@ -120,8 +120,8 @@ public class Compose {
         //do not use lambda to keep Iterable and Iterator visible
         return new Iterable() {
             public Iterator<Node> iterator() {
-                return new Composer(new ParserImpl(
-                        new StreamReader(new StringReader(yaml), settings), settings), settings);
+                return new Composer(settings, new ParserImpl(
+                        settings, new StreamReader(settings, new StringReader(yaml))));
             }
         };
     }

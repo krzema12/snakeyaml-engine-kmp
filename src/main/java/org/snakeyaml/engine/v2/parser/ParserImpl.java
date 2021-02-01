@@ -140,11 +140,25 @@ public class ParserImpl implements Parser {
     private Optional<Production> state;
     private VersionTagsTuple directives;
 
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public ParserImpl(StreamReader reader, LoadSettings settings) {
-        this(new ScannerImpl(reader, settings), settings);
+        this(settings, reader);
     }
 
+    public ParserImpl(LoadSettings settings, StreamReader reader) {
+        this(settings, new ScannerImpl(settings, reader));
+    }
+
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public ParserImpl(Scanner scanner, LoadSettings settings) {
+        this(settings, scanner);
+    }
+
+    public ParserImpl(LoadSettings settings, Scanner scanner) {
         this.scanner = scanner;
         this.settings = settings;
         currentEvent = Optional.empty();

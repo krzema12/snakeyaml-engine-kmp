@@ -68,7 +68,14 @@ public class Composer implements Iterator<Node> {
     private final CommentEventsCollector blockCommentsCollector;
     private final CommentEventsCollector inlineCommentsCollector;
 
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public Composer(Parser parser, LoadSettings settings) {
+        this(settings, parser);
+    }
+
+    public Composer(LoadSettings settings, Parser parser) {
         this.parser = parser;
         this.scalarResolver = settings.getScalarResolver();
         this.settings = settings;

@@ -6,8 +6,11 @@
     </properties>
     <body>
         <release version="2.3" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="update">
+                Change signature to have settings as first parameter (2021-02-01)
+            </action>
             <action dev="asomov" type="add">
-                Import read and write YAML with Comments (2020-11-??)
+                Import read and write YAML with Comments (2021-02-01)
             </action>
         </release>
         <release version="2.2.1" date="2020-11-24" description="Fix Windows new lines">

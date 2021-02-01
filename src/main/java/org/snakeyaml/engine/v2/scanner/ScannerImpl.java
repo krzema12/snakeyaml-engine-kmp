@@ -160,7 +160,14 @@ public final class ScannerImpl implements Scanner {
 
     private final LoadSettings settings;
 
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public ScannerImpl(StreamReader reader, LoadSettings settings) {
+        this(settings, reader);
+    }
+
+    public ScannerImpl(LoadSettings settings, StreamReader reader) {
         this.reader = reader;
         this.settings = settings;
         this.tokens = new ArrayList<>(100);
@@ -170,8 +177,11 @@ public final class ScannerImpl implements Scanner {
         fetchStreamStart();// Add the STREAM-START token.
     }
 
+    /**
+     * @deprecated it should be used with LoadSettings
+     */
     public ScannerImpl(StreamReader reader) {
-        this(reader, LoadSettings.builder().build());
+        this(LoadSettings.builder().build(), reader);
     }
 
     /**

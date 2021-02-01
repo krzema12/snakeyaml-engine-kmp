@@ -53,7 +53,7 @@ public class Parse {
      */
     public Iterable<Event> parseInputStream(InputStream yaml) {
         Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return () -> new ParserImpl(new StreamReader(new YamlUnicodeReader(yaml), settings), settings);
+        return () -> new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml)));
     }
 
     /**
@@ -66,7 +66,7 @@ public class Parse {
      */
     public Iterable<Event> parseReader(Reader yaml) {
         Objects.requireNonNull(yaml, "Reader cannot be null");
-        return () -> new ParserImpl(new StreamReader(yaml, settings), settings);
+        return () -> new ParserImpl(settings, new StreamReader(settings, yaml));
     }
 
     /**
@@ -81,7 +81,7 @@ public class Parse {
         //do not use lambda to keep Iterable and Iterator visible
         return new Iterable() {
             public Iterator<Event> iterator() {
-                return new ParserImpl(new StreamReader(new StringReader(yaml), settings), settings);
+                return new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)));
             }
         };
     }

@@ -48,7 +48,7 @@ public class EmitterWithCommentEnabledTest {
 
         serializer.open();
         LoadSettings loadSettings = LoadSettings.builder().setParseComments(true).build();
-        Composer composer = new Composer(new ParserImpl(new StreamReader(data, loadSettings), loadSettings), loadSettings);
+        Composer composer = new Composer(loadSettings, new ParserImpl(loadSettings, new StreamReader(loadSettings, data)));
         while (composer.hasNext()) {
             Node node = composer.next();
             //System.out.println(node);

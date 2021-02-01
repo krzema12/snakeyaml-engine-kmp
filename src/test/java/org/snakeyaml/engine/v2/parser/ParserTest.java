@@ -35,9 +35,9 @@ class ParserTest {
     @DisplayName("Expected NoSuchElementException after all the events are finished.")
     void testToString() {
         LoadSettings settings = LoadSettings.builder().build();
-        StreamReader reader = new StreamReader("444333", settings);
-        ScannerImpl scanner = new ScannerImpl(reader);
-        Parser parser = new ParserImpl(scanner, settings);
+        StreamReader reader = new StreamReader(settings, "444333");
+        ScannerImpl scanner = new ScannerImpl(settings, reader);
+        Parser parser = new ParserImpl(settings, scanner);
         assertTrue(parser.hasNext());
         assertEquals(Event.ID.StreamStart, parser.next().getEventId());
         assertTrue(parser.hasNext());

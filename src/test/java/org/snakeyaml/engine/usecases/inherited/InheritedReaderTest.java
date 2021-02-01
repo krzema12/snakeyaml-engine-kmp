@@ -41,7 +41,7 @@ public class InheritedReaderTest extends InheritedImportTest {
         for (int i = 0; i < inputs.length; i++) {
             InputStream input = new FileInputStream(inputs[i]);
             YamlUnicodeReader unicodeReader = new YamlUnicodeReader(input);
-            StreamReader stream = new StreamReader(unicodeReader, LoadSettings.builder().build());
+            StreamReader stream = new StreamReader(LoadSettings.builder().build(), unicodeReader);
             try {
                 while (stream.peek() != '\u0000') {
                     stream.forward();

@@ -60,7 +60,14 @@ public final class StreamReader {
     private final char[] buffer; // temp buffer for one read operation (to avoid creating the array in stack)
     private final boolean useMarks;
 
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public StreamReader(Reader reader, LoadSettings loadSettings) {
+        this(loadSettings, reader);
+    }
+
+    public StreamReader(LoadSettings loadSettings, Reader reader) {
         this.name = loadSettings.getLabel();
         this.dataWindow = new int[0];
         this.dataLength = 0;
@@ -71,8 +78,15 @@ public final class StreamReader {
         this.useMarks = loadSettings.getUseMarks();
     }
 
+    /**
+     * @deprecated use the other constructor with LoadSettings first
+     */
     public StreamReader(String stream, LoadSettings loadSettings) {
-        this(new StringReader(stream), loadSettings);
+        this(loadSettings, new StringReader(stream));
+    }
+
+    public StreamReader(LoadSettings loadSettings, String stream) {
+        this(loadSettings, new StringReader(stream));
     }
 
     public static final boolean isPrintable(final String data) {

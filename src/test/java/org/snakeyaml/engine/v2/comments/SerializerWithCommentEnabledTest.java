@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.comments;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.composer.Composer;
@@ -30,7 +29,6 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
 import org.snakeyaml.engine.v2.serializer.Serializer;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -85,7 +83,7 @@ public class SerializerWithCommentEnabledTest {
         Serializer serializer = new Serializer(dumpSettings, emitter);
         serializer.open();
         LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
-        Composer composer = new Composer(new ParserImpl(new StreamReader(data, settings), settings), settings);
+        Composer composer = new Composer(settings, new ParserImpl(settings, new StreamReader(settings, data)));
         while (composer.hasNext()) {
             serializer.serialize(composer.next());
         }

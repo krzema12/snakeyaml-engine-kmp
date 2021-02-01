@@ -41,6 +41,7 @@ public abstract class Token {
         StreamEnd("<stream end>"), //NOSONAR
         StreamStart("<stream start>"), //NOSONAR
         Tag("<tag>"), //NOSONAR
+        Comment("#"),
         Value(":"); //NOSONAR
 
         private final String description;

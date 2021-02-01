@@ -43,6 +43,7 @@ public final class LoadSettings {
     private final Integer bufferSize;
     private final boolean allowDuplicateKeys;
     private final boolean allowRecursiveKeys;
+    private final boolean parseComments;
     private final int maxAliasesForCollections;
     private final boolean useMarks;
     private final Optional<EnvConfig> envConfig;
@@ -55,7 +56,8 @@ public final class LoadSettings {
                  IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
                  UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
                  boolean allowDuplicateKeys, boolean allowRecursiveKeys, int maxAliasesForCollections,
-                 boolean useMarks, Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig) {
+                 boolean useMarks, Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig,
+                 boolean parseComments) {
         this.label = label;
         this.tagConstructors = tagConstructors;
         this.scalarResolver = scalarResolver;
@@ -66,6 +68,7 @@ public final class LoadSettings {
         this.bufferSize = bufferSize;
         this.allowDuplicateKeys = allowDuplicateKeys;
         this.allowRecursiveKeys = allowRecursiveKeys;
+        this.parseComments = parseComments;
         this.maxAliasesForCollections = maxAliasesForCollections;
         this.useMarks = useMarks;
         this.customProperties = customProperties;
@@ -130,6 +133,10 @@ public final class LoadSettings {
 
     public Optional<EnvConfig> getEnvConfig() {
         return envConfig;
+    }
+
+    public boolean getParseComments() {
+        return parseComments;
     }
 }
 

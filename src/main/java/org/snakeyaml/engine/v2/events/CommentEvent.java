@@ -60,4 +60,13 @@ public final class CommentEvent extends Event {
     public Event.ID getEventId() {
         return ID.Comment;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("=COM ");
+        builder.append(type);
+        builder.append(" ");
+        builder.append(value);
+        return builder.toString();
+    }
 }

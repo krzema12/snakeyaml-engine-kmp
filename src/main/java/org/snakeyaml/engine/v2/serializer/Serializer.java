@@ -16,9 +16,11 @@
 package org.snakeyaml.engine.v2.serializer;
 
 import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.comments.CommentLine;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.emitter.Emitable;
 import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.CommentEvent;
 import org.snakeyaml.engine.v2.events.DocumentEndEvent;
 import org.snakeyaml.engine.v2.events.DocumentStartEvent;
 import org.snakeyaml.engine.v2.events.ImplicitTuple;
@@ -128,6 +130,7 @@ public class Serializer {
             switch (node.getNodeType()) {
                 case SCALAR:
                     ScalarNode scalarNode = (ScalarNode) node;
+                    serializeComments(node.getBlockComments());
                     Tag detectedTag = settings.getScalarResolver().resolve(scalarNode.getValue(), true);
                     Tag defaultTag = settings.getScalarResolver().resolve(scalarNode.getValue(), false);
                     ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag), node
@@ -135,9 +138,12 @@ public class Serializer {
                     ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
                             scalarNode.getValue(), scalarNode.getScalarStyle());
                     this.emitable.emit(event);
+                    serializeComments(node.getInLineComments());
+                    serializeComments(node.getEndComments());
                     break;
                 case SEQUENCE:
                     SequenceNode seqNode = (SequenceNode) node;
+                    serializeComments(node.getBlockComments());
                     boolean implicitS = node.getTag().equals(Tag.SEQ);
                     this.emitable.emit(new SequenceStartEvent(tAlias, Optional.of(node.getTag().getValue()),
                             implicitS, seqNode.getFlowStyle()));
@@ -146,21 +152,39 @@ public class Serializer {
                         serializeNode(item);
                     }
                     this.emitable.emit(new SequenceEndEvent());
+                    serializeComments(node.getInLineComments());
+                    serializeComments(node.getEndComments());
                     break;
                 default:// instance of MappingNode
+                    serializeComments(node.getBlockComments());
                     boolean implicitM = node.getTag().equals(Tag.MAP);
-                    this.emitable.emit(new MappingStartEvent(tAlias, Optional.of(node.getTag().getValue()),
-                            implicitM, ((CollectionNode) node).getFlowStyle()));
                     MappingNode mappingNode = (MappingNode) node;
                     List<NodeTuple> map = mappingNode.getValue();
-                    for (NodeTuple entry : map) {
-                        Node key = entry.getKeyNode();
-                        Node value = entry.getValueNode();
-                        serializeNode(key);
-                        serializeNode(value);
+                    if (mappingNode.getTag() != Tag.COMMENT) {
+                        this.emitable.emit(new MappingStartEvent(tAlias, Optional.of(mappingNode.getTag().getValue()),
+                                implicitM, mappingNode.getFlowStyle(), Optional.empty(), Optional.empty()));
+                        for (NodeTuple entry : map) {
+                            Node key = entry.getKeyNode();
+                            Node value = entry.getValueNode();
+                            serializeNode(key);
+                            serializeNode(value);
+                        }
+                        this.emitable.emit(new MappingEndEvent());
+                        serializeComments(node.getInLineComments());
+                        serializeComments(node.getEndComments());
                     }
-                    this.emitable.emit(new MappingEndEvent());
             }
+        }
+    }
+
+    private void serializeComments(List<CommentLine> comments) {
+        if (comments == null) {
+            return;
+        }
+        for (CommentLine line : comments) {
+            CommentEvent commentEvent = new CommentEvent(line.getCommentType(), line.getValue(), line.getStartMark(),
+                    line.getEndMark());
+            this.emitable.emit(commentEvent);
         }
     }
 }

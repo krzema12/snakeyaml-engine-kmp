@@ -48,6 +48,7 @@ public final class LoadSettingsBuilder {
     private Integer bufferSize;
     private boolean allowDuplicateKeys;
     private boolean allowRecursiveKeys;
+    private boolean parseComments;
     private int maxAliasesForCollections;
     private boolean useMarks;
     private Optional<EnvConfig> envConfig;
@@ -73,6 +74,7 @@ public final class LoadSettingsBuilder {
         this.bufferSize = 1024;
         this.allowDuplicateKeys = false;
         this.allowRecursiveKeys = false;
+        this.parseComments = false;
         this.maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
         this.useMarks = true;
         this.envConfig = Optional.empty(); // no ENV substitution by default
@@ -247,6 +249,17 @@ public final class LoadSettingsBuilder {
     }
 
     /**
+     * Parse comments to the presentation tree (Node). False by default
+     *
+     * @param parseComments - use true to parse comments to the presentation tree (Node)
+     * @return the builder with the provided value
+     */
+    public LoadSettingsBuilder setParseComments(boolean parseComments) {
+        this.parseComments = parseComments;
+        return this;
+    }
+
+    /**
      * Build immutable LoadSettings
      *
      * @return immutable LoadSettings
@@ -257,7 +270,7 @@ public final class LoadSettingsBuilder {
                 defaultSet, defaultMap,
                 versionFunction, bufferSize,
                 allowDuplicateKeys, allowRecursiveKeys, maxAliasesForCollections, useMarks,
-                customProperties, envConfig);
+                customProperties, envConfig, parseComments);
     }
 }
 

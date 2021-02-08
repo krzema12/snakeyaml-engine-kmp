@@ -66,6 +66,9 @@ public class EmptyStringOutputTest {
         emitter.emit(new StreamStartEvent());
         emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>()));
         emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true), value, ScalarStyle.DOUBLE_QUOTED));
+        // Needed as emitter won't process above event until it peeks at this one
+        // to be sure it is not a comment
+        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false), value,  ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
         return writer.toString();
     }
 }

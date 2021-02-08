@@ -30,6 +30,8 @@ public final class Tag {
     public static final Tag STR = new Tag(PREFIX + "str");
     public static final Tag SEQ = new Tag(PREFIX + "seq");
     public static final Tag MAP = new Tag(PREFIX + "map");
+    // For use to indicate a DUMMY node that contains comments, when there is no other (empty document)
+    public static final Tag COMMENT = new Tag(PREFIX + "comment");
 
     public static final Tag ENV_TAG = new Tag("!ENV_VARIABLE");
 

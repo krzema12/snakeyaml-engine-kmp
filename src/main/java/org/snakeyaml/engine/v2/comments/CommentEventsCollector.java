@@ -151,7 +151,7 @@ public class CommentEventsCollector {
     }
 
     /**
-     * Return the events collected and reset the colletor.
+     * Return the events collected and reset the collector.
      *
      * @return the events collected.
      */

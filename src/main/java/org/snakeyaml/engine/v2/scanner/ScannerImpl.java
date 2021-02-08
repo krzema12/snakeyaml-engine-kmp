@@ -1444,7 +1444,7 @@ public final class ScannerImpl implements Scanner {
      * to have type tag:yaml.org,2002:str.
      * </p>
      * <p>
-     * TODO SnakeYAML incorrectly ignores c-ns-non-specific-tag right now.
+     * TODO SnakeYAML incorrectly ignores c-ns-non-specific-tag right now. Issue 459
      * <p>
      * <p>
      * TODO Note that this method does not enforce rules about local versus global tags!

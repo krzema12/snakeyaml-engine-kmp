@@ -20,9 +20,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("fast")
 class DumpSettingsTest {
@@ -37,5 +39,35 @@ class DumpSettingsTest {
                 "--- a\n", str);
     }
 
+    @Test
+    void dumpCustomProperty() {
+        DumpSettings settings = DumpSettings.builder().setCustomProperty(new KeyName("key"), "value").build();
+        assertEquals("value", settings.getCustomProperty(new KeyName("key")));
+        assertNull(settings.getCustomProperty(new KeyName("None")));
+    }
 
+    class KeyName implements SettingKey {
+        private final String keyName;
+
+        public KeyName(String name) {
+            keyName = name;
+        }
+
+        public String getKeyName() {
+            return keyName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            KeyName keyName1 = (KeyName) o;
+            return Objects.equals(keyName, keyName1.keyName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(keyName);
+        }
+    }
 }

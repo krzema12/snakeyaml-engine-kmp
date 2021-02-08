@@ -119,8 +119,8 @@ public class ReferencesTest {
         load.loadFromString(output);
         long time2 = System.currentTimeMillis();
         double duration = (time2 - time1) / 1000.0;
-        assertTrue(duration > 0.8, "It should take time. Time was " + duration + " seconds.");
-        assertTrue(duration < 6.0, "Time was " + duration + " seconds.");
+        assertTrue(duration > 3.0, "It should take time. Time was " + duration + " seconds.");
+        assertTrue(duration < 9.0, "Time was " + duration + " seconds.");
     }
 
     @Test

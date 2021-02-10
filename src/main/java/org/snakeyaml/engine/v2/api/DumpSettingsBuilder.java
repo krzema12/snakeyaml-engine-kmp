@@ -168,7 +168,7 @@ public final class DumpSettingsBuilder {
     }
 
     /**
-     * Add YAML directive (http://yaml.org/spec/1.2/spec.html#id2781553)
+     * Add YAML directive (http://yaml.org/spec/1.2/spec.html#id2782090)
      *
      * @param yamlDirective - the version to be used in the directive
      * @return the builder with the provided value
@@ -258,7 +258,7 @@ public final class DumpSettingsBuilder {
      */
     public DumpSettingsBuilder setIndicatorIndent(int indicatorIndent) {
         if (indicatorIndent < 0) {
-            throw new EmitterException("Indicator indent must be non-negative.");
+            throw new EmitterException("Indicator indent must be non-negative");
         }
         if (indicatorIndent > Emitter.MAX_INDENT - 1) {
             throw new EmitterException("Indicator indent must be at most Emitter.MAX_INDENT-1: " + (Emitter.MAX_INDENT - 1));

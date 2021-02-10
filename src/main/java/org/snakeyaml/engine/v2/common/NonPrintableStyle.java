@@ -16,7 +16,7 @@
 package org.snakeyaml.engine.v2.common;
 
 /**
- * Configure the style when String containd non-printable characters
+ * Configure the style when String contains non-printable characters
  */
 public enum NonPrintableStyle {
     /**

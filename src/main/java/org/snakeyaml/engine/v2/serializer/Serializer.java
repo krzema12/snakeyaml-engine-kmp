@@ -32,7 +32,6 @@ import org.snakeyaml.engine.v2.events.SequenceStartEvent;
 import org.snakeyaml.engine.v2.events.StreamEndEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.nodes.AnchorNode;
-import org.snakeyaml.engine.v2.nodes.CollectionNode;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;

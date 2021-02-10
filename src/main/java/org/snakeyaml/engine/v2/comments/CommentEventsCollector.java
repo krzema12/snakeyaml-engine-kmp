@@ -31,8 +31,8 @@ import java.util.Queue;
  */
 public class CommentEventsCollector {
     private List<CommentLine> commentLineList;
-    private Queue<Event> eventSource;
-    private CommentType[] expectedCommentTypes;
+    private final Queue<Event> eventSource;
+    private final CommentType[] expectedCommentTypes;
 
     /**
      * Constructor used to collect comment events emitted by a Parser.

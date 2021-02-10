@@ -25,10 +25,10 @@ import java.util.Optional;
  * A comment line. May be a block comment, blank line, or inline comment.
  */
 public class CommentLine {
-    private Optional<Mark> startMark;
-    private Optional<Mark> endMark;
-    private String value;
-    private CommentType commentType;
+    private final Optional<Mark> startMark;
+    private final Optional<Mark> endMark;
+    private final String value;
+    private final CommentType commentType;
 
     public CommentLine(CommentEvent event) {
         this(event.getStartMark(), event.getEndMark(), event.getValue(), event.getCommentType());

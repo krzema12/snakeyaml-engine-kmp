@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api.dump;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.Dump;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.SettingKey;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
+import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +56,12 @@ class DumpSettingsTest {
         assertEquals(ScalarStyle.PLAIN, settings.getDefaultScalarStyle());
         assertEquals(Optional.empty(), settings.getExplicitRootTag());
         assertFalse(settings.getIndentWithIndicator());
+        assertFalse(settings.isExplicitEnd());
+        assertFalse(settings.isExplicitStart());
+        assertFalse(settings.isCanonical());
+        assertTrue(settings.isSplitLines());
+        assertFalse(settings.isMultiLineFlow());
+        assertTrue(settings.isUseUnicodeEncoding());
         assertEquals(0, settings.getIndicatorIndent());
         assertEquals(128, settings.getMaxSimpleKeyLength());
         assertNull(settings.getNonPrintableStyle()); //TODO should have Optional ?
@@ -60,38 +70,6 @@ class DumpSettingsTest {
         assertEquals(new HashMap<>(), settings.getTagDirective());
         assertNotNull(settings.getAnchorGenerator());
         assertNotNull(settings.getScalarResolver());
-    }
-
-
-    @Test
-    @DisplayName("testSplitLinesDoubleQuoted")
-    void testSplitLinesDoubleQuoted() {
-        String data = "1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000";
-        DumpSettings settings = DumpSettings.builder()
-                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-                .setSplitLines(true)
-                .build();
-        Dump dump = new Dump(settings);
-        // Split lines enabled (default)
-        assertTrue(settings.isSplitLines());
-        assertEquals(80, settings.getWidth());
-        String output = dump.dumpToString(data);
-        assertEquals("\"1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\\\n  \\ 9999999999 0000000000\"\n", output);
-
-        // Lines with double spaces can be split too as whitespace can be preserved
-        output = dump.dumpToString("1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000");
-        assertEquals("\"1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777\\\n  \\  8888888888  9999999999  0000000000\"\n", output);
-
-        // Split lines disabled
-        DumpSettings settings2 = DumpSettings.builder()
-                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-                .setSplitLines(false)
-                .build();
-        assertFalse(settings2.isSplitLines());
-        Dump dump2 = new Dump(settings2);
-
-        output = dump2.dumpToString(data);
-        assertEquals("\"1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\"\n", output);
     }
 
     @Test
@@ -109,6 +87,47 @@ class DumpSettingsTest {
                 "  !!int \"0\",\n" +
                 "  !!int \"1\",\n" +
                 "]\n", str);
+    }
+
+    @Test
+    @DisplayName("Custom scalar resolver has no use case")
+    void setScalarResolver() {
+        DumpSettings settings = DumpSettings.builder().setScalarResolver(new JsonScalarResolver()).build();
+        Dump dump = new Dump(settings);
+        List<Integer> data = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            data.add(i);
+        }
+        String str = dump.dumpToString(data);
+        assertEquals("[0, 1]\n", str);
+    }
+
+    @Test
+    @DisplayName("Use Windows line break")
+    void setBestLineBreak() {
+        DumpSettings settings = DumpSettings.builder().setBestLineBreak("\r\n").build();
+        Dump dump = new Dump(settings);
+        List<Integer> data = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            data.add(i);
+        }
+        String str = dump.dumpToString(data);
+        assertEquals("[0, 1]\r\n", str);
+    }
+
+    @Test
+    void setMultiLineFlow() {
+        DumpSettings settings = DumpSettings.builder().setMultiLineFlow(true).build();
+        Dump dump = new Dump(settings);
+        List<Integer> data = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            data.add(i);
+        }
+        String str = dump.dumpToString(data);
+        assertEquals("[\n" +
+                "  0,\n" +
+                "  1,\n" +
+                "  2]\n", str);
     }
 
     @Test
@@ -167,10 +186,6 @@ class DumpSettingsTest {
 
         public KeyName(String name) {
             keyName = name;
-        }
-
-        public String getKeyName() {
-            return keyName;
         }
 
         @Override

@@ -133,7 +133,8 @@ public final class DumpSettingsBuilder {
     }
 
     /**
-     * Define {@link ScalarResolver} or use JSON resolver by default
+     * Define {@link ScalarResolver} or use JSON resolver by default.
+     * Do we need this method ?
      *
      * @param scalarResolver - specify the scalar resolver
      * @return the builder with the provided value

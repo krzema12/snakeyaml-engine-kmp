@@ -262,9 +262,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <header>src/etc/header.txt</header>
                     <quiet>false</quiet>
@@ -280,6 +280,12 @@
                     <useDefaultMapping>true</useDefaultMapping>
                     <strictCheck>true</strictCheck>
                     <encoding>UTF-8</encoding>
+                    <!-- To use no JavaDoc but a normal comment -->
+                    <headerDefinitions>
+                        <definition>
+                            src/etc/header-def.xml
+                        </definition>
+                    </headerDefinitions>
                 </configuration>
                 <executions>
                     <execution>

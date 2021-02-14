@@ -36,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ScannerWithCommentEnabledTest {
+    private final boolean DEBUG = false;
+
     private void assertTokensEqual(List<ID> expected, Scanner sut) {
         assertTokensEqual(expected, null, sut);
     }
@@ -54,7 +56,7 @@ public class ScannerWithCommentEnabledTest {
                 value = "";
                 break;
         }
-        System.out.println(token.getTokenId().name() + value);
+        if (DEBUG) System.out.println(token.getTokenId().name() + value);
     }
 
     private void assertTokenEquals(Iterator<ID> expectedIdIterator, Iterator<String> expectedScalarValueIterator,

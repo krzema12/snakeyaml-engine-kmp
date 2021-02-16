@@ -275,7 +275,6 @@ public class ParserImpl implements Parser {
                 Optional<Mark> startMark = token.getStartMark();
                 VersionTagsTuple tuple = processDirectives();
                 while (scanner.checkToken(Token.ID.Comment)) {
-                    // TODO: till we figure out what todo with the comments
                     scanner.next();
                 }
                 if (!scanner.checkToken(Token.ID.StreamEnd)) {

@@ -55,7 +55,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
-
 /**
  * <pre>
  * Emitter expects events obeying the following grammar:
@@ -1469,7 +1468,6 @@ public final class Emitter implements Emitable {
         if (!writeInlineComments()) {
             writeLineBreak(null);
         }
-        writeLineBreak(null);
         boolean leadingSpace = true;
         boolean spaces = false;
         boolean breaks = true;

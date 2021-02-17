@@ -85,20 +85,19 @@ class DumpWidthTest {
         Dump dump = new Dump(split.setDefaultScalarStyle(ScalarStyle.FOLDED).build());
         // Split lines enabled (default)
         String output = dump.dumpToString(data1);
-        //FIXME it must be one new line only in the beginning (3 times !)
-        assertEquals(">-\n\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n", output);
+        assertEquals(">-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n", output);
         String str = (String) new Load(LoadSettings.builder().build()).loadFromString(">-\n\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n");
         assertEquals("\n" + data1, str, "No LF must be added");
 
         // Do not split on double space as whitespace cannot be preserved in folded style
         output = dump.dumpToString(data2);
-        assertEquals(">-\n\n  1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000\n", output);
+        assertEquals(">-\n  1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000\n", output);
 
         // Split lines disabled
         Dump dump2 = new Dump(noSplit.setDefaultScalarStyle(ScalarStyle.FOLDED).build());
 
         output = dump2.dumpToString(data1);
-        assertEquals(">-\n\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\n", output);
+        assertEquals(">-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\n", output);
     }
 
     @Test

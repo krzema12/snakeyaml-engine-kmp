@@ -1,6 +1,6 @@
 {
-  "unquoted": "separate",
+  "": "omitted key",
   "http://foo.com": "",
   "omitted value": "",
-  "": "omitted key"
+  "unquoted": "separate"
 }

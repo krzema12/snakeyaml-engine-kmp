@@ -15,11 +15,14 @@
  */
 package org.snakeyaml.engine.issues.issue17;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.ParserException;
+import org.snakeyaml.engine.v2.scanner.StreamReader;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,6 +32,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 @org.junit.jupiter.api.Tag("fast")
 public class WindowsTest {
     Load loader = new Load(LoadSettings.builder().build());
+
+    @Test
+    @DisplayName("Check that Windows style line endings handled the same as Unix style ones")
+    void testGetLineNumberOnWindows() {
+        LoadSettings settings = LoadSettings.builder().build();
+        StreamReader reader1 = new StreamReader(settings, "foo\r\nbar");
+        StreamReader reader2 = new StreamReader(settings, "foo\nbar");
+        reader1.forward(100);
+        reader2.forward(100);
+        assertEquals(reader1.getLine(), reader2.getLine());
+    }
 
     @Test
     void countLinesCRLF() {

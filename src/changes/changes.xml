@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.3" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix" issue="17">
+                Report proper line number for Windows (2021-02-28)
+            </action>
             <action dev="asomov" type="update">
                 Change signature to have settings as first parameter (2021-02-01)
             </action>

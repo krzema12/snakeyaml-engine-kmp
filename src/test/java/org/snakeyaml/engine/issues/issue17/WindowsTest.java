@@ -36,8 +36,7 @@ public class WindowsTest {
             loader.loadFromString("\r\n[");
             fail();
         } catch (ParserException e) {
-            //TODO issue 17, it should be line 2
-            assertTrue(e.getMessage().contains("line 3,"), e.getMessage());
+            assertTrue(e.getMessage().contains("line 2,"), e.getMessage());
         }
     }
 

@@ -15,14 +15,14 @@
  */
 package org.snakeyaml.engine.v2.utils;
 
-import com.google.common.io.CharStreams;
 import org.snakeyaml.engine.v2.events.Event;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,11 +33,8 @@ public abstract class TestUtils {
         if (inputStream == null) {
             throw new RuntimeException("Resource not found: " + theName);
         }
-        try {
-            return CharStreams.toString(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return new BufferedReader(new InputStreamReader(inputStream))
+            .lines().collect(Collectors.joining("\n","","\n"));
     }
 
     public static void compareEvents(List<Event> list1, List<Event> list2) {

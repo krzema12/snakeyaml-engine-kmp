@@ -153,21 +153,24 @@ public abstract class BaseRepresenter {
         return node;
     }
 
+    protected NodeTuple representMappingEntry(Map.Entry<?, ?> entry) {
+        return new NodeTuple(representData(entry.getKey()), representData(entry.getValue()));
+    }
+
     protected Node representMapping(Tag tag, Map<?, ?> mapping, FlowStyle flowStyle) {
         List<NodeTuple> value = new ArrayList<>(mapping.size());
         MappingNode node = new MappingNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
         FlowStyle bestStyle = FlowStyle.FLOW;
         for (Map.Entry<?, ?> entry : mapping.entrySet()) {
-            Node nodeKey = representData(entry.getKey());
-            Node nodeValue = representData(entry.getValue());
-            if (!(nodeKey instanceof ScalarNode && ((ScalarNode) nodeKey).isPlain())) {
+            NodeTuple tuple = representMappingEntry(entry);
+            if (!(tuple.getKeyNode() instanceof ScalarNode && ((ScalarNode) tuple.getKeyNode()).isPlain())) {
                 bestStyle = FlowStyle.BLOCK;
             }
-            if (!(nodeValue instanceof ScalarNode && ((ScalarNode) nodeValue).isPlain())) {
+            if (!(tuple.getValueNode() instanceof ScalarNode && ((ScalarNode) tuple.getValueNode()).isPlain())) {
                 bestStyle = FlowStyle.BLOCK;
             }
-            value.add(new NodeTuple(nodeKey, nodeValue));
+            value.add(tuple);
         }
         if (flowStyle == FlowStyle.AUTO) {
             if (defaultFlowStyle != FlowStyle.AUTO) {

@@ -32,7 +32,7 @@ public class RepresentEntryTest {
     }
 
     @Test
-    @DisplayName("Represent unknown class")
+    @DisplayName("Represent and dump mapping nodes using the new method")
     void representMapping() {
         StringOutputStream stringOutputStream = new StringOutputStream();
 

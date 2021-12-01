@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-./maven-docker-run.sh jdk-8-slim $@
+./maven-docker-run.sh openjdk:8-alpine $@

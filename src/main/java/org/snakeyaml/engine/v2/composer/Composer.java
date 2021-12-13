@@ -113,18 +113,10 @@ public class Composer implements Iterator<Node> {
     public Optional<Node> getSingleNode() {
         // Drop the STREAM-START event.
         parser.next();
-        // Drop any leading comments (though should not have run this case with comments on)
-        while (parser.checkEvent(Event.ID.Comment)) {
-            parser.next();
-        }
         // Compose a document if the stream is not empty.
         Optional<Node> document = Optional.empty();
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             document = Optional.of(next());
-        }
-        // Drop any trailing comments (though should not have run this case with comments on)
-        while (parser.checkEvent(Event.ID.Comment)) {
-            parser.next();
         }
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
@@ -158,7 +150,7 @@ public class Composer implements Iterator<Node> {
         // Drop the DOCUMENT-START event.
         parser.next();
         // Compose the root node.
-        Node node = composeNode(Optional.empty(), blockCommentsCollector.collectEvents().consume());
+        Node node = composeNode(Optional.empty());
         // Drop the DOCUMENT-END event.
         blockCommentsCollector.collectEvents();
         if (!blockCommentsCollector.isEmpty()) {
@@ -172,7 +164,8 @@ public class Composer implements Iterator<Node> {
     }
 
 
-    private Node composeNode(Optional<Node> parent, List<CommentLine> blockComments) {
+    private Node composeNode(Optional<Node> parent) {
+        blockCommentsCollector.collectEvents();
         parent.ifPresent(recursiveNodes::add);//TODO add unit test for this line
         final Node node;
         if (parser.checkEvent(Event.ID.Alias)) {
@@ -191,17 +184,17 @@ public class Composer implements Iterator<Node> {
             if (recursiveNodes.remove(node)) {
                 node.setRecursive(true);
             }
-            node.setBlockComments(blockComments);
+            node.setBlockComments(blockCommentsCollector.consume());
         } else {
             NodeEvent event = (NodeEvent) parser.peekEvent();
             Optional<Anchor> anchor = event.getAnchor();
             // the check for duplicate anchors has been removed (issue 174)
             if (parser.checkEvent(Event.ID.Scalar)) {
-                node = composeScalarNode(anchor, blockComments);
+                node = composeScalarNode(anchor, blockCommentsCollector.consume());
             } else if (parser.checkEvent(Event.ID.SequenceStart)) {
-                node = composeSequenceNode(anchor, blockComments);
+                node = composeSequenceNode(anchor);
             } else {
-                node = composeMappingNode(anchor, blockComments);
+                node = composeMappingNode(anchor);
             }
         }
         parent.ifPresent(recursiveNodes::remove);//TODO add unit test for this line
@@ -231,7 +224,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeSequenceNode(Optional<Anchor> anchor, List<CommentLine> blockComments) {
+    protected Node composeSequenceNode(Optional<Anchor> anchor) {
         SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
         Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
@@ -245,15 +238,19 @@ public class Composer implements Iterator<Node> {
         final ArrayList<Node> children = new ArrayList();
         SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(),
                 Optional.empty());
+        if (startEvent.isFlow()) {
+            node.setBlockComments(blockCommentsCollector.consume());
+        }
         anchor.ifPresent(a -> registerAnchor(a, node));
-        node.setBlockComments(blockComments);
-        node.setInLineComments(inlineCommentsCollector.collectEvents().consume());
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             blockCommentsCollector.collectEvents();
             if (parser.checkEvent(Event.ID.SequenceEnd)) {
                 break;
             }
-            children.add(composeNode(Optional.of(node), blockCommentsCollector.consume()));
+            children.add(composeNode(Optional.of(node)));
+        }
+        if (startEvent.isFlow()) {
+            node.setInLineComments(inlineCommentsCollector.collectEvents().consume());
         }
         Event endEvent = parser.next();
         node.setEndMark(endEvent.getEndMark());
@@ -264,7 +261,7 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected Node composeMappingNode(Optional<Anchor> anchor, List<CommentLine> blockComments) {
+    protected Node composeMappingNode(Optional<Anchor> anchor) {
         MappingStartEvent startEvent = (MappingStartEvent) parser.next();
         Optional<String> tag = startEvent.getTag();
         Tag nodeTag;
@@ -278,15 +275,19 @@ public class Composer implements Iterator<Node> {
 
         final List<NodeTuple> children = new ArrayList<>();
         MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getFlowStyle(), startEvent.getStartMark(), Optional.empty());
+        if (startEvent.isFlow()) {
+            node.setBlockComments(blockCommentsCollector.consume());
+        }
         anchor.ifPresent(a -> registerAnchor(a, node));
-        node.setBlockComments(blockComments);
-        node.setInLineComments(inlineCommentsCollector.collectEvents().consume());
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             blockCommentsCollector.collectEvents();
             if (parser.checkEvent(Event.ID.MappingEnd)) {
                 break;
             }
-            composeMappingChildren(children, node, blockCommentsCollector.consume());
+            composeMappingChildren(children, node);
+        }
+        if (startEvent.isFlow()) {
+            node.setInLineComments(inlineCommentsCollector.collectEvents().consume());
         }
         Event endEvent = parser.next();
         node.setEndMark(endEvent.getEndMark());
@@ -297,17 +298,17 @@ public class Composer implements Iterator<Node> {
         return node;
     }
 
-    protected void composeMappingChildren(List<NodeTuple> children, MappingNode node, List<CommentLine> keyBlockComments) {
-        Node itemKey = composeKeyNode(node, keyBlockComments);
-        Node itemValue = composeValueNode(node, blockCommentsCollector.collectEvents().consume());
+    protected void composeMappingChildren(List<NodeTuple> children, MappingNode node) {
+        Node itemKey = composeKeyNode(node);
+        Node itemValue = composeValueNode(node);
         children.add(new NodeTuple(itemKey, itemValue));
     }
 
-    protected Node composeKeyNode(MappingNode node, List<CommentLine> blockComments) {
-        return composeNode(Optional.of(node), blockComments);
+    protected Node composeKeyNode(MappingNode node) {
+        return composeNode(Optional.of(node));
     }
 
-    protected Node composeValueNode(MappingNode node, List<CommentLine> blockComments) {
-        return composeNode(Optional.of(node), blockComments);
+    protected Node composeValueNode(MappingNode node) {
+        return composeNode(Optional.of(node));
     }
 }

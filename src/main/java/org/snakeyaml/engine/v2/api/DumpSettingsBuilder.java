@@ -59,6 +59,7 @@ public final class DumpSettingsBuilder {
     private boolean splitLines;
     private int maxSimpleKeyLength;
     private boolean indentWithIndicator;
+    private boolean dumpComments;
 
     //general
     Map<SettingKey, Object> customProperties = new HashMap();
@@ -85,6 +86,7 @@ public final class DumpSettingsBuilder {
         this.defaultScalarStyle = ScalarStyle.PLAIN;
         this.maxSimpleKeyLength = 128;
         this.indentWithIndicator = false;
+        this.dumpComments = false;
     }
 
     /**
@@ -349,6 +351,16 @@ public final class DumpSettingsBuilder {
     }
 
     /**
+     * Set to true to add comments from Nodes to
+     *
+     * @param dumpComments - true when comments should be dumped (serialised)
+     */
+    public DumpSettingsBuilder setDumpComments(boolean dumpComments) {
+        this.dumpComments = dumpComments;
+        return this;
+    }
+
+    /**
      * Create immutable DumpSettings
      *
      * @return DumpSettings with the provided values
@@ -360,7 +372,7 @@ public final class DumpSettingsBuilder {
                 //emitter
                 canonical, multiLineFlow, useUnicodeEncoding,
                 indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength,
-                customProperties, indentWithIndicator);
+                customProperties, indentWithIndicator, dumpComments);
     }
 }
 

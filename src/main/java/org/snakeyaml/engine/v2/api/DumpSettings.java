@@ -53,6 +53,7 @@ public final class DumpSettings {
     private final boolean splitLines;
     private final int maxSimpleKeyLength;
     private final boolean indentWithIndicator;
+    private final boolean dumpComments;
 
     //general
     private final Map<SettingKey, Object> customProperties;
@@ -64,7 +65,7 @@ public final class DumpSettings {
                  //emitter
                  boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
                  int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines, int maxSimpleKeyLength,
-                 Map<SettingKey, Object> customProperties, boolean indentWithIndicator
+                 Map<SettingKey, Object> customProperties, boolean indentWithIndicator, boolean dumpComments
     ) {
         this.explicitStart = explicitStart;
         this.explicitEnd = explicitEnd;
@@ -87,6 +88,7 @@ public final class DumpSettings {
         this.maxSimpleKeyLength = maxSimpleKeyLength;
         this.customProperties = customProperties;
         this.indentWithIndicator = indentWithIndicator;
+        this.dumpComments = dumpComments;
     }
 
     public static DumpSettingsBuilder builder() {
@@ -175,6 +177,9 @@ public final class DumpSettings {
 
     public boolean getIndentWithIndicator() {
         return indentWithIndicator;
+    }
+    public boolean getDumpComments() {
+        return dumpComments;
     }
 }
 

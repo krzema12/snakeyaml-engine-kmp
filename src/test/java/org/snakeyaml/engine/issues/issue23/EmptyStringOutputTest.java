@@ -51,12 +51,12 @@ public class EmptyStringOutputTest {
 
     @Test
     void outputEmptyStringWithEmitter() {
-        assertEquals("--- \"\"", dump(""), "The output must contain ---");
+        assertEquals("---", dump(""), "The output must contain ---");
     }
 
     @Test
     void outputStringWithEmitter() {
-        assertEquals("\"v1234512345\"", dump("v1234512345"), "The output must NOT contain ---");
+        assertEquals("v1234512345", dump("v1234512345"), "The output must NOT contain ---");
     }
 
     private String dump(String value) {
@@ -65,9 +65,6 @@ public class EmptyStringOutputTest {
         Emitter emitter = new Emitter(settings, writer);
         emitter.emit(new StreamStartEvent());
         emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>()));
-        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true), value, ScalarStyle.DOUBLE_QUOTED));
-        // Needed as emitter won't process above event until it peeks at this one
-        // to be sure it is not a comment
         emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false), value, ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
         return writer.toString();
     }

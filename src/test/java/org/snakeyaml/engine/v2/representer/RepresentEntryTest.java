@@ -36,7 +36,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Tag("fast")
 public class RepresentEntryTest {
 
-    private final DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN).setDefaultFlowStyle(FlowStyle.BLOCK).build();
+    private final DumpSettings settings = DumpSettings.builder()
+            .setDefaultScalarStyle(ScalarStyle.PLAIN)
+            .setDefaultFlowStyle(FlowStyle.BLOCK)
+            .setDumpComments(true)
+            .build();
     private final CommentedEntryRepresenter commentedEntryRepresenter = new CommentedEntryRepresenter(settings);
 
     private Map<String, String> createMap() {

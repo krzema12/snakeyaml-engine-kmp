@@ -347,7 +347,6 @@ public class EmitterWithCommentEnabledTest {
     }
 
     @Test
-    @Disabled("TODO FIXME Comma after comment")
     public void testCommentsInFlowMapping() {
         StreamDataWriter output = new MyWriter();
         Emitter emitter = producePrettyFlowEmitter(output);

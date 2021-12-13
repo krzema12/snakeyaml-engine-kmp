@@ -628,9 +628,9 @@ public final class Emitter implements Emitable {
                 writeInlineComments();
                 state = states.pop();
             } else {
+                writeIndicator(",", false, false, false);
                 event = blockCommentsCollector.collectEventsAndPoll(event);
                 writeBlockComment();
-                writeIndicator(",", false, false, false);
                 if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
                     writeIndent();
                 }

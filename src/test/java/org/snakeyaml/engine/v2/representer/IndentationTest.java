@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test for issue https://bitbucket.org/asomov/snakeyaml-engine/issues/9/indentation-before-sequence
+ * Test for issue https://bitbucket.org/snakeyaml/snakeyaml-engine/issues/9/indentation-before-sequence
  */
 @Tag("fast")
 class IndentationTest {

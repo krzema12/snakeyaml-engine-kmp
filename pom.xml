@@ -32,10 +32,10 @@
     <name>SnakeYAML Engine</name>
     <description>Core YAML 1.2 parser and emitter for Java</description>
     <inceptionYear>2018</inceptionYear>
-    <url>http://www.snakeyaml.org</url>
+    <url>https://bitbucket.org/snakeyaml/snakeyaml-engine</url>
     <issueManagement>
         <system>Bitbucket</system>
-        <url>https://bitbucket.org/asomov/snakeyaml-engine/issues</url>
+        <url>https://bitbucket.org/snakeyaml/snakeyaml-engine/issues</url>
     </issueManagement>
     <mailingLists>
         <mailingList>

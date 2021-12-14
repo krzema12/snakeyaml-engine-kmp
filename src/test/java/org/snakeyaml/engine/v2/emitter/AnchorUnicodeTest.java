@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("fast")
@@ -82,7 +81,8 @@ public class AnchorUnicodeTest {
                 dump.dumpToString(toExport);
                 fail();
             } catch (Exception e) {
-                assertTrue(e.getMessage().startsWith("Invalid char in anchor"));
+                String message = "Invalid character '" + ch + "' in the anchor: anchor" + ch;
+                assertEquals(message, e.getMessage());
             }
         }
     }
@@ -95,5 +95,28 @@ public class AnchorUnicodeTest {
                 return new Anchor("anchor" + invalid);
             }
         }).build();
+    }
+
+    @Test
+    public void testAnchors() {
+        assertEquals("a", new Anchor("a").toString());
+        assertEquals("Anchor may not contain spaces: a ", checkAnchor("a "));
+        assertEquals("Anchor may not contain spaces: a \t", checkAnchor("a \t"));
+        assertEquals("Invalid character '[' in the anchor: a[", checkAnchor("a["));
+        assertEquals("Invalid character ']' in the anchor: a]", checkAnchor("a]"));
+        assertEquals("Invalid character '{' in the anchor: {a", checkAnchor("{a"));
+        assertEquals("Invalid character '}' in the anchor: }a", checkAnchor("}a"));
+        assertEquals("Invalid character ',' in the anchor: a,b", checkAnchor("a,b"));
+        assertEquals("Invalid character '*' in the anchor: a*b", checkAnchor("a*b"));
+        assertEquals("Invalid character '&' in the anchor: a&b", checkAnchor("a&b"));
+    }
+
+    private String checkAnchor(String a) {
+        try {
+            new Anchor(a).toString();
+            throw new IllegalStateException("Invalid must not be accepted: " + a);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

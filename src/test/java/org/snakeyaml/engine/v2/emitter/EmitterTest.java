@@ -15,93 +15,116 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
-//TODO FIXME Finish EmitterTest
-public class EmitterTest  {
-/*
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.Dump;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Tag("fast")
+public class EmitterTest {
+
+    private String dump(DumpSettings settings, Object map) {
+        Dump yaml = new Dump(settings);
+        return yaml.dumpToString(map);
+    }
+
+    @Test
     public void testWriteFolded() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.FOLDED);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.FOLDED)
+                .build();
         String folded = "0123456789 0123456789\n0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla\n");
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testWriteLiteral() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.LITERAL);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.LITERAL)
+                .build();
         String folded = "0123456789 0123456789 0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla\n");
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testWritePlain() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.PLAIN);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.PLAIN)
+                .build();
         String folded = "0123456789 0123456789\n0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla");
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testWritePlainPretty() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.PLAIN);
-        options.setPrettyFlow(true);
-
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.PLAIN)
+                .setMultiLineFlow(true)
+                .build();
         String folded = "0123456789 0123456789\n0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla");
-
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testWriteSingleQuoted() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
+                .build();
         String folded = "0123456789 0123456789\n0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla");
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "'aaa': '0123456789 0123456789\n\n  0123456789 0123456789'\n'bbb': '\n\n  bla-bla'\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testWriteDoubleQuoted() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+                .build();
         String folded = "0123456789 0123456789\n0123456789 0123456789";
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("aaa", folded);
         map.put("bbb", "\nbla-bla");
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
         assertEquals(etalon, output);
     }
 
+    /*
     // Issue #158
+    @Test
     public void testWriteSupplementaryUnicode() throws IOException {
-        DumperOptions options = new DumperOptions();
+        DumpSettings settings = DumpSettings.builder().build();
         String burger = new String(Character.toChars(0x1f354));
         String halfBurger = "\uD83C";
         StringWriter output = new StringWriter();
@@ -115,75 +138,67 @@ public class EmitterTest  {
         assertEquals(expected, output.toString());
     }
 
+     */
+
+    @Test
     public void testSplitLineExpectFirstFlowSequenceItem() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.FLOW);
-        options.setWidth(8);
-        Yaml yaml;
-        String output;
+        DumpSettingsBuilder builder = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+                .setDefaultFlowStyle(FlowStyle.FLOW)
+                .setWidth(8);
         Map<String, Object> map = new TreeMap<String, Object>();
         map.put("12345", Arrays.asList("1111111111"));
 
         // Split lines enabled (default)
-        yaml = new Yaml(options);
-        output = yaml.dump(map);
+        String output = dump(builder.build(), map);
         assertEquals("{\"12345\": [\n    \"1111111111\"]}\n", output);
 
         // Split lines disabled
-        options.setSplitLines(false);
-        assertFalse(options.getSplitLines());
-        yaml = new Yaml(options);
-        output = yaml.dump(map);
+        output = dump(builder.setSplitLines(false).build(), map);
         assertEquals("{\"12345\": [\"1111111111\"]}\n", output);
     }
 
+    @Test
     public void testWriteIndicatorIndent() {
-        DumperOptions options = new DumperOptions();
-        options.setIndent(5);
-        options.setIndicatorIndent(2);
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        DumpSettings settings = DumpSettings.builder()
+                .setDefaultFlowStyle(FlowStyle.BLOCK)
+                .setIndent(5)
+                .setIndicatorIndent(2)
+                .build();
         List<?> topLevel = Arrays.asList(Collections.singletonMap("k1", "v1"), Collections.singletonMap("k2", "v2"));
         Map<String, ?> map = Collections.singletonMap("aaa", topLevel);
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(map);
+        String output = dump(settings, map);
         String etalon = "aaa:\n  -  k1: v1\n  -  k2: v2\n";
         assertEquals(etalon, output);
     }
 
+    @Test
     public void testSplitLineExpectFlowSequenceItem() {
-
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.FLOW);
-        options.setWidth(8);
-        Yaml yaml;
-        String output;
-
+        DumpSettingsBuilder builder = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+                .setDefaultFlowStyle(FlowStyle.FLOW)
+                .setWidth(8);
         // Split lines enabled (default)
-        yaml = new Yaml(options);
-        output = yaml.dump(Arrays.asList("1111111111", "2222222222"));
+        Dump yaml1 = new Dump(builder.build());
+        String output = yaml1.dumpToString(Arrays.asList("1111111111", "2222222222"));
         assertEquals("[\"1111111111\",\n  \"2222222222\"]\n", output);
-        output = yaml.dump(Arrays.asList("1", "2"));
+        output = yaml1.dumpToString(Arrays.asList("1", "2"));
         assertEquals("[\"1\", \"2\"]\n", output);
 
         // Split lines disabled
-        options.setSplitLines(false);
-        assertFalse(options.getSplitLines());
-        yaml = new Yaml(options);
-        output = yaml.dump(Arrays.asList("1111111111", "2222222222"));
+        Dump yaml2 = new Dump(builder.setSplitLines(false).build());
+        output = yaml2.dumpToString(Arrays.asList("1111111111", "2222222222"));
         assertEquals("[\"1111111111\", \"2222222222\"]\n", output);
-        output = yaml.dump(Arrays.asList("1", "2"));
+        output = yaml2.dumpToString(Arrays.asList("1", "2"));
         assertEquals("[\"1\", \"2\"]\n", output);
     }
 
+    @Test
     public void testSplitLineExpectFirstFlowMappingKey() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.FLOW);
-        options.setWidth(16);
-        Yaml yaml;
-        String output;
+        DumpSettingsBuilder builder = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+                .setDefaultFlowStyle(FlowStyle.FLOW)
+                .setWidth(16);
         Map<String, String> nonSplitMap = new TreeMap<String, String>();
         nonSplitMap.put("3", "4");
         Map<String, Map<String, String>> nonSplitContainerMap = new TreeMap<String, Map<String, String>>();
@@ -194,29 +209,25 @@ public class EmitterTest  {
         splitContainerMap.put("1111111111 2222222222", splitMap);
 
         // Split lines enabled (default)
-        yaml = new Yaml(options);
-        output = yaml.dump(splitContainerMap);
+        String output = dump(builder.build(), splitContainerMap);
         assertEquals("{\"1111111111 2222222222\": {\n    \"3333333333\": \"4444444444\"}}\n", output);
-        output = yaml.dump(nonSplitContainerMap);
+        output = dump(builder.build(), nonSplitContainerMap);
         assertEquals("{\"1 2\": {\"3\": \"4\"}}\n", output);
 
         // Split lines disabled
-        options.setSplitLines(false);
-        assertFalse(options.getSplitLines());
-        yaml = new Yaml(options);
-        output = yaml.dump(splitContainerMap);
+        DumpSettings noSplit = builder.setSplitLines(false).build();
+        output = dump(noSplit, splitContainerMap);
         assertEquals("{\"1111111111 2222222222\": {\"3333333333\": \"4444444444\"}}\n", output);
-        output = yaml.dump(nonSplitContainerMap);
+        output = dump(noSplit, nonSplitContainerMap);
         assertEquals("{\"1 2\": {\"3\": \"4\"}}\n", output);
     }
 
+    @Test
     public void testSplitLineExpectFlowMappingKey() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.FLOW);
-        options.setWidth(16);
-        Yaml yaml;
-        String output;
+        DumpSettingsBuilder builder = DumpSettings.builder()
+                .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+                .setDefaultFlowStyle(FlowStyle.FLOW)
+                .setWidth(16);
         Map<String, String> nonSplitMap = new TreeMap<String, String>();
         nonSplitMap.put("1", "2");
         nonSplitMap.put("3", "4");
@@ -225,42 +236,16 @@ public class EmitterTest  {
         splitMap.put("3333333333", "4444444444");
 
         // Split lines enabled (default)
-        yaml = new Yaml(options);
-        output = yaml.dump(splitMap);
+        String output = dump(builder.build(), splitMap);
         assertEquals("{\"1111111111\": \"2222222222\",\n  \"3333333333\": \"4444444444\"}\n", output);
-        output = yaml.dump(nonSplitMap);
+        output = dump(builder.build(), nonSplitMap);
         assertEquals("{\"1\": \"2\", \"3\": \"4\"}\n", output);
 
         // Split lines disabled
-        options.setSplitLines(false);
-        assertFalse(options.getSplitLines());
-        yaml = new Yaml(options);
-        output = yaml.dump(splitMap);
+        DumpSettings noSplit = builder.setSplitLines(false).build();
+        output = dump(noSplit, splitMap);
         assertEquals("{\"1111111111\": \"2222222222\", \"3333333333\": \"4444444444\"}\n", output);
-        output = yaml.dump(nonSplitMap);
+        output = dump(noSplit, nonSplitMap);
         assertEquals("{\"1\": \"2\", \"3\": \"4\"}\n", output);
     }
-
-    public void testAnchors() {
-        assertEquals("a", Emitter.prepareAnchor("a"));
-        assertEquals("Anchor may not contain spaces: a ", checkAnchor("a "));
-        assertEquals("Anchor may not contain spaces: a \t", checkAnchor("a \t"));
-        assertEquals("Invalid character '[' in the anchor: a[", checkAnchor("a["));
-        assertEquals("Invalid character ']' in the anchor: a]", checkAnchor("a]"));
-        assertEquals("Invalid character '{' in the anchor: {a", checkAnchor("{a"));
-        assertEquals("Invalid character '}' in the anchor: }a", checkAnchor("}a"));
-        assertEquals("Invalid character ',' in the anchor: a,b", checkAnchor("a,b"));
-        assertEquals("Invalid character '*' in the anchor: a*b", checkAnchor("a*b"));
-        assertEquals("Invalid character '&' in the anchor: a&b", checkAnchor("a&b"));
-    }
-
-    private String checkAnchor(String anchor) {
-        try {
-            Emitter.prepareAnchor(anchor);
-            throw new IllegalStateException("Invalid must not be accepted");
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
-    */
 }

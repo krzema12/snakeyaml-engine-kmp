@@ -1132,6 +1132,7 @@ public final class ScannerImpl implements Scanner {
         int inlineStartColumn = -1;
         while (!found) {
             Optional<Mark> startMark = reader.getMark();
+            int columnBeforeComment = reader.getColumn();
             boolean commentSeen = false;
             int ff = 0;
             // Peek ahead until we find the first non-space character, then
@@ -1150,8 +1151,7 @@ public final class ScannerImpl implements Scanner {
             if (reader.peek() == '#') {
                 commentSeen = true;
                 CommentType type;
-                if (startMark.isPresent() && startMark.get().getColumn() != 0 //TODO FIXME mark is used in busyness logic
-                        && !(lastToken != null && lastToken.getTokenId() == Token.ID.BlockEntry)) {
+                if (columnBeforeComment != 0 && !(lastToken != null && lastToken.getTokenId() == Token.ID.BlockEntry)) {
                     type = CommentType.IN_LINE;
                     inlineStartColumn = reader.getColumn();
                 } else if (inlineStartColumn == reader.getColumn()) {
@@ -1170,7 +1170,7 @@ public final class ScannerImpl implements Scanner {
             String breaks = scanLineBreak();
             if (breaks.length() != 0) {// found a line-break
                 if (settings.getParseComments() && !commentSeen) {
-                    if (startMark.isPresent() && startMark.get().getColumn() == 0) {//TODO mark is used in busyness logic
+                    if (columnBeforeComment == 0) {
                         addToken(new CommentToken(CommentType.BLANK_LINE, breaks, startMark, reader.getMark()));
                     }
                 }
@@ -1375,7 +1375,6 @@ public final class ScannerImpl implements Scanner {
         }
         CommentToken commentToken = null;
         if (reader.peek() == '#') {
-            //TODO FIXME Mark is used in business logic
             CommentToken comment = scanComment(CommentType.IN_LINE);
             if(settings.getParseComments()) {
                 commentToken = comment;

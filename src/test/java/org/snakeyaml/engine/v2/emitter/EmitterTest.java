@@ -20,9 +20,16 @@ import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
+import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.StreamStartEvent;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -120,25 +127,22 @@ public class EmitterTest {
         assertEquals(etalon, output);
     }
 
-    /*
     // Issue #158
     @Test
     public void testWriteSupplementaryUnicode() throws IOException {
         DumpSettings settings = DumpSettings.builder().build();
         String burger = new String(Character.toChars(0x1f354));
         String halfBurger = "\uD83C";
-        StringWriter output = new StringWriter();
-        Emitter emitter = new Emitter(output, options);
+        StreamDataWriter output = new MyDumperWriter();
+        Emitter emitter = new Emitter(settings, output);
 
-        emitter.emit(new StreamStartEvent(null, null));
-        emitter.emit(new DocumentStartEvent(null, null, false, null, null));
-        emitter.emit(new ScalarEvent(null, null, new ImplicitTuple(true, false), burger
-                + halfBurger, null, null, DumperOptions.ScalarStyle.DOUBLE_QUOTED));
+        emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
+        emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(), Optional.empty()));
+        emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false), burger
+                + halfBurger, ScalarStyle.DOUBLE_QUOTED, Optional.empty(), Optional.empty()));
         String expected = "! \"\\U0001f354\\ud83c\"";
         assertEquals(expected, output.toString());
     }
-
-     */
 
     @Test
     public void testSplitLineExpectFirstFlowSequenceItem() {
@@ -247,5 +251,8 @@ public class EmitterTest {
         assertEquals("{\"1111111111\": \"2222222222\", \"3333333333\": \"4444444444\"}\n", output);
         output = dump(noSplit, nonSplitMap);
         assertEquals("{\"1\": \"2\", \"3\": \"4\"}\n", output);
+    }
+
+    public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
     }
 }

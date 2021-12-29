@@ -1,10 +1,10 @@
 {
-  "mapping": {
-    "sea": "green",
-    "sky": "blue"
-  },
   "sequence": [
     "one",
     "two"
-  ]
+  ],
+  "mapping": {
+    "sky": "blue",
+    "sea": "green"
+  }
 }

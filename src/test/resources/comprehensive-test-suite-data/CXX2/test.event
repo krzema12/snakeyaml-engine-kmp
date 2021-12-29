@@ -1,8 +1,2 @@
 +STR
 +DOC ---
-+MAP
-=VAL &anchor :a
-=VAL :b
--MAP
--DOC
--STR

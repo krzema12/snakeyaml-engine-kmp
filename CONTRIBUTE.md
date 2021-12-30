@@ -50,4 +50,4 @@ make clean data && mv data orig && mkdir data; find orig -name === | sed 's/===/
 
 Run the tests and fix the errors:
 
-    ./mvnw clean install
+    ./docker-run-jdk8.sh

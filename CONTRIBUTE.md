@@ -44,6 +44,7 @@ from [tags](https://github.com/yaml/yaml-test-suite/tags). It must begin with 'd
 ```shell
 make clean data && mv data orig && mkdir data; find orig -name === | sed 's/===//; s/orig\///' | while read d; do (set -x; cp -r orig/$d data/${d/\/0/-0}); done; rm -fr orig
 ```
+
 - copy *data* folder to `src/test/resources/comprehensive-test-suite-data`
 
 ### Check the import

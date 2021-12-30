@@ -16,14 +16,8 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import org.snakeyaml.engine.v2.events.AliasEvent;
-import org.snakeyaml.engine.v2.events.CollectionStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.NodeEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.List;
@@ -66,7 +60,9 @@ public class EventRepresentation {
         */
         if (event instanceof MappingStartEvent) {
             CollectionStartEvent e = (CollectionStartEvent) event;
-            if (e.getTag().isPresent() && !Tag.MAP.getValue().equals(e.getTag().get())) {
+            boolean tagIsPresent = e.getTag().isPresent();
+            String mapTag = Tag.MAP.getValue();
+            if (tagIsPresent && !mapTag.equals(e.getTag().get())) {
                 String last = split.get(split.size() - 1);
                 if (!last.equals("<" + e.getTag().get() + ">")) return false;
             }
@@ -81,10 +77,16 @@ public class EventRepresentation {
         if (event instanceof NodeEvent) {
             NodeEvent e = (NodeEvent) event;
             if (e.getAnchor().isPresent()) {
+                int indexOfAlias = 1;
+                if (event.getEventId().equals(Event.ID.SequenceStart) || event.getEventId().equals(Event.ID.MappingStart)) {
+                    CollectionStartEvent start = (CollectionStartEvent) event;
+                    if (start.getFlowStyle() == FlowStyle.FLOW)
+                        indexOfAlias = 2;
+                }
                 if (event instanceof AliasEvent) {
-                    if (!split.get(1).startsWith("*")) return false;
+                    if (!split.get(indexOfAlias).startsWith("*")) return false;
                 } else {
-                    if (!split.get(1).startsWith("&")) return false;
+                    if (!split.get(indexOfAlias).startsWith("&")) return false;
                 }
             }
         }

@@ -31,9 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ComposeSuiteTest {
@@ -92,8 +90,9 @@ class ComposeSuiteTest {
             for (int i = 0; i < events.size(); i++) {
                 Event event = events.get(i);
                 EventRepresentation representation = new EventRepresentation(event);
-                String etalon = data.getEvents().get(i);
-                assertTrue(representation.isSameAs(etalon),
+                String expectation = data.getEvents().get(i);
+                boolean theSame = representation.isSameAs(expectation);
+                assertTrue(theSame,
                         data.getName() + " -> " + data.getLabel() + "\n" +
                                 data.getInput() + "\n" + data.getEvents().get(i) + "\n" + events.get(i) + "\n");
             }

@@ -93,14 +93,16 @@ class EventRepresentationTest {
     @DisplayName("Represent SequenceStartEvent")
     void testSequenceStartEvent() {
         valid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
+                "+SEQ [] &a <ttt>");
+        valid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.BLOCK),
                 "+SEQ &a <ttt>");
-        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
+        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.BLOCK),
                 "+SEQ *a <ttt>");
-        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
+        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.BLOCK),
                 "+SEQ &a <t>");
-        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
+        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.BLOCK),
                 "+SEQ <ttt>");
-        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.FLOW),
+        invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false, FlowStyle.BLOCK),
                 "+SEQ *a");
     }
 

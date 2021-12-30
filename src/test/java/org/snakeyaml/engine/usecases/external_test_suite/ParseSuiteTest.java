@@ -25,10 +25,7 @@ import org.snakeyaml.engine.v2.events.Event;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
@@ -63,7 +60,7 @@ class ParseSuiteTest {
                         data.getLabel() + "\n" + result.getEvents());
             } else {
                 if (result.getError().isPresent()) {
-                    fail("Expected NO error, but got: " + result.getError().get());
+                    fail("Testcase: " + data.getName() + "; label: " + data.getLabel() + "\nExpected NO error, but got: " + result.getError().get());
                 } else {
                     List<ParsePair> pairs = Streams.zip(data.getEvents().stream(), result.getEvents().stream(), ParsePair::new)
                             .collect(Collectors.toList());

@@ -7,6 +7,9 @@
     <body>
         <release version="2.4" date="in GIT" description="Maintenance">
             <action dev="asomov" type="update">
+                Import latest test suite data (from https://github.com/yaml/yaml-test-suite)
+            </action>
+            <action dev="asomov" type="update">
                 Fix comments (Wolf2323)
             </action>
             <action dev="asomov" type="add">

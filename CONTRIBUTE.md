@@ -8,7 +8,7 @@ General step are defined [in the spec](https://yaml.org/spec/1.2.2/#31-processes
 
 ![](https://yaml.org/spec/1.2.2/img/overview2.svg)
 
-Loading has the following explicit steps
+Loading has the following explicit steps (please note that Events form a Stream, not a Tree)
 
 ![](doc/YAML-streams.drawio.png)
 

@@ -24,10 +24,9 @@ import java.util.Iterator;
 /**
  * This interface represents an input stream of {@link Token}s.
  * <p>
- * The scanner and the scanner form together the 'Parse' step in the loading process.
+ * The scanner and the parser form together the 'Parse' step in the loading process.
  * </p>
- *
- * @see org.snakeyaml.engine.v2.tokens.Token
+ * @see <a href="https://yaml.org/spec/1.2.2/#31-processes">3.1. Processes</a>
  */
 public interface Scanner extends Iterator<Token> {
 
@@ -38,7 +37,7 @@ public interface Scanner extends Iterator<Token> {
      * @return <code>true</code> if the next token can be assigned to a variable
      * of at least one of the given types. Returns <code>false</code> if
      * no more tokens are available.
-     * @throws ScannerException Thrown in case of malformed input.
+     * @throws ScannerException thrown in case of malformed input.
      */
     boolean checkToken(Token.ID... choices);
 

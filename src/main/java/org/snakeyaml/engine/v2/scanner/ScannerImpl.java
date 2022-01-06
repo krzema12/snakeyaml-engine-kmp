@@ -154,7 +154,7 @@ public final class ScannerImpl implements Scanner {
 
     /*
      * Keep track of possible simple keys. This is a dictionary. The key is
-     * `flow_level`; there can be no more that one possible simple key for each
+     * `flow_level`; there can be no more than one possible simple key for each
      * level. The value is a SimpleKey record: (token_number, required, index,
      * line, column, mark) A simple key may start with ALIAS, ANCHOR, TAG,
      * SCALAR(flow), '[', or '{' tokens.
@@ -528,7 +528,7 @@ public final class ScannerImpl implements Scanner {
      */
     private void unwindIndent(int col) {
         // In the flow context, indentation is ignored. We make the scanner less
-        // restrictive then specification requires.
+        // restrictive than specification requires.
         if (this.flowLevel != 0) {
             return;
         }

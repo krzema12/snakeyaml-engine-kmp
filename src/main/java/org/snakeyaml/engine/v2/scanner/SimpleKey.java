@@ -24,8 +24,6 @@ import java.util.Optional;
  * <p>
  * Helper class for {@link ScannerImpl}.
  * </p>
- *
- * @see ScannerImpl
  */
 final class SimpleKey {
     private final int tokenNumber;

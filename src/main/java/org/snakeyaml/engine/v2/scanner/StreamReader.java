@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Reader: checks if code points are in allowed range. Returns '\0' when end of
- * data has been reached.
+ * Read the provided stream of code points into String and implement look-ahead operations.
+ * Checks if code points are in the allowed range.
  */
 public final class StreamReader {
     private final String name;
@@ -37,13 +37,11 @@ public final class StreamReader {
     /**
      * Read data (as a moving window for input stream)
      */
-    private int[] dataWindow;
-
+    private int[] codePointsWindow;
     /**
      * Real length of the data in dataWindow
      */
     private int dataLength;
-
     /**
      * The variable points to the current position in the data array
      */
@@ -51,11 +49,11 @@ public final class StreamReader {
     private boolean eof;
     /**
      * index is only required to implement 1024 key length restriction
-     * It must count code points, but it counts characters (to be fixed)
+     * TODO It must count code points, but it counts characters (to be fixed)
      */
     private int index = 0; // in code points
     private int line = 0;
-    private int column = 0; //in code points
+    private int column = 0; // in code points
     private final int bufferSize;
     private final char[] buffer; // temp buffer for one read operation (to avoid creating the array in stack)
     private final boolean useMarks;
@@ -69,7 +67,7 @@ public final class StreamReader {
 
     public StreamReader(LoadSettings loadSettings, Reader reader) {
         this.name = loadSettings.getLabel();
-        this.dataWindow = new int[0];
+        this.codePointsWindow = new int[0];
         this.dataLength = 0;
         this.stream = reader;
         this.eof = false;
@@ -89,7 +87,12 @@ public final class StreamReader {
         this(loadSettings, new StringReader(stream));
     }
 
-    public static final boolean isPrintable(final String data) {
+    /**
+     * Check if the all the data is human-readable (used in Representer)
+     * @param data - content to be checked for human-readability
+     * @return true only when everything is human-readable
+     */
+    public static boolean isPrintable(final String data) {
         final int length = data.length();
         int offset = 0;
         while (offset < length) {
@@ -102,19 +105,32 @@ public final class StreamReader {
         return true;
     }
 
+    /**
+     * Check if the code point is human-readable
+     * @param c - code point to be checked for human-readability
+     * @return true only when the code point is human-readable
+     */
     public static boolean isPrintable(final int c) {
         return (c >= 0x20 && c <= 0x7E) || c == 0x9 || c == 0xA || c == 0xD || c == 0x85
                 || (c >= 0xA0 && c <= 0xD7FF) || (c >= 0xE000 && c <= 0xFFFD)
                 || (c >= 0x10000 && c <= 0x10FFFF);
     }
 
+    /**
+     * Generate {@link Mark} if it is configured
+     * @return {@link Mark} of the current position or empty {@link Optional} otherwise
+     */
     public Optional<Mark> getMark() {
         if (useMarks)
-            return Optional.of(new Mark(name, this.index, this.line, this.column, this.dataWindow, this.pointer));
+            return Optional.of(new Mark(name, this.index, this.line, this.column, this.codePointsWindow, this.pointer));
         else
             return Optional.empty();
     }
 
+    /**
+     * read the next character and move the pointer.
+     * if the last character is high surrogate one more character will be read
+     */
     public void forward() {
         forward(1);
     }
@@ -127,11 +143,11 @@ public final class StreamReader {
      */
     public void forward(int length) {
         for (int i = 0; i < length && ensureEnoughData(); i++) {
-            int c = dataWindow[pointer++];
+            int c = codePointsWindow[pointer++];
             this.index++;
             if (CharConstants.LINEBR.has(c)
                     // do not count CR if it is followed by LF
-                    || (c == '\r' && (ensureEnoughData() && dataWindow[pointer] != '\n'))) {
+                    || (c == '\r' && (ensureEnoughData() && codePointsWindow[pointer] != '\n'))) {
                 this.line++;
                 this.column = 0;
             } else if (c != 0xFEFF) {
@@ -140,8 +156,13 @@ public final class StreamReader {
         }
     }
 
+    /**
+     * Peek the next code point (look without moving the pointer)
+     *
+     * @return the next code point
+     */
     public int peek() {
-        return (ensureEnoughData()) ? dataWindow[pointer] : '\0';
+        return (ensureEnoughData()) ? codePointsWindow[pointer] : '\0';
     }
 
     /**
@@ -151,22 +172,22 @@ public final class StreamReader {
      * @return the next index-th code point
      */
     public int peek(int index) {
-        return (ensureEnoughData(index)) ? dataWindow[pointer + index] : '\0';
+        return (ensureEnoughData(index)) ? codePointsWindow[pointer + index] : '\0';
     }
 
     /**
-     * peek the next length code points
+     * Create String from code points
      *
-     * @param length amount of the characters to peek
-     * @return the next length code points
+     * @param length amount of the characters to convert
+     * @return the String representation
      */
     public String prefix(int length) {
         if (length == 0) {
             return "";
         } else if (ensureEnoughData(length)) {
-            return new String(this.dataWindow, pointer, length);
+            return new String(this.codePointsWindow, pointer, length);
         } else {
-            return new String(this.dataWindow, pointer, Math.min(length, dataLength - pointer));
+            return new String(this.codePointsWindow, pointer, Math.min(length, dataLength - pointer));
         }
     }
 
@@ -201,7 +222,7 @@ public final class StreamReader {
             int read = stream.read(buffer, 0, bufferSize - 1);
             if (read > 0) {
                 int cpIndex = (dataLength - pointer);
-                dataWindow = Arrays.copyOfRange(dataWindow, pointer, dataLength + read);
+                codePointsWindow = Arrays.copyOfRange(codePointsWindow, pointer, dataLength + read);
 
                 if (Character.isHighSurrogate(buffer[read - 1])) {
                     if (stream.read(buffer, read, 1) == -1) {
@@ -211,15 +232,15 @@ public final class StreamReader {
                     }
                 }
 
-                int nonPrintable = ' ';
+                Optional<Integer> nonPrintable = Optional.empty();
                 int i = 0;
                 while (i < read) {
                     int codePoint = Character.codePointAt(buffer, i);
-                    dataWindow[cpIndex] = codePoint;
+                    codePointsWindow[cpIndex] = codePoint;
                     if (isPrintable(codePoint)) {
                         i += Character.charCount(codePoint);
                     } else {
-                        nonPrintable = codePoint;
+                        nonPrintable = Optional.of(codePoint);
                         i = read;
                     }
                     cpIndex++;
@@ -227,8 +248,8 @@ public final class StreamReader {
 
                 dataLength = cpIndex;
                 pointer = 0;
-                if (nonPrintable != ' ') {
-                    throw new ReaderException(name, cpIndex - 1, nonPrintable, "special characters are not allowed");
+                if (nonPrintable.isPresent()) {
+                    throw new ReaderException(name, cpIndex - 1, nonPrintable.get(), "special characters are not allowed");
                 }
             } else {
                 eof = true;
@@ -238,7 +259,9 @@ public final class StreamReader {
         }
     }
 
-
+    /**
+     * @return current position as number (in characters) from the beginning of the current line
+     */
     public int getColumn() {
         return column;
     }
@@ -250,6 +273,9 @@ public final class StreamReader {
         return index;
     }
 
+    /**
+     * @return current line from the beginning of the stream
+     */
     public int getLine() {
         return line;
     }

@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
+import java.util.ArrayDeque;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.comments.CommentEventsCollector;
@@ -52,7 +53,6 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
 /**
@@ -169,7 +169,7 @@ public final class Emitter implements Emitable {
         this.states = new ArrayStack(100);
         this.state = new ExpectStreamStart();
         // Current event and the event queue.
-        this.events = new ArrayBlockingQueue(100);
+        this.events = new ArrayDeque(100);
         this.event = null;
         // The current indentation level and the stack of previous indents.
         this.indents = new ArrayStack(10);

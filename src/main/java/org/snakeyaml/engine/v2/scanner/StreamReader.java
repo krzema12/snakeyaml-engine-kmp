@@ -124,13 +124,13 @@ public final class StreamReader {
    * @return {@link Mark} of the current position or empty {@link Optional} otherwise
    */
   public Optional<Mark> getMark() {
-      if (useMarks) {
-          return Optional.of(
-              new Mark(name, this.index, this.line, this.column, this.codePointsWindow,
-                  this.pointer));
-      } else {
-          return Optional.empty();
-      }
+    if (useMarks) {
+      return Optional.of(
+          new Mark(name, this.index, this.line, this.column, this.codePointsWindow,
+              this.pointer));
+    } else {
+      return Optional.empty();
+    }
   }
 
   /**

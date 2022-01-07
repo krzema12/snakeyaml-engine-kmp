@@ -254,72 +254,72 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Byte> asByteList(Object in) {
       byte[] array = (byte[]) in;
       List<Byte> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Short> asShortList(Object in) {
       short[] array = (short[]) in;
       List<Short> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Integer> asIntList(Object in) {
       int[] array = (int[]) in;
       List<Integer> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Long> asLongList(Object in) {
       long[] array = (long[]) in;
       List<Long> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Float> asFloatList(Object in) {
       float[] array = (float[]) in;
       List<Float> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Double> asDoubleList(Object in) {
       double[] array = (double[]) in;
       List<Double> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Character> asCharList(Object in) {
       char[] array = (char[]) in;
       List<Character> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
 
     private List<Boolean> asBooleanList(Object in) {
       boolean[] array = (boolean[]) in;
       List<Boolean> list = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; ++i) {
-            list.add(array[i]);
-        }
+      for (int i = 0; i < array.length; ++i) {
+        list.add(array[i]);
+      }
       return list;
     }
   }

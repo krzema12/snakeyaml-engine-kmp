@@ -400,9 +400,9 @@ public final class ScannerImpl implements Scanner {
     if (ESCAPES.containsKey(Character.valueOf((char) c))) {
       chRepresentation = "\\" + ESCAPES.get(Character.valueOf((char) c));
     }
-      if (c == '\t') {
-          chRepresentation += "(TAB)";
-      }
+    if (c == '\t') {
+      chRepresentation += "(TAB)";
+    }
     String text = String
         .format("found character '%s' that cannot start any token. (Do not use %s for indentation)",
             chRepresentation, chRepresentation);

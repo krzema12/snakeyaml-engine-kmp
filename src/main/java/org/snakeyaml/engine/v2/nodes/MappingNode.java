@@ -30,7 +30,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
 public class MappingNode extends CollectionNode<NodeTuple> {
 
   private List<NodeTuple> value;
-  private boolean merged = false;
 
   public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle,
       Optional<Mark> startMark, Optional<Mark> endMark) {
@@ -74,7 +73,7 @@ public class MappingNode extends CollectionNode<NodeTuple> {
         // to avoid overflow in case of recursive structures
         buf.append(System.identityHashCode(node.getValueNode()));
       } else {
-        buf.append(node.toString());
+        buf.append(node);
       }
       buf.append(" }");
     }

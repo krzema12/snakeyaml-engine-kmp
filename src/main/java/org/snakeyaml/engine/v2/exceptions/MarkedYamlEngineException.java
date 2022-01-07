@@ -58,7 +58,7 @@ public class MarkedYamlEngineException extends YamlEngineException {
         || contextMark.get().getName().equals(problemMark.get().getName())
         || (contextMark.get().getLine() != problemMark.get().getLine()) || (contextMark.get()
         .getColumn() != problemMark.get().getColumn()))) {
-      lines.append(contextMark.get().toString());
+      lines.append(contextMark.get());
       lines.append("\n");
     }
     if (problem != null) {
@@ -66,7 +66,7 @@ public class MarkedYamlEngineException extends YamlEngineException {
       lines.append("\n");
     }
     if (problemMark.isPresent()) {
-      lines.append(problemMark.get().toString());
+      lines.append(problemMark.get());
       lines.append("\n");
     }
     return lines.toString();

@@ -132,9 +132,9 @@ public class StandardConstructor extends BaseConstructor {
 
     @Override
     public Object construct(Node node) {
-        if (node != null) {
-            constructScalar((ScalarNode) node);
-        }
+      if (node != null) {
+        constructScalar((ScalarNode) node);
+      }
       return null;
     }
   }
@@ -344,11 +344,11 @@ public class StandardConstructor extends BaseConstructor {
         String separator = matcher.group("separator");
         String env = getEnv(name);
         Optional<String> overruled = config.getValueFor(name, separator, nonNullValue, env);
-          if (overruled.isPresent()) {
-              return overruled.get();
-          } else {
-              return apply(name, separator, nonNullValue, env);
-          }
+        if (overruled.isPresent()) {
+          return overruled.get();
+        } else {
+          return apply(name, separator, nonNullValue, env);
+        }
       } else {
         return val;
       }
@@ -364,36 +364,36 @@ public class StandardConstructor extends BaseConstructor {
      * @return the value to apply in the template
      */
     public String apply(String name, String separator, String value, String environment) {
-        if (environment != null && !environment.isEmpty()) {
-            return environment;
-        }
+      if (environment != null && !environment.isEmpty()) {
+        return environment;
+      }
       // variable is either unset or empty
       if (separator != null) {
         //there is a default value or error
         if (separator.equals("?")) {
-            if (environment == null) {
-                throw new MissingEnvironmentVariableException(
-                    "Missing mandatory variable " + name + ": " + value);
-            }
+          if (environment == null) {
+            throw new MissingEnvironmentVariableException(
+                "Missing mandatory variable " + name + ": " + value);
+          }
         }
         if (separator.equals(":?")) {
-            if (environment == null) {
-                throw new MissingEnvironmentVariableException(
-                    "Missing mandatory variable " + name + ": " + value);
-            }
-            if (environment.isEmpty()) {
-                throw new MissingEnvironmentVariableException(
-                    "Empty mandatory variable " + name + ": " + value);
-            }
+          if (environment == null) {
+            throw new MissingEnvironmentVariableException(
+                "Missing mandatory variable " + name + ": " + value);
+          }
+          if (environment.isEmpty()) {
+            throw new MissingEnvironmentVariableException(
+                "Empty mandatory variable " + name + ": " + value);
+          }
         }
         if (separator.startsWith(":")) {
-            if (environment == null || environment.isEmpty()) {
-                return value;
-            }
+          if (environment == null || environment.isEmpty()) {
+            return value;
+          }
         } else {
-            if (environment == null) {
-                return value;
-            }
+          if (environment == null) {
+            return value;
+          }
         }
       }
       return "";

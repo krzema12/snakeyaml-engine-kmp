@@ -68,9 +68,9 @@ public final class LoadSettingsBuilder {
     this.defaultSet = LinkedHashSet::new; // same as new LinkedHashSet(initSize)
     this.defaultMap = LinkedHashMap::new; // same as new LinkedHashMap(initSize)
     this.versionFunction = version -> {
-        if (version.getMajor() != 1) {
-            throw new YamlVersionException(version);
-        }
+      if (version.getMajor() != 1) {
+        throw new YamlVersionException(version);
+      }
       return version;
     };
     this.bufferSize = 1024;

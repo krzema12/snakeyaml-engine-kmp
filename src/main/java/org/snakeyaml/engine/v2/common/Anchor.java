@@ -44,9 +44,9 @@ public class Anchor {
 
   public Anchor(String value) {
     Objects.requireNonNull(value);
-      if (value.isEmpty()) {
-          throw new IllegalArgumentException("Empty anchor.");
-      }
+    if (value.isEmpty()) {
+      throw new IllegalArgumentException("Empty anchor.");
+    }
     for (int i = 0; i < value.length(); i++) {
       char ch = value.charAt(i);
       if (INVALID_ANCHOR.contains(ch)) {
@@ -71,12 +71,12 @@ public class Anchor {
 
   @Override
   public boolean equals(Object o) {
-      if (this == o) {
-          return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-          return false;
-      }
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Anchor anchor1 = (Anchor) o;
     return Objects.equals(value, anchor1.value);
   }

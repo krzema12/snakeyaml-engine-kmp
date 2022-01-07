@@ -140,7 +140,7 @@ public final class ScalarEvent extends NodeEvent {
     if (ESCAPES_TO_PRINT.containsKey(ch)) {
       Integer i = ESCAPES_TO_PRINT.get(ch);
       Character c = Character.valueOf((char) i.intValue());
-      return "\\" + c.toString();
+      return "\\" + c;
     } else {
       return ch.toString();
     }

@@ -41,8 +41,8 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Generic unicode textreader, which will use BOM mark to identify the encoding
- * to be used. If BOM is not found then use a given default or system encoding.
+ * Generic unicode textreader, which will use BOM mark to identify the encoding to be used. If BOM
+ * is not found then use a given default or system encoding.
  */
 public class YamlUnicodeReader extends Reader {
 
@@ -66,8 +66,8 @@ public class YamlUnicodeReader extends Reader {
   }
 
   /**
-   * Get stream encoding or NULL if stream is uninitialized. Call init() or
-   * read() method to initialize it.
+   * Get stream encoding or NULL if stream is uninitialized. Call init() or read() method to
+   * initialize it.
    *
    * @return the name of the character encoding being used by this stream.
    */
@@ -76,15 +76,15 @@ public class YamlUnicodeReader extends Reader {
   }
 
   /**
-   * Read-ahead four bytes and check for BOM marks. Extra bytes are unread
-   * back to the stream, only BOM bytes are skipped.
+   * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only
+   * BOM bytes are skipped.
    *
    * @throws IOException if InputStream cannot be created
    */
   protected void init() throws IOException {
-      if (internalIn2 != null) {
-          return;
-      }
+    if (internalIn2 != null) {
+      return;
+    }
 
     byte[] bom = new byte[BOM_SIZE];
     int n;
@@ -115,9 +115,9 @@ public class YamlUnicodeReader extends Reader {
       unread = n;
     }
 
-      if (unread > 0) {
-          internalIn.unread(bom, (n - unread), unread);
-      }
+    if (unread > 0) {
+      internalIn.unread(bom, (n - unread), unread);
+    }
 
     // Use given encoding
     CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter(

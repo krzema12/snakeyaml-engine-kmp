@@ -15,30 +15,28 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+import java.util.Optional;
 import org.snakeyaml.engine.v2.scanner.Scanner;
 
-import java.util.Optional;
-
 /**
- * Exception thrown by the {@link Scanner} implementations in case of malformed
- * input.
+ * Exception thrown by the {@link Scanner} implementations in case of malformed input.
  */
 public class ScannerException extends MarkedYamlEngineException { //NOSONAR
 
-    /**
-     * Constructs an instance.
-     *
-     * @param context     Part of the input document in which vicinity the problem
-     *                    occurred.
-     * @param contextMark Position of the <code>context</code> within the document.
-     * @param problem     Part of the input document that caused the problem.
-     * @param problemMark Position of the <code>problem</code> within the document.
-     */
-    public ScannerException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
-        super(context, contextMark, problem, problemMark, null);
-    }
+  /**
+   * Constructs an instance.
+   *
+   * @param context     Part of the input document in which vicinity the problem occurred.
+   * @param contextMark Position of the <code>context</code> within the document.
+   * @param problem     Part of the input document that caused the problem.
+   * @param problemMark Position of the <code>problem</code> within the document.
+   */
+  public ScannerException(String context, Optional<Mark> contextMark, String problem,
+      Optional<Mark> problemMark) {
+    super(context, contextMark, problem, problemMark, null);
+  }
 
-    public ScannerException(String problem, Optional<Mark> problemMark) {
-        super(null, Optional.empty(), problem, problemMark, null);
-    }
+  public ScannerException(String problem, Optional<Mark> problemMark) {
+    super(null, Optional.empty(), problem, problemMark, null);
+  }
 }

@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 public class CanonicalException extends YamlEngineException {
 
-    public CanonicalException(String message) {
-        super(message);
-    }
+  public CanonicalException(String message) {
+    super(message);
+  }
 }

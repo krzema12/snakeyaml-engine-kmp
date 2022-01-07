@@ -15,9 +15,8 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Marks the end of a document.
@@ -26,32 +25,33 @@ import java.util.Optional;
  * </p>
  */
 public final class DocumentEndEvent extends Event {
-    private final boolean explicit;
 
-    public DocumentEndEvent(boolean explicit, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-        this.explicit = explicit;
-    }
+  private final boolean explicit;
 
-    public DocumentEndEvent(boolean explicit) {
-        this(explicit, Optional.empty(), Optional.empty());
-    }
+  public DocumentEndEvent(boolean explicit, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+    this.explicit = explicit;
+  }
 
-    public boolean isExplicit() {
-        return explicit;
-    }
+  public DocumentEndEvent(boolean explicit) {
+    this(explicit, Optional.empty(), Optional.empty());
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.DocumentEnd;
-    }
+  public boolean isExplicit() {
+    return explicit;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("-DOC");
-        if (isExplicit()) {
-            builder.append(" ...");
-        }
-        return builder.toString();
+  @Override
+  public ID getEventId() {
+    return ID.DocumentEnd;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("-DOC");
+    if (isExplicit()) {
+      builder.append(" ...");
     }
+    return builder.toString();
+  }
 }

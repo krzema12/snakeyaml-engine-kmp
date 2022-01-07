@@ -15,36 +15,36 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+
 @org.junit.jupiter.api.Tag("fast")
 class NodeTest {
 
-    @Test
-    void notEqualToTheSameNode() {
-        Node node1 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
-        Node node2 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
-        assertFalse(node1.equals(node2), "Nodes with the same contant are not equal");
-        assertFalse(node2.equals(node1), "Nodes with the same contant are not equal");
-    }
+  @Test
+  void notEqualToTheSameNode() {
+    Node node1 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
+    Node node2 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
+    assertFalse(node1.equals(node2), "Nodes with the same contant are not equal");
+    assertFalse(node2.equals(node1), "Nodes with the same contant are not equal");
+  }
 
-    @Test
-    void equalsToItself() {
-        Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
-        assertTrue(node.equals(node));
-    }
+  @Test
+  void equalsToItself() {
+    Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
+    assertTrue(node.equals(node));
+  }
 
-    @Test
-    void properties() {
-        Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
-        assertNull(node.getProperty("p"));
-        assertNull(node.setProperty("p", "value"));
-        assertEquals("value", node.getProperty("p"));
-    }
+  @Test
+  void properties() {
+    Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
+    assertNull(node.getProperty("p"));
+    assertNull(node.setProperty("p", "value"));
+    assertEquals("value", node.getProperty("p"));
+  }
 }

@@ -18,31 +18,32 @@ package org.snakeyaml.engine.v2.common;
 import java.io.Serializable;
 
 public class SpecVersion implements Serializable {
-    private final int major;
-    private final int minor;
 
-    public SpecVersion(int major, int minor) {
-        this.major = major;
-        this.minor = minor;
-    }
+  private final int major;
+  private final int minor;
 
-    public int getMajor() {
-        return major;
-    }
+  public SpecVersion(int major, int minor) {
+    this.major = major;
+    this.minor = minor;
+  }
 
-    public int getMinor() {
-        return minor;
-    }
+  public int getMajor() {
+    return major;
+  }
 
-    public String getRepresentation() {
-        return major + "." + minor;
-    }
+  public int getMinor() {
+    return minor;
+  }
 
-    @Override
-    public String toString() {
-        return "Version{" +
-                "major=" + major +
-                ", minor=" + minor +
-                '}';
-    }
+  public String getRepresentation() {
+    return major + "." + minor;
+  }
+
+  @Override
+  public String toString() {
+    return "Version{" +
+        "major=" + major +
+        ", minor=" + minor +
+        '}';
+  }
 }

@@ -15,47 +15,47 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import com.google.common.io.CharSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Node;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 @Tag("fast")
 class ComposeTest {
 
-    @Test
-    void composeEmptyReader() throws IOException {
-        Compose compose = new Compose(LoadSettings.builder().build());
-        Optional<Node> node = compose.composeReader(CharSource.wrap("").openStream());
-        assertEquals(Optional.empty(), node);
-    }
+  @Test
+  void composeEmptyReader() throws IOException {
+    Compose compose = new Compose(LoadSettings.builder().build());
+    Optional<Node> node = compose.composeReader(CharSource.wrap("").openStream());
+    assertEquals(Optional.empty(), node);
+  }
 
-    @Test
-    void composeEmptyInputStream() {
-        Compose compose = new Compose(LoadSettings.builder().build());
-        Optional<Node> node = compose.composeInputStream(new ByteArrayInputStream("".getBytes()));
-        assertEquals(Optional.empty(), node);
-    }
+  @Test
+  void composeEmptyInputStream() {
+    Compose compose = new Compose(LoadSettings.builder().build());
+    Optional<Node> node = compose.composeInputStream(new ByteArrayInputStream("".getBytes()));
+    assertEquals(Optional.empty(), node);
+  }
 
-    @Test
-    void composeAllFromEmptyReader() throws IOException {
-        Compose compose = new Compose(LoadSettings.builder().build());
-        Iterable<Node> nodes = compose.composeAllFromReader(CharSource.wrap("").openStream());
-        assertFalse(nodes.iterator().hasNext());
-    }
+  @Test
+  void composeAllFromEmptyReader() throws IOException {
+    Compose compose = new Compose(LoadSettings.builder().build());
+    Iterable<Node> nodes = compose.composeAllFromReader(CharSource.wrap("").openStream());
+    assertFalse(nodes.iterator().hasNext());
+  }
 
-    @Test
-    void composeAllFromEmptyInputStream() {
-        Compose compose = new Compose(LoadSettings.builder().build());
-        Iterable<Node> nodes = compose.composeAllFromInputStream(new ByteArrayInputStream("".getBytes()));
-        assertFalse(nodes.iterator().hasNext());
-    }
+  @Test
+  void composeAllFromEmptyInputStream() {
+    Compose compose = new Compose(LoadSettings.builder().build());
+    Iterable<Node> nodes = compose.composeAllFromInputStream(
+        new ByteArrayInputStream("".getBytes()));
+    assertFalse(nodes.iterator().hasNext());
+  }
 }

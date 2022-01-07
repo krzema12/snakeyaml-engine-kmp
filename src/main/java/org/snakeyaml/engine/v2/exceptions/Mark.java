@@ -15,167 +15,166 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+import java.io.Serializable;
 import org.snakeyaml.engine.v2.common.CharConstants;
 
-import java.io.Serializable;
-
 /**
- * Its only use is producing nice error messages. Parser
- * does not use it for any other purposes.
+ * Its only use is producing nice error messages. Parser does not use it for any other purposes.
  */
 public final class Mark implements Serializable {
-    private final String name;
-    private final int index;
-    private final int line;
-    private final int column;
-    private final int[] buffer;
-    private final int pointer;
 
-    private static int[] toCodePoints(char[] str) {
-        int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];
-        int i = 0;
-        int c = 0;
-        while (i < str.length) {
-            int cp = Character.codePointAt(str, i);
-            codePoints[c] = cp;
-            i += Character.charCount(cp);
-            c++;
-        }
-        return codePoints;
+  private final String name;
+  private final int index;
+  private final int line;
+  private final int column;
+  private final int[] buffer;
+  private final int pointer;
+
+  private static int[] toCodePoints(char[] str) {
+    int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];
+    int i = 0;
+    int c = 0;
+    while (i < str.length) {
+      int cp = Character.codePointAt(str, i);
+      codePoints[c] = cp;
+      i += Character.charCount(cp);
+      c++;
+    }
+    return codePoints;
+  }
+
+  /**
+   * Creates {@link Mark}
+   *
+   * @param name    - the name to be used as identifier
+   * @param index   - the index from the beginning of the stream
+   * @param line    - line of the mark from beginning of the stream
+   * @param column  - column of the mark from beginning of the line
+   * @param buffer  - the data
+   * @param pointer - the position of the mark from the beginning of the stream
+   */
+  public Mark(String name, int index, int line, int column, int[] buffer, int pointer) {
+    super();
+    this.name = name;
+    this.index = index;
+    this.line = line;
+    this.column = column;
+    this.buffer = buffer;
+    this.pointer = pointer;
+  }
+
+  /**
+   * This constructor is only for test
+   *
+   * @param name    - the name to be used as identifier
+   * @param index   - the index from the beginning of the stream
+   * @param line    - line of the mark from beginning of the stream
+   * @param column  - column of the mark from beginning of the line
+   * @param str     - the data
+   * @param pointer - the position of the mark from the beginning of the stream
+   */
+  public Mark(String name, int index, int line, int column, char[] str, int pointer) {
+    this(name, index, line, column, toCodePoints(str), pointer);
+  }
+
+  private boolean isLineBreak(int c) {
+    return CharConstants.NULL_OR_LINEBR.has(c);
+  }
+
+  public String createSnippet(int indent, int maxLength) {
+    float half = maxLength / 2f - 1f;
+    int start = pointer;
+    String head = "";
+    while ((start > 0) && !isLineBreak(buffer[start - 1])) {
+      start -= 1;
+      if (pointer - start > half) {
+        head = " ... ";
+        start += 5;
+        break;
+      }
+    }
+    String tail = "";
+    int end = pointer;
+    while ((end < buffer.length) && !isLineBreak(buffer[end])) {
+      end += 1;
+      if (end - pointer > half) {
+        tail = " ... ";
+        end -= 5;
+        break;
+      }
     }
 
-    /**
-     * Creates {@link Mark}
-     *
-     * @param name    - the name to be used as identifier
-     * @param index   - the index from the beginning of the stream
-     * @param line    - line of the mark from beginning of the stream
-     * @param column  - column of the mark from beginning of the line
-     * @param buffer  - the data
-     * @param pointer - the position of the mark from the beginning of the stream
-     */
-    public Mark(String name, int index, int line, int column, int[] buffer, int pointer) {
-        super();
-        this.name = name;
-        this.index = index;
-        this.line = line;
-        this.column = column;
-        this.buffer = buffer;
-        this.pointer = pointer;
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < indent; i++) {
+      result.append(" ");
     }
-
-    /**
-     * This constructor is only for test
-     *
-     * @param name    - the name to be used as identifier
-     * @param index   - the index from the beginning of the stream
-     * @param line    - line of the mark from beginning of the stream
-     * @param column  - column of the mark from beginning of the line
-     * @param str     - the data
-     * @param pointer - the position of the mark from the beginning of the stream
-     */
-    public Mark(String name, int index, int line, int column, char[] str, int pointer) {
-        this(name, index, line, column, toCodePoints(str), pointer);
+    result.append(head);
+    for (int i = start; i < end; i++) {
+      result.appendCodePoint(buffer[i]);
     }
-
-    private boolean isLineBreak(int c) {
-        return CharConstants.NULL_OR_LINEBR.has(c);
+    result.append(tail);
+    result.append("\n");
+    for (int i = 0; i < indent + pointer - start + head.length(); i++) {
+      result.append(" ");
     }
+    result.append("^");
+    return result.toString();
+  }
 
-    public String createSnippet(int indent, int maxLength) {
-        float half = maxLength / 2f - 1f;
-        int start = pointer;
-        String head = "";
-        while ((start > 0) && !isLineBreak(buffer[start - 1])) {
-            start -= 1;
-            if (pointer - start > half) {
-                head = " ... ";
-                start += 5;
-                break;
-            }
-        }
-        String tail = "";
-        int end = pointer;
-        while ((end < buffer.length) && !isLineBreak(buffer[end])) {
-            end += 1;
-            if (end - pointer > half) {
-                tail = " ... ";
-                end -= 5;
-                break;
-            }
-        }
+  public String createSnippet() {
+    return createSnippet(4, 75);
+  }
 
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < indent; i++) {
-            result.append(" ");
-        }
-        result.append(head);
-        for (int i = start; i < end; i++) {
-            result.appendCodePoint(buffer[i]);
-        }
-        result.append(tail);
-        result.append("\n");
-        for (int i = 0; i < indent + pointer - start + head.length(); i++) {
-            result.append(" ");
-        }
-        result.append("^");
-        return result.toString();
-    }
+  @Override
+  public String toString() {
+    String snippet = createSnippet();
+    StringBuilder builder = new StringBuilder(" in ");
+    builder.append(name);
+    builder.append(", line ");
+    builder.append(line + 1);
+    builder.append(", column ");
+    builder.append(column + 1);
+    builder.append(":\n");
+    builder.append(snippet);
+    return builder.toString();
+  }
 
-    public String createSnippet() {
-        return createSnippet(4, 75);
-    }
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public String toString() {
-        String snippet = createSnippet();
-        StringBuilder builder = new StringBuilder(" in ");
-        builder.append(name);
-        builder.append(", line ");
-        builder.append(line + 1);
-        builder.append(", column ");
-        builder.append(column + 1);
-        builder.append(":\n");
-        builder.append(snippet);
-        return builder.toString();
-    }
+  /**
+   * starts with 0
+   *
+   * @return line number
+   */
+  public int getLine() {
+    return line;
+  }
 
-    public String getName() {
-        return name;
-    }
+  /**
+   * starts with 0
+   *
+   * @return column number
+   */
+  public int getColumn() {
+    return column;
+  }
 
-    /**
-     * starts with 0
-     *
-     * @return line number
-     */
-    public int getLine() {
-        return line;
-    }
+  /**
+   * starts with 0
+   *
+   * @return character number
+   */
+  public int getIndex() {
+    return index;
+  }
 
-    /**
-     * starts with 0
-     *
-     * @return column number
-     */
-    public int getColumn() {
-        return column;
-    }
+  public int[] getBuffer() {
+    return buffer;
+  }
 
-    /**
-     * starts with 0
-     *
-     * @return character number
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    public int[] getBuffer() {
-        return buffer;
-    }
-
-    public int getPointer() {
-        return pointer;
-    }
+  public int getPointer() {
+    return pointer;
+  }
 }

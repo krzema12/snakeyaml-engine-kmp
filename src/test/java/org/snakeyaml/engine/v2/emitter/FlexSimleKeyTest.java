@@ -15,67 +15,71 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @Tag("fast")
 public class FlexSimleKeyTest {
 
-    private final int len = 130;
+  private final int len = 130;
 
-    @Test
-    public void testLongKey() {
-        Dump dump = new Dump(createOptions(len));
-        Map<String, Object> root = new HashMap();
-        Map<String, String> map = new HashMap<>();
-        String key = createKey(len);
-        map.put(key, "v1");
-        root.put("data", map);
-        assertEquals("data: {? " + key + "\n  : v1}\n", dump.dumpToString(root));
-    }
+  @Test
+  public void testLongKey() {
+    Dump dump = new Dump(createOptions(len));
+    Map<String, Object> root = new HashMap();
+    Map<String, String> map = new HashMap<>();
+    String key = createKey(len);
+    map.put(key, "v1");
+    root.put("data", map);
+    assertEquals("data: {? " + key + "\n  : v1}\n", dump.dumpToString(root));
+  }
 
-    @Test
-    public void testForceLongKeyToBeImplicit() {
-        Dump dump = new Dump(createOptions(len + 10));
-        Map<String, Object> root = new HashMap();
-        Map<String, String> map = new HashMap<>();
-        String key = createKey(len);
-        map.put(key, "v1");
-        root.put("data", map);
-        assertEquals("data: {" + key + ": v1}\n", dump.dumpToString(root));
-    }
+  @Test
+  public void testForceLongKeyToBeImplicit() {
+    Dump dump = new Dump(createOptions(len + 10));
+    Map<String, Object> root = new HashMap();
+    Map<String, String> map = new HashMap<>();
+    String key = createKey(len);
+    map.put(key, "v1");
+    root.put("data", map);
+    assertEquals("data: {" + key + ": v1}\n", dump.dumpToString(root));
+  }
 
-    @Test
-    public void testTooLongKeyLength() {
-        try {
-            createOptions(1024 + 1);
-            fail("Length must be restricted to 1024 chars");
-        } catch (YamlEngineException e) {
-            assertEquals("The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057", e.getMessage());
-        }
+  @Test
+  public void testTooLongKeyLength() {
+    try {
+      createOptions(1024 + 1);
+      fail("Length must be restricted to 1024 chars");
+    } catch (YamlEngineException e) {
+      assertEquals(
+          "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057",
+          e.getMessage());
     }
+  }
 
-    private DumpSettings createOptions(int len) {
-        return DumpSettings.builder().setMaxSimpleKeyLength(len).build();
-    }
+  private DumpSettings createOptions(int len) {
+    return DumpSettings.builder().setMaxSimpleKeyLength(len).build();
+  }
 
-    private String createKey(int length) {
-        StringBuffer outputBuffer = new StringBuffer(length);
-        for (int i = 0; i < length; i++) {
-            outputBuffer.append("" + (i + 1) % 10);
-        }
-        String prefix = String.valueOf(length);
-        String result = prefix + "_" + outputBuffer.toString().substring(0, length - prefix.length() - 1);
-        if (result.length() != length) throw new RuntimeException("It was: " + result.length());
-        return result;
+  private String createKey(int length) {
+    StringBuffer outputBuffer = new StringBuffer(length);
+    for (int i = 0; i < length; i++) {
+      outputBuffer.append("" + (i + 1) % 10);
     }
+    String prefix = String.valueOf(length);
+    String result =
+        prefix + "_" + outputBuffer.toString().substring(0, length - prefix.length() - 1);
+    if (result.length() != length) {
+      throw new RuntimeException("It was: " + result.length());
+    }
+    return result;
+  }
 }

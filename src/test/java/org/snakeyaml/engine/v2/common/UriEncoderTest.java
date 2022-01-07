@@ -15,30 +15,30 @@
  */
 package org.snakeyaml.engine.v2.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @Tag("fast")
 class UriEncoderTest {
 
-    @Test
-    @DisplayName("Encode-decode")
-    void encodeDecodeString() {
-        String encoded = UriEncoder.encode(" +%");
-        assertEquals("%20%2B%25", encoded);
-        String decoded = UriEncoder.decode(encoded);
-        assertEquals(" +%", decoded);
-    }
+  @Test
+  @DisplayName("Encode-decode")
+  void encodeDecodeString() {
+    String encoded = UriEncoder.encode(" +%");
+    assertEquals("%20%2B%25", encoded);
+    String decoded = UriEncoder.decode(encoded);
+    assertEquals(" +%", decoded);
+  }
 
-    @Test
-    @DisplayName("Invalid decode")
-    void testInvalidDecode() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                UriEncoder.decode("%2"));
-        assertEquals("URLDecoder: Incomplete trailing escape (%) pattern", exception.getMessage());
-    }
+  @Test
+  @DisplayName("Invalid decode")
+  void testInvalidDecode() {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        UriEncoder.decode("%2"));
+    assertEquals("URLDecoder: Incomplete trailing escape (%) pattern", exception.getMessage());
+  }
 }

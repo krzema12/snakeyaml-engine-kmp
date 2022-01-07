@@ -15,8 +15,13 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.CharSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -25,30 +30,24 @@ import org.snakeyaml.engine.v2.events.StreamEndEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @Tag("fast")
 class ParseTest {
 
-    @Test
-    void parseEmptyReader() throws IOException {
-        Parse parse = new Parse(LoadSettings.builder().build());
-        Iterable<Event> events = parse.parseReader(CharSource.wrap("").openStream());
-        List<Event> list = Lists.newArrayList(events);
-        assertEquals(2, list.size());
-        TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
-    }
+  @Test
+  void parseEmptyReader() throws IOException {
+    Parse parse = new Parse(LoadSettings.builder().build());
+    Iterable<Event> events = parse.parseReader(CharSource.wrap("").openStream());
+    List<Event> list = Lists.newArrayList(events);
+    assertEquals(2, list.size());
+    TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
+  }
 
-    @Test
-    void parseEmptyInputStream() {
-        Parse parse = new Parse(LoadSettings.builder().build());
-        Iterable<Event> events = parse.parseInputStream(new ByteArrayInputStream("".getBytes()));
-        List<Event> list = Lists.newArrayList(events);
-        assertEquals(2, list.size());
-        TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
-    }
+  @Test
+  void parseEmptyInputStream() {
+    Parse parse = new Parse(LoadSettings.builder().build());
+    Iterable<Event> events = parse.parseInputStream(new ByteArrayInputStream("".getBytes()));
+    List<Event> list = Lists.newArrayList(events);
+    assertEquals(2, list.size());
+    TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
+  }
 }

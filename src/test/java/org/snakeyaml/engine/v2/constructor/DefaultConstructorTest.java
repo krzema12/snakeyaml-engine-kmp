@@ -15,6 +15,11 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.ConstructNode;
@@ -23,31 +28,26 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Tag("fast")
 class DefaultConstructorTest {
 
-    @Test
-    void constructNullWhenUnknown() {
-        LoadSettings settings = LoadSettings.builder().build();
-        Load load = new Load(settings, new MagicNullConstructor(settings));
-        String str = (String) load.loadFromString("!unknownLocalTag a");
-        assertNull(str);
-    }
+  @Test
+  void constructNullWhenUnknown() {
+    LoadSettings settings = LoadSettings.builder().build();
+    Load load = new Load(settings, new MagicNullConstructor(settings));
+    String str = (String) load.loadFromString("!unknownLocalTag a");
+    assertNull(str);
+  }
 
-    @Test
-    void failWhenUnknown() {
-        LoadSettings settings = LoadSettings.builder().build();
-        Load load = new Load(settings);
-        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-                load.loadFromString("!unknownLocalTag a"));
-        assertTrue(exception.getMessage().startsWith("could not determine a constructor for the tag !unknownLocalTag"));
-    }
+  @Test
+  void failWhenUnknown() {
+    LoadSettings settings = LoadSettings.builder().build();
+    Load load = new Load(settings);
+    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
+        load.loadFromString("!unknownLocalTag a"));
+    assertTrue(exception.getMessage()
+        .startsWith("could not determine a constructor for the tag !unknownLocalTag"));
+  }
 }
 
 /**
@@ -55,12 +55,12 @@ class DefaultConstructorTest {
  */
 class MagicNullConstructor extends StandardConstructor {
 
-    public MagicNullConstructor(LoadSettings settings) {
-        super(settings);
-    }
+  public MagicNullConstructor(LoadSettings settings) {
+    super(settings);
+  }
 
-    @Override
-    public Optional<ConstructNode> findConstructorFor(Node node) {
-        return Optional.of(new ConstructYamlNull());
-    }
+  @Override
+  public Optional<ConstructNode> findConstructorFor(Node node) {
+    return Optional.of(new ConstructYamlNull());
+  }
 }

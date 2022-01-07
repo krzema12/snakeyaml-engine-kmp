@@ -16,41 +16,39 @@
 package org.snakeyaml.engine.v2.events;
 
 /**
- * The implicit flag of a scalar event is a pair of boolean values that indicate
- * if the tag may be omitted when the scalar is emitted in a plain and non-plain
- * style correspondingly.
+ * The implicit flag of a scalar event is a pair of boolean values that indicate if the tag may be
+ * omitted when the scalar is emitted in a plain and non-plain style correspondingly.
  */
 public class ImplicitTuple {
-    private final boolean plain;
-    private final boolean nonPlain;
 
-    public ImplicitTuple(boolean plain, boolean nonplain) {
-        this.plain = plain;
-        this.nonPlain = nonplain;
-    }
+  private final boolean plain;
+  private final boolean nonPlain;
 
-    /**
-     * @return true when tag may be omitted when the scalar is emitted in a
-     * plain style.
-     */
-    public boolean canOmitTagInPlainScalar() {
-        return plain;
-    }
+  public ImplicitTuple(boolean plain, boolean nonplain) {
+    this.plain = plain;
+    this.nonPlain = nonplain;
+  }
 
-    /**
-     * @return true when tag may be omitted when the scalar is emitted in a
-     * non-plain style.
-     */
-    public boolean canOmitTagInNonPlainScalar() {
-        return nonPlain;
-    }
+  /**
+   * @return true when tag may be omitted when the scalar is emitted in a plain style.
+   */
+  public boolean canOmitTagInPlainScalar() {
+    return plain;
+  }
 
-    public boolean bothFalse() {
-        return !plain && !nonPlain;
-    }
+  /**
+   * @return true when tag may be omitted when the scalar is emitted in a non-plain style.
+   */
+  public boolean canOmitTagInNonPlainScalar() {
+    return nonPlain;
+  }
 
-    @Override
-    public String toString() {
-        return "implicit=[" + plain + ", " + nonPlain + "]";
-    }
+  public boolean bothFalse() {
+    return !plain && !nonPlain;
+  }
+
+  @Override
+  public String toString() {
+    return "implicit=[" + plain + ", " + nonPlain + "]";
+  }
 }

@@ -15,12 +15,11 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Marks the beginning of a document.
@@ -29,56 +28,57 @@ import java.util.Optional;
  * </p>
  */
 public final class DocumentStartEvent extends Event {
-    private final boolean explicit;
-    private final Optional<SpecVersion> specVersion;
-    private final Map<String, String> tags;
 
-    public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion,
-                              Map<String, String> tags, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-        this.explicit = explicit;
-        Objects.requireNonNull(specVersion);
-        this.specVersion = specVersion;
-        Objects.requireNonNull(tags);
-        this.tags = tags;
-    }
+  private final boolean explicit;
+  private final Optional<SpecVersion> specVersion;
+  private final Map<String, String> tags;
 
-    public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion, Map<String, String> tags) {
-        this(explicit, specVersion, tags, Optional.empty(), Optional.empty());
-    }
+  public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion,
+      Map<String, String> tags, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+    this.explicit = explicit;
+    Objects.requireNonNull(specVersion);
+    this.specVersion = specVersion;
+    Objects.requireNonNull(tags);
+    this.tags = tags;
+  }
 
-    public boolean isExplicit() {
-        return explicit;
-    }
+  public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion,
+      Map<String, String> tags) {
+    this(explicit, specVersion, tags, Optional.empty(), Optional.empty());
+  }
 
-    /**
-     * @return YAML version the document conforms to.
-     */
-    public Optional<SpecVersion> getSpecVersion() {
-        return specVersion;
-    }
+  public boolean isExplicit() {
+    return explicit;
+  }
 
-    /**
-     * Tag shorthands as defined by the <code>%TAG</code> directive.
-     *
-     * @return Mapping of 'handles' to 'prefixes' (the handles include the '!'
-     * characters).
-     */
-    public Map<String, String> getTags() {
-        return tags;
-    }
+  /**
+   * @return YAML version the document conforms to.
+   */
+  public Optional<SpecVersion> getSpecVersion() {
+    return specVersion;
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.DocumentStart;
-    }
+  /**
+   * Tag shorthands as defined by the <code>%TAG</code> directive.
+   *
+   * @return Mapping of 'handles' to 'prefixes' (the handles include the '!' characters).
+   */
+  public Map<String, String> getTags() {
+    return tags;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("+DOC");
-        if (isExplicit()) {
-            builder.append(" ---");
-        }
-        return builder.toString();
+  @Override
+  public ID getEventId() {
+    return ID.DocumentStart;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("+DOC");
+    if (isExplicit()) {
+      builder.append(" ---");
     }
+    return builder.toString();
+  }
 }

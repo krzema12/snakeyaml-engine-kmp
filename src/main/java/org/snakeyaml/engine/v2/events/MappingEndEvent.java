@@ -15,9 +15,8 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Marks the end of a mapping node.
@@ -26,21 +25,21 @@ import java.util.Optional;
  */
 public final class MappingEndEvent extends CollectionEndEvent {
 
-    public MappingEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public MappingEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    public MappingEndEvent() {
-        super();
-    }
+  public MappingEndEvent() {
+    super();
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.MappingEnd;
-    }
+  @Override
+  public ID getEventId() {
+    return ID.MappingEnd;
+  }
 
-    @Override
-    public String toString() {
-        return "-MAP";
-    }
+  @Override
+  public String toString() {
+    return "-MAP";
+  }
 }

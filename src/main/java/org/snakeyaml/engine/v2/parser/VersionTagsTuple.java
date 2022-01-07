@@ -15,35 +15,35 @@
  */
 package org.snakeyaml.engine.v2.parser;
 
-import org.snakeyaml.engine.v2.common.SpecVersion;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.SpecVersion;
 
 /**
  * Store the internal state for directives
  */
 class VersionTagsTuple {
-    private final Optional<SpecVersion> specVersion;
-    private final Map<String, String> tags;
 
-    public VersionTagsTuple(Optional<SpecVersion> specVersion, Map<String, String> tags) {
-        Objects.requireNonNull(specVersion);
-        this.specVersion = specVersion;
-        this.tags = tags;
-    }
+  private final Optional<SpecVersion> specVersion;
+  private final Map<String, String> tags;
 
-    public Optional<SpecVersion> getSpecVersion() {
-        return specVersion;
-    }
+  public VersionTagsTuple(Optional<SpecVersion> specVersion, Map<String, String> tags) {
+    Objects.requireNonNull(specVersion);
+    this.specVersion = specVersion;
+    this.tags = tags;
+  }
 
-    public Map<String, String> getTags() {
-        return tags;
-    }
+  public Optional<SpecVersion> getSpecVersion() {
+    return specVersion;
+  }
 
-    @Override
-    public String toString() {
-        return String.format("VersionTagsTuple<%s, %s>", specVersion, tags);
-    }
+  public Map<String, String> getTags() {
+    return tags;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("VersionTagsTuple<%s, %s>", specVersion, tags);
+  }
 }

@@ -15,73 +15,73 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.emitter.Emitable;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.serializer.Serializer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 public class Serialize {
 
-    private final DumpSettings settings;
+  private final DumpSettings settings;
 
-    /**
-     * Create instance with provided {@link DumpSettings}
-     *
-     * @param settings - configuration
-     */
-    public Serialize(DumpSettings settings) {
-        Objects.requireNonNull(settings, "DumpSettings cannot be null");
-        this.settings = settings;
-    }
+  /**
+   * Create instance with provided {@link DumpSettings}
+   *
+   * @param settings - configuration
+   */
+  public Serialize(DumpSettings settings) {
+    Objects.requireNonNull(settings, "DumpSettings cannot be null");
+    this.settings = settings;
+  }
 
-    /**
-     * Serialize a {@link Node} and produce events.
-     *
-     * @param node - {@link Node} to serialize
-     * @return serialized events
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     */
-    public List<Event> serializeOne(Node node) {
-        Objects.requireNonNull(node, "Node cannot be null");
-        return serializeAll(Collections.singletonList(node));
-    }
+  /**
+   * Serialize a {@link Node} and produce events.
+   *
+   * @param node - {@link Node} to serialize
+   * @return serialized events
+   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+   */
+  public List<Event> serializeOne(Node node) {
+    Objects.requireNonNull(node, "Node cannot be null");
+    return serializeAll(Collections.singletonList(node));
+  }
 
-    /**
-     * Serialize {@link Node}s and produce events.
-     *
-     * @param nodes - {@link Node}s to serialize
-     * @return serialized events
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     */
-    public List<Event> serializeAll(List<Node> nodes) {
-        Objects.requireNonNull(nodes, "Nodes cannot be null");
-        EmitableEvents emitableEvents = new EmitableEvents();
-        Serializer serializer = new Serializer(settings, emitableEvents);
-        serializer.open();
-        for (Node node : nodes) {
-            serializer.serialize(node);
-        }
-        serializer.close();
-        return emitableEvents.getEvents();
+  /**
+   * Serialize {@link Node}s and produce events.
+   *
+   * @param nodes - {@link Node}s to serialize
+   * @return serialized events
+   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+   */
+  public List<Event> serializeAll(List<Node> nodes) {
+    Objects.requireNonNull(nodes, "Nodes cannot be null");
+    EmitableEvents emitableEvents = new EmitableEvents();
+    Serializer serializer = new Serializer(settings, emitableEvents);
+    serializer.open();
+    for (Node node : nodes) {
+      serializer.serialize(node);
     }
+    serializer.close();
+    return emitableEvents.getEvents();
+  }
 }
 
 class EmitableEvents implements Emitable {
-    private final List<Event> events = new ArrayList<>();
 
-    @Override
-    public void emit(Event event) {
-        events.add(event);
-    }
+  private final List<Event> events = new ArrayList<>();
 
-    public List<Event> getEvents() {
-        return events;
-    }
+  @Override
+  public void emit(Event event) {
+    events.add(event);
+  }
+
+  public List<Event> getEvents() {
+    return events;
+  }
 }
 

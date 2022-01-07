@@ -16,57 +16,59 @@
 package org.snakeyaml.engine.v2.comments;
 
 import java.util.Objects;
+import java.util.Optional;
 import org.snakeyaml.engine.v2.events.CommentEvent;
 import org.snakeyaml.engine.v2.exceptions.Mark;
-
-import java.util.Optional;
 
 /**
  * A comment line. May be a block comment, blank line, or inline comment.
  */
 public class CommentLine {
-    private final Optional<Mark> startMark;
-    private final Optional<Mark> endMark;
-    private final String value;
-    private final CommentType commentType;
 
-    public CommentLine(CommentEvent event) {
-        this(event.getStartMark(), event.getEndMark(), event.getValue(), event.getCommentType());
-    }
+  private final Optional<Mark> startMark;
+  private final Optional<Mark> endMark;
+  private final String value;
+  private final CommentType commentType;
 
-    public CommentLine(Optional<Mark> startMark, Optional<Mark> endMark, String value, CommentType commentType) {
-        Objects.requireNonNull(startMark);
-        this.startMark = startMark;
-        Objects.requireNonNull(endMark);
-        this.endMark = endMark;
-        Objects.requireNonNull(value);
-        this.value = value;
-        Objects.requireNonNull(commentType);
-        this.commentType = commentType;
-    }
+  public CommentLine(CommentEvent event) {
+    this(event.getStartMark(), event.getEndMark(), event.getValue(), event.getCommentType());
+  }
 
-    public Optional<Mark> getEndMark() {
-        return endMark;
-    }
+  public CommentLine(Optional<Mark> startMark, Optional<Mark> endMark, String value,
+      CommentType commentType) {
+    Objects.requireNonNull(startMark);
+    this.startMark = startMark;
+    Objects.requireNonNull(endMark);
+    this.endMark = endMark;
+    Objects.requireNonNull(value);
+    this.value = value;
+    Objects.requireNonNull(commentType);
+    this.commentType = commentType;
+  }
 
-    public Optional<Mark> getStartMark() {
-        return startMark;
-    }
+  public Optional<Mark> getEndMark() {
+    return endMark;
+  }
 
-    public CommentType getCommentType() {
-        return commentType;
-    }
+  public Optional<Mark> getStartMark() {
+    return startMark;
+  }
 
-    /**
-     * Value of this comment.
-     *
-     * @return comment's value.
-     */
-    public String getValue() {
-        return value;
-    }
+  public CommentType getCommentType() {
+    return commentType;
+  }
 
-    public String toString() {
-        return "<" + this.getClass().getName() + " (type=" + getCommentType() + ", value=" + getValue() + ")>";
-    }
+  /**
+   * Value of this comment.
+   *
+   * @return comment's value.
+   */
+  public String getValue() {
+    return value;
+  }
+
+  public String toString() {
+    return "<" + this.getClass().getName() + " (type=" + getCommentType() + ", value=" + getValue()
+        + ")>";
+  }
 }

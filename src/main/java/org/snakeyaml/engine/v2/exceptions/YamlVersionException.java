@@ -21,14 +21,15 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
  * Indication of invalid YAML version
  */
 public class YamlVersionException extends YamlEngineException {
-    private final SpecVersion specVersion;
 
-    public YamlVersionException(SpecVersion specVersion) {
-        super(specVersion.toString());
-        this.specVersion = specVersion;
-    }
+  private final SpecVersion specVersion;
 
-    public SpecVersion getSpecVersion() {
-        return specVersion;
-    }
+  public YamlVersionException(SpecVersion specVersion) {
+    super(specVersion.toString());
+    this.specVersion = specVersion;
+  }
+
+  public SpecVersion getSpecVersion() {
+    return specVersion;
+  }
 }

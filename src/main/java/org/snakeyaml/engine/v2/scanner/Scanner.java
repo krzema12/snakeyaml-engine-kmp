@@ -16,51 +16,51 @@
 package org.snakeyaml.engine.v2.scanner;
 
 
+import java.util.Iterator;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
 import org.snakeyaml.engine.v2.tokens.Token;
-
-import java.util.Iterator;
 
 /**
  * This interface represents an input stream of {@link Token}s.
  * <p>
  * The scanner and the parser form together the 'Parse' step in the loading process.
  * </p>
+ *
  * @see <a href="https://yaml.org/spec/1.2.2/#31-processes">3.1. Processes</a>
  */
 public interface Scanner extends Iterator<Token> {
 
-    /**
-     * Check if the next token is one of the given types.
-     *
-     * @param choices token IDs.
-     * @return <code>true</code> if the next token can be assigned to a variable
-     * of at least one of the given types. Returns <code>false</code> if
-     * no more tokens are available.
-     * @throws ScannerException thrown in case of malformed input.
-     */
-    boolean checkToken(Token.ID... choices);
+  /**
+   * Check if the next token is one of the given types.
+   *
+   * @param choices token IDs.
+   * @return <code>true</code> if the next token can be assigned to a variable
+   * of at least one of the given types. Returns <code>false</code> if no more tokens are
+   * available.
+   * @throws ScannerException thrown in case of malformed input.
+   */
+  boolean checkToken(Token.ID... choices);
 
-    /**
-     * Return the next token, but do not delete it from the stream.
-     * The method must be called only after {@link #checkToken}.
-     *
-     * @return The token that will be returned on the next call to {@link #next}
-     * @throws ScannerException          Thrown in case of malformed input.
-     * @throws IndexOutOfBoundsException if no more token left
-     */
-    Token peekToken();
+  /**
+   * Return the next token, but do not delete it from the stream. The method must be called only
+   * after {@link #checkToken}.
+   *
+   * @return The token that will be returned on the next call to {@link #next}
+   * @throws ScannerException          Thrown in case of malformed input.
+   * @throws IndexOutOfBoundsException if no more token left
+   */
+  Token peekToken();
 
-    /**
-     * Returns the next token.
-     * <p>
-     * The token will be removed from the stream.
-     * (Every invocation of this method must happen after calling {@link #checkToken}.
-     * </p>
-     *
-     * @return the coming token
-     * @throws ScannerException          Thrown in case of malformed input.
-     * @throws IndexOutOfBoundsException if no more token left
-     */
-    Token next();
+  /**
+   * Returns the next token.
+   * <p>
+   * The token will be removed from the stream. (Every invocation of this method must happen after
+   * calling {@link #checkToken}.
+   * </p>
+   *
+   * @return the coming token
+   * @throws ScannerException          Thrown in case of malformed input.
+   * @throws IndexOutOfBoundsException if no more token left
+   */
+  Token next();
 }

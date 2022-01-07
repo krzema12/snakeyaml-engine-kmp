@@ -19,13 +19,14 @@ package org.snakeyaml.engine.usecases.tags;
  * Business value to be parsed from YAML
  */
 public class ImportValueImpl {
-    private final String value;
 
-    public ImportValueImpl(String value) {
-        this.value = value;
-    }
+  private final String value;
 
-    public String getValue() {
-        return value;
-    }
+  public ImportValueImpl(String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
 }

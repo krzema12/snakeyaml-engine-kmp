@@ -15,102 +15,102 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
-import org.snakeyaml.engine.v2.nodes.Tag;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * ScalarResolver for JSON Schema
- * The schema is NOT the same as in YAML 1.2 but identical to JSON,
+ * ScalarResolver for JSON Schema The schema is NOT the same as in YAML 1.2 but identical to JSON,
  *
  * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2803231">Chapter 10.2. JSON Schema</a>
  */
 public class JsonScalarResolver implements ScalarResolver {
 
-    public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
-    public static final Pattern FLOAT = Pattern.compile("^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)(e[-+]?[0-9]+)?)|-?\\.(?:inf)|\\.(?:nan)$"); //NOSONAR
-    public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
-    public static final Pattern NULL = Pattern.compile("^(?:null)$");
-    public static final Pattern EMPTY = Pattern.compile("^$");
+  public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
+  public static final Pattern FLOAT = Pattern.compile(
+      "^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)(e[-+]?[0-9]+)?)|-?\\.(?:inf)|\\.(?:nan)$"); //NOSONAR
+  public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
+  public static final Pattern NULL = Pattern.compile("^(?:null)$");
+  public static final Pattern EMPTY = Pattern.compile("^$");
 
-    @java.lang.SuppressWarnings("squid:S4784")
-    public static final Pattern ENV_FORMAT = Pattern.compile("^\\$\\{\\s*((?<name>\\w+)((?<separator>:?(-|\\?))(?<value>\\w+)?)?)\\s*\\}$");
+  @java.lang.SuppressWarnings("squid:S4784")
+  public static final Pattern ENV_FORMAT = Pattern.compile(
+      "^\\$\\{\\s*((?<name>\\w+)((?<separator>:?(-|\\?))(?<value>\\w+)?)?)\\s*\\}$");
 
-    protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
+  protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
 
-    public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
-        if (first == null) {
-            List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList());
-            curr.add(new ResolverTuple(tag, regexp));
-        } else {
-            char[] chrs = first.toCharArray();
-            for (int i = 0, j = chrs.length; i < j; i++) {
-                Character theC = Character.valueOf(chrs[i]);
-                if (theC == 0) {
-                    // special case: for null
-                    theC = null;
-                }
-                List<ResolverTuple> curr = yamlImplicitResolvers.get(theC);
-                if (curr == null) {
-                    curr = new ArrayList();
-                    yamlImplicitResolvers.put(theC, curr);
-                }
-                curr.add(new ResolverTuple(tag, regexp));
-            }
+  public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
+    if (first == null) {
+      List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList());
+      curr.add(new ResolverTuple(tag, regexp));
+    } else {
+      char[] chrs = first.toCharArray();
+      for (int i = 0, j = chrs.length; i < j; i++) {
+        Character theC = Character.valueOf(chrs[i]);
+        if (theC == 0) {
+          // special case: for null
+          theC = null;
         }
+        List<ResolverTuple> curr = yamlImplicitResolvers.get(theC);
+        if (curr == null) {
+          curr = new ArrayList();
+          yamlImplicitResolvers.put(theC, curr);
+        }
+        curr.add(new ResolverTuple(tag, regexp));
+      }
     }
+  }
 
-    protected void addImplicitResolvers() {
-        addImplicitResolver(Tag.NULL, EMPTY, null);
-        addImplicitResolver(Tag.BOOL, BOOL, "tf");
-        /*
-         * INT must be before FLOAT because the regular expression for FLOAT
-         * matches INT (see issue 130)
-         * http://code.google.com/p/snakeyaml/issues/detail?id=130
-         */
-        addImplicitResolver(Tag.INT, INT, "-0123456789");
-        addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.");
-        addImplicitResolver(Tag.NULL, NULL, "n\u0000");
-        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
-    }
+  protected void addImplicitResolvers() {
+    addImplicitResolver(Tag.NULL, EMPTY, null);
+    addImplicitResolver(Tag.BOOL, BOOL, "tf");
+    /*
+     * INT must be before FLOAT because the regular expression for FLOAT
+     * matches INT (see issue 130)
+     * http://code.google.com/p/snakeyaml/issues/detail?id=130
+     */
+    addImplicitResolver(Tag.INT, INT, "-0123456789");
+    addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.");
+    addImplicitResolver(Tag.NULL, NULL, "n\u0000");
+    addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
+  }
 
-    public JsonScalarResolver() {
-        addImplicitResolvers();
-    }
+  public JsonScalarResolver() {
+    addImplicitResolvers();
+  }
 
-    @Override
-    public Tag resolve(String value, Boolean implicit) {
-        if (!implicit) {
-            return Tag.STR;
-        }
-        final List<ResolverTuple> resolvers;
-        if (value.length() == 0) {
-            resolvers = yamlImplicitResolvers.get('\0');
-        } else {
-            resolvers = yamlImplicitResolvers.get(value.charAt(0));
-        }
-        if (resolvers != null) {
-            for (ResolverTuple v : resolvers) {
-                Tag tag = v.getTag();
-                Pattern regexp = v.getRegexp();
-                if (regexp.matcher(value).matches()) {
-                    return tag;
-                }
-            }
-        }
-        if (yamlImplicitResolvers.containsKey(null)) {
-            for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
-                Tag tag = v.getTag();
-                Pattern regexp = v.getRegexp();
-                if (regexp.matcher(value).matches()) {
-                    return tag;
-                }
-            }
-        }
-        return Tag.STR;
+  @Override
+  public Tag resolve(String value, Boolean implicit) {
+    if (!implicit) {
+      return Tag.STR;
     }
+    final List<ResolverTuple> resolvers;
+    if (value.length() == 0) {
+      resolvers = yamlImplicitResolvers.get('\0');
+    } else {
+      resolvers = yamlImplicitResolvers.get(value.charAt(0));
+    }
+    if (resolvers != null) {
+      for (ResolverTuple v : resolvers) {
+        Tag tag = v.getTag();
+        Pattern regexp = v.getRegexp();
+        if (regexp.matcher(value).matches()) {
+          return tag;
+        }
+      }
+    }
+    if (yamlImplicitResolvers.containsKey(null)) {
+      for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
+        Tag tag = v.getTag();
+        Pattern regexp = v.getRegexp();
+        if (regexp.matcher(value).matches()) {
+          return tag;
+        }
+      }
+    }
+    return Tag.STR;
+  }
 }

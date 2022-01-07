@@ -15,26 +15,26 @@
  */
 package org.snakeyaml.engine.usecases.references;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @Tag("fast")
 public class RestrictAliasNamesTest {
 
-    @Test
-    public void testAliasFromRuby() {
-        try {
-            LoadSettings settings = LoadSettings.builder().build();
-            Load yamlProcessor = new Load(settings);
-            yamlProcessor.loadFromString("Exclude: **/*_old.rb");
-            fail("Should not accept Alias **/*_old.rb");
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("unexpected character found *(42)"));
-        }
+  @Test
+  public void testAliasFromRuby() {
+    try {
+      LoadSettings settings = LoadSettings.builder().build();
+      Load yamlProcessor = new Load(settings);
+      yamlProcessor.loadFromString("Exclude: **/*_old.rb");
+      fail("Should not accept Alias **/*_old.rb");
+    } catch (Exception e) {
+      assertTrue(e.getMessage().contains("unexpected character found *(42)"));
     }
+  }
 }

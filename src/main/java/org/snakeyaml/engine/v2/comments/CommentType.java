@@ -19,7 +19,7 @@ package org.snakeyaml.engine.v2.comments;
  * The type of a comment line.
  */
 public enum CommentType {
-    BLANK_LINE, //
-    BLOCK, //
-    IN_LINE //
+  BLANK_LINE, //
+  BLOCK, //
+  IN_LINE //
 }

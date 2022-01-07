@@ -15,143 +15,143 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Marks a scalar value.
  */
 public final class ScalarEvent extends NodeEvent {
 
-    //this is only for Scalar representation (error messages and test suite)
-    private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet()
-        .stream()
-        .filter(entry -> entry.getKey() != '"')
-        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+  //this is only for Scalar representation (error messages and test suite)
+  private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet()
+      .stream()
+      .filter(entry -> entry.getKey() != '"')
+      .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-    private final Optional<String> tag;
-    // style flag of a scalar event indicates the style of the scalar. Possible
-    // values are None, '', '\'', '"', '|', '>'
-    private final ScalarStyle style;
-    private final String value;
-    // The implicit flag of a scalar event is a pair of boolean values that
-    // indicate if the tag may be omitted when the scalar is emitted in a plain
-    // and non-plain style correspondingly.
-    private final ImplicitTuple implicit;
+  private final Optional<String> tag;
+  // style flag of a scalar event indicates the style of the scalar. Possible
+  // values are None, '', '\'', '"', '|', '>'
+  private final ScalarStyle style;
+  private final String value;
+  // The implicit flag of a scalar event is a pair of boolean values that
+  // indicate if the tag may be omitted when the scalar is emitted in a plain
+  // and non-plain style correspondingly.
+  private final ImplicitTuple implicit;
 
-    public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style,
-                       Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(anchor, startMark, endMark);
-        Objects.requireNonNull(tag);
-        this.tag = tag;
-        this.implicit = implicit;
-        Objects.requireNonNull(value);
-        this.value = value;
-        Objects.requireNonNull(style);
-        this.style = style;
+  public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit,
+      String value, ScalarStyle style,
+      Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(anchor, startMark, endMark);
+    Objects.requireNonNull(tag);
+    this.tag = tag;
+    this.implicit = implicit;
+    Objects.requireNonNull(value);
+    this.value = value;
+    Objects.requireNonNull(style);
+    this.style = style;
+  }
+
+  public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit,
+      String value, ScalarStyle style) {
+    this(anchor, tag, implicit, value, style, Optional.empty(), Optional.empty());
+  }
+
+  /**
+   * Tag of this scalar.
+   *
+   * @return The tag of this scalar, or <code>null</code> if no explicit tag is available.
+   */
+  public Optional<String> getTag() {
+    return this.tag;
+  }
+
+  /**
+   * Style of the scalar.
+   * <dl>
+   * <dt>null</dt>
+   * <dd>Flow Style - Plain</dd>
+   * <dt>'\''</dt>
+   * <dd>Flow Style - Single-Quoted</dd>
+   * <dt>'"'</dt>
+   * <dd>Flow Style - Double-Quoted</dd>
+   * <dt>'|'</dt>
+   * <dd>Block Style - Literal</dd>
+   * <dt>'&gt;'</dt>
+   * <dd>Block Style - Folded</dd>
+   * </dl>
+   *
+   * @return Style of the scalar.
+   */
+  public ScalarStyle getScalarStyle() {
+    return this.style;
+  }
+
+  /**
+   * String representation of the value.
+   * <p>
+   * Without quotes and escaping.
+   * </p>
+   *
+   * @return Value as Unicode string.
+   */
+  public String getValue() {
+    return this.value;
+  }
+
+  public ImplicitTuple getImplicit() {
+    return this.implicit;
+  }
+
+  @Override
+  public ID getEventId() {
+    return ID.Scalar;
+  }
+
+  public boolean isPlain() {
+    return style == ScalarStyle.PLAIN;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("=VAL");
+    getAnchor().ifPresent(a -> builder.append(" &" + a));
+    if (implicit.bothFalse()) {
+      getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
     }
+    builder.append(" ");
+    builder.append(getScalarStyle().toString());
+    builder.append(escapedValue());
+    return builder.toString();
+  }
 
-    public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style) {
-        this(anchor, tag, implicit, value, style, Optional.empty(), Optional.empty());
+  /*
+   * Escape char (prepending '\')
+   * ch - the character to escape. Surrogates are not supported (because of int -> char conversion)
+   */
+  private String escape(Character ch) {
+    if (ESCAPES_TO_PRINT.containsKey(ch)) {
+      Integer i = ESCAPES_TO_PRINT.get(ch);
+      Character c = Character.valueOf((char) i.intValue());
+      return "\\" + c.toString();
+    } else {
+      return ch.toString();
     }
+  }
 
-    /**
-     * Tag of this scalar.
-     *
-     * @return The tag of this scalar, or <code>null</code> if no explicit tag
-     * is available.
-     */
-    public Optional<String> getTag() {
-        return this.tag;
-    }
-
-    /**
-     * Style of the scalar.
-     * <dl>
-     * <dt>null</dt>
-     * <dd>Flow Style - Plain</dd>
-     * <dt>'\''</dt>
-     * <dd>Flow Style - Single-Quoted</dd>
-     * <dt>'"'</dt>
-     * <dd>Flow Style - Double-Quoted</dd>
-     * <dt>'|'</dt>
-     * <dd>Block Style - Literal</dd>
-     * <dt>'&gt;'</dt>
-     * <dd>Block Style - Folded</dd>
-     * </dl>
-     *
-     * @return Style of the scalar.
-     */
-    public ScalarStyle getScalarStyle() {
-        return this.style;
-    }
-
-    /**
-     * String representation of the value.
-     * <p>
-     * Without quotes and escaping.
-     * </p>
-     *
-     * @return Value as Unicode string.
-     */
-    public String getValue() {
-        return this.value;
-    }
-
-    public ImplicitTuple getImplicit() {
-        return this.implicit;
-    }
-
-    @Override
-    public ID getEventId() {
-        return ID.Scalar;
-    }
-
-    public boolean isPlain() {
-        return style == ScalarStyle.PLAIN;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("=VAL");
-        getAnchor().ifPresent(a -> builder.append(" &" + a));
-        if (implicit.bothFalse()) {
-            getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
-        }
-        builder.append(" ");
-        builder.append(getScalarStyle().toString());
-        builder.append(escapedValue());
-        return builder.toString();
-    }
-
-    /*
-     * Escape char (prepending '\')
-     * ch - the character to escape. Surrogates are not supported (because of int -> char conversion)
-     */
-    private String escape(Character ch) {
-        if (ESCAPES_TO_PRINT.containsKey(ch)) {
-            Integer i = ESCAPES_TO_PRINT.get(ch);
-            Character c = Character.valueOf((char) i.intValue());
-            return "\\" + c.toString();
-        } else {
-            return ch.toString();
-        }
-    }
-
-    //escape and drop surrogates
-    public String escapedValue() {
-        return value.codePoints()
-            .filter(i -> i < Character.MAX_VALUE)
-            .mapToObj(c -> (char) c)
-            .map(this::escape)
-            .collect(Collectors.joining(""));
-    }
+  //escape and drop surrogates
+  public String escapedValue() {
+    return value.codePoints()
+        .filter(i -> i < Character.MAX_VALUE)
+        .mapToObj(c -> (char) c)
+        .map(this::escape)
+        .collect(Collectors.joining(""));
+  }
 }

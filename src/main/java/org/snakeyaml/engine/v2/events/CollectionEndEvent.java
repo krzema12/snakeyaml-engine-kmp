@@ -15,20 +15,19 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Base class for the end events of the collection nodes.
  */
 public abstract class CollectionEndEvent extends Event {
 
-    public CollectionEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public CollectionEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    public CollectionEndEvent() {
-        super();
-    }
+  public CollectionEndEvent() {
+    super();
+  }
 }

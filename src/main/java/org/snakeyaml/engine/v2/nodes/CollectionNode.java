@@ -15,48 +15,49 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
- * Base class for the two collection types {@link MappingNode mapping} and
- * {@link SequenceNode collection}.
+ * Base class for the two collection types {@link MappingNode mapping} and {@link SequenceNode
+ * collection}.
  */
 public abstract class CollectionNode<T> extends Node {
-    private FlowStyle flowStyle;
 
-    public CollectionNode(Tag tag, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(tag, startMark, endMark);
-        setFlowStyle(flowStyle);
-    }
+  private FlowStyle flowStyle;
 
-    /**
-     * Returns the elements in this sequence.
-     *
-     * @return Nodes in the specified order.
-     */
-    public abstract List<T> getValue();
+  public CollectionNode(Tag tag, FlowStyle flowStyle, Optional<Mark> startMark,
+      Optional<Mark> endMark) {
+    super(tag, startMark, endMark);
+    setFlowStyle(flowStyle);
+  }
 
-    /**
-     * Serialization style of this collection.
-     *
-     * @return <code>true</code> for flow style, <code>false</code> for block
-     * style.
-     */
-    public FlowStyle getFlowStyle() {
-        return flowStyle;
-    }
+  /**
+   * Returns the elements in this sequence.
+   *
+   * @return Nodes in the specified order.
+   */
+  public abstract List<T> getValue();
 
-    public void setFlowStyle(FlowStyle flowStyle) {
-        Objects.requireNonNull(flowStyle, "Flow style must be provided.");
-        this.flowStyle = flowStyle;
-    }
+  /**
+   * Serialization style of this collection.
+   *
+   * @return <code>true</code> for flow style, <code>false</code> for block
+   * style.
+   */
+  public FlowStyle getFlowStyle() {
+    return flowStyle;
+  }
 
-    public void setEndMark(Optional<Mark> endMark) {
-        this.endMark = endMark;
-    }
+  public void setFlowStyle(FlowStyle flowStyle) {
+    Objects.requireNonNull(flowStyle, "Flow style must be provided.");
+    this.flowStyle = flowStyle;
+  }
+
+  public void setEndMark(Optional<Mark> endMark) {
+    this.endMark = endMark;
+  }
 }

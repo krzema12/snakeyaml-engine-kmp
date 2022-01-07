@@ -21,40 +21,42 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 /**
- * Provide an example of implementation of StreamDataWriter interface
- * which does not throw {@link IOException}
+ * Provide an example of implementation of StreamDataWriter interface which does not throw {@link
+ * IOException}
  */
-public abstract class YamlOutputStreamWriter extends OutputStreamWriter implements StreamDataWriter {
-    public YamlOutputStreamWriter(OutputStream out, Charset cs) {
-        super(out, cs);
-    }
+public abstract class YamlOutputStreamWriter extends OutputStreamWriter implements
+    StreamDataWriter {
 
-    public abstract void processIOException(IOException e);
+  public YamlOutputStreamWriter(OutputStream out, Charset cs) {
+    super(out, cs);
+  }
 
-    @Override
-    public void flush() {
-        try {
-            super.flush();
-        } catch (IOException e) {
-            processIOException(e);
-        }
-    }
+  public abstract void processIOException(IOException e);
 
-    @Override
-    public void write(String str, int off, int len) {
-        try {
-            super.write(str, off, len);
-        } catch (IOException e) {
-            processIOException(e);
-        }
+  @Override
+  public void flush() {
+    try {
+      super.flush();
+    } catch (IOException e) {
+      processIOException(e);
     }
+  }
 
-    @Override
-    public void write(String str) {
-        try {
-            super.write(str);
-        } catch (IOException e) {
-            processIOException(e);
-        }
+  @Override
+  public void write(String str, int off, int len) {
+    try {
+      super.write(str, off, len);
+    } catch (IOException e) {
+      processIOException(e);
     }
+  }
+
+  @Override
+  public void write(String str) {
+    try {
+      super.write(str);
+    } catch (IOException e) {
+      processIOException(e);
+    }
+  }
 }

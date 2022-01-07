@@ -15,11 +15,10 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Represents a scalar node.
@@ -28,54 +27,55 @@ import java.util.Optional;
  * </p>
  */
 public class ScalarNode extends Node {
-    private final ScalarStyle style;
-    private final String value;
 
-    public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(tag, startMark, endMark);
-        Objects.requireNonNull(value, "value in a Node is required.");
-        this.value = value;
-        Objects.requireNonNull(style, "Scalar style must be provided.");
-        this.style = style;
-        this.resolved = resolved;
-    }
+  private final ScalarStyle style;
+  private final String value;
 
-    public ScalarNode(Tag tag, String value, ScalarStyle style) {
-        this(tag, true, value, style, Optional.empty(), Optional.empty());
-    }
+  public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style,
+      Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(tag, startMark, endMark);
+    Objects.requireNonNull(value, "value in a Node is required.");
+    this.value = value;
+    Objects.requireNonNull(style, "Scalar style must be provided.");
+    this.style = style;
+    this.resolved = resolved;
+  }
 
-    /**
-     * Get scalar style of this node.
-     *
-     * @return style of this scalar node
-     * @see org.snakeyaml.engine.v2.events.ScalarEvent
-     * Flow  styles - https://yaml.org/spec/1.2/spec.html#id2786942
-     * Block styles - https://yaml.org/spec/1.2/spec.html#id2793652
-     */
-    public ScalarStyle getScalarStyle() {
-        return style;
-    }
+  public ScalarNode(Tag tag, String value, ScalarStyle style) {
+    this(tag, true, value, style, Optional.empty(), Optional.empty());
+  }
 
-    @Override
-    public NodeType getNodeType() {
-        return NodeType.SCALAR;
-    }
+  /**
+   * Get scalar style of this node.
+   *
+   * @return style of this scalar node
+   * @see org.snakeyaml.engine.v2.events.ScalarEvent Flow  styles - https://yaml.org/spec/1.2/spec.html#id2786942
+   * Block styles - https://yaml.org/spec/1.2/spec.html#id2793652
+   */
+  public ScalarStyle getScalarStyle() {
+    return style;
+  }
 
-    /**
-     * Value of this scalar.
-     *
-     * @return Scalar's value.
-     */
-    public String getValue() {
-        return value;
-    }
+  @Override
+  public NodeType getNodeType() {
+    return NodeType.SCALAR;
+  }
 
-    public String toString() {
-        return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
-                + ")>";
-    }
+  /**
+   * Value of this scalar.
+   *
+   * @return Scalar's value.
+   */
+  public String getValue() {
+    return value;
+  }
 
-    public boolean isPlain() {
-        return style == ScalarStyle.PLAIN;
-    }
+  public String toString() {
+    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
+        + ")>";
+  }
+
+  public boolean isPlain() {
+    return style == ScalarStyle.PLAIN;
+  }
 }

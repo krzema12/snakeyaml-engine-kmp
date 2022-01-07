@@ -19,21 +19,22 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class TagTuple {
-    private final Optional<String> handle;
-    private final String suffix;
 
-    public TagTuple(Optional<String> handle, String suffix) {
-        Objects.requireNonNull(handle);
-        this.handle = handle;
-        Objects.requireNonNull(suffix);
-        this.suffix = suffix;
-    }
+  private final Optional<String> handle;
+  private final String suffix;
 
-    public Optional<String> getHandle() {
-        return handle;
-    }
+  public TagTuple(Optional<String> handle, String suffix) {
+    Objects.requireNonNull(handle);
+    this.handle = handle;
+    Objects.requireNonNull(suffix);
+    this.suffix = suffix;
+  }
 
-    public String getSuffix() {
-        return suffix;
-    }
+  public Optional<String> getHandle() {
+    return handle;
+  }
+
+  public String getSuffix() {
+    return suffix;
+  }
 }

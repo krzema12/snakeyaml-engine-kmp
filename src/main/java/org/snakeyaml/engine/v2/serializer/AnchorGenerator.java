@@ -23,10 +23,11 @@ import org.snakeyaml.engine.v2.nodes.Node;
  */
 public interface AnchorGenerator {
 
-    /**
-     * Create anchor
-     * @param node - the node to refer to
-     * @return unique name
-     */
-    Anchor nextAnchor(Node node);
+  /**
+   * Create anchor
+   *
+   * @param node - the node to refer to
+   * @return unique name
+   */
+  Anchor nextAnchor(Node node);
 }

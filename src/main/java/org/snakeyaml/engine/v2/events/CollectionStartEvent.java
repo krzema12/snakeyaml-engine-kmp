@@ -15,72 +15,74 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.exceptions.Mark;
-
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Base class for the start events of the collection nodes.
  */
 public abstract class CollectionStartEvent extends NodeEvent {
-    private final Optional<String> tag;
-    // The implicit flag of a collection start event indicates if the tag may be
-    // omitted when the collection is emitted
-    private final boolean implicit;
-    // flag indicates if a collection is block or flow
-    private final FlowStyle flowStyle;
 
-    public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
-                                FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(anchor, startMark, endMark);
-        Objects.requireNonNull(tag);
-        this.tag = tag;
-        this.implicit = implicit;
-        Objects.requireNonNull(flowStyle);
-        this.flowStyle = flowStyle;
-    }
+  private final Optional<String> tag;
+  // The implicit flag of a collection start event indicates if the tag may be
+  // omitted when the collection is emitted
+  private final boolean implicit;
+  // flag indicates if a collection is block or flow
+  private final FlowStyle flowStyle;
 
-    /**
-     * Tag of this collection.
-     *
-     * @return The tag of this collection, or <code>empty</code> if no explicit tag is available.
-     */
-    public Optional<String> getTag() {
-        return this.tag;
-    }
+  public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
+      FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(anchor, startMark, endMark);
+    Objects.requireNonNull(tag);
+    this.tag = tag;
+    this.implicit = implicit;
+    Objects.requireNonNull(flowStyle);
+    this.flowStyle = flowStyle;
+  }
 
-    /**
-     * <code>true</code> if the tag can be omitted while this collection is
-     * emitted.
-     *
-     * @return True if the tag can be omitted while this collection is emitted.
-     */
-    public boolean isImplicit() {
-        return this.implicit;
-    }
+  /**
+   * Tag of this collection.
+   *
+   * @return The tag of this collection, or <code>empty</code> if no explicit tag is available.
+   */
+  public Optional<String> getTag() {
+    return this.tag;
+  }
 
-    /**
-     * <code>true</code> if this collection is in flow style, <code>false</code>
-     * for block style.
-     *
-     * @return If this collection is in flow style.
-     */
-    public FlowStyle getFlowStyle() {
-        return this.flowStyle;
-    }
+  /**
+   * <code>true</code> if the tag can be omitted while this collection is
+   * emitted.
+   *
+   * @return True if the tag can be omitted while this collection is emitted.
+   */
+  public boolean isImplicit() {
+    return this.implicit;
+  }
 
-    public boolean isFlow() {
-        return FlowStyle.FLOW == flowStyle;
-    }
+  /**
+   * <code>true</code> if this collection is in flow style, <code>false</code>
+   * for block style.
+   *
+   * @return If this collection is in flow style.
+   */
+  public FlowStyle getFlowStyle() {
+    return this.flowStyle;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        getAnchor().ifPresent(a -> builder.append(" &" + a));
-        if (!implicit) getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
-        return builder.toString();
+  public boolean isFlow() {
+    return FlowStyle.FLOW == flowStyle;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    getAnchor().ifPresent(a -> builder.append(" &" + a));
+    if (!implicit) {
+      getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
     }
+    return builder.toString();
+  }
 }

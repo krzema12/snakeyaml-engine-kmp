@@ -16,18 +16,17 @@
 package org.snakeyaml.engine.v2.tokens;
 
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 public final class DocumentEndToken extends Token {
 
-    public DocumentEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public DocumentEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    @Override
-    public Token.ID getTokenId() {
-        return ID.DocumentEnd;
-    }
+  @Override
+  public Token.ID getTokenId() {
+    return ID.DocumentEnd;
+  }
 }

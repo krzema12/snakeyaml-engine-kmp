@@ -22,37 +22,37 @@ import java.util.Objects;
  */
 public final class NodeTuple {
 
-    private final Node keyNode;
-    private final Node valueNode;
+  private final Node keyNode;
+  private final Node valueNode;
 
-    public NodeTuple(Node keyNode, Node valueNode) {
-        Objects.requireNonNull(keyNode, "keyNode must be provided.");
-        Objects.requireNonNull(valueNode, "value Node must be provided");
-        this.keyNode = keyNode;
-        this.valueNode = valueNode;
-    }
+  public NodeTuple(Node keyNode, Node valueNode) {
+    Objects.requireNonNull(keyNode, "keyNode must be provided.");
+    Objects.requireNonNull(valueNode, "value Node must be provided");
+    this.keyNode = keyNode;
+    this.valueNode = valueNode;
+  }
 
-    /**
-     * Key node.
-     *
-     * @return the node used as key
-     */
-    public Node getKeyNode() {
-        return keyNode;
-    }
+  /**
+   * Key node.
+   *
+   * @return the node used as key
+   */
+  public Node getKeyNode() {
+    return keyNode;
+  }
 
-    /**
-     * Value node.
-     *
-     * @return node used as value
-     */
-    public Node getValueNode() {
-        return valueNode;
-    }
+  /**
+   * Value node.
+   *
+   * @return node used as value
+   */
+  public Node getValueNode() {
+    return valueNode;
+  }
 
-    @Override
-    public String toString() {
-        return "<NodeTuple keyNode=" + keyNode.toString() + "; valueNode=" + valueNode.toString()
-                + ">";
-    }
+  @Override
+  public String toString() {
+    return "<NodeTuple keyNode=" + keyNode.toString() + "; valueNode=" + valueNode.toString()
+        + ">";
+  }
 }

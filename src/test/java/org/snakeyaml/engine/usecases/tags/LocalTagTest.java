@@ -15,16 +15,15 @@
  */
 package org.snakeyaml.engine.usecases.tags;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Tag;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Example of parsing a local tag
@@ -32,17 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @org.junit.jupiter.api.Tag("fast")
 public class LocalTagTest {
 
-    @Test
-    public void testLocalTag() {
-        Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
-        //register to call CustomConstructor when the Tag !ImportValue is found
-        tagConstructors.put(new Tag("!ImportValue"), new CustomConstructor());
-        LoadSettings settings = LoadSettings.builder()
-                .setTagConstructors(tagConstructors)
-                .build();
-        Load loader = new Load(settings);
-        Object obj = loader.loadFromString("VpcId: !ImportValue SpokeVPC");
-        Map<String, ImportValueImpl> map = (Map<String, ImportValueImpl>) obj;
-        assertEquals("SpokeVPC", map.get("VpcId").getValue());
-    }
+  @Test
+  public void testLocalTag() {
+    Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
+    //register to call CustomConstructor when the Tag !ImportValue is found
+    tagConstructors.put(new Tag("!ImportValue"), new CustomConstructor());
+    LoadSettings settings = LoadSettings.builder()
+        .setTagConstructors(tagConstructors)
+        .build();
+    Load loader = new Load(settings);
+    Object obj = loader.loadFromString("VpcId: !ImportValue SpokeVPC");
+    Map<String, ImportValueImpl> map = (Map<String, ImportValueImpl>) obj;
+    assertEquals("SpokeVPC", map.get("VpcId").getValue());
+  }
 }

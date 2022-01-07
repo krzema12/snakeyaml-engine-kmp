@@ -16,50 +16,47 @@
 package org.snakeyaml.engine.v2.parser;
 
 
+import java.util.Iterator;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.exceptions.ParserException;
-
-import java.util.Iterator;
 
 /**
  * This interface represents an input stream of {@link Event Events}.
  * <p>
- * The parser and the scanner form together the 'Parse' step in the loading
- * process.
+ * The parser and the scanner form together the 'Parse' step in the loading process.
  * </p>
+ *
  * @see <a href="https://yaml.org/spec/1.2.2/#31-processes">Figure 3.1. Processing Overview</a>
  * {@link Event}
  */
 public interface Parser extends Iterator<Event> {
 
-    /**
-     * Check if the next event is one of the given type.
-     *
-     * @param choice Event ID.
-     * @return <code>true</code> if the next event can be assigned to a variable
-     * of the given type. Returns <code>false</code> if no more events
-     * are available.
-     * @throws ParserException Thrown in case of malformed input.
-     */
-    boolean checkEvent(Event.ID choice);
+  /**
+   * Check if the next event is one of the given type.
+   *
+   * @param choice Event ID.
+   * @return <code>true</code> if the next event can be assigned to a variable
+   * of the given type. Returns <code>false</code> if no more events are available.
+   * @throws ParserException Thrown in case of malformed input.
+   */
+  boolean checkEvent(Event.ID choice);
 
-    /**
-     * Return the next event, but do not delete it from the stream.
-     *
-     * @return The event that will be returned on the next call to
-     * {@link #next}
-     * @throws ParserException Thrown in case of malformed input.
-     */
-    Event peekEvent();
+  /**
+   * Return the next event, but do not delete it from the stream.
+   *
+   * @return The event that will be returned on the next call to {@link #next}
+   * @throws ParserException Thrown in case of malformed input.
+   */
+  Event peekEvent();
 
-    /**
-     * Returns the next event.
-     * <p>
-     * The event will be removed from the stream.
-     * </p>
-     *
-     * @return the next parsed event
-     * @throws ParserException Thrown in case of malformed input.
-     */
-    Event next();
+  /**
+   * Returns the next event.
+   * <p>
+   * The event will be removed from the stream.
+   * </p>
+   *
+   * @return the next parsed event
+   * @throws ParserException Thrown in case of malformed input.
+   */
+  Event next();
 }

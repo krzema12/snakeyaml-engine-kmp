@@ -22,12 +22,14 @@ import java.util.Optional;
  * General exception during composition step
  */
 public class ComposerException extends MarkedYamlEngineException { //NOSONAR
-    public ComposerException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
-        super(context, contextMark, problem, problemMark);
-        Objects.requireNonNull(context);
-    }
 
-    public ComposerException(String problem, Optional<Mark> problemMark) {
-        super("", Optional.empty(), problem, problemMark);
-    }
+  public ComposerException(String context, Optional<Mark> contextMark, String problem,
+      Optional<Mark> problemMark) {
+    super(context, contextMark, problem, problemMark);
+    Objects.requireNonNull(context);
+  }
+
+  public ComposerException(String problem, Optional<Mark> problemMark) {
+    super("", Optional.empty(), problem, problemMark);
+  }
 }

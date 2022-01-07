@@ -15,37 +15,37 @@
  */
 package org.snakeyaml.engine.usecases.colon_in_flow_context;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInListTest {
-    @Test
-    void withSpacesAround() {
-        Load loader = new Load(LoadSettings.builder().build());
-        List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
-        assertTrue(list.contains("http://foo"));
-    }
 
-    @Test
-    void withoutSpacesAround() {
-        Load loader = new Load(LoadSettings.builder().build());
-        List<String> list = (List<String>) loader.loadFromString("[http://foo]");
-        assertTrue(list.contains("http://foo"));
-    }
+  @Test
+  void withSpacesAround() {
+    Load loader = new Load(LoadSettings.builder().build());
+    List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
+    assertTrue(list.contains("http://foo"));
+  }
 
-    @Test
-    void twoValues() {
-        Load loader = new Load(LoadSettings.builder().build());
-        List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
-        assertTrue(list.contains("http://foo"));
-        assertTrue(list.contains("http://bar"));
-    }
+  @Test
+  void withoutSpacesAround() {
+    Load loader = new Load(LoadSettings.builder().build());
+    List<String> list = (List<String>) loader.loadFromString("[http://foo]");
+    assertTrue(list.contains("http://foo"));
+  }
+
+  @Test
+  void twoValues() {
+    Load loader = new Load(LoadSettings.builder().build());
+    List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
+    assertTrue(list.contains("http://foo"));
+    assertTrue(list.contains("http://bar"));
+  }
 }
 
 

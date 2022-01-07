@@ -15,43 +15,45 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import java.util.Optional;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
-import java.util.Optional;
-
 /**
  * Marks the beginning of a sequence node.
  * <p>
- * This event is followed by the elements contained in the sequence, and a
- * {@link SequenceEndEvent}.
+ * This event is followed by the elements contained in the sequence, and a {@link
+ * SequenceEndEvent}.
  * </p>
  *
  * @see SequenceEndEvent
  */
 public final class SequenceStartEvent extends CollectionStartEvent {
-    public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle, Optional<Mark> startMark,
-                              Optional<Mark> endMark) {
-        super(anchor, tag, implicit, flowStyle, startMark, endMark);
-    }
 
-    public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit, FlowStyle flowStyle) {
-        this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
-    }
+  public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
+      FlowStyle flowStyle, Optional<Mark> startMark,
+      Optional<Mark> endMark) {
+    super(anchor, tag, implicit, flowStyle, startMark, endMark);
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.SequenceStart;
-    }
+  public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
+      FlowStyle flowStyle) {
+    this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("+SEQ");
-        if (getFlowStyle() == FlowStyle.FLOW) {
-            builder.append(" []");
-        }
-        builder.append(super.toString());
-        return builder.toString();
+  @Override
+  public ID getEventId() {
+    return ID.SequenceStart;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("+SEQ");
+    if (getFlowStyle() == FlowStyle.FLOW) {
+      builder.append(" []");
     }
+    builder.append(super.toString());
+    return builder.toString();
+  }
 }

@@ -15,6 +15,12 @@
  */
 package org.snakeyaml.engine.v2.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -22,39 +28,33 @@ import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.scanner.ScannerImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 
-import java.util.NoSuchElementException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @org.junit.jupiter.api.Tag("fast")
 class ParserTest {
-    @Test
-    @DisplayName("Expected NoSuchElementException after all the events are finished.")
-    void testToString() {
-        LoadSettings settings = LoadSettings.builder().build();
-        StreamReader reader = new StreamReader(settings, "444333");
-        ScannerImpl scanner = new ScannerImpl(settings, reader);
-        Parser parser = new ParserImpl(settings, scanner);
-        assertTrue(parser.hasNext());
-        assertEquals(Event.ID.StreamStart, parser.next().getEventId());
-        assertTrue(parser.hasNext());
-        assertEquals(Event.ID.DocumentStart, parser.next().getEventId());
-        assertTrue(parser.hasNext());
-        assertEquals(Event.ID.Scalar, parser.next().getEventId());
-        assertTrue(parser.hasNext());
-        assertEquals(Event.ID.DocumentEnd, parser.next().getEventId());
-        assertTrue(parser.hasNext());
-        assertEquals(Event.ID.StreamEnd, parser.next().getEventId());
-        assertFalse(parser.hasNext());
-        try {
-            parser.next();
-            fail("Expected NoSuchElementException");
-        } catch (NoSuchElementException e) {
-            assertEquals("No more Events found.", e.getMessage());
-        }
+
+  @Test
+  @DisplayName("Expected NoSuchElementException after all the events are finished.")
+  void testToString() {
+    LoadSettings settings = LoadSettings.builder().build();
+    StreamReader reader = new StreamReader(settings, "444333");
+    ScannerImpl scanner = new ScannerImpl(settings, reader);
+    Parser parser = new ParserImpl(settings, scanner);
+    assertTrue(parser.hasNext());
+    assertEquals(Event.ID.StreamStart, parser.next().getEventId());
+    assertTrue(parser.hasNext());
+    assertEquals(Event.ID.DocumentStart, parser.next().getEventId());
+    assertTrue(parser.hasNext());
+    assertEquals(Event.ID.Scalar, parser.next().getEventId());
+    assertTrue(parser.hasNext());
+    assertEquals(Event.ID.DocumentEnd, parser.next().getEventId());
+    assertTrue(parser.hasNext());
+    assertEquals(Event.ID.StreamEnd, parser.next().getEventId());
+    assertFalse(parser.hasNext());
+    try {
+      parser.next();
+      fail("Expected NoSuchElementException");
+    } catch (NoSuchElementException e) {
+      assertEquals("No more Events found.", e.getMessage());
     }
+  }
 }
 

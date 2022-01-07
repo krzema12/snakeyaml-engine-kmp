@@ -16,58 +16,59 @@
 package org.snakeyaml.engine.v2.events;
 
 import java.util.Objects;
+import java.util.Optional;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.exceptions.Mark;
-
-import java.util.Optional;
 
 /**
  * Marks a comment block value.
  */
 public final class CommentEvent extends Event {
-    private final CommentType type;
-    private final String value;
 
-    public CommentEvent(CommentType type, String value, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-        Objects.requireNonNull(type);
-        this.type = type;
-        Objects.requireNonNull(value);
-        this.value = value;
-    }
+  private final CommentType type;
+  private final String value;
 
-    /**
-     * String representation of the value.
-     * <p>
-     * Without quotes and escaping.
-     * </p>
-     *
-     * @return Value a comment line string without the leading '#' or a blank line.
-     */
-    public String getValue() {
-        return this.value;
-    }
+  public CommentEvent(CommentType type, String value, Optional<Mark> startMark,
+      Optional<Mark> endMark) {
+    super(startMark, endMark);
+    Objects.requireNonNull(type);
+    this.type = type;
+    Objects.requireNonNull(value);
+    this.value = value;
+  }
 
-    /**
-     * The comment type.
-     *
-     * @return the commentType.
-     */
-    public CommentType getCommentType() {
-        return this.type;
-    }
+  /**
+   * String representation of the value.
+   * <p>
+   * Without quotes and escaping.
+   * </p>
+   *
+   * @return Value a comment line string without the leading '#' or a blank line.
+   */
+  public String getValue() {
+    return this.value;
+  }
 
-    @Override
-    public Event.ID getEventId() {
-        return ID.Comment;
-    }
+  /**
+   * The comment type.
+   *
+   * @return the commentType.
+   */
+  public CommentType getCommentType() {
+    return this.type;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("=COM ");
-        builder.append(type);
-        builder.append(" ");
-        builder.append(value);
-        return builder.toString();
-    }
+  @Override
+  public Event.ID getEventId() {
+    return ID.Comment;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("=COM ");
+    builder.append(type);
+    builder.append(" ");
+    builder.append(value);
+    return builder.toString();
+  }
 }

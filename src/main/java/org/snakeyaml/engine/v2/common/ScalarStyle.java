@@ -18,27 +18,26 @@ package org.snakeyaml.engine.v2.common;
 import java.util.Optional;
 
 /**
- * YAML provides a rich set of scalar styles. Block scalar styles include
- * the literal style and the folded style; flow scalar styles include the
- * plain style and two quoted styles, the single-quoted style and the
- * double-quoted style. These styles offer a range of trade-offs between
- * expressive power and readability.
+ * YAML provides a rich set of scalar styles. Block scalar styles include the literal style and the
+ * folded style; flow scalar styles include the plain style and two quoted styles, the single-quoted
+ * style and the double-quoted style. These styles offer a range of trade-offs between expressive
+ * power and readability.
  */
 public enum ScalarStyle {
-    DOUBLE_QUOTED(Optional.of('"')),
-    SINGLE_QUOTED(Optional.of('\'')),
-    LITERAL(Optional.of('|')),
-    FOLDED(Optional.of('>')),
-    PLAIN(Optional.empty());
+  DOUBLE_QUOTED(Optional.of('"')),
+  SINGLE_QUOTED(Optional.of('\'')),
+  LITERAL(Optional.of('|')),
+  FOLDED(Optional.of('>')),
+  PLAIN(Optional.empty());
 
-    private final Optional<Character> styleOpt;
+  private final Optional<Character> styleOpt;
 
-    ScalarStyle(Optional<Character> style) {
-        this.styleOpt = style;
-    }
+  ScalarStyle(Optional<Character> style) {
+    this.styleOpt = style;
+  }
 
-    @Override
-    public String toString() {
-        return String.valueOf(styleOpt.orElse(':'));
-    }
+  @Override
+  public String toString() {
+    return String.valueOf(styleOpt.orElse(':'));
+  }
 }

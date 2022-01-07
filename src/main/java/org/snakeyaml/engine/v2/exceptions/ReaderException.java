@@ -16,35 +16,36 @@
 package org.snakeyaml.engine.v2.exceptions;
 
 public class ReaderException extends YamlEngineException {
-    private final String name;
-    private final int codePoint;
-    private final int position;
 
-    public ReaderException(String name, int position, int codePoint, String message) {
-        super(message);
-        this.name = name;
-        this.codePoint = codePoint;
-        this.position = position;
-    }
+  private final String name;
+  private final int codePoint;
+  private final int position;
 
-    public String getName() {
-        return name;
-    }
+  public ReaderException(String name, int position, int codePoint, String message) {
+    super(message);
+    this.name = name;
+    this.codePoint = codePoint;
+    this.position = position;
+  }
 
-    public int getCodePoint() {
-        return codePoint;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public int getPosition() {
-        return position;
-    }
+  public int getCodePoint() {
+    return codePoint;
+  }
 
-    @Override
-    public String toString() {
-        final String s = new String(Character.toChars(codePoint));
-        return "unacceptable code point '" + s + "' (0x"
-                + Integer.toHexString(codePoint).toUpperCase() + ") " + getMessage()
-                + "\nin \"" + name + "\", position " + position;
-    }
+  public int getPosition() {
+    return position;
+  }
+
+  @Override
+  public String toString() {
+    final String s = new String(Character.toChars(codePoint));
+    return "unacceptable code point '" + s + "' (0x"
+        + Integer.toHexString(codePoint).toUpperCase() + ") " + getMessage()
+        + "\nin \"" + name + "\", position " + position;
+  }
 }
 

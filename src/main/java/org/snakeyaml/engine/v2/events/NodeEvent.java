@@ -16,35 +16,33 @@
 package org.snakeyaml.engine.v2.events;
 
 
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Base class for all events that mark the beginning of a node.
  */
 public abstract class NodeEvent extends Event {
 
-    private final Optional<Anchor> anchor;
+  private final Optional<Anchor> anchor;
 
-    public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-        Objects.requireNonNull(anchor);
-        this.anchor = anchor;
-    }
+  public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+    Objects.requireNonNull(anchor);
+    this.anchor = anchor;
+  }
 
-    /**
-     * Node anchor by which this node might later be referenced by a
-     * {@link AliasEvent}.
-     * <p>
-     * Note that {@link AliasEvent}s are by it self <code>NodeEvent</code>s and
-     * use this property to indicate the referenced anchor.
-     *
-     * @return Anchor of this node or <code>null</code> if no anchor is defined.
-     */
-    public Optional<Anchor> getAnchor() {
-        return this.anchor;
-    }
+  /**
+   * Node anchor by which this node might later be referenced by a {@link AliasEvent}.
+   * <p>
+   * Note that {@link AliasEvent}s are by it self <code>NodeEvent</code>s and use this property to
+   * indicate the referenced anchor.
+   *
+   * @return Anchor of this node or <code>null</code> if no anchor is defined.
+   */
+  public Optional<Anchor> getAnchor() {
+    return this.anchor;
+  }
 }

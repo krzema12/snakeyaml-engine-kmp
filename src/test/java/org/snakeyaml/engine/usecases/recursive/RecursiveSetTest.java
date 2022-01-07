@@ -15,6 +15,10 @@
  */
 package org.snakeyaml.engine.usecases.recursive;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,33 +27,30 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @Tag("fast")
 class RecursiveSetTest {
 
-    @Test
-    @DisplayName("Fail to load map with recursive keys")
-    void failToLoadRecursiveSetByDefault() {
-        String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
-        LoadSettings settings = LoadSettings.builder().build();
-        Load load = new Load(settings);
-        //fail to load map which has only one key - reference to itself
-        YamlEngineException exception = assertThrows(YamlEngineException.class, () -> load.loadFromString(recursiveInput));
-        assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.", exception.getMessage());
-    }
+  @Test
+  @DisplayName("Fail to load map with recursive keys")
+  void failToLoadRecursiveSetByDefault() {
+    String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
+    LoadSettings settings = LoadSettings.builder().build();
+    Load load = new Load(settings);
+    //fail to load map which has only one key - reference to itself
+    YamlEngineException exception = assertThrows(YamlEngineException.class,
+        () -> load.loadFromString(recursiveInput));
+    assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.",
+        exception.getMessage());
+  }
 
-    @Test
-    @DisplayName("Load map with recursive keys if it is explicitly allowed")
-    void loadRecursiveSetIfAllowed() {
-        String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
-        LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
-        Load load = new Load(settings);
-        //load map which has only one key - reference to itself
-        Set recursive = (Set<Object>) load.loadFromString(recursiveInput);
-        assertEquals(3, recursive.size());
-    }
+  @Test
+  @DisplayName("Load map with recursive keys if it is explicitly allowed")
+  void loadRecursiveSetIfAllowed() {
+    String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
+    LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
+    Load load = new Load(settings);
+    //load map which has only one key - reference to itself
+    Set recursive = (Set<Object>) load.loadFromString(recursiveInput);
+    assertEquals(3, recursive.size());
+  }
 }

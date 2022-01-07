@@ -15,12 +15,11 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Represents a map.
@@ -29,55 +28,57 @@ import java.util.Optional;
  * </p>
  */
 public class MappingNode extends CollectionNode<NodeTuple> {
-    private List<NodeTuple> value;
-    private boolean merged = false;
 
-    public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(tag, flowStyle, startMark, endMark);
-        Objects.requireNonNull(value);
-        this.value = value;
-        this.resolved = resolved;
-    }
+  private List<NodeTuple> value;
+  private boolean merged = false;
 
-    public MappingNode(Tag tag, List<NodeTuple> value, FlowStyle flowStyle) {
-        this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
-    }
+  public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle,
+      Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(tag, flowStyle, startMark, endMark);
+    Objects.requireNonNull(value);
+    this.value = value;
+    this.resolved = resolved;
+  }
 
-    @Override
-    public NodeType getNodeType() {
-        return NodeType.MAPPING;
-    }
+  public MappingNode(Tag tag, List<NodeTuple> value, FlowStyle flowStyle) {
+    this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
+  }
 
-    /**
-     * Returns the entries of this map.
-     *
-     * @return List of entries.
-     */
-    public List<NodeTuple> getValue() {
-        return value;
-    }
+  @Override
+  public NodeType getNodeType() {
+    return NodeType.MAPPING;
+  }
 
-    public void setValue(List<NodeTuple> mergedValue) {
-        value = mergedValue;
-    }
+  /**
+   * Returns the entries of this map.
+   *
+   * @return List of entries.
+   */
+  public List<NodeTuple> getValue() {
+    return value;
+  }
 
-    @Override
-    public String toString() {
-        String values;
-        StringBuilder buf = new StringBuilder();
-        for (NodeTuple node : getValue()) {
-            buf.append("{ key=");
-            buf.append(node.getKeyNode());
-            buf.append("; value=");
-            if (node.getValueNode() instanceof CollectionNode) {
-                // to avoid overflow in case of recursive structures
-                buf.append(System.identityHashCode(node.getValueNode()));
-            } else {
-                buf.append(node.toString());
-            }
-            buf.append(" }");
-        }
-        values = buf.toString();
-        return "<" + this.getClass().getName() + " (tag=" + getTag() + ", values=" + values + ")>";
+  public void setValue(List<NodeTuple> mergedValue) {
+    value = mergedValue;
+  }
+
+  @Override
+  public String toString() {
+    String values;
+    StringBuilder buf = new StringBuilder();
+    for (NodeTuple node : getValue()) {
+      buf.append("{ key=");
+      buf.append(node.getKeyNode());
+      buf.append("; value=");
+      if (node.getValueNode() instanceof CollectionNode) {
+        // to avoid overflow in case of recursive structures
+        buf.append(System.identityHashCode(node.getValueNode()));
+      } else {
+        buf.append(node.toString());
+      }
+      buf.append(" }");
     }
+    values = buf.toString();
+    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", values=" + values + ")>";
+  }
 }

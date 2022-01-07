@@ -15,20 +15,19 @@
  */
 package org.snakeyaml.engine.v2.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.common.collect.ImmutableMap;
+import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("fast")
 class VersionTagsTupleTest {
 
-    @Test
-    void testToString() {
-        VersionTagsTuple tuple = new VersionTagsTuple(Optional.empty(), ImmutableMap.of());
-        assertEquals("VersionTagsTuple<Optional.empty, {}>", tuple.toString());
-    }
+  @Test
+  void testToString() {
+    VersionTagsTuple tuple = new VersionTagsTuple(Optional.empty(), ImmutableMap.of());
+    assertEquals("VersionTagsTuple<Optional.empty, {}>", tuple.toString());
+  }
 }

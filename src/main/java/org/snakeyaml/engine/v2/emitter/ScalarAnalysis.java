@@ -19,50 +19,51 @@ package org.snakeyaml.engine.v2.emitter;
  * Accumulate information to choose the scalar style
  */
 public final class ScalarAnalysis {
-    private final String scalar;
-    private final boolean empty;
-    private final boolean multiline;
-    private final boolean allowFlowPlain;
-    private final boolean allowBlockPlain;
-    private final boolean allowSingleQuoted;
-    private final boolean allowBlock;
 
-    public ScalarAnalysis(String scalar, boolean empty, boolean multiline, boolean allowFlowPlain,
-                          boolean allowBlockPlain, boolean allowSingleQuoted, boolean allowBlock) {
-        this.scalar = scalar;
-        this.empty = empty;
-        this.multiline = multiline;
-        this.allowFlowPlain = allowFlowPlain;
-        this.allowBlockPlain = allowBlockPlain;
-        this.allowSingleQuoted = allowSingleQuoted;
-        this.allowBlock = allowBlock;
-    }
+  private final String scalar;
+  private final boolean empty;
+  private final boolean multiline;
+  private final boolean allowFlowPlain;
+  private final boolean allowBlockPlain;
+  private final boolean allowSingleQuoted;
+  private final boolean allowBlock;
 
-    public String getScalar() {
-        return scalar;
-    }
+  public ScalarAnalysis(String scalar, boolean empty, boolean multiline, boolean allowFlowPlain,
+      boolean allowBlockPlain, boolean allowSingleQuoted, boolean allowBlock) {
+    this.scalar = scalar;
+    this.empty = empty;
+    this.multiline = multiline;
+    this.allowFlowPlain = allowFlowPlain;
+    this.allowBlockPlain = allowBlockPlain;
+    this.allowSingleQuoted = allowSingleQuoted;
+    this.allowBlock = allowBlock;
+  }
 
-    public boolean isEmpty() {
-        return empty;
-    }
+  public String getScalar() {
+    return scalar;
+  }
 
-    public boolean isMultiline() {
-        return multiline;
-    }
+  public boolean isEmpty() {
+    return empty;
+  }
 
-    public boolean isAllowFlowPlain() {
-        return allowFlowPlain;
-    }
+  public boolean isMultiline() {
+    return multiline;
+  }
 
-    public boolean isAllowBlockPlain() {
-        return allowBlockPlain;
-    }
+  public boolean isAllowFlowPlain() {
+    return allowFlowPlain;
+  }
 
-    public boolean isAllowSingleQuoted() {
-        return allowSingleQuoted;
-    }
+  public boolean isAllowBlockPlain() {
+    return allowBlockPlain;
+  }
 
-    public boolean isAllowBlock() {
-        return allowBlock;
-    }
+  public boolean isAllowSingleQuoted() {
+    return allowSingleQuoted;
+  }
+
+  public boolean isAllowBlock() {
+    return allowBlock;
+  }
 }

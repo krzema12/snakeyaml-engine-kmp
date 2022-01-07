@@ -15,12 +15,11 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Represents a sequence.
@@ -29,36 +28,37 @@ import java.util.Optional;
  * </p>
  */
 public class SequenceNode extends CollectionNode<Node> {
-    private final List<Node> value;
 
-    public SequenceNode(Tag tag, boolean resolved, List<Node> value,
-                        FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(tag, flowStyle, startMark, endMark);
-        Objects.requireNonNull(value, "value in a Node is required.");
-        this.value = value;
-        this.resolved = resolved;
-    }
+  private final List<Node> value;
 
-    public SequenceNode(Tag tag, List<Node> value, FlowStyle flowStyle) {
-        this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
-    }
+  public SequenceNode(Tag tag, boolean resolved, List<Node> value,
+      FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(tag, flowStyle, startMark, endMark);
+    Objects.requireNonNull(value, "value in a Node is required.");
+    this.value = value;
+    this.resolved = resolved;
+  }
 
-    @Override
-    public NodeType getNodeType() {
-        return NodeType.SEQUENCE;
-    }
+  public SequenceNode(Tag tag, List<Node> value, FlowStyle flowStyle) {
+    this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
+  }
 
-    /**
-     * Returns the elements in this sequence.
-     *
-     * @return Nodes in the specified order.
-     */
-    public List<Node> getValue() {
-        return value;
-    }
+  @Override
+  public NodeType getNodeType() {
+    return NodeType.SEQUENCE;
+  }
 
-    public String toString() {
-        return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
-                + ")>";
-    }
+  /**
+   * Returns the elements in this sequence.
+   *
+   * @return Nodes in the specified order.
+   */
+  public List<Node> getValue() {
+    return value;
+  }
+
+  public String toString() {
+    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
+        + ")>";
+  }
 }

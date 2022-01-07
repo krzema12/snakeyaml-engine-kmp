@@ -19,11 +19,12 @@ package org.snakeyaml.engine.v2.parser;
 import org.snakeyaml.engine.v2.events.Event;
 
 /**
- * Helper for {@link ParserImpl}. A grammar rule to apply given the symbols on
- * top of its stack and the next input token
+ * Helper for {@link ParserImpl}. A grammar rule to apply given the symbols on top of its stack and
+ * the next input token
  *
  * @see <a href="http://en.wikipedia.org/wiki/LL_parser"></a>
  */
 interface Production {
-    Event produce();
+
+  Event produce();
 }

@@ -17,26 +17,26 @@ package org.snakeyaml.engine.v2.tokens;
 
 
 import java.util.Objects;
+import java.util.Optional;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
-import java.util.Optional;
-
 public final class AliasToken extends Token {
-    private final Anchor value;
 
-    public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-        Objects.requireNonNull(value);
-        this.value = value;
-    }
+  private final Anchor value;
 
-    public Anchor getValue() {
-        return this.value;
-    }
+  public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+    Objects.requireNonNull(value);
+    this.value = value;
+  }
 
-    @Override
-    public Token.ID getTokenId() {
-        return ID.Alias;
-    }
+  public Anchor getValue() {
+    return this.value;
+  }
+
+  @Override
+  public Token.ID getTokenId() {
+    return ID.Alias;
+  }
 }

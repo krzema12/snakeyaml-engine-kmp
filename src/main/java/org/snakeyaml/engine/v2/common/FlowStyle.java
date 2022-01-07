@@ -16,23 +16,22 @@
 package org.snakeyaml.engine.v2.common;
 
 /**
- * Block styles use indentation to denote nesting and scope within the
- * document. In contrast, flow styles rely on explicit indicators to denote
- * nesting and scope.
+ * Block styles use indentation to denote nesting and scope within the document. In contrast, flow
+ * styles rely on explicit indicators to denote nesting and scope.
  */
 public enum FlowStyle {
-    /**
-     * Flow style
-     */
-    FLOW,
+  /**
+   * Flow style
+   */
+  FLOW,
 
-    /**
-     * Block style
-     */
-    BLOCK,
+  /**
+   * Block style
+   */
+  BLOCK,
 
-    /**
-     * Block style for the root level and flow style for other levels
-     */
-    AUTO
+  /**
+   * Block style for the root level and flow style for other levels
+   */
+  AUTO
 }

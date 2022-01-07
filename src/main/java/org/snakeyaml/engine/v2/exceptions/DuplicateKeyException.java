@@ -22,8 +22,9 @@ import java.util.Optional;
  */
 public class DuplicateKeyException extends ConstructorException { //NOSONAR
 
-    public DuplicateKeyException(Optional<Mark> contextMark, Object key,
-                                 Optional<Mark> problemMark) {
-        super("while constructing a mapping", contextMark, "found duplicate key " + key.toString(), problemMark);
-    }
+  public DuplicateKeyException(Optional<Mark> contextMark, Object key,
+      Optional<Mark> problemMark) {
+    super("while constructing a mapping", contextMark, "found duplicate key " + key.toString(),
+        problemMark);
+  }
 }

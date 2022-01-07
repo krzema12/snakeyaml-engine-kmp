@@ -15,10 +15,6 @@
  */
 package org.snakeyaml.engine.v2.common;
 
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
@@ -27,45 +23,49 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 public abstract class UriEncoder {
-    private static final CharsetDecoder UTF8Decoder = StandardCharsets.UTF_8.newDecoder()
-            .onMalformedInput(CodingErrorAction.REPORT);
-    // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
-    // its escape as required by spec. See
-    private static final String SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/";
-    private static final Escaper escaper = new PercentEscaper(SAFE_CHARS, false);
 
-    private UriEncoder() {
-    }
+  private static final CharsetDecoder UTF8Decoder = StandardCharsets.UTF_8.newDecoder()
+      .onMalformedInput(CodingErrorAction.REPORT);
+  // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
+  // its escape as required by spec. See
+  private static final String SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/";
+  private static final Escaper escaper = new PercentEscaper(SAFE_CHARS, false);
 
-    /**
-     * Escape special characters with '%'
-     *
-     * @param uri URI to be escaped
-     * @return encoded URI
-     */
-    public static String encode(String uri) {
-        return escaper.escape(uri);
-    }
+  private UriEncoder() {
+  }
 
-    /**
-     * Decode '%'-escaped characters. Decoding fails in case of invalid UTF-8
-     *
-     * @param buff data to decode
-     * @return decoded data
-     * @throws CharacterCodingException if cannot be decoded
-     */
-    public static String decode(ByteBuffer buff) throws CharacterCodingException {
-        CharBuffer chars = UTF8Decoder.decode(buff);
-        return chars.toString();
-    }
+  /**
+   * Escape special characters with '%'
+   *
+   * @param uri URI to be escaped
+   * @return encoded URI
+   */
+  public static String encode(String uri) {
+    return escaper.escape(uri);
+  }
 
-    public static String decode(String buff) {
-        try {
-            return URLDecoder.decode(buff, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new YamlEngineException(e);
-        }
+  /**
+   * Decode '%'-escaped characters. Decoding fails in case of invalid UTF-8
+   *
+   * @param buff data to decode
+   * @return decoded data
+   * @throws CharacterCodingException if cannot be decoded
+   */
+  public static String decode(ByteBuffer buff) throws CharacterCodingException {
+    CharBuffer chars = UTF8Decoder.decode(buff);
+    return chars.toString();
+  }
+
+  public static String decode(String buff) {
+    try {
+      return URLDecoder.decode(buff, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new YamlEngineException(e);
     }
+  }
 }

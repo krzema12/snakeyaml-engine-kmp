@@ -15,31 +15,31 @@
  */
 package org.snakeyaml.engine.v2.serializer;
 
+import java.text.NumberFormat;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.nodes.Node;
 
-import java.text.NumberFormat;
-
 public class NumberAnchorGenerator implements AnchorGenerator {
 
-    private int lastAnchorId = 0;
+  private int lastAnchorId = 0;
 
-    public NumberAnchorGenerator(int lastAnchorId) {
-        this.lastAnchorId = lastAnchorId;
-    }
+  public NumberAnchorGenerator(int lastAnchorId) {
+    this.lastAnchorId = lastAnchorId;
+  }
 
-    /**
-     * Create value increasing the number
-     * @param node - ignored
-     * @return value with format 'id001'
-     */
-    public Anchor nextAnchor(Node node) {
-        this.lastAnchorId++;
-        NumberFormat format = NumberFormat.getNumberInstance();
-        format.setMinimumIntegerDigits(3);
-        format.setMaximumFractionDigits(0);// issue 172
-        format.setGroupingUsed(false);
-        String anchorId = format.format(this.lastAnchorId);
-        return new Anchor("id" + anchorId);
-    }
+  /**
+   * Create value increasing the number
+   *
+   * @param node - ignored
+   * @return value with format 'id001'
+   */
+  public Anchor nextAnchor(Node node) {
+    this.lastAnchorId++;
+    NumberFormat format = NumberFormat.getNumberInstance();
+    format.setMinimumIntegerDigits(3);
+    format.setMaximumFractionDigits(0);// issue 172
+    format.setGroupingUsed(false);
+    String anchorId = format.format(this.lastAnchorId);
+    return new Anchor("id" + anchorId);
+  }
 }

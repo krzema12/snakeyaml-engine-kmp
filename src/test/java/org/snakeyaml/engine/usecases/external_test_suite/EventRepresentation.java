@@ -16,30 +16,39 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.Tag;
-
 import java.util.List;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.events.AliasEvent;
+import org.snakeyaml.engine.v2.events.CollectionStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.ImplicitTuple;
+import org.snakeyaml.engine.v2.events.MappingStartEvent;
+import org.snakeyaml.engine.v2.events.NodeEvent;
+import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
  * Event representation for the external test suite
  */
 public class EventRepresentation {
-    private final Event event;
 
-    public EventRepresentation(Event event) {
-        this.event = event;
+  private final Event event;
+
+  public EventRepresentation(Event event) {
+    this.event = event;
+  }
+
+  public String getRepresentation() {
+    return event.toString();
+  }
+
+
+  public boolean isSameAs(String data) {
+    List<String> split = Splitter.on(' ').splitToList(data);
+    if (!event.toString().startsWith(split.get(0))) {
+      return false;
     }
-
-    public String getRepresentation() {
-        return event.toString();
-    }
-
-
-    public boolean isSameAs(String data) {
-        List<String> split = Splitter.on(' ').splitToList(data);
-        if (!event.toString().startsWith(split.get(0))) return false;
         /*
         if (event instanceof DocumentStartEvent) {
             DocumentStartEvent e = (DocumentStartEvent) event;
@@ -58,50 +67,62 @@ public class EventRepresentation {
             }
         }
         */
-        if (event instanceof MappingStartEvent) {
-            CollectionStartEvent e = (CollectionStartEvent) event;
-            boolean tagIsPresent = e.getTag().isPresent();
-            String mapTag = Tag.MAP.getValue();
-            if (tagIsPresent && !mapTag.equals(e.getTag().get())) {
-                String last = split.get(split.size() - 1);
-                if (!last.equals("<" + e.getTag().get() + ">")) return false;
-            }
+    if (event instanceof MappingStartEvent) {
+      CollectionStartEvent e = (CollectionStartEvent) event;
+      boolean tagIsPresent = e.getTag().isPresent();
+      String mapTag = Tag.MAP.getValue();
+      if (tagIsPresent && !mapTag.equals(e.getTag().get())) {
+        String last = split.get(split.size() - 1);
+        if (!last.equals("<" + e.getTag().get() + ">")) {
+          return false;
         }
-        if (event instanceof SequenceStartEvent) {
-            SequenceStartEvent e = (SequenceStartEvent) event;
-            if (e.getTag().isPresent() && !Tag.SEQ.getValue().equals(e.getTag().get())) {
-                String last = split.get(split.size() - 1);
-                if (!last.equals("<" + e.getTag().get() + ">")) return false;
-            }
-        }
-        if (event instanceof NodeEvent) {
-            NodeEvent e = (NodeEvent) event;
-            if (e.getAnchor().isPresent()) {
-                int indexOfAlias = 1;
-                if (event.getEventId().equals(Event.ID.SequenceStart) || event.getEventId().equals(Event.ID.MappingStart)) {
-                    CollectionStartEvent start = (CollectionStartEvent) event;
-                    if (start.getFlowStyle() == FlowStyle.FLOW)
-                        indexOfAlias = 2;
-                }
-                if (event instanceof AliasEvent) {
-                    if (!split.get(indexOfAlias).startsWith("*")) return false;
-                } else {
-                    if (!split.get(indexOfAlias).startsWith("&")) return false;
-                }
-            }
-        }
-        if (event instanceof ScalarEvent) {
-            ScalarEvent e = (ScalarEvent) event;
-            if (e.getTag().isPresent()) {
-                String tag = e.getTag().get();
-                ImplicitTuple implicit = e.getImplicit();
-                if (implicit.bothFalse()) {
-                    if (!data.contains("<" + e.getTag().get() + ">")) return false;
-                }
-            }
-            String end = e.getScalarStyle() + e.escapedValue();
-            return data.endsWith(end);
-        }
-        return true;
+      }
     }
+    if (event instanceof SequenceStartEvent) {
+      SequenceStartEvent e = (SequenceStartEvent) event;
+      if (e.getTag().isPresent() && !Tag.SEQ.getValue().equals(e.getTag().get())) {
+        String last = split.get(split.size() - 1);
+        if (!last.equals("<" + e.getTag().get() + ">")) {
+          return false;
+        }
+      }
+    }
+    if (event instanceof NodeEvent) {
+      NodeEvent e = (NodeEvent) event;
+      if (e.getAnchor().isPresent()) {
+        int indexOfAlias = 1;
+        if (event.getEventId().equals(Event.ID.SequenceStart) || event.getEventId()
+            .equals(Event.ID.MappingStart)) {
+          CollectionStartEvent start = (CollectionStartEvent) event;
+          if (start.getFlowStyle() == FlowStyle.FLOW) {
+            indexOfAlias = 2;
+          }
+        }
+        if (event instanceof AliasEvent) {
+          if (!split.get(indexOfAlias).startsWith("*")) {
+            return false;
+          }
+        } else {
+          if (!split.get(indexOfAlias).startsWith("&")) {
+            return false;
+          }
+        }
+      }
+    }
+    if (event instanceof ScalarEvent) {
+      ScalarEvent e = (ScalarEvent) event;
+      if (e.getTag().isPresent()) {
+        String tag = e.getTag().get();
+        ImplicitTuple implicit = e.getImplicit();
+        if (implicit.bothFalse()) {
+          if (!data.contains("<" + e.getTag().get() + ">")) {
+            return false;
+          }
+        }
+      }
+      String end = e.getScalarStyle() + e.escapedValue();
+      return data.endsWith(end);
+    }
+    return true;
+  }
 }

@@ -15,16 +15,16 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("fast")
 class ImplicitTupleTest {
 
-    @Test
-    void testToString() {
-        assertEquals("implicit=[true, false]", new ImplicitTuple(true, false).toString());
-    }
+  @Test
+  void testToString() {
+    assertEquals("implicit=[true, false]", new ImplicitTuple(true, false).toString());
+  }
 }

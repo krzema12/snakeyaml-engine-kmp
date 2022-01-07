@@ -19,13 +19,13 @@ package org.snakeyaml.engine.v2.common;
  * Configure the style when String contains non-printable characters
  */
 public enum NonPrintableStyle {
-    /**
-     * Transform non-printable string to !!binary
-     */
-    BINARY,
+  /**
+   * Transform non-printable string to !!binary
+   */
+  BINARY,
 
-    /**
-     * Escape non-printable string with \\u or \\x notation
-     */
-    ESCAPE
+  /**
+   * Escape non-printable string with \\u or \\x notation
+   */
+  ESCAPE
 }

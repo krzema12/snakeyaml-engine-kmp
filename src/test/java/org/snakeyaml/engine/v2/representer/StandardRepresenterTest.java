@@ -15,6 +15,9 @@
  */
 package org.snakeyaml.engine.v2.representer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.google.common.collect.TreeRangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -23,26 +26,26 @@ import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @Tag("fast")
 class StandardRepresenterTest {
-    private final StandardRepresenter standardRepresenter = new StandardRepresenter(DumpSettings.builder().build());
 
-    @Test
-    @DisplayName("Represent unknown class")
-    void representUnknownClass() {
-        YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-                standardRepresenter.represent(TreeRangeSet.create()));
-        assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet", exception.getMessage());
-    }
+  private final StandardRepresenter standardRepresenter = new StandardRepresenter(
+      DumpSettings.builder().build());
 
-    @Test
-    @DisplayName("Represent Enum as node with global tag")
-    void represenEnum() {
-        Node node = standardRepresenter.represent(FormatEnum.JSON);
-        assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
-                node.getTag().getValue());
-    }
+  @Test
+  @DisplayName("Represent unknown class")
+  void representUnknownClass() {
+    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
+        standardRepresenter.represent(TreeRangeSet.create()));
+    assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet",
+        exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("Represent Enum as node with global tag")
+  void represenEnum() {
+    Node node = standardRepresenter.represent(FormatEnum.JSON);
+    assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
+        node.getTag().getValue());
+  }
 }

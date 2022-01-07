@@ -15,74 +15,74 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 public abstract class Token {
-    public enum ID {
-        Alias("<alias>"), //NOSONAR
-        Anchor("<anchor>"), //NOSONAR
-        BlockEnd("<block end>"), //NOSONAR
-        BlockEntry("-"), //NOSONAR
-        BlockMappingStart("<block mapping start>"), //NOSONAR
-        BlockSequenceStart("<block sequence start>"), //NOSONAR
-        Directive("<directive>"), //NOSONAR
-        DocumentEnd("<document end>"), //NOSONAR
-        DocumentStart("<document start>"), //NOSONAR
-        FlowEntry(","), //NOSONAR
-        FlowMappingEnd("}"), //NOSONAR
-        FlowMappingStart("{"), //NOSONAR
-        FlowSequenceEnd("]"), //NOSONAR
-        FlowSequenceStart("["), //NOSONAR
-        Key("?"), //NOSONAR
-        Scalar("<scalar>"), //NOSONAR
-        StreamEnd("<stream end>"), //NOSONAR
-        StreamStart("<stream start>"), //NOSONAR
-        Tag("<tag>"), //NOSONAR
-        Comment("#"),
-        Value(":"); //NOSONAR
 
-        private final String description;
+  public enum ID {
+    Alias("<alias>"), //NOSONAR
+    Anchor("<anchor>"), //NOSONAR
+    BlockEnd("<block end>"), //NOSONAR
+    BlockEntry("-"), //NOSONAR
+    BlockMappingStart("<block mapping start>"), //NOSONAR
+    BlockSequenceStart("<block sequence start>"), //NOSONAR
+    Directive("<directive>"), //NOSONAR
+    DocumentEnd("<document end>"), //NOSONAR
+    DocumentStart("<document start>"), //NOSONAR
+    FlowEntry(","), //NOSONAR
+    FlowMappingEnd("}"), //NOSONAR
+    FlowMappingStart("{"), //NOSONAR
+    FlowSequenceEnd("]"), //NOSONAR
+    FlowSequenceStart("["), //NOSONAR
+    Key("?"), //NOSONAR
+    Scalar("<scalar>"), //NOSONAR
+    StreamEnd("<stream end>"), //NOSONAR
+    StreamStart("<stream start>"), //NOSONAR
+    Tag("<tag>"), //NOSONAR
+    Comment("#"),
+    Value(":"); //NOSONAR
 
-        ID(String s) {
-            description = s;
-        }
+    private final String description;
 
-        @Override
-        public String toString() {
-            return description;
-        }
+    ID(String s) {
+      description = s;
     }
-
-    private final Optional<Mark> startMark;
-    private final Optional<Mark> endMark;
-
-    public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
-        Objects.requireNonNull(startMark);
-        Objects.requireNonNull(endMark);
-        this.startMark = startMark;
-        this.endMark = endMark;
-    }
-
-    public Optional<Mark> getStartMark() {
-        return startMark;
-    }
-
-    public Optional<Mark> getEndMark() {
-        return endMark;
-    }
-
-    /**
-     * For error reporting.
-     *
-     * @return ID of this token
-     */
-    public abstract Token.ID getTokenId();
 
     @Override
     public String toString() {
-        return getTokenId().toString();
+      return description;
     }
+  }
+
+  private final Optional<Mark> startMark;
+  private final Optional<Mark> endMark;
+
+  public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
+    Objects.requireNonNull(startMark);
+    Objects.requireNonNull(endMark);
+    this.startMark = startMark;
+    this.endMark = endMark;
+  }
+
+  public Optional<Mark> getStartMark() {
+    return startMark;
+  }
+
+  public Optional<Mark> getEndMark() {
+    return endMark;
+  }
+
+  /**
+   * For error reporting.
+   *
+   * @return ID of this token
+   */
+  public abstract Token.ID getTokenId();
+
+  @Override
+  public String toString() {
+    return getTokenId().toString();
+  }
 }

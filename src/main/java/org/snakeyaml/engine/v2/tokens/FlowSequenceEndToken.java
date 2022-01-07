@@ -15,18 +15,17 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 public final class FlowSequenceEndToken extends Token {
 
-    public FlowSequenceEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public FlowSequenceEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    @Override
-    public Token.ID getTokenId() {
-        return ID.FlowSequenceEnd;
-    }
+  @Override
+  public Token.ID getTokenId() {
+    return ID.FlowSequenceEnd;
+  }
 }

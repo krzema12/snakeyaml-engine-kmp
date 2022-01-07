@@ -19,17 +19,18 @@ package org.snakeyaml.engine.v2.api;
 import org.snakeyaml.engine.v2.nodes.Node;
 
 /**
- * Create a Node Graph out of the provided Native Data Structure (Java instance).
- * (this is opposite to ConstructNode)
+ * Create a Node Graph out of the provided Native Data Structure (Java instance). (this is opposite
+ * to ConstructNode)
  *
  * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
  */
 public interface RepresentToNode {
-    /**
-     * Create a Node
-     *
-     * @param data the instance to represent
-     * @return Node to dump
-     */
-    Node representData(Object data);
+
+  /**
+   * Create a Node
+   *
+   * @param data the instance to represent
+   * @return Node to dump
+   */
+  Node representData(Object data);
 }

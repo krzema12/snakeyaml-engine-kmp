@@ -15,38 +15,38 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import java.util.Optional;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
-
-import java.util.Optional;
 
 /**
  * Marks the inclusion of a previously anchored node.
  */
 public final class AliasEvent extends NodeEvent {
-    private final Anchor alias;
 
-    public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(anchor, startMark, endMark);
-        alias = anchor.orElseThrow(() ->
-            new NullPointerException("Anchor is required in AliasEvent"));
-    }
+  private final Anchor alias;
 
-    public AliasEvent(Optional<Anchor> anchor) {
-        this(anchor, Optional.empty(), Optional.empty());
-    }
+  public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(anchor, startMark, endMark);
+    alias = anchor.orElseThrow(() ->
+        new NullPointerException("Anchor is required in AliasEvent"));
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.Alias;
-    }
+  public AliasEvent(Optional<Anchor> anchor) {
+    this(anchor, Optional.empty(), Optional.empty());
+  }
 
-    @Override
-    public String toString() {
-        return "=ALI *" + alias;
-    }
+  @Override
+  public ID getEventId() {
+    return ID.Alias;
+  }
 
-    public Anchor getAlias() {
-        return alias;
-    }
+  @Override
+  public String toString() {
+    return "=ALI *" + alias;
+  }
+
+  public Anchor getAlias() {
+    return alias;
+  }
 }

@@ -15,75 +15,75 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.Objects;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.parser.ParserImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.Objects;
-
 /**
  * Read the input stream and parse the content into events (opposite for Present or Emit)
  */
 public class Parse {
 
-    private final LoadSettings settings;
+  private final LoadSettings settings;
 
-    /**
-     * Create instance with provided {@link LoadSettings}
-     *
-     * @param settings - configuration
-     */
-    public Parse(LoadSettings settings) {
-        Objects.requireNonNull(settings, "LoadSettings cannot be null");
-        this.settings = settings;
-    }
+  /**
+   * Create instance with provided {@link LoadSettings}
+   *
+   * @param settings - configuration
+   */
+  public Parse(LoadSettings settings) {
+    Objects.requireNonNull(settings, "LoadSettings cannot be null");
+    this.settings = settings;
+  }
 
-    /**
-     * Parse a YAML stream and produce parsing events.
-     *
-     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the encoding is UTF-16 or UTF-32
-     * @return parsed events
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     */
-    public Iterable<Event> parseInputStream(InputStream yaml) {
-        Objects.requireNonNull(yaml, "InputStream cannot be null");
-        return () -> new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml)));
-    }
+  /**
+   * Parse a YAML stream and produce parsing events.
+   *
+   * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
+   *             encoding is UTF-16 or UTF-32
+   * @return parsed events
+   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+   */
+  public Iterable<Event> parseInputStream(InputStream yaml) {
+    Objects.requireNonNull(yaml, "InputStream cannot be null");
+    return () -> new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml)));
+  }
 
-    /**
-     * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM must not be present
-     * (it will be parsed as content)
-     *
-     * @param yaml - YAML document(s).
-     * @return parsed events
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     */
-    public Iterable<Event> parseReader(Reader yaml) {
-        Objects.requireNonNull(yaml, "Reader cannot be null");
-        return () -> new ParserImpl(settings, new StreamReader(settings, yaml));
-    }
+  /**
+   * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM
+   * must not be present (it will be parsed as content)
+   *
+   * @param yaml - YAML document(s).
+   * @return parsed events
+   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+   */
+  public Iterable<Event> parseReader(Reader yaml) {
+    Objects.requireNonNull(yaml, "Reader cannot be null");
+    return () -> new ParserImpl(settings, new StreamReader(settings, yaml));
+  }
 
-    /**
-     * Parse a YAML stream and produce parsing events.
-     *
-     * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
-     * @return parsed events
-     * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-     */
-    public Iterable<Event> parseString(String yaml) {
-        Objects.requireNonNull(yaml, "String cannot be null");
-        //do not use lambda to keep Iterable and Iterator visible
-        return new Iterable() {
-            public Iterator<Event> iterator() {
-                return new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)));
-            }
-        };
-    }
+  /**
+   * Parse a YAML stream and produce parsing events.
+   *
+   * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
+   * @return parsed events
+   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+   */
+  public Iterable<Event> parseString(String yaml) {
+    Objects.requireNonNull(yaml, "String cannot be null");
+    //do not use lambda to keep Iterable and Iterator visible
+    return new Iterable() {
+      public Iterator<Event> iterator() {
+        return new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)));
+      }
+    };
+  }
 }
 

@@ -20,70 +20,71 @@ import java.util.Optional;
 
 public class MarkedYamlEngineException extends YamlEngineException {
 
-    private final String context;
-    private final Optional<Mark> contextMark;
-    private final String problem;
-    private final Optional<Mark> problemMark;
+  private final String context;
+  private final Optional<Mark> contextMark;
+  private final String problem;
+  private final Optional<Mark> problemMark;
 
-    protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
-                                        Optional<Mark> problemMark, Throwable cause) {
-        super(context + "; " + problem + "; " + problemMark, cause);
-        Objects.requireNonNull(contextMark, "contextMark must be provided");
-        Objects.requireNonNull(problemMark, "problemMark must be provided");
-        this.context = context;
-        this.contextMark = contextMark;
-        this.problem = problem;
-        this.problemMark = problemMark;
-    }
+  protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
+      Optional<Mark> problemMark, Throwable cause) {
+    super(context + "; " + problem + "; " + problemMark, cause);
+    Objects.requireNonNull(contextMark, "contextMark must be provided");
+    Objects.requireNonNull(problemMark, "problemMark must be provided");
+    this.context = context;
+    this.contextMark = contextMark;
+    this.problem = problem;
+    this.problemMark = problemMark;
+  }
 
-    protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem, Optional<Mark> problemMark) {
-        this(context, contextMark, problem, problemMark, null);
-    }
+  protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
+      Optional<Mark> problemMark) {
+    this(context, contextMark, problem, problemMark, null);
+  }
 
-    @Override
-    public String getMessage() {
-        return toString();
-    }
+  @Override
+  public String getMessage() {
+    return toString();
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder lines = new StringBuilder();
-        if (context != null) {
-            lines.append(context);
-            lines.append("\n");
-        }
-        if (contextMark.isPresent()
-                && (problem == null || !problemMark.isPresent()
-                || contextMark.get().getName().equals(problemMark.get().getName())
-                || (contextMark.get().getLine() != problemMark.get().getLine()) || (contextMark.get()
-                .getColumn() != problemMark.get().getColumn()))) {
-            lines.append(contextMark.get().toString());
-            lines.append("\n");
-        }
-        if (problem != null) {
-            lines.append(problem);
-            lines.append("\n");
-        }
-        if (problemMark.isPresent()) {
-            lines.append(problemMark.get().toString());
-            lines.append("\n");
-        }
-        return lines.toString();
+  @Override
+  public String toString() {
+    StringBuilder lines = new StringBuilder();
+    if (context != null) {
+      lines.append(context);
+      lines.append("\n");
     }
+    if (contextMark.isPresent()
+        && (problem == null || !problemMark.isPresent()
+        || contextMark.get().getName().equals(problemMark.get().getName())
+        || (contextMark.get().getLine() != problemMark.get().getLine()) || (contextMark.get()
+        .getColumn() != problemMark.get().getColumn()))) {
+      lines.append(contextMark.get().toString());
+      lines.append("\n");
+    }
+    if (problem != null) {
+      lines.append(problem);
+      lines.append("\n");
+    }
+    if (problemMark.isPresent()) {
+      lines.append(problemMark.get().toString());
+      lines.append("\n");
+    }
+    return lines.toString();
+  }
 
-    public String getContext() {
-        return context;
-    }
+  public String getContext() {
+    return context;
+  }
 
-    public Optional<Mark> getContextMark() {
-        return contextMark;
-    }
+  public Optional<Mark> getContextMark() {
+    return contextMark;
+  }
 
-    public String getProblem() {
-        return problem;
-    }
+  public String getProblem() {
+    return problem;
+  }
 
-    public Optional<Mark> getProblemMark() {
-        return problemMark;
-    }
+  public Optional<Mark> getProblemMark() {
+    return problemMark;
+  }
 }

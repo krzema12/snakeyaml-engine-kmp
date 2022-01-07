@@ -15,9 +15,8 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Simple keys treatment.
@@ -26,49 +25,51 @@ import java.util.Optional;
  * </p>
  */
 final class SimpleKey {
-    private final int tokenNumber;
-    private final boolean required;
-    private final int index;
-    private final int line;
-    private final int column;
-    private final Optional<Mark> mark;
 
-    public SimpleKey(int tokenNumber, boolean required, int index, int line, int column, Optional<Mark> mark) {
-        this.tokenNumber = tokenNumber;
-        this.required = required;
-        this.index = index;
-        this.line = line;
-        this.column = column;
-        this.mark = mark;
-    }
+  private final int tokenNumber;
+  private final boolean required;
+  private final int index;
+  private final int line;
+  private final int column;
+  private final Optional<Mark> mark;
 
-    public int getTokenNumber() {
-        return this.tokenNumber;
-    }
+  public SimpleKey(int tokenNumber, boolean required, int index, int line, int column,
+      Optional<Mark> mark) {
+    this.tokenNumber = tokenNumber;
+    this.required = required;
+    this.index = index;
+    this.line = line;
+    this.column = column;
+    this.mark = mark;
+  }
 
-    public int getColumn() {
-        return this.column;
-    }
+  public int getTokenNumber() {
+    return this.tokenNumber;
+  }
 
-    public Optional<Mark> getMark() {
-        return mark;
-    }
+  public int getColumn() {
+    return this.column;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public Optional<Mark> getMark() {
+    return mark;
+  }
 
-    public int getLine() {
-        return line;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public boolean isRequired() {
-        return required;
-    }
+  public int getLine() {
+    return line;
+  }
 
-    @Override
-    public String toString() {
-        return "SimpleKey - tokenNumber=" + tokenNumber + " required=" + required + " index="
-                + index + " line=" + line + " column=" + column;
-    }
+  public boolean isRequired() {
+    return required;
+  }
+
+  @Override
+  public String toString() {
+    return "SimpleKey - tokenNumber=" + tokenNumber + " required=" + required + " index="
+        + index + " line=" + line + " column=" + column;
+  }
 }

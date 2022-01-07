@@ -16,28 +16,27 @@
 package org.snakeyaml.engine.issues.issue512;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @org.junit.jupiter.api.Tag("fast")
 public class ListWithCommentTest {
 
-    @Test
-    @DisplayName("Issue 512 from SnakeYAML")
-    public void testList() {
-        String str = TestUtils.getResource("comments/issue512.yaml");
-        LoadSettings options = LoadSettings.builder()
-                .setParseComments(true)
-                .build();
-        Load load = new Load(options);
-        List<String> obj = (List<String>) load.loadFromString(str);
-        assertEquals(2, obj.size());
-    }
+  @Test
+  @DisplayName("Issue 512 from SnakeYAML")
+  public void testList() {
+    String str = TestUtils.getResource("comments/issue512.yaml");
+    LoadSettings options = LoadSettings.builder()
+        .setParseComments(true)
+        .build();
+    Load load = new Load(options);
+    List<String> obj = (List<String>) load.loadFromString(str);
+    assertEquals(2, obj.size());
+  }
 }

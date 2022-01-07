@@ -15,10 +15,8 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.tokens.Token;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,51 +24,53 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.tokens.Token;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedCanonicalTest extends InheritedImportTest {
 
-    @Test
-    @DisplayName("Canonical scan")
-    public void testCanonicalScanner() throws IOException {
-        File[] files = getStreamsByExtension(".canonical");
-        assertTrue(files.length > 0, "No test files found.");
-        for (int i = 0; i < files.length; i++) {
-            InputStream input = new FileInputStream(files[i]);
-            List<Token> tokens = canonicalScan(input, files[i].getName());
-            input.close();
-            assertFalse(tokens.isEmpty());
-        }
+  @Test
+  @DisplayName("Canonical scan")
+  public void testCanonicalScanner() throws IOException {
+    File[] files = getStreamsByExtension(".canonical");
+    assertTrue(files.length > 0, "No test files found.");
+    for (int i = 0; i < files.length; i++) {
+      InputStream input = new FileInputStream(files[i]);
+      List<Token> tokens = canonicalScan(input, files[i].getName());
+      input.close();
+      assertFalse(tokens.isEmpty());
     }
+  }
 
-    private List<Token> canonicalScan(InputStream input, String label) throws IOException {
-        int ch = input.read();
-        StringBuilder buffer = new StringBuilder();
-        while (ch != -1) {
-            buffer.append((char) ch);
-            ch = input.read();
-        }
-        CanonicalScanner scanner = new CanonicalScanner(buffer.toString().replace(System.lineSeparator(), "\n"), label);
-        List<Token> result = new ArrayList();
-        while (scanner.hasNext()) {
-            result.add(scanner.next());
-        }
-        return result;
+  private List<Token> canonicalScan(InputStream input, String label) throws IOException {
+    int ch = input.read();
+    StringBuilder buffer = new StringBuilder();
+    while (ch != -1) {
+      buffer.append((char) ch);
+      ch = input.read();
     }
+    CanonicalScanner scanner = new CanonicalScanner(
+        buffer.toString().replace(System.lineSeparator(), "\n"), label);
+    List<Token> result = new ArrayList();
+    while (scanner.hasNext()) {
+      result.add(scanner.next());
+    }
+    return result;
+  }
 
-    @Test
-    @DisplayName("Canonical parse")
-    public void testCanonicalParser() throws IOException {
-        File[] files = getStreamsByExtension(".canonical");
-        assertTrue(files.length > 0, "No test files found.");
-        for (int i = 0; i < files.length; i++) {
-            InputStream input = new FileInputStream(files[i]);
-            List<Event> tokens = canonicalParse(input, files[i].getName());
-            input.close();
-            assertFalse(tokens.isEmpty());
-        }
+  @Test
+  @DisplayName("Canonical parse")
+  public void testCanonicalParser() throws IOException {
+    File[] files = getStreamsByExtension(".canonical");
+    assertTrue(files.length > 0, "No test files found.");
+    for (int i = 0; i < files.length; i++) {
+      InputStream input = new FileInputStream(files[i]);
+      List<Event> tokens = canonicalParse(input, files[i].getName());
+      input.close();
+      assertFalse(tokens.isEmpty());
     }
+  }
 }

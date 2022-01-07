@@ -16,20 +16,19 @@
 package org.snakeyaml.engine.v2.api;
 
 /**
- * Writer with the same methods as in {@link java.io.Writer} but without throwing IOExceptions
- * The purpose of this class is to avoid checked exceptions in every method signature.
- * Implementations must define their own way to react on IOExceptions
- * {@link YamlOutputStreamWriter}
+ * Writer with the same methods as in {@link java.io.Writer} but without throwing IOExceptions The
+ * purpose of this class is to avoid checked exceptions in every method signature. Implementations
+ * must define their own way to react on IOExceptions {@link YamlOutputStreamWriter}
  */
 public interface StreamDataWriter {
 
-    /**
-     * Flushes this stream by writing any buffered output to the underlying stream.
-     */
-    default void flush() {
-    }
+  /**
+   * Flushes this stream by writing any buffered output to the underlying stream.
+   */
+  default void flush() {
+  }
 
-    void write(String str);
+  void write(String str);
 
-    void write(String str, int off, int len);
+  void write(String str, int off, int len);
 }

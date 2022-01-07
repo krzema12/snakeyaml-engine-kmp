@@ -23,9 +23,10 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
  * Create ImportValueImpl from a scalar node
  */
 public class CustomConstructor implements ConstructNode {
-    @Override
-    public Object construct(Node node) {
-        ScalarNode scalar = (ScalarNode) node;
-        return new ImportValueImpl(scalar.getValue());
-    }
+
+  @Override
+  public Object construct(Node node) {
+    ScalarNode scalar = (ScalarNode) node;
+    return new ImportValueImpl(scalar.getValue());
+  }
 }

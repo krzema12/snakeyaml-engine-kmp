@@ -20,7 +20,7 @@ package org.snakeyaml.engine.v2.exceptions;
  */
 public class MissingEnvironmentVariableException extends YamlEngineException {
 
-    public MissingEnvironmentVariableException(String message) {
-        super(message);
-    }
+  public MissingEnvironmentVariableException(String message) {
+    super(message);
+  }
 }

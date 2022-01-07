@@ -15,18 +15,17 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 public final class ValueToken extends Token {
 
-    public ValueToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public ValueToken(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    @Override
-    public Token.ID getTokenId() {
-        return ID.Value;
-    }
+  @Override
+  public Token.ID getTokenId() {
+    return ID.Value;
+  }
 }

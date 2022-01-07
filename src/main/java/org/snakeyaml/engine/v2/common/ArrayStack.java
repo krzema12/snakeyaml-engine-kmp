@@ -21,26 +21,27 @@ import java.util.ArrayList;
  * General stack implementation.
  */
 public class ArrayStack<T> {
-    private final ArrayList<T> stack;
 
-    /**
-     * Create empty stack
-     *
-     * @param initSize - the initial size of the stack
-     */
-    public ArrayStack(int initSize) {
-        stack = new ArrayList<>(initSize);
-    }
+  private final ArrayList<T> stack;
 
-    public void push(T obj) {
-        stack.add(obj);
-    }
+  /**
+   * Create empty stack
+   *
+   * @param initSize - the initial size of the stack
+   */
+  public ArrayStack(int initSize) {
+    stack = new ArrayList<>(initSize);
+  }
 
-    public T pop() {
-        return stack.remove(stack.size() - 1);
-    }
+  public void push(T obj) {
+    stack.add(obj);
+  }
 
-    public boolean isEmpty() {
-        return stack.isEmpty();
-    }
+  public T pop() {
+    return stack.remove(stack.size() - 1);
+  }
+
+  public boolean isEmpty() {
+    return stack.isEmpty();
+  }
 }

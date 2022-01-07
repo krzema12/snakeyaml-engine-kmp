@@ -15,90 +15,90 @@
  */
 package org.snakeyaml.engine.usecases.indentation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @org.junit.jupiter.api.Tag("fast")
 public class IndentWithIndicatorTest {
-    @Test
-    public void testIndentWithIndicator1() {
-        DumpSettings settings = DumpSettings.builder()
-                .setDefaultFlowStyle(FlowStyle.BLOCK)
-                .setIndentWithIndicator(true)
-                .setIndent(2)
-                .setIndicatorIndent(1)
-                .build();
-        Dump dumper = new Dump(settings);
-        String output = dumper.dumpToString(createData());
 
-        String doc = TestUtils.getResource("indentation/issue416-1.yaml");
+  @Test
+  public void testIndentWithIndicator1() {
+    DumpSettings settings = DumpSettings.builder()
+        .setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(true)
+        .setIndent(2)
+        .setIndicatorIndent(1)
+        .build();
+    Dump dumper = new Dump(settings);
+    String output = dumper.dumpToString(createData());
 
-        assertEquals(doc, output);
-    }
+    String doc = TestUtils.getResource("indentation/issue416-1.yaml");
 
-    public void testIndentWithIndicator2() {
-        DumpSettings settings = DumpSettings.builder()
-                .setDefaultFlowStyle(FlowStyle.BLOCK)
-                .setIndentWithIndicator(true)
-                .setIndent(2)
-                .setIndicatorIndent(2)
-                .build();
+    assertEquals(doc, output);
+  }
 
-        Dump dumper = new Dump(settings);
-        String output = dumper.dumpToString(createData());
+  public void testIndentWithIndicator2() {
+    DumpSettings settings = DumpSettings.builder()
+        .setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(true)
+        .setIndent(2)
+        .setIndicatorIndent(2)
+        .build();
 
-        String doc = TestUtils.getResource("indentation/issue416-2.yaml");
+    Dump dumper = new Dump(settings);
+    String output = dumper.dumpToString(createData());
 
-        assertEquals(doc, output);
-    }
+    String doc = TestUtils.getResource("indentation/issue416-2.yaml");
 
-    public void testIndentWithIndicator3() {
-        DumpSettings settings = DumpSettings.builder()
-                .setDefaultFlowStyle(FlowStyle.BLOCK)
-                .setIndentWithIndicator(false)
-                .setIndent(4)
-                .setIndicatorIndent(2)
-                .build();
+    assertEquals(doc, output);
+  }
 
-        Dump dumper = new Dump(settings);
-        String output = dumper.dumpToString(createData());
+  public void testIndentWithIndicator3() {
+    DumpSettings settings = DumpSettings.builder()
+        .setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(false)
+        .setIndent(4)
+        .setIndicatorIndent(2)
+        .build();
 
-        String doc = TestUtils.getResource("indentation/issue416_3.yaml");
+    Dump dumper = new Dump(settings);
+    String output = dumper.dumpToString(createData());
 
-        assertEquals(doc, output);
-    }
+    String doc = TestUtils.getResource("indentation/issue416_3.yaml");
 
-    private Map<String, Object> createData() {
-        Map<String, String> fred = new LinkedHashMap<>();
-        fred.put("name", "Fred");
-        fred.put("role", "creator");
+    assertEquals(doc, output);
+  }
 
-        Map<String, String> john = new LinkedHashMap<>();
-        john.put("name", "John");
-        john.put("role", "committer");
+  private Map<String, Object> createData() {
+    Map<String, String> fred = new LinkedHashMap<>();
+    fred.put("name", "Fred");
+    fred.put("role", "creator");
 
-        List<Map<String, String>> developers = new ArrayList<>();
-        developers.add(fred);
-        developers.add(john);
+    Map<String, String> john = new LinkedHashMap<>();
+    john.put("name", "John");
+    john.put("role", "committer");
 
-        Map<String, Object> company = new LinkedHashMap<>();
-        company.put("developers", developers);
-        company.put("name", "Yet Another Company");
-        company.put("location", "Maastricht");
+    List<Map<String, String>> developers = new ArrayList<>();
+    developers.add(fred);
+    developers.add(john);
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("company", company);
+    Map<String, Object> company = new LinkedHashMap<>();
+    company.put("developers", developers);
+    company.put("name", "Yet Another Company");
+    company.put("location", "Maastricht");
 
-        return data;
-    }
+    Map<String, Object> data = new LinkedHashMap<>();
+    data.put("company", company);
+
+    return data;
+  }
 }

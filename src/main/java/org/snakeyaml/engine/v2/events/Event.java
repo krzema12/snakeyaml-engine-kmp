@@ -15,49 +15,50 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import java.util.Optional;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
-import java.util.Optional;
-
 /**
- * Basic unit of output from a {@link org.snakeyaml.engine.v2.parser.Parser} or input
- * of a {@link org.snakeyaml.engine.v2.emitter.Emitter}.
+ * Basic unit of output from a {@link org.snakeyaml.engine.v2.parser.Parser} or input of a {@link
+ * org.snakeyaml.engine.v2.emitter.Emitter}.
  */
 public abstract class Event {
-    public enum ID {
-        Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
+
+  public enum ID {
+    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
+  }
+
+  private final Optional<Mark> startMark;
+  private final Optional<Mark> endMark;
+
+  public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
+    if ((startMark.isPresent() && !endMark.isPresent()) || (!startMark.isPresent()
+        && endMark.isPresent())) {
+      throw new NullPointerException("Both marks must be either present or absent.");
     }
+    this.startMark = startMark;
+    this.endMark = endMark;
+  }
 
-    private final Optional<Mark> startMark;
-    private final Optional<Mark> endMark;
+  /*
+   * Create Node for emitter
+   */
+  public Event() {
+    this(Optional.empty(), Optional.empty());
+  }
 
-    public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
-        if ((startMark.isPresent() && !endMark.isPresent()) || (!startMark.isPresent() && endMark.isPresent())) {
-            throw new NullPointerException("Both marks must be either present or absent.");
-        }
-        this.startMark = startMark;
-        this.endMark = endMark;
-    }
+  public Optional<Mark> getStartMark() {
+    return startMark;
+  }
 
-    /*
-     * Create Node for emitter
-     */
-    public Event() {
-        this(Optional.empty(), Optional.empty());
-    }
+  public Optional<Mark> getEndMark() {
+    return endMark;
+  }
 
-    public Optional<Mark> getStartMark() {
-        return startMark;
-    }
-
-    public Optional<Mark> getEndMark() {
-        return endMark;
-    }
-
-    /**
-     * Get the type (kind) if this Event
-     *
-     * @return the ID of this Event
-     */
-    public abstract Event.ID getEventId();
+  /**
+   * Get the type (kind) if this Event
+   *
+   * @return the ID of this Event
+   */
+  public abstract Event.ID getEventId();
 }

@@ -15,16 +15,14 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
 import java.util.Optional;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
  * Marks the start of a stream that might contain multiple documents.
  * <p>
- * This event is the first event that a parser emits. Together with
- * {@link StreamEndEvent} (which is the last event a parser emits) they mark the
- * beginning and the end of a stream of documents.
+ * This event is the first event that a parser emits. Together with {@link StreamEndEvent} (which is
+ * the last event a parser emits) they mark the beginning and the end of a stream of documents.
  * </p>
  * <p>
  * See {@link Event} for an exemplary output.
@@ -32,21 +30,21 @@ import java.util.Optional;
  */
 public final class StreamStartEvent extends Event {
 
-    public StreamStartEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-        super(startMark, endMark);
-    }
+  public StreamStartEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
+    super(startMark, endMark);
+  }
 
-    public StreamStartEvent() {
-        super();
-    }
+  public StreamStartEvent() {
+    super();
+  }
 
-    @Override
-    public ID getEventId() {
-        return ID.StreamStart;
-    }
+  @Override
+  public ID getEventId() {
+    return ID.StreamStart;
+  }
 
-    @Override
-    public String toString() {
-        return "+STR";
-    }
+  @Override
+  public String toString() {
+    return "+STR";
+  }
 }

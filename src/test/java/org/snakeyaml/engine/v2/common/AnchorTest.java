@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("fast")
@@ -31,7 +32,7 @@ class AnchorTest {
     void testNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () ->
                 new Anchor(null));
-        assertEquals("Anchor must be provided.", exception.getMessage());
+        assertNull(exception.getMessage());
     }
 
     @Test

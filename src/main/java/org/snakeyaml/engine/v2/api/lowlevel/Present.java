@@ -43,29 +43,17 @@ public class Present {
 
     public String emitToString(Iterator<Event> events) {
         Objects.requireNonNull(events, "events cannot be null");
-        YamlStringWriterStream writer = new YamlStringWriterStream();
+        StreamToStringWriter writer = new StreamToStringWriter();
         final Emitter emitter = new Emitter(settings, writer);
         events.forEachRemaining(emitter::emit);
-        return writer.getString();
+        return writer.toString();
     }
 
 }
 
-class YamlStringWriterStream implements StreamDataWriter {
-    StringWriter writer = new StringWriter();
-
-    @Override
-    public void write(String str) {
-        writer.write(str);
-    }
-
-    @Override
-    public void write(String str, int off, int len) {
-        writer.write(str, off, len);
-    }
-
-    public String getString() {
-        return writer.toString();
-    }
+/**
+ * Internal helper class to support emitting to String
+ */
+class StreamToStringWriter extends StringWriter implements StreamDataWriter {
 }
 

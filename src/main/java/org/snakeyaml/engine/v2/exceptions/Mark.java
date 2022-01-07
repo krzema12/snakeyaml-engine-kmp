@@ -20,7 +20,7 @@ import org.snakeyaml.engine.v2.common.CharConstants;
 import java.io.Serializable;
 
 /**
- * It's just a record and its only use is producing nice error messages. Parser
+ * Its only use is producing nice error messages. Parser
  * does not use it for any other purposes.
  */
 public final class Mark implements Serializable {

@@ -50,13 +50,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-
 /**
  * Creates a node graph from parser events.
  * <p>
  * Corresponds to the 'Composer' step as described in chapter 3.1.2 of the
  * <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">YAML Specification</a>.
  * </p>
+ * It implements {@link Iterator<Node>} to get the stream of {@link Node}s from the input.
  */
 public class Composer implements Iterator<Node> {
     protected final Parser parser;

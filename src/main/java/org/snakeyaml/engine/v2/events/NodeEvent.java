@@ -31,7 +31,7 @@ public abstract class NodeEvent extends Event {
 
     public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        Objects.requireNonNull(anchor, "Anchor cannot be null");
+        Objects.requireNonNull(anchor);
         this.anchor = anchor;
     }
 

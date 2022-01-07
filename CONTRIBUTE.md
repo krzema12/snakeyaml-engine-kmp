@@ -12,6 +12,8 @@ Loading has the following explicit steps (please note that Events form a Stream,
 
 ![](doc/YAML-streams.drawio.png)
 
+Composer delivers also Stream of Nodes (because there may be more than one document
+in the YAML stream, but for simplification the diagram shows only one Node graph)
 
 ## Testing
 

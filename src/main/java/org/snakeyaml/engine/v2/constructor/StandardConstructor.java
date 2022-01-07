@@ -51,8 +51,6 @@ import java.util.regex.Matcher;
  */
 public class StandardConstructor extends BaseConstructor {
 
-    private static final String ERROR_PREFIX = "while constructing an ordered map";
-
     public StandardConstructor(LoadSettings settings) {
         super(settings);
         this.tagConstructors.put(Tag.NULL, new ConstructYamlNull());
@@ -207,7 +205,8 @@ public class StandardConstructor extends BaseConstructor {
         @Override
         public Object construct(Node node) {
             // Ignore white spaces for base64 encoded scalar
-            String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
+            String noWhiteSpaces = constructScalar((ScalarNode) node)
+                .replaceAll("\\s", "");
             return Base64.getDecoder().decode(noWhiteSpaces);
         }
     }
@@ -224,7 +223,8 @@ public class StandardConstructor extends BaseConstructor {
         @Override
         public Object construct(Node node) {
             if (node.getNodeType() != NodeType.SCALAR) {
-                throw new ConstructorException("while constructing Optional", Optional.empty(), "found non scalar node", node.getStartMark());
+                throw new ConstructorException("while constructing Optional",
+                    Optional.empty(), "found non scalar node", node.getStartMark());
             }
             String value = constructScalar((ScalarNode) node);
             Tag implicitTag = settings.getScalarResolver().resolve(value, true);
@@ -235,41 +235,6 @@ public class StandardConstructor extends BaseConstructor {
             }
         }
     }
-
-    public class ConstructYamlOmap implements ConstructNode {
-        @Override
-        public Object construct(Node node) {
-            Map<Object, Object> omap = new LinkedHashMap<>();
-            if (!(node instanceof SequenceNode)) {
-                throw new ConstructorException(ERROR_PREFIX,
-                        node.getStartMark(), "expected a sequence, but found " + node.getNodeType(),
-                        node.getStartMark());
-            }
-            SequenceNode sequenceNode = (SequenceNode) node;
-            for (Node subNode : sequenceNode.getValue()) {
-                if (!(subNode instanceof MappingNode)) {
-                    throw new ConstructorException(ERROR_PREFIX,
-                            node.getStartMark(),
-                            "expected a mapping of length 1, but found " + subNode.getNodeType(),
-                            subNode.getStartMark());
-                }
-                MappingNode mappingNode = (MappingNode) subNode;
-                if (mappingNode.getValue().size() != 1) {
-                    throw new ConstructorException(ERROR_PREFIX,
-                            node.getStartMark(), "expected a single mapping item, but found "
-                            + mappingNode.getValue().size() + " items",
-                            mappingNode.getStartMark());
-                }
-                Node keyNode = mappingNode.getValue().get(0).getKeyNode();
-                Node valueNode = mappingNode.getValue().get(0).getValueNode();
-                Object key = constructObject(keyNode);
-                Object value = constructObject(valueNode);
-                omap.put(key, value);
-            }
-            return omap;
-        }
-    }
-
 
     public class ConstructYamlSet implements ConstructNode {
         @Override

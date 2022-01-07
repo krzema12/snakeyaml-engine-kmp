@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import java.util.Objects;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -29,9 +30,9 @@ public final class CommentEvent extends Event {
 
     public CommentEvent(CommentType type, String value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        if (type == null) throw new NullPointerException("Event Type must be provided.");
+        Objects.requireNonNull(type);
         this.type = type;
-        if (value == null) throw new NullPointerException("Value must be provided.");
+        Objects.requireNonNull(value);
         this.value = value;
     }
 

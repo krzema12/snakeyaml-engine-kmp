@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 
 /**
  * Provide an example of implementation of StreamDataWriter interface
+ * which does not throw {@link IOException}
  */
 public abstract class YamlOutputStreamWriter extends OutputStreamWriter implements StreamDataWriter {
     public YamlOutputStreamWriter(OutputStream out, Charset cs) {

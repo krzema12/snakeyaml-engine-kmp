@@ -28,11 +28,8 @@ public final class AliasEvent extends NodeEvent {
 
     public AliasEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
-        if (!anchor.isPresent()) {
-            throw new NullPointerException("Anchor is required in AliasEvent");
-        } else {
-            alias = anchor.get();
-        }
+        alias = anchor.orElseThrow(() ->
+            new NullPointerException("Anchor is required in AliasEvent"));
     }
 
     public AliasEvent(Optional<Anchor> anchor) {

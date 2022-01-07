@@ -32,8 +32,10 @@ import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
 public final class ScalarEvent extends NodeEvent {
 
     //this is only for Scalar representation (error messages and test suite)
-    private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet().stream()
-            .filter(entry -> entry.getKey() != '"').collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+    private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet()
+        .stream()
+        .filter(entry -> entry.getKey() != '"')
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
     private final Optional<String> tag;
     // style flag of a scalar event indicates the style of the scalar. Possible
@@ -48,12 +50,12 @@ public final class ScalarEvent extends NodeEvent {
     public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit, String value, ScalarStyle style,
                        Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
-        Objects.requireNonNull(tag, "Tag must be provided.");
+        Objects.requireNonNull(tag);
         this.tag = tag;
         this.implicit = implicit;
-        Objects.requireNonNull(value, "Value must be provided.");
+        Objects.requireNonNull(value);
         this.value = value;
-        Objects.requireNonNull(style, "Style must be provided.");
+        Objects.requireNonNull(style);
         this.style = style;
     }
 
@@ -146,7 +148,10 @@ public final class ScalarEvent extends NodeEvent {
 
     //escape and drop surrogates
     public String escapedValue() {
-        return value.codePoints().filter(i -> i < Character.MAX_VALUE).mapToObj(c -> (char) c)
-                .map(this::escape).collect(Collectors.joining(""));
+        return value.codePoints()
+            .filter(i -> i < Character.MAX_VALUE)
+            .mapToObj(c -> (char) c)
+            .map(this::escape)
+            .collect(Collectors.joining(""));
     }
 }

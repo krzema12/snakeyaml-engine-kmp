@@ -123,6 +123,9 @@ public class Dump {
     }
 }
 
+/**
+ * Internal helper class to support dumping to String
+ */
 class StreamToStringWriter extends StringWriter implements StreamDataWriter {
 }
 

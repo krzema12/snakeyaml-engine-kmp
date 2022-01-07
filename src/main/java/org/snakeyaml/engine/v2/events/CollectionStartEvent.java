@@ -36,10 +36,10 @@ public abstract class CollectionStartEvent extends NodeEvent {
     public CollectionStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
                                 FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(anchor, startMark, endMark);
-        Objects.requireNonNull(tag, "Tag must be provided.");
+        Objects.requireNonNull(tag);
         this.tag = tag;
         this.implicit = implicit;
-        Objects.requireNonNull(flowStyle, "Flow style must be provided.");
+        Objects.requireNonNull(flowStyle);
         this.flowStyle = flowStyle;
     }
 

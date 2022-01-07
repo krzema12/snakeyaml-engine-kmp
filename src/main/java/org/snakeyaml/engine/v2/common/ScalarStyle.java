@@ -39,8 +39,6 @@ public enum ScalarStyle {
 
     @Override
     public String toString() {
-        if (styleOpt.isPresent()) {
-            return String.valueOf(styleOpt.get());
-        } else return ":";
+        return String.valueOf(styleOpt.orElse(':'));
     }
 }

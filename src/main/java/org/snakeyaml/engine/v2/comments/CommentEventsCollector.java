@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
-
 /**
  * Used by the Composer and Emitter to collect comment events so that they can be used at a later point in the process.
  */

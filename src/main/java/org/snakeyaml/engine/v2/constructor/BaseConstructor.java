@@ -200,7 +200,6 @@ public abstract class BaseConstructor {
         return result;
     }
 
-
     protected void constructSequenceStep2(SequenceNode node, Collection<Object> collection) {
         for (Node child : node.getValue()) {
             collection.add(constructObject(child));
@@ -246,7 +245,6 @@ public abstract class BaseConstructor {
             }
         }
     }
-
 
     /*
      * if keyObject is created it 2 steps we should postpone putting

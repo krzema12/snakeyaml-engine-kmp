@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fine tuning serializing/dumping
+ * Fine-tuning serializing/dumping
  * Description for all the fields can be found in the builder
  */
 public final class DumpSettings {

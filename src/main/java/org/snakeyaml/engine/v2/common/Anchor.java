@@ -43,7 +43,7 @@ public class Anchor {
     private final String value;
 
     public Anchor(String value) {
-        Objects.requireNonNull(value, "Anchor must be provided.");
+        Objects.requireNonNull(value);
         if (value.isEmpty()) throw new IllegalArgumentException("Empty anchor.");
         for (int i = 0; i < value.length(); i++) {
             char ch = value.charAt(i);

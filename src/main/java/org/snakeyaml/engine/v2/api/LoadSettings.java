@@ -29,7 +29,7 @@ import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
 /**
- * Fine tuning parsing/loading
+ * Fine-tuning parsing/loading
  * Description for all the fields can be found in the builder
  */
 public final class LoadSettings {

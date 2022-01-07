@@ -72,13 +72,13 @@ public class StandardConstructor extends BaseConstructor {
         this.tagConstructors.putAll(settings.getTagConstructors());
     }
 
+    /**
+     * Flattening is not required because merge was removed from YAML 1.2
+     * Only check duplications
+     * @param node - mapping to check the duplications
+     */
     protected void flattenMapping(MappingNode node) {
-        // perform merging only on nodes containing merge node(s)
         processDuplicateKeys(node);
-        if (node.isMerged()) {
-            node.setValue(mergeNode(node, true, new HashMap<>(),
-                    new ArrayList<>()));
-        }
     }
 
     protected void processDuplicateKeys(MappingNode node) {
@@ -118,36 +118,6 @@ public class StandardConstructor extends BaseConstructor {
             }
         }
         return key;
-    }
-
-    /**
-     * Does merge for supplied mapping node.
-     *
-     * @param node        where to merge
-     * @param isPreferred true if keys of node should take precedence over others...
-     * @param key2index   maps already merged keys to index from values
-     * @param values      collects merged NodeTuple
-     * @return list of the merged NodeTuple (to be set as value for the MappingNode)
-     */
-    private List<NodeTuple> mergeNode(MappingNode node, boolean isPreferred,
-                                      Map<Object, Integer> key2index, List<NodeTuple> values) {
-        Iterator<NodeTuple> iter = node.getValue().iterator();
-        while (iter.hasNext()) {
-            final NodeTuple nodeTuple = iter.next();
-            final Node keyNode = nodeTuple.getKeyNode();
-            // we need to construct keys to avoid duplications
-            Object key = constructObject(keyNode);
-            if (!key2index.containsKey(key)) { // 1st time merging key
-                values.add(nodeTuple);
-                // keep track where tuple for the key is
-                key2index.put(key, values.size() - 1);
-            } else if (isPreferred) { // there is value for the key, but we
-                // need to override it
-                // change value for the key using saved position
-                values.set(key2index.get(key), nodeTuple);
-            }
-        }
-        return values;
     }
 
     @Override

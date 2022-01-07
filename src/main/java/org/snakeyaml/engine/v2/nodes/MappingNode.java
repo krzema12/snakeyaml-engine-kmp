@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
  * Represents a map.
  * <p>
@@ -35,7 +34,7 @@ public class MappingNode extends CollectionNode<NodeTuple> {
 
     public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(tag, flowStyle, startMark, endMark);
-        Objects.requireNonNull("value in a Node is required.");
+        Objects.requireNonNull(value);
         this.value = value;
         this.resolved = resolved;
     }
@@ -80,19 +79,5 @@ public class MappingNode extends CollectionNode<NodeTuple> {
         }
         values = buf.toString();
         return "<" + this.getClass().getName() + " (tag=" + getTag() + ", values=" + values + ")>";
-    }
-
-    /**
-     * @param merged - true if map contains merge node
-     */
-    public void setMerged(boolean merged) {
-        this.merged = merged;
-    }
-
-    /**
-     * @return true if map contains merge node
-     */
-    public boolean isMerged() {
-        return merged;
     }
 }

@@ -18,7 +18,15 @@ package org.snakeyaml.engine.v2.serializer;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.nodes.Node;
 
+/**
+ * Functional interface to define Anchor for dumping
+ */
 public interface AnchorGenerator {
 
+    /**
+     * Create anchor
+     * @param node - the node to refer to
+     * @return unique name
+     */
     Anchor nextAnchor(Node node);
 }

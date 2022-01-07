@@ -60,6 +60,7 @@ import java.util.*;
  * <pre>
  * # The following YAML grammar is LL(1) and is parsed by a recursive descent
  * parser.
+ *
  * stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
  * implicit_document ::= block_node DOCUMENT-END*
  * explicit_document ::= DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
@@ -95,7 +96,9 @@ import java.util.*;
  *                       flow_mapping_entry?
  *                       FLOW-MAPPING-END
  * flow_mapping_entry    ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+ #
  * FIRST sets:
+ #
  * stream: { STREAM-START }
  * explicit_document: { DIRECTIVE DOCUMENT-START }
  * implicit_document: FIRST(block_node)

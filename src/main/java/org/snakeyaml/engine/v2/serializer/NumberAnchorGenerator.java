@@ -28,6 +28,11 @@ public class NumberAnchorGenerator implements AnchorGenerator {
         this.lastAnchorId = lastAnchorId;
     }
 
+    /**
+     * Create value increasing the number
+     * @param node - ignored
+     * @return value with format 'id001'
+     */
     public Anchor nextAnchor(Node node) {
         this.lastAnchorId++;
         NumberFormat format = NumberFormat.getNumberInstance();

@@ -25,8 +25,8 @@ final class ResolverTuple {
     private final Pattern regexp;
 
     public ResolverTuple(Tag tag, Pattern regexp) {
-        Objects.requireNonNull(tag, "Tag must be provided");
-        Objects.requireNonNull(regexp, "regexp must be provided");
+        Objects.requireNonNull(tag);
+        Objects.requireNonNull(regexp);
         this.tag = tag;
         this.regexp = regexp;
     }

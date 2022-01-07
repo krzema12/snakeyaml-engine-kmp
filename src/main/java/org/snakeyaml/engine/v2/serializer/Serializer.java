@@ -89,7 +89,7 @@ public class Serializer {
             realNode = node;
         }
         if (this.anchors.containsKey(realNode)) {
-            //it looks weird, anchors does contain the key node but we call computeIfAbsent()
+            //it looks weird, anchor does contain the key node, but we call computeIfAbsent()
             // this is because the value is null (HashMap permits values to be null)
             this.anchors.computeIfAbsent(realNode, a -> settings.getAnchorGenerator().nextAnchor(realNode));
         } else {

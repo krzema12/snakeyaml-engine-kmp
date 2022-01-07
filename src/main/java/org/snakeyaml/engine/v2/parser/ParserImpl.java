@@ -142,7 +142,7 @@ public class ParserImpl implements Parser {
   private final ArrayStack<Production> states;
   private final ArrayStack<Optional<Mark>> marksStack;
   private Optional<Production> state;
-  private VersionTagsTuple directives;
+  private final Map<String, String> directiveTags;
 
   /**
    * @deprecated use the other constructor with LoadSettings first
@@ -166,7 +166,7 @@ public class ParserImpl implements Parser {
     this.scanner = scanner;
     this.settings = settings;
     currentEvent = Optional.empty();
-    directives = new VersionTagsTuple(Optional.empty(), new HashMap(DEFAULT_TAGS));
+    directiveTags = new HashMap<>(DEFAULT_TAGS);
     states = new ArrayStack(100);
     marksStack = new ArrayStack(10);
     state = Optional.of(new ParseStreamStart());
@@ -248,7 +248,8 @@ public class ParserImpl implements Parser {
         return produceCommentEvent((CommentToken) scanner.next());
       }
       if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
-        directives = new VersionTagsTuple(Optional.empty(), DEFAULT_TAGS);
+        directiveTags.clear();
+        directiveTags.putAll(DEFAULT_TAGS);
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
         Optional<Mark> endMark = startMark;
@@ -284,6 +285,7 @@ public class ParserImpl implements Parser {
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
         VersionTagsTuple tuple = processDirectives();
+        directiveTags.putAll(tuple.getTags());
         while (scanner.checkToken(Token.ID.Comment)) {
           scanner.next();
         }
@@ -332,6 +334,8 @@ public class ParserImpl implements Parser {
         endMark = token.getEndMark();
         explicit = true;
       }
+      directiveTags.clear();
+      directiveTags.putAll(DEFAULT_TAGS);
       Event event = new DocumentEndEvent(explicit, startMark, endMark);
       // Prepare the next state.
       state = Optional.of(new ParseDocumentStart());
@@ -397,9 +401,8 @@ public class ParserImpl implements Parser {
           tagHandles.put(entry.getKey(), entry.getValue());
         }
       }
-      directives = new VersionTagsTuple(yamlSpecVersion, tagHandles);
     }
-    return directives;
+    return new VersionTagsTuple(yamlSpecVersion, tagHandles);
   }
 
   /**
@@ -479,11 +482,11 @@ public class ParserImpl implements Parser {
         String suffix = tagTupleValue.getSuffix();
         if (handleOpt.isPresent()) {
           String handle = handleOpt.get();
-          if (!directives.getTags().containsKey(handle)) {
+          if (!directiveTags.containsKey(handle)) {
             throw new ParserException("while parsing a node", startMark,
                 "found undefined tag handle " + handle, tagMark);
           }
-          tag = Optional.of(directives.getTags().get(handle) + suffix);
+          tag = Optional.of(directiveTags.get(handle) + suffix);
         } else {
           tag = Optional.of(suffix);
         }

@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.v2.tokens;
 
 
+import java.util.Objects;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -26,7 +27,7 @@ public final class AliasToken extends Token {
 
     public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
-        if (value == null) throw new NullPointerException("Value is required in AliasToken");
+        Objects.requireNonNull(value);
         this.value = value;
     }
 

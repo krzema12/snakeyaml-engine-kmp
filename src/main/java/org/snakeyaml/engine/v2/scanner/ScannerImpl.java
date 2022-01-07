@@ -1525,7 +1525,7 @@ public final class ScannerImpl implements Scanner {
             throw new ScannerException("while scanning a tag", startMark,
                     "expected ' ', but found '" + s + "' (" + (c) + ")", reader.getMark());
         }
-        TagTuple value = new TagTuple(handle, suffix);
+        TagTuple value = new TagTuple(Optional.ofNullable(handle), suffix);
         Optional<Mark> endMark = reader.getMark();
         return new TagToken(value, startMark, endMark);
     }

@@ -455,9 +455,10 @@ public class ParserImpl implements Parser {
             }
             Optional<String> tag = Optional.empty();
             if (tagTupleValue != null) {
-                String handle = tagTupleValue.getHandle();
+                Optional<String> handleOpt = tagTupleValue.getHandle();
                 String suffix = tagTupleValue.getSuffix();
-                if (handle != null) {
+                if (handleOpt.isPresent()) {
+                    String handle = handleOpt.get();
                     if (!directives.getTags().containsKey(handle)) {
                         throw new ParserException("while parsing a node", startMark,
                                 "found undefined tag handle " + handle, tagMark);

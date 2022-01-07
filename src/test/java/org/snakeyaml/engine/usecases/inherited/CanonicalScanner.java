@@ -293,7 +293,7 @@ public class CanonicalScanner implements Scanner {
         } else {
             value = "!" + value;
         }
-        return new TagToken(new TagTuple("", value), mark, mark);
+        return new TagToken(new TagTuple(Optional.of(""), value), mark, mark);
     }
 
     private Token scanScalar() {

@@ -16,6 +16,7 @@
 package org.snakeyaml.engine.v2.tokens;
 
 
+import java.util.Objects;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -26,6 +27,7 @@ public final class AnchorToken extends Token {
 
     public AnchorToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
+        Objects.requireNonNull(value);
         this.value = value;
     }
 

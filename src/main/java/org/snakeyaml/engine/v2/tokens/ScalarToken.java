@@ -15,6 +15,7 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
+import java.util.Objects;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -31,9 +32,10 @@ public final class ScalarToken extends Token {
 
     public ScalarToken(String value, boolean plain, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
         super(startMark, endMark);
+        Objects.requireNonNull(value);
         this.value = value;
         this.plain = plain;
-        if (style == null) throw new NullPointerException("Style must be provided.");
+        Objects.requireNonNull(style);
         this.style = style;
     }
 

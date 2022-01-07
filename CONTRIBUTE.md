@@ -12,23 +12,26 @@ Loading has the following explicit steps (please note that Events form a Stream,
 
 ![](doc/YAML-streams.drawio.png)
 
-Composer delivers also Stream of Nodes (because there may be more than one document
-in the YAML stream, but for simplification the diagram shows only one Node graph)
+Composer delivers also Stream of Nodes (because there may be more than one document in the YAML
+stream, but for simplification the diagram shows only one Node graph)
 
 ## Testing
 
 ### Import test date
 
-Engine uses [Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite) for the tests.
+Engine uses [Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite) for the
+tests.
 
 ### Build the data
 
 - clone [YAML Test Suite](https://github.com/yaml/yaml-test-suite)
 - take tag (the trunk is work in progress)
+
 ```
     git tag | grep data
     git checkout <LATEST TAG>
 ```
+
 - build with flat data (remove sub-folders)
 
 ```shell

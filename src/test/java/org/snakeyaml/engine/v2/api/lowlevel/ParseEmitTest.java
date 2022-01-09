@@ -45,12 +45,21 @@ import org.snakeyaml.engine.v2.utils.TestUtils;
 class ParseEmitTest {
 
   @Test
-  void parseAndEmit() throws IOException {
+  void parseAndEmitList() throws IOException {
     ByteArrayOutputStream uu = new ByteArrayOutputStream();
     final PrintStream sw = new PrintStream(uu);
     String input = "- 1\n- 2\n- 3";
     yamlToYaml(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)), sw);
     assertEquals("- 1\n- 2\n- 3\n", uu.toString());
+  }
+
+  @Test
+  void parseAndEmitMap() throws IOException {
+    ByteArrayOutputStream uu = new ByteArrayOutputStream();
+    final PrintStream sw = new PrintStream(uu);
+    String input = "---\nfoo: bar\n";
+    yamlToYaml(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)), sw);
+    assertEquals("---\nfoo: bar\n", uu.toString());
   }
 
   /**

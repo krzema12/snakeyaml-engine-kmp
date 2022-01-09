@@ -142,7 +142,7 @@ public class ParserImpl implements Parser {
   private final ArrayStack<Production> states;
   private final ArrayStack<Optional<Mark>> marksStack;
   private Optional<Production> state;
-  private final Map<String, String> directiveTags;
+  private Map<String, String> directiveTags;
 
   /**
    * @deprecated use the other constructor with LoadSettings first
@@ -248,8 +248,6 @@ public class ParserImpl implements Parser {
         return produceCommentEvent((CommentToken) scanner.next());
       }
       if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
-        directiveTags.clear();
-        directiveTags.putAll(DEFAULT_TAGS);
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
         Optional<Mark> endMark = startMark;
@@ -285,7 +283,6 @@ public class ParserImpl implements Parser {
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
         VersionTagsTuple tuple = processDirectives();
-        directiveTags.putAll(tuple.getTags());
         while (scanner.checkToken(Token.ID.Comment)) {
           scanner.next();
         }
@@ -334,8 +331,7 @@ public class ParserImpl implements Parser {
         endMark = token.getEndMark();
         explicit = true;
       }
-      directiveTags.clear();
-      directiveTags.putAll(DEFAULT_TAGS);
+      directiveTags.clear(); // directive tags do not survive between the documents
       Event event = new DocumentEndEvent(explicit, startMark, endMark);
       // Prepare the next state.
       state = Optional.of(new ParseDocumentStart());
@@ -393,16 +389,20 @@ public class ParserImpl implements Parser {
         }
       }
     }
-    if (!yamlSpecVersion.isPresent() || !tagHandles.isEmpty()) {
-      // directives in the document found - drop the previous
-      for (Map.Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
-        // do not overwrite re-defined tags
-        if (!tagHandles.containsKey(entry.getKey())) {
-          tagHandles.put(entry.getKey(), entry.getValue());
-        }
+    HashMap<String, String> detectedTagHandles = new HashMap<String, String>();
+    if (!tagHandles.isEmpty()) {
+      // copy from tagHandles
+      detectedTagHandles.putAll(tagHandles);
+    }
+    for (Map.Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
+      // do not overwrite re-defined tags
+      if (!tagHandles.containsKey(entry.getKey())) {
+        tagHandles.put(entry.getKey(), entry.getValue());
       }
     }
-    return new VersionTagsTuple(yamlSpecVersion, tagHandles);
+    directiveTags = tagHandles;
+    // data for the event (no default tags added)
+    return new VersionTagsTuple(yamlSpecVersion, detectedTagHandles);
   }
 
   /**

@@ -41,8 +41,7 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
 ## Contribute ##
 
 * GIT is used to dance with the [source code](https://bitbucket.org/snakeyaml/snakeyaml-engine/src).
-* If you find a bug in SnakeYAML,
+* If you find a bug
   please [file a bug report](https://bitbucket.org/snakeyaml/snakeyaml-engine/issues?status=new&status=open).
-* You may discuss SnakeYAML engine
+* You may discuss SnakeYAML Engine
   at [the mailing list](http://groups.google.com/group/snakeyaml-core).
-* Feel free to join the [YAML-dev Telegram group](https://t.me/joinchat/A6K7rhBzRfHcP-0XnTxnhA)

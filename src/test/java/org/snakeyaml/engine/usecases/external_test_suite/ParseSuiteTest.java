@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +33,11 @@ import org.snakeyaml.engine.v2.events.Event;
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
 
+  private final List<String> ignore = Lists.newArrayList(
+      "652Z", "Y2GN");
+
   private final List<SuiteData> all = SuiteUtils.getAll().stream()
-      .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
-      .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
+      .filter(data -> !ignore.contains(data.getName()))
       .collect(Collectors.toList());
 
   @Test
@@ -43,7 +46,7 @@ class ParseSuiteTest {
    * This test is used to debug one test (which is given explicitly)
    */
   void runOne() {
-    SuiteData data = SuiteUtils.getOne("6FWR");
+    SuiteData data = SuiteUtils.getOne("652Z");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
     Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
     for (Event event : iterable) {
@@ -57,7 +60,12 @@ class ParseSuiteTest {
   void runAll() {
     for (SuiteData data : all) {
       ParseResult result = SuiteUtils.parseData(data);
-      if (data.getError()) {
+      boolean shouldFail = data.hasError();
+      if (SuiteUtils.deviationsWithSuccess.contains(data.getName())
+          || SuiteUtils.deviationsWithError.contains(data.getName())) {
+        shouldFail = !shouldFail;
+      }
+      if (shouldFail) {
         assertTrue(result.getError().isPresent(),
             "Expected error, but got none in file " + data.getName() + ", " +
                 data.getLabel() + "\n" + result.getEvents());

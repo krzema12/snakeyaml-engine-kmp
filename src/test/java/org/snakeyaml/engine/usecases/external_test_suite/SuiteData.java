@@ -53,7 +53,7 @@ public class SuiteData {
     return events;
   }
 
-  public Boolean getError() {
+  public Boolean hasError() {
     return error;
   }
 }

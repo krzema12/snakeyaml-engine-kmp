@@ -17,15 +17,12 @@ package org.snakeyaml.engine.v2.api.lowlevel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.CharSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
@@ -33,12 +30,10 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.emitter.Emitter;
 import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
-import org.snakeyaml.engine.v2.utils.TestUtils;
 
 /**
  * Test from https://github.com/yaml/yaml-runtimes
+ *
  * @see <a href"https://github.com/yaml/yaml-runtimes/blob/master/docker/java/utils/java/src/main/java/org/yaml/editor/Snake2Yaml.java">Snake2Yaml.java</a>
  */
 @Tag("fast")
@@ -77,7 +72,8 @@ class ParseEmitTest {
   }
 
   class MyDumperWriter implements StreamDataWriter {
-    private PrintStream out;
+
+    private final PrintStream out;
 
     public MyDumperWriter(PrintStream out) {
       this.out = out;

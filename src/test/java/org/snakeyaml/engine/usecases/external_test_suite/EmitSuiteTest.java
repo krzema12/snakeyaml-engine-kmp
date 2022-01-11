@@ -39,7 +39,7 @@ class EmitSuiteTest {
   void runAll() {
     for (SuiteData data : all) {
       ParseResult result = SuiteUtils.parseData(data);
-      if (data.getError()) {
+      if (data.hasError()) {
         assertTrue(result.getError().isPresent(),
             "Expected error, but got none in file " + data.getName() + ", " +
                 data.getLabel() + "\n" + result.getEvents());

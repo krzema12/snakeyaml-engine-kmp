@@ -24,7 +24,9 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
 import org.snakeyaml.engine.v2.tokens.Token;
+import org.snakeyaml.engine.v2.tokens.Token.ID;
 
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {
@@ -48,6 +50,31 @@ class ScannerTest {
     } catch (NoSuchElementException e) {
       assertEquals("No more Tokens found.", e.getMessage());
     }
+  }
+
+  @Test
+  @DisplayName("652Z: ? is part of the key if no space after it")
+  void testToString1() {
+    LoadSettings settings = LoadSettings.builder().build();
+    StreamReader reader = new StreamReader(settings, "{ ?foo: bar }");
+    ScannerImpl scanner = new ScannerImpl(settings, reader);
+    assertTrue(scanner.hasNext());
+    assertEquals(Token.ID.StreamStart, scanner.next().getTokenId());
+
+    assertTrue(scanner.hasNext());
+    assertEquals(ID.FlowMappingStart, scanner.next().getTokenId());
+
+    assertTrue(scanner.hasNext());
+    assertEquals(ID.Key, scanner.next().getTokenId());
+
+    assertTrue(scanner.hasNext());
+    Token token = scanner.next();
+    assertEquals(ID.Scalar, token.getTokenId());
+    ScalarToken scalar = (ScalarToken) token;
+    //TODO support YAML 1.2 in 652Z -> assertEquals("?foo", scalar.getValue());
+    assertEquals("foo", scalar.getValue());
+
+    assertTrue(scanner.hasNext());
   }
 }
 

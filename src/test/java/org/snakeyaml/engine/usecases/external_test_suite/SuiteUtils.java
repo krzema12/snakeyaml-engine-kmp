@@ -36,11 +36,12 @@ public class SuiteUtils {
       "G5U8", "S98Z", "4EJS", "9MMA", "9HCY", "9JBA", "CVW2", "U99R",
       /* sep */ "9C9N", "SU5Z", "QB6E", "EB22");
   public static final List<String> deviationsWithError = Lists.newArrayList(
-      "HWV9", "NB6Z", "652Z", "VJP3-01", "RHX7", "KH5V-01", "5MUD", "9SA2", "QT73", "4MUZ", "CFD4",
+      "HWV9", "NB6Z", "VJP3-01", "RHX7", "KH5V-01", "5MUD", "9SA2", "QT73", "4MUZ", "CFD4",
       "NJ66", "NKF9", "JR7V", "K3WX", "Y2GN", "5T43", "3RLN-01", "SM9W-01", "3RLN-04", "DE56-02",
       "DE56-03",
-      /* sep */"CXX2", "KZN9", "DC7X", "6HB6", "2JQS", "6M2F", "S3PD", "Q5MG", "FRK4", "NHX8",
-      "DBG4", "4ABK", "M7A3", "9MMW", "6BCT", "A2M4", "2SXE", "DK3J", "W5VH", "8XYN", "K54U",
+      /* sep */ "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8",
+      /* sep */ "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8",
+      "DBG4", "M7A3", "2SXE", "DK3J", "W5VH",
       "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 
 

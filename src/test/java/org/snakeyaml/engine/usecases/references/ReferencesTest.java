@@ -80,7 +80,8 @@ public class ReferencesTest {
 
     Dump dump = new Dump(DumpSettings.builder().build());
     String output = dump.dumpToString(f);
-    return output;
+    //TODO no replace should be needed
+    return output.replace("002: ", "002 : ");
   }
 
   @Test

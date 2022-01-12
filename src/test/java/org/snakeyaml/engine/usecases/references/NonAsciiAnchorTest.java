@@ -27,7 +27,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 @org.junit.jupiter.api.Tag("fast")
 public class NonAsciiAnchorTest {
 
-  private final String NON_ANCHORS = ":,[]{}*&./";
+  private final String NON_ANCHORS = ",[]{}*&./";
 
   @Test
   @DisplayName("Non ASCII anchor name must be accepted")

@@ -1399,8 +1399,8 @@ public final class ScannerImpl implements Scanner {
     reader.forward();
     int length = 0;
     int c = reader.peek(length);
-    // Anchor may not contain ",[]{}", the ":" was added by SnakeYAML -> should it be added to the spec 1.2 ?
-    while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ":,[]{}/.*&")) {
+    // Anchor may not contain ",[]{}"
+    while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
       length++;
       c = reader.peek(length);
     }

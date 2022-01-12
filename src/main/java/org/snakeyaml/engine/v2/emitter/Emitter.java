@@ -97,12 +97,11 @@ public final class Emitter implements Emitable {
     DEFAULT_TAG_PREFIXES.put(Tag.PREFIX, "!!");
   }
 
-  // The stream should have the methods `write` and `flush`.
   private final StreamDataWriter stream;
 
   // Emitter is a state machine with a stack of states to handle nested structures.
   private final ArrayStack<EmitterState> states;
-  private EmitterState state;
+  private EmitterState state; // current state
 
   // Current event and the event queue.
   private final Queue<Event> events;
@@ -162,7 +161,6 @@ public final class Emitter implements Emitable {
   private final CommentEventsCollector inlineCommentsCollector;
 
   public Emitter(DumpSettings opts, StreamDataWriter stream) {
-    // The stream should have the methods `write` and possibly `flush`.
     this.stream = stream;
     // Emitter is a state machine with a stack of states to handle nested
     // structures.

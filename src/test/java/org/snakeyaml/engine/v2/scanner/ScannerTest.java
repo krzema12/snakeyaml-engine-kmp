@@ -17,6 +17,7 @@ package org.snakeyaml.engine.v2.scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -24,6 +25,7 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.tokens.AnchorToken;
 import org.snakeyaml.engine.v2.tokens.ScalarToken;
 import org.snakeyaml.engine.v2.tokens.Token;
 import org.snakeyaml.engine.v2.tokens.Token.ID;
@@ -54,27 +56,35 @@ class ScannerTest {
 
   @Test
   @DisplayName("652Z: ? is part of the key if no space after it")
-  void testToString1() {
-    LoadSettings settings = LoadSettings.builder().build();
-    StreamReader reader = new StreamReader(settings, "{ ?foo: bar }");
-    ScannerImpl scanner = new ScannerImpl(settings, reader);
-    assertTrue(scanner.hasNext());
-    assertEquals(Token.ID.StreamStart, scanner.next().getTokenId());
-
-    assertTrue(scanner.hasNext());
-    assertEquals(ID.FlowMappingStart, scanner.next().getTokenId());
-
-    assertTrue(scanner.hasNext());
-    assertEquals(ID.Key, scanner.next().getTokenId());
-
-    assertTrue(scanner.hasNext());
-    Token token = scanner.next();
+  void testQuestionMarkStartsToken() {
+    Token token = scanTo("{ ?foo: bar }", 3);
     assertEquals(ID.Scalar, token.getTokenId());
     ScalarToken scalar = (ScalarToken) token;
     //TODO support YAML 1.2 in 652Z -> assertEquals("?foo", scalar.getValue());
     assertEquals("foo", scalar.getValue());
+  }
 
+  @Test
+  @DisplayName("Y2GN: anchor may contain colon ':'")
+  void testAnchor() {
+    Token token = scanTo("key: &an:chor value", 5);
+    assertEquals(ID.Anchor, token.getTokenId());
+    AnchorToken anchorToken = (AnchorToken) token;
+    assertEquals("an:chor", anchorToken.getValue().getValue());
+  }
+
+  private Token scanTo(String input, int skip) {
+    LoadSettings settings = LoadSettings.builder().build();
+    StreamReader reader = new StreamReader(settings, input);
+    ScannerImpl scanner = new ScannerImpl(settings, reader);
+    int i = 0;
+    while (i < skip) {
+      assertTrue(scanner.hasNext());
+      assertNotNull(scanner.next());
+      i++;
+    }
     assertTrue(scanner.hasNext());
+    return scanner.next();
   }
 }
 

@@ -34,7 +34,7 @@ import org.snakeyaml.engine.v2.events.Event;
 class ParseSuiteTest {
 
   private final List<String> ignore = Lists.newArrayList(
-      "652Z", "Y2GN");
+      "652Z");
 
   private final List<SuiteData> all = SuiteUtils.getAll().stream()
       .filter(data -> !ignore.contains(data.getName()))
@@ -46,7 +46,7 @@ class ParseSuiteTest {
    * This test is used to debug one test (which is given explicitly)
    */
   void runOne() {
-    SuiteData data = SuiteUtils.getOne("652Z");
+    SuiteData data = SuiteUtils.getOne("Y2GN");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
     Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
     for (Event event : iterable) {

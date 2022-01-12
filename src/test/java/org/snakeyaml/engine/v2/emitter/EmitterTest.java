@@ -16,6 +16,8 @@
 package org.snakeyaml.engine.v2.emitter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,11 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -39,6 +44,7 @@ import org.snakeyaml.engine.v2.events.DocumentStartEvent;
 import org.snakeyaml.engine.v2.events.ImplicitTuple;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.exceptions.ComposerException;
 
 @Tag("fast")
 public class EmitterTest {
@@ -58,8 +64,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
-    String etalon = "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
-    assertEquals(etalon, output);
+    String expected = "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -72,8 +78,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
-    String etalon = "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
-    assertEquals(etalon, output);
+    String expected = "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -86,8 +92,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
-    assertEquals(etalon, output);
+    String expected = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -101,8 +107,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
-    assertEquals(etalon, output);
+    String expected = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -115,8 +121,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String etalon = "'aaa': '0123456789 0123456789\n\n  0123456789 0123456789'\n'bbb': '\n\n  bla-bla'\n";
-    assertEquals(etalon, output);
+    String expected = "'aaa': '0123456789 0123456789\n\n  0123456789 0123456789'\n'bbb': '\n\n  bla-bla'\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -129,8 +135,8 @@ public class EmitterTest {
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String etalon = "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
-    assertEquals(etalon, output);
+    String expected = "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
+    assertEquals(expected, output);
   }
 
   // Issue #158
@@ -181,8 +187,8 @@ public class EmitterTest {
         Collections.singletonMap("k2", "v2"));
     Map<String, ?> map = Collections.singletonMap("aaa", topLevel);
     String output = dump(settings, map);
-    String etalon = "aaa:\n  -  k1: v1\n  -  k2: v2\n";
-    assertEquals(etalon, output);
+    String expected = "aaa:\n  -  k1: v1\n  -  k2: v2\n";
+    assertEquals(expected, output);
   }
 
   @Test
@@ -262,7 +268,41 @@ public class EmitterTest {
     assertEquals("{\"1\": \"2\", \"3\": \"4\"}\n", output);
   }
 
-  public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
+  @Test
+  public void testAnchorInMaps() {
+    DumpSettingsBuilder builder = DumpSettings.builder()
+        .setDefaultFlowStyle(FlowStyle.FLOW);
+    Map<Object, Object> map1 = new HashMap<Object, Object>();
+    Map<Object, Object> map2 = new HashMap<Object, Object>();
+    map1.put("2", map2);
+    map2.put("1", map1);
+    String output = dump(builder.build(), map1);
+    assertEquals("&id002 {'2': {'1': *id002}}\n", output);
+  }
 
+  @Test
+  @DisplayName("Expected space to separate anchor from colon")
+  public void testAliasAsKey() {
+    DumpSettingsBuilder builder = DumpSettings.builder()
+        .setDefaultFlowStyle(FlowStyle.FLOW);
+    // this is VERY BAD code
+    // the map has itself as a key (no idea why it may be used except of a DoS attack)
+    HashMap f = new HashMap();
+    f.put(f, "a");
+
+    String output = dump(builder.build(), f);
+    //TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
+    // key:value in the flow.
+    assertEquals("&id002 {*id002: a}\n", output);
+    Load load = new Load(LoadSettings.builder().build());
+    try {
+      load.loadFromString(output);
+      fail("TODO fix anchor");
+    } catch (ComposerException e) {
+      assertTrue(e.getMessage().contains("found undefined alias id002:"), e.getMessage());
+    }
+  }
+
+  public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
   }
 }

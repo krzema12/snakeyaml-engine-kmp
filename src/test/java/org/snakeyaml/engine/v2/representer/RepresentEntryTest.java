@@ -59,9 +59,9 @@ public class RepresentEntryTest {
     StringOutputStream stringOutputStream = new StringOutputStream();
 
     Serializer serializer = new Serializer(settings, new Emitter(settings, stringOutputStream));
-    serializer.open();
-    serializer.serialize(commentedEntryRepresenter.represent(createMap()));
-    serializer.close();
+    serializer.emitStreamStart();
+    serializer.serializeDocument(commentedEntryRepresenter.represent(createMap()));
+    serializer.emitStreamEnd();
 
     assertEquals("#Key node block comment\n" +
         "a: val1 #Value node inline comment\n", stringOutputStream.toString());

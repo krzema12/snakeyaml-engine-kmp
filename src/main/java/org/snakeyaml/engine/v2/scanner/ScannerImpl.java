@@ -1590,10 +1590,6 @@ public final class ScannerImpl implements Scanner {
     }
     CommentToken blankLineCommentToken = null;
     if (chomping.chompTailIsTrue()) {
-      if (settings.getParseComments()) {
-        blankLineCommentToken = new CommentToken(CommentType.BLANK_LINE, breaks, startMark,
-            endMark);
-      }
       chunks.append(breaks);
     }
     // We are done.

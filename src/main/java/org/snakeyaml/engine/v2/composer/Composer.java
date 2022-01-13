@@ -186,7 +186,9 @@ public class Composer implements Iterator<Node> {
       if (recursiveNodes.remove(node)) {
         node.setRecursive(true);
       }
-      node.setBlockComments(blockCommentsCollector.consume());
+      // drop comments, they can not be supported here
+      blockCommentsCollector.consume();
+      inlineCommentsCollector.collectEvents().consume();
     } else {
       NodeEvent event = (NodeEvent) parser.peekEvent();
       Optional<Anchor> anchor = event.getAnchor();

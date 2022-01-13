@@ -71,7 +71,7 @@ public final class DumpSettingsBuilder {
     this.explicitRootTag = Optional.empty();
     this.tagDirective = new HashMap<>();
     this.scalarResolver = new JsonScalarResolver();
-    this.anchorGenerator = new NumberAnchorGenerator(1);
+    this.anchorGenerator = new NumberAnchorGenerator(0);
     this.bestLineBreak = "\n";
     this.canonical = false;
     this.useUnicodeEncoding = true;

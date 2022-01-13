@@ -85,14 +85,14 @@ public class SerializerWithCommentEnabledTest {
         .setDefaultFlowStyle(FlowStyle.BLOCK)
         .build();
     Serializer serializer = new Serializer(dumpSettings, emitter);
-    serializer.open();
+    serializer.emitStreamStart();
     LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
     Composer composer = new Composer(settings,
         new ParserImpl(settings, new StreamReader(settings, data)));
     while (composer.hasNext()) {
-      serializer.serialize(composer.next());
+      serializer.serializeDocument(composer.next());
     }
-    serializer.close();
+    serializer.emitStreamEnd();
     List<Event> events = emitter.getEventList();
     println("RESULT: ");
     for (Event event : events) {

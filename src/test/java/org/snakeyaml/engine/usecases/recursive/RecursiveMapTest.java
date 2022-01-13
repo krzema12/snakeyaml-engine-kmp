@@ -61,9 +61,9 @@ class RecursiveMapTest {
     map2.put("next", map1);
     Dump dump = new Dump(DumpSettings.builder().build());
     String output1 = dump.dumpToString(map1);
-    assertEquals("&id002\n" +
+    assertEquals("&id001\n" +
         "next:\n" +
-        "  next: *id002\n" +
+        "  next: *id001\n" +
         "  name: second\n" +
         "name: first\n", output1);
 

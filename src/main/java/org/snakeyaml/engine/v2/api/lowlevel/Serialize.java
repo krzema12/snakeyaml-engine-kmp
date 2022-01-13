@@ -62,11 +62,11 @@ public class Serialize {
     Objects.requireNonNull(nodes, "Nodes cannot be null");
     EmitableEvents emitableEvents = new EmitableEvents();
     Serializer serializer = new Serializer(settings, emitableEvents);
-    serializer.open();
+    serializer.emitStreamStart();
     for (Node node : nodes) {
-      serializer.serialize(node);
+      serializer.serializeDocument(node);
     }
-    serializer.close();
+    serializer.emitStreamEnd();
     return emitableEvents.getEvents();
   }
 }

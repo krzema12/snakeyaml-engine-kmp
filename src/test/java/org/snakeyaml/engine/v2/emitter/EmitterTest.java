@@ -277,7 +277,7 @@ public class EmitterTest {
     map1.put("2", map2);
     map2.put("1", map1);
     String output = dump(builder.build(), map1);
-    assertEquals("&id002 {'2': {'1': *id002}}\n", output);
+    assertEquals("&id001 {'2': {'1': *id001}}\n", output);
   }
 
   @Test
@@ -293,13 +293,13 @@ public class EmitterTest {
     String output = dump(builder.build(), f);
     //TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
     // key:value in the flow.
-    assertEquals("&id002 {*id002: a}\n", output);
+    assertEquals("&id001 {*id001: a}\n", output);
     Load load = new Load(LoadSettings.builder().build());
     try {
       load.loadFromString(output);
       fail("TODO fix anchor");
     } catch (ComposerException e) {
-      assertTrue(e.getMessage().contains("found undefined alias id002:"), e.getMessage());
+      assertTrue(e.getMessage().contains("found undefined alias id001:"), e.getMessage());
     }
   }
 

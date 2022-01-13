@@ -66,13 +66,13 @@ public class Dump {
   public void dumpAll(Iterator<? extends Object> instancesIterator,
       StreamDataWriter streamDataWriter) {
     Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
-    serializer.open();
+    serializer.emitStreamStart();
     while (instancesIterator.hasNext()) {
       Object instance = instancesIterator.next();
       Node node = representer.represent(instance);
-      serializer.serialize(node);
+      serializer.serializeDocument(node);
     }
-    serializer.close();
+    serializer.emitStreamEnd();
   }
 
   /**
@@ -115,14 +115,14 @@ public class Dump {
   /**
    * Dump the provided Node into a YAML stream.
    *
-   * @param node             - YAML node to be serialized to YAML
+   * @param node             - YAML node to be serialized to YAML document
    * @param streamDataWriter - stream to write to
    */
   public void dumpNode(Node node, StreamDataWriter streamDataWriter) {
     Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
-    serializer.open();
-    serializer.serialize(node);
-    serializer.close();
+    serializer.emitStreamStart();
+    serializer.serializeDocument(node);
+    serializer.emitStreamEnd();
   }
 }
 

@@ -29,6 +29,7 @@ import org.snakeyaml.engine.v2.events.AliasEvent;
 import org.snakeyaml.engine.v2.events.CommentEvent;
 import org.snakeyaml.engine.v2.events.DocumentEndEvent;
 import org.snakeyaml.engine.v2.events.DocumentStartEvent;
+import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ImplicitTuple;
 import org.snakeyaml.engine.v2.events.MappingEndEvent;
 import org.snakeyaml.engine.v2.events.MappingStartEvent;
@@ -46,6 +47,10 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
+/**
+ * Transform a Node Graph to Event stream and allow provided {@link Emitable}
+ * to present the {@link Event}s into the output stream
+ */
 public class Serializer {
 
   private final DumpSettings settings;
@@ -53,6 +58,11 @@ public class Serializer {
   private final Set<Node> serializedNodes;
   private final Map<Node, Anchor> anchors;
 
+  /**
+   * Create Serializer
+   * @param settings - dump configuration
+   * @param emitable - destination for the event stream
+   */
   public Serializer(DumpSettings settings, Emitable emitable) {
     this.settings = settings;
     this.emitable = emitable;
@@ -60,7 +70,11 @@ public class Serializer {
     this.anchors = new HashMap();
   }
 
-  public void serialize(Node node) {
+  /**
+   * Serialize document
+   * @param node - the document root
+   */
+  public void serializeDocument(Node node) {
     this.emitable.emit(
         new DocumentStartEvent(settings.isExplicitStart(), settings.getYamlDirective(),
             settings.getTagDirective()));
@@ -72,15 +86,18 @@ public class Serializer {
     this.anchors.clear();
   }
 
-  public void open() {
+  /**
+   * Emit {@link StreamStartEvent}
+   */
+  public void emitStreamStart() {
     this.emitable.emit(new StreamStartEvent());
   }
 
-  public void close() {
+  /**
+   * Emit {@link StreamEndEvent}
+   */
+  public void emitStreamEnd() {
     this.emitable.emit(new StreamEndEvent());
-    // clean up the resources
-    this.anchors.clear();
-    this.serializedNodes.clear();
   }
 
   private void anchorNode(Node node) {
@@ -122,6 +139,10 @@ public class Serializer {
     }
   }
 
+  /**
+   * Recursive serialization of a {@link Node}
+   * @param node - content
+   */
   private void serializeNode(Node node) {
     if (node.getNodeType() == NodeType.ANCHOR) {
       node = ((AnchorNode) node).getRealNode();

@@ -60,16 +60,16 @@ public class EmitterWithCommentEnabledTest {
         .build();
     Serializer serializer = new Serializer(dumpSettings, new Emitter(dumpSettings, output));
 
-    serializer.open();
+    serializer.emitStreamStart();
     LoadSettings loadSettings = LoadSettings.builder().setParseComments(true).build();
     Composer composer = new Composer(loadSettings,
         new ParserImpl(loadSettings, new StreamReader(loadSettings, data)));
     while (composer.hasNext()) {
       Node node = composer.next();
       //System.out.println(node);
-      serializer.serialize(node);
+      serializer.serializeDocument(node);
     }
-    serializer.close();
+    serializer.emitStreamEnd();
 
     return output.toString();
   }

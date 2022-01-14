@@ -60,8 +60,7 @@ class ScannerTest {
     Token token = scanTo("{ ?foo: bar }", 3);
     assertEquals(ID.Scalar, token.getTokenId());
     ScalarToken scalar = (ScalarToken) token;
-    //TODO support YAML 1.2 in 652Z -> assertEquals("?foo", scalar.getValue());
-    assertEquals("foo", scalar.getValue());
+    assertEquals("?foo", scalar.getValue());
   }
 
   @Test
@@ -80,7 +79,9 @@ class ScannerTest {
     int i = 0;
     while (i < skip) {
       assertTrue(scanner.hasNext());
-      assertNotNull(scanner.next());
+      Token token = scanner.next();
+      //System.out.println(token);
+      assertNotNull(token);
       i++;
     }
     assertTrue(scanner.hasNext());

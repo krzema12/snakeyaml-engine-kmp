@@ -1038,16 +1038,12 @@ public final class ScannerImpl implements Scanner {
   }
 
   /**
-   * Returns true if the next thing on the reader is a key token.
+   * Returns true if the next thing on the reader is a key token. This is different in SnakeYAML ->
+   * '?' may start a token in the flow context
    */
   private boolean checkKey() {
-    // KEY(flow context): '?'
-    if (this.flowLevel != 0) {
-      return true;
-    } else {
-      // KEY(block context): '?' (' '|'\n')
-      return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1));
-    }
+    // KEY: '?' (' ' or '\n')
+    return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1));
   }
 
   /**
@@ -1086,10 +1082,11 @@ public final class ScannerImpl implements Scanner {
     int c = reader.peek();
     // If the next char is NOT one of the forbidden chars above or
     // whitespace, then this is the start of a plain scalar.
-    return CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`")
-        || (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && (c == '-' || (
-        this.flowLevel == 0 && "?:"
-            .indexOf(c) != -1)));
+    boolean notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`");
+    boolean isPlain = notForbidden ||
+        (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) &&
+            ("-?".indexOf(c) != -1 || (this.flowLevel == 0 && c == ':')));
+    return isPlain;
   }
 
   // Scanners.
@@ -1937,7 +1934,7 @@ public final class ScannerImpl implements Scanner {
         if (CharConstants.NULL_BL_T_LINEBR.has(c)
             || (c == ':' && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(length + 1),
             flowLevel != 0 ? ",[]{}" : ""))
-            || (this.flowLevel != 0 && ",?[]{}".indexOf(c) != -1)) {
+            || (this.flowLevel != 0 && ",[]{}".indexOf(c) != -1)) {
           break;
         }
         length++;

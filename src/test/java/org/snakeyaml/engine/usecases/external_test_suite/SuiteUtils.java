@@ -40,7 +40,6 @@ public class SuiteUtils {
       "NJ66", "NKF9", "K3WX", "5T43", "3RLN-01", "SM9W-01", "3RLN-04", "DE56-02",
       "DE56-03",
       /* sep */ "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8",
-      /* sep */ "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8",
       "DBG4", "M7A3", "DK3J", "W5VH",
       "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 

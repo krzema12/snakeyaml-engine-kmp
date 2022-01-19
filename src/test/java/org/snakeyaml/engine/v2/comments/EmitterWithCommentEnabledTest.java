@@ -352,7 +352,8 @@ public class EmitterWithCommentEnabledTest {
         "  description: |+\n" +
         "    These lines have a carrage return after them.\n" +
         "    And the carrage return will be duplicated with each save if the\n" +
-        "    block chomping indicator + is used. (\"keep\": keep the line feed, keep trailing blank lines.)\n" +
+        "    block chomping indicator + is used. (\"keep\": keep the line feed, keep trailing blank lines.)\n"
+        +
         "\n" +
         "successfully-loaded: test\n";
     String result = runEmitterWithCommentsEnabled(data);

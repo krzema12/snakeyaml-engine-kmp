@@ -304,5 +304,6 @@ public class EmitterTest {
   }
 
   public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
+
   }
 }

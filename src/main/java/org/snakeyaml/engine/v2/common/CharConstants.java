@@ -74,17 +74,7 @@ public final class CharConstants {
    * <p>
    * YAML defines several common and a few uncommon escape sequences.
    */
-  public static final Map<Integer, Character> ESCAPE_REPLACEMENTS;
-
-  /**
-   * A mapping from a character to be escaped to its code in the output stream. (used for emitting)
-   * It contains the same as ESCAPE_REPLACEMENTS except ' ' and '/'
-   * <p>
-   * YAML defines several common and a few uncommon escape sequences.
-   *
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2776092">5.7. Escaped Characters</a>
-   */
-  public static final Map<Character, Integer> ESCAPES;
+  public static final Map<Character, String> ESCAPE_REPLACEMENTS;
 
   /**
    * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
@@ -99,32 +89,27 @@ public final class CharConstants {
   public static final Map<Character, Integer> ESCAPE_CODES;
 
   static {
-    Map<Integer, Character> escapeReplacements = new HashMap();
-    Map<Character, Integer> escapes = new HashMap();
-    escapeReplacements.put(Integer.valueOf('0'), '\0');// ASCII null
-    escapeReplacements.put(Integer.valueOf('a'), '\u0007');// ASCII bell
-    escapeReplacements.put(Integer.valueOf('b'), '\u0008'); // ASCII backspace
-    escapeReplacements.put(Integer.valueOf('t'), '\u0009'); // ASCII horizontal tab
-    escapeReplacements.put(Integer.valueOf('n'),
-        '\n');// ASCII newline (line feed; &#92;n maps to 0x0A)
-    escapeReplacements.put(Integer.valueOf('v'), '\u000B');// ASCII vertical tab
-    escapeReplacements.put(Integer.valueOf('f'), '\u000C');// ASCII form-feed
-    escapeReplacements.put(Integer.valueOf('r'), '\r');// carriage-return (&#92;r maps to 0x0D)
-    escapeReplacements.put(Integer.valueOf('e'), '\u001B');// ASCII escape character (Esc)
-    escapeReplacements.put(Integer.valueOf(' '), '\u0020');// ASCII space
-    escapeReplacements.put(Integer.valueOf('"'), '\"');// ASCII double-quote
-    escapeReplacements.put(Integer.valueOf('/'), '/');// ASCII slash (#x2F), for JSON compatibility.
-    escapeReplacements.put(Integer.valueOf('\\'), '\\');// ASCII backslash
-    escapeReplacements.put(Integer.valueOf('N'), '\u0085');// Unicode next line
-    escapeReplacements.put(Integer.valueOf('_'), '\u00A0');// Unicode non-breaking-space
-    escapeReplacements.put(Integer.valueOf('L'), '\u2028');// Unicode line-separator
-    escapeReplacements.put(Integer.valueOf('P'), '\u2029');// Unicode paragraph separator
-
-    escapeReplacements.entrySet().stream()
-        .filter(entry -> entry.getKey() != ' ' && entry.getKey() != '/')
-        .forEach(entry -> escapes.put(entry.getValue(), entry.getKey()));
+    Map<Character, String> escapeReplacements = new HashMap();
+    escapeReplacements.put(Character.valueOf('0'), "\0");// ASCII null
+    escapeReplacements.put(Character.valueOf('a'), "\u0007");// ASCII bell
+    escapeReplacements.put(Character.valueOf('b'), "\u0008"); // ASCII backspace
+    escapeReplacements.put(Character.valueOf('t'), "\u0009"); // ASCII horizontal tab
+    escapeReplacements.put(Character.valueOf('n'),
+        "\n");// ASCII newline (line feed; &#92;n maps to 0x0A)
+    escapeReplacements.put(Character.valueOf('v'), "\u000B");// ASCII vertical tab
+    escapeReplacements.put(Character.valueOf('f'), "\u000C");// ASCII form-feed
+    escapeReplacements.put(Character.valueOf('r'), "\r");// carriage-return (&#92;r maps to 0x0D)
+    escapeReplacements.put(Character.valueOf('e'), "\u001B");// ASCII escape character (Esc)
+    escapeReplacements.put(Character.valueOf(' '), "\u0020");// ASCII space
+    escapeReplacements.put(Character.valueOf('"'), "\"");// ASCII double-quote
+    escapeReplacements.put(Character.valueOf('/'),
+        "/");// ASCII slash (#x2F), for JSON compatibility.
+    escapeReplacements.put(Character.valueOf('\\'), "\\");// ASCII backslash
+    escapeReplacements.put(Character.valueOf('N'), "\u0085");// Unicode next line
+    escapeReplacements.put(Character.valueOf('_'), "\u00A0");// Unicode non-breaking-space
+    escapeReplacements.put(Character.valueOf('L'), "\u2028");// Unicode line-separator
+    escapeReplacements.put(Character.valueOf('P'), "\u2029");// Unicode paragraph separator
     ESCAPE_REPLACEMENTS = Collections.unmodifiableMap(escapeReplacements);
-    ESCAPES = Collections.unmodifiableMap(escapes);
 
     Map<Character, Integer> escapeCodes = new HashMap();
     escapeCodes.put(Character.valueOf('x'), 2);// 8-bit Unicode
@@ -132,5 +117,23 @@ public final class CharConstants {
     escapeCodes.put(Character.valueOf('U'),
         8);// 32-bit Unicode (Supplementary characters are supported)
     ESCAPE_CODES = Collections.unmodifiableMap(escapeCodes);
+  }
+
+  /**
+   * Replace a single character with its string representation
+   * @param chRepresentation - the char to escape
+   * @return the same string or its escaped representation
+   */
+  public static String escapeChar(String chRepresentation) {
+    for (Character s : ESCAPE_REPLACEMENTS.keySet()) {
+      String v = ESCAPE_REPLACEMENTS.get(s);
+      if (" ".equals(v) || "/".equals(v) || "\"".equals(v)) {
+        continue;
+      }
+      if (v.equals(chRepresentation)) {
+        return "\\" + s; // '<TAB>' -> '\t'
+      }
+    }
+    return chRepresentation;
   }
 }

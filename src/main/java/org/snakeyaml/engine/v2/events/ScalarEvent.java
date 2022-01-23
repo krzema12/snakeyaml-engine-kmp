@@ -15,13 +15,11 @@
  */
 package org.snakeyaml.engine.v2.events;
 
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
-
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.snakeyaml.engine.v2.common.Anchor;
+import org.snakeyaml.engine.v2.common.CharConstants;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
@@ -29,12 +27,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  * Marks a scalar value.
  */
 public final class ScalarEvent extends NodeEvent {
-
-  //this is only for Scalar representation (error messages and test suite)
-  private static final Map<Character, Integer> ESCAPES_TO_PRINT = ESCAPES.entrySet()
-      .stream()
-      .filter(entry -> entry.getKey() != '"')
-      .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
   private final Optional<String> tag;
   // style flag of a scalar event indicates the style of the scalar. Possible
@@ -132,26 +124,11 @@ public final class ScalarEvent extends NodeEvent {
     return builder.toString();
   }
 
-  /*
-   * Escape char (prepending '\')
-   * ch - the character to escape. Surrogates are not supported (because of int -> char conversion)
-   */
-  private String escape(Character ch) {
-    if (ESCAPES_TO_PRINT.containsKey(ch)) {
-      Integer i = ESCAPES_TO_PRINT.get(ch);
-      Character c = Character.valueOf((char) i.intValue());
-      return "\\" + c;
-    } else {
-      return ch.toString();
-    }
-  }
-
-  //escape and drop surrogates
+  // escape
   public String escapedValue() {
     return value.codePoints()
         .filter(i -> i < Character.MAX_VALUE)
-        .mapToObj(c -> (char) c)
-        .map(this::escape)
+        .mapToObj(ch -> CharConstants.escapeChar(String.valueOf(Character.toChars(ch))))
         .collect(Collectors.joining(""));
   }
 }

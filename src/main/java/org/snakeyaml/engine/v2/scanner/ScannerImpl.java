@@ -15,7 +15,6 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
 import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_CODES;
 import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
 
@@ -396,10 +395,7 @@ public final class ScannerImpl implements Scanner {
     // No? It's an error. Let's produce a nice error message. We do this by
     // converting escaped characters into their escape sequences. This is a
     // backwards use of the ESCAPE_REPLACEMENTS map.
-    String chRepresentation = String.valueOf(Character.toChars(c));
-    if (ESCAPES.containsKey(Character.valueOf((char) c))) {
-      chRepresentation = "\\" + ESCAPES.get(Character.valueOf((char) c));
-    }
+    String chRepresentation = CharConstants.escapeChar(String.valueOf(Character.toChars(c)));
     if (c == '\t') {
       chRepresentation += "(TAB)";
     }
@@ -1809,11 +1805,11 @@ public final class ScannerImpl implements Scanner {
       } else if (doubleQuoted && c == '\\') {
         reader.forward();
         c = reader.peek();
-        if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(c)) {
+        if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(Character.valueOf((char)c))) {
           // The character is one of the single-replacement
           // types; these are replaced with a literal character
           // from the mapping.
-          chunks.append(ESCAPE_REPLACEMENTS.get(c));
+          chunks.append(ESCAPE_REPLACEMENTS.get(Character.valueOf((char)c)));
           reader.forward();
         } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.containsKey(
             Character.valueOf((char) c))) {

@@ -48,7 +48,7 @@ class ParseSuiteTest {
     Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
     for (Event event : iterable) {
       assertNotNull(event);
-      System.out.println(event);
+      //System.out.println(event);
     }
   }
 

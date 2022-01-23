@@ -18,7 +18,6 @@ package org.snakeyaml.engine.v2.common;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPES;
 import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
 
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +69,13 @@ class CharConstantsTest {
   void ESCAPE_REPLACEMENTS() {
     assertEquals(Integer.valueOf(97), Integer.valueOf('a'));
     assertEquals(17, ESCAPE_REPLACEMENTS.size());
-    assertEquals(15, ESCAPES.size());
-    assertEquals(Character.valueOf('\r'), ESCAPE_REPLACEMENTS.get(114));
+    assertEquals("\r", ESCAPE_REPLACEMENTS.get('r'));
+  }
+
+  @Test
+  void escapeChar() {
+    assertEquals(" ", CharConstants.escapeChar(" "));
+    assertEquals("/", CharConstants.escapeChar("/"));
+    assertEquals("\\t", CharConstants.escapeChar("\t"));
   }
 }

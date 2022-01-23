@@ -48,8 +48,8 @@ import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * Transform a Node Graph to Event stream and allow provided {@link Emitable}
- * to present the {@link Event}s into the output stream
+ * Transform a Node Graph to Event stream and allow provided {@link Emitable} to present the {@link
+ * Event}s into the output stream
  */
 public class Serializer {
 
@@ -60,6 +60,7 @@ public class Serializer {
 
   /**
    * Create Serializer
+   *
    * @param settings - dump configuration
    * @param emitable - destination for the event stream
    */
@@ -72,6 +73,7 @@ public class Serializer {
 
   /**
    * Serialize document
+   *
    * @param node - the document root
    */
   public void serializeDocument(Node node) {
@@ -141,6 +143,7 @@ public class Serializer {
 
   /**
    * Recursive serialization of a {@link Node}
+   *
    * @param node - content
    */
   private void serializeNode(Node node) {

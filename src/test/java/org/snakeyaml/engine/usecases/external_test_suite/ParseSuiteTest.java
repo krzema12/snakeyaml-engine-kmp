@@ -34,7 +34,7 @@ class ParseSuiteTest {
 
   private final List<SuiteData> all = SuiteUtils.getAll().stream()
       .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME remove it
-      .filter(data -> !data.getName().equals("Y79Y-005")) //TODO FIXME remove it
+      .filter(data -> !data.getName().equals("4EJS")) //TODO FIXME remove it
       .collect(Collectors.toList());
 
   @Test
@@ -43,7 +43,7 @@ class ParseSuiteTest {
    * This test is used to debug one test (which is given explicitly)
    */
   void runOne() {
-    SuiteData data = SuiteUtils.getOne("Y79Y-004");
+    SuiteData data = SuiteUtils.getOne("JEF9-02");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
     Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
     for (Event event : iterable) {

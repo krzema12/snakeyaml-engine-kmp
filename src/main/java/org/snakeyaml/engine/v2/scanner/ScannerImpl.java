@@ -1123,8 +1123,7 @@ public final class ScannerImpl implements Scanner {
       int ff = 0;
       // Peek ahead until we find the first non-space character, then
       // move forward directly to that character.
-      // (allow TAB to precede a token, test J3BT)
-      while (reader.peek(ff) == ' ' || reader.peek(ff) == '\t') {
+      while (reader.peek(ff) == ' ') {
         ff++;
       }
       if (ff > 0) {
@@ -1805,11 +1804,12 @@ public final class ScannerImpl implements Scanner {
       } else if (doubleQuoted && c == '\\') {
         reader.forward();
         c = reader.peek();
-        if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(Character.valueOf((char)c))) {
+        if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey(
+            Character.valueOf((char) c))) {
           // The character is one of the single-replacement
           // types; these are replaced with a literal character
           // from the mapping.
-          chunks.append(ESCAPE_REPLACEMENTS.get(Character.valueOf((char)c)));
+          chunks.append(ESCAPE_REPLACEMENTS.get(Character.valueOf((char) c)));
           reader.forward();
         } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.containsKey(
             Character.valueOf((char) c))) {

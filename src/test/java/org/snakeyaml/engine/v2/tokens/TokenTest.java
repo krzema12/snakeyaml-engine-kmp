@@ -30,7 +30,7 @@ class TokenTest {
   @Test
   void testToString() {
     Token token = new ScalarToken("a", true, Optional.empty(), Optional.empty());
-    assertEquals("<scalar>", token.toString());
+    assertEquals("<scalar> plain=true style=: value=a", token.toString());
   }
 
   @Test

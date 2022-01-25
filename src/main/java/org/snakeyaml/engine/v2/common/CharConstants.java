@@ -102,8 +102,7 @@ public final class CharConstants {
     escapeReplacements.put(Character.valueOf('e'), "\u001B");// ASCII escape character (Esc)
     escapeReplacements.put(Character.valueOf(' '), "\u0020");// ASCII space
     escapeReplacements.put(Character.valueOf('"'), "\"");// ASCII double-quote
-    escapeReplacements.put(Character.valueOf('/'),
-        "/");// ASCII slash (#x2F), for JSON compatibility.
+    escapeReplacements.put(Character.valueOf('/'), "/");// ASCII slash, for JSON compatibility.
     escapeReplacements.put(Character.valueOf('\\'), "\\");// ASCII backslash
     escapeReplacements.put(Character.valueOf('N'), "\u0085");// Unicode next line
     escapeReplacements.put(Character.valueOf('_'), "\u00A0");// Unicode non-breaking-space

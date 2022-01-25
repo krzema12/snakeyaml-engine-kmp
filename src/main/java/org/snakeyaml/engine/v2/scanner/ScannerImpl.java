@@ -393,11 +393,10 @@ public final class ScannerImpl implements Scanner {
       return;
     }
     // No? It's an error. Let's produce a nice error message. We do this by
-    // converting escaped characters into their escape sequences. This is a
-    // backwards use of the ESCAPE_REPLACEMENTS map.
+    // converting escaped characters into their escape sequences.
     String chRepresentation = CharConstants.escapeChar(String.valueOf(Character.toChars(c)));
     if (c == '\t') {
-      chRepresentation += "(TAB)";
+      chRepresentation += "(TAB)"; // TAB deserves a special clarification
     }
     String text = String
         .format("found character '%s' that cannot start any token. (Do not use %s for indentation)",
@@ -477,7 +476,7 @@ public final class ScannerImpl implements Scanner {
           "A simple key is required only if it is the first token in the current line");
     }
 
-    // The next token might be a simple key. Let's save it's number and
+    // The next token might be a simple key. Let's save its number and
     // position.
     if (this.allowSimpleKey) {
       removePossibleSimpleKey();
@@ -1154,15 +1153,14 @@ public final class ScannerImpl implements Scanner {
       // If we scanned a line break, then (depending on flow level),
       // simple keys may be allowed.
       String breaks = scanLineBreak();
-      if (breaks.length() != 0) {// found a line-break
+      if (breaks.length() != 0) { // found a line-break
         if (settings.getParseComments() && !commentSeen) {
           if (columnBeforeComment == 0) {
             addToken(new CommentToken(CommentType.BLANK_LINE, breaks, startMark, reader.getMark()));
           }
         }
         if (this.flowLevel == 0) {
-          // Simple keys are allowed at flow-level 0 after a line
-          // break
+          // Simple keys are allowed at flow-level 0 after a line break
           this.allowSimpleKey = true;
         }
       } else {
@@ -1602,15 +1600,11 @@ public final class ScannerImpl implements Scanner {
    */
   private Chomping scanBlockScalarIndicators(Optional<Mark> startMark) {
     // See the specification for details.
-    Boolean chomping = null;
+    Optional<Boolean> chomping = Optional.empty();
     int increment = -1;
     int c = reader.peek();
     if (c == '-' || c == '+') {
-      if (c == '+') {
-        chomping = Boolean.TRUE;
-      } else {
-        chomping = Boolean.FALSE;
-      }
+      chomping = Optional.of(c == '+');
       reader.forward();
       c = reader.peek();
       if (Character.isDigit(c)) {
@@ -1634,11 +1628,7 @@ public final class ScannerImpl implements Scanner {
       reader.forward();
       c = reader.peek();
       if (c == '-' || c == '+') {
-        if (c == '+') {
-          chomping = Boolean.TRUE;
-        } else {
-          chomping = Boolean.FALSE;
-        }
+        chomping = Optional.of(c == '+');
         reader.forward();
       }
     }
@@ -2243,20 +2233,20 @@ public final class ScannerImpl implements Scanner {
    */
   private static class Chomping {
 
-    private final Boolean value;
+    private final Optional<Boolean> value;
     private final int increment;
 
-    public Chomping(Boolean value, int increment) {
+    public Chomping(Optional<Boolean> value, int increment) {
       this.value = value;
       this.increment = increment;
     }
 
     public boolean chompTailIsNotFalse() {
-      return value == null || value;
+      return value.orElse(true);
     }
 
     public boolean chompTailIsTrue() {
-      return value != null && value;
+      return value.orElse(false);
     }
 
     public int getIncrement() {

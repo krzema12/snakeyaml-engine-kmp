@@ -1,5 +1,0 @@
-
-
-echo "{a: 3}" | ./src/fy-tool --parse-dump -
-
-echo "{a: 3}" | ./src/fy-tool --testsuite

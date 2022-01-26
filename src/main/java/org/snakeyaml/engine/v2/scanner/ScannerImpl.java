@@ -1152,11 +1152,11 @@ public final class ScannerImpl implements Scanner {
       }
       // If we scanned a line break, then (depending on flow level),
       // simple keys may be allowed.
-      String breaks = scanLineBreak();
-      if (breaks.length() != 0) { // found a line-break
+      Optional<String> breaksOpt = scanLineBreak();
+      if (breaksOpt.isPresent()) { // found a line-break
         if (settings.getParseComments() && !commentSeen) {
           if (columnBeforeComment == 0) {
-            addToken(new CommentToken(CommentType.BLANK_LINE, breaks, startMark, reader.getMark()));
+            addToken(new CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark, reader.getMark()));
           }
         }
         if (this.flowLevel == 0) {
@@ -1364,8 +1364,7 @@ public final class ScannerImpl implements Scanner {
       }
     }
     int c = reader.peek();
-    String lineBreak = scanLineBreak();
-    if (lineBreak.length() == 0 && c != '\0') {
+    if (!scanLineBreak().isPresent() && c != '\0') {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(DIRECTIVE_PREFIX, startMark,
           "expected a comment or a line break, but found " + s + "(" + c + ")",
@@ -1512,12 +1511,12 @@ public final class ScannerImpl implements Scanner {
 
   private List<Token> scanBlockScalar(ScalarStyle style) {
     // See the specification for details.
-    StringBuilder chunks = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     Optional<Mark> startMark = reader.getMark();
     // Scan the header.
     reader.forward();
     Chomping chomping = scanBlockScalarIndicators(startMark);
-    int increment = chomping.getIncrement();
+    int increment = chomping.increment;
     CommentToken commentToken = scanBlockScalarIgnoredLine(startMark);
 
     // Determine the indentation level and go to the first non-empty line.
@@ -1542,49 +1541,48 @@ public final class ScannerImpl implements Scanner {
       endMark = (Optional<Mark>) brme[1];
     }
 
-    String lineBreak = "";
-
+    Optional<String> lineBreakOpt = Optional.empty();
     // Scan the inner part of the block scalar.
     while (this.reader.getColumn() == blockIndent && reader.peek() != '\0') {
-      chunks.append(breaks);
+      stringBuilder.append(breaks);
       boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
       int length = 0;
       while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
         length++;
       }
-      chunks.append(reader.prefixForward(length));
-      lineBreak = scanLineBreak();
+      stringBuilder.append(reader.prefixForward(length));
+      lineBreakOpt = scanLineBreak();
       Object[] brme = scanBlockScalarBreaks(blockIndent);
       breaks = (String) brme[0];
       endMark = (Optional<Mark>) brme[1];
-      if (this.reader.getColumn() == blockIndent && reader.peek() != '\0') {
+      if (this.reader.getColumn() == blockIndent && reader.peek() != '\0') { //TODO do we need \0 ?
 
         // Unfortunately, folding rules are ambiguous.
         //
         // This is the folding according to the specification:
-        if (style == ScalarStyle.FOLDED && "\n".equals(lineBreak) && leadingNonSpace
+        if (style == ScalarStyle.FOLDED && "\n".equals(lineBreakOpt.orElse("")) && leadingNonSpace
             && " \t".indexOf(reader.peek()) == -1) {
           if (breaks.length() == 0) {
-            chunks.append(" ");
+            stringBuilder.append(" ");
           }
         } else {
-          chunks.append(lineBreak);
+          stringBuilder.append(lineBreakOpt.orElse(""));
+          if(stringBuilder.toString().contains("Opti")) throw new IllegalArgumentException("F 1");
         }
       } else {
         break;
       }
     }
     // Chomp the tail.
-    if (chomping.chompTailIsNotFalse()) {
-      chunks.append(lineBreak);
+    if (chomping.value.orElse(true)) {
+      stringBuilder.append(lineBreakOpt.orElse(""));
     }
-    CommentToken blankLineCommentToken = null;
-    if (chomping.chompTailIsTrue()) {
-      chunks.append(breaks);
+    if (chomping.value.orElse(false)) {
+      stringBuilder.append(breaks);
     }
     // We are done.
-    ScalarToken scalarToken = new ScalarToken(chunks.toString(), false, style, startMark, endMark);
-    return makeTokenList(commentToken, scalarToken, blankLineCommentToken);
+    ScalarToken scalarToken = new ScalarToken(stringBuilder.toString(), false, style, startMark, endMark);
+    return makeTokenList(commentToken, scalarToken);
   }
 
   /**
@@ -1662,8 +1660,7 @@ public final class ScannerImpl implements Scanner {
     // If the next character is not a null or line break, an error has
     // occurred.
     int c = reader.peek();
-    String lineBreak = scanLineBreak();
-    if (lineBreak.length() == 0 && c != '\0') {
+    if (!scanLineBreak().isPresent() && c != '\0') {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(SCANNING_SCALAR, startMark,
           "expected a comment or a line break, but found " + s + "("
@@ -1688,7 +1685,7 @@ public final class ScannerImpl implements Scanner {
       if (reader.peek() != ' ') {
         // If the character isn't a space, it must be some kind of
         // line-break; scan the line break and track it.
-        chunks.append(scanLineBreak());
+        chunks.append(scanLineBreak().orElse(""));
         endMark = reader.getMark();
       } else {
         // If the character is a space, move forward to the next
@@ -1718,9 +1715,9 @@ public final class ScannerImpl implements Scanner {
 
     // Consume one or more line breaks followed by any amount of spaces,
     // until we find something that isn't a line-break.
-    String lineBreak = null;
-    while ((lineBreak = scanLineBreak()).length() != 0) {
-      chunks.append(lineBreak);
+    Optional<String> lineBreakOpt;
+    while ((lineBreakOpt = scanLineBreak()).isPresent()) {
+      chunks.append(lineBreakOpt.get());
       endMark = reader.getMark();
       // Scan past up to (indent) spaces on the next line, then forward
       // past them.
@@ -1818,7 +1815,7 @@ public final class ScannerImpl implements Scanner {
           String unicode = new String(Character.toChars(decimal));
           chunks.append(unicode);
           reader.forward(length);
-        } else if (scanLineBreak().length() != 0) {
+        } else if (scanLineBreak().isPresent()) {
           chunks.append(scanFlowScalarBreaks(startMark));
         } else {
           final String s = String.valueOf(Character.toChars(c));
@@ -1849,11 +1846,11 @@ public final class ScannerImpl implements Scanner {
           "found unexpected end of stream", reader.getMark());
     }
     // If we encounter a line break, scan it into our assembled string...
-    String lineBreak = scanLineBreak();
-    if (lineBreak.length() != 0) {
+    Optional<String> lineBreakOpt = scanLineBreak();
+    if (lineBreakOpt.isPresent()) {
       String breaks = scanFlowScalarBreaks(startMark);
-      if (!"\n".equals(lineBreak)) {
-        chunks.append(lineBreak);
+      if (!"\n".equals(lineBreakOpt.get())) {
+        chunks.append(lineBreakOpt.get());
       } else if (breaks.length() == 0) {
         chunks.append(" ");
       }
@@ -1882,9 +1879,9 @@ public final class ScannerImpl implements Scanner {
       }
       // If we stopped at a line break, add that; otherwise, return the
       // assembled set of scalar breaks.
-      String lineBreak = scanLineBreak();
-      if (lineBreak.length() != 0) {
-        chunks.append(lineBreak);
+      Optional<String> lineBreakOpt = scanLineBreak();
+      if (lineBreakOpt.isPresent()) {
+        chunks.append(lineBreakOpt.get());
       } else {
         return chunks.toString();
       }
@@ -1993,8 +1990,8 @@ public final class ScannerImpl implements Scanner {
       length++;
     }
     String whitespaces = reader.prefixForward(length);
-    String lineBreak = scanLineBreak();
-    if (lineBreak.length() != 0) {
+    Optional<String> lineBreakOpt = scanLineBreak();
+    if (lineBreakOpt.isPresent()) {
       this.allowSimpleKey = true;
       String prefix = reader.prefix(3);
       if ("---".equals(prefix) || "...".equals(prefix)
@@ -2009,9 +2006,9 @@ public final class ScannerImpl implements Scanner {
         if (reader.peek() == ' ') {
           reader.forward();
         } else {
-          String lb = scanLineBreak();
-          if (lb.length() != 0) {
-            breaks.append(lb);
+          Optional<String> lbOpt = scanLineBreak();
+          if (lbOpt.isPresent()) {
+            breaks.append(lbOpt.get());
             prefix = reader.prefix(3);
             if ("---".equals(prefix) || "...".equals(prefix)
                 && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
@@ -2022,8 +2019,8 @@ public final class ScannerImpl implements Scanner {
           }
         }
       }
-      if (!"\n".equals(lineBreak)) {
-        return lineBreak + breaks;
+      if (!"\n".equals(lineBreakOpt.orElse(""))) {
+        return lineBreakOpt.orElse("") + breaks;
       } else if (breaks.length() == 0) {
         return " ";
       }
@@ -2185,20 +2182,18 @@ public final class ScannerImpl implements Scanner {
    * Scan a line break, transforming:
    *
    * <pre>
-   * '\r\n' : '\n'
-   * '\r' : '\n'
-   * '\n' : '\n'
-   * '\x85' : '\n'
+   * '\r\n'   : '\n'
+   * '\r'     : '\n'
+   * '\n'     : '\n'
+   * '\x85'   : '\n'
+   * '\u2028' : '\u2028'
+   * '\u2029  : '\u2029'
    * default : ''
    * </pre>
+   *
+   * @return transformed character or empty string if no line break detected
    */
-  private String scanLineBreak() {
-    // Transforms:
-    // '\r\n' : '\n'
-    // '\r' : '\n'
-    // '\n' : '\n'
-    // '\x85' : '\n'
-    // default : ''
+  private Optional<String> scanLineBreak() {
     int c = reader.peek();
     if (c == '\r' || c == '\n' || c == '\u0085') {
       if (c == '\r' && '\n' == reader.peek(1)) {
@@ -2206,14 +2201,19 @@ public final class ScannerImpl implements Scanner {
       } else {
         reader.forward();
       }
-      return "\n";
+      return Optional.of("\n");
     } else if (c == '\u2028' || c == '\u2029') {
       reader.forward();
-      return String.valueOf(Character.toChars(c));
+      return Optional.of(String.valueOf(Character.toChars(c)));
     }
-    return "";
+    return Optional.empty();
   }
 
+  /**
+   * Ignore Comment token if they are null, or Comments should not be parsed
+   * @param tokens - token types
+   * @return tokens to be used
+   */
   private List<Token> makeTokenList(Token... tokens) {
     List<Token> tokenList = new ArrayList<>();
     for (int ix = 0; ix < tokens.length; ix++) {
@@ -2233,24 +2233,13 @@ public final class ScannerImpl implements Scanner {
    */
   private static class Chomping {
 
+    //immutable values do not have getters
     private final Optional<Boolean> value;
     private final int increment;
 
     public Chomping(Optional<Boolean> value, int increment) {
       this.value = value;
       this.increment = increment;
-    }
-
-    public boolean chompTailIsNotFalse() {
-      return value.orElse(true);
-    }
-
-    public boolean chompTailIsTrue() {
-      return value.orElse(false);
-    }
-
-    public int getIncrement() {
-      return increment;
     }
   }
 }

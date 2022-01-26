@@ -34,15 +34,19 @@ import org.snakeyaml.engine.v2.tokens.Token.ID;
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {
 
-  @Test
+  //@Test
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();
-    StreamReader reader = new StreamReader(settings, "foo: bar");
+    String input = "block:\t|\n"
+        + "  void main() {\n"
+        + "  \tprintf(\"Hello, world!\\n\");\n"
+        + "  }";
+    StreamReader reader = new StreamReader(settings, input);
     ScannerImpl scanner = new ScannerImpl(settings, reader);
     while (scanner.checkToken()) {
       Token token = scanner.next();
-      //System.out.println(token);
+      System.out.println(token);
     }
   }
 

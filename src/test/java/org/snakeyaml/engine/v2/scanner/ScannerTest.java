@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.NoSuchElementException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -32,6 +33,18 @@ import org.snakeyaml.engine.v2.tokens.Token.ID;
 
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {
+
+  @Test
+  @DisplayName("Run scanner")
+  void scan() {
+    LoadSettings settings = LoadSettings.builder().build();
+    StreamReader reader = new StreamReader(settings, "foo: bar");
+    ScannerImpl scanner = new ScannerImpl(settings, reader);
+    while (scanner.checkToken()) {
+      Token token = scanner.next();
+      //System.out.println(token);
+    }
+  }
 
   @Test
   @DisplayName("Expected NoSuchElementException after all the tokens are finished.")

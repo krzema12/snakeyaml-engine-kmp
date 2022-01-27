@@ -34,7 +34,6 @@ class ParseSuiteTest {
 
   private final List<SuiteData> all = SuiteUtils.getAll().stream()
       .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME remove it
-      .filter(data -> !data.getName().equals("4EJS")) //TODO FIXME remove it
       .collect(Collectors.toList());
 
   //@Test

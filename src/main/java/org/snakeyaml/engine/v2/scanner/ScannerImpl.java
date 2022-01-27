@@ -287,7 +287,7 @@ public final class ScannerImpl implements Scanner {
     // will look like.
     int c = reader.peek();
     switch (c) {
-      case '\0':
+      case 0:
         // Is it the end of stream?
         fetchStreamEnd();
         return;
@@ -433,8 +433,8 @@ public final class ScannerImpl implements Scanner {
    */
   private void stalePossibleSimpleKeys() {
     if (!this.possibleSimpleKeys.isEmpty()) {
-      for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator(); iterator
-          .hasNext(); ) {
+      for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator(); 
+          iterator.hasNext(); ) {
         SimpleKey key = iterator.next();
         if ((key.getLine() != reader.getLine())
             || (reader.getIndex() - key.getIndex() > 1024)) {
@@ -470,14 +470,13 @@ public final class ScannerImpl implements Scanner {
 
     if (allowSimpleKey || !required) {
       // A simple key is required only if it is the first token in the
-      // current line. Therefore it is always allowed.
+      // current line. Therefore, it is always allowed.
     } else {
       throw new YamlEngineException(
           "A simple key is required only if it is the first token in the current line");
     }
 
-    // The next token might be a simple key. Let's save its number and
-    // position.
+    // The next token might be a simple key. Let's save its number and position.
     if (this.allowSimpleKey) {
       removePossibleSimpleKey();
       int tokenNumber = this.tokensTaken + this.tokens.size();
@@ -515,8 +514,8 @@ public final class ScannerImpl implements Scanner {
    * </pre>
    * <p>
    * In flow context, tokens should respect indentation. Actually the condition should be
-   * `self.indent &gt;= column` according to the spec. But this condition will prohibit intuitively
-   * correct constructions such as key : { } </pre>
+   * `self.indent >= column` according to the spec. But this condition will prohibit intuitively
+   * correct constructions such 'as key : { }'
    */
   private void unwindIndent(int col) {
     // In the flow context, indentation is ignored. We make the scanner less
@@ -545,7 +544,7 @@ public final class ScannerImpl implements Scanner {
     return false;
   }
 
-  // Fetchers.
+  // Fetchers - add tokens to the stream (can call scanners)
 
   /**
    * We always add STREAM-START as the first token and STREAM-END as the last token.
@@ -1084,7 +1083,7 @@ public final class ScannerImpl implements Scanner {
     return isPlain;
   }
 
-  // Scanners.
+  // Scanners - create tokens
 
   /**
    * <pre>
@@ -1100,7 +1099,7 @@ public final class ScannerImpl implements Scanner {
    *   BLOCK-SEQUENCE-START, BLOCK-MAPPING-START, BLOCK-END,
    *   KEY(block), VALUE(block), BLOCK-ENTRY
    * So the checking code is
-   *   if &lt;TAB&gt;:
+   *   if <TAB>:
    *       self.allow_simple_keys = False
    * We also need to add the check for `allow_simple_keys == True` to
    * `unwind_indent` before issuing BLOCK-END.
@@ -1364,7 +1363,7 @@ public final class ScannerImpl implements Scanner {
       }
     }
     int c = reader.peek();
-    if (!scanLineBreak().isPresent() && c != '\0') {
+    if (!scanLineBreak().isPresent() && c != 0) {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(DIRECTIVE_PREFIX, startMark,
           "expected a comment or a line break, but found " + s + "(" + c + ")",
@@ -1543,7 +1542,7 @@ public final class ScannerImpl implements Scanner {
 
     Optional<String> lineBreakOpt = Optional.empty();
     // Scan the inner part of the block scalar.
-    while (this.reader.getColumn() == blockIndent && reader.peek() != '\0') {
+    while (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
       stringBuilder.append(breaks);
       boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
       int length = 0;
@@ -1555,7 +1554,7 @@ public final class ScannerImpl implements Scanner {
       Object[] brme = scanBlockScalarBreaks(blockIndent);
       breaks = (String) brme[0];
       endMark = (Optional<Mark>) brme[1];
-      if (this.reader.getColumn() == blockIndent && reader.peek() != '\0') { //TODO do we need \0 ?
+      if (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
 
         // Unfortunately, folding rules are ambiguous.
         //
@@ -1660,7 +1659,7 @@ public final class ScannerImpl implements Scanner {
     // If the next character is not a null or line break, an error has
     // occurred.
     int c = reader.peek();
-    if (!scanLineBreak().isPresent() && c != '\0') {
+    if (!scanLineBreak().isPresent() && c != 0) {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(SCANNING_SCALAR, startMark,
           "expected a comment or a line break, but found " + s + "("
@@ -1840,7 +1839,7 @@ public final class ScannerImpl implements Scanner {
     }
     String whitespaces = reader.prefixForward(length);
     int c = reader.peek();
-    if (c == '\0') {
+    if (c == 0) {
       // A flow scalar cannot end with an end-of-stream
       throw new ScannerException("while scanning a quoted scalar", startMark,
           "found unexpected end of stream", reader.getMark());
@@ -1946,7 +1945,7 @@ public final class ScannerImpl implements Scanner {
     int wsColumn = this.reader.getColumn();
     {
       int c;
-      while ((c = reader.peek(wsLength)) != '\0' && CharConstants.NULL_BL_T_LINEBR.has(c)) {
+      while ((c = reader.peek(wsLength)) != 0 && CharConstants.NULL_BL_T_LINEBR.has(c)) {
         wsLength++;
         if (!CharConstants.LINEBR.has(c) && (c != '\r' || reader.peek(wsLength + 1) != '\n')
             && c != 0xFEFF) {
@@ -1959,7 +1958,7 @@ public final class ScannerImpl implements Scanner {
 
     // if we see, a comment or end of string or change decrease in indent, we are done
     // Do not chomp end of lines and blanks, they will be handled by the main loop.
-    if (reader.peek(wsLength) == '#' || reader.peek(wsLength + 1) == '\0'
+    if (reader.peek(wsLength) == '#' || reader.peek(wsLength + 1) == 0
         || this.flowLevel == 0 && wsColumn < this.indent) {
       return true;
     }

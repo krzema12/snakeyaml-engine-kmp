@@ -165,20 +165,20 @@ public final class StreamReader {
   /**
    * Peek the next code point (look without moving the pointer)
    *
-   * @return the next code point
+   * @return the next code point or 0 if empty
    */
   public int peek() {
-    return (ensureEnoughData()) ? codePointsWindow[pointer] : '\0';
+    return (ensureEnoughData()) ? codePointsWindow[pointer] : 0;
   }
 
   /**
    * Peek the next index-th code point
    *
    * @param index to peek
-   * @return the next index-th code point
+   * @return the next index-th code point or 0 if empty
    */
   public int peek(int index) {
-    return (ensureEnoughData(index)) ? codePointsWindow[pointer + index] : '\0';
+    return (ensureEnoughData(index)) ? codePointsWindow[pointer + index] : 0;
   }
 
   /**

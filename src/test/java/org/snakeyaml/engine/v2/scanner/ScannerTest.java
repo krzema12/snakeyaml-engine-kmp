@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.NoSuchElementException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -38,10 +37,8 @@ class ScannerTest {
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();
-    String input = "block:\t|\n"
-        + "  void main() {\n"
-        + "  \tprintf(\"Hello, world!\\n\");\n"
-        + "  }";
+    String input = "- |+\n"
+        + "   ";
     StreamReader reader = new StreamReader(settings, input);
     ScannerImpl scanner = new ScannerImpl(settings, reader);
     while (scanner.checkToken()) {

@@ -38,6 +38,7 @@ import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v2.scanner.ScannerImpl.Chomping.Indicator;
 import org.snakeyaml.engine.v2.tokens.AliasToken;
 import org.snakeyaml.engine.v2.tokens.AnchorToken;
 import org.snakeyaml.engine.v2.tokens.BlockEndToken;
@@ -433,7 +434,7 @@ public final class ScannerImpl implements Scanner {
    */
   private void stalePossibleSimpleKeys() {
     if (!this.possibleSimpleKeys.isEmpty()) {
-      for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator(); 
+      for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator();
           iterator.hasNext(); ) {
         SimpleKey key = iterator.next();
         if ((key.getLine() != reader.getLine())
@@ -1155,7 +1156,8 @@ public final class ScannerImpl implements Scanner {
       if (breaksOpt.isPresent()) { // found a line-break
         if (settings.getParseComments() && !commentSeen) {
           if (columnBeforeComment == 0) {
-            addToken(new CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark, reader.getMark()));
+            addToken(new CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark,
+                reader.getMark()));
           }
         }
         if (this.flowLevel == 0) {
@@ -1566,21 +1568,23 @@ public final class ScannerImpl implements Scanner {
           }
         } else {
           stringBuilder.append(lineBreakOpt.orElse(""));
-          if(stringBuilder.toString().contains("Opti")) throw new IllegalArgumentException("F 1");
         }
       } else {
         break;
       }
     }
     // Chomp the tail.
-    if (chomping.value.orElse(true)) {
+    if (chomping.value == Indicator.CLIP || chomping.value == Indicator.KEEP) {
+      // add the final line break (if exists !) TODO find out if to add anyway
       stringBuilder.append(lineBreakOpt.orElse(""));
     }
-    if (chomping.value.orElse(false)) {
+    if (chomping.value == Indicator.KEEP) {
+      // any trailing empty lines are considered to be part of the scalar’s content
       stringBuilder.append(breaks);
     }
     // We are done.
-    ScalarToken scalarToken = new ScalarToken(stringBuilder.toString(), false, style, startMark, endMark);
+    ScalarToken scalarToken = new ScalarToken(stringBuilder.toString(), false, style, startMark,
+        endMark);
     return makeTokenList(commentToken, scalarToken);
   }
 
@@ -1597,11 +1601,11 @@ public final class ScannerImpl implements Scanner {
    */
   private Chomping scanBlockScalarIndicators(Optional<Mark> startMark) {
     // See the specification for details.
-    Optional<Boolean> chomping = Optional.empty();
+    int indicator = Integer.MIN_VALUE;
     int increment = -1;
     int c = reader.peek();
     if (c == '-' || c == '+') {
-      chomping = Optional.of(c == '+');
+      indicator = c;
       reader.forward();
       c = reader.peek();
       if (Character.isDigit(c)) {
@@ -1625,7 +1629,7 @@ public final class ScannerImpl implements Scanner {
       reader.forward();
       c = reader.peek();
       if (c == '-' || c == '+') {
-        chomping = Optional.of(c == '+');
+        indicator = c;
         reader.forward();
       }
     }
@@ -1636,7 +1640,7 @@ public final class ScannerImpl implements Scanner {
           "expected chomping or indentation indicators, but found " + s + "("
               + c + ")", reader.getMark());
     }
-    return new Chomping(chomping, increment);
+    return new Chomping(indicator, increment);
   }
 
   /**
@@ -2210,6 +2214,7 @@ public final class ScannerImpl implements Scanner {
 
   /**
    * Ignore Comment token if they are null, or Comments should not be parsed
+   *
    * @param tokens - token types
    * @return tokens to be used
    */
@@ -2227,18 +2232,33 @@ public final class ScannerImpl implements Scanner {
     return tokenList;
   }
 
-  /**
-   * Chomping the tail may have 3 values - yes, no, not defined.
-   */
-  private static class Chomping {
+  static class Chomping {
 
-    //immutable values do not have getters
-    private final Optional<Boolean> value;
+    enum Indicator {STRIP, CLIP, KEEP}
+
+    // immutable values do not have getters
+    private final Indicator value;
     private final int increment;
 
-    public Chomping(Optional<Boolean> value, int increment) {
+    public Chomping(Indicator value, int increment) {
       this.value = value;
       this.increment = increment;
+    }
+
+    public Chomping(int indicatorCodePoint, int increment) {
+      this(parse(indicatorCodePoint), increment);
+    }
+
+    private static Indicator parse(int codePoint) {
+      if (codePoint == '+') {
+        return Indicator.KEEP;
+      } else if (codePoint == '-') {
+        return Indicator.STRIP;
+      } else if (codePoint == Integer.MIN_VALUE) {
+        return Indicator.CLIP;
+      } else {
+        throw new IllegalArgumentException("Unexpected block chomping indicator: " + codePoint);
+      }
     }
   }
 }

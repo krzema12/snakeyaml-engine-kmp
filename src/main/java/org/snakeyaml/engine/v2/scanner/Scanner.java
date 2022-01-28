@@ -33,12 +33,10 @@ public interface Scanner extends Iterator<Token> {
   /**
    * Check if the next token is one of the given types.
    *
-   * @param choices
-   *            token IDs to match with
+   * @param choices token IDs to match with
    * @return <code>true</code> if the next token is one of the given types.
    * Returns <code>false</code> if no more tokens are available.
-   * @throws ScannerException
-   *             Thrown in case of malformed input.
+   * @throws ScannerException Thrown in case of malformed input.
    */
   boolean checkToken(Token.ID... choices);
 
@@ -54,9 +52,8 @@ public interface Scanner extends Iterator<Token> {
   /**
    * Returns the next token.
    * <p>
-   * The token will be removed from the stream.
-   * (Every invocation of this method must happen after calling either {@link #checkToken}
-   * or {@link #peekToken()}
+   * The token will be removed from the stream. (Every invocation of this method must happen after
+   * calling either {@link #checkToken} or {@link #peekToken()}
    * </p>
    *
    * @return the coming token

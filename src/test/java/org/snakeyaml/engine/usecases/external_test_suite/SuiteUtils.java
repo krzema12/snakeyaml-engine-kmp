@@ -38,8 +38,8 @@ public class SuiteUtils {
   public static final List<String> deviationsWithError = Lists.newArrayList(
       "HWV9", "NB6Z", "VJP3-01", "RHX7", "KH5V-01", "5MUD", "9SA2", "QT73", "4MUZ", "CFD4",
       "NJ66", "NKF9", "K3WX", "5T43", "3RLN-01", "SM9W-01", "3RLN-04", "DE56-02",
-      "DE56-03", "4MUZ-00", "4MUZ-02", "JEF9-02", "4MUZ-01", "UKK6-00", "K54U", "Y79Y-002", "Y79Y-010",
-      "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8", "M2N8-00", "MUS6-03", "6BCT", "6HB6","Q5MG",
+      "DE56-03", "4MUZ-00", "4MUZ-02", "4MUZ-01", "UKK6-00", "K54U", "Y79Y-002", "Y79Y-010",
+      "KZN9", "2JQS", "6M2F", "S3PD", "FRK4", "NHX8", "M2N8-00", "MUS6-03", "6BCT", "6HB6", "Q5MG",
       "DBG4", "M7A3", "DK3J", "W5VH", "58MP", "UV7Q", "HM87-00", "DC7X", "A2M4", "J3BT",
       "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 

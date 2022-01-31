@@ -105,8 +105,7 @@ public final class ScannerImpl implements Scanner {
   // Had we reached the end of the stream?
   private boolean done = false;
 
-  // The number of unclosed '{' and '['. `flow_level == 0` means block
-  // context.
+  // The number of unclosed '{' and '['. `isBlockContext()` means block context.
   private int flowLevel = 0;
 
   // List of processed tokens that are not yet emitted.
@@ -255,6 +254,14 @@ public final class ScannerImpl implements Scanner {
     this.tokens.addAll(tokens);
   }
 
+  private boolean isBlockContext() {
+    return this.flowLevel == 0;
+  }
+
+  private boolean isFlowContext() {
+    return !isBlockContext();
+  }
+
   /**
    * Returns true if more tokens should be scanned.
    */
@@ -366,14 +373,14 @@ public final class ScannerImpl implements Scanner {
         return;
       case '|':
         // Is it a literal scalar?
-        if (this.flowLevel == 0) {
+        if (isBlockContext()) {
           fetchLiteral();
           return;
         }
         break;
       case '>':
         // Is it a folded scalar?
-        if (this.flowLevel == 0) {
+        if (isBlockContext()) {
           fetchFolded();
           return;
         }
@@ -467,7 +474,7 @@ public final class ScannerImpl implements Scanner {
     // Check if a simple key is required at the current position.
     // A simple key is required if this position is the root flowLevel, AND
     // the current indentation level is the same as the last indent-level.
-    boolean required = (this.flowLevel == 0) && (this.indent == this.reader.getColumn());
+    boolean required = isBlockContext() && (this.indent == this.reader.getColumn());
 
     if (allowSimpleKey || !required) {
       // A simple key is required only if it is the first token in the
@@ -521,7 +528,7 @@ public final class ScannerImpl implements Scanner {
   private void unwindIndent(int col) {
     // In the flow context, indentation is ignored. We make the scanner less
     // restrictive than specification requires.
-    if (this.flowLevel != 0) {
+    if (isFlowContext()) {
       return;
     }
 
@@ -739,7 +746,7 @@ public final class ScannerImpl implements Scanner {
    */
   private void fetchBlockEntry() {
     // Block context needs additional checks.
-    if (this.flowLevel == 0) {
+    if (isBlockContext()) {
       // Are we allowed to start a new entry?
       if (!this.allowSimpleKey) {
         throw new ScannerException("", Optional.empty(), "sequence entries are not allowed here",
@@ -774,7 +781,7 @@ public final class ScannerImpl implements Scanner {
    */
   private void fetchKey() {
     // Block context needs additional checks.
-    if (this.flowLevel == 0) {
+    if (isBlockContext()) {
       // Are we allowed to start a key (not necessary a simple)?
       if (!this.allowSimpleKey) {
         throw new ScannerException("mapping keys are not allowed here",
@@ -787,7 +794,7 @@ public final class ScannerImpl implements Scanner {
       }
     }
     // Simple keys are allowed after '?' in the block context.
-    this.allowSimpleKey = this.flowLevel == 0;
+    this.allowSimpleKey = isBlockContext();
 
     // Reset possible simple key on the current level.
     removePossibleSimpleKey();
@@ -813,7 +820,7 @@ public final class ScannerImpl implements Scanner {
 
       // If this key starts a new block mapping, we need to add
       // BLOCK-MAPPING-START.
-      if (this.flowLevel == 0 && addIndent(key.getColumn())) {
+      if (isBlockContext() && addIndent(key.getColumn())) {
         addToken(key.getTokenNumber() - this.tokensTaken,
             new BlockMappingStartToken(key.getMark(), key.getMark()));
       }
@@ -824,7 +831,7 @@ public final class ScannerImpl implements Scanner {
       // It must be a part of a complex key.
       // Block context needs additional checks. Do we really need them?
       // They will be caught by the scanner anyway.
-      if (this.flowLevel == 0) {
+      if (isBlockContext()) {
         // We are allowed to start a complex value if and only if we can
         // start a simple key.
         if (!this.allowSimpleKey) {
@@ -835,13 +842,13 @@ public final class ScannerImpl implements Scanner {
       // If this value starts a new block mapping, we need to add
       // BLOCK-MAPPING-START. It will be detected as an error later by
       // the scanner.
-      if (flowLevel == 0 && addIndent(reader.getColumn())) {
+      if (isBlockContext() && addIndent(reader.getColumn())) {
         Optional<Mark> mark = reader.getMark();
         addToken(new BlockMappingStartToken(mark, mark));
       }
 
       // Simple keys are allowed after ':' in the block context.
-      allowSimpleKey = flowLevel == 0;
+      allowSimpleKey = isBlockContext();
 
       // Reset possible simple key on the current level.
       removePossibleSimpleKey();
@@ -1046,7 +1053,7 @@ public final class ScannerImpl implements Scanner {
    */
   private boolean checkValue() {
     // VALUE(flow context): ':'
-    if (flowLevel != 0) {
+    if (isFlowContext()) {
       return true;
     } else {
       // VALUE(block context): ':' (' '|'\n')
@@ -1080,7 +1087,7 @@ public final class ScannerImpl implements Scanner {
     boolean notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`");
     boolean isPlain = notForbidden ||
         (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) &&
-            ("-?".indexOf(c) != -1 || (this.flowLevel == 0 && c == ':')));
+            ("-?".indexOf(c) != -1 || (isBlockContext() && c == ':')));
     return isPlain;
   }
 
@@ -1160,7 +1167,7 @@ public final class ScannerImpl implements Scanner {
                 reader.getMark()));
           }
         }
-        if (this.flowLevel == 0) {
+        if (isBlockContext()) {
           // Simple keys are allowed at flow-level 0 after a line break
           this.allowSimpleKey = true;
         }
@@ -1919,8 +1926,8 @@ public final class ScannerImpl implements Scanner {
         c = reader.peek(length);
         if (CharConstants.NULL_BL_T_LINEBR.has(c)
             || (c == ':' && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(length + 1),
-            flowLevel != 0 ? ",[]{}" : ""))
-            || (this.flowLevel != 0 && ",[]{}".indexOf(c) != -1)) {
+            isFlowContext() ? ",[]{}" : ""))
+            || (isFlowContext() && ",[]{}".indexOf(c) != -1)) {
           break;
         }
         length++;
@@ -1934,7 +1941,7 @@ public final class ScannerImpl implements Scanner {
       endMark = reader.getMark();
       spaces = scanPlainSpaces();
       if (spaces.length() == 0 || reader.peek() == '#'
-          || (this.flowLevel == 0 && this.reader.getColumn() < plainIndent)) {
+          || (isBlockContext() && this.reader.getColumn() < plainIndent)) {
         break;
       }
     }
@@ -1963,13 +1970,13 @@ public final class ScannerImpl implements Scanner {
     // if we see, a comment or end of string or change decrease in indent, we are done
     // Do not chomp end of lines and blanks, they will be handled by the main loop.
     if (reader.peek(wsLength) == '#' || reader.peek(wsLength + 1) == 0
-        || this.flowLevel == 0 && wsColumn < this.indent) {
+        || isBlockContext() && wsColumn < this.indent) {
       return true;
     }
 
     // if we see, after the space, a key-value followed by a ':', we are done
     // Do not chomp end of lines and blanks, they will be handled by the main loop.
-    if (this.flowLevel == 0) {
+    if (isBlockContext()) {
       int c;
       for (int extra = 1;
           (c = reader.peek(wsLength + extra)) != 0 && !CharConstants.NULL_BL_T_LINEBR.has(c);

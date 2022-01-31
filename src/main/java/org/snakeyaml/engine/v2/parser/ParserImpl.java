@@ -63,8 +63,7 @@ import org.snakeyaml.engine.v2.tokens.Token;
 
 /**
  * <pre>
- * # The following YAML grammar is LL(1) and is parsed by a recursive descent
- * parser.
+ * # The following YAML grammar is LL(1) and is parsed by a recursive descent parser.
  *
  * stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
  * implicit_document ::= block_node DOCUMENT-END*
@@ -138,7 +137,7 @@ public class ParserImpl implements Parser {
 
   protected final Scanner scanner;
   private final LoadSettings settings;
-  private Optional<Event> currentEvent;
+  private Optional<Event> currentEvent; // parsed event
   private final ArrayStack<Production> states;
   private final ArrayStack<Optional<Mark>> marksStack;
   private Optional<Production> state;
@@ -169,25 +168,19 @@ public class ParserImpl implements Parser {
     directiveTags = new HashMap<>(DEFAULT_TAGS);
     states = new ArrayStack(100);
     marksStack = new ArrayStack(10);
-    state = Optional.of(new ParseStreamStart());
+    state = Optional.of(new ParseStreamStart()); // prepare the next state
   }
 
   /**
-   * Check the type of the next event.
+   * Check the ID of the next event.
    */
-  public boolean checkEvent(Event.ID choice) {
+  public boolean checkEvent(Event.ID id) {
     peekEvent();
-    return currentEvent.isPresent() && currentEvent.get().getEventId() == choice;
-  }
-
-  private void produce() {
-    if (!currentEvent.isPresent()) {
-      state.ifPresent(prod -> currentEvent = Optional.of(prod.produce()));
-    }
+    return currentEvent.isPresent() && currentEvent.get().getEventId() == id;
   }
 
   /**
-   * Get the next event.
+   * Get the next event (and keep it). Produce the event if not yet present.
    */
   public Event peekEvent() {
     produce();
@@ -195,20 +188,29 @@ public class ParserImpl implements Parser {
   }
 
   /**
-   * Get the next event and proceed further.
+   * Consume the event (get the next event and removed it).
    */
   public Event next() {
-    peekEvent();
-    Event value = currentEvent.orElseThrow(
-        () -> new NoSuchElementException("No more Events found."));
+    Event value = peekEvent();
     currentEvent = Optional.empty();
     return value;
   }
 
+  /**
+   * Produce the event if not yet present.
+   *
+   * @return true if there is another event
+   */
   @Override
   public boolean hasNext() {
     produce();
     return currentEvent.isPresent();
+  }
+
+  private void produce() {
+    if (!currentEvent.isPresent()) {
+      state.ifPresent(production -> currentEvent = Optional.of(production.produce()));
+    }
   }
 
   private CommentEvent produceCommentEvent(CommentToken token) {
@@ -220,13 +222,6 @@ public class ParserImpl implements Parser {
     return new CommentEvent(type, value, token.getStartMark(), token.getEndMark());
   }
 
-  /**
-   * <pre>
-   * stream    ::= STREAM-START implicit_document? explicit_document* STREAM-END
-   * implicit_document ::= block_node DOCUMENT-END*
-   * explicit_document ::= DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
-   * </pre>
-   */
   private class ParseStreamStart implements Production {
 
     public Event produce() {
@@ -242,12 +237,12 @@ public class ParserImpl implements Parser {
   private class ParseImplicitDocumentStart implements Production {
 
     public Event produce() {
-      // Parse an implicit document.
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseImplicitDocumentStart());
         return produceCommentEvent((CommentToken) scanner.next());
       }
       if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
+        // Parse an implicit document.
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
         Optional<Mark> endMark = startMark;
@@ -257,8 +252,10 @@ public class ParserImpl implements Parser {
         states.push(new ParseDocumentEnd());
         state = Optional.of(new ParseBlockNode());
         return event;
+      } else {
+        // explicit document detected
+        return new ParseDocumentStart().produce();
       }
-      return new ParseDocumentStart().produce();
     }
   }
 

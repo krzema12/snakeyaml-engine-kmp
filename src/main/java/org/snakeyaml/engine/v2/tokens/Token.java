@@ -19,6 +19,9 @@ import java.util.Objects;
 import java.util.Optional;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
+/**
+ * A unit of YAML data
+ */
 public abstract class Token {
 
   public enum ID {

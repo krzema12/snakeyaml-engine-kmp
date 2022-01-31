@@ -34,9 +34,9 @@ public interface Parser extends Iterator<Event> {
   /**
    * Check if the next event is one of the given type.
    *
-   * @param choice Event ID.
-   * @return <code>true</code> if the next event can be assigned to a variable
-   * of the given type. Returns <code>false</code> if no more events are available.
+   * @param choice Event ID to match
+   * @return <code>true</code> if the next event has the given ID.
+   * Returns <code>false</code> if no more events are available.
    * @throws ParserException Thrown in case of malformed input.
    */
   boolean checkEvent(Event.ID choice);
@@ -45,7 +45,8 @@ public interface Parser extends Iterator<Event> {
    * Return the next event, but do not delete it from the stream.
    *
    * @return The event that will be returned on the next call to {@link #next}
-   * @throws ParserException Thrown in case of malformed input.
+   * @throws ParserException Thrown in case of malformed input
+   * or NoSuchElementException in case no event is available.
    */
   Event peekEvent();
 

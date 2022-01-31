@@ -659,7 +659,7 @@ public final class ScannerImpl implements Scanner {
    * A flow-style collection is in a format similar to JSON. Sequences are started by '[' and ended
    * by ']'; mappings are started by '{' and ended by '}'.
    *
-   * @param isMappingStart
+   * @param isMappingStart - true for mapping, false for sequence
    */
   private void fetchFlowCollectionStart(boolean isMappingStart) {
     // '[' and '{' may start a simple key.
@@ -1066,29 +1066,28 @@ public final class ScannerImpl implements Scanner {
    */
   private boolean checkPlain() {
     /**
-     * <pre>
      * A plain scalar may start with any non-space character except:
      *   '-', '?', ':', ',', '[', ']', '{', '}',
      *   '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;',
      *   '%', '@', '`'.
-     *
-     * It may also start with
-     *   '-', '?', ':'
-     * if it is followed by a non-space character.
-     *
-     * Note that we limit the last rule to the block context (except the
-     * '-' character) because we want the flow context to be space
-     * independent.
-     * </pre>
      */
     int c = reader.peek();
     // If the next char is NOT one of the forbidden chars above or
     // whitespace, then this is the start of a plain scalar.
     boolean notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`");
-    boolean isPlain = notForbidden ||
-        (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) &&
-            ("-?".indexOf(c) != -1 || (isBlockContext() && c == ':')));
-    return isPlain;
+    if (notForbidden) {
+      return true; // plain scalar
+    } else {
+      if (isBlockContext()) {
+        // It may also start with  '-', '?', ':' if it is followed by a non-space character
+        // in the block context
+        return CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && "-?:".indexOf(c) != -1;
+      } else {
+        // It may also start with  '-', '?' if it is followed by a non-space character except ','
+        // in the flow context
+        return CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",") && "-?".indexOf(c) != -1;
+      }
+    }
   }
 
   // Scanners - create tokens

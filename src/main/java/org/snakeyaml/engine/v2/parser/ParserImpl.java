@@ -295,6 +295,9 @@ public class ParserImpl implements Parser {
           states.push(new ParseDocumentEnd());
           state = Optional.of(new ParseDocumentContent());
           return event;
+        } else {
+          throw new ParserException("expected '<document start>', but found '"
+              + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
         }
       }
       // Parse the end of the stream.

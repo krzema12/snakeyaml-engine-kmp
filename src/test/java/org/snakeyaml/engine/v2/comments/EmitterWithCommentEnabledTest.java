@@ -155,7 +155,7 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testDirectiveLineEndComment() throws Exception {
-    String data = "%YAML 1.1 #Comment\n";
+    String data = "%YAML 1.1 #Comment\n---\n";
 
     String result = runEmitterWithCommentsEnabled(data);
     // We currently strip Directive comments

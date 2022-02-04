@@ -240,10 +240,13 @@ public class SerializerWithCommentEnabledTest {
 
   @Test
   public void testDirectiveLineEndComment() throws Exception {
-    String data = "%YAML 1.1 #Comment\n";
+    String data = "%YAML 1.1 #Comment\n---";
 
     List<ID> expectedEventIdList = Arrays.asList(//
         ID.StreamStart, //
+        ID.DocumentStart, //
+        ID.Scalar, //
+        ID.DocumentEnd, //
         ID.StreamEnd //
     );
 

@@ -308,10 +308,10 @@ public class ComposerWithCommentEnabledTest {
 
   @Test
   public void testDirectiveLineEndComment() {
-    String data = "%YAML 1.1 #Comment\n";
+    String data = "%YAML 1.1 #Comment\n---\n";
 
     String[] expected = new String[]{ //
-        "" //
+        "ScalarNode: " //
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);

@@ -330,6 +330,9 @@ public class ParserImpl implements Parser {
         token = scanner.next();
         endMark = token.getEndMark();
         explicit = true;
+      } else if (scanner.checkToken(Token.ID.Directive) )  {
+        throw new ParserException("expected '<document end>' before directives, but found '"
+            + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
       }
       directiveTags.clear(); // directive tags do not survive between the documents
       Event event = new DocumentEndEvent(explicit, startMark, endMark);

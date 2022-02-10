@@ -37,7 +37,10 @@ class ScannerTest {
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();
-    String input = "%YAML 1.2";
+    String input = "!foo \"bar\"\n"
+        + "%TAG ! tag:example.com,2000:app/\n"
+        + "---\n"
+        + "!foo \"bar\"";
     StreamReader reader = new StreamReader(settings, input);
     ScannerImpl scanner = new ScannerImpl(settings, reader);
     while (scanner.checkToken()) {

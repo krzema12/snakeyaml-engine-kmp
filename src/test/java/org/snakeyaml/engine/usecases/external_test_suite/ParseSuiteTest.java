@@ -42,7 +42,7 @@ class ParseSuiteTest {
    * This test is used to debug one test (which is given explicitly)
    */
   void runOne() {
-    SuiteData data = SuiteUtils.getOne("9MMA");
+    SuiteData data = SuiteUtils.getOne("9HCY");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
     Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
     for (Event event : iterable) {

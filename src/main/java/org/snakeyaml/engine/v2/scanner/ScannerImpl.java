@@ -1347,7 +1347,7 @@ public final class ScannerImpl implements Scanner {
    */
   private String scanTagDirectivePrefix(Optional<Mark> startMark) {
     // See the specification for details.
-    String value = scanTagUri("directive", startMark);
+    String value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark);
     int c = reader.peek();
     if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
       final String s = String.valueOf(Character.toChars(c));
@@ -1423,31 +1423,20 @@ public final class ScannerImpl implements Scanner {
   }
 
   /**
-   * <p>
    * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
    * c-ns-shorthand-tag, or c-ns-non-specific-tag
-   * </p>
-   * <p>
-   * <p>
-   * c-verbatim-tag takes the form !&lt;ns-uri-char+&gt; and must be delivered verbatim (as-is) to
+   *
+   * c-verbatim-tag takes the form !<ns-uri-char+> and must be delivered verbatim (as-is) to
    * the application. In particular, verbatim tags are not subject to tag resolution.
-   * </p>
-   * <p>
-   * <p>
+   *
    * c-ns-shorthand-tag is a valid tag handle followed by a non-empty suffix. If the tag handle is a
    * c-primary-tag-handle ('!') then the suffix must have all exclamation marks properly URI-escaped
    * (%21); otherwise, the string will look like a named tag handle: !foo!bar would be interpreted
    * as (handle="!foo!", suffix="bar").
-   * </p>
-   * <p>
-   * <p>
+   *
    * c-ns-non-specific-tag is always a lone '!'; this is only useful for plain scalars, where its
    * specification means that the scalar MUST be resolved to have type tag:yaml.org,2002:str.
-   * </p>
-   * <p>
-   * TODO SnakeYAML incorrectly ignores c-ns-non-specific-tag right now. Issue 459
-   * <p>
-   * <p>
+   *
    * TODO Note that this method does not enforce rules about local versus global tags!
    */
   private Token scanTag() {
@@ -1463,7 +1452,7 @@ public final class ScannerImpl implements Scanner {
       // Skip the exclamation mark and &gt;, then read the tag suffix (as
       // a URI).
       reader.forward(2);
-      suffix = scanTagUri("tag", startMark);
+      suffix = scanTagUri("tag", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark);
       c = reader.peek();
       if (c != '>') {
         // If there are any characters between the end of the tag-suffix
@@ -1502,7 +1491,7 @@ public final class ScannerImpl implements Scanner {
         handle = "!";
         reader.forward();
       }
-      suffix = scanTagUri("tag", startMark);
+      suffix = scanTagUri("tag", CharConstants.URI_CHARS_FOR_TAG_SUFFIX, startMark);
     }
     c = reader.peek();
     // Check that the next character is allowed to follow a tag-property, if it is not, raise the error.
@@ -2094,18 +2083,14 @@ public final class ScannerImpl implements Scanner {
   }
 
   /**
-   * <p>
    * Scan a Tag URI. This scanning is valid for both local and global tag directives, because both
    * appear to be valid URIs as far as scanning is concerned. The difference may be distinguished
    * later, in parsing. This method will scan for ns-uri-char*, which covers both cases.
-   * </p>
-   * <p>
-   * <p>
+   *
    * This method performs no verification that the scanned URI conforms to any particular kind of
    * URI specification.
-   * </p>
    */
-  private String scanTagUri(String name, Optional<Mark> startMark) {
+  private String scanTagUri(String name, CharConstants range, Optional<Mark> startMark) {
     // See the specification for details.
     // Note: we do not check if URI is well-formed.
     StringBuilder chunks = new StringBuilder();
@@ -2114,7 +2099,7 @@ public final class ScannerImpl implements Scanner {
     // to a start-escape, scan the escaped sequence, then return.
     int length = 0;
     int c = reader.peek(length);
-    while (CharConstants.URI_CHARS.has(c)) {
+    while (range.has(c)) {
       if (c == '%') {
         chunks.append(reader.prefixForward(length));
         length = 0;

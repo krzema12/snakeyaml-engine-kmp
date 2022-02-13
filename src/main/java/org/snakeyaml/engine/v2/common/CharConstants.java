@@ -30,14 +30,20 @@ public final class CharConstants {
   private static final String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
   private static final String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;
   private static final String NULL_BL_T_S = "\0 \t";
-  private static final String URI_CHARS_S = ALPHA_S + "-;/?:@&=+$,_.!~*'()[]%";
+
+  // the suffix must not contain the “[”, “]”, “{”, “}” and “,” characters.
+  // These characters would cause ambiguity with flow collection structures.
+  // https://yaml.org/spec/1.2.2/#691-node-tags
+  private static final String URI_CHARS_SUFFIX_S = ALPHA_S + "-;/?:@&=+$_.!~*'()%";
 
   public static final CharConstants LINEBR = new CharConstants(LINEBR_S);
   public static final CharConstants NULL_OR_LINEBR = new CharConstants(NULL_OR_LINEBR_S);
   public static final CharConstants NULL_BL_LINEBR = new CharConstants(NULL_BL_LINEBR_S);
   public static final CharConstants NULL_BL_T_LINEBR = new CharConstants(NULL_BL_T_LINEBR_S);
   public static final CharConstants NULL_BL_T = new CharConstants(NULL_BL_T_S);
-  public static final CharConstants URI_CHARS = new CharConstants(URI_CHARS_S);
+  // prefix may contain ,[]
+  public static final CharConstants URI_CHARS_FOR_TAG_PREFIX = new CharConstants(URI_CHARS_SUFFIX_S + ",[]");
+  public static final CharConstants URI_CHARS_FOR_TAG_SUFFIX = new CharConstants(URI_CHARS_SUFFIX_S);
 
   public static final CharConstants ALPHA = new CharConstants(ALPHA_S);
 

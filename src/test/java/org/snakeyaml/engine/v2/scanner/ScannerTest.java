@@ -33,14 +33,11 @@ import org.snakeyaml.engine.v2.tokens.Token.ID;
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {
 
-  @Test
+  //@Test
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();
-    String input = "!foo \"bar\"\n"
-        + "%TAG ! tag:example.com,2000:app/\n"
-        + "---\n"
-        + "!foo \"bar\"";
+    String input = "- !!str, xxx\n";
     StreamReader reader = new StreamReader(settings, input);
     ScannerImpl scanner = new ScannerImpl(settings, reader);
     while (scanner.checkToken()) {

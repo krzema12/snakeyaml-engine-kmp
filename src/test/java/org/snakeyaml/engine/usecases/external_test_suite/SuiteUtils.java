@@ -33,7 +33,7 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 public class SuiteUtils {
 
   public static final List<String> deviationsWithSuccess = Lists.newArrayList(
-      "S98Z", "9JBA", "CVW2", "U99R",
+      "S98Z", "9JBA", "CVW2",
       "9C9N", "SU5Z", "QB6E",  "YJV2");
   public static final List<String> deviationsWithError = Lists.newArrayList(
       "HWV9", "NB6Z", "VJP3-01", "KH5V-01", "5MUD", "9SA2", "QT73", "4MUZ", "CFD4",

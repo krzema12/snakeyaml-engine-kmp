@@ -37,7 +37,7 @@ class ScannerTest {
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();
-    String input = "- !!str, xxx\n";
+    String input = "[-]\n";
     StreamReader reader = new StreamReader(settings, input);
     ScannerImpl scanner = new ScannerImpl(settings, reader);
     while (scanner.checkToken()) {

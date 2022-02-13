@@ -1083,9 +1083,9 @@ public final class ScannerImpl implements Scanner {
         // in the block context
         return CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && "-?:".indexOf(c) != -1;
       } else {
-        // It may also start with  '-', '?' if it is followed by a non-space character except ','
-        // in the flow context
-        return CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",") && "-?".indexOf(c) != -1;
+        // It may also start with  '-', '?' if it is followed by a non-space character
+        // except ',' or ']' in the flow context
+        return CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]") && "-?".indexOf(c) != -1;
       }
     }
   }

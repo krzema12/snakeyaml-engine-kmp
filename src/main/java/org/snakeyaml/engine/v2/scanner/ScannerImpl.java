@@ -1512,7 +1512,6 @@ public final class ScannerImpl implements Scanner {
     // Scan the header.
     reader.forward();
     Chomping chomping = scanBlockScalarIndicators(startMark);
-    int increment = chomping.increment;
     CommentToken commentToken = scanBlockScalarIgnoredLine(startMark);
 
     // Determine the indentation level and go to the first non-empty line.
@@ -1524,17 +1523,19 @@ public final class ScannerImpl implements Scanner {
     int maxIndent;
     int blockIndent;
     Optional<Mark> endMark;
-    if (increment == -1) {
+    if (chomping.increment.isPresent()) {
+      // increment is explicit
+      blockIndent = minIndent + chomping.increment.get() - 1;
+      Object[] brme = scanBlockScalarBreaks(blockIndent);
+      breaks = (String) brme[0];
+      endMark = (Optional<Mark>) brme[1];
+    } else {
+      // increment (indent) must be detected
       Object[] brme = scanBlockScalarIndentation();
       breaks = (String) brme[0];
       maxIndent = ((Integer) brme[1]).intValue();
       endMark = (Optional<Mark>) brme[2];
       blockIndent = Math.max(minIndent, maxIndent);
-    } else {
-      blockIndent = minIndent + increment - 1;
-      Object[] brme = scanBlockScalarBreaks(blockIndent);
-      breaks = (String) brme[0];
-      endMark = (Optional<Mark>) brme[1];
     }
 
     Optional<String> lineBreakOpt = Optional.empty();
@@ -1597,30 +1598,30 @@ public final class ScannerImpl implements Scanner {
   private Chomping scanBlockScalarIndicators(Optional<Mark> startMark) {
     // See the specification for details.
     int indicator = Integer.MIN_VALUE;
-    int increment = -1;
+    Optional<Integer> increment = Optional.empty();
     int c = reader.peek();
     if (c == '-' || c == '+') {
       indicator = c;
       reader.forward();
       c = reader.peek();
       if (Character.isDigit(c)) {
-        final String s = String.valueOf(Character.toChars(c));
-        increment = Integer.parseInt(s);
-        if (increment == 0) {
+        int incr = Integer.parseInt(String.valueOf(Character.toChars(c)));
+        if (incr == 0) {
           throw new ScannerException(SCANNING_SCALAR, startMark,
               "expected indentation indicator in the range 1-9, but found 0",
               reader.getMark());
         }
+        increment = Optional.of(incr);
         reader.forward();
       }
     } else if (Character.isDigit(c)) {
-      final String s = String.valueOf(Character.toChars(c));
-      increment = Integer.parseInt(s);
-      if (increment == 0) {
+      int incr = Integer.parseInt(String.valueOf(Character.toChars(c)));
+      if (incr == 0) {
         throw new ScannerException(SCANNING_SCALAR, startMark,
             "expected indentation indicator in the range 1-9, but found 0",
             reader.getMark());
       }
+      increment = Optional.of(incr);
       reader.forward();
       c = reader.peek();
       if (c == '-' || c == '+') {
@@ -1889,13 +1890,11 @@ public final class ScannerImpl implements Scanner {
   /**
    * Scan a plain scalar.
    *
-   * <pre>
    * See the specification for details.
    * We add an additional restriction for the flow context:
    *   plain scalars in the flow context cannot contain ',', ':' and '?'.
    * We also keep track of the `allow_simple_key` flag here.
    * Indentation rules are loosed for the flow context.
-   * </pre>
    */
   private Token scanPlain() {
     StringBuilder chunks = new StringBuilder();
@@ -2229,14 +2228,14 @@ public final class ScannerImpl implements Scanner {
 
     // immutable values do not have getters
     private final Indicator value;
-    private final int increment;
+    private final Optional<Integer> increment;
 
-    public Chomping(Indicator value, int increment) {
+    public Chomping(Indicator value, Optional<Integer> increment) {
       this.value = value;
       this.increment = increment;
     }
 
-    public Chomping(int indicatorCodePoint, int increment) {
+    public Chomping(int indicatorCodePoint, Optional<Integer> increment) {
       this(parse(indicatorCodePoint), increment);
     }
 

@@ -33,7 +33,7 @@ import org.snakeyaml.engine.v2.tokens.Token.ID;
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {
 
-  @Test
+  //@Test
   @DisplayName("Run scanner")
   void scan() {
     LoadSettings settings = LoadSettings.builder().build();

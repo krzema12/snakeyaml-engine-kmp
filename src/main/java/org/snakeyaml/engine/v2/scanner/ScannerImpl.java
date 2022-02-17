@@ -1425,18 +1425,18 @@ public final class ScannerImpl implements Scanner {
   /**
    * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
    * c-ns-shorthand-tag, or c-ns-non-specific-tag
-   *
-   * c-verbatim-tag takes the form !<ns-uri-char+> and must be delivered verbatim (as-is) to
-   * the application. In particular, verbatim tags are not subject to tag resolution.
-   *
+   * <p>
+   * c-verbatim-tag takes the form !<ns-uri-char+> and must be delivered verbatim (as-is) to the
+   * application. In particular, verbatim tags are not subject to tag resolution.
+   * <p>
    * c-ns-shorthand-tag is a valid tag handle followed by a non-empty suffix. If the tag handle is a
    * c-primary-tag-handle ('!') then the suffix must have all exclamation marks properly URI-escaped
    * (%21); otherwise, the string will look like a named tag handle: !foo!bar would be interpreted
    * as (handle="!foo!", suffix="bar").
-   *
+   * <p>
    * c-ns-non-specific-tag is always a lone '!'; this is only useful for plain scalars, where its
    * specification means that the scalar MUST be resolved to have type tag:yaml.org,2002:str.
-   *
+   * <p>
    * TODO Note that this method does not enforce rules about local versus global tags!
    */
   private Token scanTag() {
@@ -1505,6 +1505,10 @@ public final class ScannerImpl implements Scanner {
     return new TagToken(value, startMark, endMark);
   }
 
+  /*
+   * Scan literal and folded scalar
+   * @param style - either literal or folded style
+   */
   private List<Token> scanBlockScalar(ScalarStyle style) {
     // See the specification for details.
     StringBuilder stringBuilder = new StringBuilder();
@@ -1530,7 +1534,7 @@ public final class ScannerImpl implements Scanner {
       breaks = (String) brme[0];
       endMark = (Optional<Mark>) brme[1];
     } else {
-      // increment (indent) must be detected
+      // increment (block indent) must be detected in the first non-empty line.
       Object[] brme = scanBlockScalarIndentation();
       breaks = (String) brme[0];
       maxIndent = ((Integer) brme[1]).intValue();
@@ -1540,6 +1544,13 @@ public final class ScannerImpl implements Scanner {
 
     Optional<String> lineBreakOpt = Optional.empty();
     // Scan the inner part of the block scalar.
+    if (this.reader.getColumn() < blockIndent && this.indent != reader.getColumn()) {
+      // it means that there is indent, but less than expected
+      // fix S98Z - Block scalar with more spaces than first content line
+      throw new ScannerException("while scanning a block scalar", startMark,
+          " the leading empty lines contain more spaces (" + blockIndent
+              + ") than the first non-empty line.", reader.getMark());
+    }
     while (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
       stringBuilder.append(breaks);
       boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
@@ -1696,7 +1707,7 @@ public final class ScannerImpl implements Scanner {
         }
       }
     }
-    // Pass several results back together.
+    // Pass several results back together (Java 8 does not have records)
     return new Object[]{chunks.toString(), maxIndent, endMark};
   }
 
@@ -1889,12 +1900,10 @@ public final class ScannerImpl implements Scanner {
 
   /**
    * Scan a plain scalar.
-   *
-   * See the specification for details.
-   * We add an additional restriction for the flow context:
-   *   plain scalars in the flow context cannot contain ',', ':' and '?'.
-   * We also keep track of the `allow_simple_key` flag here.
-   * Indentation rules are loosed for the flow context.
+   * <p>
+   * See the specification for details. We add an additional restriction for the flow context: plain
+   * scalars in the flow context cannot contain ',', ':' and '?'. We also keep track of the
+   * `allow_simple_key` flag here. Indentation rules are loosed for the flow context.
    */
   private Token scanPlain() {
     StringBuilder chunks = new StringBuilder();
@@ -2085,7 +2094,7 @@ public final class ScannerImpl implements Scanner {
    * Scan a Tag URI. This scanning is valid for both local and global tag directives, because both
    * appear to be valid URIs as far as scanning is concerned. The difference may be distinguished
    * later, in parsing. This method will scan for ns-uri-char*, which covers both cases.
-   *
+   * <p>
    * This method performs no verification that the scanned URI conforms to any particular kind of
    * URI specification.
    */

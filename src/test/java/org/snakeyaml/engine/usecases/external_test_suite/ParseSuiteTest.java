@@ -36,7 +36,7 @@ class ParseSuiteTest {
       .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME JEF9-02 is not according to the spec
       .collect(Collectors.toList());
 
-  @Test
+  //@Test
   @DisplayName("Parse: Run one test")
   /**
    * This test is used to debug one test (which is given explicitly)

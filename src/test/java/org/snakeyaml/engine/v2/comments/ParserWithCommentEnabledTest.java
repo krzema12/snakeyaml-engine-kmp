@@ -376,11 +376,11 @@ public class ParserWithCommentEnabledTest {
         "- item2\n" +
         "\n" + // Per Spec this is part of plain scalar above
         "- item3\n" +
-        "\n" + // FIXME: ?Should be comment?
+        "\n" + // TODO: ?Should be comment?
         "key2: value2\n" +
-        "\n" + // FIXME: ?Should be comment?
+        "\n" + // TODO: ?Should be comment?
         "key3: value3\n" +
-        "\n" + // FIXME: ?Should be comment?
+        "\n" + // TODO: ?Should be comment?
         "";
 
     List<ID> expectedEventIdList = Arrays.asList(//

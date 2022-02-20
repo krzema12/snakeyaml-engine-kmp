@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
@@ -36,7 +35,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
 
 @org.junit.jupiter.api.Tag("fast")
-@Disabled // TODO FIXME first solve parsing issues
 class ComposeSuiteTest {
 
   public static final List<String> emptyNodes = Lists.newArrayList("AVM7", "8G76", "98YD");
@@ -45,7 +43,7 @@ class ComposeSuiteTest {
       .filter(data -> !data.hasError())
       .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
       .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
-      .filter(data -> !data.getName().equals("652Z")) //TODO FIXME fix 652Z
+      .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME JEF9-02 is not according to the spec
       .collect(Collectors.toList());
 
   private final List<SuiteData> allValidAndNonEmpty = allValid.stream()

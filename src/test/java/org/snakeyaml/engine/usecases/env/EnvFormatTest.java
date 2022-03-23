@@ -52,9 +52,9 @@ public class EnvFormatTest {
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE}");
     matcher.matches();
-    assertEquals("VARIABLE", matcher.group("name"));
-    assertNull(matcher.group("value"));
-    assertNull(matcher.group("separator"));
+    assertEquals("VARIABLE", matcher.group(1));
+    assertNull(matcher.group(3));
+    assertNull(matcher.group(2));
 
     assertFalse(ENV_FORMAT.matcher("${VARI ABLE}").matches());
   }
@@ -69,9 +69,9 @@ public class EnvFormatTest {
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE-default}");
     matcher.matches();
-    assertEquals("VARIABLE", matcher.group("name"));
-    assertEquals("default", matcher.group("value"));
-    assertEquals("-", matcher.group("separator"));
+    assertEquals("VARIABLE", matcher.group(1));
+    assertEquals("default", matcher.group(3));
+    assertEquals("-", matcher.group(2));
 
     assertFalse(ENV_FORMAT.matcher("${VARIABLE -default}").matches());
     assertFalse(ENV_FORMAT.matcher("${VARIABLE - default}").matches());
@@ -86,9 +86,9 @@ public class EnvFormatTest {
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE:-default}");
     matcher.matches();
-    assertEquals("VARIABLE", matcher.group("name"));
-    assertEquals("default", matcher.group("value"));
-    assertEquals(":-", matcher.group("separator"));
+    assertEquals("VARIABLE", matcher.group(1));
+    assertEquals("default", matcher.group(3));
+    assertEquals(":-", matcher.group(2));
 
     assertFalse(ENV_FORMAT.matcher("${VARIABLE :-default}").matches());
     assertFalse(ENV_FORMAT.matcher("${VARIABLE : -default}").matches());
@@ -103,9 +103,9 @@ public class EnvFormatTest {
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE:?err}");
     matcher.matches();
-    assertEquals("VARIABLE", matcher.group("name"));
-    assertEquals("err", matcher.group("value"));
-    assertEquals(":?", matcher.group("separator"));
+    assertEquals("VARIABLE", matcher.group(1));
+    assertEquals("err", matcher.group(3));
+    assertEquals(":?", matcher.group(2));
 
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE :?err }").matches());
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE : ?err }").matches());
@@ -120,9 +120,9 @@ public class EnvFormatTest {
 
     Matcher matcher = ENV_FORMAT.matcher("${ VARIABLE?err }");
     matcher.matches();
-    assertEquals("VARIABLE", matcher.group("name"));
-    assertEquals("err", matcher.group("value"));
-    assertEquals("?", matcher.group("separator"));
+    assertEquals("VARIABLE", matcher.group(1));
+    assertEquals("err", matcher.group(3));
+    assertEquals("?", matcher.group(2));
 
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE ?err }").matches());
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE ?err }").matches());

@@ -338,10 +338,10 @@ public class StandardConstructor extends BaseConstructor {
         EnvConfig config = opt.get();
         Matcher matcher = JsonScalarResolver.ENV_FORMAT.matcher(val);
         matcher.matches();
-        String name = matcher.group("name");
-        String value = matcher.group("value");
+        String name = matcher.group(1);
+        String value = matcher.group(3);
         String nonNullValue = value != null ? value : "";
-        String separator = matcher.group("separator");
+        String separator = matcher.group(2);
         String env = getEnv(name);
         Optional<String> overruled = config.getValueFor(name, separator, nonNullValue, env);
         if (overruled.isPresent()) {

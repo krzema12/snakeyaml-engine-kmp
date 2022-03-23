@@ -36,9 +36,10 @@ public class JsonScalarResolver implements ScalarResolver {
   public static final Pattern NULL = Pattern.compile("^(?:null)$");
   public static final Pattern EMPTY = Pattern.compile("^$");
 
+  /** group 1: name, group 2: separator, group 3: value */
   @java.lang.SuppressWarnings("squid:S4784")
   public static final Pattern ENV_FORMAT = Pattern.compile(
-      "^\\$\\{\\s*((?<name>\\w+)((?<separator>:?(-|\\?))(?<value>\\w+)?)?)\\s*\\}$");
+      "^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
 
   protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
 

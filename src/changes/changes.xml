@@ -6,6 +6,10 @@
     </properties>
     <body>
         <release version="2.4" date="2022-08-31" description="Maintenance">
+            <action dev="asomov" type="update">
+                Regex pattern named groups are not supported on the Java standard library shipped
+                with Android 5 and below (Tobias Zwick)
+            </action>
             <action dev="asomov" type="add">
                 Add test for YAML runtimes.
                 https://github.com/yaml/yaml-runtimes/blob/master/docker/java/utils/java/src/main/java/org/yaml/editor/Snake2Yaml.java

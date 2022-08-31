@@ -5,7 +5,7 @@
         <title>YAML 1.2 parser and emitter for Java 8+</title>
     </properties>
     <body>
-        <release version="2.4" date="in GIT" description="Maintenance">
+        <release version="2.4" date="2022-08-31" description="Maintenance">
             <action dev="asomov" type="add">
                 Add test for YAML runtimes.
                 https://github.com/yaml/yaml-runtimes/blob/master/docker/java/utils/java/src/main/java/org/yaml/editor/Snake2Yaml.java

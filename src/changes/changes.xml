@@ -5,6 +5,11 @@
         <title>YAML 1.2 parser and emitter for Java 8+</title>
     </properties>
     <body>
+        <release version="2.5-SNAPSHOT" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="update">
+                Port issue 544 from SnakeYAML (thanks to Florian Waltenberger)
+            </action>
+        </release>
         <release version="2.4" date="2022-08-31" description="Maintenance">
             <action dev="asomov" type="update">
                 Regex pattern named groups are not supported on the Java standard library shipped

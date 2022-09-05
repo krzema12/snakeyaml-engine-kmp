@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.5-SNAPSHOT" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="add" issue="36">
+                Add test for issue 36
+            </action>
             <action dev="asomov" type="update">
                 Port issue 544 from SnakeYAML (thanks to Florian Waltenberger)
             </action>

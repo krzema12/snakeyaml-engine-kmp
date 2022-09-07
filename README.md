@@ -32,6 +32,7 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
   (A
   good [introduction to schemas](http://blogs.perl.org/users/tinita/2018/01/introduction-to-yaml-schemas-and-tags.html))
 * Relatively sensible error messages (can be switched off to improve performance).
+* When you plan to feed the parser with untrusted data please study the settings which allow to restrict incoming data.
 
 ## Info ##
 

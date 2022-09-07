@@ -38,6 +38,7 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
 
 * [Changes](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Changes)
 * [Documentation](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation)
+* [CVE and untrusted sources](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md)
 
 ## Contribute ##
 

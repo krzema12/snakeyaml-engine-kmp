@@ -91,7 +91,8 @@ public abstract class BaseRepresenter {
       return Optional.of(representers.get(clazz));
     } else {
       // check the parents
-      for (Map.Entry<Class<?>, RepresentToNode> parentRepresenterEntry : parentClassRepresenters.entrySet()) {
+      for (Map.Entry<Class<?>, RepresentToNode> parentRepresenterEntry : parentClassRepresenters
+          .entrySet()) {
         if (parentRepresenterEntry.getKey().isInstance(data)) {
           return Optional.of(parentRepresenterEntry.getValue());
         }
@@ -110,9 +111,8 @@ public abstract class BaseRepresenter {
     if (data == null) {
       return nullRepresenter.representData(null);
     }
-    RepresentToNode representer = findRepresenterFor(data)
-        .orElseThrow(
-            () -> new YamlEngineException("Representer is not defined for " + data.getClass()));
+    RepresentToNode representer = findRepresenterFor(data).orElseThrow(
+        () -> new YamlEngineException("Representer is not defined for " + data.getClass()));
     return representer.representData(data);
   }
 

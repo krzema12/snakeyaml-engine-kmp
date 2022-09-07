@@ -285,8 +285,9 @@ public class ParserImpl implements Parser {
         }
         if (!scanner.checkToken(Token.ID.StreamEnd)) {
           if (!scanner.checkToken(Token.ID.DocumentStart)) {
-            throw new ParserException("expected '<document start>', but found '"
-                + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
+            throw new ParserException(
+                "expected '<document start>', but found '" + scanner.peekToken().getTokenId() + "'",
+                scanner.peekToken().getStartMark());
           }
           token = scanner.next();
           Optional<Mark> endMark = token.getEndMark();
@@ -296,8 +297,9 @@ public class ParserImpl implements Parser {
           state = Optional.of(new ParseDocumentContent());
           return event;
         } else {
-          throw new ParserException("expected '<document start>', but found '"
-              + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
+          throw new ParserException(
+              "expected '<document start>', but found '" + scanner.peekToken().getTokenId() + "'",
+              scanner.peekToken().getStartMark());
         }
       }
       // Parse the end of the stream.
@@ -330,7 +332,7 @@ public class ParserImpl implements Parser {
         token = scanner.next();
         endMark = token.getEndMark();
         explicit = true;
-      } else if (scanner.checkToken(Token.ID.Directive) )  {
+      } else if (scanner.checkToken(Token.ID.Directive)) {
         throw new ParserException("expected '<document end>' before directives, but found '"
             + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
       }
@@ -349,8 +351,8 @@ public class ParserImpl implements Parser {
         state = Optional.of(new ParseDocumentContent());
         return produceCommentEvent((CommentToken) scanner.next());
       }
-      if (scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart,
-          Token.ID.DocumentEnd, Token.ID.StreamEnd)) {
+      if (scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.DocumentEnd,
+          Token.ID.StreamEnd)) {
         Event event = processEmptyScalar(scanner.peekToken().getStartMark());
         state = Optional.of(states.pop());
         return event;
@@ -369,7 +371,7 @@ public class ParserImpl implements Parser {
       DirectiveToken token = (DirectiveToken) scanner.next();
       Optional<List<?>> dirOption = token.getValue();
       if (dirOption.isPresent()) {
-        //the value must be present
+        // the value must be present
         List<?> directiveValue = dirOption.get();
         if (token.getName().equals(DirectiveToken.YAML_DIRECTIVE)) {
           if (yamlSpecVersion.isPresent()) {
@@ -378,15 +380,14 @@ public class ParserImpl implements Parser {
           List<Integer> value = (List<Integer>) directiveValue;
           Integer major = value.get(0);
           Integer minor = value.get(1);
-          yamlSpecVersion = Optional.of(
-              settings.getVersionFunction().apply(new SpecVersion(major, minor)));
+          yamlSpecVersion =
+              Optional.of(settings.getVersionFunction().apply(new SpecVersion(major, minor)));
         } else if (token.getName().equals(DirectiveToken.TAG_DIRECTIVE)) {
           List<String> value = (List<String>) directiveValue;
           String handle = value.get(0);
           String prefix = value.get(1);
           if (tagHandles.containsKey(handle)) {
-            throw new ParserException("duplicate tag handle " + handle,
-                token.getStartMark());
+            throw new ParserException("duplicate tag handle " + handle, token.getStartMark());
           }
           tagHandles.put(handle, prefix);
         }
@@ -450,8 +451,8 @@ public class ParserImpl implements Parser {
     Optional<Mark> tagMark = Optional.empty();
     if (scanner.checkToken(Token.ID.Alias)) {
       AliasToken token = (AliasToken) scanner.next();
-      event = new AliasEvent(Optional.of(token.getValue()), token.getStartMark(),
-          token.getEndMark());
+      event =
+          new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
       state = Optional.of(states.pop());
     } else {
       Optional<Anchor> anchor = Optional.empty();
@@ -508,7 +509,7 @@ public class ParserImpl implements Parser {
           ScalarToken token = (ScalarToken) scanner.next();
           endMark = token.getEndMark();
           ImplicitTuple implicitValues;
-          if ((token.isPlain() && !tag.isPresent()) /* TODO issue 459 || "!".equals(tag)*/) {
+          if ((token.isPlain() && !tag.isPresent()) /* TODO issue 459 || "!".equals(tag) */) {
             implicitValues = new ImplicitTuple(true, false);
           } else if (!tag.isPresent()) {
             implicitValues = new ImplicitTuple(false, true);
@@ -524,30 +525,26 @@ public class ParserImpl implements Parser {
           state = Optional.of(new ParseFlowSequenceFirstEntry());
         } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
           endMark = scanner.peekToken().getEndMark();
-          event = new MappingStartEvent(anchor, tag, implicit,
-              FlowStyle.FLOW, startMark, endMark);
+          event = new MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark);
           state = Optional.of(new ParseFlowMappingFirstKey());
         } else if (block && scanner.checkToken(Token.ID.BlockSequenceStart)) {
           endMark = scanner.peekToken().getStartMark();
-          event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark,
-              endMark);
+          event =
+              new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);
           state = Optional.of(new ParseBlockSequenceFirstEntry());
         } else if (block && scanner.checkToken(Token.ID.BlockMappingStart)) {
           endMark = scanner.peekToken().getStartMark();
-          event = new MappingStartEvent(anchor, tag, implicit,
-              FlowStyle.BLOCK, startMark, endMark);
+          event = new MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);
           state = Optional.of(new ParseBlockMappingFirstKey());
         } else if (anchor.isPresent() || tag.isPresent()) {
           // Empty scalars are allowed even if a tag or an anchor is specified.
           event = new ScalarEvent(anchor, tag, new ImplicitTuple(implicit, false), "",
-              ScalarStyle.PLAIN,
-              startMark, endMark);
+              ScalarStyle.PLAIN, startMark, endMark);
           state = Optional.of(states.pop());
         } else {
           Token token = scanner.peekToken();
           throw new ParserException("while parsing a " + (block ? "block" : "flow") + " node",
-              startMark,
-              "expected the node content, but found '" + token.getTokenId() + "'",
+              startMark, "expected the node content, but found '" + token.getTokenId() + "'",
               token.getStartMark());
         }
       }
@@ -581,8 +578,7 @@ public class ParserImpl implements Parser {
       if (!scanner.checkToken(Token.ID.BlockEnd)) {
         Token token = scanner.peekToken();
         throw new ParserException("while parsing a block collection", markPop(),
-            "expected <block end>, but found '" + token.getTokenId() + "'",
-            token.getStartMark());
+            "expected <block end>, but found '" + token.getTokenId() + "'", token.getStartMark());
       }
       Token token = scanner.next();
       Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
@@ -688,8 +684,7 @@ public class ParserImpl implements Parser {
       if (!scanner.checkToken(Token.ID.BlockEnd)) {
         Token token = scanner.peekToken();
         throw new ParserException("while parsing a block mapping", markPop(),
-            "expected <block end>, but found '" + token.getTokenId() + "'",
-            token.getStartMark());
+            "expected <block end>, but found '" + token.getTokenId() + "'", token.getStartMark());
       }
       Token token = scanner.next();
       Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
@@ -808,15 +803,13 @@ public class ParserImpl implements Parser {
           } else {
             Token token = scanner.peekToken();
             throw new ParserException("while parsing a flow sequence", markPop(),
-                "expected ',' or ']', but got " + token.getTokenId(),
-                token.getStartMark());
+                "expected ',' or ']', but got " + token.getTokenId(), token.getStartMark());
           }
         }
         if (scanner.checkToken(Token.ID.Key)) {
           Token token = scanner.peekToken();
           Event event = new MappingStartEvent(Optional.empty(), Optional.empty(), true,
-              FlowStyle.FLOW, token.getStartMark(),
-              token.getEndMark());
+              FlowStyle.FLOW, token.getStartMark(), token.getEndMark());
           state = Optional.of(new ParseFlowSequenceEntryMappingKey());
           return event;
         } else if (!scanner.checkToken(Token.ID.FlowSequenceEnd)) {
@@ -924,14 +917,12 @@ public class ParserImpl implements Parser {
           } else {
             Token token = scanner.peekToken();
             throw new ParserException("while parsing a flow mapping", markPop(),
-                "expected ',' or '}', but got " + token.getTokenId(),
-                token.getStartMark());
+                "expected ',' or '}', but got " + token.getTokenId(), token.getStartMark());
           }
         }
         if (scanner.checkToken(Token.ID.Key)) {
           Token token = scanner.next();
-          if (!scanner.checkToken(Token.ID.Value, Token.ID.FlowEntry,
-              Token.ID.FlowMappingEnd)) {
+          if (!scanner.checkToken(Token.ID.Value, Token.ID.FlowEntry, Token.ID.FlowMappingEnd)) {
             states.push(new ParseFlowMappingValue());
             return parseFlowNode();
           } else {

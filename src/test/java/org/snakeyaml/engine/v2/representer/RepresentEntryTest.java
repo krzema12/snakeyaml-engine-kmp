@@ -39,13 +39,11 @@ import org.snakeyaml.engine.v2.serializer.Serializer;
 @Tag("fast")
 public class RepresentEntryTest {
 
-  private final DumpSettings settings = DumpSettings.builder()
-      .setDefaultScalarStyle(ScalarStyle.PLAIN)
-      .setDefaultFlowStyle(FlowStyle.BLOCK)
-      .setDumpComments(true)
-      .build();
-  private final CommentedEntryRepresenter commentedEntryRepresenter = new CommentedEntryRepresenter(
-      settings);
+  private final DumpSettings settings =
+      DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
+          .setDefaultFlowStyle(FlowStyle.BLOCK).setDumpComments(true).build();
+  private final CommentedEntryRepresenter commentedEntryRepresenter =
+      new CommentedEntryRepresenter(settings);
 
   private Map<String, String> createMap() {
     Map<String, String> map = new LinkedHashMap<>();
@@ -63,8 +61,8 @@ public class RepresentEntryTest {
     serializer.serializeDocument(commentedEntryRepresenter.represent(createMap()));
     serializer.emitStreamEnd();
 
-    assertEquals("#Key node block comment\n" +
-        "a: val1 #Value node inline comment\n", stringOutputStream.toString());
+    assertEquals("#Key node block comment\n" + "a: val1 #Value node inline comment\n",
+        stringOutputStream.toString());
   }
 
   private class CommentedEntryRepresenter extends StandardRepresenter {
@@ -77,15 +75,13 @@ public class RepresentEntryTest {
     protected NodeTuple representMappingEntry(Map.Entry<?, ?> entry) {
       NodeTuple tuple = super.representMappingEntry(entry);
       List<CommentLine> keyBlockComments = new ArrayList<>();
-      keyBlockComments.add(
-          new CommentLine(Optional.empty(), Optional.empty(), "Key node block comment",
-              CommentType.BLOCK));
+      keyBlockComments.add(new CommentLine(Optional.empty(), Optional.empty(),
+          "Key node block comment", CommentType.BLOCK));
       tuple.getKeyNode().setBlockComments(keyBlockComments);
 
       List<CommentLine> valueEndComments = new ArrayList<>();
-      valueEndComments.add(
-          new CommentLine(Optional.empty(), Optional.empty(), "Value node inline comment",
-              CommentType.IN_LINE));
+      valueEndComments.add(new CommentLine(Optional.empty(), Optional.empty(),
+          "Value node inline comment", CommentType.IN_LINE));
       tuple.getValueNode().setEndComments(valueEndComments);
 
       return tuple;

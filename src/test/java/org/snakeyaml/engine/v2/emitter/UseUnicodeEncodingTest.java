@@ -35,14 +35,12 @@ public class UseUnicodeEncodingTest {
 
   @Test
   public void testEscapeUnicode() {
-    DumpSettings settings = DumpSettings.builder()
-        .setUseUnicodeEncoding(false)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setUseUnicodeEncoding(false).build();
     Dump dump = new Dump(settings);
     String russianUnicode = "Пушкин - это наше всё! 😊";
     assertEquals(
         "\"\\u041f\\u0443\\u0448\\u043a\\u0438\\u043d - \\u044d\\u0442\\u043e \\u043d\\u0430\\u0448\\u0435\\\n"
-            +
-            "  \\ \\u0432\\u0441\\u0451! \\U0001f60a\"\n", dump.dumpToString(russianUnicode));
+            + "  \\ \\u0432\\u0441\\u0451! \\U0001f60a\"\n",
+        dump.dumpToString(russianUnicode));
   }
 }

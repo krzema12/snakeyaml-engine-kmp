@@ -49,24 +49,13 @@ public class EventRepresentation {
     if (!event.toString().startsWith(split.get(0))) {
       return false;
     }
-        /*
-        if (event instanceof DocumentStartEvent) {
-            DocumentStartEvent e = (DocumentStartEvent) event;
-            if (e.isExplicit()) {
-                if (split.size() != 2 || !split.get(1).equals("---")) return false;
-            } else {
-                if (split.size() != 1) return false;
-            }
-        }
-        if (event instanceof DocumentEndEvent) {
-            DocumentEndEvent e = (DocumentEndEvent) event;
-            if (e.isExplicit()) {
-                if (split.size() != 2 || !split.get(1).equals("...")) return false;
-            } else {
-                if (split.size() != 1) return false;
-            }
-        }
-        */
+    /*
+     * if (event instanceof DocumentStartEvent) { DocumentStartEvent e = (DocumentStartEvent) event;
+     * if (e.isExplicit()) { if (split.size() != 2 || !split.get(1).equals("---")) return false; }
+     * else { if (split.size() != 1) return false; } } if (event instanceof DocumentEndEvent) {
+     * DocumentEndEvent e = (DocumentEndEvent) event; if (e.isExplicit()) { if (split.size() != 2 ||
+     * !split.get(1).equals("...")) return false; } else { if (split.size() != 1) return false; } }
+     */
     if (event instanceof MappingStartEvent) {
       CollectionStartEvent e = (CollectionStartEvent) event;
       boolean tagIsPresent = e.getTag().isPresent();
@@ -91,8 +80,8 @@ public class EventRepresentation {
       NodeEvent e = (NodeEvent) event;
       if (e.getAnchor().isPresent()) {
         int indexOfAlias = 1;
-        if (event.getEventId().equals(Event.ID.SequenceStart) || event.getEventId()
-            .equals(Event.ID.MappingStart)) {
+        if (event.getEventId().equals(Event.ID.SequenceStart)
+            || event.getEventId().equals(Event.ID.MappingStart)) {
           CollectionStartEvent start = (CollectionStartEvent) event;
           if (start.getFlowStyle() == FlowStyle.FLOW) {
             indexOfAlias = 2;

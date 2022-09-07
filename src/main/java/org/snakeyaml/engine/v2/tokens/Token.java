@@ -25,27 +25,26 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
 public abstract class Token {
 
   public enum ID {
-    Alias("<alias>"), //NOSONAR
-    Anchor("<anchor>"), //NOSONAR
-    BlockEnd("<block end>"), //NOSONAR
-    BlockEntry("-"), //NOSONAR
-    BlockMappingStart("<block mapping start>"), //NOSONAR
-    BlockSequenceStart("<block sequence start>"), //NOSONAR
-    Directive("<directive>"), //NOSONAR
-    DocumentEnd("<document end>"), //NOSONAR
-    DocumentStart("<document start>"), //NOSONAR
-    FlowEntry(","), //NOSONAR
-    FlowMappingEnd("}"), //NOSONAR
-    FlowMappingStart("{"), //NOSONAR
-    FlowSequenceEnd("]"), //NOSONAR
-    FlowSequenceStart("["), //NOSONAR
-    Key("?"), //NOSONAR
-    Scalar("<scalar>"), //NOSONAR
-    StreamEnd("<stream end>"), //NOSONAR
-    StreamStart("<stream start>"), //NOSONAR
-    Tag("<tag>"), //NOSONAR
-    Comment("#"),
-    Value(":"); //NOSONAR
+    Alias("<alias>"), // NOSONAR
+    Anchor("<anchor>"), // NOSONAR
+    BlockEnd("<block end>"), // NOSONAR
+    BlockEntry("-"), // NOSONAR
+    BlockMappingStart("<block mapping start>"), // NOSONAR
+    BlockSequenceStart("<block sequence start>"), // NOSONAR
+    Directive("<directive>"), // NOSONAR
+    DocumentEnd("<document end>"), // NOSONAR
+    DocumentStart("<document start>"), // NOSONAR
+    FlowEntry(","), // NOSONAR
+    FlowMappingEnd("}"), // NOSONAR
+    FlowMappingStart("{"), // NOSONAR
+    FlowSequenceEnd("]"), // NOSONAR
+    FlowSequenceStart("["), // NOSONAR
+    Key("?"), // NOSONAR
+    Scalar("<scalar>"), // NOSONAR
+    StreamEnd("<stream end>"), // NOSONAR
+    StreamStart("<stream start>"), // NOSONAR
+    Tag("<tag>"), // NOSONAR
+    Comment("#"), Value(":"); // NOSONAR
 
     private final String description;
 

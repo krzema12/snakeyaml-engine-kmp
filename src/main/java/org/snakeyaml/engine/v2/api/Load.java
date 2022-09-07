@@ -50,7 +50,7 @@ public class Load {
   /**
    * Create instance to parse the incoming YAML data and create Java instances
    *
-   * @param settings    - configuration
+   * @param settings - configuration
    * @param constructor - custom YAML constructor
    */
   public Load(LoadSettings settings, BaseConstructor constructor) {
@@ -76,7 +76,7 @@ public class Load {
     return createComposer(new StreamReader(settings, yamlReader));
   }
 
-  // Load  a single document
+  // Load a single document
 
   protected Object loadOne(Composer composer) {
     Optional<Node> nodeOptional = composer.getSingleNode();
@@ -87,7 +87,7 @@ public class Load {
    * Parse the only YAML document in a stream and produce the corresponding Java object.
    *
    * @param yamlStream - data to load from (BOM is respected to detect encoding and removed from the
-   *                   data)
+   *        data)
    * @return parsed Java instance
    */
   public Object loadFromInputStream(InputStream yamlStream) {
@@ -130,13 +130,13 @@ public class Load {
    * parsed only when the iterator is invoked.
    *
    * @param yamlStream - YAML data to load from (BOM is respected to detect encoding and removed
-   *                   from the data)
+   *        from the data)
    * @return an Iterable over the parsed Java objects in this stream in proper sequence
    */
   public Iterable<Object> loadAllFromInputStream(InputStream yamlStream) {
     Objects.requireNonNull(yamlStream, "InputStream cannot be null");
-    Composer composer = createComposer(
-        new StreamReader(settings, new YamlUnicodeReader(yamlStream)));
+    Composer composer =
+        createComposer(new StreamReader(settings, new YamlUnicodeReader(yamlStream)));
     return loadAll(composer);
   }
 
@@ -208,7 +208,5 @@ public class Load {
     }
   }
 }
-
-
 
 

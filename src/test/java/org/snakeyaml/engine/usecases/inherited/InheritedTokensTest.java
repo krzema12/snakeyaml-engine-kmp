@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,14 +76,12 @@ public class InheritedTokensTest extends InheritedImportTest {
       String tokenFileData = getResource(name);
       String[] split = tokenFileData.split("\\s+");
       List<String> tokens2 = new ArrayList<String>();
-      for (int j = 0; j < split.length; j++) {
-        tokens2.add(split[j]);
-      }
+      Collections.addAll(tokens2, split);
       //
       List<String> tokens1 = new ArrayList<String>();
       LoadSettings settings = LoadSettings.builder().build();
-      StreamReader reader = new StreamReader(settings, new YamlUnicodeReader(new FileInputStream(
-          getFileByName(dataName))));
+      StreamReader reader = new StreamReader(settings,
+          new YamlUnicodeReader(new FileInputStream(getFileByName(dataName))));
       Scanner scanner = new ScannerImpl(settings, reader);
       try {
         while (scanner.checkToken()) {

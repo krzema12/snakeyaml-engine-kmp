@@ -215,8 +215,7 @@ public class ParserWithCommentEnabledTest {
         ID.Comment, //
         ID.DocumentStart, //
         ID.MappingStart, //
-        ID.Scalar, ID.Comment,
-        ID.Comment, //
+        ID.Scalar, ID.Comment, ID.Comment, //
         ID.SequenceStart, //
         ID.Scalar, ID.Comment, //
         ID.Comment, //
@@ -278,7 +277,7 @@ public class ParserWithCommentEnabledTest {
         ID.Scalar, // value=key3a
         ID.SequenceStart, //
         ID.Scalar, // value=value3a
-        ID.Scalar, //value=value3a2
+        ID.Scalar, // value=value3a2
         ID.SequenceEnd, //
         ID.Scalar, // value=key3b
         ID.Scalar, // value=value3b
@@ -287,8 +286,7 @@ public class ParserWithCommentEnabledTest {
         ID.Comment, //
         ID.MappingEnd, //
         ID.SequenceEnd, //
-        ID.MappingEnd,
-        ID.DocumentEnd, //
+        ID.MappingEnd, ID.DocumentEnd, //
 
         ID.DocumentStart, //
         ID.Comment, //
@@ -297,7 +295,7 @@ public class ParserWithCommentEnabledTest {
         ID.StreamEnd //
     );
     Parser sut = createParser(data);
-    //printEventList(sut);
+    // printEventList(sut);
     assertEventListEquals(expectedEventIdList, sut);
   }
 
@@ -347,8 +345,7 @@ public class ParserWithCommentEnabledTest {
         ID.Comment, //
         ID.DocumentStart, //
         ID.SequenceStart, //
-        ID.Scalar,
-        ID.MappingStart, //
+        ID.Scalar, ID.MappingStart, //
         ID.Scalar, ID.Scalar, //
         ID.MappingEnd, //
         ID.MappingStart, //
@@ -361,26 +358,18 @@ public class ParserWithCommentEnabledTest {
         ID.StreamEnd //
     );
     Parser sut = createParser(data);
-//        printEventList(sut);
+    // printEventList(sut);
     assertEventListEquals(expectedEventIdList, sut);
   }
 
   @Test
   public void testKeepingNewLineInsideSequence() throws Exception {
-    String data = "" +
-        "\n" +
-        "key:\n" +
-        "\n" +
-        "- item1\n" +
-        "\n" + // Per Spec this is part of plain scalar above
-        "- item2\n" +
-        "\n" + // Per Spec this is part of plain scalar above
-        "- item3\n" +
-        "\n" + // TODO: ?Should be comment?
-        "key2: value2\n" +
-        "\n" + // TODO: ?Should be comment?
-        "key3: value3\n" +
-        "\n" + // TODO: ?Should be comment?
+    String data = "" + "\n" + "key:\n" + "\n" + "- item1\n" + "\n" + // Per Spec this is part of
+    // plain scalar above
+        "- item2\n" + "\n" + // Per Spec this is part of plain scalar above
+        "- item3\n" + "\n" + // TODO: ?Should be comment?
+        "key2: value2\n" + "\n" + // TODO: ?Should be comment?
+        "key3: value3\n" + "\n" + // TODO: ?Should be comment?
         "";
 
     List<ID> expectedEventIdList = Arrays.asList(//
@@ -407,7 +396,7 @@ public class ParserWithCommentEnabledTest {
         ID.StreamEnd //
     );
     Parser sut = createParser(data);
-    //printEventList(sut);
+    // printEventList(sut);
     assertEventListEquals(expectedEventIdList, sut);
   }
 }

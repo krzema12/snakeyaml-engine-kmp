@@ -42,9 +42,7 @@ class LoadSettingsTest {
       }
     };
 
-    LoadSettings settings = LoadSettings.builder()
-        .setVersionFunction(strict12)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setVersionFunction(strict12).build();
     Load load = new Load(settings);
     try {
       load.loadFromString("%YAML 1.1\n...\nfoo");
@@ -57,9 +55,7 @@ class LoadSettingsTest {
   @Test
   @DisplayName("Do not allow duplicate keys")
   void doNotAllowDuplicateKeys() {
-    LoadSettings settings = LoadSettings.builder()
-        .setAllowDuplicateKeys(false)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setAllowDuplicateKeys(false).build();
     Load load = new Load(settings);
     try {
       load.loadFromString("{a: 1, a: 2}");
@@ -85,9 +81,7 @@ class LoadSettingsTest {
   @Test
   @DisplayName("Allow duplicate keys")
   void allowDuplicateKeysWhenSpecified() {
-    LoadSettings settings = LoadSettings.builder()
-        .setAllowDuplicateKeys(true)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setAllowDuplicateKeys(true).build();
     Load load = new Load(settings);
     Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1, a: 2}");
     assertEquals(Integer.valueOf(2), map.get("a"));
@@ -97,10 +91,8 @@ class LoadSettingsTest {
   @DisplayName("Set and get custom property")
   void customProperty() {
     SomeKey key = new SomeKey();
-    LoadSettings settings = LoadSettings.builder()
-        .setCustomProperty(key, "foo")
-        .setCustomProperty(SomeStatus.DELIVERED, "bar")
-        .build();
+    LoadSettings settings = LoadSettings.builder().setCustomProperty(key, "foo")
+        .setCustomProperty(SomeStatus.DELIVERED, "bar").build();
     assertEquals("foo", settings.getCustomProperty(key));
     assertEquals("bar", settings.getCustomProperty(SomeStatus.DELIVERED));
   }
@@ -110,25 +102,21 @@ class LoadSettingsTest {
   }
 
   public enum SomeStatus implements SettingKey {
-    ORDERED,
-    DELIVERED
+    ORDERED, DELIVERED
   }
 
   @Test
   @DisplayName("Set and get custom I/O buffer size")
   void bufferSize() {
-    LoadSettings settings = LoadSettings.builder()
-        .setBufferSize(4096)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setBufferSize(4096).build();
     assertEquals(Integer.valueOf(4096), settings.getBufferSize());
   }
 
   @Test
   @DisplayName("Use custom ScalarResolver")
   void customScalarResolver() {
-    LoadSettings settings = LoadSettings.builder()
-        .setScalarResolver(new SomeScalarResolver())
-        .build();
+    LoadSettings settings =
+        LoadSettings.builder().setScalarResolver(new SomeScalarResolver()).build();
     Load load = new Load(settings);
     assertEquals("false", load.loadFromString("false"));
     assertEquals(Integer.valueOf(1024), settings.getBufferSize());

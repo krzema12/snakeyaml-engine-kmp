@@ -53,11 +53,8 @@ public class EmitterWithCommentEnabledTest {
   private String runEmitterWithCommentsEnabled(String data) throws IOException {
     StreamDataWriter output = new MyWriter();
 
-    DumpSettings dumpSettings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setDumpComments(true)
-        .build();
+    DumpSettings dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
+        .setDefaultFlowStyle(FlowStyle.BLOCK).setDumpComments(true).build();
     Serializer serializer = new Serializer(dumpSettings, new Emitter(dumpSettings, output));
 
     serializer.emitStreamStart();
@@ -66,7 +63,7 @@ public class EmitterWithCommentEnabledTest {
         new ParserImpl(loadSettings, new StreamReader(loadSettings, data)));
     while (composer.hasNext()) {
       Node node = composer.next();
-      //System.out.println(node);
+      // System.out.println(node);
       serializer.serializeDocument(node);
     }
     serializer.emitStreamEnd();
@@ -75,12 +72,8 @@ public class EmitterWithCommentEnabledTest {
   }
 
   private Emitter producePrettyFlowEmitter(StreamDataWriter output) {
-    DumpSettings dumpSettings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setDefaultFlowStyle(FlowStyle.FLOW)
-        .setDumpComments(true)
-        .setMultiLineFlow(true)
-        .build();
+    DumpSettings dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
+        .setDefaultFlowStyle(FlowStyle.FLOW).setDumpComments(true).setMultiLineFlow(true).build();
     return new Emitter(dumpSettings, output);
   }
 
@@ -218,18 +211,10 @@ public class EmitterWithCommentEnabledTest {
   @Test
   public void testAllComments2() throws Exception {
     String data = "" + //
-        "key:\n" +
-        "  key:\n" +
-        "    key:\n" +
-        "    - # Block Comment1\n" +
-        "      item1a\n" +
-        "    - # Block Comment2\n" +
-        "    - item1b\n" +
-        "    - # Block Comment3\n" +
-        "      MapKey_1: MapValue1\n" +
-        "      MapKey_2: MapValue2\n" +
-        "key2:\n" +
-        "- # Block Comment4\n" + //
+        "key:\n" + "  key:\n" + "    key:\n" + "    - # Block Comment1\n" + "      item1a\n"
+        + "    - # Block Comment2\n" + "    - item1b\n" + "    - # Block Comment3\n"
+        + "      MapKey_1: MapValue1\n" + "      MapKey_2: MapValue2\n" + "key2:\n"
+        + "- # Block Comment4\n" + //
         "  # Block Comment5\n" + //
         "  item1 # Inline Comment1a\n" + //
         "        # Inline Comment1b\n" + //
@@ -257,21 +242,13 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testKeepingNewLineInsideSequence() throws Exception {
-    String data = "" +
-        "\n" +
-        "key:\n" +
-        //"  \n" + // only supported in a sequence right now
+    String data = "" + "\n" + "key:\n" +
+    // " \n" + // only supported in a sequence right now
         "- item1\n" +
-        //"\n" + // Per Spec this is part of plain scalar above
+        // "\n" + // Per Spec this is part of plain scalar above
         "- item2\n" +
-        //"\n" + // Per Spec this is part of plain scalar above
-        "- item3\n" +
-        "\n" +
-        "key2: value2\n" +
-        "\n" +
-        "key3: value3\n" +
-        "\n" +
-        "";
+        // "\n" + // Per Spec this is part of plain scalar above
+        "- item3\n" + "\n" + "key2: value2\n" + "\n" + "key3: value3\n" + "\n" + "";
 
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(data, result);
@@ -279,43 +256,27 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testKeepingNewLineInsideSequence2() throws Exception {
-    String data = "" +
-        "apiVersion: kustomize.config.k8s.io/v1beta1\n" +
-        "kind: Kustomization\n" +
-        "\n" +
-        "namePrefix: acquisition-gateway-\n" +
-        "\n" +
-        "bases:\n" +
-        /** Not supported right now
-         "  \n" +
-         "#- https://github.intuit.com/dev-patterns/intuit-kustomize/intuit-service-appd-noingress-base?ref=v3.1.2\n" +
-         "# Add the following base and HPA-patch.yaml, fill in correct minReplicas and maxReplcias in Hpa-patch.yaml\n" +
-         "#- https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-hpa-base?ref=v3.1.2\n" +
+    String data = "" + "apiVersion: kustomize.config.k8s.io/v1beta1\n" + "kind: Kustomization\n"
+        + "\n" + "namePrefix: acquisition-gateway-\n" + "\n" + "bases:\n" +
+        /**
+         * Not supported right now " \n" + "#-
+         * https://github.intuit.com/dev-patterns/intuit-kustomize/intuit-service-appd-noingress-base?ref=v3.1.2\n"
+         * + "# Add the following base and HPA-patch.yaml, fill in correct minReplicas and
+         * maxReplcias in Hpa-patch.yaml\n" + "#-
+         * https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-hpa-base?ref=v3.1.2\n"
+         * +
          */
         "- https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-canary-appd-noingress-base?ref=v3.2.0\n"
-        +
-        "- https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-rollout-hpa-base?ref=v3.2.0\n"
-        +
-        "# resources:\n" +
-        "# - Nginx-ConfigMap.yaml\n" +
-        "\n" +
-        "resources:\n" +
-        "- ConfigMap-v1-splunk-sidecar-config.yaml\n" +
-        "- CronJob-patch.yaml\n" +
-        "\n" +
-        "patchesStrategicMerge:\n" +
-        "- app-rollout-patch.yaml\n" +
-        "- Service-patch.yaml\n" +
-        "- Service-metrics-patch.yaml\n" +
+        + "- https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-rollout-hpa-base?ref=v3.2.0\n"
+        + "# resources:\n" + "# - Nginx-ConfigMap.yaml\n" + "\n" + "resources:\n"
+        + "- ConfigMap-v1-splunk-sidecar-config.yaml\n" + "- CronJob-patch.yaml\n" + "\n"
+        + "patchesStrategicMerge:\n" + "- app-rollout-patch.yaml\n" + "- Service-patch.yaml\n"
+        + "- Service-metrics-patch.yaml\n" +
         // "\n" +
-        "- Hpa-patch.yaml\n" +
-        "#- SignalSciences-patch.yaml\n" +
-        "\n" +
-        "# Uncomment HPA-patch when you need to enable HPA\n" +
-        "#- Hpa-patch.yaml\n" +
-        "# Uncomment SignalSciences-patch when you need to enable Signal Sciences\n" +
-        "#- SignalSciences-patch.yaml\n" +
-        "";
+        "- Hpa-patch.yaml\n" + "#- SignalSciences-patch.yaml\n" + "\n"
+        + "# Uncomment HPA-patch when you need to enable HPA\n" + "#- Hpa-patch.yaml\n"
+        + "# Uncomment SignalSciences-patch when you need to enable Signal Sciences\n"
+        + "#- SignalSciences-patch.yaml\n" + "";
 
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(data, result);
@@ -327,19 +288,9 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testCommentsIndentFirstLineBlank() throws Exception {
-    String data = "# Comment 1\n" +
-        "key1:\n" +
-        "  \n" +
-        "  # Comment 2\n" +
-        "  # Comment 3\n" +
-        "  key2: value1\n" +
-        "# \"Fun\" options\n" +
-        "key3:\n" +
-        "  # Comment 4\n" +
-        "  # Comment 5\n" +
-        "  key4: value2\n" +
-        "key5:\n" +
-        "  key6: value3\n";
+    String data = "# Comment 1\n" + "key1:\n" + "  \n" + "  # Comment 2\n" + "  # Comment 3\n"
+        + "  key2: value1\n" + "# \"Fun\" options\n" + "key3:\n" + "  # Comment 4\n"
+        + "  # Comment 5\n" + "  key4: value2\n" + "key5:\n" + "  key6: value3\n";
 
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(data, result);
@@ -347,15 +298,11 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testMultiLineString() throws Exception {
-    String data = "# YAML load and save bug with keep block chomping indicator\n" +
-        "example:\n" +
-        "  description: |+\n" +
-        "    These lines have a carrage return after them.\n" +
-        "    And the carrage return will be duplicated with each save if the\n" +
-        "    block chomping indicator + is used. (\"keep\": keep the line feed, keep trailing blank lines.)\n"
-        +
-        "\n" +
-        "successfully-loaded: test\n";
+    String data = "# YAML load and save bug with keep block chomping indicator\n" + "example:\n"
+        + "  description: |+\n" + "    These lines have a carrage return after them.\n"
+        + "    And the carrage return will be duplicated with each save if the\n"
+        + "    block chomping indicator + is used. (\"keep\": keep the line feed, keep trailing blank lines.)\n"
+        + "\n" + "successfully-loaded: test\n";
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(data, result);
   }
@@ -366,10 +313,7 @@ public class EmitterWithCommentEnabledTest {
     for (int i = 0; i < 100; i++) {
       commentBuilder.append("# Comment ").append(i).append("\n");
     }
-    final String data = ""
-        + commentBuilder
-        + "simpleKey: simpleValue\n"
-        + "\n";
+    final String data = "" + commentBuilder + "simpleKey: simpleValue\n" + "\n";
 
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(data, result);
@@ -377,13 +321,9 @@ public class EmitterWithCommentEnabledTest {
 
   @Test
   public void testCommentsOnReference() throws Exception {
-    String data = "dummy: &a test\n"
-        + "conf:\n"
-        + "- # comment not ok here\n"
+    String data = "dummy: &a test\n" + "conf:\n" + "- # comment not ok here\n"
         + "  *a #comment not ok here\n";
-    String expected = "dummy: &a test\n"
-        + "conf:\n"
-        + "- *a\n";
+    String expected = "dummy: &a test\n" + "conf:\n" + "- *a\n";
     String result = runEmitterWithCommentsEnabled(data);
     assertEquals(expected.replace("a", "id001"), result);
   }
@@ -392,10 +332,10 @@ public class EmitterWithCommentEnabledTest {
   public void testCommentsAtDataWindowBreak() {
     String data = getComplexConfig();
 
-    LoadSettings loadSettings = LoadSettings.builder()
-        .setMaxAliasesForCollections(Integer.MAX_VALUE)
-        .build();
-    //final Yaml yaml = new Yaml(new SafeConstructor(), yamlRepresenter, yamlOptions, loaderOptions);
+    LoadSettings loadSettings =
+        LoadSettings.builder().setMaxAliasesForCollections(Integer.MAX_VALUE).build();
+    // final Yaml yaml = new Yaml(new SafeConstructor(), yamlRepresenter, yamlOptions,
+    // loaderOptions);
 
     Load load = new Load(loadSettings);
     load.loadAllFromString(data);
@@ -414,46 +354,32 @@ public class EmitterWithCommentEnabledTest {
     emitter.emit(
         new CommentEvent(CommentType.BLOCK, " I'm first", Optional.empty(), Optional.empty()));
     ImplicitTuple allImplicit = new ImplicitTuple(true, true);
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "a",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "Hello",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "b",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "a", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "Hello", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "b", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
     emitter.emit(new MappingStartEvent(Optional.empty(), Optional.of("yaml.org,2002:map"), true,
         FlowStyle.FLOW, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "one",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "World",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new CommentEvent(CommentType.BLOCK, " also me", Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "two",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "eee",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "one", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "World", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter
+        .emit(new CommentEvent(CommentType.BLOCK, " also me", Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "two", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "eee", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
     emitter.emit(new MappingEndEvent(Optional.empty(), Optional.empty()));
     emitter.emit(new MappingEndEvent(Optional.empty(), Optional.empty()));
     emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
     emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
 
     String result = output.toString();
-    final String data = "{\n"
-        + "  # I'm first\n"
-        + "  a: Hello,\n"
-        + "  b: {\n"
-        + "    one: World,\n"
-        + "    # also me\n"
-        + "    two: eee\n"
-        + "  }\n"
-        + "}\n";
+    final String data = "{\n" + "  # I'm first\n" + "  a: Hello,\n" + "  b: {\n"
+        + "    one: World,\n" + "    # also me\n" + "    two: eee\n" + "  }\n" + "}\n";
 
     assertEquals(data, result);
   }
@@ -475,9 +401,7 @@ public class EmitterWithCommentEnabledTest {
     emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
 
     String result = output.toString();
-    final String data = "{\n"
-        + "  # nobody home\n"
-        + "}\n";
+    final String data = "{\n" + "  # nobody home\n" + "}\n";
 
     assertEquals(data, result);
   }
@@ -494,24 +418,17 @@ public class EmitterWithCommentEnabledTest {
     emitter.emit(new SequenceStartEvent(Optional.empty(), Optional.of("yaml.org,2002:seq"), true,
         FlowStyle.FLOW, Optional.empty(), Optional.empty()));
     emitter.emit(new CommentEvent(CommentType.BLOCK, " red", Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "one",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "one", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
     emitter.emit(new CommentEvent(CommentType.BLOCK, " blue", Optional.empty(), Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit, "two",
-            ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
+        "two", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
     emitter.emit(new SequenceEndEvent(Optional.empty(), Optional.empty()));
     emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
     emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
 
     String result = output.toString();
-    final String data = "[\n"
-        + "  # red\n"
-        + "  one,\n"
-        + "  # blue\n"
-        + "  two\n"
-        + "]\n";
+    final String data = "[\n" + "  # red\n" + "  one,\n" + "  # blue\n" + "  two\n" + "]\n";
 
     assertEquals(data, result);
   }
@@ -533,36 +450,25 @@ public class EmitterWithCommentEnabledTest {
     emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
 
     String result = output.toString();
-    final String data = "[\n"
-        + "  # nobody home\n"
-        + "]\n";
+    final String data = "[\n" + "  # nobody home\n" + "]\n";
 
     assertEquals(data, result);
   }
 
   private String getComplexConfig() {
-    return "# Core configurable options for LWC\n"
-        + "core:\n"
-        + "\n"
+    return "# Core configurable options for LWC\n" + "core:\n" + "\n"
         + "    # The language LWC will use, specified by the shortname. For example, English = en, French = fr, German = de,\n"
-        + "    # and so on\n"
-        + "    locale: en\n"
-        + "\n"
+        + "    # and so on\n" + "    locale: en\n" + "\n"
         + "    # How often updates are batched to the database (in seconds). If set to a higher value than 10, you may have\n"
         + "    # some unexpected results, especially if your server is prone to crashing.\n"
-        + "    flushInterval: 10\n"
-        + "\n"
+        + "    flushInterval: 10\n" + "\n"
         + "    # LWC regularly caches protections locally to prevent the database from being queried as often. The default is 10000\n"
         + "    # and for most servers is OK. LWC will also fill up to <precache> when the server is started automatically.\n"
-        + "    cacheSize: 10000\n"
-        + "\n"
+        + "    cacheSize: 10000\n" + "\n"
         + "    # How many protections are precached on startup. If set to -1, it will use the cacheSize value instead and precache\n"
-        + "    # as much as possible\n"
-        + "    precache: -1\n"
-        + "\n"
+        + "    # as much as possible\n" + "    precache: -1\n" + "\n"
         + "    # If true, players will be sent a notice in their chat box when they open a protection they have access to, but\n"
-        + "    # not their own unless <showMyNotices> is set to true\n"
-        + "    showNotices: true\n"
+        + "    # not their own unless <showMyNotices> is set to true\n" + "    showNotices: true\n"
         + "\n"
         + "    # If true, players will be sent a notice in their chat box when they open a protection they own.\n"
         + "    showMyNotices: false\n";

@@ -171,9 +171,8 @@ class LoadTest {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
     Iterable<Object> v = load.loadAllFromString("bbb");
-    UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-        () ->
-            v.iterator().remove());
+    UnsupportedOperationException exception =
+        assertThrows(UnsupportedOperationException.class, () -> v.iterator().remove());
     assertEquals("Removing is not supported.", exception.getMessage());
   }
 }

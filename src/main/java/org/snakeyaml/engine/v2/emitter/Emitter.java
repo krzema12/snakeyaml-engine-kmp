@@ -109,7 +109,7 @@ public final class Emitter implements Emitable {
 
   // The current indentation level and the stack of previous indents.
   private final ArrayStack<Integer> indents;
-  //TODO should it be Optional ?
+  // TODO should it be Optional ?
   private Integer indent;
 
   // Flow level.
@@ -222,10 +222,9 @@ public final class Emitter implements Emitable {
     this.scalarStyle = Optional.empty();
 
     // Comment processing
-    this.blockCommentsCollector = new CommentEventsCollector(events,
-        CommentType.BLANK_LINE, CommentType.BLOCK);
-    this.inlineCommentsCollector = new CommentEventsCollector(events,
-        CommentType.IN_LINE);
+    this.blockCommentsCollector =
+        new CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK);
+    this.inlineCommentsCollector = new CommentEventsCollector(events, CommentType.IN_LINE);
   }
 
   public void emit(Event event) {
@@ -372,10 +371,8 @@ public final class Emitter implements Emitable {
       if (!ev.getTags().isEmpty()) {
         handleTagDirectives(ev.getTags());
       }
-      boolean implicit = first && !ev.isExplicit() && !canonical
-          && !ev.getSpecVersion().isPresent()
-          && (ev.getTags().isEmpty())
-          && !checkEmptyDocument();
+      boolean implicit = first && !ev.isExplicit() && !canonical && !ev.getSpecVersion().isPresent()
+          && (ev.getTags().isEmpty()) && !checkEmptyDocument();
       if (!implicit) {
         writeIndent();
         writeIndicator("---", true, false, false);
@@ -403,8 +400,8 @@ public final class Emitter implements Emitable {
       Event nextEvent = events.peek();
       if (nextEvent.getEventId() == Event.ID.Scalar) {
         ScalarEvent e = (ScalarEvent) nextEvent;
-        return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null &&
-            e.getValue().length() == 0;
+        return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null
+            && e.getValue().length() == 0;
       }
       return false;
     }
@@ -453,9 +450,8 @@ public final class Emitter implements Emitable {
     simpleKeyContext = simpleKey;
     if (event.getEventId() == Event.ID.Alias) {
       expectAlias();
-    } else if (event.getEventId() == Event.ID.Scalar ||
-        event.getEventId() == Event.ID.SequenceStart ||
-        event.getEventId() == Event.ID.MappingStart) {
+    } else if (event.getEventId() == Event.ID.Scalar || event.getEventId() == Event.ID.SequenceStart
+        || event.getEventId() == Event.ID.MappingStart) {
       processAnchor("&");
       processTag();
       handleNodeEvent(event.getEventId());
@@ -835,13 +831,13 @@ public final class Emitter implements Emitable {
   // Checkers.
 
   private boolean checkEmptySequence() {
-    return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty() &&
-        events.peek().getEventId() == Event.ID.SequenceEnd;
+    return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty()
+        && events.peek().getEventId() == Event.ID.SequenceEnd;
   }
 
   private boolean checkEmptyMapping() {
-    return event.getEventId() == Event.ID.MappingStart && !events.isEmpty() &&
-        events.peek().getEventId() == Event.ID.MappingEnd;
+    return event.getEventId() == Event.ID.MappingStart && !events.isEmpty()
+        && events.peek().getEventId() == Event.ID.MappingEnd;
   }
 
   private boolean checkSimpleKey() {
@@ -901,9 +897,9 @@ public final class Emitter implements Emitable {
       if (!scalarStyle.isPresent()) {
         scalarStyle = chooseScalarStyle(ev);
       }
-      if ((!canonical || !tag.isPresent()) && ((!scalarStyle.isPresent() && ev.getImplicit()
-          .canOmitTagInPlainScalar()) || (scalarStyle.isPresent() && ev.getImplicit()
-          .canOmitTagInNonPlainScalar()))) {
+      if ((!canonical || !tag.isPresent())
+          && ((!scalarStyle.isPresent() && ev.getImplicit().canOmitTagInPlainScalar())
+              || (scalarStyle.isPresent() && ev.getImplicit().canOmitTagInNonPlainScalar()))) {
         preparedTag = null;
         return;
       }
@@ -938,8 +934,8 @@ public final class Emitter implements Emitable {
     }
     if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
       if (!(simpleKeyContext && (analysis.isEmpty() || analysis.isMultiline()))
-          && ((flowLevel != 0 && analysis.isAllowFlowPlain()) || (flowLevel == 0
-          && analysis.isAllowBlockPlain()))) {
+          && ((flowLevel != 0 && analysis.isAllowFlowPlain())
+              || (flowLevel == 0 && analysis.isAllowBlockPlain()))) {
         return Optional.empty();
       }
     }
@@ -1138,8 +1134,7 @@ public final class Emitter implements Emitable {
         lineBreaks = true;
       }
       if (!(c == '\n' || (0x20 <= c && c <= 0x7E))) {
-        if (c == 0x85 || (c >= 0xA0 && c <= 0xD7FF)
-            || (c >= 0xE000 && c <= 0xFFFD)
+        if (c == 0x85 || (c >= 0xA0 && c <= 0xD7FF) || (c >= 0xE000 && c <= 0xFFFD)
             || (c >= 0x10000 && c <= 0x10FFFF)) {
           // unicode is used
           if (!this.allowUnicode) {
@@ -1266,8 +1261,8 @@ public final class Emitter implements Emitable {
     } else {
       indentToWrite = 0;
     }
-    if (!this.indention || this.column > indentToWrite || (this.column == indentToWrite
-        && !this.whitespace)) {
+    if (!this.indention || this.column > indentToWrite
+        || (this.column == indentToWrite && !this.whitespace)) {
       writeLineBreak(null);
     }
     writeWhitespace(indentToWrite - this.column);
@@ -1415,15 +1410,15 @@ public final class Emitter implements Emitable {
                 end++;
               }
             } else {
-            // if !allowUnicode or the character is not printable,
-            // we must encode it
-            if (ch <= '\u00FF') {
-              String s = "0" + Integer.toString(ch, 16);
-              data = "\\x" + s.substring(s.length() - 2);
-            } else if (Character.charCount(codePoint) == 2) {
-              end++;
-              String s = "000" + Long.toHexString(codePoint);
-              data = "\\U" + s.substring(s.length() - 8);
+              // if !allowUnicode or the character is not printable,
+              // we must encode it
+              if (ch <= '\u00FF') {
+                String s = "0" + Integer.toString(ch, 16);
+                data = "\\x" + s.substring(s.length() - 2);
+              } else if (Character.charCount(codePoint) == 2) {
+                end++;
+                String s = "000" + Long.toHexString(codePoint);
+                data = "\\U" + s.substring(s.length() - 8);
               } else {
                 String s = "000" + Integer.toString(ch, 16);
                 data = "\\u" + s.substring(s.length() - 4);

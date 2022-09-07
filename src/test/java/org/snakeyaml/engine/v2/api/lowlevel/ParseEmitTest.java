@@ -34,7 +34,8 @@ import org.snakeyaml.engine.v2.events.Event;
 /**
  * Test from https://github.com/yaml/yaml-runtimes
  *
- * @see <a href"https://github.com/yaml/yaml-runtimes/blob/master/docker/java/utils/java/src/main/java/org/yaml/editor/Snake2Yaml.java">Snake2Yaml.java</a>
+ * @see <a
+ *      href"https://github.com/yaml/yaml-runtimes/blob/master/docker/java/utils/java/src/main/java/org/yaml/editor/Snake2Yaml.java">Snake2Yaml.java</a>
  */
 @Tag("fast")
 class ParseEmitTest {
@@ -60,7 +61,7 @@ class ParseEmitTest {
   /**
    * Convert a YAML character stream into events and then emit events back to YAML.
    *
-   * @param in  Stream to read YAML from
+   * @param in Stream to read YAML from
    * @param out Stream to write YAML to
    */
   void yamlToYaml(final InputStream in, final PrintStream out) throws IOException {
@@ -80,8 +81,7 @@ class ParseEmitTest {
     }
 
     @Override
-    public void flush() {
-    }
+    public void flush() {}
 
     @Override
     public void write(String s) {

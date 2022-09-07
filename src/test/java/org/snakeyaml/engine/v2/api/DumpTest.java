@@ -86,10 +86,8 @@ class DumpTest {
     StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
     List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
     dump.dumpAll(list.iterator(), streamToStringWriter);
-    assertEquals("a\n" +
-        "--- null\n" +
-        "--- true\n", streamToStringWriter.toString());
-    //load back
+    assertEquals("a\n" + "--- null\n" + "--- true\n", streamToStringWriter.toString());
+    // load back
     LoadSettings loadSettings = LoadSettings.builder().build();
     Load load = new Load(loadSettings);
     for (Object obj : load.loadAllFromString(streamToStringWriter.toString())) {
@@ -104,10 +102,8 @@ class DumpTest {
     Dump dump = new Dump(settings);
     List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
     String output = dump.dumpAllToString(list.iterator());
-    assertEquals("a\n" +
-        "--- null\n" +
-        "--- true\n", output);
-    //load back
+    assertEquals("a\n" + "--- null\n" + "--- true\n", output);
+    // load back
     LoadSettings loadSettings = LoadSettings.builder().build();
     Load load = new Load(loadSettings);
     for (Object obj : load.loadAllFromString(output)) {
@@ -124,15 +120,15 @@ class DumpTest {
     file.delete();
     assertFalse(file.exists());
     file.createNewFile();
-    StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file),
-        StandardCharsets.UTF_8) {
-      @Override
-      public void processIOException(IOException e) {
-        throw new RuntimeException(e);
-      }
-    };
+    StreamDataWriter writer =
+        new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8) {
+          @Override
+          public void processIOException(IOException e) {
+            throw new RuntimeException(e);
+          }
+        };
     dump.dump(ImmutableMap.of("x", 1, "y", 2, "z", 3), writer);
     assertTrue(file.exists());
-    file.delete();//on Windows the file is not deleted
+    file.delete();// on Windows the file is not deleted
   }
 }

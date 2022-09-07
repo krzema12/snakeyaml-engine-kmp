@@ -80,15 +80,13 @@ public class SerializerWithCommentEnabledTest {
 
   public List<Event> serializeWithCommentsEnabled(String data) throws IOException {
     TestEmitter emitter = new TestEmitter();
-    DumpSettings dumpSettings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .build();
+    DumpSettings dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
+        .setDefaultFlowStyle(FlowStyle.BLOCK).build();
     Serializer serializer = new Serializer(dumpSettings, emitter);
     serializer.emitStreamStart();
     LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
-    Composer composer = new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, data)));
+    Composer composer =
+        new Composer(settings, new ParserImpl(settings, new StreamReader(settings, data)));
     while (composer.hasNext()) {
       serializer.serializeDocument(composer.next());
     }

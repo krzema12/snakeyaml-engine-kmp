@@ -63,7 +63,7 @@ class DumpSettingsTest {
     assertTrue(settings.isUseUnicodeEncoding());
     assertEquals(0, settings.getIndicatorIndent());
     assertEquals(128, settings.getMaxSimpleKeyLength());
-    assertNull(settings.getNonPrintableStyle()); //TODO should have Optional ?
+    assertNull(settings.getNonPrintableStyle()); // TODO should have Optional ?
     assertEquals(80, settings.getWidth());
     assertEquals(Optional.empty(), settings.getYamlDirective());
     assertEquals(new HashMap<>(), settings.getTagDirective());
@@ -81,18 +81,14 @@ class DumpSettingsTest {
       data.add(i);
     }
     String str = dump.dumpToString(data);
-    assertEquals("---\n" +
-        "!!seq [\n" +
-        "  !!int \"0\",\n" +
-        "  !!int \"1\",\n" +
-        "]\n", str);
+    assertEquals("---\n" + "!!seq [\n" + "  !!int \"0\",\n" + "  !!int \"1\",\n" + "]\n", str);
   }
 
   @Test
   @DisplayName("Custom scalar resolver has no use case")
   void setScalarResolver() {
-    DumpSettings settings = DumpSettings.builder().setScalarResolver(new JsonScalarResolver())
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setScalarResolver(new JsonScalarResolver()).build();
     Dump dump = new Dump(settings);
     List<Integer> data = new ArrayList<>();
     for (int i = 0; i < 2; i++) {
@@ -124,11 +120,7 @@ class DumpSettingsTest {
       data.add(i);
     }
     String str = dump.dumpToString(data);
-    assertEquals("[\n" +
-        "  0,\n" +
-        "  1,\n" +
-        "  2\n" +
-        "]\n", str);
+    assertEquals("[\n" + "  0,\n" + "  1,\n" + "  2\n" + "]\n", str);
   }
 
   @Test
@@ -140,32 +132,31 @@ class DumpSettingsTest {
     DumpSettings settings = DumpSettings.builder().setTagDirective(tagDirectives).build();
     Dump dump = new Dump(settings);
     String str = dump.dumpToString("data");
-    assertEquals("%TAG !python! !python\n" +
-        "%TAG !yaml! tag:yaml.org,2002:\n" +
-        "--- data\n", str);
+    assertEquals("%TAG !python! !python\n" + "%TAG !yaml! tag:yaml.org,2002:\n" + "--- data\n",
+        str);
   }
 
   @Test
   @DisplayName("Check corner cases for indent")
   void setIndent() {
-    Exception exception1 = assertThrows(EmitterException.class,
-        () -> DumpSettings.builder().setIndent(0));
+    Exception exception1 =
+        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndent(0));
     assertEquals("Indent must be at least 1", exception1.getMessage());
 
-    Exception exception2 = assertThrows(EmitterException.class,
-        () -> DumpSettings.builder().setIndent(12));
+    Exception exception2 =
+        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndent(12));
     assertEquals("Indent must be at most 10", exception2.getMessage());
   }
 
   @Test
   @DisplayName("Check corner cases for Indicator Indent")
   void setIndicatorIndent() {
-    Exception exception1 = assertThrows(EmitterException.class,
-        () -> DumpSettings.builder().setIndicatorIndent(-1));
+    Exception exception1 =
+        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndicatorIndent(-1));
     assertEquals("Indicator indent must be non-negative", exception1.getMessage());
 
-    Exception exception2 = assertThrows(EmitterException.class,
-        () -> DumpSettings.builder().setIndicatorIndent(10));
+    Exception exception2 =
+        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndicatorIndent(10));
     assertEquals("Indicator indent must be at most Emitter.MAX_INDENT-1: 9",
         exception2.getMessage());
   }
@@ -173,18 +164,17 @@ class DumpSettingsTest {
   @Test
   @DisplayName("Dump explicit version")
   void dumpVersion() {
-    DumpSettings settings = DumpSettings.builder()
-        .setYamlDirective(Optional.of(new SpecVersion(1, 2))).build();
+    DumpSettings settings =
+        DumpSettings.builder().setYamlDirective(Optional.of(new SpecVersion(1, 2))).build();
     Dump dump = new Dump(settings);
     String str = dump.dumpToString("a");
-    assertEquals("%YAML 1.2\n" +
-        "--- a\n", str);
+    assertEquals("%YAML 1.2\n" + "--- a\n", str);
   }
 
   @Test
   void dumpCustomProperty() {
-    DumpSettings settings = DumpSettings.builder().setCustomProperty(new KeyName("key"), "value")
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setCustomProperty(new KeyName("key"), "value").build();
     assertEquals("value", settings.getCustomProperty(new KeyName("key")));
     assertNull(settings.getCustomProperty(new KeyName("None")));
   }

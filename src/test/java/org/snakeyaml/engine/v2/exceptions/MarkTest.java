@@ -57,9 +57,9 @@ class MarkTest {
   @DisplayName("Mark buffer")
   void testGetBuffer() {
     Mark mark = new Mark("test1", 0, 29, 213, "*The first line.\nThe last line.".toCharArray(), 0);
-    int[] buffer = new int[]{42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
+    int[] buffer = new int[] {42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
         46, 10, 84, 104, 101, 32, 108, 97, 115, 116, 32, 108, 105, 110, 101, 46};
-    assertTrue(buffer.length == mark.getBuffer().length);
+    assertEquals(buffer.length, mark.getBuffer().length);
     boolean match = true;
     for (int i = 0; i < buffer.length; i++) {
       if (buffer[i] != mark.getBuffer()[i]) {
@@ -82,23 +82,18 @@ class MarkTest {
   @DisplayName("Mark: createSnippet(): longer content must be reduced")
   void testGetReducedSnippet() {
     Mark mark = new Mark("test1", 200, 2, 36,
-        "*The first line,\nThe second line.\nThe third line, which aaaa bbbb ccccc dddddd * contains mor12345678901234\nThe last line.".toCharArray(),
+        "*The first line,\nThe second line.\nThe third line, which aaaa bbbb ccccc dddddd * contains mor12345678901234\nThe last line."
+            .toCharArray(),
         78);
     assertEquals(
         "   ... aaaa bbbb ccccc dddddd * contains mor1234567 ... \n                             ^",
         mark.createSnippet(2, 55));
   }
 
-    /*
-            "createSnippet(): longer content must be reduced" {
-            val doc =
-                    """The first line.
-                      |The second line,
-                      |The third line, which aaaa bbbb ccccc dddddd * contains moreeeeeeeeeeeeee
-                      |The last line.""".trimMargin().toCharArray()
-            Mark("test1", 2, 35, doc, 78).createSnippet(2, 55) shouldBe
-                    """  ... aaa bbbb ccccc dddddd * contains moreeeeeeee ...
-                      |                            ^""".trimMargin()
-        }
-     */
+  /*
+   * "createSnippet(): longer content must be reduced" { val doc = """The first line. |The second
+   * line, |The third line, which aaaa bbbb ccccc dddddd * contains moreeeeeeeeeeeeee |The last
+   * line.""".trimMargin().toCharArray() Mark("test1", 2, 35, doc, 78).createSnippet(2, 55) shouldBe
+   * """ ... aaa bbbb ccccc dddddd * contains moreeeeeeee ... | ^""".trimMargin() }
+   */
 }

@@ -33,8 +33,8 @@ public class ExplicitRootTagTest {
 
   @Test
   public void testLocalTag() {
-    DumpSettings settings = DumpSettings.builder()
-        .setExplicitRootTag(Optional.of(new Tag("!my-data"))).build();
+    DumpSettings settings =
+        DumpSettings.builder().setExplicitRootTag(Optional.of(new Tag("!my-data"))).build();
     Map<String, String> map = new HashMap();
     map.put("foo", "bar");
     Dump dump = new Dump(settings);

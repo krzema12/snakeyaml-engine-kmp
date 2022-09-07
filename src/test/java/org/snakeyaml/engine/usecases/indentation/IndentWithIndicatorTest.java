@@ -32,12 +32,8 @@ public class IndentWithIndicatorTest {
 
   @Test
   public void testIndentWithIndicator1() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setIndentWithIndicator(true)
-        .setIndent(2)
-        .setIndicatorIndent(1)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(true).setIndent(2).setIndicatorIndent(1).build();
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());
 
@@ -47,12 +43,8 @@ public class IndentWithIndicatorTest {
   }
 
   public void testIndentWithIndicator2() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setIndentWithIndicator(true)
-        .setIndent(2)
-        .setIndicatorIndent(2)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(true).setIndent(2).setIndicatorIndent(2).build();
 
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());
@@ -63,12 +55,8 @@ public class IndentWithIndicatorTest {
   }
 
   public void testIndentWithIndicator3() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setIndentWithIndicator(false)
-        .setIndent(4)
-        .setIndicatorIndent(2)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
+        .setIndentWithIndicator(false).setIndent(4).setIndicatorIndent(2).build();
 
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());

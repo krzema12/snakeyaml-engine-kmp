@@ -45,8 +45,7 @@ public abstract class CollectionNode<T> extends Node {
   /**
    * Serialization style of this collection.
    *
-   * @return <code>true</code> for flow style, <code>false</code> for block
-   * style.
+   * @return <code>true</code> for flow style, <code>false</code> for block style.
    */
   public FlowStyle getFlowStyle() {
     return flowStyle;

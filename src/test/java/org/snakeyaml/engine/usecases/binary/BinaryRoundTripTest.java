@@ -45,13 +45,12 @@ public class BinaryRoundTripTest {
 
   @Test
   public void testBinary() throws UnsupportedEncodingException {
-    Dump dumper = new Dump(
-        DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
+    Dump dumper =
+        new Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
     String source = "\u0096";
     String serialized = dumper.dumpToString(source);
-    assertEquals("!!binary |-\n" +
-        "  wpY=\n", serialized);
-    //parse back to bytes
+    assertEquals("!!binary |-\n" + "  wpY=\n", serialized);
+    // parse back to bytes
     Load loader = new Load(LoadSettings.builder().build());
     byte[] deserialized = (byte[]) loader.loadFromString(serialized);
     assertEquals(source, new String(deserialized, StandardCharsets.UTF_8));
@@ -63,11 +62,11 @@ public class BinaryRoundTripTest {
     StandardRepresenter standardRepresenter = new StandardRepresenter(
         DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
     ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
-    //check Node
+    // check Node
     assertEquals(org.snakeyaml.engine.v2.nodes.Tag.BINARY, scalar.getTag());
     assertEquals(NodeType.SCALAR, scalar.getNodeType());
     assertEquals("wpY=", scalar.getValue());
-    //check Event
+    // check Event
     Serialize serialize = new Serialize(DumpSettings.builder().build());
     Iterable<Event> eventsIter = serialize.serializeOne(scalar);
     List<Event> events = ((List<Event>) eventsIter).subList(0, ((List<Event>) eventsIter).size());
@@ -83,8 +82,8 @@ public class BinaryRoundTripTest {
 
   @Test
   public void testStrNode() {
-    StandardRepresenter standardRepresenter = new StandardRepresenter(
-        DumpSettings.builder().build());
+    StandardRepresenter standardRepresenter =
+        new StandardRepresenter(DumpSettings.builder().build());
     String source = "\u0096";
     ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
     Node node = standardRepresenter.represent(source);
@@ -95,8 +94,8 @@ public class BinaryRoundTripTest {
 
   @Test
   public void testRoundTripBinary() {
-    Dump dumper = new Dump(
-        DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.ESCAPE).build());
+    Dump dumper =
+        new Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.ESCAPE).build());
     Map<String, String> toSerialized = new HashMap<>();
     toSerialized.put("key", "a\u0096b");
     String output = dumper.dumpToString(toSerialized);

@@ -49,8 +49,9 @@ public class ScalarNode extends Node {
    * Get scalar style of this node.
    *
    * @return style of this scalar node
-   * @see org.snakeyaml.engine.v2.events.ScalarEvent Flow  styles - https://yaml.org/spec/1.2/spec.html#id2786942
-   * Block styles - https://yaml.org/spec/1.2/spec.html#id2793652
+   * @see org.snakeyaml.engine.v2.events.ScalarEvent Flow styles -
+   *      https://yaml.org/spec/1.2/spec.html#id2786942 Block styles -
+   *      https://yaml.org/spec/1.2/spec.html#id2793652
    */
   public ScalarStyle getScalarStyle() {
     return style;
@@ -71,8 +72,7 @@ public class ScalarNode extends Node {
   }
 
   public String toString() {
-    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
-        + ")>";
+    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue() + ")>";
   }
 
   public boolean isPlain() {

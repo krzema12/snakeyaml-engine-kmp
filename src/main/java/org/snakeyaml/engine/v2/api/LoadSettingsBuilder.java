@@ -54,7 +54,7 @@ public final class LoadSettingsBuilder {
   private Optional<EnvConfig> envConfig;
 
 
-  //general
+  // general
   private final Map<SettingKey, Object> customProperties = new HashMap();
 
   /**
@@ -64,7 +64,7 @@ public final class LoadSettingsBuilder {
     this.label = "reader";
     this.tagConstructors = new HashMap<>();
     this.scalarResolver = new JsonScalarResolver();
-    this.defaultList = ArrayList::new;    // same as new ArrayList(initSize)
+    this.defaultList = ArrayList::new; // same as new ArrayList(initSize)
     this.defaultSet = LinkedHashSet::new; // same as new LinkedHashSet(initSize)
     this.defaultMap = LinkedHashMap::new; // same as new LinkedHashMap(initSize)
     this.versionFunction = version -> {
@@ -77,7 +77,8 @@ public final class LoadSettingsBuilder {
     this.allowDuplicateKeys = false;
     this.allowRecursiveKeys = false;
     this.parseComments = false;
-    this.maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
+    // to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
+    this.maxAliasesForCollections = 50;
     this.useMarks = true;
     this.envConfig = Optional.empty(); // no ENV substitution by default
 
@@ -171,7 +172,7 @@ public final class LoadSettingsBuilder {
    * select what should happend when non-unique keys are detected.
    *
    * @param allowDuplicateKeys - if true than the non-unique keys in a mapping are allowed (last key
-   *                           wins). False by default.
+   *        wins). False by default.
    * @return the builder with the provided value
    */
   public LoadSettingsBuilder setAllowDuplicateKeys(boolean allowDuplicateKeys) {
@@ -199,7 +200,7 @@ public final class LoadSettingsBuilder {
    * exponentially.
    *
    * @param maxAliasesForCollections - max number of aliases. More then 50 might be very dangerous.
-   *                                 Default is 50
+   *        Default is 50
    * @return the builder with the provided value
    */
   public LoadSettingsBuilder setMaxAliasesForCollections(int maxAliasesForCollections) {
@@ -211,7 +212,7 @@ public final class LoadSettingsBuilder {
    * Marks are only used for error messages. But they requires a lot of memory. True by default.
    *
    * @param useMarks - use false to save resources but use less informative error messages (no line
-   *                 and context)
+   *        and context)
    * @return the builder with the provided value
    */
   public LoadSettingsBuilder setUseMarks(boolean useMarks) {
@@ -228,8 +229,8 @@ public final class LoadSettingsBuilder {
    * that the incoming version is not supported.
    *
    * @param versionFunction - define the way to manage the YAML version. By default, 1.* versions
-   *                        are accepted and treated as YAML 1.2. Other versions fail to parse
-   *                        (YamlVersionException is thown)
+   *        are accepted and treated as YAML 1.2. Other versions fail to parse (YamlVersionException
+   *        is thown)
    * @return the builder with the provided value
    */
   public LoadSettingsBuilder setVersionFunction(UnaryOperator<SpecVersion> versionFunction) {
@@ -244,8 +245,9 @@ public final class LoadSettingsBuilder {
    *
    * @param envConfig - non-empty configuration to substitute variables
    * @return the builder with the provided value
-   * @see <a href="https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable
-   * substitution</a>
+   * @see <a href=
+   *      "https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable
+   *      substitution</a>
    */
   public LoadSettingsBuilder setEnvConfig(Optional<EnvConfig> envConfig) {
     this.envConfig = envConfig;
@@ -274,12 +276,9 @@ public final class LoadSettingsBuilder {
    * @return immutable LoadSettings
    */
   public LoadSettings build() {
-    return new LoadSettings(label, tagConstructors,
-        scalarResolver, defaultList,
-        defaultSet, defaultMap,
-        versionFunction, bufferSize,
-        allowDuplicateKeys, allowRecursiveKeys, maxAliasesForCollections, useMarks,
-        customProperties, envConfig, parseComments);
+    return new LoadSettings(label, tagConstructors, scalarResolver, defaultList, defaultSet,
+        defaultMap, versionFunction, bufferSize, allowDuplicateKeys, allowRecursiveKeys,
+        maxAliasesForCollections, useMarks, customProperties, envConfig, parseComments);
   }
 }
 

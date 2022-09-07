@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * General exception during composition step
  */
-public class ComposerException extends MarkedYamlEngineException { //NOSONAR
+public class ComposerException extends MarkedYamlEngineException { // NOSONAR
 
   public ComposerException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark) {

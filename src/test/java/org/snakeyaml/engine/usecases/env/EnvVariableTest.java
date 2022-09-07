@@ -40,15 +40,13 @@ class EnvVariableTest {
   @Test
   @DisplayName("Parse docker-compose.yaml example")
   public void testDockerCompose() {
-    Load loader = new Load(LoadSettings.builder()
-        .setEnvConfig(Optional.of(new EnvConfig() {
-        }))
-        .build());
+    Load loader =
+        new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
     String resource = TestUtils.getResource("env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
-            "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"),
+        "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"),
         output);
   }
 
@@ -58,22 +56,19 @@ class EnvVariableTest {
     HashMap<String, String> provided = new HashMap();
     provided.put(KEY1, "VVVAAA111");
     System.setProperty(EMPTY, "VVVAAA222");
-    Load loader = new Load(LoadSettings.builder()
-        .setEnvConfig(Optional.of(new CustomEnvConfig(provided)))
-        .build());
+    Load loader = new Load(
+        LoadSettings.builder().setEnvConfig(Optional.of(new CustomEnvConfig(provided))).build());
     String resource = TestUtils.getResource("env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
-            "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"),
+        "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"),
         output);
   }
 
   private String load(String template) {
-    Load loader = new Load(LoadSettings.builder()
-        .setEnvConfig(Optional.of(new EnvConfig() {
-        }))
-        .build());
+    Load loader =
+        new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
     String loaded = (String) loader.loadFromString(template);
     return loaded;
   }

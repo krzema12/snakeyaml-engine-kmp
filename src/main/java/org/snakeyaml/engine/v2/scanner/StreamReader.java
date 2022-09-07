@@ -48,14 +48,15 @@ public final class StreamReader {
   private int pointer = 0;
   private boolean eof;
   /**
-   * index is only required to implement 1024 key length restriction
-   * TODO It must count code points, but it counts characters (to be fixed)
+   * index is only required to implement 1024 key length restriction TODO It must count code points,
+   * but it counts characters (to be fixed)
    */
   private int index = 0; // in code points
   private int line = 0;
   private int column = 0; // in code points
   private final int bufferSize;
-  private final char[] buffer; // temp buffer for one read operation (to avoid creating the array in stack)
+  // temp buffer for one read operation (to avoid creating the array in stack)
+  private final char[] buffer;
   private final boolean useMarks;
 
   /**
@@ -126,8 +127,7 @@ public final class StreamReader {
   public Optional<Mark> getMark() {
     if (useMarks) {
       return Optional.of(
-          new Mark(name, this.index, this.line, this.column, this.codePointsWindow,
-              this.pointer));
+          new Mark(name, this.index, this.line, this.column, this.codePointsWindow, this.pointer));
     } else {
       return Optional.empty();
     }

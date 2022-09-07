@@ -46,11 +46,11 @@ public final class Mark implements Serializable {
   /**
    * Creates {@link Mark}
    *
-   * @param name    - the name to be used as identifier
-   * @param index   - the index from the beginning of the stream
-   * @param line    - line of the mark from beginning of the stream
-   * @param column  - column of the mark from beginning of the line
-   * @param buffer  - the data
+   * @param name - the name to be used as identifier
+   * @param index - the index from the beginning of the stream
+   * @param line - line of the mark from beginning of the stream
+   * @param column - column of the mark from beginning of the line
+   * @param buffer - the data
    * @param pointer - the position of the mark from the beginning of the stream
    */
   public Mark(String name, int index, int line, int column, int[] buffer, int pointer) {
@@ -66,11 +66,11 @@ public final class Mark implements Serializable {
   /**
    * This constructor is only for test
    *
-   * @param name    - the name to be used as identifier
-   * @param index   - the index from the beginning of the stream
-   * @param line    - line of the mark from beginning of the stream
-   * @param column  - column of the mark from beginning of the line
-   * @param str     - the data
+   * @param name - the name to be used as identifier
+   * @param index - the index from the beginning of the stream
+   * @param line - line of the mark from beginning of the stream
+   * @param column - column of the mark from beginning of the line
+   * @param str - the data
    * @param pointer - the position of the mark from the beginning of the stream
    */
   public Mark(String name, int index, int line, int column, char[] str, int pointer) {
@@ -128,15 +128,9 @@ public final class Mark implements Serializable {
   @Override
   public String toString() {
     String snippet = createSnippet();
-    StringBuilder builder = new StringBuilder(" in ");
-    builder.append(name);
-    builder.append(", line ");
-    builder.append(line + 1);
-    builder.append(", column ");
-    builder.append(column + 1);
-    builder.append(":\n");
-    builder.append(snippet);
-    return builder.toString();
+    String builder =
+        " in " + name + ", line " + (line + 1) + ", column " + (column + 1) + ":\n" + snippet;
+    return builder;
   }
 
   public String getName() {

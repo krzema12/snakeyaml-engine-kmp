@@ -71,6 +71,7 @@ public class Serialize {
   }
 }
 
+
 class EmitableEvents implements Emitable {
 
   private final List<Event> events = new ArrayList<>();

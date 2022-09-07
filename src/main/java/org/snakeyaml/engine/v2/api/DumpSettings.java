@@ -41,7 +41,7 @@ public final class DumpSettings {
   private final FlowStyle defaultFlowStyle;
   private final ScalarStyle defaultScalarStyle;
 
-  //emitter
+  // emitter
   private final boolean canonical;
   private final boolean multiLineFlow;
   private final boolean useUnicodeEncoding;
@@ -54,20 +54,18 @@ public final class DumpSettings {
   private final boolean indentWithIndicator;
   private final boolean dumpComments;
 
-  //general
+  // general
   private final Map<SettingKey, Object> customProperties;
 
   DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
       AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective,
-      Map<String, String> tagDirective,
-      ScalarResolver scalarResolver, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
-      NonPrintableStyle nonPrintableStyle,
-      //emitter
-      boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding,
-      int indent, int indicatorIndent, int width, String bestLineBreak, boolean splitLines,
-      int maxSimpleKeyLength,
-      Map<SettingKey, Object> customProperties, boolean indentWithIndicator, boolean dumpComments
-  ) {
+      Map<String, String> tagDirective, ScalarResolver scalarResolver, FlowStyle defaultFlowStyle,
+      ScalarStyle defaultScalarStyle, NonPrintableStyle nonPrintableStyle,
+      // emitter
+      boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding, int indent,
+      int indicatorIndent, int width, String bestLineBreak, boolean splitLines,
+      int maxSimpleKeyLength, Map<SettingKey, Object> customProperties, boolean indentWithIndicator,
+      boolean dumpComments) {
     this.explicitStart = explicitStart;
     this.explicitEnd = explicitEnd;
     this.nonPrintableStyle = nonPrintableStyle;

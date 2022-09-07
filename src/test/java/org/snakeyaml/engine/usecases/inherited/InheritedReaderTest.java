@@ -45,8 +45,8 @@ public class InheritedReaderTest extends InheritedImportTest {
         while (stream.peek() != '\u0000') {
           stream.forward();
         }
-        fail("Invalid stream must not be accepted: " + inputs[i].getAbsolutePath()
-            + "; encoding=" + unicodeReader.getEncoding());
+        fail("Invalid stream must not be accepted: " + inputs[i].getAbsolutePath() + "; encoding="
+            + unicodeReader.getEncoding());
       } catch (ReaderException e) {
         assertTrue(e.toString().contains(" special characters are not allowed"), e.toString());
       } catch (YamlEngineException e) {

@@ -22,14 +22,14 @@ import org.snakeyaml.engine.v2.parser.Parser;
 /**
  * Exception thrown by the {@link Parser} implementations in case of malformed input.
  */
-public class ParserException extends MarkedYamlEngineException { //NOSONAR
+public class ParserException extends MarkedYamlEngineException { // NOSONAR
 
   /**
    * Constructs an instance.
    *
-   * @param context     Part of the input document in which vicinity the problem occurred.
+   * @param context Part of the input document in which vicinity the problem occurred.
    * @param contextMark Position of the <code>context</code> within the document.
-   * @param problem     Part of the input document that caused the problem.
+   * @param problem Part of the input document that caused the problem.
    * @param problemMark Position of the <code>problem</code>. within the document.
    */
   public ParserException(String context, Optional<Mark> contextMark, String problem,

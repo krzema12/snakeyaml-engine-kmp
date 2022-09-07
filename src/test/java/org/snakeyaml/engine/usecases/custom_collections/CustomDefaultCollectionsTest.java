@@ -31,9 +31,9 @@ class CustomDefaultCollectionsTest {
   @Test
   @DisplayName("Create LinkedList by default")
   void createLinkedListByDefault() {
-    //init size is not used in LinkedList
-    LoadSettings settings = LoadSettings.builder().setDefaultList(initSize -> new LinkedList())
-        .build();
+    // init size is not used in LinkedList
+    LoadSettings settings =
+        LoadSettings.builder().setDefaultList(initSize -> new LinkedList()).build();
     Load load = new Load(settings);
     LinkedList<String> list = (LinkedList<String>) load.loadFromString("- a\n- b");
     assertEquals(2, list.size());
@@ -42,7 +42,7 @@ class CustomDefaultCollectionsTest {
   @Test
   @DisplayName("Create TreeMap by default")
   void createTreeMapByDefault() {
-    //init size is not used in TreeMap
+    // init size is not used in TreeMap
     LoadSettings settings = LoadSettings.builder().setDefaultMap(initSize -> new TreeMap()).build();
     Load load = new Load(settings);
     TreeMap<String, String> map = (TreeMap<String, String>) load.loadFromString("{k1: v1, k2: v2}");
@@ -56,7 +56,7 @@ class CustomDefaultCollectionsTest {
     Load load = new Load(settings);
     TreeSet<String> set = (TreeSet<String>) load.loadFromString("!!set\n? foo\n? bar");
     assertEquals(2, set.size());
-    //must be re-ordered
+    // must be re-ordered
     assertEquals("bar", set.first());
     assertEquals("foo", set.last());
   }

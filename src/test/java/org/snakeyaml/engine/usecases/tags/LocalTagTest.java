@@ -34,11 +34,9 @@ public class LocalTagTest {
   @Test
   public void testLocalTag() {
     Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
-    //register to call CustomConstructor when the Tag !ImportValue is found
+    // register to call CustomConstructor when the Tag !ImportValue is found
     tagConstructors.put(new Tag("!ImportValue"), new CustomConstructor());
-    LoadSettings settings = LoadSettings.builder()
-        .setTagConstructors(tagConstructors)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
     Object obj = loader.loadFromString("VpcId: !ImportValue SpokeVPC");
     Map<String, ImportValueImpl> map = (Map<String, ImportValueImpl>) obj;

@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -48,12 +49,11 @@ public class ProblematicYamlTest {
     }
   }
 
-  private static final LoadSettings LOAD_OPTIONS = LoadSettings.builder().setParseComments(true)
-      .build();
+  private static final LoadSettings LOAD_OPTIONS =
+      LoadSettings.builder().setParseComments(true).build();
 
   private void assertEventListEquals(List<Event.ID> expectedEventIdList,
-      List<CommentType> expectedCommentTypeList,
-      Parser parser) {
+      List<CommentType> expectedCommentTypeList, Parser parser) {
     Iterator<CommentType> commentTypeIterator = expectedCommentTypeList.iterator();
     for (Event.ID expectedEventId : expectedEventIdList) {
       parser.checkEvent(expectedEventId);
@@ -64,7 +64,7 @@ public class ProblematicYamlTest {
       }
       println("Got: " + event
           + (event.getEventId() == Event.ID.Comment ? " " + ((CommentEvent) event).getCommentType()
-          : ""));
+              : ""));
       println();
       if (expectedCommentTypeList != null && event.getEventId() == Event.ID.Comment) {
         assertEquals(commentTypeIterator.next(), ((CommentEvent) event).getCommentType());
@@ -78,7 +78,7 @@ public class ProblematicYamlTest {
     for (Event event = parser.next(); event != null; event = parser.next()) {
       println("Got: " + event
           + (event.getEventId() == Event.ID.Comment ? " " + ((CommentEvent) event).getCommentType()
-          : ""));
+              : ""));
       println();
     }
   }
@@ -107,8 +107,8 @@ public class ProblematicYamlTest {
     );
     List<CommentType> expectedCommentTypeList = Arrays.asList(//
         CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK);
-    ParserImpl parser = new ParserImpl(LOAD_OPTIONS,
-        new StreamReader(LOAD_OPTIONS, new StringReader(yamlString1)));
+    ParserImpl parser =
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString1)));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -137,8 +137,8 @@ public class ProblematicYamlTest {
     );
     List<CommentType> expectedCommentTypeList = Arrays.asList(//
         CommentType.BLANK_LINE, CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK);
-    ParserImpl parser = new ParserImpl(LOAD_OPTIONS,
-        new StreamReader(LOAD_OPTIONS, new StringReader(yamlString2)));
+    ParserImpl parser =
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString2)));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -162,10 +162,9 @@ public class ProblematicYamlTest {
         ID.DocumentEnd, //
         ID.StreamEnd //
     );
-    List<CommentType> expectedCommentTypeList = Arrays.asList(//
-        CommentType.BLANK_LINE);
-    ParserImpl parser = new ParserImpl(LOAD_OPTIONS,
-        new StreamReader(LOAD_OPTIONS, new StringReader(yamlString3)));
+    List<CommentType> expectedCommentTypeList = Collections.singletonList(CommentType.BLANK_LINE);
+    ParserImpl parser =
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString3)));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -224,8 +223,8 @@ public class ProblematicYamlTest {
         ID.StreamEnd//
     );
     LoadSettings settings = LoadSettings.builder().build();
-    Parser parser = new ParserImpl(settings,
-        new StreamReader(settings, new StringReader(yamlString4)));
+    Parser parser =
+        new ParserImpl(settings, new StreamReader(settings, new StringReader(yamlString4)));
     assertEventListEquals(expectedEventIdList, new ArrayList<CommentType>(), parser);
   }
 }

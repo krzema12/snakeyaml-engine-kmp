@@ -67,8 +67,8 @@ public abstract class InheritedImportTest {
       buffer.appendCodePoint(reader.peek());
       reader.forward();
     }
-    CanonicalParser parser = new CanonicalParser(
-        buffer.toString().replace(System.lineSeparator(), "\n"), label);
+    CanonicalParser parser =
+        new CanonicalParser(buffer.toString().replace(System.lineSeparator(), "\n"), label);
     List<Event> result = new ArrayList();
     while (parser.hasNext()) {
       result.add(parser.next());

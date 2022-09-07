@@ -18,15 +18,14 @@ package org.snakeyaml.engine.v2.resolver;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * ScalarResolver tries to detect a type of a scalar value by its content (when the tag is
- * implicit)
+ * ScalarResolver tries to detect a type of a scalar value by its content (when the tag is implicit)
  */
 public interface ScalarResolver {
 
   /**
    * Resolve (detect) the tag of the scalar node of the given type.
    *
-   * @param value    - the value of the scalar node
+   * @param value - the value of the scalar node
    * @param implicit - true if there was no tag specified (the tag will be resolved)
    * @return the Tag that matches the contents
    */

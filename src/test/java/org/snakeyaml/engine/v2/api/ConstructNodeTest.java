@@ -42,11 +42,11 @@ class ConstructNodeTest {
         return null;
       }
     };
-    Node node = new SequenceNode(Tag.SEQ, Lists.newArrayList(
-        new ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)), FlowStyle.FLOW);
+    Node node = new SequenceNode(Tag.SEQ,
+        Lists.newArrayList(new ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)), FlowStyle.FLOW);
     node.setRecursive(true);
-    IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
-        constructNode.constructRecursive(node, new ArrayList<>()));
+    IllegalStateException exception = assertThrows(IllegalStateException.class,
+        () -> constructNode.constructRecursive(node, new ArrayList<>()));
     assertEquals("Not implemented in org.snakeyaml.engine.v2.api.ConstructNodeTest$1",
         exception.getMessage());
   }
@@ -60,11 +60,11 @@ class ConstructNodeTest {
         return null;
       }
     };
-    Node node = new SequenceNode(Tag.SEQ, Lists.newArrayList(
-        new ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)), FlowStyle.FLOW);
+    Node node = new SequenceNode(Tag.SEQ,
+        Lists.newArrayList(new ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)), FlowStyle.FLOW);
     node.setRecursive(false);
-    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-        constructNode.constructRecursive(node, new ArrayList<>()));
+    YamlEngineException exception = assertThrows(YamlEngineException.class,
+        () -> constructNode.constructRecursive(node, new ArrayList<>()));
     assertTrue(exception.getMessage().startsWith("Unexpected recursive structure for Node"));
   }
 }

@@ -39,8 +39,7 @@ public final class ScalarEvent extends NodeEvent {
   private final ImplicitTuple implicit;
 
   public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit,
-      String value, ScalarStyle style,
-      Optional<Mark> startMark, Optional<Mark> endMark) {
+      String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
     super(anchor, startMark, endMark);
     Objects.requireNonNull(tag);
     this.tag = tag;
@@ -126,8 +125,7 @@ public final class ScalarEvent extends NodeEvent {
 
   // escape
   public String escapedValue() {
-    return value.codePoints()
-        .filter(i -> i < Character.MAX_VALUE)
+    return value.codePoints().filter(i -> i < Character.MAX_VALUE)
         .mapToObj(ch -> CharConstants.escapeChar(String.valueOf(Character.toChars(ch))))
         .collect(Collectors.joining(""));
   }

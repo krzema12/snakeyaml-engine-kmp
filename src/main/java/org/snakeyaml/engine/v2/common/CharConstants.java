@@ -22,7 +22,8 @@ import java.util.Map;
 
 public final class CharConstants {
 
-  private static final String ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+  private static final String ALPHA_S =
+      "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
   private static final String LINEBR_S = "\n";
   private final static String FULL_LINEBR_S = "\r" + LINEBR_S;
@@ -42,8 +43,10 @@ public final class CharConstants {
   public static final CharConstants NULL_BL_T_LINEBR = new CharConstants(NULL_BL_T_LINEBR_S);
   public static final CharConstants NULL_BL_T = new CharConstants(NULL_BL_T_S);
   // prefix may contain ,[]
-  public static final CharConstants URI_CHARS_FOR_TAG_PREFIX = new CharConstants(URI_CHARS_SUFFIX_S + ",[]");
-  public static final CharConstants URI_CHARS_FOR_TAG_SUFFIX = new CharConstants(URI_CHARS_SUFFIX_S);
+  public static final CharConstants URI_CHARS_FOR_TAG_PREFIX =
+      new CharConstants(URI_CHARS_SUFFIX_S + ",[]");
+  public static final CharConstants URI_CHARS_FOR_TAG_SUFFIX =
+      new CharConstants(URI_CHARS_SUFFIX_S);
 
   public static final CharConstants ALPHA = new CharConstants(ALPHA_S);
 
@@ -86,6 +89,7 @@ public final class CharConstants {
    * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
    * escape sequences are used to handle unicode escaping in the following formats, where H is a
    * hexadecimal character:
+   *
    * <pre>
    * &#92;xHH         : escaped 8-bit Unicode character
    * &#92;uHHHH       : escaped 16-bit Unicode character
@@ -95,32 +99,31 @@ public final class CharConstants {
   public static final Map<Character, Integer> ESCAPE_CODES;
 
   static {
-    Map<Character, String> escapeReplacements = new HashMap();
-    escapeReplacements.put(Character.valueOf('0'), "\0");// ASCII null
-    escapeReplacements.put(Character.valueOf('a'), "\u0007");// ASCII bell
-    escapeReplacements.put(Character.valueOf('b'), "\u0008"); // ASCII backspace
-    escapeReplacements.put(Character.valueOf('t'), "\u0009"); // ASCII horizontal tab
-    escapeReplacements.put(Character.valueOf('n'),
-        "\n");// ASCII newline (line feed; &#92;n maps to 0x0A)
-    escapeReplacements.put(Character.valueOf('v'), "\u000B");// ASCII vertical tab
-    escapeReplacements.put(Character.valueOf('f'), "\u000C");// ASCII form-feed
-    escapeReplacements.put(Character.valueOf('r'), "\r");// carriage-return (&#92;r maps to 0x0D)
-    escapeReplacements.put(Character.valueOf('e'), "\u001B");// ASCII escape character (Esc)
-    escapeReplacements.put(Character.valueOf(' '), "\u0020");// ASCII space
-    escapeReplacements.put(Character.valueOf('"'), "\"");// ASCII double-quote
-    escapeReplacements.put(Character.valueOf('/'), "/");// ASCII slash, for JSON compatibility.
-    escapeReplacements.put(Character.valueOf('\\'), "\\");// ASCII backslash
-    escapeReplacements.put(Character.valueOf('N'), "\u0085");// Unicode next line
-    escapeReplacements.put(Character.valueOf('_'), "\u00A0");// Unicode non-breaking-space
-    escapeReplacements.put(Character.valueOf('L'), "\u2028");// Unicode line-separator
-    escapeReplacements.put(Character.valueOf('P'), "\u2029");// Unicode paragraph separator
-    ESCAPE_REPLACEMENTS = Collections.unmodifiableMap(escapeReplacements);
+    Map<Character, String> escapes = new HashMap();
+    escapes.put(Character.valueOf('0'), "\0");// ASCII null
+    escapes.put(Character.valueOf('a'), "\u0007");// ASCII bell
+    escapes.put(Character.valueOf('b'), "\u0008"); // ASCII backspace
+    escapes.put(Character.valueOf('t'), "\u0009"); // ASCII horizontal tab
+    escapes.put(Character.valueOf('n'), "\n");// ASCII newline (line feed; &#92;n maps to 0x0A)
+    escapes.put(Character.valueOf('v'), "\u000B");// ASCII vertical tab
+    escapes.put(Character.valueOf('f'), "\u000C");// ASCII form-feed
+    escapes.put(Character.valueOf('r'), "\r");// carriage-return (&#92;r maps to 0x0D)
+    escapes.put(Character.valueOf('e'), "\u001B");// ASCII escape character (Esc)
+    escapes.put(Character.valueOf(' '), "\u0020");// ASCII space
+    escapes.put(Character.valueOf('"'), "\"");// ASCII double-quote
+    escapes.put(Character.valueOf('/'), "/");// ASCII slash, for JSON compatibility.
+    escapes.put(Character.valueOf('\\'), "\\");// ASCII backslash
+    escapes.put(Character.valueOf('N'), "\u0085");// Unicode next line
+    escapes.put(Character.valueOf('_'), "\u00A0");// Unicode non-breaking-space
+    escapes.put(Character.valueOf('L'), "\u2028");// Unicode line-separator
+    escapes.put(Character.valueOf('P'), "\u2029");// Unicode paragraph separator
+    ESCAPE_REPLACEMENTS = Collections.unmodifiableMap(escapes);
 
     Map<Character, Integer> escapeCodes = new HashMap();
     escapeCodes.put(Character.valueOf('x'), 2);// 8-bit Unicode
     escapeCodes.put(Character.valueOf('u'), 4);// 16-bit Unicode
-    escapeCodes.put(Character.valueOf('U'),
-        8);// 32-bit Unicode (Supplementary characters are supported)
+    // 32-bit Unicode (Supplementary characters are supported)
+    escapeCodes.put(Character.valueOf('U'), 8);
     ESCAPE_CODES = Collections.unmodifiableMap(escapeCodes);
   }
 

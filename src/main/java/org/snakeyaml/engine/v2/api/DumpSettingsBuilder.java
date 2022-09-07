@@ -48,7 +48,7 @@ public final class DumpSettingsBuilder {
   private FlowStyle defaultFlowStyle;
   private ScalarStyle defaultScalarStyle;
 
-  //emitter
+  // emitter
   private boolean canonical;
   private boolean multiLineFlow;
   private boolean useUnicodeEncoding;
@@ -61,7 +61,7 @@ public final class DumpSettingsBuilder {
   private boolean indentWithIndicator;
   private boolean dumpComments;
 
-  //general
+  // general
   Map<SettingKey, Object> customProperties = new HashMap();
 
   /**
@@ -222,8 +222,7 @@ public final class DumpSettingsBuilder {
    * terminals)
    *
    * @param useUnicodeEncoding - true to use Unicode for "Я", false to use "\u0427" for the same
-   *                           char (if useUnicodeEncoding is false then all non-ASCII characters
-   *                           are escaped)
+   *        char (if useUnicodeEncoding is false then all non-ASCII characters are escaped)
    * @return the builder with the provided value
    */
   public DumpSettingsBuilder setUseUnicodeEncoding(boolean useUnicodeEncoding) {
@@ -234,8 +233,9 @@ public final class DumpSettingsBuilder {
   /**
    * Define the amount of the spaces for the indent in the block flow style. Default is 2.
    *
-   * @param indent - the number of spaces. Must be within the range org.snakeyaml.engine.v2.emitter.Emitter.MIN_INDENT
-   *               and org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT
+   * @param indent - the number of spaces. Must be within the range
+   *        org.snakeyaml.engine.v2.emitter.Emitter.MIN_INDENT and
+   *        org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT
    * @return the builder with the provided value
    */
   public DumpSettingsBuilder setIndent(int indent) {
@@ -254,8 +254,8 @@ public final class DumpSettingsBuilder {
    * visual results it should be by 2 less than the indent (which is 2 by default) It is 2 chars
    * less because the first char is '-' and the second char is the space after it.
    *
-   * @param indicatorIndent - must be non-negative and less than org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT
-   *                        - 1
+   * @param indicatorIndent - must be non-negative and less than
+   *        org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT - 1
    * @return the builder with the provided value
    */
   public DumpSettingsBuilder setIndicatorIndent(int indicatorIndent) {
@@ -287,7 +287,7 @@ public final class DumpSettingsBuilder {
    * Linux) than this setting is used to define the line ending. The platform line end is used by
    * default.
    *
-   * @param bestLineBreak -  "\r\n" or "\n"
+   * @param bestLineBreak - "\r\n" or "\n"
    * @return the builder with the provided value
    */
   public DumpSettingsBuilder setBestLineBreak(String bestLineBreak) {
@@ -308,7 +308,8 @@ public final class DumpSettingsBuilder {
   }
 
   /**
-   * Define max key length to use simple key (without '?') More info https://yaml.org/spec/1.2/spec.html#id2798057
+   * Define max key length to use simple key (without '?') More info
+   * https://yaml.org/spec/1.2/spec.html#id2798057
    *
    * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
    * @return the builder with the provided value
@@ -328,7 +329,7 @@ public final class DumpSettingsBuilder {
    * String objects with printable data are non affected by this setting.
    *
    * @param nonPrintableStyle - set this to BINARY to force non-printable String to represented as
-   *                          binary (byte array)
+   *        binary (byte array)
    * @return the builder with the provided value
    */
   public DumpSettingsBuilder setNonPrintableStyle(NonPrintableStyle nonPrintableStyle) {
@@ -367,13 +368,12 @@ public final class DumpSettingsBuilder {
    * @return DumpSettings with the provided values
    */
   public DumpSettings build() {
-    return new DumpSettings(explicitStart, explicitEnd, explicitRootTag,
-        anchorGenerator, yamlDirective, tagDirective,
-        scalarResolver, defaultFlowStyle, defaultScalarStyle, nonPrintableStyle,
-        //emitter
-        canonical, multiLineFlow, useUnicodeEncoding,
-        indent, indicatorIndent, width, bestLineBreak, splitLines, maxSimpleKeyLength,
-        customProperties, indentWithIndicator, dumpComments);
+    return new DumpSettings(explicitStart, explicitEnd, explicitRootTag, anchorGenerator,
+        yamlDirective, tagDirective, scalarResolver, defaultFlowStyle, defaultScalarStyle,
+        nonPrintableStyle,
+        // emitter
+        canonical, multiLineFlow, useUnicodeEncoding, indent, indicatorIndent, width, bestLineBreak,
+        splitLines, maxSimpleKeyLength, customProperties, indentWithIndicator, dumpComments);
   }
 }
 

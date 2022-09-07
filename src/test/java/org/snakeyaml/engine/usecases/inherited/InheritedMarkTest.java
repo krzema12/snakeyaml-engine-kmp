@@ -47,8 +47,8 @@ public class InheritedMarkTest extends InheritedImportTest {
       Mark mark = new Mark("testMarks", index, line, column, input.toCharArray(), index);
       String snippet = mark.createSnippet(2, 79);
       assertTrue(snippet.indexOf("\n") > -1, "Must only have one '\n'.");
-      assertEquals(snippet.indexOf("\n"),
-          snippet.lastIndexOf("\n"), "Must only have only one '\n'.");
+      assertEquals(snippet.indexOf("\n"), snippet.lastIndexOf("\n"),
+          "Must only have only one '\n'.");
       String[] lines = snippet.split("\n");
       String data = lines[0];
       String pointer = lines[1];

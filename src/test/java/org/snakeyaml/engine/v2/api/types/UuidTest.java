@@ -35,8 +35,8 @@ class UuidTest {
   @Test
   @DisplayName("Represent UUID as node with global tag")
   void representUUID() {
-    StandardRepresenter standardRepresenter = new StandardRepresenter(
-        DumpSettings.builder().build());
+    StandardRepresenter standardRepresenter =
+        new StandardRepresenter(DumpSettings.builder().build());
     Node node = standardRepresenter.represent(THE_UUID);
     assertEquals("tag:yaml.org,2002:java.util.UUID", node.getTag().getValue());
   }
@@ -55,8 +55,8 @@ class UuidTest {
   void parseUuid() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    UUID uuid = (UUID) load.loadFromString(
-        "!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
+    UUID uuid =
+        (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
     assertEquals(THE_UUID, uuid);
   }
 
@@ -65,8 +65,8 @@ class UuidTest {
   void parseUuidAsRoot() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    UUID uuid = (UUID) load.loadFromString(
-        "!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
+    UUID uuid =
+        (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
     assertEquals(THE_UUID, uuid);
   }
 }

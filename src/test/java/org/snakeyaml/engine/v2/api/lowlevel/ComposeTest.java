@@ -54,8 +54,8 @@ class ComposeTest {
   @Test
   void composeAllFromEmptyInputStream() {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Iterable<Node> nodes = compose.composeAllFromInputStream(
-        new ByteArrayInputStream("".getBytes()));
+    Iterable<Node> nodes =
+        compose.composeAllFromInputStream(new ByteArrayInputStream("".getBytes()));
     assertFalse(nodes.iterator().hasNext());
   }
 }

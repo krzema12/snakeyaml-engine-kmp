@@ -16,7 +16,7 @@
 package org.snakeyaml.engine.v2.events;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
@@ -31,14 +31,14 @@ class EventTest {
   @Test
   void testToString() {
     Event alias = new AliasEvent(Optional.of(new Anchor("111")));
-    assertFalse(alias.equals(alias.toString()));
+    assertNotEquals(alias, alias.toString());
   }
 
   @Test
   void bothMarks() {
     Mark fake = new Mark("a", 0, 0, 0, new int[0], 0);
-    NullPointerException exception = assertThrows(NullPointerException.class, () ->
-        new StreamStartEvent(Optional.empty(), Optional.of(fake)));
+    NullPointerException exception = assertThrows(NullPointerException.class,
+        () -> new StreamStartEvent(Optional.empty(), Optional.of(fake)));
     assertEquals("Both marks must be either present or absent.", exception.getMessage());
   }
 }

@@ -23,15 +23,15 @@ public class SystemPropertyExtension implements AfterEachCallback, BeforeEachCal
 
   @Override
   public void afterEach(ExtensionContext extensionContext) throws Exception {
-    SystemProperty annotation = extensionContext.getTestMethod().get()
-        .getAnnotation(SystemProperty.class);
+    SystemProperty annotation =
+        extensionContext.getTestMethod().get().getAnnotation(SystemProperty.class);
     System.clearProperty(annotation.key());
   }
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) throws Exception {
-    SystemProperty annotation = extensionContext.getTestMethod().get()
-        .getAnnotation(SystemProperty.class);
+    SystemProperty annotation =
+        extensionContext.getTestMethod().get().getAnnotation(SystemProperty.class);
     System.setProperty(annotation.key(), annotation.value());
   }
 }

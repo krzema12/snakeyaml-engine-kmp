@@ -36,8 +36,8 @@ class TokenTest {
   @Test
   void invalidDirectiveToken() {
     List<String> list = Collections.singletonList("key");
-    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-        new DirectiveToken(DirectiveToken.YAML_DIRECTIVE, Optional.of(list), Optional.empty(),
+    YamlEngineException exception = assertThrows(YamlEngineException.class,
+        () -> new DirectiveToken(DirectiveToken.YAML_DIRECTIVE, Optional.of(list), Optional.empty(),
             Optional.empty()));
     assertEquals("Two strings/integers must be provided instead of 1", exception.getMessage());
   }

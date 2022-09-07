@@ -31,15 +31,17 @@ public class JsonScalarResolver implements ScalarResolver {
 
   public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
   public static final Pattern FLOAT = Pattern.compile(
-      "^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)(e[-+]?[0-9]+)?)|-?\\.(?:inf)|\\.(?:nan)$"); //NOSONAR
+      "^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)(e[-+]?[0-9]+)?)|-?\\.(?:inf)|\\.(?:nan)$"); // NOSONAR
   public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
   public static final Pattern NULL = Pattern.compile("^(?:null)$");
   public static final Pattern EMPTY = Pattern.compile("^$");
 
-  /** group 1: name, group 2: separator, group 3: value */
+  /**
+   * group 1: name, group 2: separator, group 3: value
+   */
   @java.lang.SuppressWarnings("squid:S4784")
-  public static final Pattern ENV_FORMAT = Pattern.compile(
-      "^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
+  public static final Pattern ENV_FORMAT =
+      Pattern.compile("^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
 
   protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
 
@@ -69,8 +71,7 @@ public class JsonScalarResolver implements ScalarResolver {
     addImplicitResolver(Tag.NULL, EMPTY, null);
     addImplicitResolver(Tag.BOOL, BOOL, "tf");
     /*
-     * INT must be before FLOAT because the regular expression for FLOAT
-     * matches INT (see issue 130)
+     * INT must be before FLOAT because the regular expression for FLOAT matches INT (see issue 130)
      * http://code.google.com/p/snakeyaml/issues/detail?id=130
      */
     addImplicitResolver(Tag.INT, INT, "-0123456789");

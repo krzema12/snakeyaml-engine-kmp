@@ -65,10 +65,7 @@ public final class CommentEvent extends Event {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder("=COM ");
-    builder.append(type);
-    builder.append(" ");
-    builder.append(value);
-    return builder.toString();
+    String builder = "=COM " + type + " " + value;
+    return builder;
   }
 }

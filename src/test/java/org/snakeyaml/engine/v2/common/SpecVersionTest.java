@@ -48,17 +48,16 @@ class SpecVersionTest {
   @Test
   @DisplayName("Version 1.3 is rejected if configured")
   void version13rejected() {
-    LoadSettings settings = LoadSettings.builder().setLabel("spec 1.3")
-        .setVersionFunction(version -> {
+    LoadSettings settings =
+        LoadSettings.builder().setLabel("spec 1.3").setVersionFunction(version -> {
           if (version.getMinor() > 2) {
             throw new IllegalArgumentException("Too high.");
           } else {
             return version;
           }
-        })
-        .build();
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-        new Compose(settings).composeString("%YAML 1.3\n---\nfoo").get());
+        }).build();
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Compose(settings).composeString("%YAML 1.3\n---\nfoo").get());
     assertEquals("Too high.", exception.getMessage());
   }
 
@@ -66,8 +65,8 @@ class SpecVersionTest {
   @DisplayName("Version 2.0 is rejected")
   void version20() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 2.0").build();
-    YamlVersionException exception = assertThrows(YamlVersionException.class, () ->
-        new Compose(settings).composeString("%YAML 2.0\n---\nfoo").get());
+    YamlVersionException exception = assertThrows(YamlVersionException.class,
+        () -> new Compose(settings).composeString("%YAML 2.0\n---\nfoo").get());
     assertEquals("Version{major=2, minor=0}", exception.getMessage());
   }
 }

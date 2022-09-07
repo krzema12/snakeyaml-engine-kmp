@@ -31,8 +31,8 @@ public class SequenceNode extends CollectionNode<Node> {
 
   private final List<Node> value;
 
-  public SequenceNode(Tag tag, boolean resolved, List<Node> value,
-      FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
+  public SequenceNode(Tag tag, boolean resolved, List<Node> value, FlowStyle flowStyle,
+      Optional<Mark> startMark, Optional<Mark> endMark) {
     super(tag, flowStyle, startMark, endMark);
     Objects.requireNonNull(value, "value in a Node is required.");
     this.value = value;
@@ -58,7 +58,6 @@ public class SequenceNode extends CollectionNode<Node> {
   }
 
   public String toString() {
-    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue()
-        + ")>";
+    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue() + ")>";
   }
 }

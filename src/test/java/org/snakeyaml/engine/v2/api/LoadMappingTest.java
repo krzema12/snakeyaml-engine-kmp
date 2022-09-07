@@ -52,12 +52,12 @@ class LoadMappingTest {
   void parseMap2() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    Map<String, Object> map = (Map<String, Object>) load.loadFromString(
-        "a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
-    Map<String, Object> expected = ImmutableMap.of("a", 1, "b", 2, "c",
-        ImmutableList.of("aaa", "bbb"));
+    Map<String, Object> map =
+        (Map<String, Object>) load.loadFromString("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
+    Map<String, Object> expected =
+        ImmutableMap.of("a", 1, "b", 2, "c", ImmutableList.of("aaa", "bbb"));
     assertEquals(expected, map);
-    //assertEquals("{a=1, b=2, c=[aaa, bbb]}", map.toString());
+    // assertEquals("{a=1, b=2, c=[aaa, bbb]}", map.toString());
   }
 
   @Test
@@ -65,8 +65,8 @@ class LoadMappingTest {
   void parseMap3() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    Map<String, Integer> map = (Map<String, Integer>) load.loadFromString(
-        TestUtils.getResource("load/map1.yaml"));
+    Map<String, Integer> map =
+        (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));
     Map<String, Integer> expected = ImmutableMap.of("x", 1, "y", 2, "z", 3);
     assertEquals(expected, map);
   }

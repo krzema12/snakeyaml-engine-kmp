@@ -19,8 +19,8 @@ import java.util.Optional;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
- * Basic unit of output from a {@link org.snakeyaml.engine.v2.parser.Parser} or input of a {@link
- * org.snakeyaml.engine.v2.emitter.Emitter}.
+ * Basic unit of output from a {@link org.snakeyaml.engine.v2.parser.Parser} or input of a
+ * {@link org.snakeyaml.engine.v2.emitter.Emitter}.
  */
 public abstract class Event {
 
@@ -28,16 +28,15 @@ public abstract class Event {
    * ID of a non-abstract Event
    */
   public enum ID {
-    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart,
-    Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart //NOSONAR
+    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart // NOSONAR
   }
 
   private final Optional<Mark> startMark;
   private final Optional<Mark> endMark;
 
   public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
-    if ((startMark.isPresent() && !endMark.isPresent()) || (!startMark.isPresent()
-        && endMark.isPresent())) {
+    if ((startMark.isPresent() && !endMark.isPresent())
+        || (!startMark.isPresent() && endMark.isPresent())) {
       throw new NullPointerException("Both marks must be either present or absent.");
     }
     this.startMark = startMark;

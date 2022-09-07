@@ -53,8 +53,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
   }
 
   /**
-   * <code>true</code> if the tag can be omitted while this collection is
-   * emitted.
+   * <code>true</code> if the tag can be omitted while this collection is emitted.
    *
    * @return True if the tag can be omitted while this collection is emitted.
    */
@@ -63,8 +62,7 @@ public abstract class CollectionStartEvent extends NodeEvent {
   }
 
   /**
-   * <code>true</code> if this collection is in flow style, <code>false</code>
-   * for block style.
+   * <code>true</code> if this collection is in flow style, <code>false</code> for block style.
    *
    * @return If this collection is in flow style.
    */

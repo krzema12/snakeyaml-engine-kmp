@@ -34,16 +34,16 @@ class ComposerTest {
   @Test
   @DisplayName("Fail to Compose one document when more documents are provided.")
   void composeOne() {
-    ComposerException exception = assertThrows(ComposerException.class, () ->
-        new Compose(LoadSettings.builder().build()).composeString("a\n---\nb\n"));
+    ComposerException exception = assertThrows(ComposerException.class,
+        () -> new Compose(LoadSettings.builder().build()).composeString("a\n---\nb\n"));
     assertTrue(exception.getMessage().contains("expected a single document in the stream"));
     assertTrue(exception.getMessage().contains("but found another document"));
   }
 
   @Test
   void failToComposeUnknownAlias() {
-    ComposerException exception = assertThrows(ComposerException.class, () ->
-        new Compose(LoadSettings.builder().build()).composeString("[a, *id b]"));
+    ComposerException exception = assertThrows(ComposerException.class,
+        () -> new Compose(LoadSettings.builder().build()).composeString("[a, *id b]"));
     assertTrue(exception.getMessage().contains("found undefined alias id"), exception.getMessage());
   }
 

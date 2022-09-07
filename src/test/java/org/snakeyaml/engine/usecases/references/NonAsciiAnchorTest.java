@@ -49,7 +49,7 @@ public class NonAsciiAnchorTest {
   public void testSmile() {
     Load loader = new Load(LoadSettings.builder().build());
     Object value = loader.loadFromString("&\uD83D\uDE01 v1");
-    //System.out.println("&\uD83D\uDE01 v1");
+    // System.out.println("&\uD83D\uDE01 v1");
     assertEquals("v1", value);
   }
 

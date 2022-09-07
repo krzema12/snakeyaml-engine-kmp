@@ -27,7 +27,7 @@ import org.snakeyaml.engine.v2.exceptions.ParserException;
  * </p>
  *
  * @see <a href="https://yaml.org/spec/1.2.2/#31-processes">Figure 3.1. Processing Overview</a>
- * {@link Event}
+ *      {@link Event}
  */
 public interface Parser extends Iterator<Event> {
 
@@ -35,8 +35,8 @@ public interface Parser extends Iterator<Event> {
    * Check if the next event is one of the given type.
    *
    * @param choice Event ID to match
-   * @return <code>true</code> if the next event has the given ID.
-   * Returns <code>false</code> if no more events are available.
+   * @return <code>true</code> if the next event has the given ID. Returns <code>false</code> if no
+   *         more events are available.
    * @throws ParserException Thrown in case of malformed input.
    */
   boolean checkEvent(Event.ID choice);
@@ -45,8 +45,8 @@ public interface Parser extends Iterator<Event> {
    * Return the next event, but do not delete it from the stream.
    *
    * @return The event that will be returned on the next call to {@link #next}
-   * @throws ParserException Thrown in case of malformed input
-   * or NoSuchElementException in case no event is available.
+   * @throws ParserException Thrown in case of malformed input or NoSuchElementException in case no
+   *         event is available.
    */
   Event peekEvent();
 

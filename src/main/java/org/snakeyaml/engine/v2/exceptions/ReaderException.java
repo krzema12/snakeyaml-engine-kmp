@@ -43,9 +43,8 @@ public class ReaderException extends YamlEngineException {
   @Override
   public String toString() {
     final String s = new String(Character.toChars(codePoint));
-    return "unacceptable code point '" + s + "' (0x"
-        + Integer.toHexString(codePoint).toUpperCase() + ") " + getMessage()
-        + "\nin \"" + name + "\", position " + position;
+    return "unacceptable code point '" + s + "' (0x" + Integer.toHexString(codePoint).toUpperCase()
+        + ") " + getMessage() + "\nin \"" + name + "\", position " + position;
   }
 }
 

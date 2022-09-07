@@ -40,8 +40,8 @@ class YamlUnicodeReaderTest {
   @Test
   @DisplayName("Detect UTF-8 - EF BB BF")
   void utf8() throws IOException {
-    ByteArrayInputStream input = new ByteArrayInputStream(
-        new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, (byte) 49});
+    ByteArrayInputStream input =
+        new ByteArrayInputStream(new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, (byte) 49});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
     assertEquals(StandardCharsets.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
@@ -51,9 +51,8 @@ class YamlUnicodeReaderTest {
   @Test
   @DisplayName("Detect 00 00 FE FF, UTF-32, big-endian")
   void feff32() throws IOException {
-    ByteArrayInputStream input = new ByteArrayInputStream(
-        new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0xFE, (byte) 0xFF,
-            (byte) 0, (byte) 0, (byte) 0, (byte) 49,});
+    ByteArrayInputStream input = new ByteArrayInputStream(new byte[] {(byte) 0x00, (byte) 0x00,
+        (byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 0, (byte) 0, (byte) 49,});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
     assertEquals(Charset.forName("UTF-32BE"), reader.getEncoding());
@@ -63,9 +62,8 @@ class YamlUnicodeReaderTest {
   @Test
   @DisplayName("Detect FF FE 00 00, UTF-32, little-endian")
   void fffe32() throws IOException {
-    ByteArrayInputStream input = new ByteArrayInputStream(
-        new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 0x00, (byte) 0x00,
-            (byte) 49, (byte) 0, (byte) 0, (byte) 0});
+    ByteArrayInputStream input = new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFE,
+        (byte) 0x00, (byte) 0x00, (byte) 49, (byte) 0, (byte) 0, (byte) 0});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
     assertEquals(Charset.forName("UTF-32LE"), reader.getEncoding());
@@ -75,8 +73,8 @@ class YamlUnicodeReaderTest {
   @Test
   @DisplayName("Detect FE FF, UTF-16, big-endian")
   void feff16() throws IOException {
-    ByteArrayInputStream input = new ByteArrayInputStream(new byte[]{(byte) 0xFE, (byte) 0xFF,
-        (byte) 0, (byte) 49,});
+    ByteArrayInputStream input =
+        new ByteArrayInputStream(new byte[] {(byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 49,});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
     assertEquals(StandardCharsets.UTF_16BE, reader.getEncoding());
@@ -86,8 +84,8 @@ class YamlUnicodeReaderTest {
   @Test
   @DisplayName("Detect FF FE, UTF-16, little-endian")
   void fffe16() throws IOException {
-    ByteArrayInputStream input = new ByteArrayInputStream(new byte[]{(byte) 0xFF, (byte) 0xFE,
-        (byte) 49, (byte) 0});
+    ByteArrayInputStream input =
+        new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFE, (byte) 49, (byte) 0});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
     assertEquals(StandardCharsets.UTF_16LE, reader.getEncoding());

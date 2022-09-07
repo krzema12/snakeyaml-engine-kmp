@@ -1,16 +1,15 @@
-/* Copyright (c) 2008 Google Inc.
+/*
+ * Copyright (c) 2008 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
 
@@ -22,14 +21,14 @@ import java.io.IOException;
  * "unescaping" the text is performed automatically by the relevant scanner.
  * <p>
  * <p>
- * For example, an XML escaper would convert the literal string {@code "Foo<Bar>"} into {@code
- * "Foo&lt;Bar&gt;"} to prevent {@code "<Bar>"} from being confused with an XML tag. When the
+ * For example, an XML escaper would convert the literal string {@code "Foo<Bar>"} into
+ * {@code "Foo&lt;Bar&gt;"} to prevent {@code "<Bar>"} from being confused with an XML tag. When the
  * resulting XML document is parsed, the scanner API will return this text as the original literal
  * string {@code "Foo<Bar>"}.
  *
  *
- * <b>Note:</b> This class is similar to {@link CharEscaper} but with one very
- * important difference. A CharEscaper can only process Java <a href="http://en.wikipedia.org/wiki/UTF-16">UTF16</a>
+ * <b>Note:</b> This class is similar to {@link CharEscaper} but with one very important difference.
+ * A CharEscaper can only process Java <a href="http://en.wikipedia.org/wiki/UTF-16">UTF16</a>
  * characters in isolation and may not cope when it encounters surrogate pairs. This class
  * facilitates the correct escaping of all Unicode characters.
  * <p>
@@ -70,8 +69,7 @@ public abstract class UnicodeEscaper implements Escaper {
    * <p>
    * If the implementation of this method cannot correctly handle a particular code point then it
    * should either throw an appropriate runtime exception or return a suitable replacement
-   * character. It must never silently discard invalid input as this may constitute a security
-   * risk.
+   * character. It must never silently discard invalid input as this may constitute a security risk.
    *
    * @param cp the Unicode code point to escape if necessary
    * @return the replacement characters, or {@code null} if no escaping was needed
@@ -83,11 +81,11 @@ public abstract class UnicodeEscaper implements Escaper {
    * the next character that requires escaping.
    *
    *
-   * <b>Note:</b> When implementing an escaper, it is a good idea to override
-   * this method for efficiency. The base class implementation determines successive Unicode code
-   * points and invokes {@link #escape(int)} for each of them. If the semantics of your escaper are
-   * such that code points in the supplementary range are either all escaped or all unescaped, this
-   * method can be implemented more efficiently using {@link CharSequence#charAt(int)}.
+   * <b>Note:</b> When implementing an escaper, it is a good idea to override this method for
+   * efficiency. The base class implementation determines successive Unicode code points and invokes
+   * {@link #escape(int)} for each of them. If the semantics of your escaper are such that code
+   * points in the supplementary range are either all escaped or all unescaped, this method can be
+   * implemented more efficiently using {@link CharSequence#charAt(int)}.
    * <p>
    * <p>
    * Note however that if your escaper does not escape characters in the supplementary range, you
@@ -97,11 +95,11 @@ public abstract class UnicodeEscaper implements Escaper {
    * <p>
    * See {@link PercentEscaper} for an example.
    *
-   * @param csq   a sequence of characters
+   * @param csq a sequence of characters
    * @param start the index of the first character to be scanned
-   * @param end   the index immediately after the last character to be scanned
+   * @param end the index immediately after the last character to be scanned
    * @throws IllegalArgumentException if the scanned sub-sequence of {@code csq} contains invalid
-   *                                  surrogate pairs
+   *         surrogate pairs
    */
   protected int nextEscapeIndex(CharSequence csq, int start, int end) {
     int index = start;
@@ -127,15 +125,14 @@ public abstract class UnicodeEscaper implements Escaper {
    * with arbitrarily split input.
    *
    *
-   * <b>Note:</b> When implementing an escaper it is a good idea to override
-   * this method for efficiency by inlining the implementation of {@link
-   * #nextEscapeIndex(CharSequence, int, int)} directly. Doing this for {@link PercentEscaper} more
-   * than doubled the performance for unescaped strings (as measured by {@link
-   * CharEscapersBenchmark}).
+   * <b>Note:</b> When implementing an escaper it is a good idea to override this method for
+   * efficiency by inlining the implementation of {@link #nextEscapeIndex(CharSequence, int, int)}
+   * directly. Doing this for {@link PercentEscaper} more than doubled the performance for unescaped
+   * strings (as measured by {@link CharEscapersBenchmark}).
    *
    * @param string the literal string to be escaped
    * @return the escaped form of {@code string}
-   * @throws NullPointerException     if {@code string} is null
+   * @throws NullPointerException if {@code string} is null
    * @throws IllegalArgumentException if invalid surrogate characters are encountered
    */
   public String escape(String string) {
@@ -154,10 +151,10 @@ public abstract class UnicodeEscaper implements Escaper {
    * This method is not reentrant and may only be invoked by the top level {@link #escape(String)}
    * method.
    *
-   * @param s     the literal string to be escaped
+   * @param s the literal string to be escaped
    * @param index the index to start escaping from
    * @return the escaped form of {@code string}
-   * @throws NullPointerException     if {@code string} is null
+   * @throws NullPointerException if {@code string} is null
    * @throws IllegalArgumentException if invalid surrogate characters are encountered
    */
   protected final String escapeSlow(String s, int index) {
@@ -223,8 +220,8 @@ public abstract class UnicodeEscaper implements Escaper {
    * Appendable, including input that is split over a surrogate pair. In this case the pending high
    * surrogate character will not be processed until the corresponding low surrogate is appended.
    * This means that a trailing high surrogate character at the end of the input cannot be detected
-   * and will be silently ignored. This is unavoidable since the Appendable interface has no {@code
-   * close()} method, and it is impossible to determine when the last characters have been
+   * and will be silently ignored. This is unavoidable since the Appendable interface has no
+   * {@code close()} method, and it is impossible to determine when the last characters have been
    * appended.
    * <p>
    * <p>
@@ -238,16 +235,16 @@ public abstract class UnicodeEscaper implements Escaper {
    *
    * <pre>
    * {
-   *     &#064;code
-   *     StringBuilder sb = new StringBuilder();
-   *     escaper.escape(sb).append(string);
-   *     return sb.toString();
+   *   &#064;code
+   *   StringBuilder sb = new StringBuilder();
+   *   escaper.escape(sb).append(string);
+   *   return sb.toString();
    * }
    * </pre>
    *
    * @param out the underlying {@code Appendable} to append escaped output to
    * @return an {@code Appendable} which passes text to {@code out} after escaping it
-   * @throws NullPointerException     if {@code out} is null
+   * @throws NullPointerException if {@code out} is null
    * @throws IllegalArgumentException if invalid surrogate characters are encountered
    */
   public Appendable escape(final Appendable out) {
@@ -277,11 +274,9 @@ public abstract class UnicodeEscaper implements Escaper {
             // so we have to do some extra work first.
             char c = csq.charAt(index++);
             if (!Character.isLowSurrogate(c)) {
-              throw new IllegalArgumentException(
-                  "Expected low surrogate character but got " + c);
+              throw new IllegalArgumentException("Expected low surrogate character but got " + c);
             }
-            char[] escaped = escape(Character.toCodePoint((char) pendingHighSurrogate,
-                c));
+            char[] escaped = escape(Character.toCodePoint((char) pendingHighSurrogate, c));
             if (escaped != null) {
               // Emit the escaped character and adjust
               // unescapedChunkStart to
@@ -344,8 +339,7 @@ public abstract class UnicodeEscaper implements Escaper {
           // so we have to do some extra work first.
           if (!Character.isLowSurrogate(c)) {
             throw new IllegalArgumentException(
-                "Expected low surrogate character but got '" + c + "' with value "
-                    + (int) c);
+                "Expected low surrogate character but got '" + c + "' with value " + (int) c);
           }
           char[] escaped = escape(Character.toCodePoint((char) pendingHighSurrogate, c));
           if (escaped != null) {
@@ -360,8 +354,8 @@ public abstract class UnicodeEscaper implements Escaper {
           pendingHighSurrogate = c;
         } else {
           if (Character.isLowSurrogate(c)) {
-            throw new IllegalArgumentException("Unexpected low surrogate character '"
-                + c + "' with value " + (int) c);
+            throw new IllegalArgumentException(
+                "Unexpected low surrogate character '" + c + "' with value " + (int) c);
           }
           // This is a normal (non surrogate) char.
           char[] escaped = escape(c);
@@ -393,27 +387,26 @@ public abstract class UnicodeEscaper implements Escaper {
    * The behaviour of this method is as follows:
    * <ol>
    * <li>If {@code index >= end}, {@link IndexOutOfBoundsException} is thrown.
-   * <li><b>If the character at the specified index is not a surrogate, it is
-   * returned.</b>
-   * <li>If the first character was a high surrogate value, then an attempt is
-   * made to read the next character.
+   * <li><b>If the character at the specified index is not a surrogate, it is returned.</b>
+   * <li>If the first character was a high surrogate value, then an attempt is made to read the next
+   * character.
    * <ol>
-   * <li><b>If the end of the sequence was reached, the negated value of the
-   * trailing high surrogate is returned.</b>
-   * <li><b>If the next character was a valid low surrogate, the code point
-   * value of the high/low surrogate pair is returned.</b>
-   * <li>If the next character was not a low surrogate value, then
-   * {@link IllegalArgumentException} is thrown.
+   * <li><b>If the end of the sequence was reached, the negated value of the trailing high surrogate
+   * is returned.</b>
+   * <li><b>If the next character was a valid low surrogate, the code point value of the high/low
+   * surrogate pair is returned.</b>
+   * <li>If the next character was not a low surrogate value, then {@link IllegalArgumentException}
+   * is thrown.
    * </ol>
-   * <li>If the first character was a low surrogate value,
-   * {@link IllegalArgumentException} is thrown.
+   * <li>If the first character was a low surrogate value, {@link IllegalArgumentException} is
+   * thrown.
    * </ol>
    *
-   * @param seq   the sequence of characters from which to decode the code point
+   * @param seq the sequence of characters from which to decode the code point
    * @param index the index of the first character to decode
-   * @param end   the index beyond the last valid character to decode
+   * @param end the index beyond the last valid character to decode
    * @return the Unicode code point for the given index or the negated value of the trailing high
-   * surrogate character at the end of the sequence
+   *         surrogate character at the end of the sequence
    */
   protected static final int codePointAt(CharSequence seq, int index, int end) {
     if (index < end) {

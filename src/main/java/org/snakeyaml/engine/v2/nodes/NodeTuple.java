@@ -52,7 +52,6 @@ public final class NodeTuple {
 
   @Override
   public String toString() {
-    return "<NodeTuple keyNode=" + keyNode + "; valueNode=" + valueNode
-        + ">";
+    return "<NodeTuple keyNode=" + keyNode + "; valueNode=" + valueNode + ">";
   }
 }

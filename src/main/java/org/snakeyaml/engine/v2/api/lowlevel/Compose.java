@@ -46,29 +46,29 @@ public class Compose {
    * Parse a YAML stream and produce {@link Node}
    *
    * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
-   *             (it will be parsed as content)
+   *        (it will be parsed as content)
    * @return parsed {@link Node} if available
    * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
    */
   public Optional<Node> composeReader(Reader yaml) {
     Objects.requireNonNull(yaml, "Reader cannot be null");
-    return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml))
-    ).getSingleNode();
+    return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml)))
+        .getSingleNode();
   }
 
   /**
    * Parse a YAML stream and produce {@link Node}
    *
    * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-   *             encoding is UTF-16 or UTF-32
+   *        encoding is UTF-16 or UTF-32
    * @return parsed {@link Node} if available
    * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
    */
   public Optional<Node> composeInputStream(InputStream yaml) {
     Objects.requireNonNull(yaml, "InputStream cannot be null");
     return new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml)))
-    ).getSingleNode();
+        new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml))))
+        .getSingleNode();
   }
 
   /**
@@ -81,8 +81,8 @@ public class Compose {
   public Optional<Node> composeString(String yaml) {
     Objects.requireNonNull(yaml, "String cannot be null");
     return new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)))
-    ).getSingleNode();
+        new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml))))
+        .getSingleNode();
   }
 
   // Compose all documents
@@ -103,7 +103,7 @@ public class Compose {
    * Parse all YAML documents in a stream and produce corresponding representation trees.
    *
    * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-   *             encoding is UTF-16 or UTF-32
+   *        encoding is UTF-16 or UTF-32
    * @return parsed root Nodes for all the specified YAML documents
    * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
    */
@@ -122,16 +122,14 @@ public class Compose {
    */
   public Iterable<Node> composeAllFromString(String yaml) {
     Objects.requireNonNull(yaml, "String cannot be null");
-    //do not use lambda to keep Iterable and Iterator visible
+    // do not use lambda to keep Iterable and Iterator visible
     return new Iterable() {
       public Iterator<Node> iterator() {
-        return new Composer(settings, new ParserImpl(
-            settings, new StreamReader(settings, new StringReader(yaml))));
+        return new Composer(settings,
+            new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml))));
       }
     };
   }
 }
-
-
 
 

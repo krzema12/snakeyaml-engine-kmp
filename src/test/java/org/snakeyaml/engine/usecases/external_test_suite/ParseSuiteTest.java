@@ -32,11 +32,12 @@ import org.snakeyaml.engine.v2.events.Event;
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
 
-  private final List<SuiteData> all = SuiteUtils.getAll().stream()
-      .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME JEF9-02 is not according to the spec
-      .collect(Collectors.toList());
+  private final List<SuiteData> all =
+      // TODO FIXME JEF9-02 is not according to the spec
+      SuiteUtils.getAll().stream().filter(data -> !data.getName().equals("JEF9-02"))
+          .collect(Collectors.toList());
 
-  //@Test
+  // @Test
   @DisplayName("Parse: Run one test")
   /**
    * This test is used to debug one test (which is given explicitly)
@@ -62,17 +63,16 @@ class ParseSuiteTest {
         shouldFail = !shouldFail;
       }
       if (shouldFail) {
-        assertTrue(result.getError().isPresent(),
-            "Expected error, but got none in file " + data.getName() + ", " +
-                data.getLabel() + "\n" + result.getEvents());
+        assertTrue(result.getError().isPresent(), "Expected error, but got none in file "
+            + data.getName() + ", " + data.getLabel() + "\n" + result.getEvents());
       } else {
         if (result.getError().isPresent()) {
           fail("Testcase: " + data.getName() + "; label: " + data.getLabel()
               + "\nExpected NO error, but got: " + result.getError().get());
         } else {
-          List<ParsePair> pairs = Streams.zip(data.getEvents().stream(),
-                  result.getEvents().stream(), ParsePair::new)
-              .collect(Collectors.toList());
+          List<ParsePair> pairs =
+              Streams.zip(data.getEvents().stream(), result.getEvents().stream(), ParsePair::new)
+                  .collect(Collectors.toList());
           for (ParsePair pair : pairs) {
             EventRepresentation representation = new EventRepresentation(pair.getEvent());
             assertEquals(pair.getExpected(), representation.getRepresentation(),

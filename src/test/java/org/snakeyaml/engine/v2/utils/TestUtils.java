@@ -28,13 +28,13 @@ public abstract class TestUtils {
 
   public static String getResource(String theName) {
     InputStream inputStream = getResourceAsStream(theName);
-    return new BufferedReader(new InputStreamReader(inputStream))
-        .lines().collect(Collectors.joining("\n", "", "\n"));
+    return new BufferedReader(new InputStreamReader(inputStream)).lines()
+        .collect(Collectors.joining("\n", "", "\n"));
   }
 
   public static InputStream getResourceAsStream(String theName) {
-    InputStream inputStream = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream(theName);
+    InputStream inputStream =
+        Thread.currentThread().getContextClassLoader().getResourceAsStream(theName);
     if (inputStream == null) {
       throw new RuntimeException("Resource not found: " + theName);
     }

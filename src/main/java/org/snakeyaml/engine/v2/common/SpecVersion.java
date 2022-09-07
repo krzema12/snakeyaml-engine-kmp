@@ -41,9 +41,6 @@ public class SpecVersion implements Serializable {
 
   @Override
   public String toString() {
-    return "Version{" +
-        "major=" + major +
-        ", minor=" + minor +
-        '}';
+    return "Version{" + "major=" + major + ", minor=" + minor + '}';
   }
 }

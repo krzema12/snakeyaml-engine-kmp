@@ -32,7 +32,8 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  * Specification</a>.
  * </p>
  * <p>
- * While loading, the node graph is usually created by the {@link org.snakeyaml.engine.v2.composer.Composer}.
+ * While loading, the node graph is usually created by the
+ * {@link org.snakeyaml.engine.v2.composer.Composer}.
  * </p>
  */
 public abstract class Node {
@@ -56,9 +57,9 @@ public abstract class Node {
   /**
    * Create Node to be parsed
    *
-   * @param tag       - the tag
+   * @param tag - the tag
    * @param startMark - start mark when available
-   * @param endMark   - end mark when available
+   * @param endMark - end mark when available
    */
   public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
     setTag(tag);
@@ -121,8 +122,7 @@ public abstract class Node {
    * That is, if a recursive structure is build using anchors and aliases.
    * </p>
    * <p>
-   * Set by {@link org.snakeyaml.engine.v2.composer.Composer}, used during the construction
-   * process.
+   * Set by {@link org.snakeyaml.engine.v2.composer.Composer}, used during the construction process.
    * </p>
    * <p>
    * Only relevant during loading.
@@ -162,7 +162,7 @@ public abstract class Node {
   /**
    * Define a custom runtime property. It is not used by Engine but may be used by other tools.
    *
-   * @param key   - the key for the custom property
+   * @param key - the key for the custom property
    * @param value - the value for the custom property
    * @return the previous value for the provided key if it was defined
    */

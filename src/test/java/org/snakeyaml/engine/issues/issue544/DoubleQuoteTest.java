@@ -56,14 +56,12 @@ public class DoubleQuoteTest {
     Serialize serialize = new Serialize(settings);
     Iterable<Event> eventsIter = serialize.serializeOne(create());
     Present emit = new Present(settings);
-        return emit.emitToString(eventsIter.iterator());
+    return emit.emitToString(eventsIter.iterator());
   }
 
   @Test
   public void testSubstitution() {
-    DumpSettings settings = DumpSettings.builder()
-        .setUseUnicodeEncoding(false)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setUseUnicodeEncoding(false).build();
     String expectedOutput = "double_quoted: \"\\U0001f510This process is simple and secure.\"\n"
         + "single_quoted: \"\\U0001f510This process is simple and secure.\"\n";
     assertEquals(expectedOutput, emit(settings));
@@ -71,9 +69,7 @@ public class DoubleQuoteTest {
 
   @Test
   public void testUnicode() {
-    DumpSettings settings = DumpSettings.builder()
-        .setUseUnicodeEncoding(true)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setUseUnicodeEncoding(true).build();
     String expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n"
         + "single_quoted: '🔐This process is simple and secure.'\n";
     assertEquals(expectedOutput, emit(settings));
@@ -81,8 +77,7 @@ public class DoubleQuoteTest {
 
   @Test
   public void testDefault() {
-    DumpSettings settings = DumpSettings.builder()
-        .build();
+    DumpSettings settings = DumpSettings.builder().build();
     String expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n"
         + "single_quoted: '🔐This process is simple and secure.'\n";
     assertEquals(expectedOutput, emit(settings));

@@ -34,8 +34,8 @@ class OptionalTest {
   @Test
   @DisplayName("Represent Optional as value")
   void representOptional() {
-    StandardRepresenter standardRepresenter = new StandardRepresenter(
-        DumpSettings.builder().build());
+    StandardRepresenter standardRepresenter =
+        new StandardRepresenter(DumpSettings.builder().build());
     Node node = standardRepresenter.represent(Optional.of("a"));
     assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
   }
@@ -43,8 +43,8 @@ class OptionalTest {
   @Test
   @DisplayName("Represent Optional.empty as null")
   void representEmptyOptional() {
-    StandardRepresenter standardRepresenter = new StandardRepresenter(
-        DumpSettings.builder().build());
+    StandardRepresenter standardRepresenter =
+        new StandardRepresenter(DumpSettings.builder().build());
     Node node = standardRepresenter.represent(Optional.empty());
     assertEquals("tag:yaml.org,2002:null", node.getTag().getValue());
   }
@@ -72,8 +72,8 @@ class OptionalTest {
   void dumpListOfOptional() {
     DumpSettings settings = DumpSettings.builder().build();
     Dump dump = new Dump(settings);
-    String str = dump.dumpToString(
-        Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
+    String str =
+        dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
     assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
   }
 

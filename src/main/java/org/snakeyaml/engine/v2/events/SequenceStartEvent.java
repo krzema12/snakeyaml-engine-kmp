@@ -23,8 +23,7 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
 /**
  * Marks the beginning of a sequence node.
  * <p>
- * This event is followed by the elements contained in the sequence, and a {@link
- * SequenceEndEvent}.
+ * This event is followed by the elements contained in the sequence, and a {@link SequenceEndEvent}.
  * </p>
  *
  * @see SequenceEndEvent
@@ -32,8 +31,7 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
 public final class SequenceStartEvent extends CollectionStartEvent {
 
   public SequenceStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
-      FlowStyle flowStyle, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
+      FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
     super(anchor, tag, implicit, flowStyle, startMark, endMark);
   }
 

@@ -108,9 +108,8 @@ public class StandardConstructor extends BaseConstructor {
       try {
         key.hashCode();// check circular dependencies
       } catch (Exception e) {
-        throw new ConstructorException("while constructing a mapping",
-            contextMark, "found unacceptable key " + key,
-            problemMark, e);
+        throw new ConstructorException("while constructing a mapping", contextMark,
+            "found unacceptable key " + key, problemMark, e);
       }
     }
     return key;
@@ -166,14 +165,14 @@ public class StandardConstructor extends BaseConstructor {
     protected Number createIntNumber(String number) {
       Number result;
       try {
-        //first try integer
+        // first try integer
         result = Integer.valueOf(number);
       } catch (NumberFormatException e) {
         try {
-          //then Long
+          // then Long
           result = Long.valueOf(number);
         } catch (NumberFormatException e1) {
-          //and BigInteger as the last resource
+          // and BigInteger as the last resource
           result = new BigInteger(number);
         }
       }
@@ -210,8 +209,7 @@ public class StandardConstructor extends BaseConstructor {
     @Override
     public Object construct(Node node) {
       // Ignore white spaces for base64 encoded scalar
-      String noWhiteSpaces = constructScalar((ScalarNode) node)
-          .replaceAll("\\s", "");
+      String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
       return Base64.getDecoder().decode(noWhiteSpaces);
     }
   }
@@ -230,8 +228,8 @@ public class StandardConstructor extends BaseConstructor {
     @Override
     public Object construct(Node node) {
       if (node.getNodeType() != NodeType.SCALAR) {
-        throw new ConstructorException("while constructing Optional",
-            Optional.empty(), "found non scalar node", node.getStartMark());
+        throw new ConstructorException("while constructing Optional", Optional.empty(),
+            "found non scalar node", node.getStartMark());
       }
       String value = constructScalar((ScalarNode) node);
       Tag implicitTag = settings.getScalarResolver().resolve(value, true);
@@ -321,13 +319,12 @@ public class StandardConstructor extends BaseConstructor {
   }
 
   /**
-   * Construct scalar for format ${VARIABLE} replacing the template with the value from
-   * environment.
+   * Construct scalar for format ${VARIABLE} replacing the template with the value from environment.
    *
    * @see <a href="https://bitbucket.org/snakeyaml/snakeyaml/wiki/Variable%20substitution">Variable
-   * substitution</a>
+   *      substitution</a>
    * @see <a href="https://docs.docker.com/compose/compose-file/#variable-substitution">Variable
-   * substitution</a>
+   *      substitution</a>
    */
   public class ConstructEnv implements ConstructNode {
 
@@ -357,9 +354,9 @@ public class StandardConstructor extends BaseConstructor {
     /**
      * Implement the logic for missing and unset variables
      *
-     * @param name        - variable name in the template
-     * @param separator   - separator in the template, can be :-, -, :?, ?
-     * @param value       - default value or the error in the template
+     * @param name - variable name in the template
+     * @param separator - separator in the template, can be :-, -, :?, ?
+     * @param value - default value or the error in the template
      * @param environment - the value from environment for the provided variable
      * @return the value to apply in the template
      */
@@ -369,7 +366,7 @@ public class StandardConstructor extends BaseConstructor {
       }
       // variable is either unset or empty
       if (separator != null) {
-        //there is a default value or error
+        // there is a default value or error
         if (separator.equals("?")) {
           if (environment == null) {
             throw new MissingEnvironmentVariableException(

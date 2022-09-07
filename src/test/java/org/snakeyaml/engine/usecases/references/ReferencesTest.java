@@ -42,20 +42,10 @@ public class ReferencesTest {
     HashMap s1, s2, t1, t2;
     s1 = root;
     s2 = new HashMap();
-        /*
-        the time to parse grows very quickly
-        SIZE -> time to parse in seconds
-        25 -> 1
-        26 -> 2
-        27 -> 3
-        28 -> 8
-        29 -> 13
-        30 -> 28
-        31 -> 52
-        32 -> 113
-        33 -> 245
-        34 -> 500
-         */
+    /*
+     * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
+     * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
+     */
     for (int i = 0; i < size; i++) {
 
       t1 = new HashMap();
@@ -80,19 +70,17 @@ public class ReferencesTest {
 
     Dump dump = new Dump(DumpSettings.builder().build());
     String output = dump.dumpToString(f);
-    //TODO no replace should be needed
+    // TODO no replace should be needed
     return output.replace("001: ", "001 : ");
   }
 
   @Test
   public void referencesWithRecursiveKeysNotAllowedByDefault() {
     String output = createDump(30);
-    //System.out.println(output);
+    // System.out.println(output);
     long time1 = System.currentTimeMillis();
     // Load
-    LoadSettings settings = LoadSettings.builder()
-        .setMaxAliasesForCollections(150)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(150).build();
     Load load = new Load(settings);
     try {
       load.loadFromString(output);
@@ -112,10 +100,8 @@ public class ReferencesTest {
     String output = createDump(25);
     // Load
     long time1 = System.currentTimeMillis();
-    LoadSettings settings = LoadSettings.builder()
-        .setAllowRecursiveKeys(true)
-        .setMaxAliasesForCollections(50)
-        .build();
+    LoadSettings settings =
+        LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(50).build();
     Load load = new Load(settings);
     load.loadFromString(output);
     long time2 = System.currentTimeMillis();
@@ -136,10 +122,8 @@ public class ReferencesTest {
     String bigYAML = createDump(35);
     // Load
     long time1 = System.currentTimeMillis();
-    LoadSettings settings = LoadSettings.builder()
-        .setAllowRecursiveKeys(true)
-        .setMaxAliasesForCollections(40)
-        .build();
+    LoadSettings settings =
+        LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(40).build();
     Load load = new Load(settings);
     try {
       load.loadFromString(bigYAML);

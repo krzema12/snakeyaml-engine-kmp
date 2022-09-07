@@ -63,8 +63,7 @@ public class ScannerWithCommentEnabledTest {
   }
 
   private void assertTokenEquals(Iterator<ID> expectedIdIterator,
-      Iterator<String> expectedScalarValueIterator,
-      Token token) {
+      Iterator<String> expectedScalarValueIterator, Token token) {
     printToken(token);
     assertTrue(expectedIdIterator.hasNext());
     ID expectedValue = expectedIdIterator.next();
@@ -78,8 +77,8 @@ public class ScannerWithCommentEnabledTest {
   private void assertTokensEqual(List<ID> expectedList, List<String> expectedScalarValueList,
       Scanner sut) {
     Iterator<ID> expectedIterator = expectedList.iterator();
-    Iterator<String> expectedScalarValueIterator = expectedScalarValueList == null ? null
-        : expectedScalarValueList.iterator();
+    Iterator<String> expectedScalarValueIterator =
+        expectedScalarValueList == null ? null : expectedScalarValueList.iterator();
     while (!sut.checkToken(Token.ID.StreamEnd)) {
       Token token = sut.next();
       assertTokenEquals(expectedIterator, expectedScalarValueIterator, token);
@@ -203,7 +202,7 @@ public class ScannerWithCommentEnabledTest {
 
     Scanner sut = constructScanner("abc: > # Comment\n    def\n    hij\n\n");
 
-    //printTokens(sut);
+    // printTokens(sut);
     assertTokensEqual(expected, expectedScalarValue, sut);
   }
 

@@ -32,8 +32,10 @@ class DumpWidthTest {
   private final DumpSettingsBuilder split = DumpSettings.builder().setSplitLines(true);
   private final DumpSettingsBuilder noSplit = DumpSettings.builder().setSplitLines(false);
 
-  private final String data1 = "1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000";
-  private final String data2 = "1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000";
+  private final String data1 =
+      "1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000";
+  private final String data2 =
+      "1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000";
 
   @Test
   void testSplitLinesDoubleQuoted() {
@@ -61,11 +63,9 @@ class DumpWidthTest {
     // setWidth
     Dump dump3 = new Dump(split.setWidth(15).build());
     output = dump3.dumpToString(data1);
-    assertEquals("\"1111111111 2222222222\\\n" +
-        "  \\ 3333333333 4444444444\\\n" +
-        "  \\ 5555555555 6666666666\\\n" +
-        "  \\ 7777777777 8888888888\\\n" +
-        "  \\ 9999999999 0000000000\"\n", output);
+    assertEquals("\"1111111111 2222222222\\\n" + "  \\ 3333333333 4444444444\\\n"
+        + "  \\ 5555555555 6666666666\\\n" + "  \\ 7777777777 8888888888\\\n"
+        + "  \\ 9999999999 0000000000\"\n", output);
   }
 
   @Test

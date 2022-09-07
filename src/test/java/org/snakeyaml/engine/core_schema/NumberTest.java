@@ -54,14 +54,14 @@ public class NumberTest {
     assertEquals("1_000.5", loader.loadFromString("1_000.5"));
     assertEquals("+.inf", loader.loadFromString("+.inf"));
 
-    //start with +
+    // start with +
     assertEquals("+1", loader.loadFromString("+1"));
     assertEquals("+1223344", loader.loadFromString("+1223344"));
     assertEquals("+12.23344", loader.loadFromString("+12.23344"));
     assertEquals("+0.23344", loader.loadFromString("+0.23344"));
     assertEquals("+0", loader.loadFromString("+0"));
 
-    //leading zero
+    // leading zero
     assertEquals("03", loader.loadFromString("03"));
     assertEquals("03.67", loader.loadFromString("03.67"));
   }

@@ -41,9 +41,9 @@ public interface ConstructNode {
    * non-recursive data structures). Fail with a reminder to provide the second step for a recursive
    * structure
    *
-   * @param node   composed Node
-   * @param object the instance constructed earlier by
-   *               <code>construct(Node node)</code> for the provided Node
+   * @param node composed Node
+   * @param object the instance constructed earlier by <code>construct(Node node)</code> for the
+   *        provided Node
    */
   default void constructRecursive(Node node, Object object) {
     if (node.isRecursive()) {

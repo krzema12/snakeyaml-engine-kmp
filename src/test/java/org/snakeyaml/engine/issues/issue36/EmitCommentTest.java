@@ -41,30 +41,25 @@ public class EmitCommentTest {
   @Test
   @DisplayName("Issue 36: comment with scalar should not be ignored")
   void emitCommentWithEvent() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDumpComments(true)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDumpComments(true).build();
     StreamDataWriter writer = new StreamToStringWriter();
     Emitter emitter = new Emitter(settings, writer);
     emitter.emit(new StreamStartEvent());
     emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>()));
     emitter.emit(
         new CommentEvent(CommentType.BLOCK, "Hello world!", Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(),
-        new ImplicitTuple(true, true), "This is the scalar", ScalarStyle.DOUBLE_QUOTED));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, true),
+        "This is the scalar", ScalarStyle.DOUBLE_QUOTED));
     emitter.emit(new DocumentEndEvent(false));
     emitter.emit(new StreamEndEvent());
 
-    assertEquals("#Hello world!\n"
-        + "\"This is the scalar\"\n", writer.toString());
+    assertEquals("#Hello world!\n" + "\"This is the scalar\"\n", writer.toString());
   }
 
   @Test
   @DisplayName("Issue 36: only comment should not be ignored")
   void emitComment() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDumpComments(true)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDumpComments(true).build();
     StreamDataWriter writer = new StreamToStringWriter();
     Emitter emitter = new Emitter(settings, writer);
     emitter.emit(new StreamStartEvent());
@@ -77,6 +72,7 @@ public class EmitCommentTest {
     assertEquals("#Hello world!\n", writer.toString());
   }
 }
+
 
 class StreamToStringWriter extends StringWriter implements StreamDataWriter {
 

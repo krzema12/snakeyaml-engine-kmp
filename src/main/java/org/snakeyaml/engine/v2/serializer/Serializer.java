@@ -48,8 +48,8 @@ import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * Transform a Node Graph to Event stream and allow provided {@link Emitable} to present the {@link
- * Event}s into the output stream
+ * Transform a Node Graph to Event stream and allow provided {@link Emitable} to present the
+ * {@link Event}s into the output stream
  */
 public class Serializer {
 
@@ -77,9 +77,8 @@ public class Serializer {
    * @param node - the document root
    */
   public void serializeDocument(Node node) {
-    this.emitable.emit(
-        new DocumentStartEvent(settings.isExplicitStart(), settings.getYamlDirective(),
-            settings.getTagDirective()));
+    this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(),
+        settings.getYamlDirective(), settings.getTagDirective()));
     anchorNode(node);
     settings.getExplicitRootTag().ifPresent(node::setTag);
     serializeNode(node);
@@ -110,7 +109,7 @@ public class Serializer {
       realNode = node;
     }
     if (this.anchors.containsKey(realNode)) {
-      //it looks weird, anchor does contain the key node, but we call computeIfAbsent()
+      // it looks weird, anchor does contain the key node, but we call computeIfAbsent()
       // this is because the value is null (HashMap permits values to be null)
       this.anchors.computeIfAbsent(realNode,
           a -> settings.getAnchorGenerator().nextAnchor(realNode));
@@ -161,8 +160,8 @@ public class Serializer {
           serializeComments(node.getBlockComments());
           Tag detectedTag = settings.getScalarResolver().resolve(scalarNode.getValue(), true);
           Tag defaultTag = settings.getScalarResolver().resolve(scalarNode.getValue(), false);
-          ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag), node
-              .getTag().equals(defaultTag));
+          ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag),
+              node.getTag().equals(defaultTag));
           ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,
               scalarNode.getValue(), scalarNode.getScalarStyle());
           this.emitable.emit(event);
@@ -189,8 +188,8 @@ public class Serializer {
           MappingNode mappingNode = (MappingNode) node;
           List<NodeTuple> map = mappingNode.getValue();
           if (mappingNode.getTag() != Tag.COMMENT) {
-            this.emitable.emit(
-                new MappingStartEvent(tAlias, Optional.of(mappingNode.getTag().getValue()),
+            this.emitable
+                .emit(new MappingStartEvent(tAlias, Optional.of(mappingNode.getTag().getValue()),
                     implicitM, mappingNode.getFlowStyle(), Optional.empty(), Optional.empty()));
             for (NodeTuple entry : map) {
               Node key = entry.getKeyNode();
@@ -212,8 +211,7 @@ public class Serializer {
     }
     for (CommentLine line : comments) {
       CommentEvent commentEvent = new CommentEvent(line.getCommentType(), line.getValue(),
-          line.getStartMark(),
-          line.getEndMark());
+          line.getStartMark(), line.getEndMark());
       this.emitable.emit(commentEvent);
     }
   }

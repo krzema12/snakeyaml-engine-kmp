@@ -35,30 +35,19 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 public class BillionLaughsAttackTest {
 
   public static final String data =
-      "a: &a [\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\"]\n" +
-          "b: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a]\n" +
-          "c: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b]\n" +
-          "d: &d [*c,*c,*c,*c,*c,*c,*c,*c,*c]\n" +
-          "e: &e [*d,*d,*d,*d,*d,*d,*d,*d,*d]\n" +
-          "f: &f [*e,*e,*e,*e,*e,*e,*e,*e,*e]\n" +
-          "g: &g [*f,*f,*f,*f,*f,*f,*f,*f,*f]\n" +
-          "h: &h [*g,*g,*g,*g,*g,*g,*g,*g,*g]\n" +
-          "i: &i [*h,*h,*h,*h,*h,*h,*h,*h,*h]";
+      "a: &a [\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\",\"lol\"]\n"
+          + "b: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a]\n" + "c: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b]\n"
+          + "d: &d [*c,*c,*c,*c,*c,*c,*c,*c,*c]\n" + "e: &e [*d,*d,*d,*d,*d,*d,*d,*d,*d]\n"
+          + "f: &f [*e,*e,*e,*e,*e,*e,*e,*e,*e]\n" + "g: &g [*f,*f,*f,*f,*f,*f,*f,*f,*f]\n"
+          + "h: &h [*g,*g,*g,*g,*g,*g,*g,*g,*g]\n" + "i: &i [*h,*h,*h,*h,*h,*h,*h,*h,*h]";
 
-  public static final String scalarAliasesData = "a: &a foo\n" +
-      "b:  *a\n" +
-      "c:  *a\n" +
-      "d:  *a\n" +
-      "e:  *a\n" +
-      "f:  *a\n" +
-      "g:  *a\n";
+  public static final String scalarAliasesData =
+      "a: &a foo\n" + "b:  *a\n" + "c:  *a\n" + "d:  *a\n" + "e:  *a\n" + "f:  *a\n" + "g:  *a\n";
 
   @Test
   @DisplayName("Load many aliases if explicitly allowed")
   public void billionLaughsAttackLoaded() {
-    LoadSettings settings = LoadSettings.builder()
-        .setMaxAliasesForCollections(72)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(72).build();
     Load load = new Load(settings);
     Map map = (Map) load.loadFromString(data);
     assertNotNull(map);
@@ -67,9 +56,7 @@ public class BillionLaughsAttackTest {
   @Test
   @DisplayName("Billion_laughs_attack if data expanded")
   public void billionLaughsAttackExpanded() {
-    LoadSettings settings = LoadSettings.builder()
-        .setMaxAliasesForCollections(100)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(100).build();
     Load load = new Load(settings);
     Map map = (Map) load.loadFromString(data);
     assertNotNull(map);
@@ -98,9 +85,8 @@ public class BillionLaughsAttackTest {
   @Test
   @DisplayName("Number of aliases for scalar nodes is not restricted")
   public void doNotRestrictScalarAliases() {
-    LoadSettings settings = LoadSettings.builder()
-        .setMaxAliasesForCollections(5) //smaller than number of aliases for scalars
-        .build();
+    // smaller than number of aliases for scalars
+    LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(5).build();
     Load load = new Load(settings);
     load.loadFromString(scalarAliasesData);
   }

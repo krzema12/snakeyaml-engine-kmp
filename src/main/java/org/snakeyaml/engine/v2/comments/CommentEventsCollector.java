@@ -37,9 +37,9 @@ public class CommentEventsCollector {
   /**
    * Constructor used to collect comment events emitted by a Parser.
    *
-   * @param parser               the event source.
+   * @param parser the event source.
    * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-   *                             collected.
+   *        collected.
    */
   public CommentEventsCollector(final Parser parser, CommentType... expectedCommentTypes) {
     this.eventSource = new AbstractQueue<Event>() {
@@ -77,9 +77,9 @@ public class CommentEventsCollector {
   /**
    * Constructor used to collect events emitted by the Serializer.
    *
-   * @param eventSource          the event source.
+   * @param eventSource the event source.
    * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-   *                             collected.
+   *        collected.
    */
   public CommentEventsCollector(Queue<Event> eventSource, CommentType... expectedCommentTypes) {
     this.eventSource = eventSource;
@@ -147,7 +147,7 @@ public class CommentEventsCollector {
    *
    * @param event the first event to attempt to collect.
    * @return the event provided as an argument, if it is not collected; Otherwise, the first event
-   * that is not collected.
+   *         that is not collected.
    */
   public Event collectEventsAndPoll(Event event) {
     Event nextEvent = collectEvents(event);

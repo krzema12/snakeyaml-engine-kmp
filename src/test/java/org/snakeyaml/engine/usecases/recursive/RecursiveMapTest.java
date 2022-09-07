@@ -38,15 +38,11 @@ class RecursiveMapTest {
   void loadRecursiveMap() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    Map<String, String> map = (Map<String, String>) load.loadFromString(
-        "First occurrence: &anchor Foo\n" +
-            "Second occurrence: *anchor\n" +
-            "Override anchor: &anchor Bar\n" +
-            "Reuse anchor: *anchor\n");
-    Map<String, String> expected = ImmutableMap.of("First occurrence", "Foo",
-        "Second occurrence", "Foo",
-        "Override anchor", "Bar",
-        "Reuse anchor", "Bar");
+    Map<String, String> map = (Map<String, String>) load
+        .loadFromString("First occurrence: &anchor Foo\n" + "Second occurrence: *anchor\n"
+            + "Override anchor: &anchor Bar\n" + "Reuse anchor: *anchor\n");
+    Map<String, String> expected = ImmutableMap.of("First occurrence", "Foo", "Second occurrence",
+        "Foo", "Override anchor", "Bar", "Reuse anchor", "Bar");
     assertEquals(expected, map);
   }
 
@@ -61,11 +57,8 @@ class RecursiveMapTest {
     map2.put("next", map1);
     Dump dump = new Dump(DumpSettings.builder().build());
     String output1 = dump.dumpToString(map1);
-    assertEquals("&id001\n" +
-        "next:\n" +
-        "  next: *id001\n" +
-        "  name: second\n" +
-        "name: first\n", output1);
+    assertEquals("&id001\n" + "next:\n" + "  next: *id001\n" + "  name: second\n" + "name: first\n",
+        output1);
 
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
@@ -81,10 +74,9 @@ class RecursiveMapTest {
   void failToLoadRecursiveMapByDefault() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    //fail to load map which has only one key - reference to itself
-    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-        load.loadFromString("&id002\n" +
-            "*id002 : foo"));
+    // fail to load map which has only one key - reference to itself
+    YamlEngineException exception = assertThrows(YamlEngineException.class,
+        () -> load.loadFromString("&id002\n" + "*id002 : foo"));
     assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.",
         exception.getMessage());
   }
@@ -94,9 +86,9 @@ class RecursiveMapTest {
   void loadRecursiveMapIfAllowed() {
     LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
     Load load = new Load(settings);
-    //load map which has only one key - reference to itself
-    Map<Object, Object> recursive = (Map<Object, Object>) load.loadFromString("&id002\n" +
-        "*id002 : foo");
+    // load map which has only one key - reference to itself
+    Map<Object, Object> recursive =
+        (Map<Object, Object>) load.loadFromString("&id002\n" + "*id002 : foo");
     assertEquals(1, recursive.size());
   }
 }

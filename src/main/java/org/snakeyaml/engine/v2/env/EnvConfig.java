@@ -20,18 +20,18 @@ import java.util.Optional;
 /**
  * Configurator for ENV format
  *
- * @see <a href="https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable
- * substitution</a>
+ * @see <a href=
+ *      "https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable
+ *      substitution</a>
  */
 public interface EnvConfig {
 
   /**
-   * Implement deviation from the standard logic.
-   * TODO implement wiki page
+   * Implement deviation from the standard logic. TODO implement wiki page
    *
-   * @param name        - variable name in the template
-   * @param separator   - separator in the template, can be :-, -, :?, ? or null if not present
-   * @param value       - default value or the error in the template or empty if not present
+   * @param name - variable name in the template
+   * @param separator - separator in the template, can be :-, -, :?, ? or null if not present
+   * @param value - default value or the error in the template or empty if not present
    * @param environment - the value from environment for the provided variable or null if unset
    * @return the value to apply in the template or empty to follow the standard logic
    */

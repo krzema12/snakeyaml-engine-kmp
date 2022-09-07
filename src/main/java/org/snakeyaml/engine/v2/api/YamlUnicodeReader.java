@@ -18,13 +18,13 @@ package org.snakeyaml.engine.v2.api;
 /**
  * version: 1.1 / 2007-01-25 - changed BOM recognition ordering (longer boms first)
  * <p>
- * Original pseudocode   : Thomas Weidenfeller Implementation tweaked: Aki Nieminen Implementation
+ * Original pseudocode : Thomas Weidenfeller Implementation tweaked: Aki Nieminen Implementation
  * changed: Andrey Somov no default encoding must be provided - UTF-8 is used by default
  * (http://www.yaml.org/spec/1.2/spec.html#id2771184)
  * <p>
- * http://www.unicode.org/unicode/faq/utf_bom.html BOMs: 00 00 FE FF    = UTF-32, big-endian FF FE
- * 00 00    = UTF-32, little-endian FE FF          = UTF-16, big-endian FF FE          = UTF-16,
- * little-endian EF BB BF       = UTF-8
+ * http://www.unicode.org/unicode/faq/utf_bom.html BOMs: 00 00 FE FF = UTF-32, big-endian FF FE 00
+ * 00 = UTF-32, little-endian FE FF = UTF-16, big-endian FF FE = UTF-16, little-endian EF BB BF =
+ * UTF-8
  * <p>
  * <p>
  * Win2k Notepad: Unicode format = UTF-16LE
@@ -91,16 +91,15 @@ public class YamlUnicodeReader extends Reader {
     int unread;
     n = internalIn.read(bom, 0, bom.length);
 
-    if ((bom[0] == (byte) 0x00) && (bom[1] == (byte) 0x00) &&
-        (bom[2] == (byte) 0xFE) && (bom[3] == (byte) 0xFF)) {
+    if ((bom[0] == (byte) 0x00) && (bom[1] == (byte) 0x00) && (bom[2] == (byte) 0xFE)
+        && (bom[3] == (byte) 0xFF)) {
       encoding = UTF32BE;
       unread = n - 4;
-    } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) &&
-        (bom[2] == (byte) 0x00) && (bom[3] == (byte) 0x00)) {
+    } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) && (bom[2] == (byte) 0x00)
+        && (bom[3] == (byte) 0x00)) {
       encoding = UTF32LE;
       unread = n - 4;
-    } else if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) &&
-        (bom[2] == (byte) 0xBF)) {
+    } else if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) && (bom[2] == (byte) 0xBF)) {
       encoding = UTF8;
       unread = n - 3;
     } else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
@@ -120,8 +119,7 @@ public class YamlUnicodeReader extends Reader {
     }
 
     // Use given encoding
-    CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter(
-        CodingErrorAction.REPORT);
+    CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter(CodingErrorAction.REPORT);
     internalIn2 = new InputStreamReader(internalIn, decoder);
   }
 

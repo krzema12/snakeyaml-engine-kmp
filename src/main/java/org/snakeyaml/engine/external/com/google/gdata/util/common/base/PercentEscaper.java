@@ -1,16 +1,15 @@
-/* Copyright (c) 2008 Google Inc.
+/*
+ * Copyright (c) 2008 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
 
@@ -20,46 +19,44 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
  * construction.
  * <p>
  * <p>
- * For details on escaping URIs for use in web pages, see section 2.4 of <a
- * href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>.
+ * For details on escaping URIs for use in web pages, see section 2.4 of
+ * <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>.
  * <p>
  * <p>
  * In most cases this class should not need to be used directly. If you have no special requirements
- * for escaping your URIs, you should use either {@link CharEscapers#uriEscaper()} or {@link
- * CharEscapers#uriEscaper(boolean)}.
+ * for escaping your URIs, you should use either {@link CharEscapers#uriEscaper()} or
+ * {@link CharEscapers#uriEscaper(boolean)}.
  * <p>
  * <p>
  * When encoding a String, the following rules apply:
  * <ul>
- * <li>The alphanumeric characters "a" through "z", "A" through "Z" and "0"
- * through "9" remain the same.
+ * <li>The alphanumeric characters "a" through "z", "A" through "Z" and "0" through "9" remain the
+ * same.
  * <li>Any additionally specified safe characters remain the same.
- * <li>If {@code plusForSpace} was specified, the space character " " is
- * converted into a plus sign "+".
- * <li>All other characters are converted into one or more bytes using UTF-8
- * encoding and each byte is then represented by the 3-character string "%XY",
- * where "XY" is the two-digit, uppercase, hexadecimal representation of the
- * byte value.
+ * <li>If {@code plusForSpace} was specified, the space character " " is converted into a plus sign
+ * "+".
+ * <li>All other characters are converted into one or more bytes using UTF-8 encoding and each byte
+ * is then represented by the 3-character string "%XY", where "XY" is the two-digit, uppercase,
+ * hexadecimal representation of the byte value.
  * </ul>
  * <p>
  * <p>
- * RFC 2396 specifies the set of unreserved characters as "-", "_", ".", "!",
- * "~", "*", "'", "(" and ")". It goes on to state:
+ * RFC 2396 specifies the set of unreserved characters as "-", "_", ".", "!", "~", "*", "'", "(" and
+ * ")". It goes on to state:
  *
  *
- * <i>Unreserved characters can be escaped without changing the semantics of the
- * URI, but this should not be done unless the URI is being used in a context
- * that does not allow the unescaped character to appear.</i>
+ * <i>Unreserved characters can be escaped without changing the semantics of the URI, but this
+ * should not be done unless the URI is being used in a context that does not allow the unescaped
+ * character to appear.</i>
  * <p>
  * <p>
- * For performance reasons the only currently supported character encoding of
- * this class is UTF-8.
+ * For performance reasons the only currently supported character encoding of this class is UTF-8.
  *
  *
- * <b>Note</b>: This escaper produces uppercase hexidecimal sequences. From <a
- * href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>:<br>
- * <i>"URI producers and normalizers should use uppercase hexadecimal digits for
- * all percent-encodings."</i>
+ * <b>Note</b>: This escaper produces uppercase hexidecimal sequences. From
+ * <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>:<br>
+ * <i>"URI producers and normalizers should use uppercase hexadecimal digits for all
+ * percent-encodings."</i>
  */
 public class PercentEscaper extends UnicodeEscaper {
 
@@ -103,9 +100,8 @@ public class PercentEscaper extends UnicodeEscaper {
    * Constructs a URI escaper with the specified safe characters and optional handling of the space
    * character.
    *
-   * @param safeChars    a non null string specifying additional safe characters for this escaper
-   *                     (the ranges 0..9, a..z and A..Z are always safe and should not be specified
-   *                     here)
+   * @param safeChars a non null string specifying additional safe characters for this escaper (the
+   *        ranges 0..9, a..z and A..Z are always safe and should not be specified here)
    * @param plusForSpace true if ASCII space should be escaped to {@code +} rather than {@code %20}
    * @throws IllegalArgumentException if any of the parameters were invalid
    */
@@ -113,8 +109,7 @@ public class PercentEscaper extends UnicodeEscaper {
     // Avoid any misunderstandings about the behavior of this escaper
     if (safeChars.matches(".*[0-9A-Za-z].*")) {
       throw new IllegalArgumentException(
-          "Alphanumeric characters are always 'safe' and should not be "
-              + "explicitly specified");
+          "Alphanumeric characters are always 'safe' and should not be " + "explicitly specified");
     }
     // Avoid ambiguous parameters. Safe characters are never modified so if
     // space is a safe character then setting plusForSpace is meaningless.
@@ -157,9 +152,8 @@ public class PercentEscaper extends UnicodeEscaper {
   }
 
   /*
-   * Overridden for performance. For unescaped strings this improved the
-   * performance of the uri escaper from ~760ns to ~400ns as measured by
-   * {@link CharEscapersBenchmark}.
+   * Overridden for performance. For unescaped strings this improved the performance of the uri
+   * escaper from ~760ns to ~400ns as measured by {@link CharEscapersBenchmark}.
    */
   @Override
   protected int nextEscapeIndex(CharSequence csq, int index, int end) {
@@ -173,9 +167,8 @@ public class PercentEscaper extends UnicodeEscaper {
   }
 
   /*
-   * Overridden for performance. For unescaped strings this improved the
-   * performance of the uri escaper from ~400ns to ~170ns as measured by
-   * {@link CharEscapersBenchmark}.
+   * Overridden for performance. For unescaped strings this improved the performance of the uri
+   * escaper from ~400ns to ~170ns as measured by {@link CharEscapersBenchmark}.
    */
   @Override
   public String escape(String s) {

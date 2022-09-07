@@ -26,13 +26,14 @@ import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 
 /*
-${VARIABLE:-default} evaluates to default if VARIABLE is unset or empty in the environment.
-${VARIABLE-default} evaluates to default only if VARIABLE is unset in the environment.
-
-Similarly, the following syntax allows you to specify mandatory variables:
-
-${VARIABLE:?err} exits with an error message containing err if VARIABLE is unset or empty in the environment.
-${VARIABLE?err} exits with an error message containing err if VARIABLE is unset in the environment.
+ * ${VARIABLE:-default} evaluates to default if VARIABLE is unset or empty in the environment.
+ * ${VARIABLE-default} evaluates to default only if VARIABLE is unset in the environment.
+ *
+ * Similarly, the following syntax allows you to specify mandatory variables:
+ *
+ * ${VARIABLE:?err} exits with an error message containing err if VARIABLE is unset or empty in the
+ * environment. ${VARIABLE?err} exits with an error message containing err if VARIABLE is unset in
+ * the environment.
  */
 @org.junit.jupiter.api.Tag("fast")
 public class EnvFormatTest {

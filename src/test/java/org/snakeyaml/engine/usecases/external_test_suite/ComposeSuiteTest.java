@@ -39,20 +39,18 @@ class ComposeSuiteTest {
 
   public static final List<String> emptyNodes = Lists.newArrayList("AVM7", "8G76", "98YD");
 
-  private final List<SuiteData> allValid = SuiteUtils.getAll().stream()
-      .filter(data -> !data.hasError())
-      .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
-      .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
-      .filter(data -> !data.getName().equals("JEF9-02")) //TODO FIXME JEF9-02 is not according to the spec
-      .collect(Collectors.toList());
+  private final List<SuiteData> allValid =
+      SuiteUtils.getAll().stream().filter(data -> !data.hasError())
+          .filter(data -> !SuiteUtils.deviationsWithSuccess.contains(data.getName()))
+          .filter(data -> !SuiteUtils.deviationsWithError.contains(data.getName()))
+          // TODO FIXME JEF9-02 is not according to the spec
+          .filter(data -> !data.getName().equals("JEF9-02")).collect(Collectors.toList());
 
   private final List<SuiteData> allValidAndNonEmpty = allValid.stream()
-      .filter(data -> !emptyNodes.contains(data.getName()))
-      .collect(Collectors.toList());
+      .filter(data -> !emptyNodes.contains(data.getName())).collect(Collectors.toList());
 
   private final List<SuiteData> allValidAndEmpty = allValid.stream()
-      .filter(data -> emptyNodes.contains(data.getName()))
-      .collect(Collectors.toList());
+      .filter(data -> emptyNodes.contains(data.getName())).collect(Collectors.toList());
 
 
   public static ComposeResult composeData(SuiteData data) {
@@ -75,7 +73,7 @@ class ComposeSuiteTest {
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
     Optional<Node> node = new Compose(settings).composeString(data.getInput());
     assertTrue(node.isPresent());
-//        System.out.println(node);
+    // System.out.println(node);
   }
 
   @Test
@@ -83,32 +81,32 @@ class ComposeSuiteTest {
   void runAllNonEmpty() {
     for (SuiteData data : allValidAndNonEmpty) {
       if ("4MUZ-01".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("UV7Q".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("HM87-00".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("M2N8-00".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("UKK6-00".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("MUS6-03".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       if ("4Q9F".equals(data.getName())) {
-        continue; //TODO FIXME fix test
+        continue; // TODO FIXME fix test
       }
       ComposeResult result = composeData(data);
       List<Node> nodes = result.getNode();
       assertFalse(nodes.isEmpty(),
           data.getName() + " -> " + data.getLabel() + "\n" + data.getInput());
-      DumpSettings settings = DumpSettings.builder().setExplicitStart(true).setExplicitEnd(true)
-          .build();
+      DumpSettings settings =
+          DumpSettings.builder().setExplicitStart(true).setExplicitEnd(true).build();
       Serialize serialize = new Serialize(settings);
       List<Event> events = serialize.serializeAll(nodes);
       assertEquals(data.getEvents().size(), events.size(),
@@ -118,9 +116,8 @@ class ComposeSuiteTest {
         EventRepresentation representation = new EventRepresentation(event);
         String expectation = data.getEvents().get(i);
         boolean theSame = representation.isSameAs(expectation);
-        assertTrue(theSame,
-            data.getName() + " -> " + data.getLabel() + "\n" +
-                data.getInput() + "\n" + data.getEvents().get(i) + "\n" + events.get(i) + "\n");
+        assertTrue(theSame, data.getName() + " -> " + data.getLabel() + "\n" + data.getInput()
+            + "\n" + data.getEvents().get(i) + "\n" + events.get(i) + "\n");
       }
     }
   }
@@ -136,6 +133,7 @@ class ComposeSuiteTest {
     }
   }
 }
+
 
 class ComposeResult {
 

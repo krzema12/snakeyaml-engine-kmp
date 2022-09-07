@@ -81,10 +81,9 @@ public class Composer implements Iterator<Node> {
     this.settings = settings;
     this.anchors = new HashMap();
     this.recursiveNodes = new HashSet();
-    this.blockCommentsCollector = new CommentEventsCollector(parser,
-        CommentType.BLANK_LINE, CommentType.BLOCK);
-    this.inlineCommentsCollector = new CommentEventsCollector(parser,
-        CommentType.IN_LINE);
+    this.blockCommentsCollector =
+        new CommentEventsCollector(parser, CommentType.BLANK_LINE, CommentType.BLOCK);
+    this.inlineCommentsCollector = new CommentEventsCollector(parser, CommentType.IN_LINE);
   }
 
   /**
@@ -108,7 +107,7 @@ public class Composer implements Iterator<Node> {
    * </p>
    *
    * @return The root node of the document or <code>Optional.empty()</code> if no document is
-   * available.
+   *         available.
    */
   public Optional<Node> getSingleNode() {
     // Drop the STREAM-START event.
@@ -166,7 +165,7 @@ public class Composer implements Iterator<Node> {
 
   private Node composeNode(Optional<Node> parent) {
     blockCommentsCollector.collectEvents();
-    parent.ifPresent(recursiveNodes::add);//TODO add unit test for this line
+    parent.ifPresent(recursiveNodes::add);// TODO add unit test for this line
     final Node node;
     if (parser.checkEvent(Event.ID.Alias)) {
       AliasEvent event = (AliasEvent) parser.next();
@@ -201,7 +200,7 @@ public class Composer implements Iterator<Node> {
         node = composeMappingNode(anchor);
       }
     }
-    parent.ifPresent(recursiveNodes::remove);//TODO add unit test for this line
+    parent.ifPresent(recursiveNodes::remove);// TODO add unit test for this line
     return node;
   }
 
@@ -242,8 +241,7 @@ public class Composer implements Iterator<Node> {
     }
     final ArrayList<Node> children = new ArrayList();
     SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getFlowStyle(),
-        startEvent.getStartMark(),
-        Optional.empty());
+        startEvent.getStartMark(), Optional.empty());
     if (startEvent.isFlow()) {
       node.setBlockComments(blockCommentsCollector.consume());
     }

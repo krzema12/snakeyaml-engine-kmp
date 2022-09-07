@@ -29,15 +29,14 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 public abstract class UriEncoder {
 
-  private static final CharsetDecoder UTF8Decoder = StandardCharsets.UTF_8.newDecoder()
-      .onMalformedInput(CodingErrorAction.REPORT);
+  private static final CharsetDecoder UTF8Decoder =
+      StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT);
   // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
   // its escape as required by spec. See
   private static final String SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/";
   private static final Escaper escaper = new PercentEscaper(SAFE_CHARS, false);
 
-  private UriEncoder() {
-  }
+  private UriEncoder() {}
 
   /**
    * Escape special characters with '%'

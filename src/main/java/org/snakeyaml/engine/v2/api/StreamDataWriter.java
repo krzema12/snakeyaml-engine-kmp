@@ -25,8 +25,7 @@ public interface StreamDataWriter {
   /**
    * Flushes this stream by writing any buffered output to the underlying stream.
    */
-  default void flush() {
-  }
+  default void flush() {}
 
   void write(String str);
 

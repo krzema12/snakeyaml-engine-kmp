@@ -29,14 +29,14 @@ import org.snakeyaml.engine.v2.nodes.Node;
 @Tag("fast")
 class StandardRepresenterTest {
 
-  private final StandardRepresenter standardRepresenter = new StandardRepresenter(
-      DumpSettings.builder().build());
+  private final StandardRepresenter standardRepresenter =
+      new StandardRepresenter(DumpSettings.builder().build());
 
   @Test
   @DisplayName("Represent unknown class")
   void representUnknownClass() {
-    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-        standardRepresenter.represent(TreeRangeSet.create()));
+    YamlEngineException exception = assertThrows(YamlEngineException.class,
+        () -> standardRepresenter.represent(TreeRangeSet.create()));
     assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet",
         exception.getMessage());
   }

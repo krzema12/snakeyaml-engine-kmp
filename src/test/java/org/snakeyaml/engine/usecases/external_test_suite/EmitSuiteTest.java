@@ -40,14 +40,13 @@ class EmitSuiteTest {
     for (SuiteData data : all) {
       ParseResult result = SuiteUtils.parseData(data);
       if (data.hasError()) {
-        assertTrue(result.getError().isPresent(),
-            "Expected error, but got none in file " + data.getName() + ", " +
-                data.getLabel() + "\n" + result.getEvents());
+        assertTrue(result.getError().isPresent(), "Expected error, but got none in file "
+            + data.getName() + ", " + data.getLabel() + "\n" + result.getEvents());
       } else {
         Present emit = new Present(DumpSettings.builder().build());
-        //emit without errors
+        // emit without errors
         String yaml = emit.emitToString(result.getEvents().iterator());
-        //eat your own dog food
+        // eat your own dog food
         new Compose(LoadSettings.builder().build()).composeAllFromString(yaml);
       }
     }

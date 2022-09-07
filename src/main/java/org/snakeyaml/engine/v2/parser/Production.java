@@ -28,6 +28,7 @@ interface Production {
 
   /**
    * Produce parsed event
+   *
    * @return parsed event to be added to the stream of events
    */
   Event produce();

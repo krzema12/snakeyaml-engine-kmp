@@ -43,12 +43,13 @@ class DefaultConstructorTest {
   void failWhenUnknown() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    YamlEngineException exception = assertThrows(YamlEngineException.class, () ->
-        load.loadFromString("!unknownLocalTag a"));
+    YamlEngineException exception =
+        assertThrows(YamlEngineException.class, () -> load.loadFromString("!unknownLocalTag a"));
     assertTrue(exception.getMessage()
         .startsWith("could not determine a constructor for the tag !unknownLocalTag"));
   }
 }
+
 
 /**
  * Make NULL if the tag is not recognized

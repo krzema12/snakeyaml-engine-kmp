@@ -47,15 +47,14 @@ public final class LoadSettings {
   private final boolean useMarks;
   private final Optional<EnvConfig> envConfig;
 
-  //general
+  // general
   private final Map<SettingKey, Object> customProperties;
 
-  LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
-      ScalarResolver scalarResolver, IntFunction<List> defaultList,
-      IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
-      UnaryOperator<SpecVersion> versionFunction, Integer bufferSize,
-      boolean allowDuplicateKeys, boolean allowRecursiveKeys, int maxAliasesForCollections,
-      boolean useMarks, Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig,
+  LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors, ScalarResolver scalarResolver,
+      IntFunction<List> defaultList, IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
+      UnaryOperator<SpecVersion> versionFunction, Integer bufferSize, boolean allowDuplicateKeys,
+      boolean allowRecursiveKeys, int maxAliasesForCollections, boolean useMarks,
+      Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig,
       boolean parseComments) {
     this.label = label;
     this.tagConstructors = tagConstructors;
@@ -74,7 +73,7 @@ public final class LoadSettings {
     this.envConfig = envConfig;
   }
 
-  public static final LoadSettingsBuilder builder() {
+  public static LoadSettingsBuilder builder() {
     return new LoadSettingsBuilder();
   }
 

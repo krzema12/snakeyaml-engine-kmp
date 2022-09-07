@@ -47,7 +47,7 @@ public class Parse {
    * Parse a YAML stream and produce parsing events.
    *
    * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-   *             encoding is UTF-16 or UTF-32
+   *        encoding is UTF-16 or UTF-32
    * @return parsed events
    * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
    */
@@ -78,7 +78,7 @@ public class Parse {
    */
   public Iterable<Event> parseString(String yaml) {
     Objects.requireNonNull(yaml, "String cannot be null");
-    //do not use lambda to keep Iterable and Iterator visible
+    // do not use lambda to keep Iterable and Iterator visible
     return new Iterable() {
       public Iterator<Event> iterator() {
         return new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)));

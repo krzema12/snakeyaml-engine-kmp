@@ -91,8 +91,7 @@ public class StandardRepresenter extends BaseRepresenter {
    * Define a tag for the <code>Class</code> to serialize.
    *
    * @param clazz <code>Class</code> which tag is changed
-   * @param tag   new tag to be used for every instance of the specified
-   *              <code>Class</code>
+   * @param tag new tag to be used for every instance of the specified <code>Class</code>
    * @return the previous tag associated with the <code>Class</code>
    */
   public Tag addClassTag(Class<? extends Object> clazz, Tag tag) {
@@ -102,7 +101,7 @@ public class StandardRepresenter extends BaseRepresenter {
     return classTags.put(clazz, tag);
   }
 
-  //remove and move to BaseRe
+  // remove and move to BaseRe
   protected class RepresentNull implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -118,8 +117,8 @@ public class StandardRepresenter extends BaseRepresenter {
       Tag tag = Tag.STR;
       ScalarStyle style = ScalarStyle.PLAIN;
       String value = data.toString();
-      if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY && !StreamReader.isPrintable(
-          value)) {
+      if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY
+          && !StreamReader.isPrintable(value)) {
         tag = Tag.BINARY;
         final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         // sometimes above will just silently fail - it will return incomplete data

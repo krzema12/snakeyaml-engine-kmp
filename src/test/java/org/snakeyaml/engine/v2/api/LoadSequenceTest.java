@@ -70,8 +70,8 @@ class LoadSequenceTest {
   void parseList4() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
-    List<Object> list = (List<Object>) load.loadFromString(
-        TestUtils.getResource("load/list1.yaml"));
+    List<Object> list =
+        (List<Object>) load.loadFromString(TestUtils.getResource("load/list1.yaml"));
     assertEquals(Lists.newArrayList("a", "bb", "ccc", "dddd"), list);
   }
 }

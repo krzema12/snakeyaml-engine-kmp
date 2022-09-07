@@ -56,86 +56,84 @@ public class EmitterTest {
 
   @Test
   public void testWriteFolded() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.FOLDED)
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.FOLDED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
-    String expected = "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
+    String expected =
+        "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
     assertEquals(expected, output);
   }
 
   @Test
   public void testWriteLiteral() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.LITERAL)
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.LITERAL).build();
     String folded = "0123456789 0123456789 0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
-    String expected = "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
+    String expected =
+        "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
     assertEquals(expected, output);
   }
 
   @Test
   public void testWritePlain() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String expected = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
+    String expected =
+        "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
     assertEquals(expected, output);
   }
 
   @Test
   public void testWritePlainPretty() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setMultiLineFlow(true)
-        .build();
+    DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
+        .setMultiLineFlow(true).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String expected = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
+    String expected =
+        "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
     assertEquals(expected, output);
   }
 
   @Test
   public void testWriteSingleQuoted() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String expected = "'aaa': '0123456789 0123456789\n\n  0123456789 0123456789'\n'bbb': '\n\n  bla-bla'\n";
+    String expected =
+        "'aaa': '0123456789 0123456789\n\n  0123456789 0123456789'\n'bbb': '\n\n  bla-bla'\n";
     assertEquals(expected, output);
   }
 
   @Test
   public void testWriteDoubleQuoted() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-        .build();
+    DumpSettings settings =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
-    String expected = "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
+    String expected =
+        "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
     assertEquals(expected, output);
   }
 
@@ -151,21 +149,19 @@ public class EmitterTest {
     emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
     emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
         Optional.empty()));
-    emitter.emit(
-        new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false), burger
-            + halfBurger, ScalarStyle.DOUBLE_QUOTED, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false),
+        burger + halfBurger, ScalarStyle.DOUBLE_QUOTED, Optional.empty(), Optional.empty()));
     String expected = "! \"\\U0001f354\\ud83c\"";
     assertEquals(expected, output.toString());
   }
 
   @Test
   public void testSplitLineExpectFirstFlowSequenceItem() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-        .setDefaultFlowStyle(FlowStyle.FLOW)
-        .setWidth(8);
+    DumpSettingsBuilder builder =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+            .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(8);
     Map<String, Object> map = new TreeMap<String, Object>();
-    map.put("12345", Arrays.asList("1111111111"));
+    map.put("12345", Collections.singletonList("1111111111"));
 
     // Split lines enabled (default)
     String output = dump(builder.build(), map);
@@ -178,13 +174,10 @@ public class EmitterTest {
 
   @Test
   public void testWriteIndicatorIndent() {
-    DumpSettings settings = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setIndent(5)
-        .setIndicatorIndent(2)
-        .build();
-    List<?> topLevel = Arrays.asList(Collections.singletonMap("k1", "v1"),
-        Collections.singletonMap("k2", "v2"));
+    DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).setIndent(5)
+        .setIndicatorIndent(2).build();
+    List<?> topLevel =
+        Arrays.asList(Collections.singletonMap("k1", "v1"), Collections.singletonMap("k2", "v2"));
     Map<String, ?> map = Collections.singletonMap("aaa", topLevel);
     String output = dump(settings, map);
     String expected = "aaa:\n  -  k1: v1\n  -  k2: v2\n";
@@ -193,10 +186,9 @@ public class EmitterTest {
 
   @Test
   public void testSplitLineExpectFlowSequenceItem() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-        .setDefaultFlowStyle(FlowStyle.FLOW)
-        .setWidth(8);
+    DumpSettingsBuilder builder =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+            .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(8);
     // Split lines enabled (default)
     Dump yaml1 = new Dump(builder.build());
     String output = yaml1.dumpToString(Arrays.asList("1111111111", "2222222222"));
@@ -214,13 +206,13 @@ public class EmitterTest {
 
   @Test
   public void testSplitLineExpectFirstFlowMappingKey() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-        .setDefaultFlowStyle(FlowStyle.FLOW)
-        .setWidth(16);
+    DumpSettingsBuilder builder =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+            .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(16);
     Map<String, String> nonSplitMap = new TreeMap<String, String>();
     nonSplitMap.put("3", "4");
-    Map<String, Map<String, String>> nonSplitContainerMap = new TreeMap<String, Map<String, String>>();
+    Map<String, Map<String, String>> nonSplitContainerMap =
+        new TreeMap<String, Map<String, String>>();
     nonSplitContainerMap.put("1 2", nonSplitMap);
     Map<String, String> splitMap = new TreeMap<String, String>();
     splitMap.put("3333333333", "4444444444");
@@ -243,10 +235,9 @@ public class EmitterTest {
 
   @Test
   public void testSplitLineExpectFlowMappingKey() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-        .setDefaultFlowStyle(FlowStyle.FLOW)
-        .setWidth(16);
+    DumpSettingsBuilder builder =
+        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+            .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(16);
     Map<String, String> nonSplitMap = new TreeMap<String, String>();
     nonSplitMap.put("1", "2");
     nonSplitMap.put("3", "4");
@@ -270,8 +261,7 @@ public class EmitterTest {
 
   @Test
   public void testAnchorInMaps() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.FLOW);
+    DumpSettingsBuilder builder = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.FLOW);
     Map<Object, Object> map1 = new HashMap<Object, Object>();
     Map<Object, Object> map2 = new HashMap<Object, Object>();
     map1.put("2", map2);
@@ -283,15 +273,14 @@ public class EmitterTest {
   @Test
   @DisplayName("Expected space to separate anchor from colon")
   public void testAliasAsKey() {
-    DumpSettingsBuilder builder = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.FLOW);
+    DumpSettingsBuilder builder = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.FLOW);
     // this is VERY BAD code
     // the map has itself as a key (no idea why it may be used except of a DoS attack)
     HashMap f = new HashMap();
     f.put(f, "a");
 
     String output = dump(builder.build(), f);
-    //TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
+    // TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
     // key:value in the flow.
     assertEquals("&id001 {*id001: a}\n", output);
     Load load = new Load(LoadSettings.builder().build());

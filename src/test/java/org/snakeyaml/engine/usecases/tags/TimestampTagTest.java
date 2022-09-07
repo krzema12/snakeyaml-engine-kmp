@@ -43,28 +43,22 @@ public class TimestampTagTest {
   public void testExplicitTag() {
     Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
     tagConstructors.put(myTime, new TimestampConstructor());
-    LoadSettings settings = LoadSettings.builder()
-        .setTagConstructors(tagConstructors)
-        .build();
+    LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
-    LocalDateTime obj = (LocalDateTime) loader.loadFromString(
-        "!!timestamp 2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12,
-        34, 00, 333000000), obj);
+    LocalDateTime obj =
+        (LocalDateTime) loader.loadFromString("!!timestamp 2020-03-24T12:34:00.333");
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
   }
 
   @Test
   public void testImplicitTag() {
     Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
     tagConstructors.put(new Tag(Tag.PREFIX + "timestamp"), new TimestampConstructor());
-    LoadSettings settings = LoadSettings.builder()
-        .setTagConstructors(tagConstructors)
-        .setScalarResolver(new MyScalarResolver())
-        .build();
+    LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors)
+        .setScalarResolver(new MyScalarResolver()).build();
     Load loader = new Load(settings);
     LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12,
-        34, 00, 333000000), obj);
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
 
     assertEquals(2020, loader.loadFromString("2020"));
     assertEquals(3, ((List<String>) loader.loadFromString("[a, b, c]")).size());
@@ -85,9 +79,8 @@ public class TimestampTagTest {
   public static final class MyScalarResolver extends JsonScalarResolver {
 
     // this is taken from YAML 1.1 types
-    public static final Pattern TIMESTAMP = Pattern
-        .compile(
-            "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
+    public static final Pattern TIMESTAMP = Pattern.compile(
+        "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
 
     @Override
     public Tag resolve(String value, Boolean implicit) {

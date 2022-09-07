@@ -41,15 +41,13 @@ public class DumpAnchorTest {
     Compose compose = new Compose(LoadSettings.builder().build());
     Node node = compose.composeReader(new StringReader(str)).get();
 
-    DumpSettings setting = DumpSettings.builder()
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
+    DumpSettings setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
         .setAnchorGenerator(new AnchorGenerator() {
           @Override
           public Anchor nextAnchor(Node node) {
             return node.getAnchor().get();
           }
-        })
-        .build();
+        }).build();
     Dump yaml = new Dump(setting);
 
     StreamDataWriter writer = new MyDumperWriter();
@@ -57,6 +55,7 @@ public class DumpAnchorTest {
     assertEquals(str, writer.toString());
   }
 }
+
 
 class MyDumperWriter extends StringWriter implements StreamDataWriter {
 

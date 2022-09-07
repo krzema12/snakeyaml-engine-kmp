@@ -46,7 +46,7 @@ public class Dump {
   /**
    * Create instance
    *
-   * @param settings    - configuration
+   * @param settings - configuration
    * @param representer - custom representer
    */
   public Dump(DumpSettings settings, BaseRepresenter representer) {
@@ -61,7 +61,7 @@ public class Dump {
    * document
    *
    * @param instancesIterator - instances to serialize
-   * @param streamDataWriter  - destination I/O writer
+   * @param streamDataWriter - destination I/O writer
    */
   public void dumpAll(Iterator<? extends Object> instancesIterator,
       StreamDataWriter streamDataWriter) {
@@ -78,7 +78,7 @@ public class Dump {
   /**
    * Dump a single instance into a YAML document
    *
-   * @param yaml             - instance to serialize
+   * @param yaml - instance to serialize
    * @param streamDataWriter - destination I/O writer
    */
   public void dump(Object yaml, StreamDataWriter streamDataWriter) {
@@ -115,7 +115,7 @@ public class Dump {
   /**
    * Dump the provided Node into a YAML stream.
    *
-   * @param node             - YAML node to be serialized to YAML document
+   * @param node - YAML node to be serialized to YAML document
    * @param streamDataWriter - stream to write to
    */
   public void dumpNode(Node node, StreamDataWriter streamDataWriter) {
@@ -126,13 +126,12 @@ public class Dump {
   }
 }
 
+
 /**
  * Internal helper class to support dumping to String
  */
 class StreamToStringWriter extends StringWriter implements StreamDataWriter {
 
 }
-
-
 
 

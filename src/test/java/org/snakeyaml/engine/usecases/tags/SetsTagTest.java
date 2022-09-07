@@ -36,10 +36,7 @@ public class SetsTagTest {
   public void testSetsTag() {
     LoadSettings settings = LoadSettings.builder().build();
     Load loader = new Load(settings);
-    final String YAML = "---\n"
-        + "sets: !!set\n"
-        + "    ? a\n"
-        + "    ? b\n";
+    final String YAML = "---\n" + "sets: !!set\n" + "    ? a\n" + "    ? b\n";
     Map<String, Set<String>> map = (Map<String, Set<String>>) loader.loadFromString(YAML);
     Set<String> set = map.get("sets");
     assertEquals(2, set.size());

@@ -28,7 +28,8 @@ import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 
 /**
- * Test for issue https://bitbucket.org/snakeyaml/snakeyaml-engine/issues/9/indentation-before-sequence
+ * Test for issue
+ * https://bitbucket.org/snakeyaml/snakeyaml-engine/issues/9/indentation-before-sequence
  */
 @Tag("fast")
 class IndentationTest {
@@ -75,12 +76,8 @@ class IndentationTest {
   void dumpBlockMappingSequenceWithDefaultSettings() {
     Dump dump = createDump(0);
     String output = dump.dumpToString(createMap());
-    assertEquals("key1:\n" +
-        "- value1\n" +
-        "- value2\n" +
-        "key2:\n" +
-        "- value3\n" +
-        "- value4\n", output);
+    assertEquals("key1:\n" + "- value1\n" + "- value2\n" + "key2:\n" + "- value3\n" + "- value4\n",
+        output);
   }
 
   @Test
@@ -88,10 +85,8 @@ class IndentationTest {
   void dumpBlockSequenceMappingWithDefaultSettings() {
     Dump dump = createDump(0);
     String output = dump.dumpToString(createSequence());
-    assertEquals("- key1: value1\n" +
-        "  key2: value2\n" +
-        "- key3: value3\n" +
-        "  key4: value4\n", output);
+    assertEquals("- key1: value1\n" + "  key2: value2\n" + "- key3: value3\n" + "  key4: value4\n",
+        output);
   }
 
   @Test
@@ -99,12 +94,9 @@ class IndentationTest {
   void dumpBlockMappingSequence() {
     Dump dump = createDump(2);
     String output = dump.dumpToString(createMap());
-    assertEquals("key1:\n" +
-        "  - value1\n" +
-        "  - value2\n" +
-        "key2:\n" +
-        "  - value3\n" +
-        "  - value4\n", output);
+    assertEquals(
+        "key1:\n" + "  - value1\n" + "  - value2\n" + "key2:\n" + "  - value3\n" + "  - value4\n",
+        output);
   }
 
   @Test
@@ -112,9 +104,8 @@ class IndentationTest {
   void dumpBlockSequenceMapping() {
     Dump dump = createDump(2);
     String output = dump.dumpToString(createSequence());
-    assertEquals("  - key1: value1\n" +
-        "    key2: value2\n" +
-        "  - key3: value3\n" +
-        "    key4: value4\n", output);
+    assertEquals(
+        "  - key1: value1\n" + "    key2: value2\n" + "  - key3: value3\n" + "    key4: value4\n",
+        output);
   }
 }

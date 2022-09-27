@@ -50,7 +50,7 @@ public final class LoadSettingsBuilder {
   private int maxAliasesForCollections;
   private boolean useMarks;
   private Optional<EnvConfig> envConfig;
-
+  private int codePointLimit;
 
   // general
   private final Map<SettingKey, Object> customProperties = new HashMap();
@@ -79,7 +79,7 @@ public final class LoadSettingsBuilder {
     this.maxAliasesForCollections = 50;
     this.useMarks = true;
     this.envConfig = Optional.empty(); // no ENV substitution by default
-
+    this.codePointLimit = 3 * 1024 * 1024; // 3 MB
   }
 
   /**
@@ -269,6 +269,17 @@ public final class LoadSettingsBuilder {
   }
 
   /**
+   * The max amount of code points in the input YAML document. Please be aware that byte limit
+   * depends on the encoding. It is 3MB by default
+   *
+   * @param codePointLimit - the max allowed size of the YAML data
+   */
+  public LoadSettingsBuilder setCodePointLimit(int codePointLimit) {
+    this.codePointLimit = codePointLimit;
+    return this;
+  }
+
+  /**
    * Build immutable LoadSettings
    *
    * @return immutable LoadSettings
@@ -276,7 +287,8 @@ public final class LoadSettingsBuilder {
   public LoadSettings build() {
     return new LoadSettings(label, tagConstructors, scalarResolver, defaultList, defaultSet,
         defaultMap, versionFunction, bufferSize, allowDuplicateKeys, allowRecursiveKeys,
-        maxAliasesForCollections, useMarks, customProperties, envConfig, parseComments);
+        maxAliasesForCollections, useMarks, customProperties, envConfig, parseComments,
+        codePointLimit);
   }
 }
 

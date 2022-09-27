@@ -44,6 +44,7 @@ public final class LoadSettings {
   private final int maxAliasesForCollections;
   private final boolean useMarks;
   private final Optional<EnvConfig> envConfig;
+  private final int codePointLimit;
 
   // general
   private final Map<SettingKey, Object> customProperties;
@@ -53,7 +54,7 @@ public final class LoadSettings {
       UnaryOperator<SpecVersion> versionFunction, Integer bufferSize, boolean allowDuplicateKeys,
       boolean allowRecursiveKeys, int maxAliasesForCollections, boolean useMarks,
       Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig,
-      boolean parseComments) {
+      boolean parseComments, int codePointLimit) {
     this.label = label;
     this.tagConstructors = tagConstructors;
     this.scalarResolver = scalarResolver;
@@ -69,6 +70,7 @@ public final class LoadSettings {
     this.useMarks = useMarks;
     this.customProperties = customProperties;
     this.envConfig = envConfig;
+    this.codePointLimit = codePointLimit;
   }
 
   public static LoadSettingsBuilder builder() {
@@ -133,6 +135,10 @@ public final class LoadSettings {
 
   public boolean getParseComments() {
     return parseComments;
+  }
+
+  public int getCodePointLimit() {
+    return codePointLimit;
   }
 }
 

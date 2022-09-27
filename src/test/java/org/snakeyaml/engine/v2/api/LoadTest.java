@@ -131,7 +131,7 @@ class LoadTest {
     Iterable<Object> v = load.loadAllFromString("1\n---\n2\n---\n3");
     int counter = 1;
     for (Object o : v) {
-      System.out.println("O: " + o);
+      // System.out.println("O: " + o);
       assertEquals(counter, o);
       counter++;
     }
@@ -147,7 +147,7 @@ class LoadTest {
     Iterable<Object> iterable = load.loadAllFromString("1\n");
     int counter = 1;
     for (Object o : iterable) {
-      System.out.println("O: " + o);
+      // System.out.println("O: " + o);
       assertEquals(counter, o);
       counter++;
     }

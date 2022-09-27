@@ -282,6 +282,10 @@ public final class ScannerImpl implements Scanner {
    * Fetch one or more tokens from the StreamReader.
    */
   private void fetchMoreTokens() {
+    if (reader.getIndex() > settings.getCodePointLimit()) {
+      throw new YamlEngineException("The incoming YAML document exceeds the limit: "
+          + settings.getCodePointLimit() + " code points.");
+    }
     // Eat whitespaces and process comments until we reach the next token.
     scanToNextToken();
     // Remove obsolete possible simple keys.

@@ -131,8 +131,33 @@ class LoadTest {
     Iterable<Object> v = load.loadAllFromString("1\n---\n2\n---\n3");
     int counter = 1;
     for (Object o : v) {
-      assertEquals(counter++, o);
+      System.out.println("O: " + o);
+      assertEquals(counter, o);
+      counter++;
     }
+    assertEquals(4, counter);
+  }
+
+  @Test
+  @DisplayName("Load all from String which has only 1 document")
+  void loadIterableFromString2() {
+    LoadSettings settings = LoadSettings.builder().build();
+    Load load = new Load(settings);
+
+    Iterable<Object> iterable = load.loadAllFromString("1\n");
+    int counter = 1;
+    for (Object o : iterable) {
+      System.out.println("O: " + o);
+      assertEquals(counter, o);
+      counter++;
+    }
+    assertEquals(2, counter);
+
+    Iterator<Object> iter = load.loadAllFromString("1\n").iterator();
+    iter.hasNext();
+    Object o1 = iter.next();
+    assertEquals(1, o1);
+    assertFalse(iter.hasNext());
   }
 
   @Test

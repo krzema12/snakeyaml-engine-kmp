@@ -183,6 +183,7 @@ public class Load {
 
     private final Composer composer;
     private final BaseConstructor constructor;
+    private boolean composerInitiated = false;
 
     public YamlIterator(Composer composer, BaseConstructor constructor) {
       this.composer = composer;
@@ -191,11 +192,15 @@ public class Load {
 
     @Override
     public boolean hasNext() {
+      composerInitiated = true;
       return composer.hasNext();
     }
 
     @Override
     public Object next() {
+      if (!composerInitiated) {
+        hasNext();
+      }
       Node node = composer.next();
       return constructor.constructSingleDocument(Optional.of(node));
     }

@@ -39,9 +39,9 @@ public final class LoadSettingsBuilder {
   private String label;
   private Map<Tag, ConstructNode> tagConstructors;
   private ScalarResolver scalarResolver;
-  private IntFunction<List> defaultList;
-  private IntFunction<Set> defaultSet;
-  private IntFunction<Map> defaultMap;
+  private IntFunction<List<Object>> defaultList;
+  private IntFunction<Set<Object>> defaultSet;
+  private IntFunction<Map<Object, Object>> defaultMap;
   private UnaryOperator<SpecVersion> versionFunction;
   private Integer bufferSize;
   private boolean allowDuplicateKeys;
@@ -53,7 +53,7 @@ public final class LoadSettingsBuilder {
   private int codePointLimit;
 
   // general
-  private final Map<SettingKey, Object> customProperties = new HashMap();
+  private final Map<SettingKey, Object> customProperties = new HashMap<>();
 
   /**
    * Create builder
@@ -123,7 +123,7 @@ public final class LoadSettingsBuilder {
    * @param defaultList - specified List implementation (as a function from init size)
    * @return the builder with the provided value
    */
-  public LoadSettingsBuilder setDefaultList(IntFunction<List> defaultList) {
+  public LoadSettingsBuilder setDefaultList(IntFunction<List<Object>> defaultList) {
     Objects.requireNonNull(defaultList, "defaultList cannot be null");
     this.defaultList = defaultList;
     return this;
@@ -135,7 +135,7 @@ public final class LoadSettingsBuilder {
    * @param defaultSet - specified Set implementation (as a function from init size)
    * @return the builder with the provided value
    */
-  public LoadSettingsBuilder setDefaultSet(IntFunction<Set> defaultSet) {
+  public LoadSettingsBuilder setDefaultSet(IntFunction<Set<Object>> defaultSet) {
     Objects.requireNonNull(defaultSet, "defaultSet cannot be null");
     this.defaultSet = defaultSet;
     return this;
@@ -147,7 +147,7 @@ public final class LoadSettingsBuilder {
    * @param defaultMap - specified Map implementation (as a function from init size)
    * @return the builder with the provided value
    */
-  public LoadSettingsBuilder setDefaultMap(IntFunction<Map> defaultMap) {
+  public LoadSettingsBuilder setDefaultMap(IntFunction<Map<Object, Object>> defaultMap) {
     Objects.requireNonNull(defaultMap, "defaultMap cannot be null");
     this.defaultMap = defaultMap;
     return this;

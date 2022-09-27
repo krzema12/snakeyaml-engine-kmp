@@ -126,7 +126,7 @@ import org.snakeyaml.engine.v2.tokens.Token;
  */
 public class ParserImpl implements Parser {
 
-  private static final Map<String, String> DEFAULT_TAGS = new HashMap();
+  private static final Map<String, String> DEFAULT_TAGS = new HashMap<>();
 
   static {
     DEFAULT_TAGS.put("!", "!");
@@ -164,8 +164,8 @@ public class ParserImpl implements Parser {
     this.settings = settings;
     currentEvent = Optional.empty();
     directiveTags = new HashMap<>(DEFAULT_TAGS);
-    states = new ArrayStack(100);
-    marksStack = new ArrayStack(10);
+    states = new ArrayStack<>(100);
+    marksStack = new ArrayStack<>(10);
     state = Optional.of(new ParseStreamStart()); // prepare the next state
   }
 

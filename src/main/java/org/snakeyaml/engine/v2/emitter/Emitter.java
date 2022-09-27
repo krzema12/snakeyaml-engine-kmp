@@ -64,7 +64,7 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
  */
 public final class Emitter implements Emitable {
 
-  private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
+  private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<>();
   public static final int MIN_INDENT = 1;
   public static final int MAX_INDENT = 10;
 
@@ -162,13 +162,13 @@ public final class Emitter implements Emitable {
     this.stream = stream;
     // Emitter is a state machine with a stack of states to handle nested
     // structures.
-    this.states = new ArrayStack(100);
+    this.states = new ArrayStack<>(100);
     this.state = new ExpectStreamStart();
     // Current event and the event queue.
-    this.events = new ArrayDeque(100);
+    this.events = new ArrayDeque<>(100);
     this.event = null;
     // The current indentation level and the stack of previous indents.
-    this.indents = new ArrayStack(10);
+    this.indents = new ArrayStack<>(10);
     this.indent = null;
     // Flow level.
     this.flowLevel = 0;
@@ -209,7 +209,7 @@ public final class Emitter implements Emitable {
     this.emitComments = opts.getDumpComments();
 
     // Tag prefixes.
-    this.tagPrefixes = new LinkedHashMap();
+    this.tagPrefixes = new LinkedHashMap<>();
 
     // Prepared anchor and tag.
     this.preparedAnchor = Optional.empty();
@@ -365,7 +365,7 @@ public final class Emitter implements Emitable {
         writeIndent();
       }
       ev.getSpecVersion().ifPresent(version -> writeVersionDirective(prepareVersion(version)));
-      tagPrefixes = new LinkedHashMap(DEFAULT_TAG_PREFIXES);
+      tagPrefixes = new LinkedHashMap<>(DEFAULT_TAG_PREFIXES);
       if (!ev.getTags().isEmpty()) {
         handleTagDirectives(ev.getTags());
       }
@@ -381,7 +381,7 @@ public final class Emitter implements Emitable {
     }
 
     private void handleTagDirectives(Map<String, String> tags) {
-      Set<String> handles = new TreeSet(tags.keySet());
+      Set<String> handles = new TreeSet<>(tags.keySet());
       for (String handle : handles) {
         String prefix = tags.get(handle);
         tagPrefixes.put(prefix, handle);

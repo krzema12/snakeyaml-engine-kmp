@@ -25,7 +25,7 @@ import org.snakeyaml.engine.v2.exceptions.EmitterException;
  */
 public class Anchor {
 
-  private static final Set<Character> INVALID_ANCHOR = new HashSet();
+  private static final Set<Character> INVALID_ANCHOR = new HashSet<>();
   private static final Pattern SPACES_PATTERN = Pattern.compile("\\s");
 
   static {

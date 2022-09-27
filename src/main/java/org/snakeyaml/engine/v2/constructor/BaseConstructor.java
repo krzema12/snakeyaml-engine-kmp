@@ -51,10 +51,10 @@ public abstract class BaseConstructor {
   public BaseConstructor(LoadSettings settings) {
     this.settings = settings;
     tagConstructors = new HashMap<>();
-    constructedObjects = new HashMap();
-    recursiveObjects = new HashSet();
-    maps2fill = new ArrayList();
-    sets2fill = new ArrayList();
+    constructedObjects = new HashMap<>();
+    recursiveObjects = new HashSet<>();
+    maps2fill = new ArrayList<>();
+    sets2fill = new ArrayList<>();
   }
 
   /**

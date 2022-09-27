@@ -65,8 +65,8 @@ public class Serializer {
   public Serializer(DumpSettings settings, Emitable emitable) {
     this.settings = settings;
     this.emitable = emitable;
-    this.serializedNodes = new HashSet();
-    this.anchors = new HashMap();
+    this.serializedNodes = new HashSet<>();
+    this.anchors = new HashMap<>();
   }
 
   /**

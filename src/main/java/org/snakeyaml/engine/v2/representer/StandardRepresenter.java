@@ -73,7 +73,7 @@ public class StandardRepresenter extends BaseRepresenter {
     this.parentClassRepresenters.put(Iterator.class, new RepresentIterator());
     this.parentClassRepresenters.put(new Object[0].getClass(), new RepresentArray());
     this.parentClassRepresenters.put(Enum.class, new RepresentEnum());
-    classTags = new HashMap();
+    classTags = new HashMap<>();
     this.settings = settings;
   }
 

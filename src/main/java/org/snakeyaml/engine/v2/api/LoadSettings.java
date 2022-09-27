@@ -33,9 +33,9 @@ public final class LoadSettings {
   private final String label;
   private final Map<Tag, ConstructNode> tagConstructors;
   private final ScalarResolver scalarResolver;
-  private final IntFunction<List> defaultList;
-  private final IntFunction<Set> defaultSet;
-  private final IntFunction<Map> defaultMap;
+  private final IntFunction<List<Object>> defaultList;
+  private final IntFunction<Set<Object>> defaultSet;
+  private final IntFunction<Map<Object, Object>> defaultMap;
   private final UnaryOperator<SpecVersion> versionFunction;
   private final Integer bufferSize;
   private final boolean allowDuplicateKeys;
@@ -50,11 +50,11 @@ public final class LoadSettings {
   private final Map<SettingKey, Object> customProperties;
 
   LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors, ScalarResolver scalarResolver,
-      IntFunction<List> defaultList, IntFunction<Set> defaultSet, IntFunction<Map> defaultMap,
-      UnaryOperator<SpecVersion> versionFunction, Integer bufferSize, boolean allowDuplicateKeys,
-      boolean allowRecursiveKeys, int maxAliasesForCollections, boolean useMarks,
-      Map<SettingKey, Object> customProperties, Optional<EnvConfig> envConfig,
-      boolean parseComments, int codePointLimit) {
+      IntFunction<List<Object>> defaultList, IntFunction<Set<Object>> defaultSet,
+      IntFunction<Map<Object, Object>> defaultMap, UnaryOperator<SpecVersion> versionFunction,
+      Integer bufferSize, boolean allowDuplicateKeys, boolean allowRecursiveKeys,
+      int maxAliasesForCollections, boolean useMarks, Map<SettingKey, Object> customProperties,
+      Optional<EnvConfig> envConfig, boolean parseComments, int codePointLimit) {
     this.label = label;
     this.tagConstructors = tagConstructors;
     this.scalarResolver = scalarResolver;
@@ -89,15 +89,15 @@ public final class LoadSettings {
     return scalarResolver;
   }
 
-  public IntFunction<List> getDefaultList() {
+  public IntFunction<List<Object>> getDefaultList() {
     return defaultList;
   }
 
-  public IntFunction<Set> getDefaultSet() {
+  public IntFunction<Set<Object>> getDefaultSet() {
     return defaultSet;
   }
 
-  public IntFunction<Map> getDefaultMap() {
+  public IntFunction<Map<Object, Object>> getDefaultMap() {
     return defaultMap;
   }
 

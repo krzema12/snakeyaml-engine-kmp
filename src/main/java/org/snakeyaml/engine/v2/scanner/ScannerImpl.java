@@ -1523,15 +1523,15 @@ public final class ScannerImpl implements Scanner {
     if (chomping.increment.isPresent()) {
       // increment is explicit
       blockIndent = minIndent + chomping.increment.get() - 1;
-      Object[] brme = scanBlockScalarBreaks(blockIndent);
-      breaks = (String) brme[0];
-      endMark = (Optional<Mark>) brme[1];
+      BreakIntentHolder brme = scanBlockScalarBreaks(blockIndent);
+      breaks = brme.breaks;
+      endMark = brme.endMark;
     } else {
       // increment (block indent) must be detected in the first non-empty line.
-      Object[] brme = scanBlockScalarIndentation();
-      breaks = (String) brme[0];
-      maxIndent = ((Integer) brme[1]).intValue();
-      endMark = (Optional<Mark>) brme[2];
+      BreakIntentHolder brme = scanBlockScalarIndentation();
+      breaks = brme.breaks;
+      maxIndent = brme.maxIndent;
+      endMark = brme.endMark;
       blockIndent = Math.max(minIndent, maxIndent);
     }
 
@@ -1554,9 +1554,9 @@ public final class ScannerImpl implements Scanner {
       }
       stringBuilder.append(reader.prefixForward(length));
       lineBreakOpt = scanLineBreak();
-      Object[] brme = scanBlockScalarBreaks(blockIndent);
-      breaks = (String) brme[0];
-      endMark = (Optional<Mark>) brme[1];
+      BreakIntentHolder brme = scanBlockScalarBreaks(blockIndent);
+      breaks = brme.breaks;
+      endMark = brme.endMark;
       if (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
 
         // Unfortunately, folding rules are ambiguous.
@@ -1674,7 +1674,7 @@ public final class ScannerImpl implements Scanner {
    * Scans for the indentation of a block scalar implicitly. This mechanism is used only if the
    * block did not explicitly state an indentation to be used.
    */
-  private Object[] scanBlockScalarIndentation() {
+  private BreakIntentHolder scanBlockScalarIndentation() {
     // See the specification for details.
     StringBuilder chunks = new StringBuilder();
     int maxIndent = 0;
@@ -1699,10 +1699,10 @@ public final class ScannerImpl implements Scanner {
       }
     }
     // Pass several results back together (Java 8 does not have records)
-    return new Object[] {chunks.toString(), maxIndent, endMark};
+    return new BreakIntentHolder(chunks.toString(), maxIndent, endMark);
   }
 
-  private Object[] scanBlockScalarBreaks(int indent) {
+  private BreakIntentHolder scanBlockScalarBreaks(int indent) {
     // See the specification for details.
     StringBuilder chunks = new StringBuilder();
     Optional<Mark> endMark = reader.getMark();
@@ -1729,7 +1729,7 @@ public final class ScannerImpl implements Scanner {
       }
     }
     // Return both the assembled intervening string and the end-mark.
-    return new Object[] {chunks.toString(), endMark};
+    return new BreakIntentHolder(chunks.toString(), -1, endMark);
   }
 
   /**
@@ -2248,6 +2248,19 @@ public final class ScannerImpl implements Scanner {
       } else {
         throw new IllegalArgumentException("Unexpected block chomping indicator: " + codePoint);
       }
+    }
+  }
+
+  class BreakIntentHolder {
+
+    private final String breaks;
+    private final int maxIndent;
+    private final Optional<Mark> endMark;
+
+    public BreakIntentHolder(String breaks, int maxIndent, Optional<Mark> endMark) {
+      this.breaks = breaks;
+      this.maxIndent = maxIndent;
+      this.endMark = endMark;
     }
   }
 }

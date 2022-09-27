@@ -97,7 +97,7 @@ public final class CharConstants {
   public static final Map<Character, Integer> ESCAPE_CODES;
 
   static {
-    Map<Character, String> escapes = new HashMap();
+    Map<Character, String> escapes = new HashMap<>();
     escapes.put(Character.valueOf('0'), "\0");// ASCII null
     escapes.put(Character.valueOf('a'), "\u0007");// ASCII bell
     escapes.put(Character.valueOf('b'), "\u0008"); // ASCII backspace
@@ -117,7 +117,7 @@ public final class CharConstants {
     escapes.put(Character.valueOf('P'), "\u2029");// Unicode paragraph separator
     ESCAPE_REPLACEMENTS = Collections.unmodifiableMap(escapes);
 
-    Map<Character, Integer> escapeCodes = new HashMap();
+    Map<Character, Integer> escapeCodes = new HashMap<>();
     escapeCodes.put(Character.valueOf('x'), 2);// 8-bit Unicode
     escapeCodes.put(Character.valueOf('u'), 4);// 16-bit Unicode
     // 32-bit Unicode (Supplementary characters are supported)

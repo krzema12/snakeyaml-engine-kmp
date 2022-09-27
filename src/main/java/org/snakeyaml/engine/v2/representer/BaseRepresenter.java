@@ -40,7 +40,7 @@ public abstract class BaseRepresenter {
   /**
    * Keep representers which must match the class exactly
    */
-  protected final Map<Class<?>, RepresentToNode> representers = new HashMap();
+  protected final Map<Class<?>, RepresentToNode> representers = new HashMap<>();
   /**
    * in Java 'null' is not a type. So we have to keep the null representer separately otherwise it
    * will coincide with the default representer which is stored with the key null.
@@ -50,7 +50,7 @@ public abstract class BaseRepresenter {
   /**
    * Keep representers which match a parent of the class to be represented
    */
-  protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap();
+  protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap<>();
   protected ScalarStyle defaultScalarStyle = ScalarStyle.PLAIN;
   protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
   protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {

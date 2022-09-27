@@ -121,7 +121,7 @@ public class Compose {
   public Iterable<Node> composeAllFromString(String yaml) {
     Objects.requireNonNull(yaml, "String cannot be null");
     // do not use lambda to keep Iterable and Iterator visible
-    return new Iterable() {
+    return new Iterable<Node>() {
       public Iterator<Node> iterator() {
         return new Composer(settings,
             new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml))));

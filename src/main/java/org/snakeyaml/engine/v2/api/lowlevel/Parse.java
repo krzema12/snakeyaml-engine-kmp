@@ -77,7 +77,7 @@ public class Parse {
   public Iterable<Event> parseString(String yaml) {
     Objects.requireNonNull(yaml, "String cannot be null");
     // do not use lambda to keep Iterable and Iterator visible
-    return new Iterable() {
+    return new Iterable<Event>() {
       public Iterator<Event> iterator() {
         return new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml)));
       }

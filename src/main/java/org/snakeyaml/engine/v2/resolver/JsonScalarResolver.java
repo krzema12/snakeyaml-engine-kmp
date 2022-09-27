@@ -41,11 +41,12 @@ public class JsonScalarResolver implements ScalarResolver {
   public static final Pattern ENV_FORMAT =
       Pattern.compile("^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
 
-  protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap();
+  protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<>();
 
   public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
     if (first == null) {
-      List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList());
+      List<ResolverTuple> curr =
+          yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList<>());
       curr.add(new ResolverTuple(tag, regexp));
     } else {
       char[] chrs = first.toCharArray();
@@ -57,7 +58,7 @@ public class JsonScalarResolver implements ScalarResolver {
         }
         List<ResolverTuple> curr = yamlImplicitResolvers.get(theC);
         if (curr == null) {
-          curr = new ArrayList();
+          curr = new ArrayList<>();
           yamlImplicitResolvers.put(theC, curr);
         }
         curr.add(new ResolverTuple(tag, regexp));

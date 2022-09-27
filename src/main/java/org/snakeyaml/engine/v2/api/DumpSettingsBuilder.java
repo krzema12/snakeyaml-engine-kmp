@@ -60,7 +60,7 @@ public final class DumpSettingsBuilder {
   private boolean dumpComments;
 
   // general
-  Map<SettingKey, Object> customProperties = new HashMap();
+  Map<SettingKey, Object> customProperties = new HashMap<>();
 
   /**
    * Create builder

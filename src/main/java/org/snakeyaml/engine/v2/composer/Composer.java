@@ -77,8 +77,8 @@ public class Composer implements Iterator<Node> {
     this.parser = parser;
     this.scalarResolver = settings.getScalarResolver();
     this.settings = settings;
-    this.anchors = new HashMap();
-    this.recursiveNodes = new HashSet();
+    this.anchors = new HashMap<>();
+    this.recursiveNodes = new HashSet<>();
     this.blockCommentsCollector =
         new CommentEventsCollector(parser, CommentType.BLANK_LINE, CommentType.BLOCK);
     this.inlineCommentsCollector = new CommentEventsCollector(parser, CommentType.IN_LINE);
@@ -237,7 +237,7 @@ public class Composer implements Iterator<Node> {
     } else {
       nodeTag = new Tag(tag.get());
     }
-    final ArrayList<Node> children = new ArrayList();
+    final ArrayList<Node> children = new ArrayList<>();
     SequenceNode node = new SequenceNode(nodeTag, resolved, children, startEvent.getFlowStyle(),
         startEvent.getStartMark(), Optional.empty());
     if (startEvent.isFlow()) {

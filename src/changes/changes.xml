@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.5-SNAPSHOT" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="add" issue="39">
+                Add a test (thanks to Charles Korn)
+            </action>
             <action dev="asomov" type="update">
                 Add possibility to limit the input to prevent an attack when parsed from
                 untrusted source

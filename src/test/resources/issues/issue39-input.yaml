@@ -1,0 +1,18 @@
+containers:
+  container-1:
+    # Comment before
+    build_directory: some-dir
+    # Comment after
+    other_option: thing
+
+  container-2:
+    image: blah:1.2.3
+
+
+  container-3:
+    image: blah
+
+  # Thing
+
+  container-4:
+    image: blah4

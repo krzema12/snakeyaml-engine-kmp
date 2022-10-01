@@ -5,7 +5,7 @@
         <title>YAML 1.2 parser and emitter for Java 8+</title>
     </properties>
     <body>
-        <release version="2.5-SNAPSHOT" date="in GIT" description="Maintenance">
+        <release version="2.5" date="2022-10-02" description="Maintenance">
             <action dev="asomov" type="add" issue="39">
                 Add a test (thanks to Charles Korn)
             </action>

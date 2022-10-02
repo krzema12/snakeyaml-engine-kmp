@@ -60,6 +60,7 @@ public final class StreamReader {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public StreamReader(Reader reader, LoadSettings loadSettings) {
     this(loadSettings, reader);
   }
@@ -78,6 +79,7 @@ public final class StreamReader {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public StreamReader(String stream, LoadSettings loadSettings) {
     this(loadSettings, new StringReader(stream));
   }

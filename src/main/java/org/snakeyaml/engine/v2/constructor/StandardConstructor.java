@@ -192,12 +192,12 @@ public class StandardConstructor extends BaseConstructor {
         value = value.substring(1);
       }
       if (".inf".equals(value)) {
-        return Double.valueOf(sign == -1 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
+        return sign == -1 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
       } else if (".nan".equals(value)) {
-        return Double.valueOf(Double.NaN);
+        return Double.NaN;
       } else {
-        Double d = Double.valueOf(value);
-        return Double.valueOf(d.doubleValue() * sign);
+        double d = Double.valueOf(value);
+        return Double.valueOf(d * sign);
       }
     }
   }
@@ -339,11 +339,7 @@ public class StandardConstructor extends BaseConstructor {
         String separator = matcher.group(2);
         String env = getEnv(name);
         Optional<String> overruled = config.getValueFor(name, separator, nonNullValue, env);
-        if (overruled.isPresent()) {
-          return overruled.get();
-        } else {
-          return apply(name, separator, nonNullValue, env);
-        }
+        return overruled.orElseGet(() -> apply(name, separator, nonNullValue, env));
       } else {
         return val;
       }

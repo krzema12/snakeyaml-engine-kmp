@@ -225,6 +225,11 @@
                     <links>
                         <link>https://docs.oracle.com/javase/8/docs/api/</link>
                     </links>
+                    <excludePackageNames>
+                        org.snakeyaml.engine.external.com.google.gdata.util.common.base,
+                        org.snakeyaml.engine.v2.tokens,
+                        org.snakeyaml.engine.v2.events
+                    </excludePackageNames>
                 </configuration>
                 <executions>
                     <execution>

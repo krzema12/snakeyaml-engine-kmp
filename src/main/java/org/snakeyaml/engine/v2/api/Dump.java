@@ -24,12 +24,19 @@ import org.snakeyaml.engine.v2.representer.StandardRepresenter;
 import org.snakeyaml.engine.v2.serializer.Serializer;
 
 /**
- * Common way to serialize any Java instance(s) The instance is stateful. Only one of the 'dump'
- * methods may be called and it may be called only once.
+ * Common way to serialize any Java instance(s). The instance is stateful. Only one of the 'dump'
+ * methods may be called, and it may be called only once.
  */
 public class Dump {
 
+  /**
+   * Configuration options
+   */
   protected DumpSettings settings;
+
+  /**
+   * The component to translate Java instances to Nodes
+   */
   protected BaseRepresenter representer;
 
   /**

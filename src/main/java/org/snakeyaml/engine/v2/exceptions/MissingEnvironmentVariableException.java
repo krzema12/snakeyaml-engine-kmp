@@ -18,6 +18,11 @@ package org.snakeyaml.engine.v2.exceptions;
  */
 public class MissingEnvironmentVariableException extends YamlEngineException {
 
+  /**
+   * Create
+   *
+   * @param message - error message
+   */
   public MissingEnvironmentVariableException(String message) {
     super(message);
   }

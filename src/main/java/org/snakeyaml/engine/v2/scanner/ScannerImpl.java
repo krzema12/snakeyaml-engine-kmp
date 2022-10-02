@@ -1374,8 +1374,10 @@ public final class ScannerImpl implements Scanner {
    * <pre>
    * The YAML 1.2 specification does not restrict characters for anchors and
    * aliases. This may lead to problems.
-   * see https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to
-   * This implementation tries to follow https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md
+   * see <a href=
+  "https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to">issue 485</a>
+   * This implementation tries to follow <a href=
+  "https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md">RFC-0003</a>
    * </pre>
    */
   private Token scanAnchor(boolean isAnchor) {
@@ -1733,6 +1735,7 @@ public final class ScannerImpl implements Scanner {
   /**
    * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
    * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
+   *
    * <pre>
    * See the specification for details.
    * Note that we loose indentation rules for quoted scalars. Quoted
@@ -1788,15 +1791,13 @@ public final class ScannerImpl implements Scanner {
       } else if (doubleQuoted && c == '\\') {
         reader.forward();
         c = reader.peek();
-        if (!Character.isSupplementaryCodePoint(c)
-            && ESCAPE_REPLACEMENTS.containsKey((char) c)) {
+        if (!Character.isSupplementaryCodePoint(c) && ESCAPE_REPLACEMENTS.containsKey((char) c)) {
           // The character is one of the single-replacement
           // types; these are replaced with a literal character
           // from the mapping.
           chunks.append(ESCAPE_REPLACEMENTS.get((char) c));
           reader.forward();
-        } else if (!Character.isSupplementaryCodePoint(c)
-            && ESCAPE_CODES.containsKey((char) c)) {
+        } else if (!Character.isSupplementaryCodePoint(c) && ESCAPE_CODES.containsKey((char) c)) {
           // The character is a multi-digit escape sequence, with
           // length defined by the value in the ESCAPE_CODES map.
           length = ESCAPE_CODES.get((char) c);

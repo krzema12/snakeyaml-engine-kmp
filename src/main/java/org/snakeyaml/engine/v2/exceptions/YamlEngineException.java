@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.exceptions;
 
 /**
- * General exceptions
+ * General exception to serve as the root
  */
 public class YamlEngineException extends RuntimeException {
 

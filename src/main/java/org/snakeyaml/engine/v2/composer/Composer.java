@@ -308,10 +308,22 @@ public class Composer implements Iterator<Node> {
     children.add(new NodeTuple(itemKey, itemValue));
   }
 
+  /**
+   * To be able to override composeNode(node) which is a key
+   *
+   * @param node - the source
+   * @return node
+   */
   protected Node composeKeyNode(MappingNode node) {
     return composeNode(Optional.of(node));
   }
 
+  /**
+   * To be able to override composeNode(node) which is a value
+   *
+   * @param node - the source
+   * @return node
+   */
   protected Node composeValueNode(MappingNode node) {
     return composeNode(Optional.of(node));
   }

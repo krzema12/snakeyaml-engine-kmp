@@ -78,15 +78,11 @@ public class StandardRepresenter extends BaseRepresenter {
   }
 
   protected Tag getTag(Class<?> clazz, Tag defaultTag) {
-    if (classTags.containsKey(clazz)) {
-      return classTags.get(clazz);
-    } else {
-      return defaultTag;
-    }
+    return classTags.getOrDefault(clazz, defaultTag);
   }
 
   /**
-   * Define a tag for the <code>Class</code> to serialize.
+   * Define a tag for the <code>Class</code> to serialize. TODO should it be removed ?
    *
    * @param clazz <code>Class</code> which tag is changed
    * @param tag new tag to be used for every instance of the specified <code>Class</code>
@@ -182,7 +178,7 @@ public class StandardRepresenter extends BaseRepresenter {
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
       return representSequence(getTag(data.getClass(), Tag.SEQ), (List<Object>) data,
-          FlowStyle.AUTO);
+          settings.getDefaultFlowStyle());
     }
   }
 
@@ -192,7 +188,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Iterator<Object> iter = (Iterator<Object>) data;
       return representSequence(getTag(data.getClass(), Tag.SEQ), new IteratorWrapper(iter),
-          FlowStyle.AUTO);
+          settings.getDefaultFlowStyle());
     }
   }
 
@@ -214,7 +210,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Object[] array = (Object[]) data;
       List<Object> list = Arrays.asList(array);
-      return representSequence(Tag.SEQ, list, FlowStyle.AUTO);
+      return representSequence(Tag.SEQ, list, settings.getDefaultFlowStyle());
     }
   }
 
@@ -227,22 +223,23 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Class<?> type = data.getClass().getComponentType();
 
+      FlowStyle style = settings.getDefaultFlowStyle();
       if (byte.class == type) {
-        return representSequence(Tag.SEQ, asByteList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asByteList(data), style);
       } else if (short.class == type) {
-        return representSequence(Tag.SEQ, asShortList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asShortList(data), style);
       } else if (int.class == type) {
-        return representSequence(Tag.SEQ, asIntList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asIntList(data), style);
       } else if (long.class == type) {
-        return representSequence(Tag.SEQ, asLongList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asLongList(data), style);
       } else if (float.class == type) {
-        return representSequence(Tag.SEQ, asFloatList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asFloatList(data), style);
       } else if (double.class == type) {
-        return representSequence(Tag.SEQ, asDoubleList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asDoubleList(data), style);
       } else if (char.class == type) {
-        return representSequence(Tag.SEQ, asCharList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asCharList(data), style);
       } else if (boolean.class == type) {
-        return representSequence(Tag.SEQ, asBooleanList(data), FlowStyle.AUTO);
+        return representSequence(Tag.SEQ, asBooleanList(data), style);
       }
 
       throw new YamlEngineException("Unexpected primitive '" + type.getCanonicalName() + "'");
@@ -326,7 +323,7 @@ public class StandardRepresenter extends BaseRepresenter {
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
       return representMapping(getTag(data.getClass(), Tag.MAP), (Map<Object, Object>) data,
-          FlowStyle.AUTO);
+          settings.getDefaultFlowStyle());
     }
   }
 
@@ -339,7 +336,8 @@ public class StandardRepresenter extends BaseRepresenter {
       for (Object key : set) {
         value.put(key, null);
       }
-      return representMapping(getTag(data.getClass(), Tag.SET), value, FlowStyle.AUTO);
+      return representMapping(getTag(data.getClass(), Tag.SET), value,
+          settings.getDefaultFlowStyle());
     }
   }
 

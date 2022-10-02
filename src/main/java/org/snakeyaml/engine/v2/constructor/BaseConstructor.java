@@ -36,6 +36,9 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
+/**
+ * Base code
+ */
 public abstract class BaseConstructor {
 
   protected LoadSettings settings;
@@ -171,6 +174,7 @@ public abstract class BaseConstructor {
   }
 
   // >>>> DEFAULTS >>>>
+  //TODO ?
   protected List<Object> createDefaultList(int initSize) {
     return new ArrayList<>(initSize);
   }
@@ -184,6 +188,7 @@ public abstract class BaseConstructor {
     return new LinkedHashMap<>(initSize);
   }
 
+  //TODO ?
   protected Object createArray(Class<?> type, int size) {
     return Array.newInstance(type.getComponentType(), size);
   }

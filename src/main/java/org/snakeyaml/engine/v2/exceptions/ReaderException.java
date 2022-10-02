@@ -13,12 +13,23 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+/**
+ * Indicate invalid input stream
+ */
 public class ReaderException extends YamlEngineException {
 
   private final String name;
   private final int codePoint;
   private final int position;
 
+  /**
+   * Create
+   *
+   * @param name - the name of the reader
+   * @param position - the position from the beginning of the stream
+   * @param codePoint - the invalid character
+   * @param message - the problem
+   */
   public ReaderException(String name, int position, int codePoint, String message) {
     super(message);
     this.name = name;

@@ -51,8 +51,17 @@ public abstract class BaseRepresenter {
    * Keep representers which match a parent of the class to be represented
    */
   protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap<>();
+  /**
+   * scalar style
+   */
   protected ScalarStyle defaultScalarStyle = ScalarStyle.PLAIN;
+  /**
+   * flow style for collections
+   */
   protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
+  /**
+   * Keep references of already represented instances
+   */
   protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
     @Override
     public Node put(Object key, Node value) {

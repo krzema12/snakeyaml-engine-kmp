@@ -16,7 +16,9 @@ package org.snakeyaml.engine.v2.common;
 import java.util.ArrayList;
 
 /**
- * General stack implementation.
+ * Custom stack
+ *
+ * @param <T> data to keep in stack
  */
 public class ArrayStack<T> {
 
@@ -28,17 +30,32 @@ public class ArrayStack<T> {
    * @param initSize - the initial size of the stack
    */
   public ArrayStack(int initSize) {
-    stack = new ArrayList<>(initSize);
+    stack = new ArrayList<T>(initSize);
   }
 
+  /**
+   * Add the element to the head
+   *
+   * @param obj - data to be added
+   */
   public void push(T obj) {
     stack.add(obj);
   }
 
+  /**
+   * Get the head and remove it from the stack
+   *
+   * @return the head
+   */
   public T pop() {
     return stack.remove(stack.size() - 1);
   }
 
+  /**
+   * Check
+   *
+   * @return true when it contains nothing
+   */
   public boolean isEmpty() {
     return stack.isEmpty();
   }

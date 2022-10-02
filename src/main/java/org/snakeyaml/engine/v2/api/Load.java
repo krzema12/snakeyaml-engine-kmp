@@ -58,24 +58,54 @@ public class Load {
     this.constructor = constructor;
   }
 
+  /**
+   * Create Composer
+   *
+   * @param streamReader - the input
+   * @return configured Composer
+   */
   private Composer createComposer(StreamReader streamReader) {
     return new Composer(settings, new ParserImpl(settings, streamReader));
   }
 
+  /**
+   * Create Composer
+   *
+   * @param yamlStream - the input
+   * @return configured Composer
+   */
   protected Composer createComposer(InputStream yamlStream) {
     return createComposer(new StreamReader(settings, new YamlUnicodeReader(yamlStream)));
   }
 
+  /**
+   * Create Composer
+   *
+   * @param yaml - the input
+   * @return configured Composer
+   */
   protected Composer createComposer(String yaml) {
     return createComposer(new StreamReader(settings, yaml));
   }
 
+  /**
+   * Create Composer
+   *
+   * @param yamlReader - the input
+   * @return configured Composer
+   */
   protected Composer createComposer(Reader yamlReader) {
     return createComposer(new StreamReader(settings, yamlReader));
   }
 
   // Load a single document
 
+  /**
+   * Load with provided Composer
+   *
+   * @param composer - the component to create the Node
+   * @return deserialised YAML document
+   */
   protected Object loadOne(Composer composer) {
     Optional<Node> nodeOptional = composer.getSingleNode();
     return constructor.constructSingleDocument(nodeOptional);

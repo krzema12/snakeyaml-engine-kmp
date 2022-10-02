@@ -26,7 +26,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
 /**
- * Fine-tuning parsing/loading Description for all the fields can be found in the builder
+ * Fine-tuning parsing/loading. Description for all the fields can be found in the builder
  */
 public final class LoadSettings {
 

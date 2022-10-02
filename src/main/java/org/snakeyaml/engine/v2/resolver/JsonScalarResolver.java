@@ -27,11 +27,26 @@ import org.snakeyaml.engine.v2.nodes.Tag;
  */
 public class JsonScalarResolver implements ScalarResolver {
 
+  /**
+   * Boolean as defined in JSON
+   */
   public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
+  /**
+   * Float as defined in JSON (Number which is Float)
+   */
   public static final Pattern FLOAT = Pattern.compile(
       "^(-?(0?\\.[0-9]+|[1-9][0-9]*(\\.[0-9]*)?)(e[-+]?[0-9]+)?)|-?\\.(?:inf)|\\.(?:nan)$"); // NOSONAR
+  /**
+   * Integer as defined in JSON (Number which is Integer)
+   */
   public static final Pattern INT = Pattern.compile("^(?:-?(?:0|[1-9][0-9]*))$");
+  /**
+   * Null as defined in JSON
+   */
   public static final Pattern NULL = Pattern.compile("^(?:null)$");
+  /**
+   * No value indication
+   */
   public static final Pattern EMPTY = Pattern.compile("^$");
 
   /**

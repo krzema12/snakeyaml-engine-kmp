@@ -20,6 +20,11 @@ public class AnchorNode extends Node {
 
   private final Node realNode;
 
+  /**
+   * Create
+   *
+   * @param realNode - the source node
+   */
   public AnchorNode(Node realNode) {
     super(realNode.getTag(), realNode.getStartMark(), realNode.getEndMark());
     this.realNode = realNode;
@@ -30,6 +35,11 @@ public class AnchorNode extends Node {
     return NodeType.ANCHOR;
   }
 
+  /**
+   * getter
+   *
+   * @return the origin
+   */
   public Node getRealNode() {
     return realNode;
   }

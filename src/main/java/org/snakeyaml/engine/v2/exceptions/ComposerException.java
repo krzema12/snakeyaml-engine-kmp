@@ -21,12 +21,26 @@ import java.util.Optional;
  */
 public class ComposerException extends MarkedYamlEngineException { // NOSONAR
 
+  /**
+   * Create
+   *
+   * @param context - part of the document
+   * @param contextMark - context position
+   * @param problem - the issue
+   * @param problemMark - the problem location
+   */
   public ComposerException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark) {
     super(context, contextMark, problem, problemMark);
     Objects.requireNonNull(context);
   }
 
+  /**
+   * Create
+   *
+   * @param problem - the issue
+   * @param problemMark - the problem location
+   */
   public ComposerException(String problem, Optional<Mark> problemMark) {
     super("", Optional.empty(), problem, problemMark);
   }

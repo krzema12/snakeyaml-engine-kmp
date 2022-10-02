@@ -16,6 +16,9 @@ package org.snakeyaml.engine.v2.exceptions;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Parsing exception when the marks are available
+ */
 public class MarkedYamlEngineException extends YamlEngineException {
 
   private final String context;

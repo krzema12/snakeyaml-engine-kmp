@@ -46,8 +46,8 @@ public final class StreamReader {
   private int pointer = 0;
   private boolean eof;
   /**
-   * index is only required to implement 1024 key length restriction TODO It must count code points,
-   * but it counts characters (to be fixed)
+   * index is only required to implement 1024 key length restriction and the total length
+   * restriction
    */
   private int index = 0; // in code points
   private int line = 0;

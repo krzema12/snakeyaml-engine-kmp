@@ -20,11 +20,28 @@ import java.util.Optional;
  */
 public class ConstructorException extends MarkedYamlEngineException { // NOSONAR
 
+  /**
+   * Create
+   *
+   * @param context - part of the document
+   * @param contextMark - context position
+   * @param problem - the issue
+   * @param problemMark - problem position
+   * @param cause - the reason
+   */
   public ConstructorException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark, Throwable cause) {
     super(context, contextMark, problem, problemMark, cause);
   }
 
+  /**
+   * Create
+   *
+   * @param context - part of the document
+   * @param contextMark - context position
+   * @param problem - the issue
+   * @param problemMark - problem position
+   */
   public ConstructorException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark) {
     this(context, contextMark, problem, problemMark, null);

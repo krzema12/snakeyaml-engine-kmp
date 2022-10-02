@@ -17,7 +17,8 @@ import java.io.Serializable;
 import org.snakeyaml.engine.v2.common.CharConstants;
 
 /**
- * Its only use is producing nice error messages. Parser does not use it for any other purposes.
+ * Location of a problem in the YAML document. Its only use is producing nice error messages. Parser
+ * does not use it for any other purposes.
  */
 public final class Mark implements Serializable {
 
@@ -49,7 +50,7 @@ public final class Mark implements Serializable {
    * @param line - line of the mark from beginning of the stream
    * @param column - column of the mark from beginning of the line
    * @param buffer - the data
-   * @param pointer - the position of the mark from the beginning of the stream
+   * @param pointer - the position of the mark from the beginning of the data
    */
   public Mark(String name, int index, int line, int column, int[] buffer, int pointer) {
     super();
@@ -69,7 +70,7 @@ public final class Mark implements Serializable {
    * @param line - line of the mark from beginning of the stream
    * @param column - column of the mark from beginning of the line
    * @param str - the data
-   * @param pointer - the position of the mark from the beginning of the stream
+   * @param pointer - the position of the mark from the beginning of the data
    */
   public Mark(String name, int index, int line, int column, char[] str, int pointer) {
     this(name, index, line, column, toCodePoints(str), pointer);
@@ -126,9 +127,7 @@ public final class Mark implements Serializable {
   @Override
   public String toString() {
     String snippet = createSnippet();
-    String builder =
-        " in " + name + ", line " + (line + 1) + ", column " + (column + 1) + ":\n" + snippet;
-    return builder;
+    return " in " + name + ", line " + (line + 1) + ", column " + (column + 1) + ":\n" + snippet;
   }
 
   public String getName() {

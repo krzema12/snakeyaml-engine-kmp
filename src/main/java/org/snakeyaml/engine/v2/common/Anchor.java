@@ -40,6 +40,11 @@ public class Anchor {
 
   private final String value;
 
+  /**
+   * Create
+   *
+   * @param value - the anchor value
+   */
   public Anchor(String value) {
     Objects.requireNonNull(value);
     if (value.isEmpty()) {
@@ -58,6 +63,11 @@ public class Anchor {
     this.value = value;
   }
 
+  /**
+   * getter
+   *
+   * @return anchor value
+   */
   public String getValue() {
     return value;
   }

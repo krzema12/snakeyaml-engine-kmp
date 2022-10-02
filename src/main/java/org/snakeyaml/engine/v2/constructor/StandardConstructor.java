@@ -244,8 +244,8 @@ public class StandardConstructor extends BaseConstructor {
     @Override
     public Object construct(Node node) {
       if (node.isRecursive()) {
-        return (constructedObjects.containsKey(node) ? constructedObjects.get(node)
-            : createDefaultSet(((MappingNode) node).getValue().size()));
+        return constructedObjects.containsKey(node) ? constructedObjects.get(node)
+            : createEmptySetForNode((MappingNode) node);
       } else {
         return constructSet((MappingNode) node);
       }
@@ -276,7 +276,7 @@ public class StandardConstructor extends BaseConstructor {
     public Object construct(Node node) {
       SequenceNode seqNode = (SequenceNode) node;
       if (node.isRecursive()) {
-        return settings.getDefaultList().apply(seqNode.getValue().size());
+        return createEmptyListForNode(seqNode);
       } else {
         return constructSequence(seqNode);
       }
@@ -299,7 +299,7 @@ public class StandardConstructor extends BaseConstructor {
     public Object construct(Node node) {
       MappingNode mappingNode = (MappingNode) node;
       if (node.isRecursive()) {
-        return createDefaultMap(mappingNode.getValue().size());
+        return createEmptyMapFor(mappingNode);
       } else {
         return constructMapping(mappingNode);
       }

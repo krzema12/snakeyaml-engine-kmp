@@ -13,13 +13,10 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,29 +165,49 @@ public abstract class BaseConstructor {
     }
   }
 
-
+  /**
+   * Create String from the provided scalar node
+   *
+   * @param node - the source
+   * @return value of the scalar node
+   */
   protected String constructScalar(ScalarNode node) {
     return node.getValue();
   }
 
   // >>>> DEFAULTS >>>>
-  //TODO ?
-  protected List<Object> createDefaultList(int initSize) {
-    return new ArrayList<>(initSize);
+
+  /**
+   * Create List implementation. By default, it returns the value configured in the settings in
+   * getDefaultList(). Any custom List implementation can be provided.
+   *
+   * @param node - the node to fill the List
+   * @return empty List to fill
+   */
+  protected List<Object> createEmptyListForNode(SequenceNode node) {
+    return settings.getDefaultList().apply(node.getValue().size());
   }
 
-  protected Set<Object> createDefaultSet(int initSize) {
-    return new LinkedHashSet<>(initSize);
+  /**
+   * Create Set implementation. By default, it returns the value configured in the settings in
+   * getDefaultSet(). Any custom Set implementation can be provided.
+   *
+   * @param node - the node to fill the Set
+   * @return empty Set to fill
+   */
+  protected Set<Object> createEmptySetForNode(MappingNode node) {
+    return settings.getDefaultSet().apply(node.getValue().size());
   }
 
-  protected Map<Object, Object> createDefaultMap(int initSize) {
-    // respect order from YAML document
-    return new LinkedHashMap<>(initSize);
-  }
-
-  //TODO ?
-  protected Object createArray(Class<?> type, int size) {
-    return Array.newInstance(type.getComponentType(), size);
+  /**
+   * Create Map implementation. By default, it returns the value configured in the settings in
+   * getDefaultMap(). Any custom Map implementation can be provided.
+   *
+   * @param node - the node to fill the Map
+   * @return empty Map to fill
+   */
+  protected Map<Object, Object> createEmptyMapFor(MappingNode node) {
+    return settings.getDefaultMap().apply(node.getValue().size());
   }
 
   // <<<< DEFAULTS <<<<

@@ -64,6 +64,7 @@ public final class LoadSettingsBuilder {
     this.scalarResolver = new JsonScalarResolver();
     this.defaultList = ArrayList::new; // same as new ArrayList(initSize)
     this.defaultSet = LinkedHashSet::new; // same as new LinkedHashSet(initSize)
+    // respect order from YAML document
     this.defaultMap = LinkedHashMap::new; // same as new LinkedHashMap(initSize)
     this.versionFunction = version -> {
       if (version.getMajor() != 1) {

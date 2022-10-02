@@ -22,11 +22,21 @@ public class YamlVersionException extends YamlEngineException {
 
   private final SpecVersion specVersion;
 
+  /**
+   * Create
+   *
+   * @param specVersion - the version
+   */
   public YamlVersionException(SpecVersion specVersion) {
     super(specVersion.toString());
     this.specVersion = specVersion;
   }
 
+  /**
+   * getter
+   *
+   * @return its version
+   */
   public SpecVersion getSpecVersion() {
     return specVersion;
   }

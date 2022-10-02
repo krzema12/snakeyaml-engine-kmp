@@ -57,6 +57,9 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver;
  */
 public class Composer implements Iterator<Node> {
 
+  /**
+   * Event parser
+   */
   protected final Parser parser;
   private final ScalarResolver scalarResolver;
   private final Map<Anchor, Node> anchors;
@@ -67,6 +70,8 @@ public class Composer implements Iterator<Node> {
   private final CommentEventsCollector inlineCommentsCollector;
 
   /**
+   * @param parser - the input
+   * @param settings - configuration options
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -74,6 +79,12 @@ public class Composer implements Iterator<Node> {
     this(settings, parser);
   }
 
+  /**
+   * Create
+   *
+   * @param settings - configuration options
+   * @param parser - the input
+   */
   public Composer(LoadSettings settings, Parser parser) {
     this.parser = parser;
     this.scalarResolver = settings.getScalarResolver();
@@ -208,6 +219,13 @@ public class Composer implements Iterator<Node> {
     node.setAnchor(Optional.of(anchor));
   }
 
+  /**
+   * Create ScalarNode
+   *
+   * @param anchor - anchor if present
+   * @param blockComments - comments before the Node
+   * @return Node
+   */
   protected Node composeScalarNode(Optional<Anchor> anchor, List<CommentLine> blockComments) {
     ScalarEvent ev = (ScalarEvent) parser.next();
     Optional<String> tag = ev.getTag();
@@ -227,7 +245,13 @@ public class Composer implements Iterator<Node> {
     return node;
   }
 
-  protected Node composeSequenceNode(Optional<Anchor> anchor) {
+  /**
+   * Compose a sequence Node from the input starting with SequenceStartEvent
+   *
+   * @param anchor - anchor if present
+   * @return parsed Node
+   */
+  protected SequenceNode composeSequenceNode(Optional<Anchor> anchor) {
     SequenceStartEvent startEvent = (SequenceStartEvent) parser.next();
     Optional<String> tag = startEvent.getTag();
     Tag nodeTag;
@@ -264,6 +288,12 @@ public class Composer implements Iterator<Node> {
     return node;
   }
 
+  /**
+   * Create mapping Node
+   *
+   * @param anchor - anchor if present
+   * @return Node
+   */
   protected Node composeMappingNode(Optional<Anchor> anchor) {
     MappingStartEvent startEvent = (MappingStartEvent) parser.next();
     Optional<String> tag = startEvent.getTag();
@@ -302,6 +332,12 @@ public class Composer implements Iterator<Node> {
     return node;
   }
 
+  /**
+   * Add the provided Node to the children as the last child
+   *
+   * @param children - the list to be extended
+   * @param node - the child to the children
+   */
   protected void composeMappingChildren(List<NodeTuple> children, MappingNode node) {
     Node itemKey = composeKeyNode(node);
     Node itemValue = composeValueNode(node);

@@ -58,6 +58,8 @@ public final class StreamReader {
   private final boolean useMarks;
 
   /**
+   * @param loadSettings - configuration options
+   * @param reader - the input
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -65,6 +67,12 @@ public final class StreamReader {
     this(loadSettings, reader);
   }
 
+  /**
+   * Create
+   *
+   * @param loadSettings - configuration options
+   * @param reader - the input
+   */
   public StreamReader(LoadSettings loadSettings, Reader reader) {
     this.name = loadSettings.getLabel();
     this.codePointsWindow = new int[0];
@@ -77,6 +85,8 @@ public final class StreamReader {
   }
 
   /**
+   * @param stream - the input
+   * @param loadSettings - configuration options
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -84,6 +94,12 @@ public final class StreamReader {
     this(loadSettings, new StringReader(stream));
   }
 
+  /**
+   * Create
+   *
+   * @param loadSettings - configuration options
+   * @param stream - the input
+   */
   public StreamReader(LoadSettings loadSettings, String stream) {
     this(loadSettings, new StringReader(stream));
   }

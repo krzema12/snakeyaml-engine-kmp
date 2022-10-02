@@ -35,6 +35,12 @@ public class ParserException extends MarkedYamlEngineException { // NOSONAR
     super(context, contextMark, problem, problemMark, null);
   }
 
+  /**
+   * Create
+   *
+   * @param problem - the issue
+   * @param problemMark - the position of the issue
+   */
   public ParserException(String problem, Optional<Mark> problemMark) {
     super(null, Optional.empty(), problem, problemMark, null);
   }

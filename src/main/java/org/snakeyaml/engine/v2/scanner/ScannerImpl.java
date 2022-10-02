@@ -159,6 +159,8 @@ public final class ScannerImpl implements Scanner {
   private final LoadSettings settings;
 
   /**
+   * @param reader - the input
+   * @param settings - configurable options
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -166,6 +168,12 @@ public final class ScannerImpl implements Scanner {
     this(settings, reader);
   }
 
+  /**
+   * Create
+   *
+   * @param settings - configurable options
+   * @param reader - the input
+   */
   public ScannerImpl(LoadSettings settings, StreamReader reader) {
     this.reader = reader;
     this.settings = settings;
@@ -177,6 +185,7 @@ public final class ScannerImpl implements Scanner {
   }
 
   /**
+   * @param reader - the input
    * @deprecated it should be used with LoadSettings
    */
   @Deprecated
@@ -1375,9 +1384,9 @@ public final class ScannerImpl implements Scanner {
    * The YAML 1.2 specification does not restrict characters for anchors and
    * aliases. This may lead to problems.
    * see <a href=
-  "https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to">issue 485</a>
+   * "https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to">issue 485</a>
    * This implementation tries to follow <a href=
-  "https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md">RFC-0003</a>
+   * "https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md">RFC-0003</a>
    * </pre>
    */
   private Token scanAnchor(boolean isAnchor) {

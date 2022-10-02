@@ -73,6 +73,11 @@ public final class LoadSettings {
     this.codePointLimit = codePointLimit;
   }
 
+  /**
+   * Create the builder
+   *
+   * @return the builder to fill the configuration options
+   */
   public static LoadSettingsBuilder builder() {
     return new LoadSettingsBuilder();
   }

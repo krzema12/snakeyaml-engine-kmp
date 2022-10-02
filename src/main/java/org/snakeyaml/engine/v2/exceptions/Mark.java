@@ -80,6 +80,13 @@ public final class Mark implements Serializable {
     return CharConstants.NULL_OR_LINEBR.has(c);
   }
 
+  /**
+   * Create readable snippet
+   *
+   * @param indent - the indent
+   * @param maxLength - cut data after this length
+   * @return readable piece of YAML where a problem detected
+   */
   public String createSnippet(int indent, int maxLength) {
     float half = maxLength / 2f - 1f;
     int start = pointer;
@@ -120,6 +127,11 @@ public final class Mark implements Serializable {
     return result.toString();
   }
 
+  /**
+   * Create readable YAML with indent 4 and n ot longer that 75 characters long
+   *
+   * @return readable piece of YAML where a problem detected
+   */
   public String createSnippet() {
     return createSnippet(4, 75);
   }
@@ -130,6 +142,11 @@ public final class Mark implements Serializable {
     return " in " + name + ", line " + (line + 1) + ", column " + (column + 1) + ":\n" + snippet;
   }
 
+  /**
+   * getter
+   *
+   * @return name of the data stream
+   */
   public String getName() {
     return name;
   }
@@ -161,10 +178,21 @@ public final class Mark implements Serializable {
     return index;
   }
 
+  /**
+   * getter
+   *
+   * @return data with the error
+   */
   public int[] getBuffer() {
     return buffer;
   }
 
+
+  /**
+   * getter
+   *
+   * @return pointer in the data to the error
+   */
   public int getPointer() {
     return pointer;
   }

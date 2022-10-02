@@ -38,6 +38,12 @@ public class Present {
     this.settings = settings;
   }
 
+  /**
+   * Serialise the provided Events
+   *
+   * @param events - the data to serialise
+   * @return - the YAML document
+   */
   public String emitToString(Iterator<Event> events) {
     Objects.requireNonNull(events, "events cannot be null");
     StreamToStringWriter writer = new StreamToStringWriter();
@@ -45,7 +51,6 @@ public class Present {
     events.forEachRemaining(emitter::emit);
     return writer.toString();
   }
-
 }
 
 

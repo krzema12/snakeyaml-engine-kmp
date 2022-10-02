@@ -69,6 +69,9 @@ public abstract class BaseRepresenter {
     }
   };
 
+  /**
+   * the current object to be converted to Node
+   */
   protected Object objectToRepresent;
 
   /**
@@ -108,6 +111,12 @@ public abstract class BaseRepresenter {
     }
   }
 
+  /**
+   * Find the representer and use it to create the Node from instance
+   *
+   * @param data - the source
+   * @return Node for the provided source
+   */
   protected final Node representData(Object data) {
     objectToRepresent = data;
     // check for identity
@@ -123,6 +132,14 @@ public abstract class BaseRepresenter {
     return representer.representData(data);
   }
 
+  /**
+   * Create Scalar Node from string
+   *
+   * @param tag - the tag in Node
+   * @param value - the source
+   * @param style - the style
+   * @return Node for string
+   */
   protected Node representScalar(Tag tag, String value, ScalarStyle style) {
     if (style == ScalarStyle.PLAIN) {
       style = this.defaultScalarStyle;
@@ -130,12 +147,27 @@ public abstract class BaseRepresenter {
     return new ScalarNode(tag, value, style);
   }
 
+  /**
+   * Create Node for string using PLAIN scalar style if possible
+   *
+   * @param tag - the tag for Node
+   * @param value - the surce
+   * @return Node for string
+   */
   protected Node representScalar(Tag tag, String value) {
     return representScalar(tag, value, ScalarStyle.PLAIN);
   }
 
+  /**
+   * Create Node
+   *
+   * @param tag - tag to use in Node
+   * @param sequence - the source
+   * @param flowStyle - the flow style
+   * @return the Node from the source iterable
+   */
   protected Node representSequence(Tag tag, Iterable<?> sequence, FlowStyle flowStyle) {
-    int size = 10;// default for ArrayList
+    int size = 10; // default for ArrayList
     if (sequence instanceof List<?>) {
       size = ((List<?>) sequence).size();
     }
@@ -160,10 +192,24 @@ public abstract class BaseRepresenter {
     return node;
   }
 
+  /**
+   * Create a tuple for one key pair
+   *
+   * @param entry - Map entry
+   * @return the tuple where both key and value are converted to Node
+   */
   protected NodeTuple representMappingEntry(Map.Entry<?, ?> entry) {
     return new NodeTuple(representData(entry.getKey()), representData(entry.getValue()));
   }
 
+  /**
+   * Create Node for the provided Map
+   *
+   * @param tag - the tag for Node
+   * @param mapping - the source
+   * @param flowStyle - the style of Node
+   * @return Node for the source Map
+   */
   protected Node representMapping(Tag tag, Map<?, ?> mapping, FlowStyle flowStyle) {
     List<NodeTuple> value = new ArrayList<>(mapping.size());
     MappingNode node = new MappingNode(tag, value, flowStyle);

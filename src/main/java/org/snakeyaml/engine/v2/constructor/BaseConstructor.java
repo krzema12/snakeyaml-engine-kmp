@@ -38,6 +38,9 @@ import org.snakeyaml.engine.v2.nodes.Tag;
  */
 public abstract class BaseConstructor {
 
+  /**
+   * keep the settings
+   */
   protected LoadSettings settings;
   /**
    * It maps the (explicit or implicit) tag to the Construct implementation.
@@ -48,6 +51,11 @@ public abstract class BaseConstructor {
   private final ArrayList<RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>> maps2fill;
   private final ArrayList<RecursiveTuple<Set<Object>, Object>> sets2fill;
 
+  /**
+   * Create
+   *
+   * @param settings - the configuration option
+   */
   public BaseConstructor(LoadSettings settings) {
     this.settings = settings;
     tagConstructors = new HashMap<>();
@@ -125,6 +133,13 @@ public abstract class BaseConstructor {
     return constructObjectNoCheck(node);
   }
 
+  /**
+   * Construct object from the specified Node. It does not check if existing instance the node is
+   * already constructed.
+   *
+   * @param node - the source
+   * @return instantiated object
+   */
   protected Object constructObjectNoCheck(Node node) {
     if (recursiveObjects.contains(node)) {
       throw new ConstructorException(null, Optional.empty(), "found unconstructable recursive node",
@@ -215,30 +230,61 @@ public abstract class BaseConstructor {
   // <<<< NEW instance
 
   // >>>> Construct => NEW, 2ndStep(filling)
+
+  /**
+   * Create instance of List
+   *
+   * @param node - the source
+   * @return filled List
+   */
   protected List<Object> constructSequence(SequenceNode node) {
     List<Object> result = settings.getDefaultList().apply(node.getValue().size());
     constructSequenceStep2(node, result);
     return result;
   }
 
+  /**
+   * Fill the collection with the data from provided node
+   *
+   * @param node - the source
+   * @param collection - the collection to fill
+   */
   protected void constructSequenceStep2(SequenceNode node, Collection<Object> collection) {
     for (Node child : node.getValue()) {
       collection.add(constructObject(child));
     }
   }
 
+  /**
+   * Create instance of Set from mapping node
+   *
+   * @param node - the source
+   * @return filled Set
+   */
   protected Set<Object> constructSet(MappingNode node) {
     final Set<Object> set = settings.getDefaultSet().apply(node.getValue().size());
     constructSet2ndStep(node, set);
     return set;
   }
 
+  /**
+   * Create filled Map from the provided Node
+   *
+   * @param node - the source
+   * @return filled Map
+   */
   protected Map<Object, Object> constructMapping(MappingNode node) {
     final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getValue().size());
     constructMapping2ndStep(node, mapping);
     return mapping;
   }
 
+  /**
+   * Fill the mapping with the data from provided node
+   *
+   * @param node - the source
+   * @param mapping - empty map to be filled
+   */
   protected void constructMapping2ndStep(MappingNode node, Map<Object, Object> mapping) {
     List<NodeTuple> nodeValue = node.getValue();
     for (NodeTuple tuple : nodeValue) {
@@ -267,15 +313,25 @@ public abstract class BaseConstructor {
     }
   }
 
-  /*
+  /**
    * if keyObject is created it 2 steps we should postpone putting it in map because it may have
    * different hash after initialization compared to clean just created one. And map of course does
    * not observe key hashCode changes.
+   *
+   * @param mapping - the mapping to add key/value
+   * @param key - the key to add to map
+   * @param value - the value behind the key
    */
   protected void postponeMapFilling(Map<Object, Object> mapping, Object key, Object value) {
     maps2fill.add(0, new RecursiveTuple(mapping, new RecursiveTuple(key, value)));
   }
 
+  /**
+   * Fill the Map with the data from the node
+   *
+   * @param node - the source
+   * @param set - empty set to fill
+   */
   protected void constructSet2ndStep(MappingNode node, Set<Object> set) {
     List<NodeTuple> nodeValue = node.getValue();
     for (NodeTuple tuple : nodeValue) {
@@ -302,10 +358,13 @@ public abstract class BaseConstructor {
     }
   }
 
-  /*
+  /**
    * if keyObject is created it 2 steps we should postpone putting it into the set because it may
    * have different hash after initialization compared to clean just created one. And set of course
    * does not observe value hashCode changes.
+   *
+   * @param set - the set to add the key
+   * @param key - the item to add to the set
    */
   protected void postponeSetFilling(Set<Object> set, Object key) {
     sets2fill.add(0, new RecursiveTuple<>(set, key));

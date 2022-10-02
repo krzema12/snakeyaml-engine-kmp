@@ -42,9 +42,20 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
  */
 public class StandardRepresenter extends BaseRepresenter {
 
+  /**
+   * Connect classes to their tags
+   */
   protected Map<Class<? extends Object>, Tag> classTags;
+  /**
+   * keep the options
+   */
   protected DumpSettings settings;
 
+  /**
+   * Create
+   *
+   * @param settings - configuration options
+   */
   public StandardRepresenter(DumpSettings settings) {
     this.defaultFlowStyle = settings.getDefaultFlowStyle();
     this.defaultScalarStyle = settings.getDefaultScalarStyle();
@@ -77,6 +88,13 @@ public class StandardRepresenter extends BaseRepresenter {
     this.settings = settings;
   }
 
+  /**
+   * Define the way to get the Tag for any class
+   *
+   * @param clazz - the class to serialise
+   * @param defaultTag - the tag to use if there is no explicit configuration
+   * @return the Tag for output
+   */
   protected Tag getTag(Class<?> clazz, Tag defaultTag) {
     return classTags.getOrDefault(clazz, defaultTag);
   }
@@ -95,7 +113,9 @@ public class StandardRepresenter extends BaseRepresenter {
     return classTags.put(clazz, tag);
   }
 
-  // remove and move to BaseRe
+  /**
+   * Create null Node
+   */
   protected class RepresentNull implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -103,8 +123,14 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * all chars that represent a new line
+   */
   public static final Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
 
+  /**
+   * Create Node for String
+   */
   protected class RepresentString implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -134,6 +160,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Boolean
+   */
   protected class RepresentBoolean implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -147,6 +176,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Byte, Short, Integer, Long, BigInteger
+   */
   protected class RepresentNumber implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -173,6 +205,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for List
+   */
   protected class RepresentList implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
@@ -182,6 +217,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Iterator
+   */
   protected class RepresentIterator implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
@@ -205,6 +243,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Object[]
+   */
   protected class RepresentArray implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -318,6 +359,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Map instance
+   */
   protected class RepresentMap implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
@@ -327,6 +371,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Set instances
+   */
   protected class RepresentSet implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
@@ -342,6 +389,9 @@ public class StandardRepresenter extends BaseRepresenter {
   }
 
 
+  /**
+   * Create eNode for Enums
+   */
   protected class RepresentEnum implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -350,6 +400,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for byte[]
+   */
   protected class RepresentByteArray implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -358,6 +411,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for UUID
+   */
   protected class RepresentUuid implements RepresentToNode {
 
     public Node representData(Object data) {
@@ -365,6 +421,9 @@ public class StandardRepresenter extends BaseRepresenter {
     }
   }
 
+  /**
+   * Create Node for Optional instance (the value of null)
+   */
   protected class RepresentOptional implements RepresentToNode {
 
     public Node representData(Object data) {

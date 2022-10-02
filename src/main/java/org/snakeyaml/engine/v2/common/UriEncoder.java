@@ -25,6 +25,9 @@ import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
 import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
+/**
+ * To be decided
+ */
 public abstract class UriEncoder {
 
   private static final CharsetDecoder UTF8Decoder =
@@ -58,6 +61,12 @@ public abstract class UriEncoder {
     return chars.toString();
   }
 
+  /**
+   * Decode with URLDecoder
+   *
+   * @param buff - the source
+   * @return decoded with UTF-8
+   */
   public static String decode(String buff) {
     try {
       return URLDecoder.decode(buff, "UTF-8");

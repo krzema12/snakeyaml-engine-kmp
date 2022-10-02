@@ -228,6 +228,7 @@
                     <excludePackageNames>
                         org.snakeyaml.engine.external.com.google.gdata.util.common.base,
                         org.snakeyaml.engine.v2.tokens,
+                        org.snakeyaml.engine.v2.nodes,
                         org.snakeyaml.engine.v2.events
                     </excludePackageNames>
                 </configuration>

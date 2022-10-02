@@ -25,7 +25,19 @@ public interface StreamDataWriter {
    */
   default void flush() {}
 
+  /**
+   * write the whole data
+   *
+   * @param str - data to write
+   */
   void write(String str);
 
+  /**
+   * Write part of the data
+   *
+   * @param str - the data to write (the source)
+   * @param off - offset to start from
+   * @param len - number of chars to write
+   */
   void write(String str, int off, int len);
 }

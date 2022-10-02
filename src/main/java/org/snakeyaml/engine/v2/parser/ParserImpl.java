@@ -133,6 +133,9 @@ public class ParserImpl implements Parser {
     DEFAULT_TAGS.put("!!", Tag.PREFIX);
   }
 
+  /**
+   * tokeniser
+   */
   protected final Scanner scanner;
   private final LoadSettings settings;
   private Optional<Event> currentEvent; // parsed event
@@ -142,6 +145,8 @@ public class ParserImpl implements Parser {
   private Map<String, String> directiveTags;
 
   /**
+   * @param reader - the input
+   * @param settings - the configuration options
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -149,11 +154,20 @@ public class ParserImpl implements Parser {
     this(settings, reader);
   }
 
+
+  /**
+   * Create
+   *
+   * @param settings - configuration options
+   * @param reader - the input
+   */
   public ParserImpl(LoadSettings settings, StreamReader reader) {
     this(settings, new ScannerImpl(settings, reader));
   }
 
   /**
+   * @param scanner - input
+   * @param settings - configuration options
    * @deprecated use the other constructor with LoadSettings first
    */
   @Deprecated
@@ -161,6 +175,12 @@ public class ParserImpl implements Parser {
     this(settings, scanner);
   }
 
+  /**
+   * Create
+   *
+   * @param settings - configuration options
+   * @param scanner - input
+   */
   public ParserImpl(LoadSettings settings, Scanner scanner) {
     this.scanner = scanner;
     this.settings = settings;

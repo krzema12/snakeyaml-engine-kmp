@@ -56,8 +56,20 @@ public class JsonScalarResolver implements ScalarResolver {
   public static final Pattern ENV_FORMAT =
       Pattern.compile("^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
 
+  /**
+   * Map from the char to the resolver which may begin with this char
+   */
   protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<>();
 
+  /**
+   * Add a resolver to resolve a value that matches the provided regular expression to the provided
+   * tag
+   *
+   * @param tag - the Tag to assign when the value matches
+   * @param regexp - the RE which is applied for every value
+   * @param first - the possible first characters (this is merely for performance improvement) to
+   *        skip RE evaluation to gain time
+   */
   public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
     if (first == null) {
       List<ResolverTuple> curr =
@@ -81,6 +93,9 @@ public class JsonScalarResolver implements ScalarResolver {
     }
   }
 
+  /**
+   * Register all the resolvers to be applied
+   */
   protected void addImplicitResolvers() {
     addImplicitResolver(Tag.NULL, EMPTY, null);
     addImplicitResolver(Tag.BOOL, BOOL, "tf");
@@ -94,6 +109,9 @@ public class JsonScalarResolver implements ScalarResolver {
     addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
   }
 
+  /**
+   * Create
+   */
   public JsonScalarResolver() {
     addImplicitResolvers();
   }

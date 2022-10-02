@@ -26,6 +26,15 @@ public class MarkedYamlEngineException extends YamlEngineException {
   private final String problem;
   private final Optional<Mark> problemMark;
 
+  /**
+   * Create
+   *
+   * @param context - the context of the problem
+   * @param contextMark - position of the context
+   * @param problem - the issue
+   * @param problemMark - position of the issue
+   * @param cause - exception which was thrown
+   */
   protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark, Throwable cause) {
     super(context + "; " + problem + "; " + problemMark, cause);
@@ -37,16 +46,34 @@ public class MarkedYamlEngineException extends YamlEngineException {
     this.problemMark = problemMark;
   }
 
+  /**
+   * Create
+   *
+   * @param context - the context of the problem
+   * @param contextMark - position of the context
+   * @param problem - the issue
+   * @param problemMark - position of the issue
+   */
   protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
       Optional<Mark> problemMark) {
     this(context, contextMark, problem, problemMark, null);
   }
 
+  /**
+   * Getter
+   *
+   * @return the problem
+   */
   @Override
   public String getMessage() {
     return toString();
   }
 
+  /**
+   * get readable error
+   *
+   * @return readable problem
+   */
   @Override
   public String toString() {
     StringBuilder lines = new StringBuilder();
@@ -72,18 +99,38 @@ public class MarkedYamlEngineException extends YamlEngineException {
     return lines.toString();
   }
 
+  /**
+   * getter
+   *
+   * @return context of the error
+   */
   public String getContext() {
     return context;
   }
 
+  /**
+   * getter
+   *
+   * @return position of the context of the error
+   */
   public Optional<Mark> getContextMark() {
     return contextMark;
   }
 
+  /**
+   * getter
+   *
+   * @return the issue
+   */
   public String getProblem() {
     return problem;
   }
 
+  /**
+   * getter
+   *
+   * @return position of the issue
+   */
   public Optional<Mark> getProblemMark() {
     return problemMark;
   }

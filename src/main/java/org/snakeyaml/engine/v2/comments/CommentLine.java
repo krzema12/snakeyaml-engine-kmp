@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.events.CommentEvent;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
 /**
- * A comment line. May be a block comment, blank line, or inline comment.
+ * A comment line. Maybe a block comment, blank line, or inline comment.
  */
 public class CommentLine {
 
@@ -28,10 +28,23 @@ public class CommentLine {
   private final String value;
   private final CommentType commentType;
 
+  /**
+   * Create
+   *
+   * @param event - the source
+   */
   public CommentLine(CommentEvent event) {
     this(event.getStartMark(), event.getEndMark(), event.getValue(), event.getCommentType());
   }
 
+  /**
+   * Create
+   *
+   * @param startMark - start
+   * @param endMark - end
+   * @param value - the comment
+   * @param commentType - the type
+   */
   public CommentLine(Optional<Mark> startMark, Optional<Mark> endMark, String value,
       CommentType commentType) {
     Objects.requireNonNull(startMark);
@@ -44,14 +57,29 @@ public class CommentLine {
     this.commentType = commentType;
   }
 
+  /**
+   * getter
+   *
+   * @return end position
+   */
   public Optional<Mark> getEndMark() {
     return endMark;
   }
 
+  /**
+   * getter
+   *
+   * @return start position
+   */
   public Optional<Mark> getStartMark() {
     return startMark;
   }
 
+  /**
+   * getter
+   *
+   * @return type of it
+   */
   public CommentType getCommentType() {
     return commentType;
   }

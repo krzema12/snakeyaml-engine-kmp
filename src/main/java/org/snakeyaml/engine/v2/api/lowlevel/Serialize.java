@@ -23,6 +23,9 @@ import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.serializer.Serializer;
 
+/**
+ * Implementation of the step which translates Nodes to Events
+ */
 public class Serialize {
 
   private final DumpSettings settings;

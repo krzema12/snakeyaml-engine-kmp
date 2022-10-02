@@ -25,10 +25,21 @@ import java.nio.charset.Charset;
 public abstract class YamlOutputStreamWriter extends OutputStreamWriter
     implements StreamDataWriter {
 
+  /**
+   * Create
+   *
+   * @param out - the output
+   * @param cs - encoding to use to translate String to bytes
+   */
   public YamlOutputStreamWriter(OutputStream out, Charset cs) {
     super(out, cs);
   }
 
+  /**
+   * to be implemented
+   *
+   * @param e - the reason
+   */
   public abstract void processIOException(IOException e);
 
   @Override

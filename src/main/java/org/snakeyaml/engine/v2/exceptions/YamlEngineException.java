@@ -18,14 +18,30 @@ package org.snakeyaml.engine.v2.exceptions;
  */
 public class YamlEngineException extends RuntimeException {
 
+  /**
+   * Create
+   *
+   * @param message - the problem
+   */
   public YamlEngineException(String message) {
     super(message);
   }
 
+  /**
+   * Create
+   *
+   * @param cause - the reason
+   */
   public YamlEngineException(Throwable cause) {
     super(cause);
   }
 
+  /**
+   * Create
+   *
+   * @param message - error
+   * @param cause - the cause
+   */
   public YamlEngineException(String message, Throwable cause) {
     super(message, cause);
   }

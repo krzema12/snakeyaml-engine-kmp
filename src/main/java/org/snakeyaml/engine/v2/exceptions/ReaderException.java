@@ -37,14 +37,29 @@ public class ReaderException extends YamlEngineException {
     this.position = position;
   }
 
+  /**
+   * getter
+   *
+   * @return the name of the reader
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * getter
+   *
+   * @return the invalid char
+   */
   public int getCodePoint() {
     return codePoint;
   }
 
+  /**
+   * getter
+   *
+   * @return position of the error
+   */
   public int getPosition() {
     return position;
   }

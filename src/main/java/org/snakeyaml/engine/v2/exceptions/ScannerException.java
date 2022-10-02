@@ -34,6 +34,12 @@ public class ScannerException extends MarkedYamlEngineException { // NOSONAR
     super(context, contextMark, problem, problemMark, null);
   }
 
+  /**
+   * Create
+   *
+   * @param problem - the issue
+   * @param problemMark - the position of the issue
+   */
   public ScannerException(String problem, Optional<Mark> problemMark) {
     super(null, Optional.empty(), problem, problemMark, null);
   }

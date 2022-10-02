@@ -17,10 +17,18 @@ import java.text.NumberFormat;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.nodes.Node;
 
+/**
+ * Simple generate of the format id + number
+ */
 public class NumberAnchorGenerator implements AnchorGenerator {
 
   private int lastAnchorId = 0;
 
+  /**
+   * Create
+   *
+   * @param lastAnchorId - the number to start from
+   */
   public NumberAnchorGenerator(int lastAnchorId) {
     this.lastAnchorId = lastAnchorId;
   }

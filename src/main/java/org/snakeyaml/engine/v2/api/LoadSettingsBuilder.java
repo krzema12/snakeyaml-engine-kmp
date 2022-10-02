@@ -253,6 +253,13 @@ public final class LoadSettingsBuilder {
     return this;
   }
 
+  /**
+   * Provide a custom property to be used later
+   *
+   * @param key - the key
+   * @param value - the value behind the key
+   * @return the builder with the provided value
+   */
   public LoadSettingsBuilder setCustomProperty(SettingKey key, Object value) {
     customProperties.put(key, value);
     return this;
@@ -274,6 +281,7 @@ public final class LoadSettingsBuilder {
    * depends on the encoding. It is 3MB by default
    *
    * @param codePointLimit - the max allowed size of the YAML data
+   * @return the builder with the provided value
    */
   public LoadSettingsBuilder setCodePointLimit(int codePointLimit) {
     this.codePointLimit = codePointLimit;

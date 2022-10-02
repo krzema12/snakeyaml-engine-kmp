@@ -15,24 +15,54 @@ package org.snakeyaml.engine.v2.common;
 
 import java.io.Serializable;
 
+/**
+ * YAML Version indicator
+ */
 public class SpecVersion implements Serializable {
 
+  /**
+   * keep major
+   */
   private final int major;
+  /**
+   * keep minor
+   */
   private final int minor;
 
+  /**
+   * Create
+   *
+   * @param major - major part ov version, must be 1
+   * @param minor - minor part of version, may be 0 or 1
+   */
   public SpecVersion(int major, int minor) {
     this.major = major;
     this.minor = minor;
   }
 
+  /**
+   * getter
+   *
+   * @return 1
+   */
   public int getMajor() {
     return major;
   }
 
+  /**
+   * getter
+   *
+   * @return 0 or 1
+   */
   public int getMinor() {
     return minor;
   }
 
+  /**
+   * create readable text
+   *
+   * @return text
+   */
   public String getRepresentation() {
     return major + "." + minor;
   }

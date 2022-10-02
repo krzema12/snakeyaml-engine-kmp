@@ -27,8 +27,18 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  */
 public class MappingNode extends CollectionNode<NodeTuple> {
 
-  private List<NodeTuple> value;
+  private final List<NodeTuple> value;
 
+  /**
+   * Create
+   *
+   * @param tag - tag of the node
+   * @param resolved - true when the tag is implicitly resolved
+   * @param value - the value
+   * @param flowStyle - the flow style of the node
+   * @param startMark - start
+   * @param endMark - end
+   */
   public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle,
       Optional<Mark> startMark, Optional<Mark> endMark) {
     super(tag, flowStyle, startMark, endMark);
@@ -37,6 +47,13 @@ public class MappingNode extends CollectionNode<NodeTuple> {
     this.resolved = resolved;
   }
 
+  /**
+   * Create
+   *
+   * @param tag - tag of the node
+   * @param value - the value
+   * @param flowStyle - the flow style of the node
+   */
   public MappingNode(Tag tag, List<NodeTuple> value, FlowStyle flowStyle) {
     this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
   }
@@ -53,10 +70,6 @@ public class MappingNode extends CollectionNode<NodeTuple> {
    */
   public List<NodeTuple> getValue() {
     return value;
-  }
-
-  public void setValue(List<NodeTuple> mergedValue) {
-    value = mergedValue;
   }
 
   @Override

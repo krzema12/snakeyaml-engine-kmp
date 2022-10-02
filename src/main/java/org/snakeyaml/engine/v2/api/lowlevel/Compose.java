@@ -26,6 +26,9 @@ import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.parser.ParserImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 
+/**
+ * Helper to compose input stream to Node
+ */
 public class Compose {
 
   private final LoadSettings settings;

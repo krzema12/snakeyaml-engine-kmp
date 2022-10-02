@@ -168,7 +168,7 @@ public final class DumpSettingsBuilder {
   }
 
   /**
-   * Add YAML directive (http://yaml.org/spec/1.2/spec.html#id2782090)
+   * Add YAML <a href="http://yaml.org/spec/1.2/spec.html#id2782090">directive</a>
    *
    * @param yamlDirective - the version to be used in the directive
    * @return the builder with the provided value
@@ -180,7 +180,7 @@ public final class DumpSettingsBuilder {
   }
 
   /**
-   * Add TAG directive (http://yaml.org/spec/1.2/spec.html#id2782090)
+   * Add TAG <a href="http://yaml.org/spec/1.2/spec.html#id2782090">directive</a>
    *
    * @param tagDirective - the data to create TAG directive
    * @return the builder with the provided value
@@ -335,6 +335,13 @@ public final class DumpSettingsBuilder {
     return this;
   }
 
+  /**
+   * Custom property is the way to give some runtime parameters to be used during dumping
+   *
+   * @param key - the key
+   * @param value - the value behind the key
+   * @return the builder with the provided value
+   */
   public DumpSettingsBuilder setCustomProperty(SettingKey key, Object value) {
     customProperties.put(key, value);
     return this;
@@ -344,6 +351,7 @@ public final class DumpSettingsBuilder {
    * Set to true to add the indent for sequences to the general indent
    *
    * @param indentWithIndicator - true when indent for sequences is added to general
+   * @return the builder with the provided value
    */
   public DumpSettingsBuilder setIndentWithIndicator(boolean indentWithIndicator) {
     this.indentWithIndicator = indentWithIndicator;
@@ -354,6 +362,7 @@ public final class DumpSettingsBuilder {
    * Set to true to add comments from Nodes to
    *
    * @param dumpComments - true when comments should be dumped (serialised)
+   * @return the builder with the provided value
    */
   public DumpSettingsBuilder setDumpComments(boolean dumpComments) {
     this.dumpComments = dumpComments;

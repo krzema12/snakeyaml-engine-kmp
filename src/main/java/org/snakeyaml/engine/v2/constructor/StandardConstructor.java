@@ -46,6 +46,11 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
  */
 public class StandardConstructor extends BaseConstructor {
 
+  /**
+   * Create
+   *
+   * @param settings - configuration options
+   */
   public StandardConstructor(LoadSettings settings) {
     super(settings);
     this.tagConstructors.put(Tag.NULL, new ConstructYamlNull());
@@ -74,6 +79,11 @@ public class StandardConstructor extends BaseConstructor {
     processDuplicateKeys(node);
   }
 
+  /**
+   * detect and process the duplicate key in mapping according to the configured setting
+   *
+   * @param node - the source
+   */
   protected void processDuplicateKeys(MappingNode node) {
     List<NodeTuple> nodeValue = node.getValue();
     Map<Object, Integer> keys = new HashMap<>(nodeValue.size());
@@ -125,6 +135,9 @@ public class StandardConstructor extends BaseConstructor {
     super.constructSet2ndStep(node, set);
   }
 
+  /**
+   * Create null
+   */
   public class ConstructYamlNull implements ConstructNode {
 
     @Override
@@ -143,6 +156,9 @@ public class StandardConstructor extends BaseConstructor {
     BOOL_VALUES.put("false", Boolean.FALSE);
   }
 
+  /**
+   * Create Boolean instances
+   */
   public class ConstructYamlBool implements ConstructNode {
 
     @Override
@@ -152,6 +168,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create instances for numbers (Integer, Long, BigInteger)
+   */
   public class ConstructYamlInt implements ConstructNode {
 
     @Override
@@ -160,6 +179,12 @@ public class StandardConstructor extends BaseConstructor {
       return createIntNumber(value);
     }
 
+    /**
+     * Create number trying fist Integer, then Long, then BigInteger
+     *
+     * @param number - the source
+     * @return number that fits the source
+     */
     protected Number createIntNumber(String number) {
       Number result;
       try {
@@ -178,6 +203,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create Double instances for float
+   */
   public class ConstructYamlFloat implements ConstructNode {
 
     @Override
@@ -202,6 +230,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create instances bytes for binary
+   */
   public class ConstructYamlBinary implements ConstructNode {
 
     @Override
@@ -212,6 +243,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create instances of UUID class
+   */
   public class ConstructUuidClass implements ConstructNode {
 
     @Override
@@ -221,6 +255,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create instances of Optional
+   */
   public class ConstructOptionalClass implements ConstructNode {
 
     @Override
@@ -239,6 +276,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create Set instances
+   */
   public class ConstructYamlSet implements ConstructNode {
 
     @Override
@@ -262,6 +302,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create String instances
+   */
   public class ConstructYamlStr implements ConstructNode {
 
     @Override
@@ -270,6 +313,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create the List implementation (configured in setting)
+   */
   public class ConstructYamlSeq implements ConstructNode {
 
     @Override
@@ -293,6 +339,9 @@ public class StandardConstructor extends BaseConstructor {
     }
   }
 
+  /**
+   * Create Map instance
+   */
   public class ConstructYamlMap implements ConstructNode {
 
     @Override

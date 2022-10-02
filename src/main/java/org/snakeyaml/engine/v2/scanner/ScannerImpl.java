@@ -161,6 +161,7 @@ public final class ScannerImpl implements Scanner {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public ScannerImpl(StreamReader reader, LoadSettings settings) {
     this(settings, reader);
   }
@@ -178,6 +179,7 @@ public final class ScannerImpl implements Scanner {
   /**
    * @deprecated it should be used with LoadSettings
    */
+  @Deprecated
   public ScannerImpl(StreamReader reader) {
     this(LoadSettings.builder().build(), reader);
   }
@@ -761,7 +763,7 @@ public final class ScannerImpl implements Scanner {
       }
     } else {
       // It's an error for the block entry to occur in the flow
-      // context,but we let the scanner detect this.
+      // context, but we let the scanner detect this.
     }
     // Simple keys are allowed after '-'.
     this.allowSimpleKey = true;
@@ -929,10 +931,8 @@ public final class ScannerImpl implements Scanner {
     fetchBlockScalar(ScalarStyle.FOLDED);
   }
 
-  /**
+  /*
    * Fetch a block scalar (literal or folded).
-   *
-   * @param style
    */
   private void fetchBlockScalar(ScalarStyle style) {
     // A simple key may follow a block scalar.
@@ -960,10 +960,8 @@ public final class ScannerImpl implements Scanner {
     fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED);
   }
 
-  /**
+  /*
    * Fetch a flow scalar (single- or double-quoted).
-   *
-   * @param style
    */
   private void fetchFlowScalar(ScalarStyle style) {
     // A flow scalar could be a simple key.
@@ -1064,7 +1062,7 @@ public final class ScannerImpl implements Scanner {
    * Returns true if the next thing on the reader is a plain token.
    */
   private boolean checkPlain() {
-    /**
+    /*
      * A plain scalar may start with any non-space character except: '-', '?', ':', ',', '[', ']',
      * '{', '}', '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;', '%', '@', '`'.
      */
@@ -1321,7 +1319,7 @@ public final class ScannerImpl implements Scanner {
   /**
    * Scan a %TAG directive's handle. This is YAML's c-tag-handle.
    *
-   * @param startMark
+   * @param startMark - start
    * @return the directive value
    */
   private String scanTagDirectiveHandle(Optional<Mark> startMark) {
@@ -1735,8 +1733,6 @@ public final class ScannerImpl implements Scanner {
   /**
    * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
    * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
-   *
-   *
    * <pre>
    * See the specification for details.
    * Note that we loose indentation rules for quoted scalars. Quoted
@@ -1793,17 +1789,17 @@ public final class ScannerImpl implements Scanner {
         reader.forward();
         c = reader.peek();
         if (!Character.isSupplementaryCodePoint(c)
-            && ESCAPE_REPLACEMENTS.containsKey(Character.valueOf((char) c))) {
+            && ESCAPE_REPLACEMENTS.containsKey((char) c)) {
           // The character is one of the single-replacement
           // types; these are replaced with a literal character
           // from the mapping.
-          chunks.append(ESCAPE_REPLACEMENTS.get(Character.valueOf((char) c)));
+          chunks.append(ESCAPE_REPLACEMENTS.get((char) c));
           reader.forward();
         } else if (!Character.isSupplementaryCodePoint(c)
-            && ESCAPE_CODES.containsKey(Character.valueOf((char) c))) {
+            && ESCAPE_CODES.containsKey((char) c)) {
           // The character is a multi-digit escape sequence, with
           // length defined by the value in the ESCAPE_CODES map.
-          length = ESCAPE_CODES.get(Character.valueOf((char) c)).intValue();
+          length = ESCAPE_CODES.get((char) c);
           reader.forward();
           String hex = reader.prefix(length);
           if (NOT_HEXA.matcher(hex).find()) {
@@ -2251,7 +2247,7 @@ public final class ScannerImpl implements Scanner {
     }
   }
 
-  class BreakIntentHolder {
+  static class BreakIntentHolder {
 
     private final String breaks;
     private final int maxIndent;

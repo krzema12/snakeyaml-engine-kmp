@@ -53,7 +53,7 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver;
  * Corresponds to the 'Composer' step as described in chapter 3.1.2 of the
  * <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">YAML Specification</a>.
  * </p>
- * It implements {@link Iterator<Node>} to get the stream of {@link Node}s from the input.
+ * It implements {@link Iterator} to get the stream of {@link Node}s from the input.
  */
 public class Composer implements Iterator<Node> {
 
@@ -69,6 +69,7 @@ public class Composer implements Iterator<Node> {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public Composer(Parser parser, LoadSettings settings) {
     this(settings, parser);
   }

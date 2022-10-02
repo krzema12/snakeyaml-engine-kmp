@@ -144,6 +144,7 @@ public class ParserImpl implements Parser {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public ParserImpl(StreamReader reader, LoadSettings settings) {
     this(settings, reader);
   }
@@ -155,6 +156,7 @@ public class ParserImpl implements Parser {
   /**
    * @deprecated use the other constructor with LoadSettings first
    */
+  @Deprecated
   public ParserImpl(Scanner scanner, LoadSettings settings) {
     this(settings, scanner);
   }
@@ -243,9 +245,8 @@ public class ParserImpl implements Parser {
         // Parse an implicit document.
         Token token = scanner.peekToken();
         Optional<Mark> startMark = token.getStartMark();
-        Optional<Mark> endMark = startMark;
         Event event = new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap(),
-            startMark, endMark);
+            startMark, startMark);
         // Prepare the next state.
         states.push(new ParseDocumentEnd());
         state = Optional.of(new ParseBlockNode());
@@ -391,7 +392,7 @@ public class ParserImpl implements Parser {
         }
       }
     }
-    HashMap<String, String> detectedTagHandles = new HashMap<String, String>();
+    HashMap<String, String> detectedTagHandles = new HashMap<>();
     if (!tagHandles.isEmpty()) {
       // copy from tagHandles
       detectedTagHandles.putAll(tagHandles);

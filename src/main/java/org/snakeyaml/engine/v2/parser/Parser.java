@@ -25,7 +25,6 @@ import org.snakeyaml.engine.v2.exceptions.ParserException;
  * </p>
  *
  * @see <a href="https://yaml.org/spec/1.2.2/#31-processes">Figure 3.1. Processing Overview</a>
- *      {@link Event}
  */
 public interface Parser extends Iterator<Event> {
 

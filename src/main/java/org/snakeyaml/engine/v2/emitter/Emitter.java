@@ -113,8 +113,7 @@ public final class Emitter implements Emitable {
 
   // The current indentation level and the stack of previous indents.
   private final ArrayStack<Integer> indents;
-  // TODO should it be Optional ?
-  private Integer indent;
+  private Integer indent; // can be null to choose the best
 
   // Flow level.
   private int flowLevel;

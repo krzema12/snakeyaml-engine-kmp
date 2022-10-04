@@ -100,12 +100,15 @@ public class StandardRepresenter extends BaseRepresenter {
   }
 
   /**
-   * Define a tag for the <code>Class</code> to serialize. TODO should it be removed ?
+   * Define a tag for the <code>Class</code> to serialize. Should be replaced later with the beans
+   * project.
    *
    * @param clazz <code>Class</code> which tag is changed
    * @param tag new tag to be used for every instance of the specified <code>Class</code>
    * @return the previous tag associated with the <code>Class</code>
+   * @deprecated should be replaced with the Beans project
    */
+  @Deprecated
   public Tag addClassTag(Class<? extends Object> clazz, Tag tag) {
     if (tag == null) {
       throw new NullPointerException("Tag must be provided.");

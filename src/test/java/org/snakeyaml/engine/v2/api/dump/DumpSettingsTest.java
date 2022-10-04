@@ -34,6 +34,7 @@ import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.SettingKey;
 import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.NonPrintableStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
@@ -61,7 +62,7 @@ class DumpSettingsTest {
     assertTrue(settings.isUseUnicodeEncoding());
     assertEquals(0, settings.getIndicatorIndent());
     assertEquals(128, settings.getMaxSimpleKeyLength());
-    assertNull(settings.getNonPrintableStyle()); // TODO should have Optional ?
+    assertEquals(NonPrintableStyle.ESCAPE, settings.getNonPrintableStyle());
     assertEquals(80, settings.getWidth());
     assertEquals(Optional.empty(), settings.getYamlDirective());
     assertEquals(new HashMap<>(), settings.getTagDirective());

@@ -82,6 +82,7 @@ public final class DumpSettingsBuilder {
     this.yamlDirective = Optional.empty();
     this.defaultFlowStyle = FlowStyle.AUTO;
     this.defaultScalarStyle = ScalarStyle.PLAIN;
+    this.nonPrintableStyle = NonPrintableStyle.ESCAPE;
     this.maxSimpleKeyLength = 128;
     this.indentWithIndicator = false;
     this.dumpComments = false;
@@ -306,8 +307,8 @@ public final class DumpSettingsBuilder {
   }
 
   /**
-   * Define max key length to use simple key (without '?') More info
-   * https://yaml.org/spec/1.2/spec.html#id2798057
+   * Define max key length to use simple key (without '?').
+   * <a href="https://yaml.org/spec/1.2/spec.html#id2798057">More info</a>
    *
    * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
    * @return the builder with the provided value

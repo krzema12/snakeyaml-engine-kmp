@@ -28,7 +28,7 @@ public class WindowsLinesTest {
   void parseWindowsNewLine() {
     Load loader = new Load(LoadSettings.builder().build());
     String source = "parent:\r\n  key: value";
-    //System.out.println(source);
+    // System.out.println(source);
     Map<String, String> list = (Map<String, String>) loader.loadFromString(source);
     assertEquals(1, list.size());
     assertNotNull(list.get("parent"));

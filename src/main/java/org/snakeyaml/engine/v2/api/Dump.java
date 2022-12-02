@@ -70,6 +70,8 @@ public class Dump {
    */
   public void dumpAll(Iterator<? extends Object> instancesIterator,
       StreamDataWriter streamDataWriter) {
+    Objects.requireNonNull(instancesIterator, "Iterator cannot be null");
+    Objects.requireNonNull(streamDataWriter, "StreamDataWriter cannot be null");
     Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
     serializer.emitStreamStart();
     while (instancesIterator.hasNext()) {
@@ -124,6 +126,8 @@ public class Dump {
    * @param streamDataWriter - stream to write to
    */
   public void dumpNode(Node node, StreamDataWriter streamDataWriter) {
+    Objects.requireNonNull(node, "Node cannot be null");
+    Objects.requireNonNull(streamDataWriter, "StreamDataWriter cannot be null");
     Serializer serializer = new Serializer(settings, new Emitter(settings, streamDataWriter));
     serializer.emitStreamStart();
     serializer.serializeDocument(node);

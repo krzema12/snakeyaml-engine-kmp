@@ -26,7 +26,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.schema.Schema;
 
 /**
- * Fine-tuning parsing/loading. Description for all the fields can be found in the builder
+ * Immutable configuration for loading. Description for all the fields can be found in the builder
  */
 public final class LoadSettings {
 

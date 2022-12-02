@@ -24,7 +24,8 @@ import org.snakeyaml.engine.v2.schema.Schema;
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 
 /**
- * Fine-tuning serializing/dumping Description for all the fields can be found in the builder
+ * Immutable configuration for serialisation. Description for all the fields can be found in the
+ * builder
  */
 public final class DumpSettings {
 

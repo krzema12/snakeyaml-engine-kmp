@@ -27,7 +27,7 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  */
 public class MappingNode extends CollectionNode<NodeTuple> {
 
-  private final List<NodeTuple> value;
+  private List<NodeTuple> value;
 
   /**
    * Create
@@ -70,6 +70,15 @@ public class MappingNode extends CollectionNode<NodeTuple> {
    */
   public List<NodeTuple> getValue() {
     return value;
+  }
+
+  /**
+   * Applications may need to replace the content (Spring Boot). Merging was removed, but it may be
+   * implemented.
+   */
+  public void setValue(List<NodeTuple> merged) {
+    Objects.requireNonNull(merged);
+    value = merged;
   }
 
   @Override

@@ -7,6 +7,9 @@
     <body>
         <release version="2.6-SNAPSHOT" date="in GIT" description="Maintenance">
             <action dev="asomov" type="update">
+                Allow to change the value in MappingNode
+            </action>
+            <action dev="asomov" type="update">
                 Use explicit default for NonPrintableStyle
             </action>
         </release>

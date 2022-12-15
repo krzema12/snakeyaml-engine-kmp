@@ -28,8 +28,8 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
 /**
  * Common way to load Java instance(s). This class is not thread-safe. Which means that all the
  * methods of the same instance can be called only by one thread. It is better to create an instance
- * for every YAML stream. The instance is stateful. Only one of the 'load' methods may be called and
- * it may be called only once.
+ * for every YAML stream. The instance is stateful. Only one of the 'load' methods may be called,
+ * and it may be called only once.
  */
 public class Load {
 

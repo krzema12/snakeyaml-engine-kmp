@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigInteger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.Dump;
+import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -65,10 +67,14 @@ public class NumberTest {
   }
 
   @Test
-  @DisplayName("Test all doubles which are define in the core schema & JSON")
+  @DisplayName("Test all doubles which are defined in the core schema & JSON")
   void parseDouble() {
     Load loader = new Load(LoadSettings.builder().build());
     assertEquals(new Double(-1.345), loader.loadFromString("-1.345"));
+    assertEquals(new Double(0), loader.loadFromString("0.0"));
+    assertEquals(new Double(0f), loader.loadFromString("0.0"));
+    assertEquals(new Double(0d), loader.loadFromString("0.0"));
+    assertEquals(new Double(+0), loader.loadFromString("0.0"));
     assertEquals(new Double(-0.0), loader.loadFromString("-0.0"));
     assertEquals(new Double(0.123), loader.loadFromString("0.123"));
     assertEquals(new Double(1.23E-6), loader.loadFromString("1.23e-6"));
@@ -78,8 +84,39 @@ public class NumberTest {
     assertEquals(new Double(1000.25), loader.loadFromString("1000.25"));
     assertEquals(new Double(9000.0), loader.loadFromString("9000.00"));
     assertEquals(new Double(1.0), loader.loadFromString("1."));
-    assertTrue(((Double) loader.loadFromString(".inf")).isInfinite());
-    assertTrue(((Double) loader.loadFromString("-.inf")).isInfinite());
+  }
+
+  @Test
+  @DisplayName("Parse special doubles which are defined in the core schema")
+  void parseDoubleSpecial() {
+    // they should probably fail because they are not in the JSON schema
+    Load loader = new Load(LoadSettings.builder().build());
+    String pos_inf = ".inf";
+    assertTrue(((Double) loader.loadFromString(pos_inf)).isInfinite());
+    assertTrue(((Double) loader.loadFromString(pos_inf)) > 0);
+    assertEquals(Double.POSITIVE_INFINITY, loader.loadFromString(pos_inf));
+
+    String neg_inf = "-.inf";
+    assertTrue(((Double) loader.loadFromString(neg_inf)).isInfinite());
+    assertTrue(((Double) loader.loadFromString(neg_inf)) < 0);
+    assertEquals(Double.NEGATIVE_INFINITY, loader.loadFromString(neg_inf));
+
     assertTrue(((Double) loader.loadFromString(".nan")).isNaN());
+    assertEquals(Double.NaN, loader.loadFromString(".nan"));
+  }
+
+  @Test
+  @DisplayName("Dump special doubles which are defined in the core schema")
+  void dumpDoubleSpecial() {
+    // they should probably fail because they are not in the JSON schema
+    Dump dumper = new Dump(DumpSettings.builder().build());
+    assertEquals(".inf\n", dumper.dumpToString(Double.POSITIVE_INFINITY));
+    assertEquals("!!float 'Infinity'\n", dumper.dumpToString(Float.POSITIVE_INFINITY));
+
+    assertEquals("-.inf\n", dumper.dumpToString(Double.NEGATIVE_INFINITY));
+    assertEquals("!!float '-Infinity'\n", dumper.dumpToString(Float.NEGATIVE_INFINITY));
+
+    assertEquals("!!float '.NaN'\n", dumper.dumpToString(Double.NaN));
+    assertEquals("!!float 'NaN'\n", dumper.dumpToString(Float.NaN));
   }
 }

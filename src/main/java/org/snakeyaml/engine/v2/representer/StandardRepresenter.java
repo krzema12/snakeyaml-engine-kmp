@@ -134,7 +134,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for String
    */
-  protected class RepresentString implements RepresentToNode {
+  public class RepresentString implements RepresentToNode {
 
     public Node representData(Object data) {
       Tag tag = Tag.STR;
@@ -166,7 +166,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Boolean
    */
-  protected class RepresentBoolean implements RepresentToNode {
+  public class RepresentBoolean implements RepresentToNode {
 
     public Node representData(Object data) {
       String value;
@@ -182,7 +182,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Byte, Short, Integer, Long, BigInteger
    */
-  protected class RepresentNumber implements RepresentToNode {
+  public class RepresentNumber implements RepresentToNode {
 
     public Node representData(Object data) {
       Tag tag;
@@ -211,7 +211,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for List
    */
-  protected class RepresentList implements RepresentToNode {
+  public class RepresentList implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
@@ -223,7 +223,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Iterator
    */
-  protected class RepresentIterator implements RepresentToNode {
+  public class RepresentIterator implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
@@ -249,7 +249,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Object[]
    */
-  protected class RepresentArray implements RepresentToNode {
+  public class RepresentArray implements RepresentToNode {
 
     public Node representData(Object data) {
       Object[] array = (Object[]) data;
@@ -262,7 +262,7 @@ public class StandardRepresenter extends BaseRepresenter {
    * Represents primitive arrays, such as short[] and float[], by converting them into equivalent
    * {@link List} using the appropriate autoboxing type.
    */
-  protected class RepresentPrimitiveArray implements RepresentToNode {
+  public class RepresentPrimitiveArray implements RepresentToNode {
 
     public Node representData(Object data) {
       Class<?> type = data.getClass().getComponentType();
@@ -365,7 +365,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Map instance
    */
-  protected class RepresentMap implements RepresentToNode {
+  public class RepresentMap implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
@@ -377,7 +377,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Set instances
    */
-  protected class RepresentSet implements RepresentToNode {
+  public class RepresentSet implements RepresentToNode {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
@@ -395,7 +395,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create eNode for Enums
    */
-  protected class RepresentEnum implements RepresentToNode {
+  public class RepresentEnum implements RepresentToNode {
 
     public Node representData(Object data) {
       Tag tag = new Tag(data.getClass());
@@ -406,7 +406,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for byte[]
    */
-  protected class RepresentByteArray implements RepresentToNode {
+  public class RepresentByteArray implements RepresentToNode {
 
     public Node representData(Object data) {
       return representScalar(Tag.BINARY, Base64.getEncoder().encodeToString((byte[]) data),
@@ -417,7 +417,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for UUID
    */
-  protected class RepresentUuid implements RepresentToNode {
+  public class RepresentUuid implements RepresentToNode {
 
     public Node representData(Object data) {
       return representScalar(getTag(data.getClass(), new Tag(UUID.class)), data.toString());
@@ -427,7 +427,7 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * Create Node for Optional instance (the value of null)
    */
-  protected class RepresentOptional implements RepresentToNode {
+  public class RepresentOptional implements RepresentToNode {
 
     public Node representData(Object data) {
       Optional<?> opt = (Optional<?>) data;

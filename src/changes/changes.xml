@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.6-SNAPSHOT" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix" issue="44">
+                Open internal classes in StandardRepresenter
+            </action>
             <action dev="asomov" type="update">
                 Allow to change the value in MappingNode
             </action>

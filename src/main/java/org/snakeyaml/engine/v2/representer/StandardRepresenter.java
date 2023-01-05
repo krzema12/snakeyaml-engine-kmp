@@ -32,6 +32,7 @@ import org.snakeyaml.engine.v2.api.RepresentToNode;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.NonPrintableStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.exceptions.RepresenterException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.Tag;
@@ -194,12 +195,11 @@ public class StandardRepresenter extends BaseRepresenter {
       } else {
         Number number = (Number) data;
         tag = Tag.FLOAT;
-        if (number.equals(Double.NaN)) {
-          value = ".NaN";
-        } else if (number.equals(Double.POSITIVE_INFINITY)) {
-          value = ".inf";
-        } else if (number.equals(Double.NEGATIVE_INFINITY)) {
-          value = "-.inf";
+        if (number.equals(Double.NaN) || number.equals(Double.POSITIVE_INFINITY)
+            || number.equals(Double.NEGATIVE_INFINITY) || number.equals(Float.NaN)
+            || number.equals(Float.POSITIVE_INFINITY) || number.equals(Float.NEGATIVE_INFINITY)) {
+          throw new RepresenterException("Special value " + number + " for " + data.getClass()
+              + " has no representation in the JSON schema.");
         } else {
           value = number.toString();
         }

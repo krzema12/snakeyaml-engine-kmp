@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.core_schema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
@@ -23,6 +24,8 @@ import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.exceptions.ConstructorException;
+import org.snakeyaml.engine.v2.exceptions.RepresenterException;
 
 @org.junit.jupiter.api.Tag("fast")
 public class NumberTest {
@@ -70,20 +73,20 @@ public class NumberTest {
   @DisplayName("Test all doubles which are defined in the core schema & JSON")
   void parseDouble() {
     Load loader = new Load(LoadSettings.builder().build());
-    assertEquals(new Double(-1.345), loader.loadFromString("-1.345"));
-    assertEquals(new Double(0), loader.loadFromString("0.0"));
-    assertEquals(new Double(0f), loader.loadFromString("0.0"));
-    assertEquals(new Double(0d), loader.loadFromString("0.0"));
-    assertEquals(new Double(+0), loader.loadFromString("0.0"));
-    assertEquals(new Double(-0.0), loader.loadFromString("-0.0"));
-    assertEquals(new Double(0.123), loader.loadFromString("0.123"));
-    assertEquals(new Double(1.23E-6), loader.loadFromString("1.23e-6"));
-    assertEquals(new Double(1.23E6), loader.loadFromString("1.23e+6"));
-    assertEquals(new Double(1.23E6), loader.loadFromString("1.23e6"));
-    assertEquals(new Double(-1.23E6), loader.loadFromString("-1.23e6"));
-    assertEquals(new Double(1000.25), loader.loadFromString("1000.25"));
-    assertEquals(new Double(9000.0), loader.loadFromString("9000.00"));
-    assertEquals(new Double(1.0), loader.loadFromString("1."));
+    assertEquals(Double.valueOf(-1.345), loader.loadFromString("-1.345"));
+    assertEquals(Double.valueOf(0), loader.loadFromString("0.0"));
+    assertEquals(Double.valueOf(0f), loader.loadFromString("0.0"));
+    assertEquals(Double.valueOf(0d), loader.loadFromString("0.0"));
+    assertEquals(Double.valueOf(+0), loader.loadFromString("0.0"));
+    assertEquals(Double.valueOf(-0.0), loader.loadFromString("-0.0"));
+    assertEquals(Double.valueOf(0.123), loader.loadFromString("0.123"));
+    assertEquals(Double.valueOf(1.23E-6), loader.loadFromString("1.23e-6"));
+    assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e+6"));
+    assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e6"));
+    assertEquals(Double.valueOf(-1.23E6), loader.loadFromString("-1.23e6"));
+    assertEquals(Double.valueOf(1000.25), loader.loadFromString("1000.25"));
+    assertEquals(Double.valueOf(9000.0), loader.loadFromString("9000.00"));
+    assertEquals(Double.valueOf(1.0), loader.loadFromString("1."));
   }
 
   @Test
@@ -91,32 +94,61 @@ public class NumberTest {
   void parseDoubleSpecial() {
     // they should probably fail because they are not in the JSON schema
     Load loader = new Load(LoadSettings.builder().build());
-    String pos_inf = ".inf";
-    assertTrue(((Double) loader.loadFromString(pos_inf)).isInfinite());
-    assertTrue(((Double) loader.loadFromString(pos_inf)) > 0);
-    assertEquals(Double.POSITIVE_INFINITY, loader.loadFromString(pos_inf));
 
-    String neg_inf = "-.inf";
-    assertTrue(((Double) loader.loadFromString(neg_inf)).isInfinite());
-    assertTrue(((Double) loader.loadFromString(neg_inf)) < 0);
-    assertEquals(Double.NEGATIVE_INFINITY, loader.loadFromString(neg_inf));
+    ConstructorException thrown1 = assertThrows(ConstructorException.class,
+        () -> loader.loadFromString(".inf"), "Infinity is not supported");
+    assertTrue(
+        thrown1.getMessage().startsWith(
+            "while constructing float\n" + "found value unsupported in the JSON schema: Infinity"),
+        thrown1.getMessage());
 
-    assertTrue(((Double) loader.loadFromString(".nan")).isNaN());
-    assertEquals(Double.NaN, loader.loadFromString(".nan"));
+    ConstructorException thrown2 = assertThrows(ConstructorException.class,
+        () -> loader.loadFromString("-.inf"), "Infinity is not supported");
+    assertTrue(
+        thrown2.getMessage().startsWith(
+            "while constructing float\n" + "found value unsupported in the JSON schema: Infinity"),
+        thrown1.getMessage());
+
+    ConstructorException thrown3 = assertThrows(ConstructorException.class,
+        () -> loader.loadFromString(".nan"), "Infinity is not supported");
+    assertTrue(
+        thrown3.getMessage().startsWith(
+            "while constructing float\n" + "found value unsupported in the JSON schema: NaN"),
+        thrown1.getMessage());
   }
 
   @Test
-  @DisplayName("Dump special doubles which are defined in the core schema")
+  @DisplayName("Fail to dump special doubles which are defined in the core schema")
   void dumpDoubleSpecial() {
-    // they should probably fail because they are not in the JSON schema
     Dump dumper = new Dump(DumpSettings.builder().build());
-    assertEquals(".inf\n", dumper.dumpToString(Double.POSITIVE_INFINITY));
-    assertEquals("!!float 'Infinity'\n", dumper.dumpToString(Float.POSITIVE_INFINITY));
+    RepresenterException thrown1 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Double.POSITIVE_INFINITY), "Infinity is not supported");
+    assertEquals(thrown1.getMessage(),
+        "Special value Infinity for class java.lang.Double has no representation in the JSON schema.");
 
-    assertEquals("-.inf\n", dumper.dumpToString(Double.NEGATIVE_INFINITY));
-    assertEquals("!!float '-Infinity'\n", dumper.dumpToString(Float.NEGATIVE_INFINITY));
+    RepresenterException thrown2 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Float.POSITIVE_INFINITY), "Infinity is not supported");
+    assertEquals(thrown2.getMessage(),
+        "Special value Infinity for class java.lang.Float has no representation in the JSON schema.");
 
-    assertEquals("!!float '.NaN'\n", dumper.dumpToString(Double.NaN));
-    assertEquals("!!float 'NaN'\n", dumper.dumpToString(Float.NaN));
+    RepresenterException thrown3 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Double.NEGATIVE_INFINITY), "Infinity is not supported");
+    assertEquals(thrown3.getMessage(),
+        "Special value -Infinity for class java.lang.Double has no representation in the JSON schema.");
+
+    RepresenterException thrown4 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Float.NEGATIVE_INFINITY), "Infinity is not supported");
+    assertEquals(thrown4.getMessage(),
+        "Special value -Infinity for class java.lang.Float has no representation in the JSON schema.");
+
+    RepresenterException thrown5 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Double.NaN), "Infinity is not supported");
+    assertEquals(thrown5.getMessage(),
+        "Special value NaN for class java.lang.Double has no representation in the JSON schema.");
+
+    RepresenterException thrown6 = assertThrows(RepresenterException.class,
+        () -> dumper.dumpToString(Float.NaN), "Infinity is not supported");
+    assertEquals(thrown6.getMessage(),
+        "Special value NaN for class java.lang.Float has no representation in the JSON schema.");
   }
 }

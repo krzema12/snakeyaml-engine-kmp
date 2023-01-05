@@ -220,9 +220,11 @@ public class StandardConstructor extends BaseConstructor {
         value = value.substring(1);
       }
       if (".inf".equals(value)) {
-        return sign == -1 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+        throw new ConstructorException("while constructing float", Optional.empty(),
+            "found value unsupported in the JSON schema: Infinity", node.getStartMark());
       } else if (".nan".equals(value)) {
-        return Double.NaN;
+        throw new ConstructorException("while constructing float", Optional.empty(),
+            "found value unsupported in the JSON schema: NaN", node.getStartMark());
       } else {
         double d = Double.valueOf(value);
         return Double.valueOf(d * sign);

@@ -43,10 +43,9 @@ import org.snakeyaml.engine.v2.tokens.ValueToken;
 
 public class CanonicalScanner implements Scanner {
 
-  private static final String DIRECTIVE = "%YAML 1.2";
-
-  private static final Map<Character, Integer> ESCAPE_CODES = new HashMap();
   public static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
+  private static final String DIRECTIVE = "%YAML 1.2";
+  private static final Map<Character, Integer> ESCAPE_CODES = new HashMap();
 
   static {
     // ASCII null
@@ -92,10 +91,10 @@ public class CanonicalScanner implements Scanner {
 
   private final String data;
   private final String label;
-  private int index;
-  public ArrayList<Token> tokens;
-  private boolean scanned;
   private final Optional<Mark> mark;
+  public ArrayList<Token> tokens;
+  private int index;
+  private boolean scanned;
 
   public CanonicalScanner(String data, String label) {
     this.data = data + "\0";

@@ -280,10 +280,6 @@ public class EmitterWithCommentEnabledTest {
     assertEquals(data, result);
   }
 
-  class MyWriter extends StringWriter implements StreamDataWriter {
-
-  }
-
   @Test
   public void testCommentsIndentFirstLineBlank() throws Exception {
     String data = "# Comment 1\n" + "key1:\n" + "  \n" + "  # Comment 2\n" + "  # Comment 3\n"
@@ -470,5 +466,9 @@ public class EmitterWithCommentEnabledTest {
         + "\n"
         + "    # If true, players will be sent a notice in their chat box when they open a protection they own.\n"
         + "    showMyNotices: false\n";
+  }
+
+  class MyWriter extends StringWriter implements StreamDataWriter {
+
   }
 }

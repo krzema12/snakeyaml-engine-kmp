@@ -95,14 +95,6 @@ class LoadSettingsTest {
     assertEquals("bar", settings.getCustomProperty(SomeStatus.DELIVERED));
   }
 
-  public static final class SomeKey implements SettingKey {
-
-  }
-
-  public enum SomeStatus implements SettingKey {
-    ORDERED, DELIVERED
-  }
-
   @Test
   @DisplayName("Set and get custom I/O buffer size")
   void bufferSize() {
@@ -118,6 +110,14 @@ class LoadSettingsTest {
     Load load = new Load(settings);
     assertEquals("false", load.loadFromString("false"));
     assertEquals(Integer.valueOf(1024), settings.getBufferSize());
+  }
+
+  public enum SomeStatus implements SettingKey {
+    ORDERED, DELIVERED
+  }
+
+  public static final class SomeKey implements SettingKey {
+
   }
 
   public static final class SomeScalarResolver extends JsonScalarResolver {

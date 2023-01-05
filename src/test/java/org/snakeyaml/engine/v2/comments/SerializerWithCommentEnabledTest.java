@@ -62,20 +62,6 @@ public class SerializerWithCommentEnabledTest {
     }
   }
 
-  private static class TestEmitter implements Emitable {
-
-    private final List<Event> eventList = new ArrayList<>();
-
-    @Override
-    public void emit(Event event) {
-      eventList.add(event);
-    }
-
-    public List<Event> getEventList() {
-      return eventList;
-    }
-  }
-
   public List<Event> serializeWithCommentsEnabled(String data) throws IOException {
     TestEmitter emitter = new TestEmitter();
     DumpSettings dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
@@ -421,5 +407,19 @@ public class SerializerWithCommentEnabledTest {
     List<Event> result = serializeWithCommentsEnabled(data);
 
     assertEventListEquals(expectedEventIdList, result);
+  }
+
+  private static class TestEmitter implements Emitable {
+
+    private final List<Event> eventList = new ArrayList<>();
+
+    @Override
+    public void emit(Event event) {
+      eventList.add(event);
+    }
+
+    public List<Event> getEventList() {
+      return eventList;
+    }
   }
 }

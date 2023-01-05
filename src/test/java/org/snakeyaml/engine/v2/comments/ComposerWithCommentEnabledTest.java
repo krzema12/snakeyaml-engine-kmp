@@ -545,13 +545,6 @@ public class ComposerWithCommentEnabledTest {
     assertNodesEqual(expected, result);
   }
 
-  private static class TestConstructor extends StandardConstructor {
-
-    public TestConstructor(LoadSettings settings) {
-      super(settings);
-    }
-  }
-
   @Test
   public void testBaseConstructorGetData() {
     String data = "" + //
@@ -591,5 +584,12 @@ public class ComposerWithCommentEnabledTest {
 
     printNodeList(result);
     assertNodesEqual(expected, result);
+  }
+
+  private static class TestConstructor extends StandardConstructor {
+
+    public TestConstructor(LoadSettings settings) {
+      super(settings);
+    }
   }
 }

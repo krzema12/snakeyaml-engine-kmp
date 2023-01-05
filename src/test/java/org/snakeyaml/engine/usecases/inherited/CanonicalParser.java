@@ -44,8 +44,8 @@ public class CanonicalParser implements Parser {
 
   private final String label;
   private final ArrayList<Event> events;
-  private boolean parsed;
   private final CanonicalScanner scanner;
+  private boolean parsed;
 
   public CanonicalParser(String data, String label) {
     this.label = label;

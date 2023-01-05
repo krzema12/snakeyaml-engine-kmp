@@ -33,6 +33,8 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
 
 public class ProblematicYamlTest {
 
+  private static final LoadSettings LOAD_OPTIONS =
+      LoadSettings.builder().setParseComments(true).build();
   private final boolean DEBUG = false;
 
   private void println(String s) {
@@ -46,9 +48,6 @@ public class ProblematicYamlTest {
       System.out.println();
     }
   }
-
-  private static final LoadSettings LOAD_OPTIONS =
-      LoadSettings.builder().setParseComments(true).build();
 
   private void assertEventListEquals(List<Event.ID> expectedEventIdList,
       List<CommentType> expectedCommentTypeList, Parser parser) {

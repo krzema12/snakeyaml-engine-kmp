@@ -26,11 +26,11 @@ import org.snakeyaml.engine.v2.env.EnvConfig;
  */
 public class CustomEnvConfig implements EnvConfig {
 
+  private final Map<String, String> provided;
+
   public CustomEnvConfig(Map<String, String> provided) {
     this.provided = provided;
   }
-
-  private final Map<String, String> provided;
 
   /**
    * Implement deviation from the standard logic. It chooses the value from the provided map, if not

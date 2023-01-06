@@ -3,12 +3,12 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: maven:3-jdk-8
+image: openjdk:8-alpine
 
 pipelines:
   default:
     - step:
         caches:
           - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -V -B clean install
+        script:
+          - ./mvnw -V -B clean install

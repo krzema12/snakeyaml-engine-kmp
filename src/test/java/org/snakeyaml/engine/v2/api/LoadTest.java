@@ -79,7 +79,7 @@ class LoadTest {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
     Double doubleValue = (Double) load.loadFromString("1.01");
-    assertEquals(new Double(1.01), doubleValue);
+    assertEquals(Double.valueOf(1.01), doubleValue);
   }
 
   @Test

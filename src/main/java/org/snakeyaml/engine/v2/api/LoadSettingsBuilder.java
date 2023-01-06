@@ -36,6 +36,7 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver;
  */
 public final class LoadSettingsBuilder {
 
+  private final Map<SettingKey, Object> customProperties = new HashMap<>();
   private String label;
   private Map<Tag, ConstructNode> tagConstructors;
   private ScalarResolver scalarResolver;
@@ -51,9 +52,6 @@ public final class LoadSettingsBuilder {
   private boolean useMarks;
   private Optional<EnvConfig> envConfig;
   private int codePointLimit;
-
-  // general
-  private final Map<SettingKey, Object> customProperties = new HashMap<>();
 
   /**
    * Create builder

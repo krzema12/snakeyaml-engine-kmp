@@ -64,10 +64,10 @@ public class Composer implements Iterator<Node> {
   private final ScalarResolver scalarResolver;
   private final Map<Anchor, Node> anchors;
   private final Set<Node> recursiveNodes;
-  private int nonScalarAliasesCount = 0;
   private final LoadSettings settings;
   private final CommentEventsCollector blockCommentsCollector;
   private final CommentEventsCollector inlineCommentsCollector;
+  private int nonScalarAliasesCount = 0;
 
   /**
    * @param parser - the input

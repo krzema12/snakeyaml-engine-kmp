@@ -49,12 +49,10 @@ public class YamlUnicodeReader extends Reader {
   private static final Charset UTF16LE = StandardCharsets.UTF_16LE;
   private static final Charset UTF32BE = Charset.forName("UTF-32BE");
   private static final Charset UTF32LE = Charset.forName("UTF-32LE");
-
+  private static final int BOM_SIZE = 4;
   PushbackInputStream internalIn;
   InputStreamReader internalIn2 = null;
   Charset encoding = UTF8;
-
-  private static final int BOM_SIZE = 4;
 
   /**
    * @param in InputStream to be read

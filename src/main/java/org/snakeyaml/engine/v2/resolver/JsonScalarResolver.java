@@ -62,6 +62,13 @@ public class JsonScalarResolver implements ScalarResolver {
   protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<>();
 
   /**
+   * Create
+   */
+  public JsonScalarResolver() {
+    addImplicitResolvers();
+  }
+
+  /**
    * Add a resolver to resolve a value that matches the provided regular expression to the provided
    * tag
    *
@@ -107,13 +114,6 @@ public class JsonScalarResolver implements ScalarResolver {
     addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.");
     addImplicitResolver(Tag.NULL, NULL, "n\u0000");
     addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
-  }
-
-  /**
-   * Create
-   */
-  public JsonScalarResolver() {
-    addImplicitResolvers();
   }
 
   @Override

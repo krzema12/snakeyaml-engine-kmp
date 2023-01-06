@@ -44,6 +44,10 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
 public class StandardRepresenter extends BaseRepresenter {
 
   /**
+   * all chars that represent a new line
+   */
+  public static final Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
+  /**
    * Connect classes to their tags
    */
   protected Map<Class<? extends Object>, Tag> classTags;
@@ -117,6 +121,19 @@ public class StandardRepresenter extends BaseRepresenter {
     return classTags.put(clazz, tag);
   }
 
+  private static class IteratorWrapper implements Iterable<Object> {
+
+    private final Iterator<Object> iter;
+
+    public IteratorWrapper(Iterator<Object> iter) {
+      this.iter = iter;
+    }
+
+    public Iterator<Object> iterator() {
+      return iter;
+    }
+  }
+
   /**
    * Create null Node
    */
@@ -126,11 +143,6 @@ public class StandardRepresenter extends BaseRepresenter {
       return representScalar(Tag.NULL, "null");
     }
   }
-
-  /**
-   * all chars that represent a new line
-   */
-  public static final Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
 
   /**
    * Create Node for String
@@ -230,19 +242,6 @@ public class StandardRepresenter extends BaseRepresenter {
       Iterator<Object> iter = (Iterator<Object>) data;
       return representSequence(getTag(data.getClass(), Tag.SEQ), new IteratorWrapper(iter),
           settings.getDefaultFlowStyle());
-    }
-  }
-
-  private static class IteratorWrapper implements Iterable<Object> {
-
-    private final Iterator<Object> iter;
-
-    public IteratorWrapper(Iterator<Object> iter) {
-      this.iter = iter;
-    }
-
-    public Iterator<Object> iterator() {
-      return iter;
     }
   }
 

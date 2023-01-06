@@ -42,15 +42,24 @@ public abstract class BaseRepresenter {
    */
   protected final Map<Class<?>, RepresentToNode> representers = new HashMap<>();
   /**
-   * in Java 'null' is not a type. So we have to keep the null representer separately otherwise it
-   * will coincide with the default representer which is stored with the key null.
-   */
-  protected RepresentToNode nullRepresenter;
-  // the order is important (map can be also a sequence of key-values)
-  /**
    * Keep representers which match a parent of the class to be represented
    */
   protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap<>();
+  /**
+   * Keep references of already represented instances.
+   * The order is important (map can be also a sequence of key-values)
+   */
+  protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
+    @Override
+    public Node put(Object key, Node value) {
+      return super.put(key, new AnchorNode(value));
+    }
+  };
+  /**
+   * in Java 'null' is not a type. So we have to keep the null representer separately, otherwise it
+   * will coincide with the default representer which is stored with the key null.
+   */
+  protected RepresentToNode nullRepresenter;
   /**
    * scalar style
    */
@@ -59,16 +68,6 @@ public abstract class BaseRepresenter {
    * flow style for collections
    */
   protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
-  /**
-   * Keep references of already represented instances
-   */
-  protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
-    @Override
-    public Node put(Object key, Node value) {
-      return super.put(key, new AnchorNode(value));
-    }
-  };
-
   /**
    * the current object to be converted to Node
    */

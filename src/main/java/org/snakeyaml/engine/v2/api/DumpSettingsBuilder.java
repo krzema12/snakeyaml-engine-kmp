@@ -35,6 +35,7 @@ import org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator;
  */
 public final class DumpSettingsBuilder {
 
+  Map<SettingKey, Object> customProperties = new HashMap<>();
   private boolean explicitStart;
   private boolean explicitEnd;
   private NonPrintableStyle nonPrintableStyle;
@@ -45,7 +46,6 @@ public final class DumpSettingsBuilder {
   private ScalarResolver scalarResolver;
   private FlowStyle defaultFlowStyle;
   private ScalarStyle defaultScalarStyle;
-
   // emitter
   private boolean canonical;
   private boolean multiLineFlow;
@@ -58,9 +58,6 @@ public final class DumpSettingsBuilder {
   private int maxSimpleKeyLength;
   private boolean indentWithIndicator;
   private boolean dumpComments;
-
-  // general
-  Map<SettingKey, Object> customProperties = new HashMap<>();
 
   /**
    * Create builder

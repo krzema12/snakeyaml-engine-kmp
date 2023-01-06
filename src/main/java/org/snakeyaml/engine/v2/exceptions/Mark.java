@@ -29,19 +29,6 @@ public final class Mark implements Serializable {
   private final int[] buffer;
   private final int pointer;
 
-  private static int[] toCodePoints(char[] str) {
-    int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];
-    int i = 0;
-    int c = 0;
-    while (i < str.length) {
-      int cp = Character.codePointAt(str, i);
-      codePoints[c] = cp;
-      i += Character.charCount(cp);
-      c++;
-    }
-    return codePoints;
-  }
-
   /**
    * Creates {@link Mark}
    *
@@ -74,6 +61,19 @@ public final class Mark implements Serializable {
    */
   public Mark(String name, int index, int line, int column, char[] str, int pointer) {
     this(name, index, line, column, toCodePoints(str), pointer);
+  }
+
+  private static int[] toCodePoints(char[] str) {
+    int[] codePoints = new int[Character.codePointCount(str, 0, str.length)];
+    int i = 0;
+    int c = 0;
+    while (i < str.length) {
+      int cp = Character.codePointAt(str, i);
+      codePoints[c] = cp;
+      i += Character.charCount(cp);
+      c++;
+    }
+    return codePoints;
   }
 
   private boolean isLineBreak(int c) {

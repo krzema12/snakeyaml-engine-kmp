@@ -46,6 +46,13 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
  */
 public class StandardConstructor extends BaseConstructor {
 
+  private static final Map<String, Boolean> BOOL_VALUES = new HashMap<>();
+
+  static {
+    BOOL_VALUES.put("true", Boolean.TRUE);
+    BOOL_VALUES.put("false", Boolean.FALSE);
+  }
+
   /**
    * Create
    *
@@ -147,13 +154,6 @@ public class StandardConstructor extends BaseConstructor {
       }
       return null;
     }
-  }
-
-  private static final Map<String, Boolean> BOOL_VALUES = new HashMap<>();
-
-  static {
-    BOOL_VALUES.put("true", Boolean.TRUE);
-    BOOL_VALUES.put("false", Boolean.FALSE);
   }
 
   /**

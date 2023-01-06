@@ -22,13 +22,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  */
 public abstract class Event {
 
-  /**
-   * ID of a non-abstract Event
-   */
-  public enum ID {
-    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart // NOSONAR
-  }
-
   private final Optional<Mark> startMark;
   private final Optional<Mark> endMark;
 
@@ -62,4 +55,11 @@ public abstract class Event {
    * @return the ID of this Event
    */
   public abstract Event.ID getEventId();
+
+  /**
+   * ID of a non-abstract Event
+   */
+  public enum ID {
+    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart // NOSONAR
+  }
 }

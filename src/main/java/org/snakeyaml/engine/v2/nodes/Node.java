@@ -36,9 +36,13 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  */
 public abstract class Node {
 
-  private Tag tag;
   private final Optional<Mark> startMark;
   protected Optional<Mark> endMark;
+  /**
+   * true when the tag is assigned by the resolver
+   */
+  protected boolean resolved;
+  private Tag tag;
   private boolean recursive;
   private Optional<Anchor> anchor;
   private List<CommentLine> inLineComments;
@@ -46,11 +50,6 @@ public abstract class Node {
   // End Comments are only on the last node in a document
   private List<CommentLine> endComments;
   private Map<String, Object> properties;
-
-  /**
-   * true when the tag is assigned by the resolver
-   */
-  protected boolean resolved;
 
   /**
    * Create Node to be parsed
@@ -83,6 +82,11 @@ public abstract class Node {
     return this.tag;
   }
 
+  public void setTag(Tag tag) {
+    Objects.requireNonNull(tag, "tag in a Node is required.");
+    this.tag = tag;
+  }
+
   public Optional<Mark> getEndMark() {
     return endMark;
   }
@@ -96,21 +100,12 @@ public abstract class Node {
     return startMark;
   }
 
-  public void setTag(Tag tag) {
-    Objects.requireNonNull(tag, "tag in a Node is required.");
-    this.tag = tag;
-  }
-
   /**
    * Node is only equal to itself
    */
   @Override
   public final boolean equals(Object obj) {
     return super.equals(obj);
-  }
-
-  public void setRecursive(boolean recursive) {
-    this.recursive = recursive;
   }
 
   /**
@@ -130,6 +125,10 @@ public abstract class Node {
    */
   public boolean isRecursive() {
     return recursive;
+  }
+
+  public void setRecursive(boolean recursive) {
+    this.recursive = recursive;
   }
 
   @Override

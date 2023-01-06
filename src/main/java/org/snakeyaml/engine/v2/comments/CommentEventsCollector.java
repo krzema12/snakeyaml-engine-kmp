@@ -28,9 +28,9 @@ import org.snakeyaml.engine.v2.parser.Parser;
  */
 public class CommentEventsCollector {
 
-  private List<CommentLine> commentLineList;
   private final Queue<Event> eventSource;
   private final CommentType[] expectedCommentTypes;
+  private List<CommentLine> commentLineList;
 
   /**
    * Constructor used to collect comment events emitted by a Parser.

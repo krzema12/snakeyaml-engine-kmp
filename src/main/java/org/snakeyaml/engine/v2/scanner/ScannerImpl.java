@@ -101,29 +101,30 @@ public final class ScannerImpl implements Scanner {
   private static final Pattern NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]");
 
   private final StreamReader reader;
-  // Had we reached the end of the stream?
-  private boolean done = false;
-
-  // The number of unclosed '{' and '['. `isBlockContext()` means block context.
-  private int flowLevel = 0;
-
   // List of processed tokens that are not yet emitted.
   private final List<Token> tokens;
-
+  // Past indentation levels.
+  private final ArrayStack<Integer> indents;
+  /*
+   * Keep track of possible simple keys. This is a dictionary. The key is `flow_level`; there can be
+   * no more than one possible simple key for each level. The value is a SimpleKey record:
+   * (token_number, required, index, line, column, mark) A simple key may start with ALIAS, ANCHOR,
+   * TAG, SCALAR(flow), '[', or '{' tokens.
+   */
+  private final Map<Integer, SimpleKey> possibleSimpleKeys;
+  private final LoadSettings settings;
+  // Had we reached the end of the stream?
+  private boolean done = false;
+  // The number of unclosed '{' and '['. `isBlockContext()` means block context.
+  private int flowLevel = 0;
   // The last added token
   private Token lastToken;
 
+  // Variables related to simple keys treatment.
   // Number of tokens that were emitted through the `get_token` method.
   private int tokensTaken = 0;
-
   // The current indentation level.
   private int indent = -1;
-
-  // Past indentation levels.
-  private final ArrayStack<Integer> indents;
-
-  // Variables related to simple keys treatment.
-
   /**
    * <pre>
    * A simple key is a key that is not denoted by the '?' indicator.
@@ -147,16 +148,6 @@ public final class ScannerImpl implements Scanner {
    * </pre>
    */
   private boolean allowSimpleKey = true;
-
-  /*
-   * Keep track of possible simple keys. This is a dictionary. The key is `flow_level`; there can be
-   * no more than one possible simple key for each level. The value is a SimpleKey record:
-   * (token_number, required, index, line, column, mark) A simple key may start with ALIAS, ANCHOR,
-   * TAG, SCALAR(flow), '[', or '{' tokens.
-   */
-  private final Map<Integer, SimpleKey> possibleSimpleKeys;
-
-  private final LoadSettings settings;
 
   /**
    * @param reader - the input
@@ -2227,10 +2218,6 @@ public final class ScannerImpl implements Scanner {
 
   static class Chomping {
 
-    enum Indicator {
-      STRIP, CLIP, KEEP
-    }
-
     // immutable values do not have getters
     private final Indicator value;
     private final Optional<Integer> increment;
@@ -2254,6 +2241,10 @@ public final class ScannerImpl implements Scanner {
       } else {
         throw new IllegalArgumentException("Unexpected block chomping indicator: " + codePoint);
       }
+    }
+
+    enum Indicator {
+      STRIP, CLIP, KEEP
     }
   }
 

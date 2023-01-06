@@ -21,11 +21,10 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 public final class DirectiveToken<T> extends Token {
 
-  private final String name;
-  private final Optional<List<T>> value;
-
   public static final String YAML_DIRECTIVE = "YAML";
   public static final String TAG_DIRECTIVE = "TAG";
+  private final String name;
+  private final Optional<List<T>> value;
 
   public DirectiveToken(String name, Optional<List<T>> value, Optional<Mark> startMark,
       Optional<Mark> endMark) {

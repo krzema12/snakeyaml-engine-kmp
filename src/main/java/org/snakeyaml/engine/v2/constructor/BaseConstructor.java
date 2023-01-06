@@ -39,10 +39,6 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 public abstract class BaseConstructor {
 
   /**
-   * keep the settings
-   */
-  protected LoadSettings settings;
-  /**
    * It maps the (explicit or implicit) tag to the Construct implementation.
    */
   protected final Map<Tag, ConstructNode> tagConstructors;
@@ -50,6 +46,10 @@ public abstract class BaseConstructor {
   private final Set<Node> recursiveObjects;
   private final ArrayList<RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>> maps2fill;
   private final ArrayList<RecursiveTuple<Set<Object>, Object>> sets2fill;
+  /**
+   * keep the settings
+   */
+  protected LoadSettings settings;
 
   /**
    * Create

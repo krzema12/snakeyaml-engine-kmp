@@ -22,6 +22,36 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
  */
 public abstract class Token {
 
+  private final Optional<Mark> startMark;
+  private final Optional<Mark> endMark;
+
+  public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
+    Objects.requireNonNull(startMark);
+    Objects.requireNonNull(endMark);
+    this.startMark = startMark;
+    this.endMark = endMark;
+  }
+
+  public Optional<Mark> getStartMark() {
+    return startMark;
+  }
+
+  public Optional<Mark> getEndMark() {
+    return endMark;
+  }
+
+  /**
+   * For error reporting.
+   *
+   * @return ID of this token
+   */
+  public abstract Token.ID getTokenId();
+
+  @Override
+  public String toString() {
+    return getTokenId().toString();
+  }
+
   public enum ID {
     Alias("<alias>"), // NOSONAR
     Anchor("<anchor>"), // NOSONAR
@@ -54,35 +84,5 @@ public abstract class Token {
     public String toString() {
       return description;
     }
-  }
-
-  private final Optional<Mark> startMark;
-  private final Optional<Mark> endMark;
-
-  public Token(Optional<Mark> startMark, Optional<Mark> endMark) {
-    Objects.requireNonNull(startMark);
-    Objects.requireNonNull(endMark);
-    this.startMark = startMark;
-    this.endMark = endMark;
-  }
-
-  public Optional<Mark> getStartMark() {
-    return startMark;
-  }
-
-  public Optional<Mark> getEndMark() {
-    return endMark;
-  }
-
-  /**
-   * For error reporting.
-   *
-   * @return ID of this token
-   */
-  public abstract Token.ID getTokenId();
-
-  @Override
-  public String toString() {
-    return getTokenId().toString();
   }
 }

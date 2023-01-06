@@ -32,6 +32,10 @@ public final class StreamReader {
 
   private final String name;
   private final Reader stream;
+  private final int bufferSize;
+  // temp buffer for one read operation (to avoid creating the array in stack)
+  private final char[] buffer;
+  private final boolean useMarks;
   /**
    * Read data (as a moving window for input stream)
    */
@@ -52,10 +56,6 @@ public final class StreamReader {
   private int index = 0; // in code points
   private int line = 0;
   private int column = 0; // in code points
-  private final int bufferSize;
-  // temp buffer for one read operation (to avoid creating the array in stack)
-  private final char[] buffer;
-  private final boolean useMarks;
 
   /**
    * @param loadSettings - configuration options

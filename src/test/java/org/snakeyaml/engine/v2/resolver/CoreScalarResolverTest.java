@@ -13,35 +13,23 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
-import java.util.Objects;
-import java.util.regex.Pattern;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
-/**
- * Hold 2 values, tag and pattern
- */
-final class ResolverTuple {
+@org.junit.jupiter.api.Tag("fast")
+class CoreScalarResolverTest {
 
-  private final Tag tag;
-  private final Pattern regexp;
+  private final ScalarResolver scalarResolver = new CoreScalarResolver();
 
-  public ResolverTuple(Tag tag, Pattern regexp) {
-    Objects.requireNonNull(tag);
-    Objects.requireNonNull(regexp);
-    this.tag = tag;
-    this.regexp = regexp;
-  }
+  @Test
+  void resolveImplicitInteger() {
+    assertTrue(CoreScalarResolver.INT.matcher("0o1010").matches());
+    assertFalse(CoreScalarResolver.INT.matcher("0b1010").matches());
 
-  public Tag getTag() {
-    return tag;
-  }
-
-  public Pattern getRegexp() {
-    return regexp;
-  }
-
-  @Override
-  public String toString() {
-    return "Tuple tag=" + tag + " regexp=" + regexp;
+    assertEquals(Tag.STR, scalarResolver.resolve("0b1010", true));
   }
 }

@@ -13,8 +13,6 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
-import java.math.BigInteger;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -35,8 +32,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.NodeType;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
@@ -46,13 +41,6 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
  */
 public class StandardConstructor extends BaseConstructor {
 
-  private static final Map<String, Boolean> BOOL_VALUES = new HashMap<>();
-
-  static {
-    BOOL_VALUES.put("true", Boolean.TRUE);
-    BOOL_VALUES.put("false", Boolean.FALSE);
-  }
-
   /**
    * Create
    *
@@ -60,20 +48,16 @@ public class StandardConstructor extends BaseConstructor {
    */
   public StandardConstructor(LoadSettings settings) {
     super(settings);
-    this.tagConstructors.put(Tag.NULL, new ConstructYamlNull());
-    this.tagConstructors.put(Tag.BOOL, new ConstructYamlBool());
-    this.tagConstructors.put(Tag.INT, new ConstructYamlInt());
-    this.tagConstructors.put(Tag.FLOAT, new ConstructYamlFloat());
-    this.tagConstructors.put(Tag.BINARY, new ConstructYamlBinary());
     this.tagConstructors.put(Tag.SET, new ConstructYamlSet());
     this.tagConstructors.put(Tag.STR, new ConstructYamlStr());
     this.tagConstructors.put(Tag.SEQ, new ConstructYamlSeq());
     this.tagConstructors.put(Tag.MAP, new ConstructYamlMap());
     this.tagConstructors.put(Tag.ENV_TAG, new ConstructEnv());
 
-    this.tagConstructors.put(new Tag(UUID.class), new ConstructUuidClass());
-    this.tagConstructors.put(new Tag(Optional.class), new ConstructOptionalClass());
+    // apply the tag constructors from the provided schema
+    this.tagConstructors.putAll(settings.getSchema().getSchemaTagConstructors());
 
+    // the explicit config overrides all
     this.tagConstructors.putAll(settings.getTagConstructors());
   }
 
@@ -143,142 +127,6 @@ public class StandardConstructor extends BaseConstructor {
   }
 
   /**
-   * Create null
-   */
-  public class ConstructYamlNull implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      if (node != null) {
-        constructScalar((ScalarNode) node);
-      }
-      return null;
-    }
-  }
-
-  /**
-   * Create Boolean instances
-   */
-  public class ConstructYamlBool implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      String val = constructScalar((ScalarNode) node);
-      return BOOL_VALUES.get(val.toLowerCase());
-    }
-  }
-
-  /**
-   * Create instances for numbers (Integer, Long, BigInteger)
-   */
-  public class ConstructYamlInt implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      String value = constructScalar((ScalarNode) node);
-      return createIntNumber(value);
-    }
-
-    /**
-     * Create number trying fist Integer, then Long, then BigInteger
-     *
-     * @param number - the source
-     * @return number that fits the source
-     */
-    protected Number createIntNumber(String number) {
-      Number result;
-      try {
-        // first try integer
-        result = Integer.valueOf(number);
-      } catch (NumberFormatException e) {
-        try {
-          // then Long
-          result = Long.valueOf(number);
-        } catch (NumberFormatException e1) {
-          // and BigInteger as the last resource
-          result = new BigInteger(number);
-        }
-      }
-      return result;
-    }
-  }
-
-  /**
-   * Create Double instances for float
-   */
-  public class ConstructYamlFloat implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      String value = constructScalar((ScalarNode) node);
-      int sign = +1;
-      char first = value.charAt(0);
-      if (first == '-') {
-        sign = -1;
-        value = value.substring(1);
-      } else if (first == '+') {
-        value = value.substring(1);
-      }
-      if (".inf".equals(value)) {
-        throw new ConstructorException("while constructing float", Optional.empty(),
-            "found value unsupported in the JSON schema: Infinity", node.getStartMark());
-      } else if (".nan".equals(value)) {
-        throw new ConstructorException("while constructing float", Optional.empty(),
-            "found value unsupported in the JSON schema: NaN", node.getStartMark());
-      } else {
-        double d = Double.valueOf(value);
-        return Double.valueOf(d * sign);
-      }
-    }
-  }
-
-  /**
-   * Create instances bytes for binary
-   */
-  public class ConstructYamlBinary implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      // Ignore white spaces for base64 encoded scalar
-      String noWhiteSpaces = constructScalar((ScalarNode) node).replaceAll("\\s", "");
-      return Base64.getDecoder().decode(noWhiteSpaces);
-    }
-  }
-
-  /**
-   * Create instances of UUID class
-   */
-  public class ConstructUuidClass implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      String uuidValue = constructScalar((ScalarNode) node);
-      return UUID.fromString(uuidValue);
-    }
-  }
-
-  /**
-   * Create instances of Optional
-   */
-  public class ConstructOptionalClass implements ConstructNode {
-
-    @Override
-    public Object construct(Node node) {
-      if (node.getNodeType() != NodeType.SCALAR) {
-        throw new ConstructorException("while constructing Optional", Optional.empty(),
-            "found non scalar node", node.getStartMark());
-      }
-      String value = constructScalar((ScalarNode) node);
-      Tag implicitTag = settings.getScalarResolver().resolve(value, true);
-      if (implicitTag.equals(Tag.NULL)) {
-        return Optional.empty();
-      } else {
-        return Optional.of(value);
-      }
-    }
-  }
-
-  /**
    * Create Set instances
    */
   public class ConstructYamlSet implements ConstructNode {
@@ -307,11 +155,11 @@ public class StandardConstructor extends BaseConstructor {
   /**
    * Create String instances
    */
-  public class ConstructYamlStr implements ConstructNode {
+  public class ConstructYamlStr extends ConstructScalar {
 
     @Override
     public Object construct(Node node) {
-      return constructScalar((ScalarNode) node);
+      return constructScalar(node);
     }
   }
 
@@ -375,10 +223,10 @@ public class StandardConstructor extends BaseConstructor {
    * @see <a href="https://docs.docker.com/compose/compose-file/#variable-substitution">Variable
    *      substitution</a>
    */
-  public class ConstructEnv implements ConstructNode {
+  public class ConstructEnv extends ConstructScalar {
 
     public Object construct(Node node) {
-      String val = constructScalar((ScalarNode) node);
+      String val = constructScalar(node);
       Optional<EnvConfig> opt = settings.getEnvConfig();
       if (opt.isPresent()) {
         EnvConfig config = opt.get();

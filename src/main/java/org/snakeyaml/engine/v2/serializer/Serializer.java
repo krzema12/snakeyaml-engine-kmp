@@ -156,8 +156,10 @@ public class Serializer {
         case SCALAR:
           ScalarNode scalarNode = (ScalarNode) node;
           serializeComments(node.getBlockComments());
-          Tag detectedTag = settings.getScalarResolver().resolve(scalarNode.getValue(), true);
-          Tag defaultTag = settings.getScalarResolver().resolve(scalarNode.getValue(), false);
+          Tag detectedTag =
+              settings.getSchema().getScalarResolver().resolve(scalarNode.getValue(), true);
+          Tag defaultTag =
+              settings.getSchema().getScalarResolver().resolve(scalarNode.getValue(), false);
           ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag),
               node.getTag().equals(defaultTag));
           ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,

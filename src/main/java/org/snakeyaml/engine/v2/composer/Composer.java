@@ -87,7 +87,7 @@ public class Composer implements Iterator<Node> {
    */
   public Composer(LoadSettings settings, Parser parser) {
     this.parser = parser;
-    this.scalarResolver = settings.getScalarResolver();
+    this.scalarResolver = settings.getSchema().getScalarResolver();
     this.settings = settings;
     this.anchors = new HashMap<>();
     this.recursiveNodes = new HashSet<>();

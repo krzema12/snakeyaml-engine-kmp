@@ -11,37 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.constructor.json;
 
-import java.util.Objects;
-import java.util.regex.Pattern;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import java.util.Base64;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar;
+import org.snakeyaml.engine.v2.nodes.Node;
 
 /**
- * Hold 2 values, tag and pattern
+ * Create instances bytes for binary
  */
-final class ResolverTuple {
-
-  private final Tag tag;
-  private final Pattern regexp;
-
-  public ResolverTuple(Tag tag, Pattern regexp) {
-    Objects.requireNonNull(tag);
-    Objects.requireNonNull(regexp);
-    this.tag = tag;
-    this.regexp = regexp;
-  }
-
-  public Tag getTag() {
-    return tag;
-  }
-
-  public Pattern getRegexp() {
-    return regexp;
-  }
+public class ConstructYamlBinary extends ConstructScalar {
 
   @Override
-  public String toString() {
-    return "Tuple tag=" + tag + " regexp=" + regexp;
+  public Object construct(Node node) {
+    // Ignore white spaces for base64 encoded scalar
+    String noWhiteSpaces = constructScalar(node).replaceAll("\\s", "");
+    return Base64.getDecoder().decode(noWhiteSpaces);
   }
 }

@@ -25,8 +25,8 @@ import org.snakeyaml.engine.v2.emitter.Emitter;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.schema.JsonSchema;
+import org.snakeyaml.engine.v2.schema.Schema;
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 import org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator;
 
@@ -43,7 +43,6 @@ public final class DumpSettingsBuilder {
   private AnchorGenerator anchorGenerator;
   private Optional<SpecVersion> yamlDirective;
   private Map<String, String> tagDirective;
-  private ScalarResolver scalarResolver;
   private FlowStyle defaultFlowStyle;
   private ScalarStyle defaultScalarStyle;
   // emitter
@@ -58,6 +57,7 @@ public final class DumpSettingsBuilder {
   private int maxSimpleKeyLength;
   private boolean indentWithIndicator;
   private boolean dumpComments;
+  private Schema schema;
 
   /**
    * Create builder
@@ -65,7 +65,6 @@ public final class DumpSettingsBuilder {
   DumpSettingsBuilder() {
     this.explicitRootTag = Optional.empty();
     this.tagDirective = new HashMap<>();
-    this.scalarResolver = new JsonScalarResolver();
     this.anchorGenerator = new NumberAnchorGenerator(0);
     this.bestLineBreak = "\n";
     this.canonical = false;
@@ -83,6 +82,7 @@ public final class DumpSettingsBuilder {
     this.maxSimpleKeyLength = 128;
     this.indentWithIndicator = false;
     this.dumpComments = false;
+    this.schema = new JsonSchema();
   }
 
   /**
@@ -127,18 +127,6 @@ public final class DumpSettingsBuilder {
   public DumpSettingsBuilder setAnchorGenerator(AnchorGenerator anchorGenerator) {
     Objects.requireNonNull(anchorGenerator, "anchorGenerator cannot be null");
     this.anchorGenerator = anchorGenerator;
-    return this;
-  }
-
-  /**
-   * Define {@link ScalarResolver} or use JSON resolver by default. Do we need this method ?
-   *
-   * @param scalarResolver - specify the scalar resolver
-   * @return the builder with the provided value
-   */
-  public DumpSettingsBuilder setScalarResolver(ScalarResolver scalarResolver) {
-    Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
-    this.scalarResolver = scalarResolver;
     return this;
   }
 
@@ -368,14 +356,30 @@ public final class DumpSettingsBuilder {
   }
 
   /**
+   * Provide either recommended or custom
+   * <a href="https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas">schema</a> instead of
+   * default {@link org.snakeyaml.engine.v2.schema.JsonSchema}. These 3 are available
+   * {@link org.snakeyaml.engine.v2.schema.FailsafeSchema},
+   * {@link org.snakeyaml.engine.v2.schema.JsonSchema},
+   * {@link org.snakeyaml.engine.v2.schema.CoreSchema}.
+   *
+   * @param schema - the tag schema
+   * @return the builder with the provided value
+   */
+  public DumpSettingsBuilder setSchema(Schema schema) {
+    this.schema = schema;
+    return this;
+  }
+
+  /**
    * Create immutable DumpSettings
    *
    * @return DumpSettings with the provided values
    */
   public DumpSettings build() {
     return new DumpSettings(explicitStart, explicitEnd, explicitRootTag, anchorGenerator,
-        yamlDirective, tagDirective, scalarResolver, defaultFlowStyle, defaultScalarStyle,
-        nonPrintableStyle,
+        yamlDirective, tagDirective, defaultFlowStyle, defaultScalarStyle, nonPrintableStyle,
+        schema,
         // emitter
         canonical, multiLineFlow, useUnicodeEncoding, indent, indicatorIndent, width, bestLineBreak,
         splitLines, maxSimpleKeyLength, customProperties, indentWithIndicator, dumpComments);

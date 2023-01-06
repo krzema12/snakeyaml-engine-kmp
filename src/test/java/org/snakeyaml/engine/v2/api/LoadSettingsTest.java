@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
+import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 @Tag("fast")
 class LoadSettingsTest {
@@ -103,13 +103,10 @@ class LoadSettingsTest {
   }
 
   @Test
-  @DisplayName("Use custom ScalarResolver")
-  void customScalarResolver() {
-    LoadSettings settings =
-        LoadSettings.builder().setScalarResolver(new SomeScalarResolver()).build();
-    Load load = new Load(settings);
-    assertEquals("false", load.loadFromString("false"));
-    assertEquals(Integer.valueOf(1024), settings.getBufferSize());
+  @DisplayName("Use JSON schema by default")
+  void defaultSchema() {
+    LoadSettings settings = LoadSettings.builder().build();
+    assertEquals(JsonSchema.class, settings.getSchema().getClass());
   }
 
   public enum SomeStatus implements SettingKey {
@@ -118,17 +115,5 @@ class LoadSettingsTest {
 
   public static final class SomeKey implements SettingKey {
 
-  }
-
-  public static final class SomeScalarResolver extends JsonScalarResolver {
-
-    @Override
-    public org.snakeyaml.engine.v2.nodes.Tag resolve(String value, Boolean implicit) {
-      if ("false".equals(value)) {
-        return org.snakeyaml.engine.v2.nodes.Tag.STR;
-      } else {
-        return super.resolve(value, implicit);
-      }
-    }
   }
 }

@@ -13,35 +13,21 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
-import java.util.Objects;
-import java.util.regex.Pattern;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * Hold 2 values, tag and pattern
+ * ScalarResolver for JSON Schema
+ *
+ * @see <a href="https://yaml.org/spec/1.2.2/#101-failsafe-schema">Chapter 10.2. Failsafe Schema</a>
  */
-final class ResolverTuple {
+public class FailsafeScalarResolver extends BaseScalarResolver {
 
-  private final Tag tag;
-  private final Pattern regexp;
 
-  public ResolverTuple(Tag tag, Pattern regexp) {
-    Objects.requireNonNull(tag);
-    Objects.requireNonNull(regexp);
-    this.tag = tag;
-    this.regexp = regexp;
-  }
-
-  public Tag getTag() {
-    return tag;
-  }
-
-  public Pattern getRegexp() {
-    return regexp;
-  }
-
+  /**
+   * Register all the resolvers to be applied
+   */
   @Override
-  public String toString() {
-    return "Tuple tag=" + tag + " regexp=" + regexp;
+  protected void addImplicitResolvers() {
+    addImplicitResolver(Tag.NULL, EMPTY, null);
   }
 }

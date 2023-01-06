@@ -28,6 +28,8 @@ import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
+import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 /**
  * Example of parsing a !!timestamp tag
@@ -50,10 +52,7 @@ public class TimestampTagTest {
 
   @Test
   public void testImplicitTag() {
-    Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
-    tagConstructors.put(new Tag(Tag.PREFIX + "timestamp"), new TimestampConstructor());
-    LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors)
-        .setScalarResolver(new MyScalarResolver()).build();
+    LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
     Load loader = new Load(settings);
     LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
     assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
@@ -87,6 +86,21 @@ public class TimestampTagTest {
       } else {
         return super.resolve(value, implicit);
       }
+    }
+  }
+
+  public static final class TimestampSchema extends JsonSchema {
+
+    @Override
+    public ScalarResolver getScalarResolver() {
+      return new MyScalarResolver();
+    }
+
+    @Override
+    public Map<Tag, ConstructNode> getSchemaTagConstructors() {
+      Map<Tag, ConstructNode> parent = super.getSchemaTagConstructors();
+      parent.put(new Tag(Tag.PREFIX + "timestamp"), new TimestampConstructor());
+      return parent;
     }
   }
 }

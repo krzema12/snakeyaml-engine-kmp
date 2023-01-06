@@ -23,7 +23,7 @@ import java.util.function.UnaryOperator;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.schema.Schema;
 
 /**
  * Fine-tuning parsing/loading. Description for all the fields can be found in the builder
@@ -32,7 +32,6 @@ public final class LoadSettings {
 
   private final String label;
   private final Map<Tag, ConstructNode> tagConstructors;
-  private final ScalarResolver scalarResolver;
   private final IntFunction<List<Object>> defaultList;
   private final IntFunction<Set<Object>> defaultSet;
   private final IntFunction<Map<Object, Object>> defaultMap;
@@ -45,19 +44,19 @@ public final class LoadSettings {
   private final boolean useMarks;
   private final Optional<EnvConfig> envConfig;
   private final int codePointLimit;
+  private final Schema schema;
 
   // general
   private final Map<SettingKey, Object> customProperties;
 
-  LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors, ScalarResolver scalarResolver,
+  LoadSettings(String label, Map<Tag, ConstructNode> tagConstructors,
       IntFunction<List<Object>> defaultList, IntFunction<Set<Object>> defaultSet,
       IntFunction<Map<Object, Object>> defaultMap, UnaryOperator<SpecVersion> versionFunction,
       Integer bufferSize, boolean allowDuplicateKeys, boolean allowRecursiveKeys,
       int maxAliasesForCollections, boolean useMarks, Map<SettingKey, Object> customProperties,
-      Optional<EnvConfig> envConfig, boolean parseComments, int codePointLimit) {
+      Optional<EnvConfig> envConfig, boolean parseComments, int codePointLimit, Schema schema) {
     this.label = label;
     this.tagConstructors = tagConstructors;
-    this.scalarResolver = scalarResolver;
     this.defaultList = defaultList;
     this.defaultSet = defaultSet;
     this.defaultMap = defaultMap;
@@ -71,6 +70,7 @@ public final class LoadSettings {
     this.customProperties = customProperties;
     this.envConfig = envConfig;
     this.codePointLimit = codePointLimit;
+    this.schema = schema;
   }
 
   /**
@@ -88,10 +88,6 @@ public final class LoadSettings {
 
   public Map<Tag, ConstructNode> getTagConstructors() {
     return tagConstructors;
-  }
-
-  public ScalarResolver getScalarResolver() {
-    return scalarResolver;
   }
 
   public IntFunction<List<Object>> getDefaultList() {
@@ -144,6 +140,10 @@ public final class LoadSettings {
 
   public int getCodePointLimit() {
     return codePointLimit;
+  }
+
+  public Schema getSchema() {
+    return schema;
   }
 }
 

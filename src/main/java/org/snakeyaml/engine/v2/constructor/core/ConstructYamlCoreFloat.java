@@ -11,21 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.constructor.core;
 
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat;
+import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.ScalarNode;
 
 /**
- * ScalarResolver tries to detect a type of scalar value by its content (when the tag is implicit)
+ * Create Double instances for float
  */
-public interface ScalarResolver {
+public class ConstructYamlCoreFloat extends ConstructYamlJsonFloat {
 
-  /**
-   * Resolve (detect) the tag of the scalar node of the given type.
-   *
-   * @param value - the value of the scalar node
-   * @param implicit - true if there was no tag specified (the tag will be resolved)
-   * @return the Tag that matches the contents
-   */
-  Tag resolve(String value, Boolean implicit);
+  protected String constructScalar(Node node) {
+    // to lower case to parse the special values in any case
+    return ((ScalarNode) node).getValue().toLowerCase();
+  }
 }

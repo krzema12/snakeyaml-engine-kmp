@@ -19,15 +19,13 @@ SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 
 
 ## SnakeYAML Engine features ##
 
-* a **complete** [YAML 1.2 processor](http://yaml.org/spec/1.2/spec.html). In particular, SnakeYAML
+* a **complete** [YAML 1.2 processor](https://yaml.org/spec/1.2.2/). In particular, SnakeYAML
   can parse (almost) all examples from the specification.
 * Integrated tests
   from [YAML Test Suite - Comprehensive Test Suite for YAML](https://github.com/yaml/yaml-test-suite)
 * Unicode support including UTF-8/UTF-16/UTF-32 input/output.
 * Low-level API for serializing and deserializing native Java objects.
-* Only [JSON Schema](http://yaml.org/spec/1.2/spec.html#id2803231) is supported.
-* The [Core Schema](http://yaml.org/spec/1.2/spec.html#id2804923) might be supported later. If
-  anyone needs it. No one so far requested it.
+* All the [Schemas](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) are supported.
   (A
   good [introduction to schemas](http://blogs.perl.org/users/tinita/2018/01/introduction-to-yaml-schemas-and-tags.html))
 * Relatively sensible error messages (can be switched off to improve performance).

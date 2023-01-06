@@ -38,7 +38,6 @@ import org.snakeyaml.engine.v2.common.NonPrintableStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 
 @Tag("fast")
 class DumpSettingsTest {
@@ -67,7 +66,6 @@ class DumpSettingsTest {
     assertEquals(Optional.empty(), settings.getYamlDirective());
     assertEquals(new HashMap<>(), settings.getTagDirective());
     assertNotNull(settings.getAnchorGenerator());
-    assertNotNull(settings.getScalarResolver());
   }
 
   @Test
@@ -81,20 +79,6 @@ class DumpSettingsTest {
     }
     String str = dump.dumpToString(data);
     assertEquals("---\n" + "!!seq [\n" + "  !!int \"0\",\n" + "  !!int \"1\",\n" + "]\n", str);
-  }
-
-  @Test
-  @DisplayName("Custom scalar resolver has no use case")
-  void setScalarResolver() {
-    DumpSettings settings =
-        DumpSettings.builder().setScalarResolver(new JsonScalarResolver()).build();
-    Dump dump = new Dump(settings);
-    List<Integer> data = new ArrayList<>();
-    for (int i = 0; i < 2; i++) {
-      data.add(i);
-    }
-    String str = dump.dumpToString(data);
-    assertEquals("[0, 1]\n", str);
   }
 
   @Test

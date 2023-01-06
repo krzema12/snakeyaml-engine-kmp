@@ -20,7 +20,7 @@ import org.snakeyaml.engine.v2.common.NonPrintableStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.schema.Schema;
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 
 /**
@@ -35,7 +35,6 @@ public final class DumpSettings {
   private final AnchorGenerator anchorGenerator;
   private final Optional<SpecVersion> yamlDirective;
   private final Map<String, String> tagDirective;
-  private final ScalarResolver scalarResolver;
   private final FlowStyle defaultFlowStyle;
   private final ScalarStyle defaultScalarStyle;
 
@@ -51,14 +50,16 @@ public final class DumpSettings {
   private final int maxSimpleKeyLength;
   private final boolean indentWithIndicator;
   private final boolean dumpComments;
+  private final Schema schema;
+
 
   // general
   private final Map<SettingKey, Object> customProperties;
 
   DumpSettings(boolean explicitStart, boolean explicitEnd, Optional<Tag> explicitRootTag,
       AnchorGenerator anchorGenerator, Optional<SpecVersion> yamlDirective,
-      Map<String, String> tagDirective, ScalarResolver scalarResolver, FlowStyle defaultFlowStyle,
-      ScalarStyle defaultScalarStyle, NonPrintableStyle nonPrintableStyle,
+      Map<String, String> tagDirective, FlowStyle defaultFlowStyle, ScalarStyle defaultScalarStyle,
+      NonPrintableStyle nonPrintableStyle, Schema schema,
       // emitter
       boolean canonical, boolean multiLineFlow, boolean useUnicodeEncoding, int indent,
       int indicatorIndent, int width, String bestLineBreak, boolean splitLines,
@@ -71,9 +72,9 @@ public final class DumpSettings {
     this.anchorGenerator = anchorGenerator;
     this.yamlDirective = yamlDirective;
     this.tagDirective = tagDirective;
-    this.scalarResolver = scalarResolver;
     this.defaultFlowStyle = defaultFlowStyle;
     this.defaultScalarStyle = defaultScalarStyle;
+    this.schema = schema;
     this.canonical = canonical;
     this.multiLineFlow = multiLineFlow;
     this.useUnicodeEncoding = useUnicodeEncoding;
@@ -106,10 +107,6 @@ public final class DumpSettings {
 
   public AnchorGenerator getAnchorGenerator() {
     return anchorGenerator;
-  }
-
-  public ScalarResolver getScalarResolver() {
-    return scalarResolver;
   }
 
   public boolean isExplicitEnd() {
@@ -178,6 +175,10 @@ public final class DumpSettings {
 
   public boolean getDumpComments() {
     return dumpComments;
+  }
+
+  public Schema getSchema() {
+    return schema;
   }
 }
 

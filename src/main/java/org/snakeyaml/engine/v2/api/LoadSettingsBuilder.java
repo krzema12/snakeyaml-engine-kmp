@@ -28,8 +28,8 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.exceptions.YamlVersionException;
 import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.schema.JsonSchema;
+import org.snakeyaml.engine.v2.schema.Schema;
 
 /**
  * Builder pattern implementation for LoadSettings
@@ -39,7 +39,6 @@ public final class LoadSettingsBuilder {
   private final Map<SettingKey, Object> customProperties = new HashMap<>();
   private String label;
   private Map<Tag, ConstructNode> tagConstructors;
-  private ScalarResolver scalarResolver;
   private IntFunction<List<Object>> defaultList;
   private IntFunction<Set<Object>> defaultSet;
   private IntFunction<Map<Object, Object>> defaultMap;
@@ -52,6 +51,7 @@ public final class LoadSettingsBuilder {
   private boolean useMarks;
   private Optional<EnvConfig> envConfig;
   private int codePointLimit;
+  private Schema schema;
 
   /**
    * Create builder
@@ -59,7 +59,6 @@ public final class LoadSettingsBuilder {
   LoadSettingsBuilder() {
     this.label = "reader";
     this.tagConstructors = new HashMap<>();
-    this.scalarResolver = new JsonScalarResolver();
     this.defaultList = ArrayList::new; // same as new ArrayList(initSize)
     this.defaultSet = LinkedHashSet::new; // same as new LinkedHashSet(initSize)
     // respect order from YAML document
@@ -79,6 +78,7 @@ public final class LoadSettingsBuilder {
     this.useMarks = true;
     this.envConfig = Optional.empty(); // no ENV substitution by default
     this.codePointLimit = 3 * 1024 * 1024; // 3 MB
+    this.schema = new JsonSchema();
   }
 
   /**
@@ -101,18 +101,6 @@ public final class LoadSettingsBuilder {
    */
   public LoadSettingsBuilder setTagConstructors(Map<Tag, ConstructNode> tagConstructors) {
     this.tagConstructors = tagConstructors;
-    return this;
-  }
-
-  /**
-   * Provide resolver to detect a tag by the value of a scalar
-   *
-   * @param scalarResolver - specified ScalarResolver
-   * @return the builder with the provided value
-   */
-  public LoadSettingsBuilder setScalarResolver(ScalarResolver scalarResolver) {
-    Objects.requireNonNull(scalarResolver, "scalarResolver cannot be null");
-    this.scalarResolver = scalarResolver;
     return this;
   }
 
@@ -287,15 +275,30 @@ public final class LoadSettingsBuilder {
   }
 
   /**
+   * Provide either recommended or custom
+   * <a href="https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas">schema</a> instead of
+   * default * {@link org.snakeyaml.engine.v2.schema.CoreSchema} These 3 are available
+   * {@link org.snakeyaml.engine.v2.schema.FailsafeSchema},
+   * {@link org.snakeyaml.engine.v2.schema.JsonSchema},
+   * {@link org.snakeyaml.engine.v2.schema.CoreSchema}.
+   *
+   * @param schema to be used for parsing
+   */
+  public LoadSettingsBuilder setSchema(Schema schema) {
+    this.schema = schema;
+    return this;
+  }
+
+  /**
    * Build immutable LoadSettings
    *
    * @return immutable LoadSettings
    */
   public LoadSettings build() {
-    return new LoadSettings(label, tagConstructors, scalarResolver, defaultList, defaultSet,
-        defaultMap, versionFunction, bufferSize, allowDuplicateKeys, allowRecursiveKeys,
+    return new LoadSettings(label, tagConstructors, defaultList, defaultSet, defaultMap,
+        versionFunction, bufferSize, allowDuplicateKeys, allowRecursiveKeys,
         maxAliasesForCollections, useMarks, customProperties, envConfig, parseComments,
-        codePointLimit);
+        codePointLimit, schema);
   }
 }
 

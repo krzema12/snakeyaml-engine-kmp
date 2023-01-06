@@ -13,8 +13,16 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+/**
+ * A problem during object representation
+ */
 public class RepresenterException extends YamlEngineException {
 
+  /**
+   * Create
+   *
+   * @param message - problem statement
+   */
   public RepresenterException(String message) {
     super(message);
   }

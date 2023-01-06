@@ -46,8 +46,8 @@ public abstract class BaseRepresenter {
    */
   protected final Map<Class<?>, RepresentToNode> parentClassRepresenters = new LinkedHashMap<>();
   /**
-   * Keep references of already represented instances.
-   * The order is important (map can be also a sequence of key-values)
+   * Keep references of already represented instances. The order is important (map can be also a
+   * sequence of key-values)
    */
   protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
     @Override
@@ -56,8 +56,7 @@ public abstract class BaseRepresenter {
     }
   };
   /**
-   * in Java 'null' is not a type. So we have to keep the null representer separately, otherwise it
-   * will coincide with the default representer which is stored with the key null.
+   * in Java 'null' is not a type. So we have to keep the null representer separately
    */
   protected RepresentToNode nullRepresenter;
   /**

@@ -20,6 +20,9 @@ import org.snakeyaml.engine.v2.common.SpecVersion;
  */
 public class YamlVersionException extends YamlEngineException {
 
+  /**
+   * specified version
+   */
   private final SpecVersion specVersion;
 
   /**

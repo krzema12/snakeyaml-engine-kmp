@@ -25,21 +25,23 @@ public class CoreScalarResolver extends BaseScalarResolver {
    * Boolean as defined in Core
    */
   public static final Pattern BOOL = Pattern.compile("^(?:true|True|TRUE|false|False|FALSE)$");
+
   /**
    * Float as defined in JSON (Number which is Float)
    */
-  public static final Pattern FLOAT =
-      Pattern.compile("^(" + "[-+]?(?:[0-9][0-9]*)\\.[0-9]*(?:[eE][-+]?[0-9]+)?" + // (base 10)
-          "|[-+]?(?:[0-9][0-9]*)(?:[eE][-+]?[0-9]+)" + // (base 10, scientific notation without .)
-          "|[-+]?\\.[0-9]+(?:[eE][-+]?[0-9]+)?" + // (base 10, starting with .)
-          "|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN)" + ")$"); // NOSONAR
+  public static final Pattern FLOAT = Pattern.compile(
+      "^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" +
+          "|([-+]?\\.(?:inf|Inf|INF))" + // infinity
+          "|(\\.(?:nan|NaN|NAN))$"); // not a number
+
   /**
    * Integer as defined in Core
    */
-  public static final Pattern INT = Pattern.compile("^(?:" + "0o*[0-7]+?" + // (base 8)
-      "|[-+]?(?:0|[1-9][0-9]*)" + // (base 10)
-      "|0x[0-9a-fA-F]+?" + // (base 16)
-      ")$");
+  public static final Pattern INT = Pattern.compile("^([-+]?[0-9]+)" + // (base 10)
+      "|(0o[0-7]+)" + // (base 8)
+      "|(0x[0-9a-fA-F]+)$" // (base 16)
+  );
+
   /**
    * Null as defined in Core
    */

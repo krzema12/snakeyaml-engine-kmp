@@ -27,15 +27,18 @@ public class JsonScalarResolver extends BaseScalarResolver {
    * Boolean as defined in JSON
    */
   public static final Pattern BOOL = Pattern.compile("^(?:true|false)$");
+
   /**
    * Float as defined in JSON (Number which is Float)
    */
-  public static final Pattern FLOAT = Pattern.compile(
-      "^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$");
+  public static final Pattern FLOAT =
+      Pattern.compile("^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$");
+
   /**
    * Integer as defined in JSON (Number which is Integer)
    */
   public static final Pattern INT = Pattern.compile("^-?(0|[1-9][0-9]*)$");
+
   /**
    * Null as defined in JSON
    */

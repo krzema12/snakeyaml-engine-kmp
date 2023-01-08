@@ -40,6 +40,7 @@ public class IndentWithIndicatorTest {
     assertEquals(doc, output);
   }
 
+  @Test
   public void testIndentWithIndicator2() {
     DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
         .setIndentWithIndicator(true).setIndent(2).setIndicatorIndent(2).build();
@@ -52,6 +53,7 @@ public class IndentWithIndicatorTest {
     assertEquals(doc, output);
   }
 
+  @Test
   public void testIndentWithIndicator3() {
     DumpSettings settings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
         .setIndentWithIndicator(false).setIndent(4).setIndicatorIndent(2).build();

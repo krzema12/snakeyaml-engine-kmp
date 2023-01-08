@@ -50,7 +50,8 @@ class JsonScalarResolverTest {
     assertEquals(Tag.STR, scalarResolver.resolve("+01.445", true));
     assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455e45", true));
     assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455e-45", true));
-    assertEquals(Tag.STR, scalarResolver.resolve("-1.455E045", true));
+    assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455E045", true));
+    assertEquals(Tag.FLOAT, scalarResolver.resolve("-1.455E0", true)); // ? e0
     assertEquals(Tag.FLOAT, scalarResolver.resolve("1.4e4", true));
     assertEquals(Tag.FLOAT, scalarResolver.resolve("1e4", true));
     assertEquals(Tag.FLOAT, scalarResolver.resolve("0.0", true));

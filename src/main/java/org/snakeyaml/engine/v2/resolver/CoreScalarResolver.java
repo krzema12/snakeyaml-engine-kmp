@@ -36,9 +36,9 @@ public class CoreScalarResolver extends BaseScalarResolver {
   /**
    * Integer as defined in Core
    */
-  public static final Pattern INT = Pattern.compile("^(?:" + "[-+]?0o*[0-7][0-7]*" + // (base 8)
+  public static final Pattern INT = Pattern.compile("^(?:" + "0o*[0-7]+?" + // (base 8)
       "|[-+]?(?:0|[1-9][0-9]*)" + // (base 10)
-      "|[-+]?0x[0-9a-fA-F][0-9a-fA-F]*" + // (base 16)
+      "|0x[0-9a-fA-F]+?" + // (base 16)
       ")$");
   /**
    * Null as defined in Core

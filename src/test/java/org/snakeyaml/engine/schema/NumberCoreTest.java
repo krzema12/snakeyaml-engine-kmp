@@ -36,6 +36,7 @@ public class NumberCoreTest {
     assertEquals(Integer.valueOf(-1), loader.loadFromString("-1"));
     assertEquals(Integer.valueOf(0), loader.loadFromString("0"));
     assertEquals(Integer.valueOf(0), loader.loadFromString("-0"));
+    assertEquals(Integer.valueOf(1), loader.loadFromString("0001"));
     assertEquals(Integer.valueOf(1234567890), loader.loadFromString("1234567890"));
     assertEquals(Long.valueOf(12345678901L), loader.loadFromString("12345678901"));
     assertEquals(new BigInteger("1234567890123456789123"),
@@ -68,6 +69,10 @@ public class NumberCoreTest {
     assertEquals("1_000", loader.loadFromString("1_000"));
 
     assertEquals("1_000.5", loader.loadFromString("1_000.5"));
+    assertEquals("-0xFF", loader.loadFromString("-0xFF"));
+    assertEquals("+0xFF", loader.loadFromString("+0xFF"));
+    assertEquals("+0o123", loader.loadFromString("+0o123"));
+    assertEquals("-0o123", loader.loadFromString("-0o123"));
   }
 
   @Test
@@ -83,6 +88,7 @@ public class NumberCoreTest {
     assertEquals(Double.valueOf(1.23E-6), loader.loadFromString("1.23e-6"));
     assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e+6"));
     assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e6"));
+    assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23E6"));
     assertEquals(Double.valueOf(-1.23E6), loader.loadFromString("-1.23e6"));
     assertEquals(Double.valueOf(1000.25), loader.loadFromString("1000.25"));
     assertEquals(Double.valueOf(9000.0), loader.loadFromString("9000.00"));

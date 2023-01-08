@@ -77,15 +77,6 @@ public class ConstructYamlCoreInt extends ConstructScalar {
     } else if (value.startsWith("0o")) {
       value = value.substring(2);
       base = 8;
-    } else if (value.indexOf(':') != -1) {
-      String[] digits = value.split(":");
-      int bes = 1;
-      int val = 0;
-      for (int i = 0, j = digits.length; i < j; i++) {
-        val += Long.parseLong(digits[j - i - 1]) * bes;
-        bes *= 60;
-      }
-      return createNumber(sign, String.valueOf(val), 10);
     } else {
       return createNumber(sign, value, 10);
     }

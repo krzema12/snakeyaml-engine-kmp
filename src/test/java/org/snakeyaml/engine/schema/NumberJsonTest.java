@@ -63,6 +63,8 @@ public class NumberJsonTest {
     // leading zero
     assertEquals("03", loader.loadFromString("03"));
     assertEquals("03.67", loader.loadFromString("03.67"));
+    assertEquals("3.6", loader.loadFromString("! 3.6"));
+    assertEquals("3", loader.loadFromString("! 3"));
   }
 
   @Test

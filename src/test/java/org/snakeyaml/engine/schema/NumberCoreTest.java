@@ -73,6 +73,8 @@ public class NumberCoreTest {
     assertEquals("+0xFF", loader.loadFromString("+0xFF"));
     assertEquals("+0o123", loader.loadFromString("+0o123"));
     assertEquals("-0o123", loader.loadFromString("-0o123"));
+    assertEquals("3.6", loader.loadFromString("! 3.6"));
+    assertEquals("3", loader.loadFromString("! 3"));
   }
 
   @Test

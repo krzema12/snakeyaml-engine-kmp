@@ -29,8 +29,8 @@ public class CoreScalarResolver extends BaseScalarResolver {
   /**
    * Float as defined in JSON (Number which is Float)
    */
-  public static final Pattern FLOAT = Pattern.compile(
-      "^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" +
+  public static final Pattern FLOAT =
+      Pattern.compile("^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" + // float
           "|([-+]?\\.(?:inf|Inf|INF))" + // infinity
           "|(\\.(?:nan|NaN|NAN))$"); // not a number
 

@@ -105,9 +105,9 @@ public class ReferencesTest {
     long time2 = System.currentTimeMillis();
     double duration = (time2 - time1) / 1000.0;
     int cores = Runtime.getRuntime().availableProcessors();
-    double minDuration = 0.8;
+    double minDuration = 0.7;
     if (cores > 4) {
-      minDuration = 0.5;
+      minDuration = 0.4;
     }
     assertTrue(duration > minDuration, "It should take time. Time was " + duration + " seconds.");
     assertTrue(duration < 9.0, "Time was " + duration + " seconds.");

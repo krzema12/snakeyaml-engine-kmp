@@ -37,12 +37,12 @@ import org.snakeyaml.engine.v2.schema.JsonSchema;
 @org.junit.jupiter.api.Tag("fast")
 public class TimestampTagTest {
 
-  public static final Tag myTime = new Tag(Tag.PREFIX + "timestamp");
+  public static final Tag myTimeTag = new Tag(Tag.PREFIX + "timestamp");
 
   @Test
   public void testExplicitTag() {
     Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
-    tagConstructors.put(myTime, new TimestampConstructor());
+    tagConstructors.put(myTimeTag, new TimestampConstructor());
     LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
     LocalDateTime obj =
@@ -82,7 +82,7 @@ public class TimestampTagTest {
     @Override
     public Tag resolve(String value, Boolean implicit) {
       if (TIMESTAMP.matcher(value).matches()) {
-        return myTime;
+        return myTimeTag;
       } else {
         return super.resolve(value, implicit);
       }

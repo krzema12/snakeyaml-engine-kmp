@@ -30,6 +30,7 @@ public class NullJsonTest {
   @Test
   void parseNull() {
     assertNull(loader.loadFromString("null"));
+    assertEquals("null", loader.loadFromString("! null"));
   }
 
   @Test

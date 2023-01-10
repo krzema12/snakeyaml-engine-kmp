@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.6" date="2023-01-12" description="Maintenance">
+            <action dev="asomov" type="update">
+                Respect  the ! non-specific tag (https://yaml.org/spec/1.2.2/#332-resolved-tags)
+            </action>
             <action dev="asomov" type="fix" issue="38">
                 Implement all the recommended schemas
             </action>

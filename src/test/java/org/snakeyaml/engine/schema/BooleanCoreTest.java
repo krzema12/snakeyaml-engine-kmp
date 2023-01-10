@@ -37,6 +37,9 @@ public class BooleanCoreTest {
     assertEquals(Boolean.FALSE, loader.loadFromString("false"));
     assertEquals(Boolean.FALSE, loader.loadFromString("False"));
     assertEquals(Boolean.FALSE, loader.loadFromString("FALSE"));
+
+    // the ! non-specific tag
+    assertEquals("true", loader.loadFromString("! true"));
   }
 
   @Test

@@ -35,6 +35,7 @@ public class NullCoreTest {
     assertNull(loader.loadFromString("Null"));
     assertNull(loader.loadFromString("NULL"));
     assertNull(loader.loadFromString("~"));
+    assertEquals("null", loader.loadFromString("! null"));
   }
 
   @Test

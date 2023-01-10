@@ -32,6 +32,8 @@ public class BooleanJsonTest {
     assertEquals(Boolean.FALSE, loader.loadFromString("false"));
     assertEquals("False", loader.loadFromString("False"));
     assertEquals("True", loader.loadFromString("True"));
+    // the ! non-specific tag
+    assertEquals("true", loader.loadFromString("! true"));
   }
 
   @Test

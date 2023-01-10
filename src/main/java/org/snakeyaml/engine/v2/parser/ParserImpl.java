@@ -352,7 +352,7 @@ public class ParserImpl implements Parser {
         startMark = scanner.peekToken().getStartMark();
         endMark = startMark;
       }
-      boolean implicit = (!tag.isPresent() || tag.equals("!"));
+      boolean implicit = (!tag.isPresent());
       if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
         endMark = scanner.peekToken().getEndMark();
         event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark);
@@ -362,7 +362,7 @@ public class ParserImpl implements Parser {
           ScalarToken token = (ScalarToken) scanner.next();
           endMark = token.getEndMark();
           ImplicitTuple implicitValues;
-          if ((token.isPlain() && !tag.isPresent()) || "!".equals(tag)) {
+          if ((token.isPlain() && !tag.isPresent())) {
             implicitValues = new ImplicitTuple(true, false);
           } else if (!tag.isPresent()) {
             implicitValues = new ImplicitTuple(false, true);

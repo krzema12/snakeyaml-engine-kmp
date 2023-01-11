@@ -19,7 +19,7 @@
                 Use explicit default for NonPrintableStyle
             </action>
         </release>
-        <release version="2.5" date="2022-10-02" description="Maintenance">
+        <release version="2.5" date="2022-10-03" description="Maintenance">
             <action dev="asomov" type="update">
                 Improve possibility to provide custom collection implementations
             </action>

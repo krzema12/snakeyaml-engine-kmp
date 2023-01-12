@@ -1,5 +1,6 @@
 # Assuming conventional resolution:
 - "12"
 - 12
-#TODO issue 459 - ! 12
+- ! 12
 - '12'
+- true

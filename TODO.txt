@@ -26,6 +26,3 @@ Apps to support
 * swagger -> jackson
 * Liquibase -> java 8
 * RAML -> java 7, compose only
-
-spec-06-28.data -> ! tag is not parsed properly (it must create string)
-YAML processors should resolve nodes having the “!” non-specific tag as “tag:yaml.org,2002:seq”, “tag:yaml.org,2002:map” or “tag:yaml.org,2002:str” depending on their kind.

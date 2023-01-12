@@ -283,6 +283,7 @@ public final class LoadSettingsBuilder {
    * {@link org.snakeyaml.engine.v2.schema.CoreSchema}.
    *
    * @param schema to be used for parsing
+   * @return the builder with the provided value
    */
   public LoadSettingsBuilder setSchema(Schema schema) {
     this.schema = schema;

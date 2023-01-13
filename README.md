@@ -7,7 +7,7 @@ interaction with scripting languages.
 
 SnakeYAML Engine is a YAML 1.2 processor for the Java Virtual Machine version 8 and higher.
 
-[Latest release](https://search.maven.org/search?q=a:snakeyaml-engine)
+[Latest release](https://central.sonatype.dev/search?q=snakeyaml-engine)
 
 ## API
 

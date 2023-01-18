@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-./maven-docker-run.sh openjdk:17-alpine $@
+./maven-docker-run.sh eclipse-temurin:17.0.5_8-jdk -Preformat $@

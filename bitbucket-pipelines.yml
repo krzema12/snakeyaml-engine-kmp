@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: eclipse-temurin:8u352-b08-jdk
+image: eclipse-temurin:8
 
 pipelines:
   default:

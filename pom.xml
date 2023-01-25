@@ -115,8 +115,25 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.10.1</version>
                     <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
                         <compilerArgument>-Xlint:unchecked</compilerArgument>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <id>module-info-compile</id>
+                            <goals><goal>compile</goal></goals>
+                            <configuration>
+                                <release>11</release>
+                                <compileSourceRoots>${project.basedir}/src/main/java11</compileSourceRoots>
+                                <multiReleaseOutput>true</multiReleaseOutput>
+                                <jdkToolchain>
+                                    <version>[11,)</version>
+                                </jdkToolchain>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -288,7 +305,7 @@
                             !org.snakeyaml.engine.external.*,
                             org.snakeyaml.engine.v2.*;version=${project.version}
                         </Export-Package>
-                        <Automatic-Module-Name>org.snakeyaml.engine.v2</Automatic-Module-Name>
+                        <Multi-Release>true</Multi-Release>
                     </instructions>
                 </configuration>
             </plugin>
@@ -330,6 +347,22 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>2.20.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <configuration>
+                            <configFile>src/etc/eclipse-java-google-style.xml</configFile>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -460,29 +493,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>reformat</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>net.revelc.code.formatter</groupId>
-                        <artifactId>formatter-maven-plugin</artifactId>
-                        <version>2.20.0</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>format</goal>
-                                </goals>
-                                <configuration>
-                                    <configFile>src/etc/eclipse-java-google-style.xml</configFile>
-                                    <encoding>UTF-8</encoding>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

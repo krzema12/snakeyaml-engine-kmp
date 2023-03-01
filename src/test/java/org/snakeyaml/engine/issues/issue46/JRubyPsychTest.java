@@ -26,7 +26,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: parse different values")
-  void parseWithoutOnlyStar() {
+  void parseDifferentValues() {
     parse("\\n\\u2029*");
     parse("\\n\\u2028 C");
     parse("\\n\\u2028* C");

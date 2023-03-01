@@ -6,6 +6,9 @@
     </properties>
     <body>
         <release version="2.7" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix" issue="46">
+                Add test for failure in JRuby
+            </action>
             <action dev="asomov" type="fix" issue="42">
                 Add module-info.java and make snakeyaml-engine a Module for Java 11+
             </action>

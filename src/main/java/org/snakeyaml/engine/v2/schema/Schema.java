@@ -18,6 +18,9 @@ import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 
+/**
+ * Interface to be implemented by any Schema
+ */
 public interface Schema {
 
   /**

@@ -60,5 +60,8 @@ public interface Scanner extends Iterator<Token> {
    */
   Token next();
 
+  /**
+   * Set the document index to 0 after a document end
+   */
   void resetDocumentIndex();
 }

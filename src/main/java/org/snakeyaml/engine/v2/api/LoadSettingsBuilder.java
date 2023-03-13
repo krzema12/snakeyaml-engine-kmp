@@ -267,6 +267,7 @@ public final class LoadSettingsBuilder {
    * byte limit depends on the encoding.
    *
    * @param codePointLimit - the max allowed size of a single YAML document in a stream
+   * @return the builder with the provided value
    */
   public LoadSettingsBuilder setCodePointLimit(int codePointLimit) {
     this.codePointLimit = codePointLimit;

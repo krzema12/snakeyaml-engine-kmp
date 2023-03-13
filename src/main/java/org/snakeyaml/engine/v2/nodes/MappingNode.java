@@ -75,6 +75,8 @@ public class MappingNode extends CollectionNode<NodeTuple> {
   /**
    * Applications may need to replace the content (Spring Boot). Merging was removed, but it may be
    * implemented.
+   *
+   * @param merged - merged data to replace the internal value
    */
   public void setValue(List<NodeTuple> merged) {
     Objects.requireNonNull(merged);

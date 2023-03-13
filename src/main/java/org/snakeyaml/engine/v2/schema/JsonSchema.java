@@ -38,6 +38,9 @@ public class JsonSchema implements Schema {
   private final Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
   private final ScalarResolver scalarResolver = new JsonScalarResolver();
 
+  /**
+   * Create the instance
+   */
   public JsonSchema() {
     this.tagConstructors.put(Tag.NULL, new ConstructYamlNull());
     this.tagConstructors.put(Tag.BOOL, new ConstructYamlJsonBool());

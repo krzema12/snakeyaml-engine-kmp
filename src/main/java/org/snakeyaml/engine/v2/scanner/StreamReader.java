@@ -54,6 +54,8 @@ public final class StreamReader {
    * restriction
    */
   private int index = 0; // in code points
+  private int documentIndex = 0; // current document index in code points (only for limiting)
+
   private int line = 0;
   private int column = 0; // in code points
 
@@ -166,7 +168,7 @@ public final class StreamReader {
   public void forward(int length) {
     for (int i = 0; i < length && ensureEnoughData(); i++) {
       int c = codePointsWindow[pointer++];
-      this.index++;
+      moveIndices(1);
       if (CharConstants.LINEBR.has(c)
           // do not count CR if it is followed by LF
           || (c == '\r' && (ensureEnoughData() && codePointsWindow[pointer] != '\n'))) {
@@ -222,7 +224,7 @@ public final class StreamReader {
   public String prefixForward(int length) {
     final String prefix = prefix(length);
     this.pointer += length;
-    this.index += length;
+    moveIndices(length);
     // prefix never contains new line characters
     this.column += length;
     return prefix;
@@ -287,6 +289,27 @@ public final class StreamReader {
    */
   public int getColumn() {
     return column;
+  }
+
+  private void moveIndices(int length) {
+    this.index += length;
+    this.documentIndex += length;
+  }
+
+  /**
+   * Get the position of the currect char in the current YAML document
+   *
+   * @return index of the current position from the beginning of the current document
+   */
+  public int getDocumentIndex() {
+    return documentIndex;
+  }
+
+  /**
+   * Reset the position to start (at the start of a new document in the stream)
+   */
+  public void resetDocumentIndex() {
+    documentIndex = 0;
   }
 
   /**

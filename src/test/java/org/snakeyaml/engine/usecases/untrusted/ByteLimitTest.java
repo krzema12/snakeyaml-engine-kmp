@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.usecases.untrusted;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Iterator;
@@ -48,5 +49,16 @@ public class ByteLimitTest {
     } catch (Exception e) {
       assertEquals("The incoming YAML document exceeds the limit: 15 code points.", e.getMessage());
     }
+  }
+
+  @Test
+  public void testLoadManyDocuments() {
+    LoadSettings settings = LoadSettings.builder().setCodePointLimit(8).build();
+    Load load = new Load(settings);
+    Iterator<Object> iter = load.loadAllFromString("---\nfoo\n---\nbar\n---\nyep").iterator();
+    assertEquals("foo", iter.next());
+    assertEquals("bar", iter.next());
+    assertEquals("yep", iter.next());
+    assertFalse(iter.hasNext());
   }
 }

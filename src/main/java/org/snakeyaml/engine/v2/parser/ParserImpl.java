@@ -543,6 +543,7 @@ public class ParserImpl implements Parser {
             + scanner.peekToken().getTokenId() + "'", scanner.peekToken().getStartMark());
       }
       directiveTags.clear(); // directive tags do not survive between the documents
+      scanner.resetDocumentIndex();
       Event event = new DocumentEndEvent(explicit, startMark, endMark);
       // Prepare the next state.
       state = Optional.of(new ParseDocumentStart());

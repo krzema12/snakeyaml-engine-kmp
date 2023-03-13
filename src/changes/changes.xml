@@ -6,6 +6,10 @@
     </properties>
     <body>
         <release version="2.7" date="in GIT" description="Maintenance">
+            <action dev="asomov" type="fix">
+                Document size limit should be applied to single document not the whole input stream
+                (thanks to Petr Gladkikh)
+            </action>
             <action dev="asomov" type="fix" issue="46">
                 Add test for failure in JRuby
             </action>

@@ -59,4 +59,6 @@ public interface Scanner extends Iterator<Token> {
    * @throws IndexOutOfBoundsException if no more token left
    */
   Token next();
+
+  void resetDocumentIndex();
 }

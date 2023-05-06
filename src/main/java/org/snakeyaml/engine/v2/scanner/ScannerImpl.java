@@ -1286,7 +1286,13 @@ public final class ScannerImpl implements Scanner {
     while (Character.isDigit(reader.peek(length))) {
       length++;
     }
-    return Integer.parseInt(reader.prefixForward(length));
+    String number = reader.prefixForward(length);
+    if (length > 3) {
+      throw new ScannerException("while scanning a YAML directive", startMark,
+          "found a number which cannot represent a valid version: " + number, reader.getMark());
+    }
+    Integer value = Integer.parseInt(number);
+    return value;
   }
 
   /**

@@ -284,9 +284,9 @@ public final class ScannerImpl implements Scanner {
    * Fetch one or more tokens from the StreamReader.
    */
   private void fetchMoreTokens() {
-    if (reader.getDocumentIndex() > settings.getCodePointLimit()) {
+    if (reader.getDocumentIndex() > settings.codePointLimit) {
       throw new YamlEngineException("The incoming YAML document exceeds the limit: "
-          + settings.getCodePointLimit() + " code points.");
+          + settings.codePointLimit + " code points.");
     }
     // Eat whitespaces and process comments until we reach the next token.
     scanToNextToken();
@@ -1147,7 +1147,7 @@ public final class ScannerImpl implements Scanner {
           type = CommentType.BLOCK;
         }
         CommentToken token = scanComment(type);
-        if (settings.getParseComments()) {
+        if (settings.parseComments) {
           addToken(token);
         }
       }
@@ -1155,7 +1155,7 @@ public final class ScannerImpl implements Scanner {
       // simple keys may be allowed.
       Optional<String> breaksOpt = scanLineBreak();
       if (breaksOpt.isPresent()) { // found a line-break
-        if (settings.getParseComments() && !commentSeen) {
+        if (settings.parseComments && !commentSeen) {
           if (columnBeforeComment == 0) {
             addToken(new CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark,
                 reader.getMark()));
@@ -1363,7 +1363,7 @@ public final class ScannerImpl implements Scanner {
     CommentToken commentToken = null;
     if (reader.peek() == '#') {
       CommentToken comment = scanComment(CommentType.IN_LINE);
-      if (settings.getParseComments()) {
+      if (settings.parseComments) {
         commentToken = comment;
       }
     }
@@ -2000,7 +2000,7 @@ public final class ScannerImpl implements Scanner {
           || "...".equals(prefix) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
         return "";
       }
-      if (settings.getParseComments() && atEndOfPlain()) {
+      if (settings.parseComments && atEndOfPlain()) {
         return "";
       }
       StringBuilder breaks = new StringBuilder();
@@ -2219,7 +2219,7 @@ public final class ScannerImpl implements Scanner {
       if (tokens[ix] == null) {
         continue;
       }
-      if (!settings.getParseComments() && (tokens[ix] instanceof CommentToken)) {
+      if (!settings.parseComments && (tokens[ix] instanceof CommentToken)) {
         continue;
       }
       tokenList.add(tokens[ix]);

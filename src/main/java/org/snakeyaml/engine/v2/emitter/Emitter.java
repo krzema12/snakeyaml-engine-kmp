@@ -205,19 +205,19 @@ public final class Emitter implements Emitable {
     this.multiLineFlow = opts.isMultiLineFlow();
     this.allowUnicode = opts.isUseUnicodeEncoding();
     this.bestIndent = 2;
-    if ((opts.getIndent() > MIN_INDENT) && (opts.getIndent() < MAX_INDENT)) {
-      this.bestIndent = opts.getIndent();
+    if ((opts.indent > MIN_INDENT) && (opts.indent < MAX_INDENT)) {
+      this.bestIndent = opts.indent;
     }
-    this.indicatorIndent = opts.getIndicatorIndent();
-    this.indentWithIndicator = opts.getIndentWithIndicator();
+    this.indicatorIndent = opts.indicatorIndent;
+    this.indentWithIndicator = opts.indentWithIndicator;
     this.bestWidth = 80;
-    if (opts.getWidth() > this.bestIndent * 2) {
-      this.bestWidth = opts.getWidth();
+    if (opts.width > this.bestIndent * 2) {
+      this.bestWidth = opts.width;
     }
-    this.bestLineBreak = opts.getBestLineBreak();
+    this.bestLineBreak = opts.bestLineBreak;
     this.splitLines = opts.isSplitLines();
-    this.maxSimpleKeyLength = opts.getMaxSimpleKeyLength();
-    this.emitComments = opts.getDumpComments();
+    this.maxSimpleKeyLength = opts.maxSimpleKeyLength;
+    this.emitComments = opts.dumpComments;
 
     // Tag prefixes.
     this.tagPrefixes = new LinkedHashMap<>();

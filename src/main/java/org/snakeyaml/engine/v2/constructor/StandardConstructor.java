@@ -55,10 +55,10 @@ public class StandardConstructor extends BaseConstructor {
     this.tagConstructors.put(Tag.ENV_TAG, new ConstructEnv());
 
     // apply the tag constructors from the provided schema
-    this.tagConstructors.putAll(settings.getSchema().getSchemaTagConstructors());
+    this.tagConstructors.putAll(settings.schema.getSchemaTagConstructors());
 
     // the explicit config overrides all
-    this.tagConstructors.putAll(settings.getTagConstructors());
+    this.tagConstructors.putAll(settings.tagConstructors);
   }
 
   /**
@@ -85,7 +85,7 @@ public class StandardConstructor extends BaseConstructor {
       Object key = constructKey(keyNode, node.getStartMark(), tuple.getKeyNode().getStartMark());
       Integer prevIndex = keys.put(key, i);
       if (prevIndex != null) {
-        if (!settings.getAllowDuplicateKeys()) {
+        if (!settings.allowDuplicateKeys) {
           throw new DuplicateKeyException(node.getStartMark(), key,
               tuple.getKeyNode().getStartMark());
         }
@@ -227,7 +227,7 @@ public class StandardConstructor extends BaseConstructor {
 
     public Object construct(Node node) {
       String val = constructScalar(node);
-      Optional<EnvConfig> opt = settings.getEnvConfig();
+      Optional<EnvConfig> opt = settings.envConfig;
       if (opt.isPresent()) {
         EnvConfig config = opt.get();
         Matcher matcher = JsonScalarResolver.ENV_FORMAT.matcher(val);

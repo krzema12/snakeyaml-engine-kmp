@@ -76,9 +76,9 @@ public class Serializer {
    */
   public void serializeDocument(Node node) {
     this.emitable.emit(new DocumentStartEvent(settings.isExplicitStart(),
-        settings.getYamlDirective(), settings.getTagDirective()));
+            settings.yamlDirective, settings.tagDirective));
     anchorNode(node);
-    settings.getExplicitRootTag().ifPresent(node::setTag);
+    settings.explicitRootTag.ifPresent(node::setTag);
     serializeNode(node);
     this.emitable.emit(new DocumentEndEvent(settings.isExplicitEnd()));
     this.serializedNodes.clear();
@@ -110,10 +110,10 @@ public class Serializer {
       // it looks weird, anchor does contain the key node, but we call computeIfAbsent()
       // this is because the value is null (HashMap permits values to be null)
       this.anchors.computeIfAbsent(realNode,
-          a -> settings.getAnchorGenerator().nextAnchor(realNode));
+          a -> settings.anchorGenerator.nextAnchor(realNode));
     } else {
       this.anchors.put(realNode,
-          realNode.getAnchor().isPresent() ? settings.getAnchorGenerator().nextAnchor(realNode)
+          realNode.getAnchor().isPresent() ? settings.anchorGenerator.nextAnchor(realNode)
               : null);
       switch (realNode.getNodeType()) {
         case SEQUENCE:
@@ -157,9 +157,9 @@ public class Serializer {
           ScalarNode scalarNode = (ScalarNode) node;
           serializeComments(node.getBlockComments());
           Tag detectedTag =
-              settings.getSchema().getScalarResolver().resolve(scalarNode.getValue(), true);
+              settings.schema.getScalarResolver().resolve(scalarNode.getValue(), true);
           Tag defaultTag =
-              settings.getSchema().getScalarResolver().resolve(scalarNode.getValue(), false);
+              settings.schema.getScalarResolver().resolve(scalarNode.getValue(), false);
           ImplicitTuple tuple = new ImplicitTuple(node.getTag().equals(detectedTag),
               node.getTag().equals(defaultTag));
           ScalarEvent event = new ScalarEvent(tAlias, Optional.of(node.getTag().getValue()), tuple,

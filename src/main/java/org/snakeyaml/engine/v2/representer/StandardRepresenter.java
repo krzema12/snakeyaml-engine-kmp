@@ -61,8 +61,8 @@ public class StandardRepresenter extends BaseRepresenter {
    * @param settings - configuration options
    */
   public StandardRepresenter(DumpSettings settings) {
-    this.defaultFlowStyle = settings.getDefaultFlowStyle();
-    this.defaultScalarStyle = settings.getDefaultScalarStyle();
+    this.defaultFlowStyle = settings.defaultFlowStyle;
+    this.defaultScalarStyle = settings.defaultScalarStyle;
 
     this.nullRepresenter = new RepresentNull();
     this.representers.put(String.class, new RepresentString());
@@ -152,7 +152,7 @@ public class StandardRepresenter extends BaseRepresenter {
       Tag tag = Tag.STR;
       ScalarStyle style = ScalarStyle.PLAIN;
       String value = data.toString();
-      if (settings.getNonPrintableStyle() == NonPrintableStyle.BINARY
+      if (settings.nonPrintableStyle == NonPrintableStyle.BINARY
           && !StreamReader.isPrintable(value)) {
         tag = Tag.BINARY;
         final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
@@ -230,7 +230,7 @@ public class StandardRepresenter extends BaseRepresenter {
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
       return representSequence(getTag(data.getClass(), Tag.SEQ), (List<Object>) data,
-          settings.getDefaultFlowStyle());
+              settings.defaultFlowStyle);
     }
   }
 
@@ -243,7 +243,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Iterator<Object> iter = (Iterator<Object>) data;
       return representSequence(getTag(data.getClass(), Tag.SEQ), new IteratorWrapper(iter),
-          settings.getDefaultFlowStyle());
+              settings.defaultFlowStyle);
     }
   }
 
@@ -255,7 +255,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Object[] array = (Object[]) data;
       List<Object> list = Arrays.asList(array);
-      return representSequence(Tag.SEQ, list, settings.getDefaultFlowStyle());
+      return representSequence(Tag.SEQ, list, settings.defaultFlowStyle);
     }
   }
 
@@ -268,7 +268,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Class<?> type = data.getClass().getComponentType();
 
-      FlowStyle style = settings.getDefaultFlowStyle();
+      FlowStyle style = settings.defaultFlowStyle;
       if (byte.class == type) {
         return representSequence(Tag.SEQ, asByteList(data), style);
       } else if (short.class == type) {
@@ -371,7 +371,7 @@ public class StandardRepresenter extends BaseRepresenter {
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
       return representMapping(getTag(data.getClass(), Tag.MAP), (Map<Object, Object>) data,
-          settings.getDefaultFlowStyle());
+              settings.defaultFlowStyle);
     }
   }
 
@@ -388,7 +388,7 @@ public class StandardRepresenter extends BaseRepresenter {
         value.put(key, null);
       }
       return representMapping(getTag(data.getClass(), Tag.SET), value,
-          settings.getDefaultFlowStyle());
+              settings.defaultFlowStyle);
     }
   }
 

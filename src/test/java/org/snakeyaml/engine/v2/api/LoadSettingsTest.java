@@ -99,14 +99,14 @@ class LoadSettingsTest {
   @DisplayName("Set and get custom I/O buffer size")
   void bufferSize() {
     LoadSettings settings = LoadSettings.builder().setBufferSize(4096).build();
-    assertEquals(Integer.valueOf(4096), settings.getBufferSize());
+    assertEquals(Integer.valueOf(4096), settings.bufferSize);
   }
 
   @Test
   @DisplayName("Use JSON schema by default")
   void defaultSchema() {
     LoadSettings settings = LoadSettings.builder().build();
-    assertEquals(JsonSchema.class, settings.getSchema().getClass());
+    assertEquals(JsonSchema.class, settings.schema.getClass());
   }
 
   public enum SomeStatus implements SettingKey {

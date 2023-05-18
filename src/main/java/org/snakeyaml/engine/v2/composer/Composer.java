@@ -87,7 +87,7 @@ public class Composer implements Iterator<Node> {
    */
   public Composer(LoadSettings settings, Parser parser) {
     this.parser = parser;
-    this.scalarResolver = settings.getSchema().getScalarResolver();
+    this.scalarResolver = settings.schema.getScalarResolver();
     this.settings = settings;
     this.anchors = new HashMap<>();
     this.recursiveNodes = new HashSet<>();
@@ -186,10 +186,10 @@ public class Composer implements Iterator<Node> {
       node = anchors.get(anchor);
       if (node.getNodeType() != NodeType.SCALAR) {
         this.nonScalarAliasesCount++;
-        if (this.nonScalarAliasesCount > settings.getMaxAliasesForCollections()) {
+        if (this.nonScalarAliasesCount > settings.maxAliasesForCollections) {
           throw new YamlEngineException(
               "Number of aliases for non-scalar nodes exceeds the specified max="
-                  + settings.getMaxAliasesForCollections());
+                  + settings.maxAliasesForCollections);
         }
       }
       if (recursiveNodes.remove(node)) {

@@ -76,14 +76,14 @@ public final class StreamReader {
    * @param reader - the input
    */
   public StreamReader(LoadSettings loadSettings, Reader reader) {
-    this.name = loadSettings.getLabel();
+    this.name = loadSettings.label;
     this.codePointsWindow = new int[0];
     this.dataLength = 0;
     this.stream = reader;
     this.eof = false;
-    this.bufferSize = loadSettings.getBufferSize();
+    this.bufferSize = loadSettings.bufferSize;
     this.buffer = new char[bufferSize];
-    this.useMarks = loadSettings.getUseMarks();
+    this.useMarks = loadSettings.useMarks;
   }
 
   /**

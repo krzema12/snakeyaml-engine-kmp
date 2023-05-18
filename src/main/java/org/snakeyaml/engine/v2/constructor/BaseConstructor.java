@@ -169,8 +169,8 @@ public abstract class BaseConstructor {
    */
   protected Optional<ConstructNode> findConstructorFor(Node node) {
     Tag tag = node.getTag();
-    if (settings.getTagConstructors().containsKey(tag)) {
-      return Optional.of(settings.getTagConstructors().get(tag));
+    if (settings.tagConstructors.containsKey(tag)) {
+      return Optional.of(settings.tagConstructors.get(tag));
     } else {
       if (tagConstructors.containsKey(tag)) {
         return Optional.of(tagConstructors.get(tag));
@@ -200,7 +200,7 @@ public abstract class BaseConstructor {
    * @return empty List to fill
    */
   protected List<Object> createEmptyListForNode(SequenceNode node) {
-    return settings.getDefaultList().apply(node.getValue().size());
+    return settings.defaultList.apply(node.getValue().size());
   }
 
   /**
@@ -211,7 +211,7 @@ public abstract class BaseConstructor {
    * @return empty Set to fill
    */
   protected Set<Object> createEmptySetForNode(MappingNode node) {
-    return settings.getDefaultSet().apply(node.getValue().size());
+    return settings.defaultSet.apply(node.getValue().size());
   }
 
   /**
@@ -222,7 +222,7 @@ public abstract class BaseConstructor {
    * @return empty Map to fill
    */
   protected Map<Object, Object> createEmptyMapFor(MappingNode node) {
-    return settings.getDefaultMap().apply(node.getValue().size());
+    return settings.defaultMap.apply(node.getValue().size());
   }
 
   // <<<< DEFAULTS <<<<
@@ -238,7 +238,7 @@ public abstract class BaseConstructor {
    * @return filled List
    */
   protected List<Object> constructSequence(SequenceNode node) {
-    List<Object> result = settings.getDefaultList().apply(node.getValue().size());
+    List<Object> result = settings.defaultList.apply(node.getValue().size());
     constructSequenceStep2(node, result);
     return result;
   }
@@ -262,7 +262,7 @@ public abstract class BaseConstructor {
    * @return filled Set
    */
   protected Set<Object> constructSet(MappingNode node) {
-    final Set<Object> set = settings.getDefaultSet().apply(node.getValue().size());
+    final Set<Object> set = settings.defaultSet.apply(node.getValue().size());
     constructSet2ndStep(node, set);
     return set;
   }
@@ -274,7 +274,7 @@ public abstract class BaseConstructor {
    * @return filled Map
    */
   protected Map<Object, Object> constructMapping(MappingNode node) {
-    final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getValue().size());
+    final Map<Object, Object> mapping = settings.defaultMap.apply(node.getValue().size());
     constructMapping2ndStep(node, mapping);
     return mapping;
   }
@@ -301,7 +301,7 @@ public abstract class BaseConstructor {
       }
       Object value = constructObject(valueNode);
       if (keyNode.isRecursive()) {
-        if (settings.getAllowRecursiveKeys()) {
+        if (settings.allowRecursiveKeys) {
           postponeMapFilling(mapping, key, value);
         } else {
           throw new YamlEngineException(
@@ -346,7 +346,7 @@ public abstract class BaseConstructor {
         }
       }
       if (keyNode.isRecursive()) {
-        if (settings.getAllowRecursiveKeys()) {
+        if (settings.allowRecursiveKeys) {
           postponeSetFilling(set, key);
         } else {
           throw new YamlEngineException(

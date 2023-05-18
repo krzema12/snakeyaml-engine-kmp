@@ -11,24 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api
 
-
-import org.snakeyaml.engine.v2.nodes.Node;
+import java.io.Serializable
 
 /**
- * Create a Node Graph out of the provided Native Data Structure (Java instance). (this is opposite
- * to ConstructNode)
- *
- * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+ * Type for the custom keys in settings. The keys (used in custom settings) must implement this
+ * interface. It makes possible to be 'compiler safe' and define Enum for keys. This way is easier
+ * to follow the changes in the key names and avoid a typo. The implementation of this interface
+ * must properly implement equals() and hashCode() to be used as keys in a Map
  */
-public interface RepresentToNode {
-
-  /**
-   * Create a Node
-   *
-   * @param data the instance to represent
-   * @return Node to dump
-   */
-  Node representData(Object data);
-}
+interface SettingKey : Serializable

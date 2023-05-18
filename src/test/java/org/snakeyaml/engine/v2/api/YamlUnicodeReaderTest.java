@@ -32,7 +32,7 @@ class YamlUnicodeReaderTest {
     ByteArrayInputStream input = new ByteArrayInputStream("1".getBytes());
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(StandardCharsets.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
+    assertEquals(StandardCharsets.UTF_8, reader.encoding, "no BOM must be detected as UTF-8");
   }
 
   @Test
@@ -42,7 +42,7 @@ class YamlUnicodeReaderTest {
         new ByteArrayInputStream(new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, (byte) 49});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(StandardCharsets.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
+    assertEquals(StandardCharsets.UTF_8, reader.encoding, "no BOM must be detected as UTF-8");
     assertEquals('1', reader.read(), "BOM must be skipped, #49 -> 1");
   }
 
@@ -53,7 +53,7 @@ class YamlUnicodeReaderTest {
         (byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 0, (byte) 0, (byte) 49,});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(Charset.forName("UTF-32BE"), reader.getEncoding());
+    assertEquals(Charset.forName("UTF-32BE"), reader.encoding);
     assertEquals('1', reader.read(), "BOM must be skipped, #49 -> 1");
   }
 
@@ -64,7 +64,7 @@ class YamlUnicodeReaderTest {
         (byte) 0x00, (byte) 0x00, (byte) 49, (byte) 0, (byte) 0, (byte) 0});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(Charset.forName("UTF-32LE"), reader.getEncoding());
+    assertEquals(Charset.forName("UTF-32LE"), reader.encoding);
     assertEquals('1', reader.read(), "BOM must be skipped, #49 -> 1");
   }
 
@@ -75,7 +75,7 @@ class YamlUnicodeReaderTest {
         new ByteArrayInputStream(new byte[] {(byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 49,});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(StandardCharsets.UTF_16BE, reader.getEncoding());
+    assertEquals(StandardCharsets.UTF_16BE, reader.encoding);
     assertEquals('1', reader.read(), "BOM must be skipped, #49 -> 1");
   }
 
@@ -86,7 +86,7 @@ class YamlUnicodeReaderTest {
         new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFE, (byte) 49, (byte) 0});
     YamlUnicodeReader reader = new YamlUnicodeReader(input);
     reader.init();
-    assertEquals(StandardCharsets.UTF_16LE, reader.getEncoding());
+    assertEquals(StandardCharsets.UTF_16LE, reader.encoding);
     assertEquals('1', reader.read(), "BOM must be skipped, #49 -> 1");
     reader.close();
   }

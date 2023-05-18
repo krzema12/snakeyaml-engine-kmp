@@ -47,25 +47,25 @@ class DumpSettingsTest {
   void defaults() {
     DumpSettings settings = DumpSettings.builder().build();
 
-    assertEquals("\n", settings.getBestLineBreak());
-    assertEquals(2, settings.getIndent());
-    assertEquals(FlowStyle.AUTO, settings.getDefaultFlowStyle());
-    assertEquals(ScalarStyle.PLAIN, settings.getDefaultScalarStyle());
-    assertEquals(Optional.empty(), settings.getExplicitRootTag());
-    assertFalse(settings.getIndentWithIndicator());
+    assertEquals("\n", settings.bestLineBreak);
+    assertEquals(2, settings.indent);
+    assertEquals(FlowStyle.AUTO, settings.defaultFlowStyle);
+    assertEquals(ScalarStyle.PLAIN, settings.defaultScalarStyle);
+    assertEquals(Optional.empty(), settings.explicitRootTag);
+    assertFalse(settings.indentWithIndicator);
     assertFalse(settings.isExplicitEnd());
     assertFalse(settings.isExplicitStart());
     assertFalse(settings.isCanonical());
     assertTrue(settings.isSplitLines());
     assertFalse(settings.isMultiLineFlow());
     assertTrue(settings.isUseUnicodeEncoding());
-    assertEquals(0, settings.getIndicatorIndent());
-    assertEquals(128, settings.getMaxSimpleKeyLength());
-    assertEquals(NonPrintableStyle.ESCAPE, settings.getNonPrintableStyle());
-    assertEquals(80, settings.getWidth());
-    assertEquals(Optional.empty(), settings.getYamlDirective());
-    assertEquals(new HashMap<>(), settings.getTagDirective());
-    assertNotNull(settings.getAnchorGenerator());
+    assertEquals(0, settings.indicatorIndent);
+    assertEquals(128, settings.maxSimpleKeyLength);
+    assertEquals(NonPrintableStyle.ESCAPE, settings.nonPrintableStyle);
+    assertEquals(80, settings.width);
+    assertEquals(Optional.empty(), settings.yamlDirective);
+    assertEquals(new HashMap<>(), settings.tagDirective);
+    assertNotNull(settings.anchorGenerator);
   }
 
   @Test

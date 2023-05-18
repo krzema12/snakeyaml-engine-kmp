@@ -56,6 +56,6 @@ class Present(settings: DumpSettings) {
  */
 internal class StreamToStringWriter : StringWriter(), StreamDataWriter {
     override fun flush() {
-        TODO("Not yet sure what should be here")
+        super<StringWriter>.flush()
     }
 }

@@ -99,7 +99,7 @@ class Load @JvmOverloads constructor(
      * @param composer - the component to create the Node
      * @return deserialised YAML document
      */
-    protected fun loadOne(composer: Composer): Any {
+    protected fun loadOne(composer: Composer): Any? {
         val nodeOptional = composer.singleNode
         return constructor.constructSingleDocument(nodeOptional)
     }
@@ -111,7 +111,7 @@ class Load @JvmOverloads constructor(
      * data)
      * @return parsed Java instance
      */
-    fun loadFromInputStream(yamlStream: InputStream): Any {
+    fun loadFromInputStream(yamlStream: InputStream): Any? {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null")
         return loadOne(createComposer(yamlStream))
     }
@@ -122,7 +122,7 @@ class Load @JvmOverloads constructor(
      * @param yamlReader - data to load from (BOM must not be present)
      * @return parsed Java instance
      */
-    fun loadFromReader(yamlReader: Reader): Any {
+    fun loadFromReader(yamlReader: Reader): Any? {
         Objects.requireNonNull(yamlReader, "Reader cannot be null")
         return loadOne(createComposer(yamlReader))
     }
@@ -134,14 +134,14 @@ class Load @JvmOverloads constructor(
      * @return parsed Java instance
      * @throws org.snakeyaml.engine.v2.exceptions.YamlEngineException if the YAML is not valid
      */
-    fun loadFromString(yaml: String): Any {
+    fun loadFromString(yaml: String): Any? {
         Objects.requireNonNull(yaml, "String cannot be null")
         return loadOne(createComposer(yaml))
     }
 
     // Load all the documents
-    private fun loadAll(composer: Composer): Iterable<Any> {
-        val result: MutableIterator<Any> = YamlIterator(composer, constructor)
+    private fun loadAll(composer: Composer): Iterable<Any?> {
+        val result: MutableIterator<Any?> = YamlIterator(composer, constructor)
         return YamlIterable(result)
     }
 
@@ -153,7 +153,7 @@ class Load @JvmOverloads constructor(
      * from the data)
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
-    fun loadAllFromInputStream(yamlStream: InputStream): Iterable<Any> {
+    fun loadAllFromInputStream(yamlStream: InputStream): Iterable<Any?> {
         Objects.requireNonNull(yamlStream, "InputStream cannot be null")
         val composer = createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
         return loadAll(composer)
@@ -166,7 +166,7 @@ class Load @JvmOverloads constructor(
      * @param yamlReader - YAML data to load from (BOM must not be present)
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
-    fun loadAllFromReader(yamlReader: Reader): Iterable<Any> {
+    fun loadAllFromReader(yamlReader: Reader): Iterable<Any?> {
         Objects.requireNonNull(yamlReader, "Reader cannot be null")
         val composer = createComposer(StreamReader(settings, yamlReader))
         return loadAll(composer)
@@ -180,27 +180,27 @@ class Load @JvmOverloads constructor(
      * @param yaml - YAML data to load from (BOM must not be present)
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
-    fun loadAllFromString(yaml: String): Iterable<Any> {
+    fun loadAllFromString(yaml: String): Iterable<Any?> {
         Objects.requireNonNull(yaml, "String cannot be null")
         val composer = createComposer(StreamReader(settings, yaml))
         return loadAll(composer)
     }
 
-    private class YamlIterable(private val iterator: MutableIterator<Any>) : Iterable<Any> {
-        override fun iterator(): MutableIterator<Any> {
+    private class YamlIterable(private val iterator: MutableIterator<Any?>) : Iterable<Any?> {
+        override fun iterator(): MutableIterator<Any?> {
             return iterator
         }
     }
 
     private class YamlIterator(private val composer: Composer, private val constructor: BaseConstructor) :
-        MutableIterator<Any> {
+        MutableIterator<Any?> {
         private var composerInitiated = false
         override fun hasNext(): Boolean {
             composerInitiated = true
             return composer.hasNext()
         }
 
-        override fun next(): Any {
+        override fun next(): Any? {
             if (!composerInitiated) {
                 hasNext()
             }

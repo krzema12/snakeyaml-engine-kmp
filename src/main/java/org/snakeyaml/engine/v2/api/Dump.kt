@@ -85,7 +85,7 @@ class Dump @JvmOverloads constructor(
      * @param yaml - instance to serialize
      * @param streamDataWriter - destination I/O writer
      */
-    fun dump(yaml: Any, streamDataWriter: StreamDataWriter) {
+    fun dump(yaml: Any?, streamDataWriter: StreamDataWriter) {
         val iter = setOf(yaml).iterator()
         dumpAll(iter, streamDataWriter)
     }
@@ -110,7 +110,7 @@ class Dump @JvmOverloads constructor(
      * @param yaml - instance to serialize
      * @return String representation of the YAML stream
      */
-    fun dumpToString(yaml: Any): String {
+    fun dumpToString(yaml: Any?): String {
         val writer = StreamToStringWriter()
         dump(yaml, writer)
         return writer.toString()
@@ -137,6 +137,6 @@ class Dump @JvmOverloads constructor(
  */
 internal class StreamToStringWriter : StringWriter(), StreamDataWriter {
     override fun flush() {
-        TODO("Not yet sure what should be here")
+        super<StringWriter>.flush()
     }
 }

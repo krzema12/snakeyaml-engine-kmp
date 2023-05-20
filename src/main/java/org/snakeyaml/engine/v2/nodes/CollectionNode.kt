@@ -11,50 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.FlowStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
- * Base class for the two collection types {@link MappingNode mapping} and {@link SequenceNode
- * collection}.
+ * Base class for the two collection types [mapping][MappingNode] and [ collection][SequenceNode].
+ *
+ * @param[flowStyle] Serialization style of this collection
  */
-public abstract class CollectionNode<T> extends Node {
-
-  private FlowStyle flowStyle;
-
-  public CollectionNode(Tag tag, FlowStyle flowStyle, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
-    super(tag, startMark, endMark);
-    setFlowStyle(flowStyle);
-  }
+abstract class CollectionNode<T> @JvmOverloads constructor(
+  tag: Tag,
+  var flowStyle: FlowStyle,
+  startMark: Optional<Mark>,
+  endMark: Optional<Mark>,
+  resolved: Boolean = true,
+) : Node(tag, startMark, endMark, resolved = resolved) {
 
   /**
    * Returns the elements in this sequence.
    *
    * @return Nodes in the specified order.
    */
-  public abstract List<T> getValue();
+  abstract val value: List<T>?
 
-  /**
-   * Serialization style of this collection.
-   *
-   * @return <code>true</code> for flow style, <code>false</code> for block style.
-   */
-  public FlowStyle getFlowStyle() {
-    return flowStyle;
-  }
-
-  public void setFlowStyle(FlowStyle flowStyle) {
-    Objects.requireNonNull(flowStyle, "Flow style must be provided.");
-    this.flowStyle = flowStyle;
-  }
-
-  public void setEndMark(Optional<Mark> endMark) {
-    this.endMark = endMark;
+  fun setEndMark(value: Optional<Mark>) {
+    super.endMark = value
   }
 }

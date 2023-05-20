@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
@@ -91,6 +93,7 @@ public class TimestampTagTest {
 
   public static final class TimestampSchema extends JsonSchema {
 
+    @NotNull
     @Override
     public ScalarResolver getScalarResolver() {
       return new MyScalarResolver();

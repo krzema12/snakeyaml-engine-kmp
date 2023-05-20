@@ -57,7 +57,7 @@ public class EmitterTest {
     DumpSettings settings =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.FOLDED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
@@ -71,7 +71,7 @@ public class EmitterTest {
     DumpSettings settings =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.LITERAL).build();
     String folded = "0123456789 0123456789 0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla\n");
     String output = dump(settings, map);
@@ -84,7 +84,7 @@ public class EmitterTest {
   public void testWritePlain() {
     DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
@@ -98,7 +98,7 @@ public class EmitterTest {
     DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
         .setMultiLineFlow(true).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
@@ -112,7 +112,7 @@ public class EmitterTest {
     DumpSettings settings =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
@@ -126,7 +126,7 @@ public class EmitterTest {
     DumpSettings settings =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<>();
     map.put("aaa", folded);
     map.put("bbb", "\nbla-bla");
     String output = dump(settings, map);
@@ -158,7 +158,7 @@ public class EmitterTest {
     DumpSettingsBuilder builder =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
             .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(8);
-    Map<String, Object> map = new TreeMap<String, Object>();
+    Map<String, Object> map = new TreeMap<>();
     map.put("12345", Collections.singletonList("1111111111"));
 
     // Split lines enabled (default)
@@ -207,14 +207,14 @@ public class EmitterTest {
     DumpSettingsBuilder builder =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
             .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(16);
-    Map<String, String> nonSplitMap = new TreeMap<String, String>();
+    Map<String, String> nonSplitMap = new TreeMap<>();
     nonSplitMap.put("3", "4");
     Map<String, Map<String, String>> nonSplitContainerMap =
-        new TreeMap<String, Map<String, String>>();
+        new TreeMap<>();
     nonSplitContainerMap.put("1 2", nonSplitMap);
-    Map<String, String> splitMap = new TreeMap<String, String>();
+    Map<String, String> splitMap = new TreeMap<>();
     splitMap.put("3333333333", "4444444444");
-    Map<String, Map<String, String>> splitContainerMap = new TreeMap<String, Map<String, String>>();
+    Map<String, Map<String, String>> splitContainerMap = new TreeMap<>();
     splitContainerMap.put("1111111111 2222222222", splitMap);
 
     // Split lines enabled (default)
@@ -236,10 +236,10 @@ public class EmitterTest {
     DumpSettingsBuilder builder =
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
             .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(16);
-    Map<String, String> nonSplitMap = new TreeMap<String, String>();
+    Map<String, String> nonSplitMap = new TreeMap<>();
     nonSplitMap.put("1", "2");
     nonSplitMap.put("3", "4");
-    Map<String, String> splitMap = new TreeMap<String, String>();
+    Map<String, String> splitMap = new TreeMap<>();
     splitMap.put("1111111111", "2222222222");
     splitMap.put("3333333333", "4444444444");
 
@@ -260,8 +260,8 @@ public class EmitterTest {
   @Test
   public void testAnchorInMaps() {
     DumpSettingsBuilder builder = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.FLOW);
-    Map<Object, Object> map1 = new HashMap<Object, Object>();
-    Map<Object, Object> map2 = new HashMap<Object, Object>();
+    Map<Object, Object> map1 = new HashMap<>();
+    Map<Object, Object> map2 = new HashMap<>();
     map1.put("2", map2);
     map2.put("1", map1);
     String output = dump(builder.build(), map1);
@@ -274,7 +274,8 @@ public class EmitterTest {
     DumpSettingsBuilder builder = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.FLOW);
     // this is VERY BAD code
     // the map has itself as a key (no idea why it may be used except of a DoS attack)
-    HashMap f = new HashMap();
+    HashMap<Object, String> f = new HashMap<>();
+    //noinspection CollectionAddedToSelf
     f.put(f, "a");
 
     String output = dump(builder.build(), f);

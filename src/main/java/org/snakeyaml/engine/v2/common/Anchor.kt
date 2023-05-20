@@ -14,8 +14,6 @@
 package org.snakeyaml.engine.v2.common
 
 import org.snakeyaml.engine.v2.exceptions.EmitterException
-import java.util.*
-import java.util.regex.Pattern
 
 /**
  * Value inside Anchor and Alias
@@ -26,12 +24,11 @@ class Anchor(val value: String) {
     init {
         require(value.isNotEmpty()) { "Empty anchor." }
         for (element in value) {
-            if (INVALID_ANCHOR.contains(element)) {
+            if (element in INVALID_ANCHOR) {
                 throw EmitterException("Invalid character '$element' in the anchor: $value")
             }
         }
-        val matcher = SPACES_PATTERN.matcher(value)
-        if (matcher.find()) {
+        if (SPACES_PATTERN.containsMatchIn(value)) {
             throw EmitterException("Anchor may not contain spaces: $value")
         }
     }
@@ -49,9 +46,7 @@ class Anchor(val value: String) {
         return value == anchor1.value
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(value)
-    }
+    override fun hashCode(): Int = value.hashCode()
 
     companion object {
         private val INVALID_ANCHOR: Set<Char> = setOf(
@@ -63,6 +58,6 @@ class Anchor(val value: String) {
             '*',
             '&',
         )
-        private val SPACES_PATTERN = Pattern.compile("\\s")
+        private val SPACES_PATTERN = Regex("\\s")
     }
 }

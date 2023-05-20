@@ -15,13 +15,13 @@ package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
+import java.util.Optional
 
 class AliasToken(
-  val value: Anchor,
-  startMark: Optional<Mark>,
-  endMark: Optional<Mark>
+    val value: Anchor,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
 ) : Token(startMark, endMark) {
-  override val tokenId: ID
-    get() = ID.Alias
+    override val tokenId: ID
+        get() = ID.Alias
 }

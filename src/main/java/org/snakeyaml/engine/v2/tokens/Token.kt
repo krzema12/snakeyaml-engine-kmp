@@ -14,50 +14,50 @@
 package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
+import java.util.Optional
 
 /**
  * A unit of YAML data
  */
 sealed class Token(
-  val startMark: Optional<Mark>,
-  val endMark: Optional<Mark>,
+    val startMark: Optional<Mark>,
+    val endMark: Optional<Mark>,
 ) {
 
-  /**
-   * For error reporting.
-   *
-   * @return [ID] of this token
-   */
-  abstract val tokenId: ID
+    /**
+     * For error reporting.
+     *
+     * @return [ID] of this token
+     */
+    abstract val tokenId: ID
 
-  override fun toString(): String = tokenId.toString()
+    override fun toString(): String = tokenId.toString()
 
-  enum class ID(
-    private val description: String
-  ) {
-    Alias("<alias>"),
-    Anchor("<anchor>"),
-    BlockEnd("<block end>"),
-    BlockEntry("-"),
-    BlockMappingStart("<block mapping start>"),
-    BlockSequenceStart("<block sequence start>"),
-    Directive("<directive>"),
-    DocumentEnd("<document end>"),
-    DocumentStart("<document start>"),
-    FlowEntry(","),
-    FlowMappingEnd("}"),
-    FlowMappingStart("{"),
-    FlowSequenceEnd("]"),
-    FlowSequenceStart("["),
-    Key("?"),
-    Scalar("<scalar>"),
-    StreamEnd("<stream end>"),
-    StreamStart("<stream start>"),
-    Tag("<tag>"),
-    Comment("#"),
-    Value(":");
+    enum class ID(
+        private val description: String,
+    ) {
+        Alias("<alias>"),
+        Anchor("<anchor>"),
+        BlockEnd("<block end>"),
+        BlockEntry("-"),
+        BlockMappingStart("<block mapping start>"),
+        BlockSequenceStart("<block sequence start>"),
+        Directive("<directive>"),
+        DocumentEnd("<document end>"),
+        DocumentStart("<document start>"),
+        FlowEntry(","),
+        FlowMappingEnd("}"),
+        FlowMappingStart("{"),
+        FlowSequenceEnd("]"),
+        FlowSequenceStart("["),
+        Key("?"),
+        Scalar("<scalar>"),
+        StreamEnd("<stream end>"),
+        StreamStart("<stream start>"),
+        Tag("<tag>"),
+        Comment("#"),
+        Value(":");
 
-    override fun toString(): String = description
-  }
+        override fun toString(): String = description
+    }
 }

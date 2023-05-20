@@ -32,7 +32,7 @@ import java.util.Optional
  * Builder pattern implementation for DumpSettings
  */
 class DumpSettingsBuilder internal constructor() {
-    var customProperties: MutableMap<SettingKey, Any> = HashMap()
+    private var customProperties: MutableMap<SettingKey, Any> = HashMap()
     private var explicitStart = false
     private var explicitEnd = false
     private var nonPrintableStyle: NonPrintableStyle
@@ -111,7 +111,6 @@ class DumpSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setAnchorGenerator(anchorGenerator: AnchorGenerator): DumpSettingsBuilder {
-        Objects.requireNonNull(anchorGenerator, "anchorGenerator cannot be null")
         this.anchorGenerator = anchorGenerator
         return this
     }
@@ -123,7 +122,6 @@ class DumpSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setExplicitRootTag(explicitRootTag: Optional<Tag>): DumpSettingsBuilder {
-        Objects.requireNonNull(explicitRootTag, "explicitRootTag cannot be null")
         this.explicitRootTag = explicitRootTag
         return this
     }
@@ -146,7 +144,6 @@ class DumpSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setYamlDirective(yamlDirective: Optional<SpecVersion>): DumpSettingsBuilder {
-        Objects.requireNonNull(yamlDirective, "yamlDirective cannot be null")
         this.yamlDirective = yamlDirective
         return this
     }
@@ -158,7 +155,6 @@ class DumpSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setTagDirective(tagDirective: Map<String, String>): DumpSettingsBuilder {
-        Objects.requireNonNull(tagDirective, "tagDirective cannot be null")
         this.tagDirective = tagDirective
         return this
     }
@@ -258,11 +254,10 @@ class DumpSettingsBuilder internal constructor() {
      * Linux) than this setting is used to define the line ending. The platform line end is used by
      * default.
      *
-     * @param bestLineBreak - "\r\n" or "\n"
+     * @param bestLineBreak - `\r\n` or `\n`
      * @return the builder with the provided value
      */
     fun setBestLineBreak(bestLineBreak: String): DumpSettingsBuilder {
-        Objects.requireNonNull(bestLineBreak, "bestLineBreak cannot be null")
         this.bestLineBreak = bestLineBreak
         return this
     }
@@ -279,7 +274,7 @@ class DumpSettingsBuilder internal constructor() {
     }
 
     /**
-     * Define max key length to use simple key (without '?').
+     * Define max key length to use simple key (without `?`).
      * [More info](https://yaml.org/spec/1.2/spec.html#id2798057)
      *
      * @param maxSimpleKeyLength - the limit after which the key gets explicit key indicator '?'
@@ -366,11 +361,29 @@ class DumpSettingsBuilder internal constructor() {
      */
     fun build(): DumpSettings {
         return DumpSettings(
-            explicitStart, explicitEnd, explicitRootTag, anchorGenerator,
-            yamlDirective, tagDirective, defaultFlowStyle, defaultScalarStyle, nonPrintableStyle,
-            schema,  // emitter
-            canonical, multiLineFlow, useUnicodeEncoding, indent, indicatorIndent, width, bestLineBreak,
-            splitLines, maxSimpleKeyLength, customProperties, indentWithIndicator, dumpComments
+            isExplicitStart = explicitStart,
+            isExplicitEnd = explicitEnd,
+            explicitRootTag = explicitRootTag,
+            anchorGenerator = anchorGenerator,
+            yamlDirective = yamlDirective,
+            tagDirective = tagDirective,
+            defaultFlowStyle = defaultFlowStyle,
+            defaultScalarStyle = defaultScalarStyle,
+            nonPrintableStyle = nonPrintableStyle,
+            schema = schema,
+            // emitter
+            isCanonical = canonical,
+            isMultiLineFlow = multiLineFlow,
+            isUseUnicodeEncoding = useUnicodeEncoding,
+            indent = indent,
+            indicatorIndent = indicatorIndent,
+            width = width,
+            bestLineBreak = bestLineBreak,
+            isSplitLines = splitLines,
+            maxSimpleKeyLength = maxSimpleKeyLength,
+            customProperties = customProperties,
+            indentWithIndicator = indentWithIndicator,
+            dumpComments = dumpComments,
         )
     }
 }

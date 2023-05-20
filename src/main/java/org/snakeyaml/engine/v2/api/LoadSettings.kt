@@ -26,22 +26,28 @@ import java.util.function.UnaryOperator
  * Immutable configuration for loading. Description for all the fields can be found in the builder
  */
 class LoadSettings internal constructor(
-  @JvmField val label: String, @JvmField val tagConstructors: Map<Tag, ConstructNode>,
-  @JvmField val defaultList: IntFunction<List<Any>>, @JvmField val defaultSet: IntFunction<Set<Any>>,
-  @JvmField val defaultMap: IntFunction<Map<Any, Any>>, private val versionFunction: UnaryOperator<SpecVersion>,
-  @JvmField val bufferSize: Int, @JvmField val allowDuplicateKeys: Boolean, @JvmField val allowRecursiveKeys: Boolean,
-  @JvmField val maxAliasesForCollections: Int, @JvmField val useMarks: Boolean, // general
-  private val customProperties: Map<SettingKey, Any>,
-  @JvmField val envConfig: Optional<EnvConfig>, @JvmField val parseComments: Boolean, @JvmField val codePointLimit: Int, @JvmField val schema: Schema
+    @JvmField val label: String,
+    @JvmField val tagConstructors: Map<Tag, ConstructNode>,
+    @JvmField val defaultList: IntFunction<List<Any>>,
+    @JvmField val defaultSet: IntFunction<Set<Any>>,
+    @JvmField val defaultMap: IntFunction<Map<Any, Any>>,
+    private val versionFunction: UnaryOperator<SpecVersion>,
+    @JvmField val bufferSize: Int,
+    @JvmField val allowDuplicateKeys: Boolean,
+    @JvmField val allowRecursiveKeys: Boolean,
+    @JvmField val maxAliasesForCollections: Int,
+    @JvmField val useMarks: Boolean,
+    // general
+    private val customProperties: Map<SettingKey, Any>,
+    @JvmField val envConfig: Optional<EnvConfig>,
+    @JvmField val parseComments: Boolean,
+    @JvmField val codePointLimit: Int,
+    @JvmField val schema: Schema,
 ) {
 
-    fun getVersionFunction(): Function<SpecVersion, SpecVersion> {
-        return versionFunction
-    }
+    fun getVersionFunction(): Function<SpecVersion, SpecVersion> = versionFunction
 
-    fun getCustomProperty(key: SettingKey): Any? {
-        return customProperties[key]
-    }
+    fun getCustomProperty(key: SettingKey): Any? = customProperties[key]
 
     companion object {
         /**
@@ -50,8 +56,6 @@ class LoadSettings internal constructor(
          * @return the builder to fill the configuration options
          */
         @JvmStatic
-        fun builder(): LoadSettingsBuilder {
-            return LoadSettingsBuilder()
-        }
+        fun builder(): LoadSettingsBuilder = LoadSettingsBuilder()
     }
 }

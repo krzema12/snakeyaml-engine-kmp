@@ -20,7 +20,6 @@ import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
-import java.util.Objects
 import java.util.Optional
 
 /**
@@ -28,30 +27,14 @@ import java.util.Optional
  * methods of the same instance can be called only by one thread. It is better to create an instance
  * for every YAML stream. The instance is stateful. Only one of the 'load' methods may be called,
  * and it may be called only once.
+ *
+ * @param settings - configuration
+ * @param constructor - custom YAML constructor
  */
 class Load @JvmOverloads constructor(
-    settings: LoadSettings,
-    constructor: BaseConstructor = StandardConstructor(settings)
+    private val settings: LoadSettings,
+    private val constructor: BaseConstructor = StandardConstructor(settings),
 ) {
-    private val settings: LoadSettings
-    private val constructor: BaseConstructor
-    /**
-     * Create instance to parse the incoming YAML data and create Java instances
-     *
-     * @param settings - configuration
-     * @param constructor - custom YAML constructor
-     */
-    /**
-     * Create instance to parse the incoming YAML data and create Java instances
-     *
-     * @param settings - configuration
-     */
-    init {
-        Objects.requireNonNull(settings, "LoadSettings cannot be null")
-        Objects.requireNonNull(constructor, "BaseConstructor cannot be null")
-        this.settings = settings
-        this.constructor = constructor
-    }
 
     /**
      * Create Composer
@@ -59,9 +42,8 @@ class Load @JvmOverloads constructor(
      * @param streamReader - the input
      * @return configured Composer
      */
-    private fun createComposer(streamReader: StreamReader): Composer {
-        return Composer(settings, ParserImpl(settings, streamReader))
-    }
+    private fun createComposer(streamReader: StreamReader): Composer =
+        Composer(settings, ParserImpl(settings, streamReader))
 
     /**
      * Create Composer
@@ -69,9 +51,8 @@ class Load @JvmOverloads constructor(
      * @param yamlStream - the input
      * @return configured Composer
      */
-    protected fun createComposer(yamlStream: InputStream?): Composer {
-        return createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
-    }
+    private fun createComposer(yamlStream: InputStream): Composer =
+        createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
 
     /**
      * Create Composer
@@ -79,9 +60,8 @@ class Load @JvmOverloads constructor(
      * @param yaml - the input
      * @return configured Composer
      */
-    protected fun createComposer(yaml: String?): Composer {
-        return createComposer(StreamReader(settings, yaml))
-    }
+    private fun createComposer(yaml: String): Composer =
+        createComposer(StreamReader(settings, yaml))
 
     /**
      * Create Composer
@@ -89,17 +69,16 @@ class Load @JvmOverloads constructor(
      * @param yamlReader - the input
      * @return configured Composer
      */
-    protected fun createComposer(yamlReader: Reader?): Composer {
-        return createComposer(StreamReader(settings, yamlReader))
-    }
-    // Load a single document
+    private fun createComposer(yamlReader: Reader): Composer =
+        createComposer(StreamReader(settings, yamlReader))
+
     /**
-     * Load with provided Composer
+     * Load a single document with the provided [composer]
      *
      * @param composer - the component to create the Node
      * @return deserialised YAML document
      */
-    protected fun loadOne(composer: Composer): Any? {
+    private fun loadOne(composer: Composer): Any? {
         val nodeOptional = composer.singleNode
         return constructor.constructSingleDocument(nodeOptional)
     }
@@ -112,7 +91,6 @@ class Load @JvmOverloads constructor(
      * @return parsed Java instance
      */
     fun loadFromInputStream(yamlStream: InputStream): Any? {
-        Objects.requireNonNull(yamlStream, "InputStream cannot be null")
         return loadOne(createComposer(yamlStream))
     }
 
@@ -122,10 +100,7 @@ class Load @JvmOverloads constructor(
      * @param yamlReader - data to load from (BOM must not be present)
      * @return parsed Java instance
      */
-    fun loadFromReader(yamlReader: Reader): Any? {
-        Objects.requireNonNull(yamlReader, "Reader cannot be null")
-        return loadOne(createComposer(yamlReader))
-    }
+    fun loadFromReader(yamlReader: Reader): Any? = loadOne(createComposer(yamlReader))
 
     /**
      * Parse a YAML document and create a Java instance
@@ -134,16 +109,11 @@ class Load @JvmOverloads constructor(
      * @return parsed Java instance
      * @throws org.snakeyaml.engine.v2.exceptions.YamlEngineException if the YAML is not valid
      */
-    fun loadFromString(yaml: String): Any? {
-        Objects.requireNonNull(yaml, "String cannot be null")
-        return loadOne(createComposer(yaml))
-    }
+    fun loadFromString(yaml: String): Any? = loadOne(createComposer(yaml))
 
     // Load all the documents
-    private fun loadAll(composer: Composer): Iterable<Any?> {
-        val result: MutableIterator<Any?> = YamlIterator(composer, constructor)
-        return YamlIterable(result)
-    }
+    private fun loadAll(composer: Composer): Iterable<Any?> =
+        Iterable { YamlIterator(composer, constructor) }
 
     /**
      * Parse all YAML documents in a stream and produce corresponding Java objects. The documents are
@@ -154,7 +124,6 @@ class Load @JvmOverloads constructor(
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
     fun loadAllFromInputStream(yamlStream: InputStream): Iterable<Any?> {
-        Objects.requireNonNull(yamlStream, "InputStream cannot be null")
         val composer = createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
         return loadAll(composer)
     }
@@ -167,7 +136,6 @@ class Load @JvmOverloads constructor(
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
     fun loadAllFromReader(yamlReader: Reader): Iterable<Any?> {
-        Objects.requireNonNull(yamlReader, "Reader cannot be null")
         val composer = createComposer(StreamReader(settings, yamlReader))
         return loadAll(composer)
     }
@@ -181,19 +149,14 @@ class Load @JvmOverloads constructor(
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
     fun loadAllFromString(yaml: String): Iterable<Any?> {
-        Objects.requireNonNull(yaml, "String cannot be null")
         val composer = createComposer(StreamReader(settings, yaml))
         return loadAll(composer)
     }
 
-    private class YamlIterable(private val iterator: MutableIterator<Any?>) : Iterable<Any?> {
-        override fun iterator(): MutableIterator<Any?> {
-            return iterator
-        }
-    }
-
-    private class YamlIterator(private val composer: Composer, private val constructor: BaseConstructor) :
-        MutableIterator<Any?> {
+    private class YamlIterator(
+        private val composer: Composer,
+        private val constructor: BaseConstructor,
+    ) : MutableIterator<Any?> {
         private var composerInitiated = false
         override fun hasNext(): Boolean {
             composerInitiated = true
@@ -208,8 +171,6 @@ class Load @JvmOverloads constructor(
             return constructor.constructSingleDocument(Optional.of(node))
         }
 
-        override fun remove() {
-            throw UnsupportedOperationException("Removing is not supported.")
-        }
+        override fun remove(): Unit = throw UnsupportedOperationException("Removing is not supported.")
     }
 }

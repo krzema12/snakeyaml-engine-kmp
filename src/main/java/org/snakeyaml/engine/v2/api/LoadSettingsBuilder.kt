@@ -50,13 +50,13 @@ class LoadSettingsBuilder internal constructor() {
      */
     init {
         tagConstructors = HashMap()
-        defaultList =
-            IntFunction { initialCapacity: Int -> ArrayList(initialCapacity) } // same as new ArrayList(initSize)
-        defaultSet =
-            IntFunction { initialCapacity: Int -> LinkedHashSet(initialCapacity) } // same as new LinkedHashSet(initSize)
+        // same as new ArrayList(initSize)
+        defaultList = IntFunction { initialCapacity: Int -> ArrayList(initialCapacity) }
+        // same as new LinkedHashSet(initSize)
+        defaultSet = IntFunction { initialCapacity: Int -> LinkedHashSet(initialCapacity) }
         // respect order from YAML document
-        defaultMap =
-            IntFunction { initialCapacity: Int -> LinkedHashMap(initialCapacity) } // same as new LinkedHashMap(initSize)
+        // same as new LinkedHashMap(initSize)
+        defaultMap = IntFunction { initialCapacity: Int -> LinkedHashMap(initialCapacity) }
         versionFunction = UnaryOperator { version: SpecVersion ->
             if (version.major != 1) {
                 throw YamlVersionException(version)
@@ -82,7 +82,6 @@ class LoadSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setLabel(label: String): LoadSettingsBuilder {
-        Objects.requireNonNull(label, "label cannot be null")
         this.label = label
         return this
     }
@@ -105,7 +104,6 @@ class LoadSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setDefaultList(defaultList: IntFunction<List<Any>>): LoadSettingsBuilder {
-        Objects.requireNonNull(defaultList, "defaultList cannot be null")
         this.defaultList = defaultList
         return this
     }
@@ -117,7 +115,6 @@ class LoadSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setDefaultSet(defaultSet: IntFunction<Set<Any>>): LoadSettingsBuilder {
-        Objects.requireNonNull(defaultSet, "defaultSet cannot be null")
         this.defaultSet = defaultSet
         return this
     }
@@ -129,7 +126,6 @@ class LoadSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setDefaultMap(defaultMap: IntFunction<Map<Any, Any>>): LoadSettingsBuilder {
-        Objects.requireNonNull(defaultMap, "defaultMap cannot be null")
         this.defaultMap = defaultMap
         return this
     }
@@ -214,7 +210,6 @@ class LoadSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setVersionFunction(versionFunction: UnaryOperator<SpecVersion>): LoadSettingsBuilder {
-        Objects.requireNonNull(versionFunction, "versionFunction cannot be null")
         this.versionFunction = versionFunction
         return this
     }
@@ -291,10 +286,22 @@ class LoadSettingsBuilder internal constructor() {
      */
     fun build(): LoadSettings {
         return LoadSettings(
-            label, tagConstructors, defaultList, defaultSet, defaultMap,
-            versionFunction, bufferSize, allowDuplicateKeys, allowRecursiveKeys,
-            maxAliasesForCollections, useMarks, customProperties, envConfig, parseComments,
-            codePointLimit, schema
+            label = label,
+            tagConstructors = tagConstructors,
+            defaultList = defaultList,
+            defaultSet = defaultSet,
+            defaultMap = defaultMap,
+            versionFunction = versionFunction,
+            bufferSize = bufferSize,
+            allowDuplicateKeys = allowDuplicateKeys,
+            allowRecursiveKeys = allowRecursiveKeys,
+            maxAliasesForCollections = maxAliasesForCollections,
+            useMarks = useMarks,
+            customProperties = customProperties,
+            envConfig = envConfig,
+            parseComments = parseComments,
+            codePointLimit = codePointLimit,
+            schema = schema,
         )
     }
 }

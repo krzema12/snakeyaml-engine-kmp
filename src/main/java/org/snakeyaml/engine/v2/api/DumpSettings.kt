@@ -27,26 +27,36 @@ import java.util.Optional
  * builder
  */
 class DumpSettings internal constructor(
-  val isExplicitStart: Boolean, val isExplicitEnd: Boolean, @JvmField val explicitRootTag: Optional<Tag>,
-  @JvmField val anchorGenerator: AnchorGenerator, @JvmField val yamlDirective: Optional<SpecVersion>,
-  @JvmField val tagDirective: Map<String, String>, @JvmField val defaultFlowStyle: FlowStyle, @JvmField val defaultScalarStyle: ScalarStyle,
-  @JvmField val nonPrintableStyle: NonPrintableStyle, @JvmField val schema: Schema,  // emitter
+    val isExplicitStart: Boolean,
+    val isExplicitEnd: Boolean,
+    @JvmField val explicitRootTag: Optional<Tag>,
+    @JvmField val anchorGenerator: AnchorGenerator,
+    @JvmField val yamlDirective: Optional<SpecVersion>,
+    @JvmField val tagDirective: Map<String, String>,
+    @JvmField val defaultFlowStyle: FlowStyle,
+    @JvmField val defaultScalarStyle: ScalarStyle,
+    @JvmField val nonPrintableStyle: NonPrintableStyle,
+    @JvmField val schema: Schema,
     // emitter
-  val isCanonical: Boolean, val isMultiLineFlow: Boolean, val isUseUnicodeEncoding: Boolean, @JvmField val indent: Int,
-  @JvmField val indicatorIndent: Int, @JvmField val width: Int, @JvmField val bestLineBreak: String, val isSplitLines: Boolean,
-  @JvmField val maxSimpleKeyLength: Int, // general
-  private val customProperties: Map<SettingKey, Any>, @JvmField val indentWithIndicator: Boolean,
-  @JvmField val dumpComments: Boolean
+    val isCanonical: Boolean,
+    val isMultiLineFlow: Boolean,
+    val isUseUnicodeEncoding: Boolean,
+    @JvmField val indent: Int,
+    @JvmField val indicatorIndent: Int,
+    @JvmField val width: Int,
+    @JvmField val bestLineBreak: String,
+    val isSplitLines: Boolean,
+    @JvmField val maxSimpleKeyLength: Int,
+    // general
+    private val customProperties: Map<SettingKey, Any>,
+    @JvmField val indentWithIndicator: Boolean,
+    @JvmField val dumpComments: Boolean,
 ) {
 
-    fun getCustomProperty(key: SettingKey): Any? {
-        return customProperties[key]
-    }
+    fun getCustomProperty(key: SettingKey): Any? = customProperties[key]
 
     companion object {
         @JvmStatic
-        fun builder(): DumpSettingsBuilder {
-            return DumpSettingsBuilder()
-        }
+        fun builder(): DumpSettingsBuilder = DumpSettingsBuilder()
     }
 }

@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.env.EnvConfig;
@@ -143,7 +145,7 @@ public class StandardConstructor extends BaseConstructor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void constructRecursive(Node node, Object object) {
+    public void constructRecursive(Node node, @NotNull Object object) {
       if (node.isRecursive()) {
         constructSet2ndStep((MappingNode) node, (Set<Object>) object);
       } else {
@@ -158,7 +160,7 @@ public class StandardConstructor extends BaseConstructor {
   public class ConstructYamlStr extends ConstructScalar {
 
     @Override
-    public Object construct(Node node) {
+    public Object construct(@NotNull Node node) {
       return constructScalar(node);
     }
   }
@@ -180,7 +182,7 @@ public class StandardConstructor extends BaseConstructor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void constructRecursive(Node node, Object data) {
+    public void constructRecursive(Node node, @NotNull Object data) {
       if (node.isRecursive()) {
         constructSequenceStep2((SequenceNode) node, (List<Object>) data);
       } else {
@@ -206,7 +208,7 @@ public class StandardConstructor extends BaseConstructor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void constructRecursive(Node node, Object object) {
+    public void constructRecursive(Node node, @NotNull Object object) {
       if (node.isRecursive()) {
         constructMapping2ndStep((MappingNode) node, (Map<Object, Object>) object);
       } else {
@@ -225,7 +227,7 @@ public class StandardConstructor extends BaseConstructor {
    */
   public class ConstructEnv extends ConstructScalar {
 
-    public Object construct(Node node) {
+    public Object construct(@NotNull Node node) {
       String val = constructScalar(node);
       Optional<EnvConfig> opt = settings.envConfig;
       if (opt.isPresent()) {

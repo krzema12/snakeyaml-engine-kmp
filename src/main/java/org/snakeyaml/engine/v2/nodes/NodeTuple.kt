@@ -11,45 +11,16 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
-
-import java.util.Objects;
+package org.snakeyaml.engine.v2.nodes
 
 /**
  * Stores one key value pair used in a map.
+ * @param[keyNode] the node used as the key
+ * @param[valueNode] the node used as the value
  */
-public final class NodeTuple {
-
-  private final Node keyNode;
-  private final Node valueNode;
-
-  public NodeTuple(Node keyNode, Node valueNode) {
-    Objects.requireNonNull(keyNode, "keyNode must be provided.");
-    Objects.requireNonNull(valueNode, "value Node must be provided");
-    this.keyNode = keyNode;
-    this.valueNode = valueNode;
-  }
-
-  /**
-   * Key node.
-   *
-   * @return the node used as key
-   */
-  public Node getKeyNode() {
-    return keyNode;
-  }
-
-  /**
-   * Value node.
-   *
-   * @return node used as value
-   */
-  public Node getValueNode() {
-    return valueNode;
-  }
-
-  @Override
-  public String toString() {
-    return "<NodeTuple keyNode=" + keyNode + "; valueNode=" + valueNode + ">";
-  }
+class NodeTuple(
+  val keyNode: Node,
+  val valueNode: Node
+) {
+  override fun toString(): String = "<NodeTuple keyNode=$keyNode; valueNode=$valueNode>"
 }

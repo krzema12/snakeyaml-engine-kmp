@@ -11,50 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.schema;
+package org.snakeyaml.engine.v2.schema
 
-import java.util.HashMap;
-import java.util.Map;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreBool;
-import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreFloat;
-import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreInt;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.CoreScalarResolver;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
+import org.snakeyaml.engine.v2.api.ConstructNode
+import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreBool
+import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreFloat
+import org.snakeyaml.engine.v2.constructor.core.ConstructYamlCoreInt
+import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.resolver.CoreScalarResolver
 
 /**
  * Core schema
  */
-public class CoreSchema extends JsonSchema {
+class CoreSchema : JsonSchema(CoreScalarResolver()) {
+    private val tagConstructors: Map<Tag, ConstructNode> = mapOf(
+        Tag.BOOL to ConstructYamlCoreBool(),
+        Tag.INT to ConstructYamlCoreInt(),
+        Tag.FLOAT to ConstructYamlCoreFloat(),
+    )
 
-  private final Map<Tag, ConstructNode> tagConstructors = new HashMap<>();
-
-  public CoreSchema() {
-    this.tagConstructors.put(Tag.BOOL, new ConstructYamlCoreBool());
-    this.tagConstructors.put(Tag.INT, new ConstructYamlCoreInt());
-    this.tagConstructors.put(Tag.FLOAT, new ConstructYamlCoreFloat());
-  }
-
-  /**
-   * Create ScalarResolver
-   *
-   * @return CoreScalarResolver
-   */
-  @Override
-  public ScalarResolver getScalarResolver() {
-    return new CoreScalarResolver();
-  }
-
-  /**
-   * Provide constructs to support the schema (bool, int, float)
-   *
-   * @return map
-   */
-  @Override
-  public Map<Tag, ConstructNode> getSchemaTagConstructors() {
-    Map<Tag, ConstructNode> json = super.getSchemaTagConstructors();
-    json.putAll(tagConstructors);
-    return json;
-  }
+    /**
+     * Provide constructs to support the schema (bool, int, float)
+     *
+     * @return map
+     */
+    override val schemaTagConstructors: Map<Tag, ConstructNode> = super.schemaTagConstructors + tagConstructors
 }

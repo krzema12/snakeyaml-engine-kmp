@@ -17,30 +17,17 @@ import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.*
 
-class ScalarToken(
-  value: String, plain: Boolean, style: ScalarStyle, startMark: Optional<Mark>,
-  endMark: Optional<Mark>
-) :
-  Token(startMark, endMark) {
-  val value: String
-  val isPlain: Boolean
-  val style: ScalarStyle
-
-  constructor(
-    value: String, plain: Boolean, startMark: Optional<Mark>,
-    endMark: Optional<Mark>
-  ) : this(value, plain, ScalarStyle.PLAIN, startMark, endMark)
-
-  init {
-    Objects.requireNonNull(value)
-    this.value = value
-    isPlain = plain
-    Objects.requireNonNull(style)
-    this.style = style
-  }
+class ScalarToken @JvmOverloads
+constructor(
+  val value: String,
+  val plain: Boolean,
+  startMark: Optional<Mark>,
+  endMark: Optional<Mark>,
+  val style: ScalarStyle = ScalarStyle.PLAIN,
+) : Token(startMark, endMark) {
 
   override val tokenId: ID
     get() = ID.Scalar
 
-  override fun toString(): String = "$tokenId plain=$isPlain style=$style value=$value"
+  override fun toString(): String = "$tokenId plain=$plain style=$style value=$value"
 }

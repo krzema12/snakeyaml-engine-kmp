@@ -1591,7 +1591,7 @@ public final class ScannerImpl implements Scanner {
     }
     // We are done.
     ScalarToken scalarToken =
-        new ScalarToken(stringBuilder.toString(), false, style, startMark, endMark);
+        new ScalarToken(stringBuilder.toString(), false, startMark, endMark, style);
     return makeTokenList(commentToken, scalarToken);
   }
 
@@ -1766,7 +1766,7 @@ public final class ScannerImpl implements Scanner {
     }
     reader.forward();
     Optional<Mark> endMark = reader.getMark();
-    return new ScalarToken(chunks.toString(), false, style, startMark, endMark);
+    return new ScalarToken(chunks.toString(), false, startMark, endMark, style);
   }
 
   /**

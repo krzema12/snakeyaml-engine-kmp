@@ -99,7 +99,7 @@ public class CanonicalParser implements Parser {
       Optional<String> tag = Optional.empty();
       if (scanner.checkToken(Token.ID.Tag)) {
         TagToken token = (TagToken) scanner.next();
-        tag = Optional.of(token.getValue().handle + token.getValue().suffix);
+        tag = Optional.of(token.value.handle + token.value.suffix);
       }
       if (scanner.checkToken(Token.ID.Scalar)) {
         ScalarToken token = (ScalarToken) scanner.next();

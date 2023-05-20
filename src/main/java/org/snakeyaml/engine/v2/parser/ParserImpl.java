@@ -319,14 +319,14 @@ public class ParserImpl implements Parser {
           TagToken tagToken = (TagToken) scanner.next();
           tagMark = tagToken.getStartMark();
           endMark = tagToken.getEndMark();
-          tagTupleValue = tagToken.getValue();
+          tagTupleValue = tagToken.value;
         }
       } else if (scanner.checkToken(Token.ID.Tag)) {
         TagToken tagToken = (TagToken) scanner.next();
         startMark = tagToken.getStartMark();
         tagMark = startMark;
         endMark = tagToken.getEndMark();
-        tagTupleValue = tagToken.getValue();
+        tagTupleValue = tagToken.value;
         if (scanner.checkToken(Token.ID.Anchor)) {
           AnchorToken token = (AnchorToken) scanner.next();
           endMark = token.getEndMark();

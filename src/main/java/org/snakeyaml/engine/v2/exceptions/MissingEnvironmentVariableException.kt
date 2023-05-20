@@ -11,19 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
 /**
  * Indicate missing mandatory environment variable in the template
+ * @param message - error message
  */
-public class MissingEnvironmentVariableException extends YamlEngineException {
-
-  /**
-   * Create
-   *
-   * @param message - error message
-   */
-  public MissingEnvironmentVariableException(String message) {
-    super(message);
-  }
-}
+class MissingEnvironmentVariableException(message: String) : YamlEngineException(message)

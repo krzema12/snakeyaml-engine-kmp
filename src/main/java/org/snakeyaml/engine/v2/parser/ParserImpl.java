@@ -340,8 +340,11 @@ public class ParserImpl implements Parser {
         if (handleOpt.isPresent()) {
           String handle = handleOpt.get();
           if (!directiveTags.containsKey(handle)) {
-            throw new ParserException("while parsing a node", startMark,
-                "found undefined tag handle " + handle, tagMark);
+            throw new ParserException(
+                "found undefined tag handle " + handle,
+                "while parsing a node",
+                startMark,
+                tagMark);
           }
           tag = Optional.of(directiveTags.get(handle) + suffix);
         } else {
@@ -396,8 +399,10 @@ public class ParserImpl implements Parser {
           state = Optional.of(states.pop());
         } else {
           Token token = scanner.peekToken();
-          throw new ParserException("while parsing a " + (block ? "block" : "flow") + " node",
-              startMark, "expected the node content, but found '" + token.getTokenId() + "'",
+          throw new ParserException(
+              "expected the node content, but found '" + token.getTokenId() + "'",
+              "while parsing a " + (block ? "block" : "flow") + " node",
+              startMark,
               token.getStartMark());
         }
       }
@@ -620,8 +625,11 @@ public class ParserImpl implements Parser {
       }
       if (!scanner.checkToken(Token.ID.BlockEnd)) {
         Token token = scanner.peekToken();
-        throw new ParserException("while parsing a block collection", markPop(),
-            "expected <block end>, but found '" + token.getTokenId() + "'", token.getStartMark());
+        throw new ParserException(
+            "expected <block end>, but found '" + token.getTokenId() + "'",
+            "while parsing a block collection",
+            markPop(),
+            token.getStartMark());
       }
       Token token = scanner.next();
       Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
@@ -724,8 +732,11 @@ public class ParserImpl implements Parser {
       }
       if (!scanner.checkToken(Token.ID.BlockEnd)) {
         Token token = scanner.peekToken();
-        throw new ParserException("while parsing a block mapping", markPop(),
-            "expected <block end>, but found '" + token.getTokenId() + "'", token.getStartMark());
+        throw new ParserException(
+            "expected <block end>, but found '" + token.getTokenId() + "'",
+            "while parsing a block mapping",
+            markPop(),
+            token.getStartMark());
       }
       Token token = scanner.next();
       Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
@@ -843,8 +854,11 @@ public class ParserImpl implements Parser {
             }
           } else {
             Token token = scanner.peekToken();
-            throw new ParserException("while parsing a flow sequence", markPop(),
-                "expected ',' or ']', but got " + token.getTokenId(), token.getStartMark());
+            throw new ParserException(
+                "expected ',' or ']', but got " + token.getTokenId(),
+                "while parsing a flow sequence",
+                markPop(),
+                token.getStartMark());
           }
         }
         if (scanner.checkToken(Token.ID.Key)) {
@@ -957,8 +971,11 @@ public class ParserImpl implements Parser {
             scanner.next();
           } else {
             Token token = scanner.peekToken();
-            throw new ParserException("while parsing a flow mapping", markPop(),
-                "expected ',' or '}', but got " + token.getTokenId(), token.getStartMark());
+            throw new ParserException(
+                "expected ',' or '}', but got " + token.getTokenId(),
+                "while parsing a flow mapping",
+                markPop(),
+                token.getStartMark());
           }
         }
         if (scanner.checkToken(Token.ID.Key)) {

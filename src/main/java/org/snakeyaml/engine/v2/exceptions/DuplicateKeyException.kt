@@ -11,24 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
-import java.util.Optional;
+import java.util.*
 
 /**
  * Indicate duplicate keys in the same mapping during parsing
+ *
+ * @param contextMark - the context location
+ * @param key - the data used as key more than once in the same mapping
+ * @param problemMark - the problem location
  */
-public class DuplicateKeyException extends ConstructorException { // NOSONAR
-
-  /**
-   * Create
-   *
-   * @param contextMark - the context location
-   * @param key - the data used as key more than once in the same mapping
-   * @param problemMark - the problem location
-   */
-  public DuplicateKeyException(Optional<Mark> contextMark, Object key, Optional<Mark> problemMark) {
-    super("while constructing a mapping", contextMark, "found duplicate key " + key.toString(),
-        problemMark);
-  }
-}
+class DuplicateKeyException(
+    contextMark: Optional<Mark>,
+    key: Any,
+    problemMark: Optional<Mark>,
+) : ConstructorException(
+    context = "while constructing a mapping",
+    contextMark = contextMark,
+    problem = "found duplicate key $key",
+    problemMark = problemMark,
+)

@@ -11,67 +11,60 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.common;
+package org.snakeyaml.engine.v2.common
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper;
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper
+import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.ByteBuffer
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
 
-/**
- * To be decided
- */
-public abstract class UriEncoder {
+object UriEncoder {
+    private val UTF8Decoder = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
 
-  private static final CharsetDecoder UTF8Decoder =
-      StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT);
-  // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
-  // its escape as required by spec. See
-  private static final String SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/";
-  private static final Escaper escaper = new PercentEscaper(SAFE_CHARS, false);
+    // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
+    // its escape as required by spec. See
+    private const val SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/"
+    private val escaper: Escaper = PercentEscaper(SAFE_CHARS, false)
 
-  private UriEncoder() {}
+    /**
+     * Escape special characters with `%`
+     *
+     * @param uri URI to be escaped
+     * @return encoded URI
+     */
+    @JvmStatic
+    fun encode(uri: String): String = escaper.escape(uri)
 
-  /**
-   * Escape special characters with '%'
-   *
-   * @param uri URI to be escaped
-   * @return encoded URI
-   */
-  public static String encode(String uri) {
-    return escaper.escape(uri);
-  }
-
-  /**
-   * Decode '%'-escaped characters. Decoding fails in case of invalid UTF-8
-   *
-   * @param buff data to decode
-   * @return decoded data
-   * @throws CharacterCodingException if cannot be decoded
-   */
-  public static String decode(ByteBuffer buff) throws CharacterCodingException {
-    CharBuffer chars = UTF8Decoder.decode(buff);
-    return chars.toString();
-  }
-
-  /**
-   * Decode with URLDecoder
-   *
-   * @param buff - the source
-   * @return decoded with UTF-8
-   */
-  public static String decode(String buff) {
-    try {
-      return URLDecoder.decode(buff, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new YamlEngineException(e);
+    /**
+     * Decode `%`-escaped characters. Decoding fails in case of invalid UTF-8
+     *
+     * @param buff data to decode
+     * @return decoded data
+     * @throws CharacterCodingException if [buff] cannot be decoded
+     */
+    @JvmStatic
+    @Throws(CharacterCodingException::class)
+    fun decode(buff: ByteBuffer): String {
+        val chars = UTF8Decoder.decode(buff)
+        return chars.toString()
     }
-  }
+
+    /**
+     * Decode with [URLDecoder]
+     *
+     * @param buff - the source
+     * @return decoded with UTF-8
+     */
+    @JvmStatic
+    fun decode(buff: String?): String {
+        return try {
+            URLDecoder.decode(buff, "UTF-8")
+        } catch (e: UnsupportedEncodingException) {
+            throw YamlEngineException(e)
+        }
+    }
 }

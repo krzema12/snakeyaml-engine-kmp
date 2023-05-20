@@ -11,20 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.json;
+package org.snakeyaml.engine.v2.constructor.json
 
-import java.util.UUID;
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
+import java.util.*
 
 /**
  * Create instances of UUID class
  */
-public class ConstructUuidClass extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    String uuidValue = constructScalar(node);
-    return UUID.fromString(uuidValue);
+class ConstructUuidClass : ConstructScalar() {
+  override fun construct(node: Node?): Any? {
+    val uuidValue = constructScalar(node)
+    return UUID.fromString(uuidValue)
   }
 }

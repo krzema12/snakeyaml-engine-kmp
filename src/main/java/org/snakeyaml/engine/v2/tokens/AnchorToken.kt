@@ -17,14 +17,11 @@ import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.*
 
-class AnchorToken(value: Anchor, startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
-  @JvmField
-  val value: Anchor
-
-  init {
-    Objects.requireNonNull(value)
-    this.value = value
-  }
+class AnchorToken(
+  val value: Anchor,
+  startMark: Optional<Mark>,
+  endMark: Optional<Mark>,
+) : Token(startMark, endMark) {
 
   override val tokenId: ID
     get() = ID.Anchor

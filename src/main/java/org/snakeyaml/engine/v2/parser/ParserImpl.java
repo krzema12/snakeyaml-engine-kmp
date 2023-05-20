@@ -305,7 +305,7 @@ public class ParserImpl implements Parser {
     if (scanner.checkToken(Token.ID.Alias)) {
       AliasToken token = (AliasToken) scanner.next();
       event =
-          new AliasEvent(Optional.of(token.value), token.getStartMark(), token.getEndMark());
+          new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
       state = Optional.of(states.pop());
     } else {
       Optional<Anchor> anchor = Optional.empty();
@@ -314,7 +314,7 @@ public class ParserImpl implements Parser {
         AnchorToken token = (AnchorToken) scanner.next();
         startMark = token.getStartMark();
         endMark = token.getEndMark();
-        anchor = Optional.of(token.value);
+        anchor = Optional.of(token.getValue());
         if (scanner.checkToken(Token.ID.Tag)) {
           TagToken tagToken = (TagToken) scanner.next();
           tagMark = tagToken.getStartMark();
@@ -330,7 +330,7 @@ public class ParserImpl implements Parser {
         if (scanner.checkToken(Token.ID.Anchor)) {
           AnchorToken token = (AnchorToken) scanner.next();
           endMark = token.getEndMark();
-          anchor = Optional.of(token.value);
+          anchor = Optional.of(token.getValue());
         }
       }
       Optional<String> tag = Optional.empty();
@@ -362,7 +362,7 @@ public class ParserImpl implements Parser {
           ScalarToken token = (ScalarToken) scanner.next();
           endMark = token.getEndMark();
           ImplicitTuple implicitValues;
-          if ((token.isPlain() && !tag.isPresent())) {
+          if ((token.getPlain() && !tag.isPresent())) {
             implicitValues = new ImplicitTuple(true, false);
           } else if (!tag.isPresent()) {
             implicitValues = new ImplicitTuple(false, true);

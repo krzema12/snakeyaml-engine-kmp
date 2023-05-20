@@ -11,33 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Marks the end of a mapping node.
  *
  * @see MappingStartEvent
  */
-public final class MappingEndEvent extends CollectionEndEvent {
+class MappingEndEvent : CollectionEndEvent {
+    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor() : super()
 
-  public MappingEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
+    override val eventId: ID
+        get() = ID.MappingEnd
 
-  public MappingEndEvent() {
-    super();
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.MappingEnd;
-  }
-
-  @Override
-  public String toString() {
-    return "-MAP";
-  }
+    override fun toString(): String {
+        return "-MAP"
+    }
 }

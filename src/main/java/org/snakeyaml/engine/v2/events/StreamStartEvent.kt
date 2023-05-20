@@ -11,38 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Marks the start of a stream that might contain multiple documents.
- * <p>
- * This event is the first event that a parser emits. Together with {@link StreamEndEvent} (which is
+ *
+ *
+ * This event is the first event that a parser emits. Together with [StreamEndEvent] (which is
  * the last event a parser emits) they mark the beginning and the end of a stream of documents.
- * </p>
- * <p>
- * See {@link Event} for an exemplary output.
- * </p>
+ *
+ *
+ *
+ * See [Event] for an exemplary output.
+ *
  */
-public final class StreamStartEvent extends Event {
+class StreamStartEvent : Event {
+    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor() : super()
 
-  public StreamStartEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
+    override val eventId: ID
+        get() = ID.StreamStart
 
-  public StreamStartEvent() {
-    super();
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.StreamStart;
-  }
-
-  @Override
-  public String toString() {
-    return "+STR";
-  }
+    override fun toString(): String {
+        return "+STR"
+    }
 }

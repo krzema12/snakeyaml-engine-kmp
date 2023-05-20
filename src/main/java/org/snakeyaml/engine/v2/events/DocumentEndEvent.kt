@@ -11,45 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Marks the end of a document.
- * <p>
+ *
+ *
  * This event follows the document's content.
- * </p>
+ *
  */
-public final class DocumentEndEvent extends Event {
+class DocumentEndEvent @JvmOverloads constructor(
+    val isExplicit: Boolean,
+    startMark: Optional<Mark> = Optional.empty(),
+    endMark: Optional<Mark> = Optional.empty(),
+) :
+    Event(startMark, endMark) {
 
-  private final boolean explicit;
+    override val eventId: ID
+        get() = ID.DocumentEnd
 
-  public DocumentEndEvent(boolean explicit, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-    this.explicit = explicit;
-  }
-
-  public DocumentEndEvent(boolean explicit) {
-    this(explicit, Optional.empty(), Optional.empty());
-  }
-
-  public boolean isExplicit() {
-    return explicit;
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.DocumentEnd;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder("-DOC");
-    if (isExplicit()) {
-      builder.append(" ...");
+    override fun toString(): String {
+        val builder = StringBuilder("-DOC")
+        if (isExplicit) {
+            builder.append(" ...")
+        }
+        return builder.toString()
     }
-    return builder.toString();
-  }
 }

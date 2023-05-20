@@ -11,59 +11,50 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.comments.CommentType
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Objects
+import java.util.Optional
 
 /**
  * Marks a comment block value.
  */
-public final class CommentEvent extends Event {
+class CommentEvent(
+    type: CommentType, value: String, startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) :
+    Event(startMark, endMark) {
+    /**
+     * The comment type.
+     *
+     * @return the commentType.
+     */
+    val commentType: CommentType
 
-  private final CommentType type;
-  private final String value;
+    /**
+     * String representation of the value.
+     *
+     *
+     * Without quotes and escaping.
+     *
+     *
+     * @return Value a comment line string without the leading '#' or a blank line.
+     */
+    val value: String
 
-  public CommentEvent(CommentType type, String value, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
-    super(startMark, endMark);
-    Objects.requireNonNull(type);
-    this.type = type;
-    Objects.requireNonNull(value);
-    this.value = value;
-  }
+    init {
+        Objects.requireNonNull(type)
+        commentType = type
+        Objects.requireNonNull(value)
+        this.value = value
+    }
 
-  /**
-   * String representation of the value.
-   * <p>
-   * Without quotes and escaping.
-   * </p>
-   *
-   * @return Value a comment line string without the leading '#' or a blank line.
-   */
-  public String getValue() {
-    return this.value;
-  }
+    override val eventId: ID
+        get() = ID.Comment
 
-  /**
-   * The comment type.
-   *
-   * @return the commentType.
-   */
-  public CommentType getCommentType() {
-    return this.type;
-  }
-
-  @Override
-  public Event.ID getEventId() {
-    return ID.Comment;
-  }
-
-  @Override
-  public String toString() {
-    String builder = "=COM " + type + " " + value;
-    return builder;
-  }
+    override fun toString(): String {
+        return "=COM $commentType $value"
+    }
 }

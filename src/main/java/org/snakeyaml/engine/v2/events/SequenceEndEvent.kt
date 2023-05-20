@@ -11,35 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Marks the end of a sequence.
  *
  * @see SequenceStartEvent
  */
-public final class SequenceEndEvent extends CollectionEndEvent {
+class SequenceEndEvent : CollectionEndEvent {
+    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor() : super()
 
-  public SequenceEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
+    override val eventId: ID
+        get() = ID.SequenceEnd
 
-  public SequenceEndEvent() {
-    super();
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.SequenceEnd;
-  }
-
-
-  @Override
-  public String toString() {
-    return "-SEQ";
-  }
+    override fun toString(): String = "-SEQ"
 }

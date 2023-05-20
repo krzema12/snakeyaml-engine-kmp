@@ -11,36 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
 /**
  * This class is only used during representation (dumping)
+ * @param realNode - the source node
  */
-public class AnchorNode extends Node {
+class AnchorNode(
+  /** @returns the origin */
+  val realNode: Node
+) : Node(realNode.tag, realNode.startMark, realNode.getEndMark()) {
 
-  private final Node realNode;
-
-  /**
-   * Create
-   *
-   * @param realNode - the source node
-   */
-  public AnchorNode(Node realNode) {
-    super(realNode.getTag(), realNode.getStartMark(), realNode.getEndMark());
-    this.realNode = realNode;
-  }
-
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.ANCHOR;
-  }
-
-  /**
-   * getter
-   *
-   * @return the origin
-   */
-  public Node getRealNode() {
-    return realNode;
-  }
+  override val nodeType: NodeType
+    get() = NodeType.ANCHOR
 }

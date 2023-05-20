@@ -11,52 +11,43 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.common.FlowStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Marks the beginning of a mapping node.
- * <p>
- * This event is followed by a number of key value pairs. <br>
+ *
+ *
+ * This event is followed by a number of key value pairs. <br></br>
  * The pairs are not in any particular order. However, the value always directly follows the
- * corresponding key. <br>
- * After the key value pairs follows a {@link MappingEndEvent}.
- * </p>
- * <p>
+ * corresponding key. <br></br>
+ * After the key value pairs follows a [MappingEndEvent].
+ *
+ *
+ *
  * There must be an even number of node events between the start and end event.
- * </p>
+ *
  *
  * @see MappingEndEvent
  */
-public final class MappingStartEvent extends CollectionStartEvent {
+class MappingStartEvent @JvmOverloads constructor(
+    anchor: Optional<Anchor>, tag: Optional<String>, implicit: Boolean,
+    flowStyle: FlowStyle?, startMark: Optional<Mark> = Optional.empty(), endMark: Optional<Mark> = Optional.empty(),
+) :
+    CollectionStartEvent(anchor, tag, implicit, flowStyle!!, startMark, endMark) {
+    override val eventId: ID
+        get() = ID.MappingStart
 
-  public MappingStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
-      FlowStyle flowStyle, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(anchor, tag, implicit, flowStyle, startMark, endMark);
-  }
-
-  public MappingStartEvent(Optional<Anchor> anchor, Optional<String> tag, boolean implicit,
-      FlowStyle flowStyle) {
-    this(anchor, tag, implicit, flowStyle, Optional.empty(), Optional.empty());
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.MappingStart;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder("+MAP");
-    if (getFlowStyle() == FlowStyle.FLOW) {
-      builder.append(" {}");
+    override fun toString(): String {
+        val builder = StringBuilder("+MAP")
+        if (flowStyle == FlowStyle.FLOW) {
+            builder.append(" {}")
+        }
+        builder.append(super.toString())
+        return builder.toString()
     }
-    builder.append(super.toString());
-    return builder.toString();
-  }
 }

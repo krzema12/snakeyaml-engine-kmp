@@ -11,72 +11,56 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.SpecVersion
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Objects
+import java.util.Optional
 
 /**
  * Marks the beginning of a document.
- * <p>
- * This event followed by the document's content and a {@link DocumentEndEvent}.
- * </p>
+ *
+ *
+ * This event followed by the document's content and a [DocumentEndEvent].
+ *
  */
-public final class DocumentStartEvent extends Event {
+class DocumentStartEvent @JvmOverloads constructor(
+    val isExplicit: Boolean,
+    specVersion: Optional<SpecVersion>,
+    tags: Map<String, String>,
+    startMark: Optional<Mark> = Optional.empty(),
+    endMark: Optional<Mark> = Optional.empty(),
+) :
+    Event(startMark, endMark) {
 
-  private final boolean explicit;
-  private final Optional<SpecVersion> specVersion;
-  private final Map<String, String> tags;
+    /**
+     * @return YAML version the document conforms to.
+     */
+    val specVersion: Optional<SpecVersion>
 
-  public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion,
-      Map<String, String> tags, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-    this.explicit = explicit;
-    Objects.requireNonNull(specVersion);
-    this.specVersion = specVersion;
-    Objects.requireNonNull(tags);
-    this.tags = tags;
-  }
+    /**
+     * Tag shorthands as defined by the `%TAG` directive.
+     *
+     * @return Mapping of 'handles' to 'prefixes' (the handles include the '!' characters).
+     */
+    val tags: Map<String, String>
 
-  public DocumentStartEvent(boolean explicit, Optional<SpecVersion> specVersion,
-      Map<String, String> tags) {
-    this(explicit, specVersion, tags, Optional.empty(), Optional.empty());
-  }
-
-  public boolean isExplicit() {
-    return explicit;
-  }
-
-  /**
-   * @return YAML version the document conforms to.
-   */
-  public Optional<SpecVersion> getSpecVersion() {
-    return specVersion;
-  }
-
-  /**
-   * Tag shorthands as defined by the <code>%TAG</code> directive.
-   *
-   * @return Mapping of 'handles' to 'prefixes' (the handles include the '!' characters).
-   */
-  public Map<String, String> getTags() {
-    return tags;
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.DocumentStart;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder("+DOC");
-    if (isExplicit()) {
-      builder.append(" ---");
+    init {
+        Objects.requireNonNull(specVersion)
+        this.specVersion = specVersion
+        Objects.requireNonNull(tags)
+        this.tags = tags
     }
-    return builder.toString();
-  }
+
+    override val eventId: ID
+        get() = ID.DocumentStart
+
+    override fun toString(): String {
+        val builder = StringBuilder("+DOC")
+        if (isExplicit) {
+            builder.append(" ---")
+        }
+        return builder.toString()
+    }
 }

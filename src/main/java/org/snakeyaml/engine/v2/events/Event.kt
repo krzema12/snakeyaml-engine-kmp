@@ -32,11 +32,11 @@ abstract class Event @JvmOverloads constructor(
     }
 
     /**
-     * Get the type (kind) if this Event
+     * Get the type (kind) of this Event
      *
      * @return the [ID] of this Event
      */
-    abstract val eventId: ID?
+    abstract val eventId: ID
 
     /**
      * ID of a non-abstract Event

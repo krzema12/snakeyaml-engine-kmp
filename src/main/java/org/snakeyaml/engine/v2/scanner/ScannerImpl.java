@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.ArrayStack;
 import org.snakeyaml.engine.v2.common.CharConstants;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.UriEncoder;
@@ -104,7 +103,7 @@ public final class ScannerImpl implements Scanner {
   // List of processed tokens that are not yet emitted.
   private final List<Token> tokens;
   // Past indentation levels.
-  private final ArrayStack<Integer> indents;
+  private final kotlin.collections.ArrayDeque<Integer> indents;
   /*
    * Keep track of possible simple keys. This is a dictionary. The key is `flow_level`; there can be
    * no more than one possible simple key for each level. The value is a SimpleKey record:
@@ -169,7 +168,7 @@ public final class ScannerImpl implements Scanner {
     this.reader = reader;
     this.settings = settings;
     this.tokens = new ArrayList<>(100);
-    this.indents = new ArrayStack<>(10);
+    this.indents = new kotlin.collections.ArrayDeque<>(10);
     // The order in possibleSimpleKeys is kept for nextPossibleSimpleKey()
     this.possibleSimpleKeys = new LinkedHashMap<>();
     fetchStreamStart();// Add the STREAM-START token.
@@ -538,7 +537,7 @@ public final class ScannerImpl implements Scanner {
     // In block context, we may need to issue the BLOCK-END tokens.
     while (this.indent > col) {
       Optional<Mark> mark = reader.getMark();
-      this.indent = this.indents.pop();
+      this.indent = this.indents.removeLast();
       addToken(new BlockEndToken(mark, mark));
     }
   }
@@ -548,7 +547,7 @@ public final class ScannerImpl implements Scanner {
    */
   private boolean addIndent(int column) {
     if (this.indent < column) {
-      this.indents.push(this.indent);
+      this.indents.addLast(this.indent);
       this.indent = column;
       return true;
     }

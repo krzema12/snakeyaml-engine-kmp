@@ -11,30 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+class AliasToken(value: Anchor, startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
+  @JvmField
+  val value: Anchor
 
-public final class AliasToken extends Token {
-
-  private final Anchor value;
-
-  public AliasToken(Anchor value, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-    Objects.requireNonNull(value);
-    this.value = value;
+  init {
+    Objects.requireNonNull(value)
+    this.value = value
   }
 
-  public Anchor getValue() {
-    return this.value;
-  }
-
-  @Override
-  public Token.ID getTokenId() {
-    return ID.Alias;
-  }
+  override val tokenId: ID
+    get() = ID.Alias
 }

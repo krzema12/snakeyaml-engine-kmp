@@ -21,26 +21,29 @@ import java.util.Optional
 /**
  * Marks the beginning of a sequence node.
  *
- *
  * This event is followed by the elements contained in the sequence, and a [SequenceEndEvent].
- *
  *
  * @see SequenceEndEvent
  */
 class SequenceStartEvent @JvmOverloads constructor(
-    anchor: Optional<Anchor>, tag: Optional<String>, implicit: Boolean,
-    flowStyle: FlowStyle?, startMark: Optional<Mark> = Optional.empty(), endMark: Optional<Mark> = Optional.empty(),
-) :
-    CollectionStartEvent(anchor, tag, implicit, flowStyle!!, startMark, endMark) {
+    anchor: Optional<Anchor>,
+    tag: Optional<String>,
+    implicit: Boolean,
+    flowStyle: FlowStyle,
+    startMark: Optional<Mark> = Optional.empty(),
+    endMark: Optional<Mark> = Optional.empty(),
+) : CollectionStartEvent(anchor, tag, implicit, flowStyle, startMark, endMark) {
+
     override val eventId: ID
         get() = ID.SequenceStart
 
     override fun toString(): String {
-        val builder = StringBuilder("+SEQ")
-        if (flowStyle == FlowStyle.FLOW) {
-            builder.append(" []")
+        return buildString {
+            append("+SEQ")
+            if (flowStyle == FlowStyle.FLOW) {
+                append(" []")
+            }
+            append(super.toString())
         }
-        builder.append(super.toString())
-        return builder.toString()
     }
 }

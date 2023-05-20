@@ -16,58 +16,49 @@ package org.snakeyaml.engine.v2.events
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Objects
-import java.util.Optional
+import java.util.*
 
 /**
  * Base class for the start events of the collection nodes.
+ *
+ * @param[implicit] The implicit flag of a collection start event indicates if the tag may be omitted when the collection is emitted
+ * @param[flowStyle] indicates if a collection is block or flow
  */
 abstract class CollectionStartEvent(
-    anchor: Optional<Anchor>, tag: Optional<String>, implicit: Boolean,
-    flowStyle: FlowStyle, startMark: Optional<Mark>, endMark: Optional<Mark>,
-) :
-    NodeEvent(anchor, startMark, endMark) {
+    anchor: Optional<Anchor>,
+
     /**
      * Tag of this collection.
      *
      * @return The tag of this collection, or `empty` if no explicit tag is available.
      */
-    val tag: Optional<String>
-
-    /**
-     * `true` if the tag can be omitted while this collection is emitted.
-     *
-     * @return True if the tag can be omitted while this collection is emitted.
-     */
-    // The implicit flag of a collection start event indicates if the tag may be
-    // omitted when the collection is emitted
-    val isImplicit: Boolean
+    val tag: Optional<String>,
+    val implicit: Boolean,
+    val flowStyle: FlowStyle,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) : NodeEvent(anchor, startMark, endMark) {
 
     /**
      * `true` if this collection is in flow style, `false` for block style.
      *
      * @return If this collection is in flow style.
      */
-    // flag indicates if a collection is block or flow
-    val flowStyle: FlowStyle
+    fun isFlow(): Boolean = FlowStyle.FLOW == flowStyle
 
-    init {
-        Objects.requireNonNull(tag)
-        this.tag = tag
-        isImplicit = implicit
-        Objects.requireNonNull(flowStyle)
-        this.flowStyle = flowStyle
-    }
-
-    val isFlow: Boolean
-        get() = FlowStyle.FLOW == flowStyle
+    /**
+     * `true` if the tag can be omitted while this collection is emitted.
+     *
+     * @return True if the tag can be omitted while this collection is emitted.
+     */
+    fun isImplicit(): Boolean = implicit // temp-fix for Java interop, remove when everything is Kotlin
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        anchor.ifPresent { a -> builder.append(" &$a") }
-        if (!isImplicit) {
-            tag.ifPresent { theTag: String -> builder.append(" <$theTag>") }
+        return buildString {
+            anchor.ifPresent { a -> append(" &$a") }
+            if (!implicit) {
+                tag.ifPresent { theTag: String -> append(" <$theTag>") }
+            }
         }
-        return builder.toString()
     }
 }

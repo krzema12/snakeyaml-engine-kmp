@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
+import java.util.*
 
 /**
  * Marks the end of a stream that might have contained multiple documents.
@@ -35,7 +35,5 @@ class StreamEndEvent : Event {
     override val eventId: ID
         get() = ID.StreamEnd
 
-    override fun toString(): String {
-        return "-STR"
-    }
+    override fun toString(): String = "-STR"
 }

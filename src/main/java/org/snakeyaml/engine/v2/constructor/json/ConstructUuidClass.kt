@@ -21,7 +21,7 @@ import java.util.*
  * Create instances of UUID class
  */
 class ConstructUuidClass : ConstructScalar() {
-  override fun construct(node: Node?): Any? {
+  override fun construct(node: Node?): UUID {
     val uuidValue = constructScalar(node)
     return UUID.fromString(uuidValue)
   }

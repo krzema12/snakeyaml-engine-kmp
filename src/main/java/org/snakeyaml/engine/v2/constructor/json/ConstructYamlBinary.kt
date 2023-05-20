@@ -11,21 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.json;
+package org.snakeyaml.engine.v2.constructor.json
 
-import java.util.Base64;
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
+import java.util.Base64
 
 /**
  * Create instances bytes for binary
  */
-public class ConstructYamlBinary extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    // Ignore white spaces for base64 encoded scalar
-    String noWhiteSpaces = constructScalar(node).replaceAll("\\s", "");
-    return Base64.getDecoder().decode(noWhiteSpaces);
-  }
+class ConstructYamlBinary : ConstructScalar() {
+    override fun construct(node: Node?): ByteArray {
+        // Ignore white spaces for base64 encoded scalar
+        val noWhiteSpaces = constructScalar(node).replace("\\s".toRegex(), "")
+        return Base64.getDecoder().decode(noWhiteSpaces)
+    }
 }

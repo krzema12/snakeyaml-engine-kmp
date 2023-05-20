@@ -323,7 +323,7 @@ public abstract class BaseConstructor {
    * @param value - the value behind the key
    */
   protected void postponeMapFilling(Map<Object, Object> mapping, Object key, Object value) {
-    maps2fill.add(0, new RecursiveTuple(mapping, new RecursiveTuple(key, value)));
+    maps2fill.add(0, new RecursiveTuple<>(mapping, new RecursiveTuple<>(key, value)));
   }
 
   /**

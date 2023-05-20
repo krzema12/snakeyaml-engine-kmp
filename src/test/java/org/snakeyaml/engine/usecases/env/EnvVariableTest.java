@@ -43,7 +43,7 @@ class EnvVariableTest {
   public void testDockerCompose() {
     Load loader =
         new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
-    String resource = TestUtils.getResource("env/docker-compose.yaml");
+    String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
@@ -59,7 +59,7 @@ class EnvVariableTest {
     System.setProperty(EMPTY, "VVVAAA222");
     Load loader = new Load(
         LoadSettings.builder().setEnvConfig(Optional.of(new CustomEnvConfig(provided))).build());
-    String resource = TestUtils.getResource("env/docker-compose.yaml");
+    String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(

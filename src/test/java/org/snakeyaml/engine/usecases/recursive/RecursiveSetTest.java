@@ -31,7 +31,7 @@ class RecursiveSetTest {
   @Test
   @DisplayName("Fail to load map with recursive keys")
   void failToLoadRecursiveSetByDefault() {
-    String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
+    String recursiveInput = TestUtils.getResource("/recursive/recursive-set-1.yaml");
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
     // fail to load map which has only one key - reference to itself
@@ -44,7 +44,7 @@ class RecursiveSetTest {
   @Test
   @DisplayName("Load map with recursive keys if it is explicitly allowed")
   void loadRecursiveSetIfAllowed() {
-    String recursiveInput = TestUtils.getResource("recursive/recursive-set-1.yaml");
+    String recursiveInput = TestUtils.getResource("/recursive/recursive-set-1.yaml");
     LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
     Load load = new Load(settings);
     // load map which has only one key - reference to itself

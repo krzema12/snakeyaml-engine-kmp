@@ -20,19 +20,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.intellij.lang.annotations.Language;
 import org.snakeyaml.engine.v2.events.Event;
 
 public abstract class TestUtils {
 
-  public static String getResource(String theName) {
+  public static String getResource(@Language("file-reference") String theName) {
     InputStream inputStream = getResourceAsStream(theName);
     return new BufferedReader(new InputStreamReader(inputStream)).lines()
         .collect(Collectors.joining("\n", "", "\n"));
   }
 
-  public static InputStream getResourceAsStream(String theName) {
-    InputStream inputStream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream(theName);
+  public static InputStream getResourceAsStream(@Language("file-reference") String theName) {
+    InputStream inputStream = TestUtils.class.getResourceAsStream(theName);
     if (inputStream == null) {
       throw new RuntimeException("Resource not found: " + theName);
     }

@@ -13,14 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
 import org.snakeyaml.engine.v2.events.Event;
@@ -29,29 +21,39 @@ import org.snakeyaml.engine.v2.parser.ParserImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public abstract class InheritedImportTest {
 
-  public static final String PATH = "inherited_yaml_1_1";
+  public static final String PATH = "/inherited_yaml_1_1";
 
 
   protected String getResource(String theName) {
-    return TestUtils.getResource(PATH + File.separator + theName);
+    //noinspection InjectedReferences
+    return TestUtils.getResource(PATH + "/" + theName);
   }
 
-  protected File[] getStreamsByExtension(String extention) {
-    return getStreamsByExtension(extention, false);
+  protected File[] getStreamsByExtension(String extension) {
+    return getStreamsByExtension(extension, false);
   }
 
-  protected File[] getStreamsByExtension(String extention, boolean onlyIfCanonicalPresent) {
-    File file = new File("src/test/resources/" + PATH);
+  protected File[] getStreamsByExtension(String extension, boolean onlyIfCanonicalPresent) {
+    File file = new File("src/test/resources" + PATH);
     assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
     assertTrue(file.isDirectory());
-    return file.listFiles(new InheritedFilenameFilter(extention, onlyIfCanonicalPresent));
+    return file.listFiles(new InheritedFilenameFilter(extension, onlyIfCanonicalPresent));
   }
 
   protected File getFileByName(String name) {
-    File file = new File("src/test/resources/" + PATH + "/" + name);
+    File file = new File("src/test/resources" + PATH + "/" + name);
     assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
     assertTrue(file.isFile());
     return file;

@@ -11,20 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-
-public final class BlockMappingStartToken extends Token {
-
-  public BlockMappingStartToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
-
-  @Override
-  public Token.ID getTokenId() {
-    return ID.BlockMappingStart;
-  }
+class BlockMappingStartToken(startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
+  override val tokenId: ID
+    get() = ID.BlockMappingStart
 }

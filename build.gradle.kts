@@ -27,6 +27,9 @@ kotlin {
         compilations.configureEach {
             compilerOptions.configure {
                 jvmTarget.set(JvmTarget.JVM_1_8)
+                freeCompilerArgs.addAll(
+                    "-Xjvm-default=all", // TODO remove this once everything is Kotlin
+                )
             }
         }
     }
@@ -43,7 +46,7 @@ tasks.withType<Test>().configureEach {
             TestLogEvent.FAILED,
             TestLogEvent.SKIPPED,
             TestLogEvent.STANDARD_ERROR,
-            TestLogEvent.STANDARD_OUT
+            TestLogEvent.STANDARD_OUT,
         )
         exceptionFormat = TestExceptionFormat.FULL
         showCauses = true

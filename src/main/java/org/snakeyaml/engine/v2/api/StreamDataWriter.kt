@@ -29,7 +29,7 @@ interface StreamDataWriter {
      *
      * @param str - data to write
      */
-    fun write(str: String?)
+    fun write(str: String)
 
     /**
      * Write part of the data
@@ -38,5 +38,5 @@ interface StreamDataWriter {
      * @param off - offset to start from
      * @param len - number of chars to write
      */
-    fun write(str: String?, off: Int, len: Int)
+    fun write(str: String, off: Int, len: Int)
 }

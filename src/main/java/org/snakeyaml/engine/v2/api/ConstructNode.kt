@@ -11,43 +11,40 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api
 
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Provide a way to construct a Java instance from the composed Node. Support recursive objects if
  * it is required. (create Native Data Structure out of Node Graph) (this is the opposite for
  * Represent)
  *
- * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+ * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
  */
-public interface ConstructNode {
+@JvmDefaultWithoutCompatibility // TODO remove this once everything is Kotlin
+interface ConstructNode {
+    /**
+     * Construct a Java instance with all the properties injected when it is possible.
+     *
+     * @param node composed Node
+     * @return a complete Java instance or empty collection instance if it is recursive
+     */
+    fun construct(node: Node): Any?
 
-  /**
-   * Construct a Java instance with all the properties injected when it is possible.
-   *
-   * @param node composed Node
-   * @return a complete Java instance or empty collection instance if it is recursive
-   */
-  Object construct(Node node);
-
-  /**
-   * Apply the second step when constructing recursive structures. Because the instance is already
-   * created it can assign a reference to itself. (no need to implement this method for
-   * non-recursive data structures). Fail with a reminder to provide the second step for a recursive
-   * structure
-   *
-   * @param node composed Node
-   * @param object the instance constructed earlier by <code>construct(Node node)</code> for the
-   *        provided Node
-   */
-  default void constructRecursive(Node node, Object object) {
-    if (node.isRecursive()) {
-      throw new IllegalStateException("Not implemented in " + getClass().getName());
-    } else {
-      throw new YamlEngineException("Unexpected recursive structure for Node: " + node);
+    /**
+     * Apply the second step when constructing recursive structures. Because the instance is already
+     * created it can assign a reference to itself. (no need to implement this method for
+     * non-recursive data structures). Fail with a reminder to provide the second step for a recursive
+     * structure
+     *
+     * @param node composed Node
+     * @param object the instance constructed earlier by `construct(Node node)` for the
+     * provided Node
+     */
+    fun constructRecursive(node: Node, `object`: Any) {
+        check(!node.isRecursive) { "Not implemented in ${javaClass.name}" }
+        throw YamlEngineException("Unexpected recursive structure for Node: $node")
     }
-  }
 }

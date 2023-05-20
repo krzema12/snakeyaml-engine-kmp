@@ -21,23 +21,14 @@ import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
 import java.io.StringReader
-import java.util.Objects
 
 /**
  * Read the input stream and parse the content into events (opposite for Present or Emit)
+ * @param settings - configuration
  */
-class Parse(settings: LoadSettings) {
-    private val settings: LoadSettings
-
-    /**
-     * Create instance with provided [LoadSettings]
-     *
-     * @param settings - configuration
-     */
-    init {
-        Objects.requireNonNull(settings, "LoadSettings cannot be null")
-        this.settings = settings
-    }
+class Parse(
+    private val settings: LoadSettings,
+) {
 
     /**
      * Parse a YAML stream and produce parsing events.
@@ -47,10 +38,10 @@ class Parse(settings: LoadSettings) {
      * @return parsed events
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun parseInputStream(yaml: InputStream): Iterable<Event> {
-        Objects.requireNonNull(yaml, "InputStream cannot be null")
-        return Iterable { ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))) }
-    }
+    fun parseInputStream(yaml: InputStream): Iterable<Event> =
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml)))
+        }
 
     /**
      * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM
@@ -60,10 +51,10 @@ class Parse(settings: LoadSettings) {
      * @return parsed events
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun parseReader(yaml: Reader): Iterable<Event> {
-        Objects.requireNonNull(yaml, "Reader cannot be null")
-        return Iterable { ParserImpl(settings, StreamReader(settings, yaml)) }
-    }
+    fun parseReader(yaml: Reader): Iterable<Event> =
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, yaml))
+        }
 
     /**
      * Parse a YAML stream and produce parsing events.
@@ -72,13 +63,8 @@ class Parse(settings: LoadSettings) {
      * @return parsed events
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun parseString(yaml: String): Iterable<Event> {
-        Objects.requireNonNull(yaml, "String cannot be null")
-        // do not use lambda to keep Iterable and Iterator visible
-        return object : Iterable<Event> {
-            override fun iterator(): Iterator<Event> {
-                return ParserImpl(settings, StreamReader(settings, StringReader(yaml)))
-            }
+    fun parseString(yaml: String): Iterable<Event> =
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, StringReader(yaml)))
         }
-    }
 }

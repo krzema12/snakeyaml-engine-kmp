@@ -19,23 +19,22 @@ import java.io.OutputStreamWriter
 import java.nio.charset.Charset
 
 /**
- * Provide an example of implementation of StreamDataWriter interface which does not throw
- * [IOException]
- */
-abstract class YamlOutputStreamWriter
-/**
- * Create
+ * Provide an example of implementation of StreamDataWriter interface which does not throw [IOException]
  *
  * @param out - the output
  * @param cs - encoding to use to translate String to bytes
  */
-    (out: OutputStream?, cs: Charset?) : OutputStreamWriter(out, cs), StreamDataWriter {
+abstract class YamlOutputStreamWriter(
+    out: OutputStream,
+    cs: Charset,
+) : OutputStreamWriter(out, cs), StreamDataWriter {
     /**
      * to be implemented
      *
      * @param e - the reason
      */
     abstract fun processIOException(e: IOException?)
+
     override fun flush() {
         try {
             super<StreamDataWriter>.flush()
@@ -44,7 +43,7 @@ abstract class YamlOutputStreamWriter
         }
     }
 
-    override fun write(str: String?, off: Int, len: Int) {
+    override fun write(str: String, off: Int, len: Int) {
         try {
             super.write(str, off, len)
         } catch (e: IOException) {
@@ -52,7 +51,7 @@ abstract class YamlOutputStreamWriter
         }
     }
 
-    override fun write(str: String?) {
+    override fun write(str: String) {
         try {
             super.write(str)
         } catch (e: IOException) {

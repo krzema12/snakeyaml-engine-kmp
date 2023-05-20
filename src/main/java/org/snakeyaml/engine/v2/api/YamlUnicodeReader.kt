@@ -23,8 +23,10 @@ import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
 
 /**
- * version: 1.1 / 2007-01-25 - changed BOM recognition ordering (longer boms first)
+ * Generic unicode text reader, which will use BOM mark to identify the encoding to be used. If BOM
+ * is not found then use a given default or system encoding.
  *
+ * version: 1.1 / 2007-01-25 - changed BOM recognition ordering (longer boms first)
  *
  * Original pseudocode : Thomas Weidenfeller Implementation tweaked: Aki Nieminen Implementation
  * changed: Andrey Somov no default encoding must be provided - UTF-8 is used by default
@@ -35,18 +37,12 @@ import java.nio.charset.StandardCharsets
  * 00 = UTF-32, little-endian FE FF = UTF-16, big-endian FF FE = UTF-16, little-endian EF BB BF =
  * UTF-8
  *
- *
- *
- *
  * Win2k Notepad: Unicode format = UTF-16LE
+ * @param stream InputStream to be read
  */
-/**
- * Generic unicode textreader, which will use BOM mark to identify the encoding to be used. If BOM
- * is not found then use a given default or system encoding.
- */
-class YamlUnicodeReader(`in`: InputStream?) : Reader() {
-    var internalIn: PushbackInputStream
-    var internalIn2: InputStreamReader? = null
+class YamlUnicodeReader(stream: InputStream?) : Reader() {
+    private var internalIn: PushbackInputStream = PushbackInputStream(stream, BOM_SIZE)
+    private var internalIn2: InputStreamReader? = null
 
     /**
      * Get stream encoding or NULL if stream is uninitialized. Call init() or read() method to
@@ -55,14 +51,7 @@ class YamlUnicodeReader(`in`: InputStream?) : Reader() {
      * @return the name of the character encoding being used by this stream.
      */
     @JvmField
-    var encoding = UTF8
-
-    /**
-     * @param in InputStream to be read
-     */
-    init {
-        internalIn = PushbackInputStream(`in`, BOM_SIZE)
-    }
+    var encoding: Charset = UTF8
 
     /**
      * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only
@@ -76,9 +65,8 @@ class YamlUnicodeReader(`in`: InputStream?) : Reader() {
             return
         }
         val bom = ByteArray(BOM_SIZE)
-        val n: Int
         val unread: Int
-        n = internalIn.read(bom, 0, bom.size)
+        val n: Int = internalIn.read(bom, 0, bom.size)
         if (bom[0] == 0x00.toByte() && bom[1] == 0x00.toByte() && bom[2] == 0xFE.toByte() && bom[3] == 0xFF.toByte()) {
             encoding = UTF32BE
             unread = n - 4

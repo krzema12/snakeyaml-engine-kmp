@@ -24,38 +24,13 @@ import java.util.Objects
 /**
  * Common way to serialize any Java instance(s). The instance is stateful. Only one of the 'dump'
  * methods may be called, and it may be called only once.
+ * @param settings - Configuration options
+ * @param representer - The component to translate Java instances to Nodes
  */
 class Dump @JvmOverloads constructor(
-    settings: DumpSettings,
-    representer: BaseRepresenter = StandardRepresenter(settings)
+    private val settings: DumpSettings,
+    private val representer: BaseRepresenter = StandardRepresenter(settings),
 ) {
-    /**
-     * Configuration options
-     */
-    protected var settings: DumpSettings
-
-    /**
-     * The component to translate Java instances to Nodes
-     */
-    protected var representer: BaseRepresenter
-    /**
-     * Create instance
-     *
-     * @param settings - configuration
-     * @param representer - custom representer
-     */
-    /**
-     * Create instance
-     *
-     * @param settings - configuration
-     */
-    init {
-        Objects.requireNonNull(settings, "DumpSettings cannot be null")
-        Objects.requireNonNull(representer, "Representer cannot be null")
-        this.settings = settings
-        this.representer = representer
-    }
-
     /**
      * Dump all the instances from the iterator into a stream with every instance in a separate YAML
      * document
@@ -65,10 +40,8 @@ class Dump @JvmOverloads constructor(
      */
     fun dumpAll(
         instancesIterator: Iterator<Any?>,
-        streamDataWriter: StreamDataWriter
+        streamDataWriter: StreamDataWriter,
     ) {
-        Objects.requireNonNull(instancesIterator, "Iterator cannot be null")
-        Objects.requireNonNull(streamDataWriter, "StreamDataWriter cannot be null")
         val serializer = Serializer(settings, Emitter(settings, streamDataWriter))
         serializer.emitStreamStart()
         while (instancesIterator.hasNext()) {
@@ -123,8 +96,6 @@ class Dump @JvmOverloads constructor(
      * @param streamDataWriter - stream to write to
      */
     fun dumpNode(node: Node, streamDataWriter: StreamDataWriter) {
-        Objects.requireNonNull(node, "Node cannot be null")
-        Objects.requireNonNull(streamDataWriter, "StreamDataWriter cannot be null")
         val serializer = Serializer(settings, Emitter(settings, streamDataWriter))
         serializer.emitStreamStart()
         serializer.serializeDocument(node)
@@ -135,7 +106,7 @@ class Dump @JvmOverloads constructor(
 /**
  * Internal helper class to support dumping to String
  */
-internal class StreamToStringWriter : StringWriter(), StreamDataWriter {
+private class StreamToStringWriter : StringWriter(), StreamDataWriter {
     override fun flush() {
         super<StringWriter>.flush()
     }

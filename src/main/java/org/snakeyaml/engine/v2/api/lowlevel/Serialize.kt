@@ -14,28 +14,18 @@
 package org.snakeyaml.engine.v2.api.lowlevel
 
 import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.emitter.Emitable
 import org.snakeyaml.engine.v2.events.Event
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.serializer.Serializer
-import java.util.Objects
 
 /**
- * Implementation of the step which translates Nodes to Events
+ * Implementation of the step which translates [Node]s to [Event]s
+ *
+ * @param settings - configuration
  */
-class Serialize(settings: DumpSettings) {
-    private val settings: DumpSettings
-
-    /**
-     * Create instance with provided [DumpSettings]
-     *
-     * @param settings - configuration
-     */
-    init {
-        Objects.requireNonNull(settings, "DumpSettings cannot be null")
-        this.settings = settings
-    }
-
+class Serialize(
+    private val settings: DumpSettings,
+) {
     /**
      * Serialize a [Node] and produce events.
      *
@@ -43,10 +33,7 @@ class Serialize(settings: DumpSettings) {
      * @return serialized events
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun serializeOne(node: Node): List<Event> {
-        Objects.requireNonNull(node, "Node cannot be null")
-        return serializeAll(listOf(node))
-    }
+    fun serializeOne(node: Node): List<Event> = serializeAll(listOf(node))
 
     /**
      * Serialize [Node]s and produce events.
@@ -56,25 +43,13 @@ class Serialize(settings: DumpSettings) {
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun serializeAll(nodes: List<Node>): List<Event> {
-        Objects.requireNonNull(nodes, "Nodes cannot be null")
-        val emitableEvents = EmitableEvents()
-        val serializer = Serializer(settings, emitableEvents)
+        val events = mutableListOf<Event>()
+        val serializer = Serializer(settings) { events.add(it) }
         serializer.emitStreamStart()
         for (node in nodes) {
             serializer.serializeDocument(node)
         }
         serializer.emitStreamEnd()
-        return emitableEvents.getEvents()
-    }
-}
-
-internal class EmitableEvents : Emitable {
-    private val events: MutableList<Event> = ArrayList()
-    override fun emit(event: Event) {
-        events.add(event)
-    }
-
-    fun getEvents(): List<Event> {
         return events
     }
 }

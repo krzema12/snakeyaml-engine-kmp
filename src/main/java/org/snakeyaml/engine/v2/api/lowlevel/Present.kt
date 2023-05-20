@@ -18,24 +18,15 @@ import org.snakeyaml.engine.v2.api.StreamDataWriter
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.events.Event
 import java.io.StringWriter
-import java.util.Objects
 
 /**
  * Emit the events into a data stream (opposite for Parse)
+ *
+ * @param settings - configuration
  */
-class Present(settings: DumpSettings) {
-    private val settings: DumpSettings
-
-    /**
-     * Create Present (emitter)
-     *
-     * @param settings - configuration
-     */
-    init {
-        Objects.requireNonNull(settings, "DumpSettings cannot be null")
-        this.settings = settings
-    }
-
+class Present(
+    private val settings: DumpSettings,
+) {
     /**
      * Serialise the provided Events
      *
@@ -43,10 +34,9 @@ class Present(settings: DumpSettings) {
      * @return - the YAML document
      */
     fun emitToString(events: Iterator<Event>): String {
-        Objects.requireNonNull(events, "events cannot be null")
         val writer = StreamToStringWriter()
         val emitter = Emitter(settings, writer)
-        events.forEachRemaining { event: Event? -> emitter.emit(event) }
+        events.forEachRemaining { event: Event -> emitter.emit(event) }
         return writer.toString()
     }
 }
@@ -54,8 +44,6 @@ class Present(settings: DumpSettings) {
 /**
  * Internal helper class to support emitting to String
  */
-internal class StreamToStringWriter : StringWriter(), StreamDataWriter {
-    override fun flush() {
-        super<StringWriter>.flush()
-    }
+private class StreamToStringWriter : StringWriter(), StreamDataWriter {
+    override fun flush(): Unit = super<StringWriter>.flush()
 }

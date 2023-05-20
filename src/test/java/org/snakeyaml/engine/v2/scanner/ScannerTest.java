@@ -80,7 +80,7 @@ class ScannerTest {
     Token token = scanTo("key: &an:chor value", 5);
     assertEquals(ID.Anchor, token.getTokenId());
     AnchorToken anchorToken = (AnchorToken) token;
-    assertEquals("an:chor", anchorToken.getValue().getValue());
+    assertEquals("an:chor", anchorToken.value.getValue());
   }
 
   private Token scanTo(String input, int skip) {
@@ -99,4 +99,3 @@ class ScannerTest {
     return scanner.next();
   }
 }
-

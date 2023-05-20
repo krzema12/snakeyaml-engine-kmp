@@ -13,7 +13,7 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import java.util.Optional
+import java.util.*
 
 /**
  * Parsing exception when the marks are available
@@ -40,37 +40,27 @@ open class MarkedYamlEngineException protected constructor(
      *
      * @return readable problem
      */
-    override fun toString(): String {
-        val lines = StringBuilder()
+    override fun toString(): String = buildString {
         if (context != null) {
-            lines.append(context)
-            lines.append("\n")
+            appendLine(context)
         }
-        if (
-            contextMark.isPresent &&
-            (
-                (
-                    (
-                        problem == null
-                            || !problemMark.isPresent
-                            || contextMark.get().name == problemMark.get().name
-                        )
-                        || contextMark.get().line != problemMark.get().line
-                    )
-                    || contextMark.get().column != problemMark.get().column
-                )
-        ) {
-            lines.append(contextMark.get())
-            lines.append("\n")
+        if (contextMark.isPresent) {
+            val problemIsPresent = problem != null && problemMark.isPresent
+
+            if (
+                !problemIsPresent
+                || contextMark.get().name == problemMark.get().name
+                || contextMark.get().line != problemMark.get().line
+                || contextMark.get().column != problemMark.get().column
+            ) {
+                appendLine(contextMark.get())
+            }
         }
         if (problem != null) {
-            lines.append(problem)
-            lines.append("\n")
+            appendLine(problem)
         }
         if (problemMark.isPresent) {
-            lines.append(problemMark.get())
-            lines.append("\n")
+            appendLine(problemMark.get())
         }
-        return lines.toString()
     }
 }

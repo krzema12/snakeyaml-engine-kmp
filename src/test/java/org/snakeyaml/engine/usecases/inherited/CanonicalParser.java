@@ -94,7 +94,7 @@ public class CanonicalParser implements Parser {
       Optional<Anchor> anchor = Optional.empty();
       if (scanner.checkToken(Token.ID.Anchor)) {
         AnchorToken token = (AnchorToken) scanner.next();
-        anchor = Optional.of(token.getValue());
+        anchor = Optional.of(token.value);
       }
       Optional<String> tag = Optional.empty();
       if (scanner.checkToken(Token.ID.Tag)) {

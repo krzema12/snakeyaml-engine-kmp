@@ -314,7 +314,7 @@ public class ParserImpl implements Parser {
         AnchorToken token = (AnchorToken) scanner.next();
         startMark = token.getStartMark();
         endMark = token.getEndMark();
-        anchor = Optional.of(token.getValue());
+        anchor = Optional.of(token.value);
         if (scanner.checkToken(Token.ID.Tag)) {
           TagToken tagToken = (TagToken) scanner.next();
           tagMark = tagToken.getStartMark();
@@ -330,7 +330,7 @@ public class ParserImpl implements Parser {
         if (scanner.checkToken(Token.ID.Anchor)) {
           AnchorToken token = (AnchorToken) scanner.next();
           endMark = token.getEndMark();
-          anchor = Optional.of(token.getValue());
+          anchor = Optional.of(token.value);
         }
       }
       Optional<String> tag = Optional.empty();

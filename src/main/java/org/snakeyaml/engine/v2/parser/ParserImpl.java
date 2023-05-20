@@ -335,8 +335,8 @@ public class ParserImpl implements Parser {
       }
       Optional<String> tag = Optional.empty();
       if (tagTupleValue != null) {
-        Optional<String> handleOpt = tagTupleValue.getHandle();
-        String suffix = tagTupleValue.getSuffix();
+        Optional<String> handleOpt = tagTupleValue.handle;
+        String suffix = tagTupleValue.suffix;
         if (handleOpt.isPresent()) {
           String handle = handleOpt.get();
           if (!directiveTags.containsKey(handle)) {

@@ -11,28 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*
 
-public final class TagTuple {
+class TagTuple(handle: Optional<String>, suffix: String) {
+  @JvmField
+  val handle: Optional<String>
+  @JvmField
+  val suffix: String
 
-  private final Optional<String> handle;
-  private final String suffix;
-
-  public TagTuple(Optional<String> handle, String suffix) {
-    Objects.requireNonNull(handle);
-    this.handle = handle;
-    Objects.requireNonNull(suffix);
-    this.suffix = suffix;
-  }
-
-  public Optional<String> getHandle() {
-    return handle;
-  }
-
-  public String getSuffix() {
-    return suffix;
+  init {
+    Objects.requireNonNull(handle)
+    this.handle = handle
+    Objects.requireNonNull(suffix)
+    this.suffix = suffix
   }
 }

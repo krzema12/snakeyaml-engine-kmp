@@ -305,7 +305,7 @@ public class ParserImpl implements Parser {
     if (scanner.checkToken(Token.ID.Alias)) {
       AliasToken token = (AliasToken) scanner.next();
       event =
-          new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
+          new AliasEvent(Optional.of(token.value), token.getStartMark(), token.getEndMark());
       state = Optional.of(states.pop());
     } else {
       Optional<Anchor> anchor = Optional.empty();

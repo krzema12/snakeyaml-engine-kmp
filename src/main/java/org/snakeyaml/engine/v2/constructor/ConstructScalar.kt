@@ -31,7 +31,7 @@ abstract class ConstructScalar : ConstructNode {
 
     companion object {
         @JvmField
-        protected val BOOL_VALUES: Map<String, Boolean> = mapOf(
+        internal val BOOL_VALUES: Map<String, Boolean> = mapOf(
             "true" to true,
             "false" to false,
         )

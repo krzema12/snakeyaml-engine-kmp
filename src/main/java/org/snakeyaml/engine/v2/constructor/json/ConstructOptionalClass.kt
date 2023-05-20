@@ -11,43 +11,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.json;
+package org.snakeyaml.engine.v2.constructor.json
 
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.exceptions.ConstructorException;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeType;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
-
-import java.util.Optional;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.exceptions.ConstructorException
+import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.NodeType
+import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.resolver.ScalarResolver
+import java.util.Optional
 
 /**
  * Create instances of Optional
  */
-public class ConstructOptionalClass extends ConstructScalar {
-
-  private final ScalarResolver scalarResolver;
-
-  public ConstructOptionalClass(ScalarResolver scalarResolver) {
-    this.scalarResolver = scalarResolver;
-  }
-
-  @Override
-  public Object construct(Node node) {
-    if (node.getNodeType() != NodeType.SCALAR) {
-      throw new ConstructorException(
-          "while constructing Optional",
-          Optional.empty(),
-          "found non scalar node",
-          node.getStartMark());
+class ConstructOptionalClass(private val scalarResolver: ScalarResolver) : ConstructScalar() {
+    override fun construct(node: Node?): Optional<Any> {
+        if (node?.nodeType !== NodeType.SCALAR) {
+            throw ConstructorException(
+                "while constructing Optional",
+                Optional.empty(),
+                "found non scalar node",
+                node!!.startMark,
+            )
+        }
+        val value = constructScalar(node)
+        val implicitTag = scalarResolver.resolve(value, true)
+        return if (implicitTag.equals(Tag.NULL)) {
+            Optional.empty<Any>()
+        } else {
+            Optional.of(value)
+        }
     }
-    String value = constructScalar(node);
-    Tag implicitTag = scalarResolver.resolve(value, true);
-    if (implicitTag.equals(Tag.NULL)) {
-      return Optional.empty();
-    } else {
-      return Optional.of(value);
-    }
-  }
 }

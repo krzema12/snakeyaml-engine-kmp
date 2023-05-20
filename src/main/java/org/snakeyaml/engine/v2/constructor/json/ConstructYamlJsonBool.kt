@@ -11,19 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.json;
+package org.snakeyaml.engine.v2.constructor.json
 
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Create Boolean instances
  */
-public class ConstructYamlJsonBool extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    String val = constructScalar(node);
-    return BOOL_VALUES.get(val);
-  }
+class ConstructYamlJsonBool : ConstructScalar() {
+    override fun construct(node: Node?): Boolean? {
+        val scalar = constructScalar(node)
+        return BOOL_VALUES[scalar]
+    }
 }

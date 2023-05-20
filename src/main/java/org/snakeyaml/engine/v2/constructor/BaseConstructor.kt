@@ -17,12 +17,8 @@ import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.exceptions.ConstructorException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.SequenceNode
-import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.Optional
+import org.snakeyaml.engine.v2.nodes.*
+import java.util.*
 
 /**
  * Base code

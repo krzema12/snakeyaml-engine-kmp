@@ -37,7 +37,7 @@ class MappingNode @JvmOverloads constructor(
    * Applications may need to replace the content (Spring Boot).
    * Merging was removed, but it may be implemented.
    */
-  override var value: List<NodeTuple>,
+  override var value: MutableList<NodeTuple>,
   flowStyle: FlowStyle,
   startMark: Optional<Mark> = Optional.empty<Mark>(),
   endMark: Optional<Mark> = Optional.empty<Mark>(),

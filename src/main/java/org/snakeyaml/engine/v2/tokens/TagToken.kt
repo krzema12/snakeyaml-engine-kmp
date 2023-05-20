@@ -16,15 +16,11 @@ package org.snakeyaml.engine.v2.tokens
 import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.*
 
-class TagToken(value: TagTuple, startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
-  @JvmField
-  val value: TagTuple
-
-  init {
-    Objects.requireNonNull(value)
-    this.value = value
-  }
-
+class TagToken(
+  val value: TagTuple,
+  startMark: Optional<Mark>,
+  endMark: Optional<Mark>
+) : Token(startMark, endMark) {
   override val tokenId: ID
     get() = ID.Tag
 }

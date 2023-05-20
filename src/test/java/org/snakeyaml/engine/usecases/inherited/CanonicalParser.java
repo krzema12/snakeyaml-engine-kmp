@@ -49,7 +49,7 @@ public class CanonicalParser implements Parser {
 
   public CanonicalParser(String data, String label) {
     this.label = label;
-    events = new ArrayList();
+    events = new ArrayList<>();
     parsed = false;
     scanner = new CanonicalScanner(data, label);
   }
@@ -99,7 +99,7 @@ public class CanonicalParser implements Parser {
       Optional<String> tag = Optional.empty();
       if (scanner.checkToken(Token.ID.Tag)) {
         TagToken token = (TagToken) scanner.next();
-        tag = Optional.of(token.value.handle + token.value.suffix);
+        tag = Optional.of(token.getValue().getHandle() + token.getValue().getSuffix());
       }
       if (scanner.checkToken(Token.ID.Scalar)) {
         ScalarToken token = (ScalarToken) scanner.next();

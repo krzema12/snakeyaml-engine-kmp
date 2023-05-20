@@ -18,20 +18,11 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.*
 
 class CommentToken(
-  type: CommentType, value: String, startMark: Optional<Mark>,
+  val commentType: CommentType,
+  val value: String,
+  startMark: Optional<Mark>,
   endMark: Optional<Mark>
-) :
-  Token(startMark, endMark) {
-  val commentType: CommentType
-  val value: String
-
-  init {
-    Objects.requireNonNull(type)
-    commentType = type
-    Objects.requireNonNull(value)
-    this.value = value
-  }
-
+) : Token(startMark, endMark) {
   override val tokenId: ID
     get() = ID.Comment
 }

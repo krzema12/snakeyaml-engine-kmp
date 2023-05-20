@@ -16,7 +16,10 @@ package org.snakeyaml.engine.v2.tokens
 import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.*
 
-class DocumentEndToken(startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
+class DocumentEndToken(
+  startMark: Optional<Mark>,
+  endMark: Optional<Mark>,
+) : Token(startMark, endMark) {
   override val tokenId: ID
     get() = ID.DocumentEnd
 }

@@ -15,16 +15,7 @@ package org.snakeyaml.engine.v2.tokens
 
 import java.util.*
 
-class TagTuple(handle: Optional<String>, suffix: String) {
-  @JvmField
-  val handle: Optional<String>
-  @JvmField
-  val suffix: String
-
-  init {
-    Objects.requireNonNull(handle)
-    this.handle = handle
-    Objects.requireNonNull(suffix)
-    this.suffix = suffix
-  }
-}
+class TagTuple(
+  val handle: Optional<String>,
+  val suffix: String,
+)

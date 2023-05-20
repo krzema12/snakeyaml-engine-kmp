@@ -18,23 +18,19 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import java.util.*
 
 class DirectiveToken<T>(
-  name: String, value: Optional<List<T>>, startMark: Optional<Mark>,
+  val name: String,
+  val value: Optional<List<T>>,
+  startMark: Optional<Mark>,
   endMark: Optional<Mark>
-) :
-  Token(startMark, endMark) {
-  val name: String
-  val value: Optional<List<T>>
+) : Token(startMark, endMark) {
 
   init {
-    Objects.requireNonNull(name)
-    this.name = name
     Objects.requireNonNull(value)
     if (value.isPresent && value.get().size != 2) {
       throw YamlEngineException(
         "Two strings/integers must be provided instead of " + value.get().size
       )
     }
-    this.value = value
   }
 
   override val tokenId: ID

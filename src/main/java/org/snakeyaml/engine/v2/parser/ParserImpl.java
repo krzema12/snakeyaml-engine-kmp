@@ -319,14 +319,14 @@ public class ParserImpl implements Parser {
           TagToken tagToken = (TagToken) scanner.next();
           tagMark = tagToken.getStartMark();
           endMark = tagToken.getEndMark();
-          tagTupleValue = tagToken.value;
+          tagTupleValue = tagToken.getValue();
         }
       } else if (scanner.checkToken(Token.ID.Tag)) {
         TagToken tagToken = (TagToken) scanner.next();
         startMark = tagToken.getStartMark();
         tagMark = startMark;
         endMark = tagToken.getEndMark();
-        tagTupleValue = tagToken.value;
+        tagTupleValue = tagToken.getValue();
         if (scanner.checkToken(Token.ID.Anchor)) {
           AnchorToken token = (AnchorToken) scanner.next();
           endMark = token.getEndMark();
@@ -335,8 +335,8 @@ public class ParserImpl implements Parser {
       }
       Optional<String> tag = Optional.empty();
       if (tagTupleValue != null) {
-        Optional<String> handleOpt = tagTupleValue.handle;
-        String suffix = tagTupleValue.suffix;
+        Optional<String> handleOpt = tagTupleValue.getHandle();
+        String suffix = tagTupleValue.getSuffix();
         if (handleOpt.isPresent()) {
           String handle = handleOpt.get();
           if (!directiveTags.containsKey(handle)) {

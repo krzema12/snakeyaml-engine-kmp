@@ -19,15 +19,15 @@ import java.util.*
 /**
  * A unit of YAML data
  */
-abstract class Token(
-  val  startMark: Optional<Mark>,
-  val endMark: Optional<Mark>
+sealed class Token(
+  val startMark: Optional<Mark>,
+  val endMark: Optional<Mark>,
 ) {
 
   /**
    * For error reporting.
    *
-   * @return ID of this token
+   * @return [ID] of this token
    */
   abstract val tokenId: ID
 

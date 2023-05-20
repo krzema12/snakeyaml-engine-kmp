@@ -46,7 +46,7 @@ class Mark(
      * @param str - the data
      * @param pointer - the position of the mark from the beginning of the data
      */
-    constructor(name: String, index: Int, line: Int, column: Int, str: CharArray, pointer: Int) : this(
+    internal constructor(name: String, index: Int, line: Int, column: Int, str: CharArray, pointer: Int) : this(
         name = name,
         index = index,
         line = line,
@@ -65,6 +65,7 @@ class Mark(
      * @return readable piece of YAML where a problem detected
      */
     @JvmOverloads
+    // TODO this function is only exposed because of testing - mark it as `internal` once everything is Kotlin
     fun createSnippet(
         indent: Int = 4,
         maxLength: Int = 75,

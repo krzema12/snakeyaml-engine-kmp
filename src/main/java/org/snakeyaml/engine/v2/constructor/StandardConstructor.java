@@ -13,30 +13,16 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-
 import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.env.EnvConfig;
-import org.snakeyaml.engine.v2.exceptions.ConstructorException;
-import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-import org.snakeyaml.engine.v2.exceptions.MissingEnvironmentVariableException;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.MappingNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.SequenceNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.exceptions.*;
+import org.snakeyaml.engine.v2.nodes.*;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
+
+import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * Construct standard Java classes
@@ -103,7 +89,7 @@ public class StandardConstructor extends BaseConstructor {
   }
 
   private Object constructKey(Node keyNode, Optional<Mark> contextMark,
-      Optional<Mark> problemMark) {
+                              Optional<Mark> problemMark) {
     Object key = constructObject(keyNode);
     if (key != null) {
       try {
@@ -160,7 +146,7 @@ public class StandardConstructor extends BaseConstructor {
   public class ConstructYamlStr extends ConstructScalar {
 
     @Override
-    public Object construct(@NotNull Node node) {
+    public Object construct(Node node) {
       return constructScalar(node);
     }
   }
@@ -221,13 +207,13 @@ public class StandardConstructor extends BaseConstructor {
    * Construct scalar for format ${VARIABLE} replacing the template with the value from environment.
    *
    * @see <a href="https://bitbucket.org/snakeyaml/snakeyaml/wiki/Variable%20substitution">Variable
-   *      substitution</a>
+   * substitution</a>
    * @see <a href="https://docs.docker.com/compose/compose-file/#variable-substitution">Variable
-   *      substitution</a>
+   * substitution</a>
    */
   public class ConstructEnv extends ConstructScalar {
 
-    public Object construct(@NotNull Node node) {
+    public Object construct(Node node) {
       String val = constructScalar(node);
       Optional<EnvConfig> opt = settings.envConfig;
       if (opt.isPresent()) {
@@ -249,9 +235,9 @@ public class StandardConstructor extends BaseConstructor {
     /**
      * Implement the logic for missing and unset variables
      *
-     * @param name - variable name in the template
-     * @param separator - separator in the template, can be :-, -, :?, ?
-     * @param value - default value or the error in the template
+     * @param name        - variable name in the template
+     * @param separator   - separator in the template, can be :-, -, :?, ?
+     * @param value       - default value or the error in the template
      * @param environment - the value from environment for the provided variable
      * @return the value to apply in the template
      */

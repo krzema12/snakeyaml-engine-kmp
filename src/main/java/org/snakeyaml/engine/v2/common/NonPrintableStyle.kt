@@ -11,12 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.common;
+package org.snakeyaml.engine.v2.common
 
 /**
  * Configure the style when String contains non-printable characters
  */
-public enum NonPrintableStyle {
+enum class NonPrintableStyle {
   /**
    * Transform non-printable string to !!binary
    */

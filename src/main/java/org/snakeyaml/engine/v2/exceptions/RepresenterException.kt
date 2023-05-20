@@ -11,19 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
 /**
  * A problem during object representation
+ * @param message - problem statement
  */
-public class RepresenterException extends YamlEngineException {
-
-  /**
-   * Create
-   *
-   * @param message - problem statement
-   */
-  public RepresenterException(String message) {
-    super(message);
-  }
-}
+class RepresenterException(message: String) : YamlEngineException(message)

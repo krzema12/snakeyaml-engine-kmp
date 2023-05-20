@@ -34,7 +34,5 @@ class AliasEvent @JvmOverloads constructor(
     override val eventId: ID
         get() = ID.Alias
 
-    override fun toString(): String {
-        return "=ALI *$alias"
-    }
+    override fun toString(): String = "=ALI *$alias"
 }

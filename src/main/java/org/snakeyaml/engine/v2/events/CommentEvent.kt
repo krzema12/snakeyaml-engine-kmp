@@ -15,46 +15,25 @@ package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Objects
-import java.util.Optional
+import java.util.*
 
 /**
  * Marks a comment block value.
  */
 class CommentEvent(
-    type: CommentType, value: String, startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
-) :
-    Event(startMark, endMark) {
+    val commentType: CommentType,
     /**
-     * The comment type.
-     *
-     * @return the commentType.
-     */
-    val commentType: CommentType
-
-    /**
-     * String representation of the value.
-     *
-     *
-     * Without quotes and escaping.
-     *
+     * String representation of the value, without quotes and escaping.
      *
      * @return Value a comment line string without the leading '#' or a blank line.
      */
-    val value: String
-
-    init {
-        Objects.requireNonNull(type)
-        commentType = type
-        Objects.requireNonNull(value)
-        this.value = value
-    }
+    val value: String,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) : Event(startMark, endMark) {
 
     override val eventId: ID
         get() = ID.Comment
 
-    override fun toString(): String {
-        return "=COM $commentType $value"
-    }
+    override fun toString(): String = "=COM $commentType $value"
 }

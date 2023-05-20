@@ -35,19 +35,24 @@ import java.util.Optional
  * @see MappingEndEvent
  */
 class MappingStartEvent @JvmOverloads constructor(
-    anchor: Optional<Anchor>, tag: Optional<String>, implicit: Boolean,
-    flowStyle: FlowStyle?, startMark: Optional<Mark> = Optional.empty(), endMark: Optional<Mark> = Optional.empty(),
-) :
-    CollectionStartEvent(anchor, tag, implicit, flowStyle!!, startMark, endMark) {
+    anchor: Optional<Anchor>,
+    tag: Optional<String>,
+    implicit: Boolean,
+    flowStyle: FlowStyle,
+    startMark: Optional<Mark> = Optional.empty(),
+    endMark: Optional<Mark> = Optional.empty(),
+) : CollectionStartEvent(anchor, tag, implicit, flowStyle, startMark, endMark) {
+
     override val eventId: ID
         get() = ID.MappingStart
 
     override fun toString(): String {
-        val builder = StringBuilder("+MAP")
-        if (flowStyle == FlowStyle.FLOW) {
-            builder.append(" {}")
+        return buildString {
+            append("+MAP")
+            if (flowStyle == FlowStyle.FLOW) {
+                append(" {}")
+            }
+            append(super.toString())
         }
-        builder.append(super.toString())
-        return builder.toString()
     }
 }

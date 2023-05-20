@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
+import java.util.*
 
 /**
  * Marks the end of a mapping node.
@@ -28,7 +28,5 @@ class MappingEndEvent : CollectionEndEvent {
     override val eventId: ID
         get() = ID.MappingEnd
 
-    override fun toString(): String {
-        return "-MAP"
-    }
+    override fun toString(): String = "-MAP"
 }

@@ -19,25 +19,23 @@ import java.util.Optional
 /**
  * Marks the end of a document.
  *
- *
  * This event follows the document's content.
- *
  */
 class DocumentEndEvent @JvmOverloads constructor(
     val isExplicit: Boolean,
     startMark: Optional<Mark> = Optional.empty(),
     endMark: Optional<Mark> = Optional.empty(),
-) :
-    Event(startMark, endMark) {
+) : Event(startMark, endMark) {
 
     override val eventId: ID
         get() = ID.DocumentEnd
 
     override fun toString(): String {
-        val builder = StringBuilder("-DOC")
-        if (isExplicit) {
-            builder.append(" ...")
+        return buildString {
+            append("-DOC")
+            if (isExplicit) {
+                append(" ...")
+            }
         }
-        return builder.toString()
     }
 }

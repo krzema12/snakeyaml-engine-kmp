@@ -17,7 +17,10 @@ package org.snakeyaml.engine.v2.events
  * The implicit flag of a scalar event is a pair of boolean values that indicate if the tag may be
  * omitted when the scalar is emitted in a plain and non-plain style correspondingly.
  */
-class ImplicitTuple(private val plain: Boolean, private val nonPlain: Boolean) {
+class ImplicitTuple(
+    private val plain: Boolean,
+    private val nonPlain: Boolean,
+) {
     /**
      * @return true when tag may be omitted when the scalar is emitted in a plain style.
      */

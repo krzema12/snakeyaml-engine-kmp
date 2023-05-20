@@ -11,20 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.core;
+package org.snakeyaml.engine.v2.constructor.core
 
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
+import java.util.*
 
 /**
  * Create Boolean instances
  */
-public class ConstructYamlCoreBool extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    String val = constructScalar(node);
-    // any case
-    return BOOL_VALUES.get(val.toLowerCase());
-  }
+class ConstructYamlCoreBool : ConstructScalar() {
+    override fun construct(node: Node?): Boolean? {
+        val scalar = constructScalar(node)
+        return BOOL_VALUES[scalar.lowercase(Locale.getDefault())]
+    }
 }

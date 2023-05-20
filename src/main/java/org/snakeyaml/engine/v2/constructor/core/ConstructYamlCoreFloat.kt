@@ -11,21 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.core;
+package org.snakeyaml.engine.v2.constructor.core
 
-import org.jetbrains.annotations.NotNull;
-import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
+import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
+import java.util.*
 
 /**
  * Create Double instances for float
  */
-public class ConstructYamlCoreFloat extends ConstructYamlJsonFloat {
-
-  @NotNull
-  protected String constructScalar(Node node) {
-    // to lower case to parse the special values in any case
-    return ((ScalarNode) node).getValue().toLowerCase();
-  }
+class ConstructYamlCoreFloat : ConstructYamlJsonFloat() {
+    override fun constructScalar(node: Node?): String {
+        // to lower case to parse the special values in any case
+        return (node as ScalarNode).value.lowercase(Locale.getDefault())
+    }
 }

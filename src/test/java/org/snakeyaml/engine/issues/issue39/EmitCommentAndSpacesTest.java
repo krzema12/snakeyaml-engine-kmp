@@ -39,7 +39,7 @@ public class EmitCommentAndSpacesTest {
   @DisplayName("Issue 39: extra space added")
   void emitCommentWithEvent() {
     LoadSettings loadSettings = LoadSettings.builder().setParseComments(true).build();
-    String input = TestUtils.getResource("issues/issue39-input.yaml");
+    String input = TestUtils.getResource("/issues/issue39-input.yaml");
     Parser parser = new ParserImpl(loadSettings, new StreamReader(loadSettings, input));
     DumpSettings settings = DumpSettings.builder().setDumpComments(true).build();
     StreamDataWriter writer = new StreamToStringWriter();

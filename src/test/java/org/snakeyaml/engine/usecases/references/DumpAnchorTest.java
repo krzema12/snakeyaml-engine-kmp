@@ -35,7 +35,7 @@ public class DumpAnchorTest {
 
   @Test
   public void test_anchor_test() {
-    String str = TestUtils.getResource("anchor/issue481.yaml");
+    String str = TestUtils.getResource("/anchor/issue481.yaml");
     Compose compose = new Compose(LoadSettings.builder().build());
     Node node = compose.composeReader(new StringReader(str)).get();
 

@@ -64,7 +64,7 @@ class LoadMappingTest {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
     Map<String, Integer> map =
-        (Map<String, Integer>) load.loadFromString(TestUtils.getResource("load/map1.yaml"));
+        (Map<String, Integer>) load.loadFromString(TestUtils.getResource("/load/map1.yaml"));
     Map<String, Integer> expected = ImmutableMap.of("x", 1, "y", 2, "z", 3);
     assertEquals(expected, map);
   }

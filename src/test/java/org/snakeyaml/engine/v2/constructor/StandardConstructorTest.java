@@ -29,7 +29,7 @@ class StandardConstructorTest {
   @Test
   void constructMergeExample() {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Optional<Node> node = compose.composeString(TestUtils.getResource("load/list1.yaml"));
+    Optional<Node> node = compose.composeString(TestUtils.getResource("/load/list1.yaml"));
     StandardConstructor constructor = new StandardConstructor(LoadSettings.builder().build());
     Object object = constructor.construct(node.get());
     assertNotNull(object);

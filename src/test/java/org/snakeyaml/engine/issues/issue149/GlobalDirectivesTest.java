@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -29,7 +31,7 @@ import org.snakeyaml.engine.v2.utils.TestUtils;
 @org.junit.jupiter.api.Tag("fast")
 public class GlobalDirectivesTest {
 
-  Iterable<Event> yamlToEvents(final String resourceName) {
+  Iterable<Event> yamlToEvents(@Language("file-reference") final String resourceName) {
     InputStream input = TestUtils.getResourceAsStream(resourceName);
     Parse parser = new Parse(LoadSettings.builder().build());
     return parser.parseInputStream(input);
@@ -38,7 +40,7 @@ public class GlobalDirectivesTest {
   @Test
   @DisplayName("Use tag directive")
   public void testOneDocument() {
-    Iterable<Event> events = yamlToEvents("issues/issue149-one-document.yaml");
+    Iterable<Event> events = yamlToEvents("/issues/issue149-one-document.yaml");
     final AtomicInteger counter = new AtomicInteger(0);
     events.forEach(event -> counter.incrementAndGet());
 
@@ -48,7 +50,7 @@ public class GlobalDirectivesTest {
   @Test
   @DisplayName("Fail to parse because directive does not stay for the second document")
   public void testDirectives() {
-    Iterable<Event> events = yamlToEvents("issues/issue149-losing-directives.yaml");
+    Iterable<Event> events = yamlToEvents("/issues/issue149-losing-directives.yaml");
     final AtomicInteger counter = new AtomicInteger(0);
     try {
       events.forEach(event -> counter.incrementAndGet());
@@ -60,7 +62,7 @@ public class GlobalDirectivesTest {
   @Test
   @DisplayName("Parse both tag directives")
   public void testDirectives2() {
-    Iterable<Event> events = yamlToEvents("issues/issue149-losing-directives-2.yaml");
+    Iterable<Event> events = yamlToEvents("/issues/issue149-losing-directives-2.yaml");
     final AtomicInteger counter = new AtomicInteger(0);
     events.forEach(event -> counter.incrementAndGet());
 

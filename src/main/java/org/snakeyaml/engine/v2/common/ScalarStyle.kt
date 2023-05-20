@@ -20,29 +20,19 @@ package org.snakeyaml.engine.v2.common
  * power and readability.
  */
 enum class ScalarStyle(private val styleOpt: Char?) {
-    /**
-     * Double quoted scalar
-     */
+    /** Double quoted scalar */
     DOUBLE_QUOTED('"'),
 
-    /**
-     * Single quoted scalar
-     */
+    /** Single quoted scalar */
     SINGLE_QUOTED('\''),
 
-    /**
-     * Literal scalar
-     */
+    /** Literal scalar */
     LITERAL('|'),
 
-    /**
-     * Folded scalar
-     */
+    /** Folded scalar */
     FOLDED('>'),
 
-    /**
-     * Plain scalar
-     */
+    /** Plain scalar */
     PLAIN(null);
 
     override fun toString(): String = (styleOpt ?: ':').toString()

@@ -11,19 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
-public final class FlowMappingStartToken extends Token {
-
-  public FlowMappingStartToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
-
-  @Override
-  public Token.ID getTokenId() {
-    return ID.FlowMappingStart;
-  }
+class FlowMappingStartToken(startMark: Optional<Mark>, endMark: Optional<Mark>) : Token(startMark, endMark) {
+  override val tokenId: ID
+    get() = ID.FlowMappingStart
 }

@@ -28,9 +28,9 @@ import java.util.function.UnaryOperator
 class LoadSettings internal constructor(
     @JvmField val label: String,
     @JvmField val tagConstructors: Map<Tag, ConstructNode>,
-    @JvmField val defaultList: IntFunction<List<Any>>,
-    @JvmField val defaultSet: IntFunction<Set<Any>>,
-    @JvmField val defaultMap: IntFunction<Map<Any, Any>>,
+    @JvmField val defaultList: IntFunction<MutableList<Any?>>,
+    @JvmField val defaultSet: IntFunction<MutableSet<Any?>>,
+    @JvmField val defaultMap: IntFunction<MutableMap<Any?, Any?>>,
     private val versionFunction: UnaryOperator<SpecVersion>,
     @JvmField val bufferSize: Int,
     @JvmField val allowDuplicateKeys: Boolean,

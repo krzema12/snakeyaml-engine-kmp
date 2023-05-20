@@ -84,7 +84,7 @@ class ScalarEvent @JvmOverloads constructor(
             .codePoints()
             .filter { i: Int -> i < Character.MAX_VALUE.code }
             .mapToObj { ch: Int ->
-                CharConstants.escapeChar(String(Character.toChars(ch)))
+                CharConstants.escapeChar(ch.toChar())
             }
             .collect(Collectors.joining(""))
     }

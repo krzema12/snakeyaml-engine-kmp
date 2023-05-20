@@ -72,8 +72,8 @@ class CharConstantsTest {
 
   @Test
   void escapeChar() {
-    assertEquals(" ", CharConstants.escapeChar(" "));
-    assertEquals("/", CharConstants.escapeChar("/"));
-    assertEquals("\\t", CharConstants.escapeChar("\t"));
+    assertEquals(" ", CharConstants.escapeChar(' '));
+    assertEquals("/", CharConstants.escapeChar('/'));
+    assertEquals("\\t", CharConstants.escapeChar('\t'));
   }
 }

@@ -405,7 +405,7 @@ public final class ScannerImpl implements Scanner {
     }
     // No? It's an error. Let's produce a nice error message. We do this by
     // converting escaped characters into their escape sequences.
-    String chRepresentation = CharConstants.escapeChar(String.valueOf(Character.toChars(c)));
+    String chRepresentation = CharConstants.escapeChar(Character.toChars(c)[0]);
     if (c == '\t') {
       chRepresentation += "(TAB)"; // TAB deserves a special clarification
     }

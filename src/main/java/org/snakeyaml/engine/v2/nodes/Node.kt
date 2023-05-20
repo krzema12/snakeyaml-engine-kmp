@@ -29,7 +29,7 @@ import java.util.*
  * @param startMark - start mark when available
  * @param endMark - end mark when available
  */
-abstract class Node(
+abstract class Node @JvmOverloads constructor(
 
   /**
    * Tag of this node.
@@ -45,13 +45,14 @@ abstract class Node(
 
   @JvmField
   protected var endMark: Optional<Mark>,
-) {
 
   /**
-   * true when the tag is assigned by the resolver
+   * `true` when the tag is assigned by the resolver
    */
   @JvmField
-  protected var resolved: Boolean = true
+  protected var resolved: Boolean = true,
+) {
+
 
   /**
    * Indicates if this node must be constructed in two steps.

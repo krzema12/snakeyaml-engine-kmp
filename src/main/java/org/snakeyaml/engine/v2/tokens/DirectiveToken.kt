@@ -15,29 +15,30 @@ package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import java.util.*
+import java.util.Objects
+import java.util.Optional
 
 class DirectiveToken<T>(
-  val name: String,
-  val value: Optional<List<T>>,
-  startMark: Optional<Mark>,
-  endMark: Optional<Mark>
+    val name: String,
+    val value: Optional<List<T>>,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
 ) : Token(startMark, endMark) {
 
-  init {
-    Objects.requireNonNull(value)
-    if (value.isPresent && value.get().size != 2) {
-      throw YamlEngineException(
-        "Two strings/integers must be provided instead of " + value.get().size
-      )
+    init {
+        Objects.requireNonNull(value)
+        if (value.isPresent && value.get().size != 2) {
+            throw YamlEngineException(
+                "Two strings/integers must be provided instead of " + value.get().size,
+            )
+        }
     }
-  }
 
-  override val tokenId: ID
-    get() = ID.Directive
+    override val tokenId: ID
+        get() = ID.Directive
 
-  companion object {
-    const val YAML_DIRECTIVE = "YAML"
-    const val TAG_DIRECTIVE = "TAG"
-  }
+    companion object {
+        const val YAML_DIRECTIVE = "YAML"
+        const val TAG_DIRECTIVE = "TAG"
+    }
 }

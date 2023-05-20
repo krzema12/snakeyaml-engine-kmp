@@ -28,10 +28,10 @@ interface ConstructNode {
     /**
      * Construct a Java instance with all the properties injected when it is possible.
      *
-     * @param node composed Node
+     * @param node composed [Node]
      * @return a complete Java instance or empty collection instance if it is recursive
      */
-    fun construct(node: Node): Any?
+    fun construct(node: Node?): Any?
 
     /**
      * Apply the second step when constructing recursive structures. Because the instance is already
@@ -39,7 +39,7 @@ interface ConstructNode {
      * non-recursive data structures). Fail with a reminder to provide the second step for a recursive
      * structure
      *
-     * @param node composed Node
+     * @param node composed [Node]
      * @param object the instance constructed earlier by `construct(Node node)` for the
      * provided Node
      */

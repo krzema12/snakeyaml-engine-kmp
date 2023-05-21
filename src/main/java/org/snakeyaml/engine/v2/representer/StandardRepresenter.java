@@ -15,17 +15,7 @@ package org.snakeyaml.engine.v2.representer;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.RepresentToNode;
@@ -45,11 +35,11 @@ public class StandardRepresenter extends BaseRepresenter {
   /**
    * all chars that represent a new line
    */
-  public static final Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
+  public static final Pattern MULTILINE_PATTERN = Pattern.compile("[\n\u0085\u2028\u2029]");
   /**
    * Connect classes to their tags
    */
-  protected Map<Class<? extends Object>, Tag> classTags;
+  protected Map<Class<?>, Tag> classTags;
   /**
    * keep the options
    */
@@ -86,7 +76,7 @@ public class StandardRepresenter extends BaseRepresenter {
     this.parentClassRepresenters.put(Map.class, new RepresentMap());
     this.parentClassRepresenters.put(Set.class, new RepresentSet());
     this.parentClassRepresenters.put(Iterator.class, new RepresentIterator());
-    this.parentClassRepresenters.put(new Object[0].getClass(), new RepresentArray());
+    this.parentClassRepresenters.put(Object[].class, new RepresentArray());
     this.parentClassRepresenters.put(Enum.class, new RepresentEnum());
     classTags = new HashMap<>();
     this.settings = settings;
@@ -113,7 +103,7 @@ public class StandardRepresenter extends BaseRepresenter {
    * @deprecated should be replaced with the Beans project
    */
   @Deprecated
-  public Tag addClassTag(Class<? extends Object> clazz, Tag tag) {
+  public Tag addClassTag(Class<?> clazz, Tag tag) {
     if (tag == null) {
       throw new NullPointerException("Tag must be provided.");
     }
@@ -151,7 +141,7 @@ public class StandardRepresenter extends BaseRepresenter {
     public Node representData(Object data) {
       Tag tag = Tag.STR;
       ScalarStyle style = ScalarStyle.PLAIN;
-      String value = data.toString();
+      String value = Objects.requireNonNull(data).toString();
       if (settings.nonPrintableStyle == NonPrintableStyle.BINARY
           && !StreamReader.isPrintable(value)) {
         tag = Tag.BINARY;
@@ -229,7 +219,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
-      return representSequence(getTag(data.getClass(), Tag.SEQ), (List<Object>) data,
+      return representSequence(getTag(Objects.requireNonNull(data).getClass(), Tag.SEQ), (List<Object>) data,
               settings.defaultFlowStyle);
     }
   }
@@ -242,7 +232,7 @@ public class StandardRepresenter extends BaseRepresenter {
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
       Iterator<Object> iter = (Iterator<Object>) data;
-      return representSequence(getTag(data.getClass(), Tag.SEQ), new IteratorWrapper(iter),
+      return representSequence(getTag(iter.getClass(), Tag.SEQ), new IteratorWrapper(iter),
               settings.defaultFlowStyle);
     }
   }
@@ -266,7 +256,7 @@ public class StandardRepresenter extends BaseRepresenter {
   public class RepresentPrimitiveArray implements RepresentToNode {
 
     public Node representData(Object data) {
-      Class<?> type = data.getClass().getComponentType();
+      Class<?> type = Objects.requireNonNull(data).getClass().getComponentType();
 
       FlowStyle style = settings.defaultFlowStyle;
       if (byte.class == type) {
@@ -293,8 +283,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Byte> asByteList(Object in) {
       byte[] array = (byte[]) in;
       List<Byte> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (byte b : array) {
+        list.add(b);
       }
       return list;
     }
@@ -302,8 +292,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Short> asShortList(Object in) {
       short[] array = (short[]) in;
       List<Short> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (short value : array) {
+        list.add(value);
       }
       return list;
     }
@@ -311,8 +301,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Integer> asIntList(Object in) {
       int[] array = (int[]) in;
       List<Integer> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (int j : array) {
+        list.add(j);
       }
       return list;
     }
@@ -320,8 +310,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Long> asLongList(Object in) {
       long[] array = (long[]) in;
       List<Long> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (long l : array) {
+        list.add(l);
       }
       return list;
     }
@@ -329,8 +319,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Float> asFloatList(Object in) {
       float[] array = (float[]) in;
       List<Float> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (float v : array) {
+        list.add(v);
       }
       return list;
     }
@@ -338,8 +328,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Double> asDoubleList(Object in) {
       double[] array = (double[]) in;
       List<Double> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (double v : array) {
+        list.add(v);
       }
       return list;
     }
@@ -347,8 +337,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Character> asCharList(Object in) {
       char[] array = (char[]) in;
       List<Character> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (char c : array) {
+        list.add(c);
       }
       return list;
     }
@@ -356,8 +346,8 @@ public class StandardRepresenter extends BaseRepresenter {
     private List<Boolean> asBooleanList(Object in) {
       boolean[] array = (boolean[]) in;
       List<Boolean> list = new ArrayList<>(array.length);
-      for (int i = 0; i < array.length; ++i) {
-        list.add(array[i]);
+      for (boolean b : array) {
+        list.add(b);
       }
       return list;
     }
@@ -370,7 +360,7 @@ public class StandardRepresenter extends BaseRepresenter {
 
     @SuppressWarnings("unchecked")
     public Node representData(Object data) {
-      return representMapping(getTag(data.getClass(), Tag.MAP), (Map<Object, Object>) data,
+      return representMapping(getTag(Objects.requireNonNull(data).getClass(), Tag.MAP), (Map<Object, Object>) data,
               settings.defaultFlowStyle);
     }
   }
@@ -399,7 +389,7 @@ public class StandardRepresenter extends BaseRepresenter {
   public class RepresentEnum implements RepresentToNode {
 
     public Node representData(Object data) {
-      Tag tag = new Tag(data.getClass());
+      Tag tag = new Tag(Objects.requireNonNull(data).getClass());
       return representScalar(getTag(data.getClass(), tag), ((Enum<?>) data).name());
     }
   }
@@ -421,7 +411,7 @@ public class StandardRepresenter extends BaseRepresenter {
   public class RepresentUuid implements RepresentToNode {
 
     public Node representData(Object data) {
-      return representScalar(getTag(data.getClass(), new Tag(UUID.class)), data.toString());
+      return representScalar(getTag(Objects.requireNonNull(data).getClass(), new Tag(UUID.class)), data.toString());
     }
   }
 

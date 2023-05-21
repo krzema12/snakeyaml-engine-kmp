@@ -133,7 +133,7 @@ public class ParserImpl implements Parser {
   }
 
   /**
-   * tokeniser
+   * tokenizer
    */
   protected final Scanner scanner;
   private final LoadSettings settings;
@@ -305,7 +305,7 @@ public class ParserImpl implements Parser {
       AliasToken token = (AliasToken) scanner.next();
       event =
           new AliasEvent(Optional.of(token.getValue()), token.getStartMark(), token.getEndMark());
-      state = Optional.of(states.removeLastOrNull());
+      state = Optional.of(states.removeLast());
     } else {
       Optional<Anchor> anchor = Optional.empty();
       TagTuple tagTupleValue = null;
@@ -373,7 +373,7 @@ public class ParserImpl implements Parser {
           }
           event = new ScalarEvent(anchor, tag, implicitValues, token.getValue(), token.getStyle(),
               startMark, endMark);
-          state = Optional.of(states.removeLastOrNull());
+          state = Optional.of(states.removeLast());
         } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {
           endMark = scanner.peekToken().getEndMark();
           event = new SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark);
@@ -395,7 +395,7 @@ public class ParserImpl implements Parser {
           // Empty scalars are allowed even if a tag or an anchor is specified.
           event = new ScalarEvent(anchor, tag, new ImplicitTuple(implicit, false), "",
               ScalarStyle.PLAIN, startMark, endMark);
-          state = Optional.of(states.removeLastOrNull());
+          state = Optional.of(states.removeLast());
         } else {
           Token token = scanner.peekToken();
           throw new ParserException(
@@ -565,7 +565,7 @@ public class ParserImpl implements Parser {
       if (scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.DocumentEnd,
           Token.ID.StreamEnd)) {
         Event event = processEmptyScalar(scanner.peekToken().getStartMark());
-        state = Optional.of(states.removeLastOrNull());
+        state = Optional.of(states.removeLast());
         return event;
       } else {
         return new ParseBlockNode().produce();
@@ -632,7 +632,7 @@ public class ParserImpl implements Parser {
       }
       Token token = scanner.next();
       Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
-      state = Optional.of(states.removeLastOrNull());
+      state = Optional.of(states.removeLast());
       markPop();
       return event;
     }
@@ -674,7 +674,7 @@ public class ParserImpl implements Parser {
       }
       Token token = scanner.peekToken();
       Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
-      state = Optional.of(states.removeLastOrNull());
+      state = Optional.of(states.removeLast());
       return event;
     }
   }
@@ -739,7 +739,7 @@ public class ParserImpl implements Parser {
       }
       Token token = scanner.next();
       Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
-      state = Optional.of(states.removeLastOrNull());
+      state = Optional.of(states.removeLast());
       markPop();
       return event;
     }
@@ -874,7 +874,7 @@ public class ParserImpl implements Parser {
       Token token = scanner.next();
       Event event = new SequenceEndEvent(token.getStartMark(), token.getEndMark());
       if (!scanner.checkToken(Token.ID.Comment)) {
-        state = Optional.of(states.removeLastOrNull());
+        state = Optional.of(states.removeLast());
       } else {
         state = Optional.of(new ParseFlowEndComment());
       }
@@ -888,7 +888,7 @@ public class ParserImpl implements Parser {
     public Event produce() {
       Event event = produceCommentEvent((CommentToken) scanner.next());
       if (!scanner.checkToken(Token.ID.Comment)) {
-        state = Optional.of(states.removeLastOrNull());
+        state = Optional.of(states.removeLast());
       }
       return event;
     }
@@ -995,7 +995,7 @@ public class ParserImpl implements Parser {
       Event event = new MappingEndEvent(token.getStartMark(), token.getEndMark());
       markPop();
       if (!scanner.checkToken(Token.ID.Comment)) {
-        state = Optional.ofNullable(states.removeLastOrNull());
+        state = Optional.of(states.removeLast());
       } else {
         state = Optional.of(new ParseFlowEndComment());
       }

@@ -121,7 +121,7 @@ abstract class Node @JvmOverloads constructor(
   /**
    * @return scalar, sequence, mapping
    */
-  abstract val nodeType: NodeType?
+  abstract val nodeType: NodeType
 
   /**
    * Define a custom runtime property. It is not used by Engine but may be used by other tools.

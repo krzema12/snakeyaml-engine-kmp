@@ -32,10 +32,10 @@ public final class ScalarAnalysis {
    * @param scalar - the data to analyse
    * @param empty - true for empty scalar
    * @param multiline - true if it may take many lines
-   * @param allowFlowPlain - true if can be plain in flow context
-   * @param allowBlockPlain - true if can be plain in block context
+   * @param allowFlowPlain - `true` if can be plain in flow context
+   * @param allowBlockPlain - `true` if can be plain in block context
    * @param allowSingleQuoted - true if single quotes are allowed
-   * @param allowBlock - true if block style is alowed
+   * @param allowBlock - true if block style is allowed
    */
   public ScalarAnalysis(String scalar, boolean empty, boolean multiline, boolean allowFlowPlain,
       boolean allowBlockPlain, boolean allowSingleQuoted, boolean allowBlock) {

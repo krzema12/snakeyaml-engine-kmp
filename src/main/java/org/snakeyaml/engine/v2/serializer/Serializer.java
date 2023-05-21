@@ -13,12 +13,8 @@
  */
 package org.snakeyaml.engine.v2.serializer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.comments.CommentLine;
 import org.snakeyaml.engine.v2.common.Anchor;
@@ -46,7 +42,7 @@ import org.snakeyaml.engine.v2.nodes.SequenceNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
- * Transform a Node Graph to Event stream and allow provided {@link Emitable} to present the
+ * Transform a {@link Node} Graph to {@link Event} stream and allow provided {@link Emitable} to present the
  * {@link Event}s into the output stream
  */
 public class Serializer {
@@ -112,9 +108,10 @@ public class Serializer {
       this.anchors.computeIfAbsent(realNode,
           a -> settings.anchorGenerator.nextAnchor(realNode));
     } else {
-      this.anchors.put(realNode,
-          realNode.getAnchor().isPresent() ? settings.anchorGenerator.nextAnchor(realNode)
-              : null);
+      this.anchors.put(
+          realNode,
+          realNode.getAnchor().isPresent() ? settings.anchorGenerator.nextAnchor(realNode) : null
+      );
       switch (realNode.getNodeType()) {
         case SEQUENCE:
           SequenceNode seqNode = (SequenceNode) realNode;
@@ -210,8 +207,12 @@ public class Serializer {
       return;
     }
     for (CommentLine line : comments) {
-      CommentEvent commentEvent = new CommentEvent(line.getCommentType(), line.getValue(),
-          line.getStartMark(), line.getEndMark());
+      CommentEvent commentEvent = new CommentEvent(
+          line.getCommentType(),
+          line.getValue(),
+          line.getStartMark(),
+          line.getEndMark()
+      );
       this.emitable.emit(commentEvent);
     }
   }

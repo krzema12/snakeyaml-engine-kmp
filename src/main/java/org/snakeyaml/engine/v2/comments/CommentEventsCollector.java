@@ -13,14 +13,12 @@
  */
 package org.snakeyaml.engine.v2.comments;
 
-import java.util.AbstractQueue;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
+import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.events.CommentEvent;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.parser.Parser;
+
+import java.util.*;
 
 /**
  * Used by the Composer and Emitter to collect comment events so that they can be used at a later
@@ -35,9 +33,9 @@ public class CommentEventsCollector {
   /**
    * Constructor used to collect comment events emitted by a Parser.
    *
-   * @param parser the event source.
+   * @param parser               the event source.
    * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-   *        collected.
+   *                             collected.
    */
   public CommentEventsCollector(final Parser parser, CommentType... expectedCommentTypes) {
     this.eventSource = new AbstractQueue<Event>() {
@@ -75,9 +73,9 @@ public class CommentEventsCollector {
   /**
    * Constructor used to collect events emitted by the Serializer.
    *
-   * @param eventSource the event source.
+   * @param eventSource          the event source.
    * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-   *        collected.
+   *                             collected.
    */
   public CommentEventsCollector(Queue<Event> eventSource, CommentType... expectedCommentTypes) {
     this.eventSource = eventSource;
@@ -91,7 +89,7 @@ public class CommentEventsCollector {
    * @param event the event to test.
    * @return <code>true</code> if the events is a comment of the expected type; Otherwise, false.
    */
-  private boolean isEventExpected(Event event) {
+  private boolean isEventExpected(@Nullable Event event) {
     if (event == null || event.getEventId() != Event.ID.Comment) {
       return false;
     }
@@ -133,7 +131,8 @@ public class CommentEventsCollector {
       }
     }
     while (isEventExpected(eventSource.peek())) {
-      commentLineList.add(new CommentLine((CommentEvent) eventSource.poll()));
+      final Event e = Objects.requireNonNull(eventSource.poll());
+      commentLineList.add(new CommentLine((CommentEvent) e));
     }
     return null;
   }
@@ -145,7 +144,7 @@ public class CommentEventsCollector {
    *
    * @param event the first event to attempt to collect.
    * @return the event provided as an argument, if it is not collected; Otherwise, the first event
-   *         that is not collected.
+   * that is not collected.
    */
   public Event collectEventsAndPoll(Event event) {
     Event nextEvent = collectEvents(event);

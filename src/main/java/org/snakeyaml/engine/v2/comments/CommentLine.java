@@ -94,7 +94,6 @@ public class CommentLine {
   }
 
   public String toString() {
-    return "<" + this.getClass().getName() + " (type=" + getCommentType() + ", value=" + getValue()
-        + ")>";
+    return "<" + this.getClass().getName() + " (type=" + getCommentType() + ", value=" + getValue() + ")>";
   }
 }

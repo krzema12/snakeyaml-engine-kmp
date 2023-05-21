@@ -408,7 +408,8 @@ public final class Emitter implements Emitable {
       Event nextEvent = events.peek();
       if (nextEvent.getEventId() == Event.ID.Scalar) {
         ScalarEvent e = (ScalarEvent) nextEvent;
-        return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null
+        return !e.getAnchor().isPresent()
+            && !e.getTag().isPresent()
             && e.getValue().length() == 0;
       }
       return false;

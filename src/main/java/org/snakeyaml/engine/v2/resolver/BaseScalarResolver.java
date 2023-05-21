@@ -35,7 +35,7 @@ public abstract class BaseScalarResolver implements ScalarResolver {
    */
   @java.lang.SuppressWarnings("squid:S4784")
   public static final Pattern ENV_FORMAT =
-      Pattern.compile("^\\$\\{\\s*(?:(\\w+)(?:(:?[-?])(\\w+)?)?)\\s*\\}$");
+      Pattern.compile("^\\$\\{\\s*(\\w+)(?:(:?[-?])(\\w+)?)?\\s*}$");
 
   /**
    * Map from the char to the resolver which may begin with this char
@@ -65,17 +65,13 @@ public abstract class BaseScalarResolver implements ScalarResolver {
       curr.add(new ResolverTuple(tag, regexp));
     } else {
       char[] chrs = first.toCharArray();
-      for (int i = 0, j = chrs.length; i < j; i++) {
-        Character theC = Character.valueOf(chrs[i]);
+      for (char chr : chrs) {
+        Character theC = chr;
         if (theC == 0) {
           // special case: for null
           theC = null;
         }
-        List<ResolverTuple> curr = yamlImplicitResolvers.get(theC);
-        if (curr == null) {
-          curr = new ArrayList<>();
-          yamlImplicitResolvers.put(theC, curr);
-        }
+        List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(theC, k -> new ArrayList<>());
         curr.add(new ResolverTuple(tag, regexp));
       }
     }

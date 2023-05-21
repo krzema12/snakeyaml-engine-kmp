@@ -42,7 +42,7 @@ public class JsonScalarResolver extends BaseScalarResolver {
   /**
    * Null as defined in JSON
    */
-  public static final Pattern NULL = Pattern.compile("^(?:null)$");
+  public static final Pattern NULL = Pattern.compile("^null$");
 
   /**
    * Register all the resolvers to be applied

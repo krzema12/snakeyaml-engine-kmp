@@ -13,12 +13,13 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
+import org.snakeyaml.engine.v2.nodes.Tag;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 /**
  * Base resolver
@@ -53,10 +54,10 @@ public abstract class BaseScalarResolver implements ScalarResolver {
    * Add a resolver to resolve a value that matches the provided regular expression to the provided
    * tag
    *
-   * @param tag - the Tag to assign when the value matches
-   * @param regexp - the RE which is applied for every value
-   * @param first - the possible first characters (this is merely for performance improvement) to
-   *        skip RE evaluation to gain time
+   * @param tag    the Tag to assign when the value matches
+   * @param regexp the RE which is applied for every value
+   * @param first  the possible first characters (this is merely for performance improvement) to
+   *               skip RE evaluation to gain time
    */
   public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
     if (first == null) {
@@ -64,13 +65,10 @@ public abstract class BaseScalarResolver implements ScalarResolver {
           yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList<>());
       curr.add(new ResolverTuple(tag, regexp));
     } else {
-      char[] chrs = first.toCharArray();
-      for (char chr : chrs) {
-        Character theC = chr;
-        if (theC == 0) {
-          // special case: for null
-          theC = null;
-        }
+      char[] chars = first.toCharArray();
+      for (char chr : chars) {
+        // special case: for null
+        final Character theC = chr == 0 ? null : chr;
         List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(theC, k -> new ArrayList<>());
         curr.add(new ResolverTuple(tag, regexp));
       }

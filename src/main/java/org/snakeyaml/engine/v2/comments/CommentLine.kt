@@ -74,13 +74,9 @@ class CommentLine(
      * @param commentType - the type
      */
     init {
-        Objects.requireNonNull(startMark)
         this.startMark = startMark
-        Objects.requireNonNull(endMark)
         this.endMark = endMark
-        Objects.requireNonNull(value)
         this.value = value
-        Objects.requireNonNull(commentType)
         this.commentType = commentType
     }
 

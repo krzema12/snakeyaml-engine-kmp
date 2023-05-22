@@ -149,7 +149,7 @@ public class Composer implements Iterator<Node> {
     blockCommentsCollector.collectEvents();
     if (parser.checkEvent(Event.ID.StreamEnd)) {
       List<CommentLine> commentLines = blockCommentsCollector.consume();
-      Optional<Mark> startMark = commentLines.get(0).getStartMark();
+      Optional<Mark> startMark = commentLines.get(0).startMark;
       List<NodeTuple> children = Collections.emptyList();
       Node node = new MappingNode(Tag.COMMENT, false, children, FlowStyle.BLOCK, startMark,
           Optional.empty());

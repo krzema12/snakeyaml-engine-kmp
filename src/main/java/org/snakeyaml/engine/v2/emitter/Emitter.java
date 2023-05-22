@@ -1471,16 +1471,16 @@ public final class Emitter implements Emitable {
       int indentColumns = 0;
       boolean firstComment = true;
       for (CommentLine commentLine : commentLines) {
-        if (commentLine.getCommentType() != CommentType.BLANK_LINE) {
+        if (commentLine.commentType != CommentType.BLANK_LINE) {
           if (firstComment) {
             firstComment = false;
-            writeIndicator("#", commentLine.getCommentType() == CommentType.IN_LINE, false, false);
+            writeIndicator("#", commentLine.commentType == CommentType.IN_LINE, false, false);
             indentColumns = this.column > 0 ? this.column - 1 : 0;
           } else {
             writeWhitespace(indentColumns);
             writeIndicator("#", false, false, false);
           }
-          stream.write(commentLine.getValue());
+          stream.write(commentLine.value);
           writeLineBreak(null);
         } else {
           writeLineBreak(null);

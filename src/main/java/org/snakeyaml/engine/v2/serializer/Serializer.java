@@ -208,10 +208,10 @@ public class Serializer {
     }
     for (CommentLine line : comments) {
       CommentEvent commentEvent = new CommentEvent(
-          line.getCommentType(),
-          line.getValue(),
-          line.getStartMark(),
-          line.getEndMark()
+              line.commentType,
+              line.value,
+              line.startMark,
+              line.endMark
       );
       this.emitable.emit(commentEvent);
     }

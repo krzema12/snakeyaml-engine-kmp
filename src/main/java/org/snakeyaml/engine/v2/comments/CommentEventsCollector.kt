@@ -114,7 +114,7 @@ class CommentEventsCollector {
     fun collectEvents(event: Event?): Event? {
         if (event != null) {
             if (isEventExpected(event)) {
-                commentLineList.add(CommentLine(event as CommentEvent?))
+                commentLineList.add(CommentLine(event as CommentEvent))
             } else {
                 return event
             }

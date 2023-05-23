@@ -880,53 +880,6 @@ final class ScannerImplJava implements Scanner {
     return false;
   }
 
-  /**
-   * See the specification for details. SnakeYAML and libyaml allow tabs inside plain scalar
-   */
-  String scanPlainSpaces() {
-    int length = 0;
-    while (reader.peek(length) == ' ' || reader.peek(length) == '\t') {
-      length++;
-    }
-    String whitespaces = reader.prefixForward(length);
-    Optional<String> lineBreakOpt = scanLineBreak();
-    if (lineBreakOpt.isPresent()) {
-      this.allowSimpleKey = true;
-      String prefix = reader.prefix(3);
-      if ("---".equals(prefix)
-          || "...".equals(prefix) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
-        return "";
-      }
-      if (settings.parseComments && atEndOfPlain()) {
-        return "";
-      }
-      StringBuilder breaks = new StringBuilder();
-      while (true) {
-        if (reader.peek() == ' ') {
-          reader.forward();
-        } else {
-          Optional<String> lbOpt = scanLineBreak();
-          if (lbOpt.isPresent()) {
-            breaks.append(lbOpt.get());
-            prefix = reader.prefix(3);
-            if ("---".equals(prefix)
-                || "...".equals(prefix) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
-              return "";
-            }
-          } else {
-            break;
-          }
-        }
-      }
-      if (!"\n".equals(lineBreakOpt.orElse(""))) {
-        return lineBreakOpt.orElse("") + breaks;
-      } else if (breaks.length() == 0) {
-        return " ";
-      }
-      return breaks.toString();
-    }
-    return whitespaces;
-  }
 
   /**
    * <p>

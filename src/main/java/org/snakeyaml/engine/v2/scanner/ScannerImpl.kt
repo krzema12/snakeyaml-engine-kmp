@@ -5,6 +5,8 @@ import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
+import org.snakeyaml.engine.v2.exceptions.ScannerException
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.tokens.CommentToken
 import org.snakeyaml.engine.v2.tokens.Token
 import java.util.Optional
@@ -143,16 +145,197 @@ class ScannerImpl(
 
     override fun resetDocumentIndex(): Unit = reader.resetDocumentIndex()
 
-    //@formatter:off
     //region Private methods.
 
-    private fun addToken(token: Token): Unit = scannerJava.addToken(token)
-    private fun addToken(index: Int, token: Token): Unit = scannerJava.addToken(index, token)
-    private fun addAllTokens(tokens: List<Token>): Unit = scannerJava.addAllTokens(tokens)
-    private fun isBlockContext(): Boolean = scannerJava.isBlockContext
-    private fun isFlowContext(): Boolean = scannerJava.isFlowContext
-    private fun needMoreTokens(): Boolean = scannerJava.needMoreTokens()
-    private fun fetchMoreTokens(): Unit = scannerJava.fetchMoreTokens()
+    private fun addToken(token: Token) {
+        lastToken = token
+        tokens.add(token)
+    }
+
+    private fun addToken(index: Int, token: Token) {
+        if (index == tokens.size) {
+            lastToken = token
+        }
+        tokens.add(index, token)
+    }
+
+    private fun addAllTokens(tokens: List<Token>) {
+        lastToken = tokens.last()
+        this.tokens.addAll(tokens)
+    }
+
+    private fun isBlockContext(): Boolean = flowLevel == 0
+
+    private fun isFlowContext(): Boolean = !isBlockContext()
+
+    /** Returns `true` if more tokens should be scanned. */
+    private fun needMoreTokens(): Boolean {
+        // If we are done, we do not require more tokens.
+        if (done) return false
+        // If we aren't done, but we have no tokens, we need to scan more.
+        if (tokens.isEmpty()) return true
+        // The current token may be a potential simple key, so we
+        // need to look further.
+        stalePossibleSimpleKeys()
+        return nextPossibleSimpleKey() == tokensTaken
+    }
+
+    /** Fetch one or more tokens from the StreamReader. */
+    private fun fetchMoreTokens() {
+        if (reader.documentIndex > settings.codePointLimit) {
+            throw YamlEngineException("The incoming YAML document exceeds the limit: ${settings.codePointLimit} code points.")
+        }
+        // Eat whitespaces and process comments until we reach the next token.
+        scanToNextToken()
+        // Remove obsolete possible simple keys.
+        stalePossibleSimpleKeys()
+        // Compare the current indentation and column. It may add some tokens and decrease the current indentation level.
+        unwindIndent(reader.column)
+        // Peek the next code point, to decide what the next group of tokens will look like.
+        val c = reader.peek()
+
+        // Is it the end of stream?
+        if (c == 0) {
+            fetchStreamEnd()
+            return
+        }
+        when (c.toChar()) {
+            // Is it a directive?
+            '%'  ->
+                if (checkDirective()) {
+                    fetchDirective()
+                    return
+                }
+
+            // Is it the document start?
+            '-'  ->
+                if (checkDocumentStart()) {
+                    fetchDocumentStart()
+                    return
+                    // Is it the block entry indicator?
+                } else if (checkBlockEntry()) {
+                    fetchBlockEntry()
+                    return
+                }
+
+            // Is it the document end?
+            '.'  ->
+                if (checkDocumentEnd()) {
+                    fetchDocumentEnd()
+                    return
+                }
+
+            // Is it the flow sequence start indicator?
+            '['  -> {
+                fetchFlowSequenceStart()
+                return
+            }
+
+            // Is it the flow mapping start indicator?
+            '{'  -> {
+                fetchFlowMappingStart()
+                return
+            }
+
+            // Is it the flow sequence end indicator?
+            ']'  -> {
+                fetchFlowSequenceEnd()
+                return
+            }
+
+            // Is it the flow mapping end indicator?
+            '}'  -> {
+                fetchFlowMappingEnd()
+                return
+            }
+
+            // Is it the flow entry indicator?
+            ','  -> {
+                fetchFlowEntry()
+                return
+            }
+
+            // Is it the key indicator?
+            '?'  ->
+                if (checkKey()) {
+                    fetchKey()
+                    return
+                }
+
+            // Is it the value indicator?
+            ':'  ->
+                if (checkValue()) {
+                    fetchValue()
+                    return
+                }
+
+            // Is it an alias?
+            '*'  -> {
+                fetchAlias()
+                return
+            }
+
+            // Is it an anchor?
+            '&'  -> {
+                fetchAnchor()
+                return
+            }
+
+            // Is it a tag?
+            '!'  -> {
+
+                fetchTag()
+                return
+            }
+
+            // Is it a literal scalar?
+            '|'  ->
+                if (isBlockContext()) {
+                    fetchLiteral()
+                    return
+                }
+
+            // Is it a folded scalar?
+            '>'  ->
+                if (isBlockContext()) {
+                    fetchFolded()
+                    return
+                }
+
+            // Is it a single quoted scalar?
+            '\'' -> {
+                fetchSingle()
+                return
+            }
+
+            // Is it a double quoted scalar?
+            '"'  -> {
+                fetchDouble()
+                return
+            }
+
+            else -> {}
+        }
+        if (checkPlain()) {
+            fetchPlain()
+            return
+        }
+        // No? It's an error. Let's produce a nice error message.
+        // We do this by converting escaped characters into their escape sequences.
+        var chRepresentation = CharConstants.escapeChar(Character.toChars(c)[0])
+        if (c == '\t'.code) {
+            chRepresentation += "(TAB)" // TAB deserves a special clarification
+        }
+        throw ScannerException(
+            context = "while scanning for the next token",
+            contextMark = Optional.empty(),
+            problem = "found character '$chRepresentation' that cannot start any token. (Do not use $chRepresentation for indentation)",
+            problemMark = reader.getMark(),
+        )
+
+    }
+
+    //@formatter:off
 
     //region Simple keys treatment.
     private fun nextPossibleSimpleKey(): Int = scannerJava.nextPossibleSimpleKey()

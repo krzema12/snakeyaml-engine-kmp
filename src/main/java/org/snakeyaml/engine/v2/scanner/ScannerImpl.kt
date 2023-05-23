@@ -45,7 +45,8 @@ class ScannerImpl(
     private val scannerJava = ScannerImplJava(settings, reader)
 
     /** List of processed tokens that are not yet emitted. */
-    private val tokens by scannerJava::tokens
+    // maybe make this an ArrayDeque?
+    private val tokens: MutableList<Token> by scannerJava::tokens
 //    = ArrayList<Token>(100)
 
     /** Past indentation levels. */
@@ -80,7 +81,7 @@ class ScannerImpl(
 
     /**
      * Variables related to simple keys treatment.
-     * Number of tokens that were emitted through the `get_token` method.
+     * Number of tokens that were emitted through the [checkToken] method.
      */
     private var tokensTaken by scannerJava::tokensTaken // = 0
 
@@ -115,67 +116,96 @@ class ScannerImpl(
         fetchStreamStart() // Add the STREAM-START token.
     }
 
+    override fun hasNext(): Boolean = checkToken()
+
+    /** Return the next token, removing it from the queue. */
+    override fun checkToken(vararg choices: Token.ID): Boolean {
+        while (needMoreTokens()) {
+            fetchMoreTokens()
+        }
+        if (tokens.isNotEmpty()) {
+            if (choices.isEmpty()) {
+                return true
+            }
+            // since profiler puts this method on top (it is used a lot), we
+            // should not use 'foreach' here because of the performance reasons
+            val firstToken = tokens[0]
+            val first: Token.ID = firstToken.tokenId
+            for (choice in choices) {
+                if (first == choice) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    /** Return the next token, but do not delete it from the queue. */
+    override fun peekToken(): Token {
+        while (needMoreTokens()) {
+            fetchMoreTokens()
+        }
+        return tokens[0]
+    }
+
+    /** Return the next token, removing it from the queue. */
+    override fun next(): Token {
+        tokensTaken++
+        return tokens.removeFirstOrNull() ?: throw NoSuchElementException("No more Tokens found.")
+    }
+
+    override fun resetDocumentIndex(): Unit = reader.resetDocumentIndex()
+
     //@formatter:off
-
-    override fun hasNext(): Boolean = scannerJava.hasNext()
-
-    override fun checkToken(vararg choices: Token.ID): Boolean = scannerJava.checkToken(*choices)
-
-    override fun peekToken(): Token = scannerJava.peekToken()
-
-    override fun next(): Token = scannerJava.next()
-
-    override fun resetDocumentIndex() = scannerJava.resetDocumentIndex()
-
     //region Private methods.
 
-    private fun addToken(token: Token) = scannerJava.addToken(token)
-    private fun addToken(index: Int, token: Token) = scannerJava.addToken(index, token)
-    private fun addAllTokens(tokens: List<Token>) = scannerJava.addAllTokens(tokens)
+    private fun addToken(token: Token): Unit = scannerJava.addToken(token)
+    private fun addToken(index: Int, token: Token): Unit = scannerJava.addToken(index, token)
+    private fun addAllTokens(tokens: List<Token>): Unit = scannerJava.addAllTokens(tokens)
     private fun isBlockContext(): Boolean = scannerJava.isBlockContext
     private fun isFlowContext(): Boolean = scannerJava.isFlowContext
     private fun needMoreTokens(): Boolean = scannerJava.needMoreTokens()
-    private fun fetchMoreTokens() = scannerJava.fetchMoreTokens()
+    private fun fetchMoreTokens(): Unit = scannerJava.fetchMoreTokens()
 
     //region Simple keys treatment.
     private fun nextPossibleSimpleKey(): Int = scannerJava.nextPossibleSimpleKey()
-    private fun stalePossibleSimpleKeys() = scannerJava.stalePossibleSimpleKeys()
-    private fun savePossibleSimpleKey() = scannerJava.savePossibleSimpleKey()
-    private fun removePossibleSimpleKey() = scannerJava.removePossibleSimpleKey()
+    private fun stalePossibleSimpleKeys(): Unit = scannerJava.stalePossibleSimpleKeys()
+    private fun savePossibleSimpleKey(): Unit = scannerJava.savePossibleSimpleKey()
+    private fun removePossibleSimpleKey(): Unit = scannerJava.removePossibleSimpleKey()
     //endregion
 
     //region Indentation functions.
-    private fun unwindIndent(col: Int) = scannerJava.unwindIndent(col)
+    private fun unwindIndent(col: Int): Unit = scannerJava.unwindIndent(col)
     private fun addIndent(column: Int): Boolean = scannerJava.addIndent(column)
     //endregion
 
     //region Fetchers - add tokens to the stream (can call scanners)
-    private fun fetchStreamStart() = scannerJava.fetchStreamStart()
-    private fun fetchStreamEnd() = scannerJava.fetchStreamEnd()
-    private fun fetchDirective() = scannerJava.fetchDirective()
-    private fun fetchDocumentStart() = scannerJava.fetchDocumentStart()
-    private fun fetchDocumentEnd() = scannerJava.fetchDocumentEnd()
-    private fun fetchDocumentIndicator(isDocumentStart: Boolean) = scannerJava.fetchDocumentIndicator(isDocumentStart)
-    private fun fetchFlowSequenceStart() = scannerJava.fetchFlowSequenceStart()
-    private fun fetchFlowMappingStart() = scannerJava.fetchFlowMappingStart()
-    private fun fetchFlowCollectionStart(isMappingStart: Boolean) = scannerJava.fetchFlowCollectionStart(isMappingStart)
-    private fun fetchFlowSequenceEnd() = scannerJava.fetchFlowSequenceEnd()
-    private fun fetchFlowMappingEnd() = scannerJava.fetchFlowMappingEnd()
-    private fun fetchFlowCollectionEnd(isMappingEnd: Boolean) = scannerJava.fetchFlowCollectionEnd(isMappingEnd)
-    private fun fetchFlowEntry() = scannerJava.fetchFlowEntry()
-    private fun fetchBlockEntry() = scannerJava.fetchBlockEntry()
-    private fun fetchKey() = scannerJava.fetchKey()
-    private fun fetchValue() = scannerJava.fetchValue()
-    private fun fetchAlias() = scannerJava.fetchAlias()
-    private fun fetchAnchor() = scannerJava.fetchAnchor()
-    private fun fetchTag() = scannerJava.fetchTag()
-    private fun fetchLiteral() = scannerJava.fetchLiteral()
-    private fun fetchFolded() = scannerJava.fetchFolded()
-    private fun fetchBlockScalar(style: ScalarStyle) = scannerJava.fetchBlockScalar(style)
-    private fun fetchSingle() = scannerJava.fetchSingle()
-    private fun fetchDouble() = scannerJava.fetchDouble()
-    private fun fetchFlowScalar(style: ScalarStyle) = scannerJava.fetchFlowScalar(style)
-    private fun fetchPlain() = scannerJava.fetchPlain()
+    private fun fetchStreamStart(): Unit = scannerJava.fetchStreamStart()
+    private fun fetchStreamEnd(): Unit = scannerJava.fetchStreamEnd()
+    private fun fetchDirective(): Unit = scannerJava.fetchDirective()
+    private fun fetchDocumentStart(): Unit = scannerJava.fetchDocumentStart()
+    private fun fetchDocumentEnd(): Unit = scannerJava.fetchDocumentEnd()
+    private fun fetchDocumentIndicator(isDocumentStart: Boolean): Unit = scannerJava.fetchDocumentIndicator(isDocumentStart)
+    private fun fetchFlowSequenceStart(): Unit = scannerJava.fetchFlowSequenceStart()
+    private fun fetchFlowMappingStart(): Unit = scannerJava.fetchFlowMappingStart()
+    private fun fetchFlowCollectionStart(isMappingStart: Boolean): Unit = scannerJava.fetchFlowCollectionStart(isMappingStart)
+    private fun fetchFlowSequenceEnd(): Unit = scannerJava.fetchFlowSequenceEnd()
+    private fun fetchFlowMappingEnd(): Unit = scannerJava.fetchFlowMappingEnd()
+    private fun fetchFlowCollectionEnd(isMappingEnd: Boolean): Unit = scannerJava.fetchFlowCollectionEnd(isMappingEnd)
+    private fun fetchFlowEntry(): Unit = scannerJava.fetchFlowEntry()
+    private fun fetchBlockEntry(): Unit = scannerJava.fetchBlockEntry()
+    private fun fetchKey(): Unit = scannerJava.fetchKey()
+    private fun fetchValue(): Unit = scannerJava.fetchValue()
+    private fun fetchAlias(): Unit = scannerJava.fetchAlias()
+    private fun fetchAnchor(): Unit = scannerJava.fetchAnchor()
+    private fun fetchTag(): Unit = scannerJava.fetchTag()
+    private fun fetchLiteral(): Unit = scannerJava.fetchLiteral()
+    private fun fetchFolded(): Unit = scannerJava.fetchFolded()
+    private fun fetchBlockScalar(style: ScalarStyle): Unit = scannerJava.fetchBlockScalar(style)
+    private fun fetchSingle(): Unit = scannerJava.fetchSingle()
+    private fun fetchDouble(): Unit = scannerJava.fetchDouble()
+    private fun fetchFlowScalar(style: ScalarStyle): Unit = scannerJava.fetchFlowScalar(style)
+    private fun fetchPlain(): Unit = scannerJava.fetchPlain()
     //endregion
 
     //region Checkers.
@@ -189,7 +219,7 @@ class ScannerImpl(
     //endregion
 
     //region Scanners - create tokens
-    private fun scanToNextToken() = scannerJava.scanToNextToken()
+    private fun scanToNextToken(): Unit = scannerJava.scanToNextToken()
     private fun scanComment(type: CommentType): CommentToken = scannerJava.scanComment(type)
     private fun scanDirective(): List<Token> = scannerJava.scanDirective()
     private fun scanDirectiveName(startMark: Optional<Mark>): String = scannerJava.scanDirectiveName(startMark)

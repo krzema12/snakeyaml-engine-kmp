@@ -1230,11 +1230,106 @@ class ScannerImpl(
         return TagToken(value, startMark, endMark)
     }
 
-    private fun scanBlockScalar(style: ScalarStyle): List<Token> = scannerJava.scanBlockScalar(style)
+
+    /**
+     * Scan literal and folded scalar
+     *
+     * @param style - either literal or folded style
+     */
+    fun scanBlockScalar(style: ScalarStyle): List<Token> {
+        // See the specification for details.
+        val stringBuilder = java.lang.StringBuilder()
+        val startMark = reader.getMark()
+        // Scan the header.
+        reader.forward()
+        val chomping = scanBlockScalarIndicators(startMark)
+        val commentToken = scanBlockScalarIgnoredLine(startMark)
+
+        // Determine the indentation level and go to the first non-empty line.
+        var minIndent = indent + 1
+        if (minIndent < 1) {
+            minIndent = 1
+        }
+        var breaks: String
+        val maxIndent: Int
+        val blockIndent: Int
+        var endMark: Optional<Mark>
+        if (chomping.increment.isPresent) {
+            // increment is explicit
+            blockIndent = minIndent + chomping.increment.get() - 1
+            val brme = scanBlockScalarBreaks(blockIndent)
+            breaks = brme.breaks
+            endMark = brme.endMark
+        } else {
+            // increment (block indent) must be detected in the first non-empty line.
+            val brme = scanBlockScalarIndentation()
+            breaks = brme.breaks
+            maxIndent = brme.maxIndent
+            endMark = brme.endMark
+            blockIndent = Math.max(minIndent, maxIndent)
+        }
+        var lineBreakOpt = Optional.empty<String>()
+        // Scan the inner part of the block scalar.
+        if (reader.getColumn() < blockIndent && indent != reader.getColumn()) {
+            // it means that there is indent, but less than expected
+            // fix S98Z - Block scalar with more spaces than first content line
+            throw ScannerException(
+                "while scanning a block scalar", startMark,
+                " the leading empty lines contain more spaces (" + blockIndent
+                    + ") than the first non-empty line.",
+                reader.getMark(),
+            )
+        }
+        while (reader.getColumn() == blockIndent && reader.peek() != 0) {
+            stringBuilder.append(breaks)
+            val leadingNonSpace = " \t".indexOf(reader.peek().toChar()) == -1
+            var length = 0
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
+                length++
+            }
+            stringBuilder.append(reader.prefixForward(length))
+            lineBreakOpt = scanLineBreak()
+            val brme = scanBlockScalarBreaks(blockIndent)
+            breaks = brme.breaks
+            endMark = brme.endMark
+            if (reader.getColumn() == blockIndent && reader.peek() != 0) {
+
+                // Unfortunately, folding rules are ambiguous.
+                //
+                // This is the folding according to the specification:
+                if (style == ScalarStyle.FOLDED && "\n" == lineBreakOpt.orElse("") && leadingNonSpace && " \t".indexOf(
+                        reader.peek().toChar(),
+                    ) == -1
+                ) {
+                    if (breaks.isEmpty()) {
+                        stringBuilder.append(" ")
+                    }
+                } else {
+                    stringBuilder.append(lineBreakOpt.orElse(""))
+                }
+            } else {
+                break
+            }
+        }
+        // Chomp the tail.
+        if (chomping.value === Chomping.Indicator.CLIP || chomping.value === Chomping.Indicator.KEEP) {
+            // add the final line break (if exists !) TODO find out if to add anyway
+            stringBuilder.append(lineBreakOpt.orElse(""))
+        }
+        if (chomping.value === Chomping.Indicator.KEEP) {
+            // any trailing empty lines are considered to be part of the scalar’s content
+            stringBuilder.append(breaks)
+        }
+        // We are done.
+        val scalarToken = ScalarToken(stringBuilder.toString(), false, startMark, endMark, style)
+        return makeTokenList(commentToken, scalarToken)
+    }
+
+
     private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
         scannerJava.scanBlockScalarIndicators(startMark)
 
-    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken =
+    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken? =
         scannerJava.scanBlockScalarIgnoredLine(startMark)
 
     private fun scanBlockScalarIndentation(): BreakIntentHolder = scannerJava.scanBlockScalarIndentation()
@@ -1442,7 +1537,7 @@ class ScannerImpl(
 
     //endregion
 
-    private fun makeTokenList(vararg tokens: Token): List<Token> = scannerJava.makeTokenList(*tokens)
+    private fun makeTokenList(vararg tokens: Token?): List<Token> = scannerJava.makeTokenList(*tokens)
     //@formatter:on
 
     companion object {

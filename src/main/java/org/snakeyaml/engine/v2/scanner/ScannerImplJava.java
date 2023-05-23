@@ -15,17 +15,15 @@ package org.snakeyaml.engine.v2.scanner;
 
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.common.CharConstants;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
-import org.snakeyaml.engine.v2.scanner.Chomping.Indicator;
 import org.snakeyaml.engine.v2.tokens.CommentToken;
 import org.snakeyaml.engine.v2.tokens.DirectiveToken;
-import org.snakeyaml.engine.v2.tokens.ScalarToken;
 import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.nio.ByteBuffer;
@@ -357,98 +355,6 @@ final class ScannerImplJava implements Scanner {
 
 
   /**
-   * Scan literal and folded scalar
-   *
-   * @param style - either literal or folded style
-   */
-  List<Token> scanBlockScalar(ScalarStyle style) {
-    // See the specification for details.
-    StringBuilder stringBuilder = new StringBuilder();
-    Optional<Mark> startMark = reader.getMark();
-    // Scan the header.
-    reader.forward();
-    Chomping chomping = scanBlockScalarIndicators(startMark);
-    CommentToken commentToken = scanBlockScalarIgnoredLine(startMark);
-
-    // Determine the indentation level and go to the first non-empty line.
-    int minIndent = this.indent + 1;
-    if (minIndent < 1) {
-      minIndent = 1;
-    }
-    String breaks;
-    int maxIndent;
-    int blockIndent;
-    Optional<Mark> endMark;
-    if (chomping.increment.isPresent()) {
-      // increment is explicit
-      blockIndent = minIndent + chomping.increment.get() - 1;
-      BreakIntentHolder brme = scanBlockScalarBreaks(blockIndent);
-      breaks = brme.breaks;
-      endMark = brme.endMark;
-    } else {
-      // increment (block indent) must be detected in the first non-empty line.
-      BreakIntentHolder brme = scanBlockScalarIndentation();
-      breaks = brme.breaks;
-      maxIndent = brme.maxIndent;
-      endMark = brme.endMark;
-      blockIndent = Math.max(minIndent, maxIndent);
-    }
-
-    Optional<String> lineBreakOpt = Optional.empty();
-    // Scan the inner part of the block scalar.
-    if (this.reader.getColumn() < blockIndent && this.indent != reader.getColumn()) {
-      // it means that there is indent, but less than expected
-      // fix S98Z - Block scalar with more spaces than first content line
-      throw new ScannerException("while scanning a block scalar", startMark,
-          " the leading empty lines contain more spaces (" + blockIndent
-              + ") than the first non-empty line.",
-          reader.getMark());
-    }
-    while (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
-      stringBuilder.append(breaks);
-      boolean leadingNonSpace = " \t".indexOf(reader.peek()) == -1;
-      int length = 0;
-      while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
-        length++;
-      }
-      stringBuilder.append(reader.prefixForward(length));
-      lineBreakOpt = scanLineBreak();
-      BreakIntentHolder brme = scanBlockScalarBreaks(blockIndent);
-      breaks = brme.breaks;
-      endMark = brme.endMark;
-      if (this.reader.getColumn() == blockIndent && reader.peek() != 0) {
-
-        // Unfortunately, folding rules are ambiguous.
-        //
-        // This is the folding according to the specification:
-        if (style == ScalarStyle.FOLDED && "\n".equals(lineBreakOpt.orElse("")) && leadingNonSpace
-            && " \t".indexOf(reader.peek()) == -1) {
-          if (breaks.length() == 0) {
-            stringBuilder.append(" ");
-          }
-        } else {
-          stringBuilder.append(lineBreakOpt.orElse(""));
-        }
-      } else {
-        break;
-      }
-    }
-    // Chomp the tail.
-    if (chomping.value == Indicator.CLIP || chomping.value == Indicator.KEEP) {
-      // add the final line break (if exists !) TODO find out if to add anyway
-      stringBuilder.append(lineBreakOpt.orElse(""));
-    }
-    if (chomping.value == Indicator.KEEP) {
-      // any trailing empty lines are considered to be part of the scalar’s content
-      stringBuilder.append(breaks);
-    }
-    // We are done.
-    ScalarToken scalarToken =
-        new ScalarToken(stringBuilder.toString(), false, startMark, endMark, style);
-    return makeTokenList(commentToken, scalarToken);
-  }
-
-  /**
    * Scan a block scalar indicator. The block scalar indicator includes two optional components,
    * which may appear in either order.
    * <p>
@@ -505,6 +411,7 @@ final class ScannerImplJava implements Scanner {
    * Scan to the end of the line after a block scalar has been scanned; the only things that are
    * permitted at this time are comments and spaces.
    */
+  @Nullable
   CommentToken scanBlockScalarIgnoredLine(Optional<Mark> startMark) {
     // See the specification for details.
 

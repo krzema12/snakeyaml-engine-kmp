@@ -21,7 +21,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import java.io.IOException
 import java.io.Reader
 import java.io.StringReader
-import java.util.Arrays
 import java.util.Optional
 
 /**
@@ -119,8 +118,9 @@ class StreamReader(
      */
     @JvmOverloads
     fun forward(length: Int = 1) {
-        var i = 0
-        while (i < length && ensureEnoughData()) {
+        repeat(length) {
+            if (!ensureEnoughData()) return@repeat
+
             val c = codePointsWindow[pointer++]
             moveIndices(1)
             if (CharConstants.LINEBR.has(c) || c == '\r'.code && ensureEnoughData() && codePointsWindow[pointer] != '\n'.code) {
@@ -129,7 +129,6 @@ class StreamReader(
             } else if (c != 0xFEFF) {
                 column++
             }
-            i++
         }
     }
 
@@ -138,9 +137,7 @@ class StreamReader(
      *
      * @return the next code point or `0` if empty
      */
-    fun peek(): Int {
-        return if (ensureEnoughData()) codePointsWindow[pointer] else 0
-    }
+    fun peek(): Int = if (ensureEnoughData()) codePointsWindow[pointer] else 0
 
     /**
      * Peek the next [index]-th code point
@@ -148,9 +145,7 @@ class StreamReader(
      * @param index to peek
      * @return the next [index]-th code point or `0` if empty
      */
-    fun peek(index: Int): Int {
-        return if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
-    }
+    fun peek(index: Int): Int = if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
 
     /**
      * Create String from code points
@@ -195,7 +190,7 @@ class StreamReader(
             var read = stream.read(buffer, 0, bufferSize - 1)
             if (read > 0) {
                 var cpIndex = dataLength - pointer
-                codePointsWindow = Arrays.copyOfRange(codePointsWindow, pointer, dataLength + read)
+                codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
                 if (Character.isHighSurrogate(buffer[read - 1])) {
                     if (stream.read(buffer, read, 1) == -1) {
                         eof = true
@@ -284,5 +279,11 @@ class StreamReader(
                 || c in 0xE000..0xFFFD
                 || c in 0x10000..0x10FFFF
         }
+
+        /**
+         * Like [IntArray.copyOfRange], but allows for [toIndex] to be out-of-bounds.
+         */
+        private fun IntArray.copyOfRangeSafe(fromIndex: Int, toIndex: Int): IntArray =
+            IntArray(toIndex - fromIndex) { getOrNull(fromIndex + it) ?: 0 }
     }
 }

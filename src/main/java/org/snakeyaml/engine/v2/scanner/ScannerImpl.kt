@@ -116,28 +116,13 @@ class ScannerImpl(
         fetchStreamStart() // Add the STREAM-START token.
     }
 
-    override fun hasNext(): Boolean = checkToken()
-
-    /** Return the next token, removing it from the queue. */
+    /** Check whether the next token is one of the given types. */
     override fun checkToken(vararg choices: Token.ID): Boolean {
         while (needMoreTokens()) {
             fetchMoreTokens()
         }
-        if (tokens.isNotEmpty()) {
-            if (choices.isEmpty()) {
-                return true
-            }
-            // since profiler puts this method on top (it is used a lot), we
-            // should not use 'foreach' here because of the performance reasons
-            val firstToken = tokens[0]
-            val first: Token.ID = firstToken.tokenId
-            for (choice in choices) {
-                if (first == choice) {
-                    return true
-                }
-            }
-        }
-        return false
+        val firstTokenId = tokens.firstOrNull()?.tokenId ?: return false
+        return choices.isEmpty() || choices.any { choice -> firstTokenId == choice }
     }
 
     /** Return the next token, but do not delete it from the queue. */
@@ -147,6 +132,8 @@ class ScannerImpl(
         }
         return tokens[0]
     }
+
+    override fun hasNext(): Boolean = checkToken()
 
     /** Return the next token, removing it from the queue. */
     override fun next(): Token {

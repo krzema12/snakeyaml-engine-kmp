@@ -69,7 +69,7 @@ public abstract class InheritedImportTest {
     }
     CanonicalParser parser =
         new CanonicalParser(buffer.toString().replace(System.lineSeparator(), "\n"), label);
-    List<Event> result = new ArrayList();
+    List<Event> result = new ArrayList<>();
     while (parser.hasNext()) {
       result.add(parser.next());
     }
@@ -81,7 +81,7 @@ public abstract class InheritedImportTest {
     LoadSettings settings = LoadSettings.builder().build();
     StreamReader reader = new StreamReader(settings, new YamlUnicodeReader(input));
     Parser parser = new ParserImpl(settings, reader);
-    List<Event> result = new ArrayList();
+    List<Event> result = new ArrayList<>();
     while (parser.hasNext()) {
       result.add(parser.next());
     }
@@ -89,7 +89,7 @@ public abstract class InheritedImportTest {
     return result;
   }
 
-  private class InheritedFilenameFilter implements FilenameFilter {
+  private static class InheritedFilenameFilter implements FilenameFilter {
 
     private final String extension;
     private final boolean onlyIfCanonicalPresent;

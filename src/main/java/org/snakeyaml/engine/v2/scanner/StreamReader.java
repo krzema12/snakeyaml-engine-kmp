@@ -49,10 +49,7 @@ public final class StreamReader {
    */
   private int pointer = 0;
   private boolean eof;
-  /**
-   * index is only required to implement 1024 key length restriction and the total length
-   * restriction
-   */
+  /** index is only required to implement 1024 key length restriction and the total length restriction */
   private int index = 0; // in code points
   private int documentIndex = 0; // current document index in code points (only for limiting)
 

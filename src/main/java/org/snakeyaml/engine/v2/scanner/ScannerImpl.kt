@@ -14,7 +14,10 @@ import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.CommentToken
 import org.snakeyaml.engine.v2.tokens.DocumentEndToken
 import org.snakeyaml.engine.v2.tokens.DocumentStartToken
+import org.snakeyaml.engine.v2.tokens.FlowEntryToken
+import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken
 import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken
+import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken
 import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.KeyToken
 import org.snakeyaml.engine.v2.tokens.StreamEndToken
@@ -582,7 +585,7 @@ class ScannerImpl(
      * A flow-style collection is in a format similar to JSON. Sequences are started by `[` and ended
      * by `]`; mappings are started by `{` and ended by `}`.
      *
-     * @param isMappingStart - `true` for mapping, `false` for sequence
+     * @param isMappingStart `true` for mapping, `false` for sequence
      */
     private fun fetchFlowCollectionStart(isMappingStart: Boolean) {
         // `[` and `{` may start a simple key.
@@ -610,8 +613,53 @@ class ScannerImpl(
 
     private fun fetchFlowMappingEnd() = fetchFlowCollectionEnd(true)
 
-    private fun fetchFlowCollectionEnd(isMappingEnd: Boolean): Unit = scannerJava.fetchFlowCollectionEnd(isMappingEnd)
-    private fun fetchFlowEntry(): Unit = scannerJava.fetchFlowEntry()
+    /**
+     * Fetch a flow-style collection end, which is either a sequence or a mapping. The type is
+     * determined by the given boolean.
+     *
+     * A flow-style collection is in a format similar to JSON. Sequences are started by `[` and ended
+     * by `]`; mappings are started by `{` and ended by `}`.
+     */
+    private fun fetchFlowCollectionEnd(isMappingEnd: Boolean) {
+        // Reset possible simple key on the current level.
+        removePossibleSimpleKey()
+
+        // Decrease the flow level.
+        flowLevel--
+
+        // No simple keys after ']' or '}'.
+        allowSimpleKey = false
+
+        // Add FLOW-SEQUENCE-END or FLOW-MAPPING-END.
+        val startMark = reader.getMark()
+        reader.forward()
+        val endMark = reader.getMark()
+        val token = if (isMappingEnd) {
+            FlowMappingEndToken(startMark, endMark)
+        } else {
+            FlowSequenceEndToken(startMark, endMark)
+        }
+        addToken(token)
+    }
+
+    /**
+     * Fetch an entry in the flow style. Flow-style entries occur either immediately after the start
+     * of a collection, or else after a comma.
+     */
+    private fun fetchFlowEntry() {
+        // Simple keys are allowed after ','.
+        allowSimpleKey = true
+
+        // Reset possible simple key on the current level.
+        removePossibleSimpleKey()
+
+        // Add FLOW-ENTRY.
+        val startMark = reader.getMark()
+        reader.forward()
+        val endMark = reader.getMark()
+        val token = FlowEntryToken(startMark, endMark)
+        addToken(token)
+    }
 
     /** Fetch an entry in the block style. */
     private fun fetchBlockEntry() {
@@ -723,7 +771,6 @@ class ScannerImpl(
         val token: Token = ValueToken(startMark, endMark)
         addToken(token)
     }
-    //@formatter:off
 
     private fun fetchAlias(): Unit = scannerJava.fetchAlias()
     private fun fetchAnchor(): Unit = scannerJava.fetchAnchor()
@@ -735,7 +782,10 @@ class ScannerImpl(
     private fun fetchDouble(): Unit = scannerJava.fetchDouble()
     private fun fetchFlowScalar(style: ScalarStyle): Unit = scannerJava.fetchFlowScalar(style)
     private fun fetchPlain(): Unit = scannerJava.fetchPlain()
+
     //endregion
+
+    //@formatter:off
 
     //region Checkers.
     private fun checkDirective(): Boolean = scannerJava.checkDirective()

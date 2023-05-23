@@ -91,26 +91,26 @@ class ScannerImpl(
 //    = LinkedHashMap<Int, SimpleKey>()
 
     /** Had we reached the end of the stream */
-    private var done by scannerJava::done  //= false
+    private var done  = false
 
     /**
      * The number of unclosed `{` and `[`. [isBlockContext] means block context.
      */
-    private var flowLevel by scannerJava::flowLevel // = 0
+    private var flowLevel   = 0
 
     /**
      * The last added token
      */
-    private var lastToken by scannerJava::lastToken //: Token = null
+    private var lastToken: Token? = null
 
     /**
      * Variables related to simple keys treatment.
      * Number of tokens that were emitted through the [checkToken] method.
      */
-    private var tokensTaken by scannerJava::tokensTaken // = 0
+    private var tokensTaken = 0
 
     /** The current indentation level. */
-    private var indent by scannerJava::indent // = -1
+    private var indent = -1
 
     /**
      * ```
@@ -1032,7 +1032,7 @@ class ScannerImpl(
                 commentSeen = true
                 var type: CommentType
                 if (columnBeforeComment != 0
-                    && !(lastToken != null && lastToken.tokenId == Token.ID.BlockEntry)
+                    && !(lastToken != null && lastToken?.tokenId == Token.ID.BlockEntry)
                 ) {
                     type = CommentType.IN_LINE
                     inlineStartColumn = reader.column
@@ -1564,11 +1564,12 @@ class ScannerImpl(
                     length = CharConstants.ESCAPE_CODES[c.toChar()]!!
                     reader.forward()
                     val hex = reader.prefix(length)
-                    if (ScannerImplJava.NOT_HEXA.matcher(hex).find()) {
+                    if (NOT_HEXA.matcher(hex).find()) {
                         throw ScannerException(
-                            "while scanning a double-quoted scalar", startMark,
-                            "expected escape sequence of $length hexadecimal numbers, but found: $hex",
-                            reader.getMark(),
+                            problem = "while scanning a double-quoted scalar",
+                            problemMark = startMark,
+                            context = "expected escape sequence of $length hexadecimal numbers, but found: $hex",
+                            contextMark = reader.getMark(),
                         )
                     }
                     val decimal = hex.toInt(16)
@@ -1578,8 +1579,10 @@ class ScannerImpl(
                         reader.forward(length)
                     } catch (e: IllegalArgumentException) {
                         throw ScannerException(
-                            "while scanning a double-quoted scalar", startMark,
-                            "found unknown escape character $hex", reader.getMark(),
+                            problem = "while scanning a double-quoted scalar",
+                            problemMark = startMark,
+                            context = "found unknown escape character $hex",
+                            contextMark = reader.getMark(),
                         )
                     }
                 } else if (scanLineBreak().isPresent) {
@@ -1587,8 +1590,10 @@ class ScannerImpl(
                 } else {
                     val s = String(Character.toChars(c))
                     throw ScannerException(
-                        "while scanning a double-quoted scalar", startMark,
-                        "found unknown escape character $s($c)", reader.getMark(),
+                        problem = "while scanning a double-quoted scalar",
+                        problemMark = startMark,
+                        context = "found unknown escape character $s($c)",
+                        contextMark = reader.getMark(),
                     )
                 }
             } else {

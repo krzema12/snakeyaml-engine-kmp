@@ -41,10 +41,6 @@ final class ScannerImplJava implements Scanner {
       "expected alphabetic or numeric character, but found ";
   static final String SCANNING_SCALAR = "while scanning a block scalar";
   static final String SCANNING_PREFIX = "while scanning a ";
-  /**
-   * A regular expression matching characters which are not in the hexadecimal set (0-9, A-F, a-f).
-   */
-  static final Pattern NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]");
 
   final StreamReader reader;
   /**
@@ -63,28 +59,7 @@ final class ScannerImplJava implements Scanner {
    */
   final Map<Integer, SimpleKey> possibleSimpleKeys;
   final LoadSettings settings;
-  /**
-   * Had we reached the end of the stream?
-   */
-  boolean done = false;
-  /**
-   * The number of unclosed '{' and '['. `isBlockContext()` means block context.
-   */
-  int flowLevel = 0;
-  /**
-   * The last added token
-   */
-  Token lastToken;
 
-  /**
-   * Variables related to simple keys treatment.
-   * Number of tokens that were emitted through the `get_token` method.
-   */
-  int tokensTaken = 0;
-  /**
-   * The current indentation level.
-   */
-  int indent = -1;
   /**
    * <pre>
    * A simple key is a key that is not denoted by the '?' indicator.
@@ -122,7 +97,6 @@ final class ScannerImplJava implements Scanner {
     this.indents = new kotlin.collections.ArrayDeque<>(10);
     // The order in possibleSimpleKeys is kept for nextPossibleSimpleKey()
     this.possibleSimpleKeys = new LinkedHashMap<>();
-    //fetchStreamStart();// Add the STREAM-START token.
   }
 
   public boolean checkToken(@NotNull Token.ID... choices) {
@@ -144,12 +118,6 @@ final class ScannerImplJava implements Scanner {
     throw new NotImplementedError("converted to Kotlin");
   }
 
-
-  boolean isBlockContext() {
-    return this.flowLevel == 0;
-  }
-
-
   CommentToken scanComment(CommentType type) {
     // See the specification for details.
     Optional<Mark> startMark = reader.getMark();
@@ -163,6 +131,7 @@ final class ScannerImplJava implements Scanner {
     return new CommentToken(type, value, startMark, endMark);
   }
 
+  @NotNull
   List<Token> scanDirective() {
     // See the specification for details.
     Optional<Mark> startMark = reader.getMark();
@@ -195,7 +164,8 @@ final class ScannerImplJava implements Scanner {
   /**
    * Scan a directive name. Directive names are a series of non-space characters.
    */
-  String scanDirectiveName(Optional<Mark> startMark) {
+  @NotNull
+  String scanDirectiveName(@NotNull Optional<Mark> startMark) {
     // See the specification for details.
     int length = 0;
     // A Directive-name is a sequence of alphanumeric characters
@@ -221,8 +191,8 @@ final class ScannerImplJava implements Scanner {
     }
     return value;
   }
-
-  List<Integer> scanYamlDirectiveValue(Optional<Mark> startMark) {
+  @NotNull
+  List<Integer> scanYamlDirectiveValue(@NotNull Optional<Mark> startMark) {
     // See the specification for details.
     while (reader.peek() == ' ') {
       reader.forward();
@@ -252,7 +222,7 @@ final class ScannerImplJava implements Scanner {
    * Read a %YAML directive number: this is either the major or the minor part. Stop reading at a
    * non-digit character (usually either '.' or '\n').
    */
-  Integer scanYamlDirectiveNumber(Optional<Mark> startMark) {
+  @NotNull  Integer scanYamlDirectiveNumber(@NotNull Optional<Mark> startMark) {
     // See the specification for details.
     int c = reader.peek();
     if (!Character.isDigit(c)) {
@@ -283,7 +253,7 @@ final class ScannerImplJava implements Scanner {
    * <p>
    * </p>
    */
-  List<String> scanTagDirectiveValue(Optional<Mark> startMark) {
+  @NotNull  List<String> scanTagDirectiveValue(@NotNull Optional<Mark> startMark) {
     // See the specification for details.
     while (reader.peek() == ' ') {
       reader.forward();
@@ -305,7 +275,7 @@ final class ScannerImplJava implements Scanner {
    * @param startMark - start
    * @return the directive value
    */
-  String scanTagDirectiveHandle(Optional<Mark> startMark) {
+  @NotNull  String scanTagDirectiveHandle(Optional<Mark> startMark) {
     // See the specification for details.
     String value = scanTagHandle("directive", startMark);
     int c = reader.peek();
@@ -320,7 +290,7 @@ final class ScannerImplJava implements Scanner {
   /**
    * Scan a %TAG directive's prefix. This is YAML's ns-tag-prefix.
    */
-  String scanTagDirectivePrefix(Optional<Mark> startMark) {
+  @NotNull  String scanTagDirectivePrefix(Optional<Mark> startMark) {
     // See the specification for details.
     String value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark);
     int c = reader.peek();

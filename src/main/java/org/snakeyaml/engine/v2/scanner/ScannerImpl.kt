@@ -56,8 +56,9 @@ class ScannerImpl(
     //= ArrayDeque<Int>(10)
 
     /**
-     * Keep track of possible simple keys. This is a dictionary. The key is `flow_level`; there can be
-     * no more than one possible simple key for each level.
+     * Keep track of possible simple keys. This is a dictionary. Insertion order _must_ be preserved.
+     *
+     * The key is `flow_level`; there can be no more than one possible simple key for each level.
      *
      * The value is a [SimpleKey] record.
      *
@@ -65,7 +66,7 @@ class ScannerImpl(
      *
      *  The order in [possibleSimpleKeys] is kept for [nextPossibleSimpleKey]
      */
-    private val possibleSimpleKeys by scannerJava::possibleSimpleKeys
+    private val possibleSimpleKeys: MutableMap<Int, SimpleKey> by scannerJava::possibleSimpleKeys
 //    = LinkedHashMap<Int, SimpleKey>()
 
     /** Had we reached the end of the stream */
@@ -335,14 +336,105 @@ class ScannerImpl(
 
     }
 
-    //@formatter:off
+    //region Simple keys treatment.
+
+    /**
+     * Return the number of the nearest possible simple key. Actually we don't need to loop through
+     * the whole dictionary.
+     */
+    private fun nextPossibleSimpleKey(): Int {
+        // Because possibleSimpleKeys is ordered we can simply take the first key
+        return possibleSimpleKeys.values.firstOrNull()?.tokenNumber ?: -1
+    }
 
     //region Simple keys treatment.
-    private fun nextPossibleSimpleKey(): Int = scannerJava.nextPossibleSimpleKey()
-    private fun stalePossibleSimpleKeys(): Unit = scannerJava.stalePossibleSimpleKeys()
-    private fun savePossibleSimpleKey(): Unit = scannerJava.savePossibleSimpleKey()
-    private fun removePossibleSimpleKey(): Unit = scannerJava.removePossibleSimpleKey()
+    /**
+     * ```
+     * Remove entries that are no longer possible simple keys. According to
+     * the YAML specification, simple keys
+     * - should be limited to a single line,
+     * - should be no longer than 1024 characters.
+     * Disabling this procedure will allow simple keys of any length and
+     * height (may cause problems if indentation is broken though).
+     * ```
+     */
+    private fun stalePossibleSimpleKeys() {
+        if (possibleSimpleKeys.isNotEmpty()) {
+            val iterator = possibleSimpleKeys.values.iterator()
+            while (iterator.hasNext()) {
+                val key = iterator.next()
+                if (key.line != reader.line || reader.index - key.index > 1024) {
+                    // If the key is not on the same line as the current
+                    // position OR the difference in column between the token
+                    // start and the current position is more than the maximum
+                    // simple key length, then this cannot be a simple key.
+                    if (key.isRequired) {
+                        // If the key was required, this implies an error condition.
+                        throw ScannerException(
+                            context = "while scanning a simple key",
+                            contextMark = key.mark,
+                            problem = "could not find expected ':'",
+                            problemMark = reader.getMark(),
+                        )
+                    }
+                    iterator.remove()
+                }
+            }
+        }
+    }
+
+    /**
+     * The next token may start a simple key. We check if it's possible and save its position.
+     * This function is called for `ALIAS`, `ANCHOR`, `TAG`, `SCALAR(flow)`, `[`, and `{`.
+     */
+    private fun savePossibleSimpleKey() {
+        // The next token may start a simple key. We check if it's possible
+        // and save its position. This function is called for
+        // ALIAS, ANCHOR, TAG, SCALAR(flow), '[', and '{'.
+
+        // Check if a simple key is required at the current position.
+        // A simple key is required if this position is the root flowLevel, AND
+        // the current indentation level is the same as the last indent-level.
+        val required = isBlockContext() && indent == reader.column
+
+        if (allowSimpleKey || !required) {
+            // A simple key is required only if it is the first token in the current line.
+            // Therefore, it is always allowed.
+        } else {
+            throw YamlEngineException("A simple key is required only if it is the first token in the current line")
+        }
+
+        // The next token might be a simple key. Let's save its number and position.
+        if (allowSimpleKey) {
+            removePossibleSimpleKey()
+            val tokenNumber = tokensTaken + tokens.size
+            val key = SimpleKey(
+                tokenNumber = tokenNumber,
+                isRequired = required,
+                index = reader.index,
+                line = reader.line,
+                column = reader.column,
+                mark = reader.getMark(),
+            )
+            possibleSimpleKeys[flowLevel] = key
+        }
+    }
+
+    /** Remove the saved possible key position at the current flow level. */
+    private fun removePossibleSimpleKey() {
+        val key = possibleSimpleKeys.remove(flowLevel)
+        if (key != null && key.isRequired) {
+            throw ScannerException(
+                context = "while scanning a simple key",
+                contextMark = key.mark,
+                problem = "could not find expected ':'",
+                problemMark = reader.getMark(),
+            )
+        }
+    }
     //endregion
+
+    //@formatter:off
 
     //region Indentation functions.
     private fun unwindIndent(col: Int): Unit = scannerJava.unwindIndent(col)

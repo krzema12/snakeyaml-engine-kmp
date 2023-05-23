@@ -1239,7 +1239,40 @@ class ScannerImpl(
 
     private fun scanBlockScalarIndentation(): BreakIntentHolder = scannerJava.scanBlockScalarIndentation()
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder = scannerJava.scanBlockScalarBreaks(indent)
-    private fun scanFlowScalar(style: ScalarStyle): Token = scannerJava.scanFlowScalar(style)
+
+
+    /**
+     * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
+     * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
+     *
+     * ```
+     * See the specification for details.
+     * Note that we loose indentation rules for quoted scalars. Quoted
+     * scalars don't need to adhere indentation because &quot; and ' clearly
+     * mark the beginning and the end of them. Therefore we are less
+     * restrictive then the specification requires. We only need to check
+     * that document separators are not included in scalars.
+     * ```
+     */
+    private fun scanFlowScalar(style: ScalarStyle): Token {
+        // The style will be either single- or double-quoted; we determine this
+        // by the first character in the entry (supplied)
+        val doubleValue = style == ScalarStyle.DOUBLE_QUOTED
+        val startMark = reader.getMark()
+        val quote = reader.peek()
+        reader.forward()
+        val chunks = buildString {
+            append(scanFlowScalarNonSpaces(doubleValue, startMark))
+            while (reader.peek() != quote) {
+                append(scanFlowScalarSpaces(startMark))
+                append(scanFlowScalarNonSpaces(doubleValue, startMark))
+            }
+        }
+        reader.forward()
+        val endMark = reader.getMark()
+        return ScalarToken(chunks, false, startMark, endMark, style)
+    }
+
     private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String =
         scannerJava.scanFlowScalarNonSpaces(doubleQuoted, startMark)
 
@@ -1300,7 +1333,56 @@ class ScannerImpl(
         return ScalarToken(chunks.toString(), true, startMark, endMark)
     }
 
-    private fun atEndOfPlain(): Boolean = scannerJava.atEndOfPlain()
+
+    /**
+     * Helper for scanPlainSpaces method when comments are enabled.
+     * The ensures that blank lines and comments following a multi-line plain token are not swallowed
+     * up
+     */
+    private fun atEndOfPlain(): Boolean {
+        // peak ahead to find end of whitespaces and the column at which it occurs
+        var wsLength = 0
+        var wsColumn = reader.column
+        run {
+            var c: Int
+            while (
+                reader.peek(wsLength).also { c = it } != 0
+                && CharConstants.NULL_BL_T_LINEBR.has(c)
+            ) {
+                wsLength++
+                if (!CharConstants.LINEBR.has(c) && (c != '\r'.code || reader.peek(wsLength + 1) != '\n'.code) && c != 0xFEFF
+                ) {
+                    wsColumn++
+                } else {
+                    wsColumn = 0
+                }
+            }
+        }
+
+        // if we see, a comment or end of string or change decrease in indent, we are done
+        // Do not chomp end of lines and blanks, they will be handled by the main loop.
+        if (reader.peek(wsLength) == '#'.code || reader.peek(wsLength + 1) == 0 || isBlockContext() && wsColumn < indent) {
+            return true
+        }
+
+        // if we see, after the space, a key-value followed by a ':', we are done
+        // Do not chomp end of lines and blanks, they will be handled by the main loop.
+        if (isBlockContext()) {
+            var c: Int
+            var extra = 1
+            while (reader.peek(wsLength + extra).also { c = it } != 0
+                && !CharConstants.NULL_BL_T_LINEBR.has(c)) {
+                if (c == ':'.code && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(wsLength + extra + 1))) {
+                    return true
+                }
+                extra++
+            }
+        }
+
+        // None of the above so safe to chomp the spaces.
+        return false
+    }
+
 
     /**
      * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar

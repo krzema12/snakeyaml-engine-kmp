@@ -1176,8 +1176,10 @@ class ScannerImpl(
                 // URI and the closing &gt;, then an error has occurred.
                 val s = String(Character.toChars(c))
                 throw ScannerException(
-                    "while scanning a tag", startMark,
-                    "expected '>', but found '$s' ($c)", reader.getMark(),
+                    problem = "while scanning a tag",
+                    problemMark = startMark,
+                    context = "expected '>', but found '$s' ($c)",
+                    contextMark = reader.getMark(),
                 )
             }
             handle = null
@@ -1326,8 +1328,71 @@ class ScannerImpl(
     }
 
 
-    private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
-        scannerJava.scanBlockScalarIndicators(startMark)
+    /**
+     * Scan a block scalar indicator. The block scalar indicator includes two optional components,
+     * which may appear in either order.
+     *
+     *
+     * A block indentation indicator is a non-zero digit describing the indentation level of the block
+     * scalar to follow. This indentation is an additional number of spaces relative to the current
+     * indentation level.
+     *
+     *
+     * A block chomping indicator is a + or -, selecting the chomping mode away from the default
+     * (clip) to either -(strip) or +(keep).
+     */
+    private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping {
+        // See the specification for details.
+        var indicator = Int.MIN_VALUE
+        var increment: Optional<Int> = Optional.empty()
+        var c = reader.peek()
+        if (c == '-'.code || c == '+'.code) {
+            indicator = c
+            reader.forward()
+            c = reader.peek()
+            if (Character.isDigit(c)) {
+                val incr = String(Character.toChars(c)).toInt()
+                if (incr == 0) {
+                    throw ScannerException(
+                        problem = ScannerImplJava.SCANNING_SCALAR,
+                        problemMark = startMark,
+                        context = "expected indentation indicator in the range 1-9, but found 0",
+                        contextMark = reader.getMark(),
+                    )
+                }
+                increment = Optional.of(incr)
+                reader.forward()
+            }
+        } else if (Character.isDigit(c)) {
+            val incr = String(Character.toChars(c)).toInt()
+            if (incr == 0) {
+                throw ScannerException(
+                    problem = ScannerImplJava.SCANNING_SCALAR,
+                    problemMark = startMark,
+                    context = "expected indentation indicator in the range 1-9, but found 0",
+                    contextMark = reader.getMark(),
+                )
+            }
+            increment = Optional.of(incr)
+            reader.forward()
+            c = reader.peek()
+            if (c == '-'.code || c == '+'.code) {
+                indicator = c
+                reader.forward()
+            }
+        }
+        c = reader.peek()
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = ScannerImplJava.SCANNING_SCALAR,
+                problemMark = startMark,
+                context = "expected chomping or indentation indicators, but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return Chomping(indicator, increment)
+    }
 
 
     /**
@@ -1353,15 +1418,77 @@ class ScannerImpl(
         if (!scanLineBreak().isPresent && c != 0) {
             val s = String(Character.toChars(c))
             throw ScannerException(
-                ScannerImplJava.SCANNING_SCALAR, startMark,
-                "expected a comment or a line break, but found $s($c)", reader.getMark(),
+                problem = ScannerImplJava.SCANNING_SCALAR,
+                problemMark = startMark,
+                context = "expected a comment or a line break, but found $s($c)",
+                contextMark = reader.getMark(),
             )
         }
         return commentToken
     }
 
-    private fun scanBlockScalarIndentation(): BreakIntentHolder = scannerJava.scanBlockScalarIndentation()
-    private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder = scannerJava.scanBlockScalarBreaks(indent)
+    /**
+     * Scans for the indentation of a block scalar implicitly. This mechanism is used only if the
+     * block did not explicitly state an indentation to be used.
+     */
+    private fun scanBlockScalarIndentation(): BreakIntentHolder {
+        // See the specification for details.
+        val chunks = StringBuilder()
+        var maxIndent = 0
+        var endMark: Optional<Mark> = reader.getMark()
+        // Look ahead some number of lines until the first non-blank character
+        // occurs; the determined indentation will be the maximum number of
+        // leading spaces on any of these lines.
+        while (CharConstants.LINEBR.has(reader.peek(), " \r")) {
+            if (reader.peek() != ' '.code) {
+                // If the character isn't a space, it must be some kind of
+                // line-break; scan the line break and track it.
+                chunks.append(scanLineBreak().orElse(""))
+                endMark = reader.getMark()
+            } else {
+                // If the character is a space, move forward to the next
+                // character; if we surpass our previous maximum for indent
+                // level, update that too.
+                reader.forward()
+                if (reader.column > maxIndent) {
+                    maxIndent = reader.column
+                }
+            }
+        }
+        // Pass several results back together (Java 8 does not have records)
+        return BreakIntentHolder(chunks.toString(), maxIndent, endMark)
+    }
+
+
+    private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {
+        // See the specification for details.
+        val chunks = StringBuilder()
+        var endMark: Optional<Mark> = reader.getMark()
+        var col = reader.column
+        // Scan for up to the expected indentation-level of spaces, then move
+        // forward past that amount.
+        while (col < indent && reader.peek() == ' '.code) {
+            reader.forward()
+            col++
+        }
+
+        // Consume one or more line breaks followed by any amount of spaces,
+        // until we find something that isn't a line-break.
+        var lineBreakOpt: Optional<String>
+        while (scanLineBreak().also { lineBreakOpt = it }.isPresent) {
+            chunks.append(lineBreakOpt.get())
+            endMark = reader.getMark()
+            // Scan past up to (indent) spaces on the next line, then forward
+            // past them.
+            col = reader.column
+            while (col < indent && reader.peek() == ' '.code) {
+                reader.forward()
+                col++
+            }
+        }
+        // Return both the assembled intervening string and the end-mark.
+        return BreakIntentHolder(chunks.toString(), -1, endMark)
+    }
 
 
     /**
@@ -1400,7 +1527,7 @@ class ScannerImpl(
     /**
      * Scan some number of flow-scalar non-space characters.
      */
-    fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String {
+    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String {
         // See the specification for details.
         val chunks = StringBuilder()
         while (true) {
@@ -1507,7 +1634,37 @@ class ScannerImpl(
     }
 
 
-    private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarBreaks(startMark)
+    private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String {
+        // See the specification for details.
+        val chunks = StringBuilder()
+        while (true) {
+            // Instead of checking indentation, we check for document separators.
+            val prefix = reader.prefix(3)
+            if (("---" == prefix || "..." == prefix)
+                && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            ) {
+                throw ScannerException(
+                    problem = "while scanning a quoted scalar",
+                    problemMark = startMark,
+                    context = "found unexpected document separator",
+                    contextMark = reader.getMark(),
+                )
+            }
+            // Scan past any number of spaces and tabs, ignoring them
+            while (" \t".indexOf(reader.peek().toChar()) != -1) {
+                reader.forward()
+            }
+            // If we stopped at a line break, add that; otherwise, return the
+            // assembled set of scalar breaks.
+            val lineBreakOpt = scanLineBreak()
+            if (lineBreakOpt.isPresent) {
+                chunks.append(lineBreakOpt.get())
+            } else {
+                return chunks.toString()
+            }
+        }
+    }
+
 
     /**
      * Scan a plain scalar.

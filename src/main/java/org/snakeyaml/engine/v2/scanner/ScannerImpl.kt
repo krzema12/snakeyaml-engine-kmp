@@ -1137,7 +1137,6 @@ class ScannerImpl(
         }
     }
 
-
     private fun scanTag(): Token = scannerJava.scanTag()
     private fun scanBlockScalar(style: ScalarStyle): List<Token> = scannerJava.scanBlockScalar(style)
     private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
@@ -1159,8 +1158,8 @@ class ScannerImpl(
      * Scan a plain scalar.
      *
      * See the specification for details. We add an additional restriction for the flow context: plain
-     * scalars in the flow context cannot contain ',', ':' and '?'. We also keep track of the
-     * `allow_simple_key` flag here. Indentation rules are loosed for the flow context.
+     * scalars in the flow context cannot contain `,`, `:` and `?`. We also keep track of the
+     * `allow_simple_key` flag here. Indentation rules are loosened for the flow context.
      */
     private fun scanPlain(): Token {
         val chunks = StringBuilder()

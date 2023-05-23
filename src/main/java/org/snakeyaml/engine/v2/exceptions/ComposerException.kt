@@ -24,10 +24,10 @@ import java.util.*
  * @param problemMark - the problem location
  */
 class ComposerException @JvmOverloads constructor(
-    context: String = "",
-    contextMark: Optional<Mark> = Optional.empty<Mark>(),
     problem: String?,
     problemMark: Optional<Mark>,
+    context: String = "",
+    contextMark: Optional<Mark> = Optional.empty<Mark>(),
 ) : MarkedYamlEngineException(
     context = context,
     contextMark = contextMark,

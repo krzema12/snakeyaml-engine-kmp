@@ -17,15 +17,16 @@ import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.CharConstants;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.scanner.Chomping.Indicator;
-import org.snakeyaml.engine.v2.tokens.*;
+import org.snakeyaml.engine.v2.tokens.CommentToken;
+import org.snakeyaml.engine.v2.tokens.DirectiveToken;
+import org.snakeyaml.engine.v2.tokens.ScalarToken;
+import org.snakeyaml.engine.v2.tokens.Token;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -146,12 +147,9 @@ final class ScannerImplJava implements Scanner {
   }
 
 
-
   boolean isBlockContext() {
     return this.flowLevel == 0;
   }
-
-
 
 
   CommentToken scanComment(CommentType type) {
@@ -167,7 +165,6 @@ final class ScannerImplJava implements Scanner {
     return new CommentToken(type, value, startMark, endMark);
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
   List<Token> scanDirective() {
     // See the specification for details.
     Optional<Mark> startMark = reader.getMark();
@@ -594,36 +591,6 @@ final class ScannerImplJava implements Scanner {
     return new BreakIntentHolder(chunks.toString(), -1, endMark);
   }
 
-  /**
-   * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
-   * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
-   *
-   * <pre>
-   * See the specification for details.
-   * Note that we loose indentation rules for quoted scalars. Quoted
-   * scalars don't need to adhere indentation because &quot; and ' clearly
-   * mark the beginning and the end of them. Therefore we are less
-   * restrictive then the specification requires. We only need to check
-   * that document separators are not included in scalars.
-   * </pre>
-   */
-  Token scanFlowScalar(final ScalarStyle style) {
-    // The style will be either single- or double-quoted; we determine this
-    // by the first character in the entry (supplied)
-    final boolean doubleValue = style == ScalarStyle.DOUBLE_QUOTED;
-    StringBuilder chunks = new StringBuilder();
-    Optional<Mark> startMark = reader.getMark();
-    int quote = reader.peek();
-    reader.forward();
-    chunks.append(scanFlowScalarNonSpaces(doubleValue, startMark));
-    while (reader.peek() != quote) {
-      chunks.append(scanFlowScalarSpaces(startMark));
-      chunks.append(scanFlowScalarNonSpaces(doubleValue, startMark));
-    }
-    reader.forward();
-    Optional<Mark> endMark = reader.getMark();
-    return new ScalarToken(chunks.toString(), false, startMark, endMark, style);
-  }
 
   /**
    * Scan some number of flow-scalar non-space characters.
@@ -750,53 +717,6 @@ final class ScannerImplJava implements Scanner {
       }
     }
   }
-
-
-  /**
-   * Helper for scanPlainSpaces method when comments are enabled.
-   * The ensures that blank lines and comments following a multi-line plain token are not swallowed
-   * up
-   */
-  boolean atEndOfPlain() {
-    // peak ahead to find end of whitespaces and the column at which it occurs
-    int wsLength = 0;
-    int wsColumn = this.reader.getColumn();
-    {
-      int c;
-      while ((c = reader.peek(wsLength)) != 0 && CharConstants.NULL_BL_T_LINEBR.has(c)) {
-        wsLength++;
-        if (!CharConstants.LINEBR.has(c) && (c != '\r' || reader.peek(wsLength + 1) != '\n')
-            && c != 0xFEFF) {
-          wsColumn++;
-        } else {
-          wsColumn = 0;
-        }
-      }
-    }
-
-    // if we see, a comment or end of string or change decrease in indent, we are done
-    // Do not chomp end of lines and blanks, they will be handled by the main loop.
-    if (reader.peek(wsLength) == '#' || reader.peek(wsLength + 1) == 0
-        || isBlockContext() && wsColumn < this.indent) {
-      return true;
-    }
-
-    // if we see, after the space, a key-value followed by a ':', we are done
-    // Do not chomp end of lines and blanks, they will be handled by the main loop.
-    if (isBlockContext()) {
-      int c;
-      for (int extra = 1; (c = reader.peek(wsLength + extra)) != 0
-          && !CharConstants.NULL_BL_T_LINEBR.has(c); extra++) {
-        if (c == ':' && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(wsLength + extra + 1))) {
-          return true;
-        }
-      }
-    }
-
-    // None of the above so safe to chomp the spaces.
-    return false;
-  }
-
 
   /**
    * <p>

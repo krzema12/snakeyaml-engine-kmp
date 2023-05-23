@@ -13,19 +13,6 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_CODES;
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
-
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.regex.Pattern;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.common.Anchor;
@@ -36,56 +23,45 @@ import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.ScannerException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.scanner.ScannerImpl.Chomping.Indicator;
-import org.snakeyaml.engine.v2.tokens.AliasToken;
-import org.snakeyaml.engine.v2.tokens.AnchorToken;
-import org.snakeyaml.engine.v2.tokens.BlockEndToken;
-import org.snakeyaml.engine.v2.tokens.BlockEntryToken;
-import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken;
-import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken;
-import org.snakeyaml.engine.v2.tokens.CommentToken;
-import org.snakeyaml.engine.v2.tokens.DirectiveToken;
-import org.snakeyaml.engine.v2.tokens.DocumentEndToken;
-import org.snakeyaml.engine.v2.tokens.DocumentStartToken;
-import org.snakeyaml.engine.v2.tokens.FlowEntryToken;
-import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken;
-import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken;
-import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken;
-import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken;
-import org.snakeyaml.engine.v2.tokens.KeyToken;
-import org.snakeyaml.engine.v2.tokens.ScalarToken;
-import org.snakeyaml.engine.v2.tokens.StreamEndToken;
-import org.snakeyaml.engine.v2.tokens.StreamStartToken;
-import org.snakeyaml.engine.v2.tokens.TagToken;
-import org.snakeyaml.engine.v2.tokens.TagTuple;
-import org.snakeyaml.engine.v2.tokens.Token;
-import org.snakeyaml.engine.v2.tokens.ValueToken;
+import org.snakeyaml.engine.v2.tokens.*;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_CODES;
+import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
 
 /**
- * <pre>
  * Scanner produces tokens of the following types:
- * STREAM-START
- * STREAM-END
- * COMMENT
- * DIRECTIVE(name, value)
- * DOCUMENT-START
- * DOCUMENT-END
- * BLOCK-SEQUENCE-START
- * BLOCK-MAPPING-START
- * BLOCK-END
- * FLOW-SEQUENCE-START
- * FLOW-MAPPING-START
- * FLOW-SEQUENCE-END
- * FLOW-MAPPING-END
- * BLOCK-ENTRY
- * FLOW-ENTRY
- * KEY
- * VALUE
- * ALIAS(value)
- * ANCHOR(value)
- * TAG(value)
- * SCALAR(value, plain, style)
+ * <br/>
+ * <l>
+ * <li>{@code STREAM-START}
+ * <li>{@code STREAM-END}
+ * <li>{@code COMMENT}
+ * <li>{@code DIRECTIVE(name, value)}
+ * <li>{@code DOCUMENT-START}
+ * <li>{@code DOCUMENT-END}
+ * <li>{@code BLOCK-SEQUENCE-START}
+ * <li>{@code BLOCK-MAPPING-START}
+ * <li>{@code BLOCK-END}
+ * <li>{@code FLOW-SEQUENCE-START}
+ * <li>{@code FLOW-MAPPING-START}
+ * <li>{@code FLOW-SEQUENCE-END}
+ * <li>{@code FLOW-MAPPING-END}
+ * <li>{@code BLOCK-ENTRY}
+ * <li>{@code FLOW-ENTRY}
+ * <li>{@code KEY}
+ * <li>{@code VALUE}
+ * <li>{@code ALIAS(value)}
+ * <li>{@code ANCHOR(value)}
+ * <li>{@code TAG(value)}
+ * <li>{@code SCALAR(value, plain, style)}
+ * </li>
+ * <p>
+ * <br/>
  * Read comments in the Scanner code for more details.
- * </pre>
  */
 public final class ScannerImpl implements Scanner {
 
@@ -149,7 +125,7 @@ public final class ScannerImpl implements Scanner {
   private boolean allowSimpleKey = true;
 
   /**
-   * @param reader - the input
+   * @param reader   - the input
    * @param settings - configurable options
    * @deprecated use the other constructor with LoadSettings first
    */
@@ -162,7 +138,7 @@ public final class ScannerImpl implements Scanner {
    * Create
    *
    * @param settings - configurable options
-   * @param reader - the input
+   * @param reader   - the input
    */
   public ScannerImpl(LoadSettings settings, StreamReader reader) {
     this.reader = reader;
@@ -198,8 +174,8 @@ public final class ScannerImpl implements Scanner {
       // should not use 'foreach' here because of the performance reasons
       Token firstToken = this.tokens.get(0);
       Token.ID first = firstToken.getTokenId();
-      for (int i = 0; i < choices.length; i++) {
-        if (first == choices[i]) {
+      for (Token.ID choice : choices) {
+        if (first == choice) {
           return true;
         }
       }
@@ -445,7 +421,7 @@ public final class ScannerImpl implements Scanner {
   private void stalePossibleSimpleKeys() {
     if (!this.possibleSimpleKeys.isEmpty()) {
       for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator(); iterator
-          .hasNext();) {
+          .hasNext(); ) {
         SimpleKey key = iterator.next();
         if ((key.getLine() != reader.getLine()) || (reader.getIndex() - key.getIndex() > 1024)) {
           // If the key is not on the same line as the current
@@ -751,8 +727,7 @@ public final class ScannerImpl implements Scanner {
     if (isBlockContext()) {
       // Are we allowed to start a new entry?
       if (!this.allowSimpleKey) {
-        throw new ScannerException("", Optional.empty(), "sequence entries are not allowed here",
-            reader.getMark());
+        throw new ScannerException("", Optional.empty(), "sequence entries are not allowed here", reader.getMark());
       }
 
       // We may need to add BLOCK-SEQUENCE-START.
@@ -1227,7 +1202,7 @@ public final class ScannerImpl implements Scanner {
       length++;
       c = reader.peek(length);
     }
-    // If the name would be empty, an error occurs.
+    // If the peeked name is empty, an error occurs.
     if (length == 0) {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(DIRECTIVE_PREFIX, startMark,
@@ -1290,8 +1265,7 @@ public final class ScannerImpl implements Scanner {
       throw new ScannerException("while scanning a YAML directive", startMark,
           "found a number which cannot represent a valid version: " + number, reader.getMark());
     }
-    Integer value = Integer.parseInt(number);
-    return value;
+    return Integer.parseInt(number);
   }
 
   /**
@@ -1442,12 +1416,11 @@ public final class ScannerImpl implements Scanner {
     // Determine the type of tag property based on the first character
     // encountered
     int c = reader.peek(1);
-    String handle = null;
-    String suffix = null;
+    final String handle;
+    final String suffix;
     // Verbatim tag! (c-verbatim-tag)
     if (c == '<') {
-      // Skip the exclamation mark and &gt;, then read the tag suffix (as
-      // a URI).
+      // Skip the exclamation mark and &gt;, then read the tag suffix (as a URI).
       reader.forward(2);
       suffix = scanTagUri("tag", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark);
       c = reader.peek();
@@ -1458,11 +1431,13 @@ public final class ScannerImpl implements Scanner {
         throw new ScannerException("while scanning a tag", startMark,
             "expected '>', but found '" + s + "' (" + c + ")", reader.getMark());
       }
+      handle = null;
       reader.forward();
     } else if (CharConstants.NULL_BL_T_LINEBR.has(c)) {
       // A NUL, blank, tab, or line-break means that this was a
       // c-ns-non-specific tag.
       suffix = "!";
+      handle = null;
       reader.forward();
     } else {
       // Any other character implies c-ns-shorthand-tag type.
@@ -2214,14 +2189,14 @@ public final class ScannerImpl implements Scanner {
    */
   private List<Token> makeTokenList(Token... tokens) {
     List<Token> tokenList = new ArrayList<>();
-    for (int ix = 0; ix < tokens.length; ix++) {
-      if (tokens[ix] == null) {
+    for (Token token : tokens) {
+      if (token == null) {
         continue;
       }
-      if (!settings.parseComments && (tokens[ix] instanceof CommentToken)) {
+      if (!settings.parseComments && (token instanceof CommentToken)) {
         continue;
       }
-      tokenList.add(tokens[ix]);
+      tokenList.add(token);
     }
     return tokenList;
   }

@@ -7,8 +7,16 @@ import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.tokens.BlockEndToken
+import org.snakeyaml.engine.v2.tokens.BlockEntryToken
+import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
+import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.CommentToken
+import org.snakeyaml.engine.v2.tokens.KeyToken
+import org.snakeyaml.engine.v2.tokens.StreamEndToken
+import org.snakeyaml.engine.v2.tokens.StreamStartToken
 import org.snakeyaml.engine.v2.tokens.Token
+import org.snakeyaml.engine.v2.tokens.ValueToken
 import java.util.Optional
 import java.util.regex.Pattern
 
@@ -434,30 +442,214 @@ class ScannerImpl(
     }
     //endregion
 
-    //@formatter:off
-
     //region Indentation functions.
-    private fun unwindIndent(col: Int): Unit = scannerJava.unwindIndent(col)
-    private fun addIndent(column: Int): Boolean = scannerJava.addIndent(column)
+
+    /**
+     * * Handle implicitly ending multiple levels of block nodes by decreased indentation. This
+     * function becomes important on lines 4 and 7 of this example:
+     *
+     * ```yaml
+     * 1| book one:
+     * 2|   part one:
+     * 3|     chapter one
+     * 4|   part two:
+     * 5|     chapter one
+     * 6|     chapter two
+     * 7| book two:
+     * ```
+     *
+     * In flow context, tokens should respect indentation. Actually the condition should be
+     * `self.indent >= column` according to the spec. But this condition will prohibit intuitively
+     * correct constructions such as `key : { }`
+     */
+    private fun unwindIndent(col: Int) {
+        // In the flow context, indentation is ignored. We make the scanner less
+        // restrictive than specification requires.
+        if (isFlowContext()) {
+            return
+        }
+
+        // In block context, we may need to issue the BLOCK-END tokens.
+        while (indent > col) {
+            val mark = reader.getMark()
+            indent = indents.removeLast()
+            addToken(BlockEndToken(mark, mark))
+        }
+    }
+
+    /** Check if we need to increase indentation. */
+    private fun addIndent(column: Int): Boolean {
+        if (indent >= column) return false
+
+        indents.addLast(indent)
+        indent = column
+        return true
+    }
     //endregion
 
+
     //region Fetchers - add tokens to the stream (can call scanners)
-    private fun fetchStreamStart(): Unit = scannerJava.fetchStreamStart()
-    private fun fetchStreamEnd(): Unit = scannerJava.fetchStreamEnd()
+
+    //endregion
+    //region Fetchers - add tokens to the stream (can call scanners)
+    /** We always add `STREAM-START` as the first token and `STREAM-END` as the last token. */
+    private fun fetchStreamStart() {
+        // Read the token.
+        val mark = reader.getMark()
+
+        // Add STREAM-START.
+        val token: Token = StreamStartToken(mark, mark)
+        addToken(token)
+    }
+
+    private fun fetchStreamEnd() {
+        // Set the current indentation to -1.
+        unwindIndent(-1)
+
+        // Reset simple keys.
+        removePossibleSimpleKey()
+        allowSimpleKey = false
+        possibleSimpleKeys.clear()
+
+        // Read the token.
+        val mark = reader.getMark()
+
+        // Add STREAM-END.
+        val token: Token = StreamEndToken(mark, mark)
+        addToken(token)
+
+        // The stream is finished.
+        done = true
+    }
+
     private fun fetchDirective(): Unit = scannerJava.fetchDirective()
     private fun fetchDocumentStart(): Unit = scannerJava.fetchDocumentStart()
     private fun fetchDocumentEnd(): Unit = scannerJava.fetchDocumentEnd()
-    private fun fetchDocumentIndicator(isDocumentStart: Boolean): Unit = scannerJava.fetchDocumentIndicator(isDocumentStart)
+    private fun fetchDocumentIndicator(isDocumentStart: Boolean): Unit =
+        scannerJava.fetchDocumentIndicator(isDocumentStart)
+
     private fun fetchFlowSequenceStart(): Unit = scannerJava.fetchFlowSequenceStart()
     private fun fetchFlowMappingStart(): Unit = scannerJava.fetchFlowMappingStart()
-    private fun fetchFlowCollectionStart(isMappingStart: Boolean): Unit = scannerJava.fetchFlowCollectionStart(isMappingStart)
+    private fun fetchFlowCollectionStart(isMappingStart: Boolean): Unit =
+        scannerJava.fetchFlowCollectionStart(isMappingStart)
+
     private fun fetchFlowSequenceEnd(): Unit = scannerJava.fetchFlowSequenceEnd()
     private fun fetchFlowMappingEnd(): Unit = scannerJava.fetchFlowMappingEnd()
     private fun fetchFlowCollectionEnd(isMappingEnd: Boolean): Unit = scannerJava.fetchFlowCollectionEnd(isMappingEnd)
     private fun fetchFlowEntry(): Unit = scannerJava.fetchFlowEntry()
-    private fun fetchBlockEntry(): Unit = scannerJava.fetchBlockEntry()
-    private fun fetchKey(): Unit = scannerJava.fetchKey()
-    private fun fetchValue(): Unit = scannerJava.fetchValue()
+
+    /** Fetch an entry in the block style. */
+    private fun fetchBlockEntry() {
+        // Block context needs additional checks.
+        if (isBlockContext()) {
+            // Are we allowed to start a new entry?
+            if (!allowSimpleKey) {
+                throw ScannerException("", Optional.empty(), "sequence entries are not allowed here", reader.getMark())
+            }
+
+            // We may need to add BLOCK-SEQUENCE-START.
+            if (addIndent(reader.column)) {
+                val mark = reader.getMark()
+                addToken(BlockSequenceStartToken(mark, mark))
+            }
+        } else {
+            // It's an error for the block entry to occur in the flow
+            // context, but we let the scanner detect this.
+        }
+        // Simple keys are allowed after '-'.
+        allowSimpleKey = true
+
+        // Reset possible simple key on the current level.
+        removePossibleSimpleKey()
+
+        // Add BLOCK-ENTRY.
+        val startMark = reader.getMark()
+        reader.forward()
+        val endMark = reader.getMark()
+        val token: Token = BlockEntryToken(startMark, endMark)
+        addToken(token)
+    }
+
+    /** Fetch a key in a block-style mapping. */
+    private fun fetchKey() {
+        // Block context needs additional checks.
+        if (isBlockContext()) {
+            // Are we allowed to start a key (not necessary a simple)?
+            if (!allowSimpleKey) {
+                throw ScannerException("mapping keys are not allowed here", reader.getMark())
+            }
+            // We may need to add BLOCK-MAPPING-START.
+            if (addIndent(reader.column)) {
+                val mark = reader.getMark()
+                addToken(BlockMappingStartToken(mark, mark))
+            }
+        }
+        // Simple keys are allowed after '?' in the block context.
+        allowSimpleKey = isBlockContext()
+
+        // Reset possible simple key on the current level.
+        removePossibleSimpleKey()
+
+        // Add KEY.
+        val startMark = reader.getMark()
+        reader.forward()
+        val endMark = reader.getMark()
+        val token: Token = KeyToken(startMark, endMark)
+        addToken(token)
+    }
+
+    /** Fetch a value in a block-style mapping. */
+    private fun fetchValue() {
+        // Do we determine a simple key?
+        val key = possibleSimpleKeys.remove(flowLevel)
+        if (key != null) {
+            // Add KEY.
+            addToken(key.tokenNumber - tokensTaken, KeyToken(key.mark, key.mark))
+
+            // If this key starts a new block mapping, we need to add BLOCK-MAPPING-START.
+            if (isBlockContext() && addIndent(key.column)) {
+                addToken(
+                    key.tokenNumber - tokensTaken,
+                    BlockMappingStartToken(key.mark, key.mark),
+                )
+            }
+            // There cannot be two simple keys one after another.
+            allowSimpleKey = false
+        } else {
+            // It must be a part of a complex key.
+            // Block context needs additional checks. Do we really need them?
+            // They will be caught by the scanner anyway.
+            if (isBlockContext()) {
+                // We are allowed to start a complex value if and only if we can
+                // start a simple key.
+                if (!allowSimpleKey) {
+                    throw ScannerException("mapping values are not allowed here", reader.getMark())
+                }
+            }
+
+            // If this value starts a new block mapping, we need to add
+            // BLOCK-MAPPING-START. It will be detected as an error later by
+            // the scanner.
+            if (isBlockContext() && addIndent(reader.column)) {
+                val mark = reader.getMark()
+                addToken(BlockMappingStartToken(mark, mark))
+            }
+
+            // Simple keys are allowed after ':' in the block context.
+            allowSimpleKey = isBlockContext()
+
+            // Reset possible simple key on the current level.
+            removePossibleSimpleKey()
+        }
+        // Add VALUE.
+        val startMark = reader.getMark()
+        reader.forward()
+        val endMark = reader.getMark()
+        val token: Token = ValueToken(startMark, endMark)
+        addToken(token)
+    }
+    //@formatter:off
+
     private fun fetchAlias(): Unit = scannerJava.fetchAlias()
     private fun fetchAnchor(): Unit = scannerJava.fetchAnchor()
     private fun fetchTag(): Unit = scannerJava.fetchTag()

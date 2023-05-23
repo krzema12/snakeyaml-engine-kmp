@@ -273,37 +273,7 @@ final class ScannerImplJava implements Scanner {
 
   //region Fetchers - add tokens to the stream (can call scanners)
 
-  /**
-   * We always add STREAM-START as the first token and STREAM-END as the last token.
-   */
-  void fetchStreamStart() {
-    // Read the token.
-    Optional<Mark> mark = reader.getMark();
 
-    // Add STREAM-START.
-    Token token = new StreamStartToken(mark, mark);
-    addToken(token);
-  }
-
-  void fetchStreamEnd() {
-    // Set the current indentation to -1.
-    unwindIndent(-1);
-
-    // Reset simple keys.
-    removePossibleSimpleKey();
-    this.allowSimpleKey = false;
-    this.possibleSimpleKeys.clear();
-
-    // Read the token.
-    Optional<Mark> mark = reader.getMark();
-
-    // Add STREAM-END.
-    Token token = new StreamEndToken(mark, mark);
-    addToken(token);
-
-    // The stream is finished.
-    this.done = true;
-  }
 
   /**
    * Fetch a YAML directive. Directives are presentation details that are interpreted as
@@ -491,89 +461,6 @@ final class ScannerImplJava implements Scanner {
     reader.forward();
     Optional<Mark> endMark = reader.getMark();
     Token token = new BlockEntryToken(startMark, endMark);
-    addToken(token);
-  }
-
-  /**
-   * Fetch a key in a block-style mapping.
-   */
-  void fetchKey() {
-    // Block context needs additional checks.
-    if (isBlockContext()) {
-      // Are we allowed to start a key (not necessary a simple)?
-      if (!this.allowSimpleKey) {
-        throw new ScannerException("mapping keys are not allowed here", reader.getMark());
-      }
-      // We may need to add BLOCK-MAPPING-START.
-      if (addIndent(this.reader.getColumn())) {
-        Optional<Mark> mark = reader.getMark();
-        addToken(new BlockMappingStartToken(mark, mark));
-      }
-    }
-    // Simple keys are allowed after '?' in the block context.
-    this.allowSimpleKey = isBlockContext();
-
-    // Reset possible simple key on the current level.
-    removePossibleSimpleKey();
-
-    // Add KEY.
-    Optional<Mark> startMark = reader.getMark();
-    reader.forward();
-    Optional<Mark> endMark = reader.getMark();
-    Token token = new KeyToken(startMark, endMark);
-    addToken(token);
-  }
-
-  /**
-   * Fetch a value in a block-style mapping.
-   */
-  void fetchValue() {
-    // Do we determine a simple key?
-    SimpleKey key = this.possibleSimpleKeys.remove(this.flowLevel);
-    if (key != null) {
-      // Add KEY.
-      addToken(key.getTokenNumber() - this.tokensTaken, new KeyToken(key.getMark(), key.getMark()));
-
-      // If this key starts a new block mapping, we need to add
-      // BLOCK-MAPPING-START.
-      if (isBlockContext() && addIndent(key.getColumn())) {
-        addToken(key.getTokenNumber() - this.tokensTaken,
-            new BlockMappingStartToken(key.getMark(), key.getMark()));
-      }
-      // There cannot be two simple keys one after another.
-      this.allowSimpleKey = false;
-
-    } else {
-      // It must be a part of a complex key.
-      // Block context needs additional checks. Do we really need them?
-      // They will be caught by the scanner anyway.
-      if (isBlockContext()) {
-        // We are allowed to start a complex value if and only if we can
-        // start a simple key.
-        if (!this.allowSimpleKey) {
-          throw new ScannerException("mapping values are not allowed here", reader.getMark());
-        }
-      }
-
-      // If this value starts a new block mapping, we need to add
-      // BLOCK-MAPPING-START. It will be detected as an error later by
-      // the scanner.
-      if (isBlockContext() && addIndent(reader.getColumn())) {
-        Optional<Mark> mark = reader.getMark();
-        addToken(new BlockMappingStartToken(mark, mark));
-      }
-
-      // Simple keys are allowed after ':' in the block context.
-      allowSimpleKey = isBlockContext();
-
-      // Reset possible simple key on the current level.
-      removePossibleSimpleKey();
-    }
-    // Add VALUE.
-    Optional<Mark> startMark = reader.getMark();
-    reader.forward();
-    Optional<Mark> endMark = reader.getMark();
-    Token token = new ValueToken(startMark, endMark);
     addToken(token);
   }
 

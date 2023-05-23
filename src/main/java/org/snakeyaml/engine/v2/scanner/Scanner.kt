@@ -41,7 +41,7 @@ interface Scanner : Iterator<Token> {
      * @throws ScannerException Thrown in case of malformed input.
      * @throws IndexOutOfBoundsException if no more token left
      */
-    fun peekToken(): Token?
+    fun peekToken(): Token
 
     /**
      * Returns the next token.

@@ -20,6 +20,7 @@ import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken
 import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken
 import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.KeyToken
+import org.snakeyaml.engine.v2.tokens.ScalarToken
 import org.snakeyaml.engine.v2.tokens.StreamEndToken
 import org.snakeyaml.engine.v2.tokens.StreamStartToken
 import org.snakeyaml.engine.v2.tokens.Token
@@ -997,7 +998,60 @@ class ScannerImpl(
     private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String = scannerJava.scanFlowScalarNonSpaces(doubleQuoted ,startMark)
     private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarSpaces(startMark)
     private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarBreaks(startMark)
-    private fun scanPlain(): Token = scannerJava.scanPlain()
+
+    /**
+     * Scan a plain scalar.
+     *
+     * See the specification for details. We add an additional restriction for the flow context: plain
+     * scalars in the flow context cannot contain ',', ':' and '?'. We also keep track of the
+     * `allow_simple_key` flag here. Indentation rules are loosed for the flow context.
+     */
+    private fun scanPlain(): Token {
+        val chunks = StringBuilder()
+        val startMark: Optional<Mark> = reader.getMark()
+        var endMark = startMark
+        val plainIndent = indent + 1
+        var spaces = ""
+        while (true) {
+            var c: Int
+            var length = 0
+            // A comment indicates the end of the scalar.
+            if (reader.peek() == '#'.code) {
+                break
+            }
+            while (true) {
+                c = reader.peek(length)
+                if (
+                    CharConstants.NULL_BL_T_LINEBR.has(c)
+                    || c == ':'.code
+                    && CharConstants.NULL_BL_T_LINEBR.has(
+                        reader.peek(length + 1),
+                        if (isFlowContext())",[]{}" else "")
+                    || isFlowContext() && ",[]{}".indexOf(c.toChar()) != -1
+                    ) {
+                    break
+                }
+                length++
+            }
+            if (length == 0) {
+                break
+            }
+            allowSimpleKey = false
+            chunks.append(spaces)
+            chunks.append(reader.prefixForward(length))
+            endMark = reader.getMark()
+            spaces = scanPlainSpaces()
+            if (
+                spaces.isEmpty()
+                || reader.peek() == '#'.code
+                || isBlockContext() && reader.column < plainIndent
+                ) {
+                break
+            }
+        }
+        return ScalarToken(chunks.toString(), true, startMark, endMark)
+    }
+
     private fun atEndOfPlain(): Boolean = scannerJava.atEndOfPlain()
     private fun scanPlainSpaces(): String = scannerJava.scanPlainSpaces()
     private fun scanTagHandle(name: String, startMark: Optional<Mark>): String = scannerJava.scanTagHandle(name, startMark)

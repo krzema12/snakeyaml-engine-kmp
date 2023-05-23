@@ -167,38 +167,6 @@ final class ScannerImplJava implements Scanner {
 
 
   /**
-   * The next token may start a simple key. We check if it's possible and save its position. This
-   * function is called for ALIAS, ANCHOR, TAG, SCALAR(flow), '[', and '{'.
-   */
-  void savePossibleSimpleKey() {
-    // The next token may start a simple key. We check if it's possible
-    // and save its position. This function is called for
-    // ALIAS, ANCHOR, TAG, SCALAR(flow), '[', and '{'.
-
-    // Check if a simple key is required at the current position.
-    // A simple key is required if this position is the root flowLevel, AND
-    // the current indentation level is the same as the last indent-level.
-    boolean required = isBlockContext() && (this.indent == this.reader.getColumn());
-
-    if (allowSimpleKey || !required) {
-      // A simple key is required only if it is the first token in the
-      // current line. Therefore, it is always allowed.
-    } else {
-      throw new YamlEngineException(
-          "A simple key is required only if it is the first token in the current line");
-    }
-
-    // The next token might be a simple key. Let's save its number and position.
-    if (this.allowSimpleKey) {
-      removePossibleSimpleKey();
-      int tokenNumber = this.tokensTaken + this.tokens.size();
-      SimpleKey key = new SimpleKey(tokenNumber, required, reader.getIndex(), reader.getLine(),
-          this.reader.getColumn(), this.reader.getMark());
-      this.possibleSimpleKeys.put(this.flowLevel, key);
-    }
-  }
-
-  /**
    * Remove the saved possible key position at the current flow level.
    */
   void removePossibleSimpleKey() {
@@ -1021,50 +989,6 @@ final class ScannerImplJava implements Scanner {
     }
   }
 
-  /**
-   * Scan a plain scalar.
-   * <p>
-   * See the specification for details. We add an additional restriction for the flow context: plain
-   * scalars in the flow context cannot contain ',', ':' and '?'. We also keep track of the
-   * `allow_simple_key` flag here. Indentation rules are loosed for the flow context.
-   */
-  Token scanPlain() {
-    StringBuilder chunks = new StringBuilder();
-    Optional<Mark> startMark = reader.getMark();
-    Optional<Mark> endMark = startMark;
-    int plainIndent = this.indent + 1;
-    String spaces = "";
-    while (true) {
-      int c;
-      int length = 0;
-      // A comment indicates the end of the scalar.
-      if (reader.peek() == '#') {
-        break;
-      }
-      while (true) {
-        c = reader.peek(length);
-        if (CharConstants.NULL_BL_T_LINEBR.has(c) || (c == ':' && CharConstants.NULL_BL_T_LINEBR
-            .has(reader.peek(length + 1), isFlowContext() ? ",[]{}" : ""))
-            || (isFlowContext() && ",[]{}".indexOf(c) != -1)) {
-          break;
-        }
-        length++;
-      }
-      if (length == 0) {
-        break;
-      }
-      this.allowSimpleKey = false;
-      chunks.append(spaces);
-      chunks.append(reader.prefixForward(length));
-      endMark = reader.getMark();
-      spaces = scanPlainSpaces();
-      if (spaces.length() == 0 || reader.peek() == '#'
-          || (isBlockContext() && this.reader.getColumn() < plainIndent)) {
-        break;
-      }
-    }
-    return new ScalarToken(chunks.toString(), true, startMark, endMark);
-  }
 
   /**
    * Helper for scanPlainSpaces method when comments are enabled.

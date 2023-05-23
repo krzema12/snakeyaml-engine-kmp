@@ -772,16 +772,118 @@ class ScannerImpl(
         addToken(token)
     }
 
-    private fun fetchAlias(): Unit = scannerJava.fetchAlias()
-    private fun fetchAnchor(): Unit = scannerJava.fetchAnchor()
-    private fun fetchTag(): Unit = scannerJava.fetchTag()
-    private fun fetchLiteral(): Unit = scannerJava.fetchLiteral()
-    private fun fetchFolded(): Unit = scannerJava.fetchFolded()
-    private fun fetchBlockScalar(style: ScalarStyle): Unit = scannerJava.fetchBlockScalar(style)
-    private fun fetchSingle(): Unit = scannerJava.fetchSingle()
-    private fun fetchDouble(): Unit = scannerJava.fetchDouble()
-    private fun fetchFlowScalar(style: ScalarStyle): Unit = scannerJava.fetchFlowScalar(style)
-    private fun fetchPlain(): Unit = scannerJava.fetchPlain()
+    /**
+     * Fetch an alias, which is a reference to an anchor. Aliases take the format:
+     *
+     * ```
+     * *(anchor name)
+     * ```
+     */
+    private fun fetchAlias() {
+        // ALIAS could be a simple key.
+        savePossibleSimpleKey()
+
+        // No simple keys after ALIAS.
+        allowSimpleKey = false
+
+        // Scan and add ALIAS.
+        val tok = scanAnchor(false)
+        addToken(tok)
+    }
+
+    /**
+     * Fetch an anchor. Anchors take the form:
+     *
+     * ```
+     * &(anchor name)
+     * ```
+     */
+    private fun fetchAnchor() {
+        // ANCHOR could start a simple key.
+        savePossibleSimpleKey()
+
+        // No simple keys after ANCHOR.
+        allowSimpleKey = false
+
+        // Scan and add ANCHOR.
+        val tok = scanAnchor(true)
+        addToken(tok)
+    }
+
+    /** Fetch a tag. Tags take a complex form. */
+    private fun fetchTag() {
+        // TAG could start a simple key.
+        savePossibleSimpleKey()
+
+        // No simple keys after TAG.
+        allowSimpleKey = false
+
+        // Scan and add TAG.
+        val tok = scanTag()
+        addToken(tok)
+    }
+
+
+    /**
+     * Fetch a literal scalar, denoted with a vertical-bar. This is the type best used for source code
+     * and other content, such as binary data, which must be included verbatim.
+     */
+    private fun fetchLiteral() = fetchBlockScalar(ScalarStyle.LITERAL)
+
+    /**
+     * Fetch a folded scalar, denoted with a greater-than sign. This is the type best used for long
+     * content, such as the text of a chapter or description.
+     */
+    private fun fetchFolded() = fetchBlockScalar(ScalarStyle.FOLDED)
+
+    /**
+     * Fetch a block scalar (literal or folded).
+     */
+    private fun fetchBlockScalar(style: ScalarStyle) {
+        // A simple key may follow a block scalar.
+        allowSimpleKey = true
+
+        // Reset possible simple key on the current level.
+        removePossibleSimpleKey()
+
+        // Scan and add SCALAR.
+        val tok = scanBlockScalar(style)
+        addAllTokens(tok)
+    }
+
+    /** Fetch a single-quoted (') scalar. */
+    private fun fetchSingle() = fetchFlowScalar(ScalarStyle.SINGLE_QUOTED)
+
+    /** Fetch a double-quoted (") scalar. */
+    private fun fetchDouble() = fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED)
+
+    /** Fetch a flow scalar (single- or double-quoted). */
+    private fun fetchFlowScalar(style: ScalarStyle?) {
+        // A flow scalar could be a simple key.
+        savePossibleSimpleKey()
+
+        // No simple keys after flow scalars.
+        allowSimpleKey = false
+
+        // Scan and add SCALAR.
+        val tok = scanFlowScalar(style!!)
+        addToken(tok)
+    }
+
+    /** Fetch a plain scalar. */
+    private fun fetchPlain() {
+        // A plain scalar could be a simple key.
+        savePossibleSimpleKey()
+
+        // No simple keys after plain scalars. But note that `scan_plain` will
+        // change this flag if the scan is finished at the beginning of the
+        // line.
+        allowSimpleKey = false
+
+        // Scan and add SCALAR. May change `allow_simple_key`.
+        val tok = scanPlain()
+        addToken(tok)
+    }
 
     //endregion
 

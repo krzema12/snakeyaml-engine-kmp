@@ -29,6 +29,31 @@ internal class SimpleKey(
     val column: Int,
     val mark: Optional<Mark>,
 ) {
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("tokenNumber"))
+    @JvmName("getTokenNumberJvm")
+    fun getTokenNumber() = tokenNumber
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("isRequired"))
+    @JvmName("isRequiredJvm")
+    fun isRequired() = isRequired
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("index"))
+    @JvmName("getIndexJvm")
+    fun getIndex() = index
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("line"))
+    @JvmName("getLineJvm")
+    fun getLine() = line
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("column"))
+    @JvmName("getColumnJvm")
+    fun getColumn() = column
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("mark"))
+    @JvmName("getMarkJvm")
+    fun getMark() = mark
+
     override fun toString(): String =
         "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
 }

@@ -79,6 +79,19 @@ class StreamReader(
     var column = 0 // in code points
         private set
 
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("index"))
+    @JvmName("getIndexJvm")
+    fun getIndex() = index
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("line"))
+    @JvmName("getLineJvm")
+    fun getLine() = line
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("column"))
+    @JvmName("getColumnJvm")
+    fun getColumn() = column
+
     /**
      * Create
      *

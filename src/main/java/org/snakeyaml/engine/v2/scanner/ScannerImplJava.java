@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
+import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
@@ -125,57 +126,23 @@ final class ScannerImplJava implements Scanner {
     //fetchStreamStart();// Add the STREAM-START token.
   }
 
-  /**
-   * Check whether the next token is one of the given types.
-   */
   public boolean checkToken(@NotNull Token.ID... choices) {
-    while (needMoreTokens()) {
-      fetchMoreTokens();
-    }
-    if (!this.tokens.isEmpty()) {
-      if (choices.length == 0) {
-        return true;
-      }
-      // since profiler puts this method on top (it is used a lot), we
-      // should not use 'foreach' here because of the performance reasons
-      Token firstToken = this.tokens.get(0);
-      Token.ID first = firstToken.getTokenId();
-      for (Token.ID choice : choices) {
-        if (first == choice) {
-          return true;
-        }
-      }
-    }
-    return false;
+    throw new NotImplementedError("converted to Kotlin");
   }
 
-  /**
-   * Return the next token, but do not delete it from the queue.
-   */
   @NotNull
   public Token peekToken() {
-    while (needMoreTokens()) {
-      fetchMoreTokens();
-    }
-    return this.tokens.get(0);
+    throw new NotImplementedError("converted to Kotlin");
   }
 
   @Override
   public boolean hasNext() {
-    return checkToken();
+    throw new NotImplementedError("converted to Kotlin");
   }
 
-  /**
-   * Return the next token, removing it from the queue.
-   */
   @NotNull
   public Token next() {
-    this.tokensTaken++;
-    if (this.tokens.isEmpty()) {
-      throw new NoSuchElementException("No more Tokens found.");
-    } else {
-      return this.tokens.remove(0);
-    }
+    throw new NotImplementedError("converted to Kotlin");
   }
 
 

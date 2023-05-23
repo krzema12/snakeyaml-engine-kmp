@@ -153,11 +153,10 @@ class CommentEventsCollector {
         }
     }
 
-    val isEmpty: Boolean
-        /**
-         * Test if the collector contains any collected events.
-         *
-         * @return `true` if it does; Otherwise, `false`
-         */
-        get() = commentLineList.isEmpty()
+    /**
+     * Test if the collector contains any collected events.
+     *
+     * @return `true` if it does; Otherwise, `false`
+     */
+    fun isEmpty(): Boolean = commentLineList.isEmpty()
 }

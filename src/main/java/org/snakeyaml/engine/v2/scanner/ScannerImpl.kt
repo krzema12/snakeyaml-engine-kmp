@@ -14,6 +14,8 @@ import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.CommentToken
 import org.snakeyaml.engine.v2.tokens.DocumentEndToken
 import org.snakeyaml.engine.v2.tokens.DocumentStartToken
+import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken
+import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.KeyToken
 import org.snakeyaml.engine.v2.tokens.StreamEndToken
 import org.snakeyaml.engine.v2.tokens.StreamStartToken
@@ -573,11 +575,41 @@ class ScannerImpl(
 
     private fun fetchFlowMappingStart() = fetchFlowCollectionStart(true)
 
-    private fun fetchFlowCollectionStart(isMappingStart: Boolean): Unit =
-        scannerJava.fetchFlowCollectionStart(isMappingStart)
+    /**
+     * Fetch a flow-style collection start, which is either a sequence or a mapping. The type is
+     * determined by the given boolean.
+     *
+     * A flow-style collection is in a format similar to JSON. Sequences are started by `[` and ended
+     * by `]`; mappings are started by `{` and ended by `}`.
+     *
+     * @param isMappingStart - `true` for mapping, `false` for sequence
+     */
+    private fun fetchFlowCollectionStart(isMappingStart: Boolean) {
+        // `[` and `{` may start a simple key.
+        savePossibleSimpleKey()
 
-    private fun fetchFlowSequenceEnd(): Unit = scannerJava.fetchFlowSequenceEnd()
-    private fun fetchFlowMappingEnd(): Unit = scannerJava.fetchFlowMappingEnd()
+        // Increase the flow level.
+        flowLevel++
+
+        // Simple keys are allowed after `[` and `{`.
+        allowSimpleKey = true
+
+        // Add FLOW-SEQUENCE-START or FLOW-MAPPING-START.
+        val startMark = reader.getMark()
+        reader.forward(1)
+        val endMark = reader.getMark()
+        val token = if (isMappingStart) {
+            FlowMappingStartToken(startMark, endMark)
+        } else {
+            FlowSequenceStartToken(startMark, endMark)
+        }
+        addToken(token)
+    }
+
+    private fun fetchFlowSequenceEnd() = fetchFlowCollectionEnd(false)
+
+    private fun fetchFlowMappingEnd() = fetchFlowCollectionEnd(true)
+
     private fun fetchFlowCollectionEnd(isMappingEnd: Boolean): Unit = scannerJava.fetchFlowCollectionEnd(isMappingEnd)
     private fun fetchFlowEntry(): Unit = scannerJava.fetchFlowEntry()
 

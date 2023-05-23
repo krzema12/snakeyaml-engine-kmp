@@ -271,46 +271,6 @@ final class ScannerImplJava implements Scanner {
 
 
   /**
-   * Fetch a flow-style collection start, which is either a sequence or a mapping. The type is
-   * determined by the given boolean.
-   * <p>
-   * A flow-style collection is in a format similar to JSON. Sequences are started by '[' and ended
-   * by ']'; mappings are started by '{' and ended by '}'.
-   *
-   * @param isMappingStart - true for mapping, false for sequence
-   */
-  void fetchFlowCollectionStart(boolean isMappingStart) {
-    // '[' and '{' may start a simple key.
-    savePossibleSimpleKey();
-
-    // Increase the flow level.
-    this.flowLevel++;
-
-    // Simple keys are allowed after '[' and '{'.
-    this.allowSimpleKey = true;
-
-    // Add FLOW-SEQUENCE-START or FLOW-MAPPING-START.
-    Optional<Mark> startMark = reader.getMark();
-    reader.forward(1);
-    Optional<Mark> endMark = reader.getMark();
-    Token token;
-    if (isMappingStart) {
-      token = new FlowMappingStartToken(startMark, endMark);
-    } else {
-      token = new FlowSequenceStartToken(startMark, endMark);
-    }
-    addToken(token);
-  }
-
-  void fetchFlowSequenceEnd() {
-    fetchFlowCollectionEnd(false);
-  }
-
-  void fetchFlowMappingEnd() {
-    fetchFlowCollectionEnd(true);
-  }
-
-  /**
    * Fetch a flow-style collection end, which is either a sequence or a mapping. The type is
    * determined by the given boolean.
    * <p>

@@ -1209,7 +1209,52 @@ class ScannerImpl(
     }
 
     private fun atEndOfPlain(): Boolean = scannerJava.atEndOfPlain()
-    private fun scanPlainSpaces(): String = scannerJava.scanPlainSpaces()
+
+    /**
+     * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar
+     */
+    private fun scanPlainSpaces(): String {
+        var length = 0
+        while (reader.peek(length) == ' '.code || reader.peek(length) == '\t'.code) {
+            length++
+        }
+        val whitespaces = reader.prefixForward(length)
+        val lineBreakOpt = scanLineBreak()
+        if (lineBreakOpt.isPresent) {
+            allowSimpleKey = true
+            var prefix = reader.prefix(3)
+            if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                return ""
+            }
+            if (settings.parseComments && atEndOfPlain()) {
+                return ""
+            }
+            val breaks = java.lang.StringBuilder()
+            while (true) {
+                if (reader.peek() == ' '.code) {
+                    reader.forward()
+                } else {
+                    val lbOpt = scanLineBreak()
+                    if (lbOpt.isPresent) {
+                        breaks.append(lbOpt.get())
+                        prefix = reader.prefix(3)
+                        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                            return ""
+                        }
+                    } else {
+                        break
+                    }
+                }
+            }
+            return when {
+                "\n" != lineBreakOpt.orElse("") -> lineBreakOpt.orElse("") + breaks
+                breaks.isEmpty()                -> " "
+                else                            -> breaks.toString()
+            }
+        }
+        return whitespaces
+    }
+
     private fun scanTagHandle(name: String, startMark: Optional<Mark>): String =
         scannerJava.scanTagHandle(name, startMark)
 

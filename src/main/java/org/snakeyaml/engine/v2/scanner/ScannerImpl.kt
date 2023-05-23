@@ -884,20 +884,96 @@ class ScannerImpl(
         val tok = scanPlain()
         addToken(tok)
     }
+    //endregion
+
+    //region Checkers.
+    /**
+     * Returns `true` if the next thing on the reader is a directive, given that the leading `%` has
+     * already been checked.
+     */
+    private fun checkDirective(): Boolean {
+        // DIRECTIVE: ^ '%' ...
+        // The '%' indicator is already checked.
+        return reader.column == 0
+    }
+
+    /**
+     * Returns true if the next thing on the reader is a document-start (`---`).
+     * A document-start is always followed immediately by a new line.
+     */
+    private fun checkDocumentStart(): Boolean {
+        // DOCUMENT-START: ^ '---' (' '|'\n')
+        return if (reader.column == 0) {
+            "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+        } else false
+    }
+
+
+    /**
+     * Returns true if the next thing on the reader is a document-end (`...`).
+     * A document-end is always followed immediately by a new line.
+     */
+    private fun checkDocumentEnd(): Boolean {
+        // DOCUMENT-END: ^ '...' (' '|'\n')
+        return if (reader.column == 0) {
+            "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+        } else false
+    }
+
+    /** Returns `true` if the next thing on the reader is a block token. */
+    private fun checkBlockEntry(): Boolean {
+        // BLOCK-ENTRY: '-' (' '|'\n')
+        return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1))
+    }
+
+    /**
+     * Returns `true` if the next thing on the reader is a key token. This is different in SnakeYAML ->
+     * `?` may start a token in the flow context
+     */
+    private fun checkKey(): Boolean {
+        // KEY: '?' (' ' or '\n')
+        return CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1))
+    }
+
+    /**
+     * Returns `true` if the next thing on the reader is a value token.
+     */
+    private fun checkValue(): Boolean {
+        // VALUE(flow context): ':'
+        return if (isFlowContext()) {
+            true
+        } else {
+            // VALUE(block context): ':' (' '|'\n')
+            CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1))
+        }
+    }
+
+    /** Returns `true` if the next thing on the reader is a plain token. */
+    private fun checkPlain(): Boolean {
+        // * A plain scalar may start with any non-space character except: '-', '?', ':', ',', '[', ']',
+        // * '{', '}', '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;', '%', '@', '`'.
+        val c = reader.peek()
+        // If the next char is NOT one of the forbidden chars above or
+        // whitespace, then this is the start of a plain scalar.
+        val notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`")
+        return if (notForbidden) {
+            true // plain scalar
+        } else {
+            if (isBlockContext()) {
+                // It may also start with '-', '?', ':' if it is followed by a non-space character
+                // in the block context
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && "-?:".indexOf(c.toChar()) != -1
+            } else {
+                // It may also start with '-', '?' if it is followed by a non-space character
+                // except ',' or ']' in the flow context
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]") && "-?".indexOf(c.toChar()) != -1
+            }
+        }
+    }
 
     //endregion
 
     //@formatter:off
-
-    //region Checkers.
-    private fun checkDirective(): Boolean = scannerJava.checkDirective()
-    private fun checkDocumentStart(): Boolean = scannerJava.checkDocumentStart()
-    private fun checkDocumentEnd(): Boolean = scannerJava.checkDocumentEnd()
-    private fun checkBlockEntry(): Boolean = scannerJava.checkBlockEntry()
-    private fun checkKey(): Boolean = scannerJava.checkKey()
-    private fun checkValue(): Boolean = scannerJava.checkValue()
-    private fun checkPlain(): Boolean = scannerJava.checkPlain()
-    //endregion
 
     //region Scanners - create tokens
     private fun scanToNextToken(): Unit = scannerJava.scanToNextToken()

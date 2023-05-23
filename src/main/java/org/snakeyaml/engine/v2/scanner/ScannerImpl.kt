@@ -12,6 +12,8 @@ import org.snakeyaml.engine.v2.tokens.BlockEntryToken
 import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
 import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.CommentToken
+import org.snakeyaml.engine.v2.tokens.DocumentEndToken
+import org.snakeyaml.engine.v2.tokens.DocumentStartToken
 import org.snakeyaml.engine.v2.tokens.KeyToken
 import org.snakeyaml.engine.v2.tokens.StreamEndToken
 import org.snakeyaml.engine.v2.tokens.StreamStartToken
@@ -487,11 +489,8 @@ class ScannerImpl(
     }
     //endregion
 
-
     //region Fetchers - add tokens to the stream (can call scanners)
 
-    //endregion
-    //region Fetchers - add tokens to the stream (can call scanners)
     /** We always add `STREAM-START` as the first token and `STREAM-END` as the last token. */
     private fun fetchStreamStart() {
         // Read the token.
@@ -522,14 +521,58 @@ class ScannerImpl(
         done = true
     }
 
-    private fun fetchDirective(): Unit = scannerJava.fetchDirective()
-    private fun fetchDocumentStart(): Unit = scannerJava.fetchDocumentStart()
-    private fun fetchDocumentEnd(): Unit = scannerJava.fetchDocumentEnd()
-    private fun fetchDocumentIndicator(isDocumentStart: Boolean): Unit =
-        scannerJava.fetchDocumentIndicator(isDocumentStart)
+    /**
+     * Fetch a YAML directive. Directives are presentation details that are interpreted as
+     * instructions to the processor. YAML defines two kinds of directives, YAML and TAG; all other
+     * types are reserved for future use.
+     */
+    private fun fetchDirective() {
+        // Set the current indentation to -1.
+        unwindIndent(-1)
 
-    private fun fetchFlowSequenceStart(): Unit = scannerJava.fetchFlowSequenceStart()
-    private fun fetchFlowMappingStart(): Unit = scannerJava.fetchFlowMappingStart()
+        // Reset simple keys.
+        removePossibleSimpleKey()
+        allowSimpleKey = false
+
+        // Scan and add DIRECTIVE.
+        val tok = scanDirective()
+        addAllTokens(tok)
+    }
+
+    /** Fetch a document-start token (`---`). */
+    private fun fetchDocumentStart(): Unit = fetchDocumentIndicator(true)
+
+    /** Fetch a document-end token (`...`). */
+    private fun fetchDocumentEnd() = fetchDocumentIndicator(false)
+
+    /**
+     * Fetch a document indicator, either `---` for "document-start", or else `...` for "document-end.
+     * The type is chosen by the given boolean.
+     */
+    private fun fetchDocumentIndicator(isDocumentStart: Boolean) {
+        // Set the current indentation to -1.
+        unwindIndent(-1)
+
+        // Reset simple keys. Note that there could not be a block collection after '---'.
+        removePossibleSimpleKey()
+        allowSimpleKey = false
+
+        // Add DOCUMENT-START or DOCUMENT-END.
+        val startMark = reader.getMark()
+        reader.forward(3)
+        val endMark = reader.getMark()
+        val token = if (isDocumentStart) {
+            DocumentStartToken(startMark, endMark)
+        } else {
+            DocumentEndToken(startMark, endMark)
+        }
+        addToken(token)
+    }
+
+    private fun fetchFlowSequenceStart() = fetchFlowCollectionStart(false)
+
+    private fun fetchFlowMappingStart() = fetchFlowCollectionStart(true)
+
     private fun fetchFlowCollectionStart(isMappingStart: Boolean): Unit =
         scannerJava.fetchFlowCollectionStart(isMappingStart)
 

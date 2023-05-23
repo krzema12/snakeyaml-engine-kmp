@@ -26,6 +26,8 @@ import org.snakeyaml.engine.v2.tokens.KeyToken
 import org.snakeyaml.engine.v2.tokens.ScalarToken
 import org.snakeyaml.engine.v2.tokens.StreamEndToken
 import org.snakeyaml.engine.v2.tokens.StreamStartToken
+import org.snakeyaml.engine.v2.tokens.TagToken
+import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
 import java.util.Optional
@@ -823,8 +825,8 @@ class ScannerImpl(
         allowSimpleKey = false
 
         // Scan and add TAG.
-        val tok = scanTag()
-        addToken(tok)
+        val token = scanTag()
+        addToken(token)
     }
 
 
@@ -1137,7 +1139,97 @@ class ScannerImpl(
         }
     }
 
-    private fun scanTag(): Token = scannerJava.scanTag()
+
+    /**
+     * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
+     * c-ns-shorthand-tag, or c-ns-non-specific-tag
+     *
+     * c-verbatim-tag takes the form !<ns-uri-char></ns-uri-char>+> and must be delivered verbatim (as-is) to the
+     * application. In particular, verbatim tags are not subject to tag resolution.
+     *
+     * c-ns-shorthand-tag is a valid tag handle followed by a non-empty suffix. If the tag handle is a
+     * c-primary-tag-handle ('!') then the suffix must have all exclamation marks properly URI-escaped
+     * (%21); otherwise, the string will look like a named tag handle: !foo!bar would be interpreted
+     * as (handle="!foo!", suffix="bar").
+     *
+     * c-ns-non-specific-tag is always a lone '!'; this is only useful for plain scalars, where its
+     * specification means that the scalar MUST be resolved to have type tag:yaml.org,2002:str.
+     *
+     * TODO Note that this method does not enforce rules about local versus global tags!
+     */
+    private fun scanTag(): Token {
+        // See the specification for details.
+        val startMark = reader.getMark()
+        // Determine the type of tag property based on the first character
+        // encountered
+        var c = reader.peek(1)
+        val handle: String?
+        val suffix: String
+        // Verbatim tag! (c-verbatim-tag)
+        if (c == '<'.code) {
+            // Skip the exclamation mark and &gt;, then read the tag suffix (as a URI).
+            reader.forward(2)
+            suffix = scanTagUri("tag", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
+            c = reader.peek()
+            if (c != '>'.code) {
+                // If there are any characters between the end of the tag-suffix
+                // URI and the closing &gt;, then an error has occurred.
+                val s = String(Character.toChars(c))
+                throw ScannerException(
+                    "while scanning a tag", startMark,
+                    "expected '>', but found '$s' ($c)", reader.getMark(),
+                )
+            }
+            handle = null
+            reader.forward()
+        } else if (CharConstants.NULL_BL_T_LINEBR.has(c)) {
+            // A NUL, blank, tab, or line-break means that this was a
+            // c-ns-non-specific tag.
+            suffix = "!"
+            handle = null
+            reader.forward()
+        } else {
+            // Any other character implies c-ns-shorthand-tag type.
+
+            // Look ahead in the stream to determine whether this tag property
+            // is of the form !foo or !foo!bar.
+            var length = 1
+            var useHandle = false
+            while (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+                if (c == '!'.code) {
+                    useHandle = true
+                    break
+                }
+                length++
+                c = reader.peek(length)
+            }
+            // If we need to use a handle, scan it in; otherwise, the handle is
+            // presumed to be '!'.
+            if (useHandle) {
+                handle = scanTagHandle("tag", startMark)
+            } else {
+                handle = "!"
+                reader.forward()
+            }
+            suffix = scanTagUri("tag", CharConstants.URI_CHARS_FOR_TAG_SUFFIX, startMark)
+        }
+        c = reader.peek()
+        // Check that the next character is allowed to follow a tag-property,
+        // if it is not, raise the error.
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = "while scanning a tag",
+                problemMark = startMark,
+                context = "expected ' ', but found '$s' ($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        val value = TagTuple(Optional.ofNullable(handle), suffix)
+        val endMark = reader.getMark()
+        return TagToken(value, startMark, endMark)
+    }
+
     private fun scanBlockScalar(style: ScalarStyle): List<Token> = scannerJava.scanBlockScalar(style)
     private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
         scannerJava.scanBlockScalarIndicators(startMark)

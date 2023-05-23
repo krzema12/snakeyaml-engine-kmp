@@ -1230,15 +1230,14 @@ class ScannerImpl(
         return TagToken(value, startMark, endMark)
     }
 
-
     /**
      * Scan literal and folded scalar
      *
      * @param style - either literal or folded style
      */
-    fun scanBlockScalar(style: ScalarStyle): List<Token> {
+    private fun scanBlockScalar(style: ScalarStyle): List<Token> {
         // See the specification for details.
-        val stringBuilder = java.lang.StringBuilder()
+        val stringBuilder = StringBuilder()
         val startMark = reader.getMark()
         // Scan the header.
         reader.forward()
@@ -1266,11 +1265,11 @@ class ScannerImpl(
             breaks = brme.breaks
             maxIndent = brme.maxIndent
             endMark = brme.endMark
-            blockIndent = Math.max(minIndent, maxIndent)
+            blockIndent = minIndent.coerceAtLeast(maxIndent)
         }
         var lineBreakOpt = Optional.empty<String>()
         // Scan the inner part of the block scalar.
-        if (reader.getColumn() < blockIndent && indent != reader.getColumn()) {
+        if (reader.column < blockIndent && indent != reader.column) {
             // it means that there is indent, but less than expected
             // fix S98Z - Block scalar with more spaces than first content line
             throw ScannerException(
@@ -1280,7 +1279,7 @@ class ScannerImpl(
                 reader.getMark(),
             )
         }
-        while (reader.getColumn() == blockIndent && reader.peek() != 0) {
+        while (reader.column == blockIndent && reader.peek() != 0) {
             stringBuilder.append(breaks)
             val leadingNonSpace = " \t".indexOf(reader.peek().toChar()) == -1
             var length = 0
@@ -1292,14 +1291,15 @@ class ScannerImpl(
             val brme = scanBlockScalarBreaks(blockIndent)
             breaks = brme.breaks
             endMark = brme.endMark
-            if (reader.getColumn() == blockIndent && reader.peek() != 0) {
+            if (reader.column == blockIndent && reader.peek() != 0) {
 
                 // Unfortunately, folding rules are ambiguous.
-                //
                 // This is the folding according to the specification:
-                if (style == ScalarStyle.FOLDED && "\n" == lineBreakOpt.orElse("") && leadingNonSpace && " \t".indexOf(
-                        reader.peek().toChar(),
-                    ) == -1
+                if (
+                    style == ScalarStyle.FOLDED
+                    && "\n" == lineBreakOpt.orElse("")
+                    && leadingNonSpace
+                    && " \t".indexOf(reader.peek().toChar()) == -1
                 ) {
                     if (breaks.isEmpty()) {
                         stringBuilder.append(" ")
@@ -1329,8 +1329,36 @@ class ScannerImpl(
     private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
         scannerJava.scanBlockScalarIndicators(startMark)
 
-    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken? =
-        scannerJava.scanBlockScalarIgnoredLine(startMark)
+
+    /**
+     * Scan to the end of the line after a block scalar has been scanned; the only things that are
+     * permitted at this time are comments and spaces.
+     */
+    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken? {
+        // See the specification for details.
+
+        // Forward past any number of trailing spaces
+        while (reader.peek() == ' '.code) {
+            reader.forward()
+        }
+
+        // If a comment occurs, scan to just before the end of line.
+        var commentToken: CommentToken? = null
+        if (reader.peek() == '#'.code) {
+            commentToken = scanComment(CommentType.IN_LINE)
+        }
+        // If the next character is not a null or line break, an error has
+        // occurred.
+        val c = reader.peek()
+        if (!scanLineBreak().isPresent && c != 0) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                ScannerImplJava.SCANNING_SCALAR, startMark,
+                "expected a comment or a line break, but found $s($c)", reader.getMark(),
+            )
+        }
+        return commentToken
+    }
 
     private fun scanBlockScalarIndentation(): BreakIntentHolder = scannerJava.scanBlockScalarIndentation()
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder = scannerJava.scanBlockScalarBreaks(indent)
@@ -1368,10 +1396,117 @@ class ScannerImpl(
         return ScalarToken(chunks, false, startMark, endMark, style)
     }
 
-    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String =
-        scannerJava.scanFlowScalarNonSpaces(doubleQuoted, startMark)
 
-    private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarSpaces(startMark)
+    /**
+     * Scan some number of flow-scalar non-space characters.
+     */
+    fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String {
+        // See the specification for details.
+        val chunks = StringBuilder()
+        while (true) {
+            // Scan through any number of characters which are not: NUL, blank,
+            // tabs, line breaks, single-quotes, double-quotes, or backslashes.
+            var length = 0
+            while (CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(length), "'\"\\")) {
+                length++
+            }
+            if (length != 0) {
+                chunks.append(reader.prefixForward(length))
+            }
+            // Depending on our quoting-type, the characters ', " and \ have
+            // differing meanings.
+            var c = reader.peek()
+            if (!doubleQuoted && c == '\''.code && reader.peek(1) == '\''.code) {
+                chunks.append("'")
+                reader.forward(2)
+            } else if (doubleQuoted && c == '\''.code || !doubleQuoted && "\"\\".indexOf(c.toChar()) != -1) {
+                chunks.appendCodePoint(c)
+                reader.forward()
+            } else if (doubleQuoted && c == '\\'.code) {
+                reader.forward()
+                c = reader.peek()
+                if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_REPLACEMENTS.containsKey(c.toChar())) {
+                    // The character is one of the single-replacement
+                    // types; these are replaced with a literal character
+                    // from the mapping.
+                    chunks.append(CharConstants.ESCAPE_REPLACEMENTS[c.toChar()])
+                    reader.forward()
+                } else if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_CODES.containsKey(c.toChar())) {
+                    // The character is a multi-digit escape sequence, with
+                    // length defined by the value in the ESCAPE_CODES map.
+                    length = CharConstants.ESCAPE_CODES[c.toChar()]!!
+                    reader.forward()
+                    val hex = reader.prefix(length)
+                    if (ScannerImplJava.NOT_HEXA.matcher(hex).find()) {
+                        throw ScannerException(
+                            "while scanning a double-quoted scalar", startMark,
+                            "expected escape sequence of $length hexadecimal numbers, but found: $hex",
+                            reader.getMark(),
+                        )
+                    }
+                    val decimal = hex.toInt(16)
+                    try {
+                        val unicode = String(Character.toChars(decimal))
+                        chunks.append(unicode)
+                        reader.forward(length)
+                    } catch (e: IllegalArgumentException) {
+                        throw ScannerException(
+                            "while scanning a double-quoted scalar", startMark,
+                            "found unknown escape character $hex", reader.getMark(),
+                        )
+                    }
+                } else if (scanLineBreak().isPresent) {
+                    chunks.append(scanFlowScalarBreaks(startMark))
+                } else {
+                    val s = String(Character.toChars(c))
+                    throw ScannerException(
+                        "while scanning a double-quoted scalar", startMark,
+                        "found unknown escape character $s($c)", reader.getMark(),
+                    )
+                }
+            } else {
+                return chunks.toString()
+            }
+        }
+    }
+
+
+    private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String {
+        // See the specification for details.
+        var length = 0
+        // Scan through any number of whitespace (space, tab) characters, consuming them.
+        while (" \t".indexOf(reader.peek(length).toChar()) != -1) {
+            length++
+        }
+        val whitespaces = reader.prefixForward(length)
+        val c = reader.peek()
+        if (c == 0) {
+            // A flow scalar cannot end with an end-of-stream
+            throw ScannerException(
+                problem = "while scanning a quoted scalar",
+                problemMark = startMark,
+                context = "found unexpected end of stream",
+                contextMark = reader.getMark(),
+            )
+        }
+        // If we encounter a line break, scan it into our assembled string...
+        val lineBreakOpt = scanLineBreak()
+        return buildString {
+            if (lineBreakOpt.isPresent) {
+                val breaks = scanFlowScalarBreaks(startMark)
+                if ("\n" != lineBreakOpt.get()) {
+                    append(lineBreakOpt.get())
+                } else if (breaks.isEmpty()) {
+                    append(" ")
+                }
+                append(breaks)
+            } else {
+                append(whitespaces)
+            }
+        }
+    }
+
+
     private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarBreaks(startMark)
 
     /**
@@ -1498,7 +1633,7 @@ class ScannerImpl(
             if (settings.parseComments && atEndOfPlain()) {
                 return ""
             }
-            val breaks = java.lang.StringBuilder()
+            val breaks = StringBuilder()
             while (true) {
                 if (reader.peek() == ' '.code) {
                     reader.forward()

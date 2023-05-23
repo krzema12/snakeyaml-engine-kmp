@@ -5,6 +5,7 @@ import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.common.UriEncoder
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
@@ -15,6 +16,7 @@ import org.snakeyaml.engine.v2.tokens.BlockEntryToken
 import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
 import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
 import org.snakeyaml.engine.v2.tokens.CommentToken
+import org.snakeyaml.engine.v2.tokens.DirectiveToken
 import org.snakeyaml.engine.v2.tokens.DocumentEndToken
 import org.snakeyaml.engine.v2.tokens.DocumentStartToken
 import org.snakeyaml.engine.v2.tokens.FlowEntryToken
@@ -30,6 +32,7 @@ import org.snakeyaml.engine.v2.tokens.TagToken
 import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
+import java.nio.ByteBuffer
 import java.util.Optional
 import java.util.regex.Pattern
 
@@ -65,16 +68,12 @@ class ScannerImpl(
     private val settings: LoadSettings,
     private val reader: StreamReader,
 ) : Scanner {
-    private val scannerJava = ScannerImplJava(settings, reader)
-
     /** List of processed tokens that are not yet emitted. */
     // maybe make this an ArrayDeque?
-    private val tokens: MutableList<Token> by scannerJava::tokens
-//    = ArrayList<Token>(100)
+    private val tokens: MutableList<Token> = ArrayList<Token>(100)
 
     /** Past indentation levels. */
-    private val indents by scannerJava::indents
-    //= ArrayDeque<Int>(10)
+    private val indents = ArrayDeque<Int>(10)
 
     /**
      * Keep track of possible simple keys. This is a dictionary. Insertion order _must_ be preserved.
@@ -87,16 +86,15 @@ class ScannerImpl(
      *
      *  The order in [possibleSimpleKeys] is kept for [nextPossibleSimpleKey]
      */
-    private val possibleSimpleKeys: MutableMap<Int, SimpleKey> by scannerJava::possibleSimpleKeys
-//    = LinkedHashMap<Int, SimpleKey>()
+    private val possibleSimpleKeys: MutableMap<Int, SimpleKey> = mutableMapOf()
 
     /** Had we reached the end of the stream */
-    private var done  = false
+    private var done = false
 
     /**
      * The number of unclosed `{` and `[`. [isBlockContext] means block context.
      */
-    private var flowLevel   = 0
+    private var flowLevel = 0
 
     /**
      * The last added token
@@ -134,7 +132,7 @@ class ScannerImpl(
      * may start at the current position.
      * ```
      */
-    private var allowSimpleKey by scannerJava::allowSimpleKey // = true
+    private var allowSimpleKey  = true
 
     init {
         fetchStreamStart() // Add the STREAM-START token.
@@ -1043,7 +1041,7 @@ class ScannerImpl(
                     type = CommentType.BLOCK
                 }
                 val token = scanComment(type)
-                if (settings.parseComments) {
+                if (settings.parseComments && token != null) {
                     addToken(token)
                 }
             }
@@ -1071,24 +1069,231 @@ class ScannerImpl(
         }
     }
 
-    private fun scanComment(type: CommentType): CommentToken = scannerJava.scanComment(type)
-    private fun scanDirective(): List<Token> = scannerJava.scanDirective()
-    private fun scanDirectiveName(startMark: Optional<Mark>): String = scannerJava.scanDirectiveName(startMark)
-    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): List<Int> =
-        scannerJava.scanYamlDirectiveValue(startMark)
+    private fun scanComment(type: CommentType?): CommentToken? {
+        // See the specification for details.
+        val startMark = reader.getMark()
+        reader.forward()
+        var length = 0
+        while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
+            length++
+        }
+        val value = reader.prefixForward(length)
+        val endMark = reader.getMark()
+        return CommentToken(type!!, value, startMark, endMark)
+    }
 
-    private fun scanYamlDirectiveNumber(startMark: Optional<Mark>): Int = scannerJava.scanYamlDirectiveNumber(startMark)
-    private fun scanTagDirectiveValue(startMark: Optional<Mark>): List<String> =
-        scannerJava.scanTagDirectiveValue(startMark)
+    private fun scanDirective(): List<Token> {
+        // See the specification for details.
+        val startMark = reader.getMark()
+        val endMark: Optional<Mark>
+        reader.forward()
+        val name = scanDirectiveName(startMark)
+        val value: Optional<List<*>>
+        if (DirectiveToken.YAML_DIRECTIVE == name) {
+            value = Optional.of(scanYamlDirectiveValue(startMark))
+            endMark = reader.getMark()
+        } else if (DirectiveToken.TAG_DIRECTIVE == name) {
+            value = Optional.of(scanTagDirectiveValue(startMark))
+            endMark = reader.getMark()
+        } else {
+            endMark = reader.getMark()
+            var ff = 0
+            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
+                ff++
+            }
+            if (ff > 0) {
+                reader.forward(ff)
+            }
+            value = Optional.empty()
+        }
+        val commentToken = scanDirectiveIgnoredLine(startMark)
+        val token: DirectiveToken<*> = DirectiveToken(name, value, startMark, endMark)
+        return makeTokenList(token, commentToken)
+    }
 
-    private fun scanTagDirectiveHandle(startMark: Optional<Mark>): String =
-        scannerJava.scanTagDirectiveHandle(startMark)
 
-    private fun scanTagDirectivePrefix(startMark: Optional<Mark>): String =
-        scannerJava.scanTagDirectivePrefix(startMark)
+    /**
+     * Scan a directive name. Directive names are a series of non-space characters.
+     */
+    private fun scanDirectiveName(startMark: Optional<Mark>): String {
+        // See the specification for details.
+        var length = 0
+        // A Directive-name is a sequence of alphanumeric characters
+        // (a-z,A-Z,0-9). We scan until we find something that isn't.
+        // This disagrees with the specification.
+        var c = reader.peek(length)
+        while (CharConstants.ALPHA.has(c)) {
+            length++
+            c = reader.peek(length)
+        }
+        // If the peeked name is empty, an error occurs.
+        if (length == 0) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                DIRECTIVE_PREFIX, startMark,
+                "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)", reader.getMark(),
+            )
+        }
+        val value = reader.prefixForward(length)
+        c = reader.peek()
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                DIRECTIVE_PREFIX, startMark,
+                "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)", reader.getMark(),
+            )
+        }
+        return value
+    }
 
-    private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken =
-        scannerJava.scanDirectiveIgnoredLine(startMark)
+    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): List<Int> {
+        // See the specification for details.
+        while (reader.peek() == ' '.code) {
+            reader.forward()
+        }
+        val major = scanYamlDirectiveNumber(startMark)
+        var c = reader.peek()
+        if (c != '.'.code) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected a digit or '.', but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        reader.forward()
+        val minor = scanYamlDirectiveNumber(startMark)
+        c = reader.peek()
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected a digit or ' ', but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return listOf(major, minor)
+    }
+
+
+    /**
+     * Read a %YAML directive number: this is either the major or the minor part. Stop reading at a
+     * non-digit character (usually either '.' or '\n').
+     */
+    private fun scanYamlDirectiveNumber(startMark: Optional<Mark>): Int {
+        // See the specification for details.
+        val c = reader.peek()
+        if (!Character.isDigit(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                DIRECTIVE_PREFIX, startMark,
+                "expected a digit, but found $s($c)", reader.getMark(),
+            )
+        }
+        var length = 0
+        while (Character.isDigit(reader.peek(length))) {
+            length++
+        }
+        val number = reader.prefixForward(length)
+        if (length > 3) {
+            throw ScannerException(
+                "while scanning a YAML directive", startMark,
+                "found a number which cannot represent a valid version: $number", reader.getMark(),
+            )
+        }
+        return number.toInt()
+    }
+
+
+    /**
+     * Read a %TAG directive value:
+     * ```
+     * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
+     * ```
+     */
+    private fun scanTagDirectiveValue(startMark: Optional<Mark>): List<String> {
+        // See the specification for details.
+        while (reader.peek() == ' '.code) {
+            reader.forward()
+        }
+        val handle = scanTagDirectiveHandle(startMark)
+        while (reader.peek() == ' '.code) {
+            reader.forward()
+        }
+        val prefix = scanTagDirectivePrefix(startMark)
+        return listOf(handle, prefix)
+    }
+
+
+    /**
+     * Scan a %TAG directive's handle. This is YAML's c-tag-handle.
+     *
+     * @param startMark - start
+     * @return the directive value
+     */
+    private fun scanTagDirectiveHandle(startMark: Optional<Mark>): String {
+        // See the specification for details.
+        val value = scanTagHandle("directive", startMark)
+        val c = reader.peek()
+        if (c != ' '.code) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected ' ', but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return value
+    }
+
+
+    /**
+     * Scan a `%TAG` directive's prefix. This is YAML's ns-tag-prefix.
+     */
+    private fun scanTagDirectivePrefix(startMark: Optional<Mark>): String {
+        // See the specification for details.
+        val value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
+        val c = reader.peek()
+        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected ' ', but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return value
+    }
+
+
+    private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken? {
+        // See the specification for details.
+        while (reader.peek() == ' '.code) {
+            reader.forward()
+        }
+        var commentToken: CommentToken? = null
+        if (reader.peek() == '#'.code) {
+            val comment = scanComment(CommentType.IN_LINE)
+            if (settings.parseComments) {
+                commentToken = comment
+            }
+        }
+        val c = reader.peek()
+        if (!scanLineBreak().isPresent && c != 0) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected a comment or a line break, but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return commentToken
+    }
 
 
     /**
@@ -1354,7 +1559,7 @@ class ScannerImpl(
                 val incr = String(Character.toChars(c)).toInt()
                 if (incr == 0) {
                     throw ScannerException(
-                        problem = ScannerImplJava.SCANNING_SCALAR,
+                        problem = SCANNING_SCALAR,
                         problemMark = startMark,
                         context = "expected indentation indicator in the range 1-9, but found 0",
                         contextMark = reader.getMark(),
@@ -1367,7 +1572,7 @@ class ScannerImpl(
             val incr = String(Character.toChars(c)).toInt()
             if (incr == 0) {
                 throw ScannerException(
-                    problem = ScannerImplJava.SCANNING_SCALAR,
+                    problem = SCANNING_SCALAR,
                     problemMark = startMark,
                     context = "expected indentation indicator in the range 1-9, but found 0",
                     contextMark = reader.getMark(),
@@ -1385,7 +1590,7 @@ class ScannerImpl(
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
             val s = String(Character.toChars(c))
             throw ScannerException(
-                problem = ScannerImplJava.SCANNING_SCALAR,
+                problem = SCANNING_SCALAR,
                 problemMark = startMark,
                 context = "expected chomping or indentation indicators, but found $s($c)",
                 contextMark = reader.getMark(),
@@ -1418,7 +1623,7 @@ class ScannerImpl(
         if (!scanLineBreak().isPresent && c != 0) {
             val s = String(Character.toChars(c))
             throw ScannerException(
-                problem = ScannerImplJava.SCANNING_SCALAR,
+                problem = SCANNING_SCALAR,
                 problemMark = startMark,
                 context = "expected a comment or a line break, but found $s($c)",
                 contextMark = reader.getMark(),
@@ -1821,20 +2026,221 @@ class ScannerImpl(
         return whitespaces
     }
 
-    private fun scanTagHandle(name: String, startMark: Optional<Mark>): String =
-        scannerJava.scanTagHandle(name, startMark)
 
-    private fun scanTagUri(name: String, range: CharConstants, startMark: Optional<Mark>): String =
-        scannerJava.scanTagUri(name, range, startMark)
+    /**
+     * Scan a Tag handle. A Tag handle takes one of three forms:
+     *
+     * ```
+     * "!" (c-primary-tag-handle)
+     * "!!" (ns-secondary-tag-handle)
+     * "!(name)!" (c-named-tag-handle)
+     * ```
+     *
+     * Where (name) must be formatted as an ns-word-char.
+     *
+     * ```
+     * See the specification for details.
+     * For some strange reasons, the specification does not allow '_' in
+     * tag handles. I have allowed it anyway.
+     * ```
+     */
+    private fun scanTagHandle(name: String, startMark: Optional<Mark>): String {
+        var c = reader.peek()
+        if (c != '!'.code) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = SCANNING_PREFIX + name,
+                problemMark = startMark,
+                context = "expected '!', but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        // Look for the next '!' in the stream, stopping if we hit a
+        // non-word-character. If the first character is a space, then the
+        // tag-handle is a c-primary-tag-handle ('!').
+        var length = 1
+        c = reader.peek(length)
+        if (c != ' '.code) {
+            // Scan through 0+ alphabetic characters.
+            // According to the specification, these should be
+            // ns-word-char only, which prohibits '_'. This might be a
+            // candidate for a configuration option.
+            while (CharConstants.ALPHA.has(c)) {
+                length++
+                c = reader.peek(length)
+            }
+            // Found the next non-word-char. If this is not a space and not an
+            // '!', then this is an error, as the tag-handle was specified as:
+            // !(name) or similar; the trailing '!' is missing.
+            if (c != '!'.code) {
+                reader.forward(length)
+                val s = String(Character.toChars(c))
+                throw ScannerException(
+                    SCANNING_PREFIX + name, startMark,
+                    "expected '!', but found $s($c)", reader.getMark(),
+                )
+            }
+            length++
+        }
+        return reader.prefixForward(length)
+    }
 
-    private fun scanUriEscapes(name: String, startMark: Optional<Mark>): String =
-        scannerJava.scanUriEscapes(name, startMark)
 
-    private fun scanLineBreak(): Optional<String> = scannerJava.scanLineBreak()
+    /**
+     * Scan a Tag URI. This scanning is valid for both local and global tag directives, because both
+     * appear to be valid URIs as far as scanning is concerned. The difference may be distinguished
+     * later, in parsing. This method will scan for ns-uri-char*, which covers both cases.
+     *
+     *
+     * This method performs no verification that the scanned URI conforms to any particular kind of
+     * URI specification.
+     */
+    private fun scanTagUri(name: String, range: CharConstants, startMark: Optional<Mark>): String {
+        // See the specification for details.
+        // Note: we do not check if URI is well-formed.
+        val chunks = StringBuilder()
+        // Scan through accepted URI characters, which includes the standard
+        // URI characters, plus the start-escape character ('%'). When we get
+        // to a start-escape, scan the escaped sequence, then return.
+        var length = 0
+        var c = reader.peek(length)
+        while (range.has(c)) {
+            if (c == '%'.code) {
+                chunks.append(reader.prefixForward(length))
+                length = 0
+                chunks.append(scanUriEscapes(name, startMark))
+            } else {
+                length++
+            }
+            c = reader.peek(length)
+        }
+        // Consume the last "chunk", which would not otherwise be consumed by
+        // the loop above.
+        if (length != 0) {
+            chunks.append(reader.prefixForward(length))
+        }
+        if (chunks.isEmpty()) {
+            // If no URI was found, an error has occurred.
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = SCANNING_PREFIX + name,
+                problemMark = startMark,
+                context = "expected URI, but found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        return chunks.toString()
+    }
+
+
+    /**
+     * Scan a sequence of `%`-escaped URI escape codes and convert them into a String representing the
+     * unescaped values.
+     *
+     * This method fails for more than 256 bytes' worth of URI-encoded characters in a row. Is this
+     * possible? Is this a use-case?
+     */
+    private fun scanUriEscapes(name: String, startMark: Optional<Mark>): String {
+        // First, look ahead to see how many URI-escaped characters we should
+        // expect, so we can use the correct buffer size.
+        var length = 1
+        while (reader.peek(length * 3) == '%'.code) {
+            length++
+        }
+        // See the specification for details.
+        // URIs containing 16 and 32 bit Unicode characters are
+        // encoded in UTF-8, and then each octet is written as a
+        // separate character.
+        val beginningMark = reader.getMark()
+        val buff = ByteBuffer.allocate(length)
+        while (reader.peek() == '%'.code) {
+            reader.forward()
+            try {
+                val code = reader.prefix(2).toInt(16).toByte()
+                buff.put(code)
+            } catch (nfe: NumberFormatException) {
+                val c1 = reader.peek()
+                val s1 = String(Character.toChars(c1))
+                val c2 = reader.peek(1)
+                val s2 = String(Character.toChars(c2))
+                throw ScannerException(
+                    problem = SCANNING_PREFIX + name,
+                    problemMark = startMark,
+                    context = "expected URI escape sequence of 2 hexadecimal numbers, but found $s1($c1) and $s2($c2)",
+                    contextMark = reader.getMark(),
+                )
+            }
+            reader.forward(2)
+        }
+        buff.flip()
+        try {
+            return UriEncoder.decode(buff)
+        } catch (e: CharacterCodingException) {
+            throw ScannerException(
+                problem = SCANNING_PREFIX + name,
+                problemMark = startMark,
+                context = "expected URI in UTF-8: " + e.message,
+                contextMark = beginningMark,
+            )
+        }
+    }
+
+
+    /**
+     * Scan a line break, transforming:
+     *
+     * ```
+     * '\r\n'   : '\n'
+     * '\r'     : '\n'
+     * '\n'     : '\n'
+     * '\x85'   : '\n'
+     * '\u2028' : '\u2028'
+     * '\u2029  : '\u2029'
+     * default : ''
+     * ```
+     * @returns transformed character or empty string if no line break detected
+     */
+    private fun scanLineBreak(): Optional<String> {
+        val c = reader.peek()
+        if (c == '\r'.code || c == '\n'.code || c == '\u0085'.code) {
+            if (c == '\r'.code && '\n'.code == reader.peek(1)) {
+                reader.forward(2)
+            } else {
+                reader.forward()
+            }
+            return Optional.of("\n")
+        } else if (c == '\u2028'.code || c == '\u2029'.code) {
+            reader.forward()
+            return Optional.of(String(Character.toChars(c)))
+        }
+        return Optional.empty()
+    }
+
 
     //endregion
 
-    private fun makeTokenList(vararg tokens: Token?): List<Token> = scannerJava.makeTokenList(*tokens)
+
+    //endregion
+    /**
+     * Ignore Comment token if they are null, or Comments should not be parsed
+     *
+     * @param tokens - token types
+     * @return tokens to be used
+     */
+    private fun makeTokenList(vararg tokens: Token?): List<Token> {
+        val tokenList: MutableList<Token> = ArrayList()
+        for (token in tokens) {
+            if (token == null) {
+                continue
+            }
+            if (!settings.parseComments && token is CommentToken) {
+                continue
+            }
+            tokenList.add(token)
+        }
+        return tokenList
+    }
+
     //@formatter:on
 
     companion object {

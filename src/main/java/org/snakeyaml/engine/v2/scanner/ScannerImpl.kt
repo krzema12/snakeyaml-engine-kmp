@@ -977,7 +977,93 @@ class ScannerImpl(
     //@formatter:off
 
     //region Scanners - create tokens
-    private fun scanToNextToken(): Unit = scannerJava.scanToNextToken()
+
+
+    /**
+     * ```
+     * We ignore spaces, line breaks and comments.
+     * If we find a line break in the block context, we set the flag
+     * `allow_simple_key` on.
+     * The byte order mark is stripped if it's the first character in the
+     * stream. We do not yet support BOM inside the stream as the
+     * specification requires. Any such mark will be considered as a part
+     * of the document.
+     * TODO: We need to make tab handling rules more sane. A good rule is
+     *       Tabs cannot precede tokens
+     * BLOCK-SEQUENCE-START, BLOCK-MAPPING-START, BLOCK-END,
+     * KEY(block), VALUE(block), BLOCK-ENTRY
+     * So the checking code is
+     * if <TAB>:
+     * self.allow_simple_keys = False
+     * We also need to add the check for `allow_simple_keys == True` to
+     * `unwind_indent` before issuing BLOCK-END.
+     * Scanners for block, flow, and plain scalars need to be modified.
+     * </TAB>
+     *```
+     */
+    private fun scanToNextToken() {
+        // If there is a byte order mark (BOM) at the beginning of the stream,
+        // forward past it.
+        if (reader.index == 0 && reader.peek() == 0xFEFF) {
+            reader.forward()
+        }
+        var found = false
+        var inlineStartColumn = -1
+        while (!found) {
+            val startMark = reader.getMark()
+            val columnBeforeComment = reader.column
+            var commentSeen = false
+            var ff = 0
+            // Peek ahead until we find the first non-space character, then
+            // move forward directly to that character.
+            while (reader.peek(ff) == ' '.code) {
+                ff++
+            }
+            if (ff > 0) {
+                reader.forward(ff)
+            }
+            // If the character we have skipped forward to is a comment (#),
+            // then peek ahead until we find the next end of line. YAML
+            // comments are from a # to the next new-line. We then forward
+            // past the comment.
+            if (reader.peek() == '#'.code) {
+                commentSeen = true
+                var type: CommentType
+                if (columnBeforeComment != 0
+                    && !(lastToken != null && lastToken.tokenId == Token.ID.BlockEntry)) {
+                    type = CommentType.IN_LINE
+                    inlineStartColumn = reader.column
+                } else if (inlineStartColumn == reader.column) {
+                    type = CommentType.IN_LINE
+                } else {
+                    inlineStartColumn = -1
+                    type = CommentType.BLOCK
+                }
+                val token = scanComment(type)
+                if (settings.parseComments) {
+                    addToken(token)
+                }
+            }
+            // If we scanned a line break, then (depending on flow level),
+            // simple keys may be allowed.
+            val breaksOpt = scanLineBreak()
+            if (breaksOpt.isPresent) { // found a line-break
+                if (settings.parseComments && !commentSeen) {
+                    if (columnBeforeComment == 0) {
+                        addToken(CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark,
+                            reader.getMark()))
+                    }
+                }
+                if (isBlockContext()) {
+                    // Simple keys are allowed at flow-level 0 after a line break
+                    allowSimpleKey = true
+                }
+            } else {
+                found = true
+            }
+        }
+    }
+
     private fun scanComment(type: CommentType): CommentToken = scannerJava.scanComment(type)
     private fun scanDirective(): List<Token> = scannerJava.scanDirective()
     private fun scanDirectiveName(startMark: Optional<Mark>): String = scannerJava.scanDirectiveName(startMark)

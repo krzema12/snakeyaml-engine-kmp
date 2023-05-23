@@ -175,51 +175,7 @@ final class ScannerImplJava implements Scanner {
 
   //region Simple keys treatment.
 
-  /**
-   * Return the number of the nearest possible simple key. Actually we don't need to loop through
-   * the whole dictionary.
-   */
-  int nextPossibleSimpleKey() {
-    /*
-     * Because this.possibleSimpleKeys is ordered we can simply take the first key
-     */
-    if (!this.possibleSimpleKeys.isEmpty()) {
-      return this.possibleSimpleKeys.values().iterator().next().getTokenNumber();
-    }
-    return -1;
-  }
 
-  /**
-   * <pre>
-   * Remove entries that are no longer possible simple keys. According to
-   * the YAML specification, simple keys
-   * - should be limited to a single line,
-   * - should be no longer than 1024 characters.
-   * Disabling this procedure will allow simple keys of any length and
-   * height (may cause problems if indentation is broken though).
-   * </pre>
-   */
-  void stalePossibleSimpleKeys() {
-    if (!this.possibleSimpleKeys.isEmpty()) {
-      for (Iterator<SimpleKey> iterator = this.possibleSimpleKeys.values().iterator(); iterator
-          .hasNext(); ) {
-        SimpleKey key = iterator.next();
-        if ((key.getLine() != reader.getLine()) || (reader.getIndex() - key.getIndex() > 1024)) {
-          // If the key is not on the same line as the current
-          // position OR the difference in column between the token
-          // start and the current position is more than the maximum
-          // simple key length, then this cannot be a simple key.
-          if (key.isRequired()) {
-            // If the key was required, this implies an error
-            // condition.
-            throw new ScannerException("while scanning a simple key", key.getMark(),
-                "could not find expected ':'", reader.getMark());
-          }
-          iterator.remove();
-        }
-      }
-    }
-  }
 
   /**
    * The next token may start a simple key. We check if it's possible and save its position. This

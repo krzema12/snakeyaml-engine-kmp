@@ -146,36 +146,11 @@ final class ScannerImplJava implements Scanner {
   }
 
 
-  //region Private methods.
-
-  void addToken(Token token) {
-    lastToken = token;
-    this.tokens.add(token);
-  }
-
 
   boolean isBlockContext() {
     return this.flowLevel == 0;
   }
 
-  boolean isFlowContext() {
-    return !isBlockContext();
-  }
-
-  //region Simple keys treatment.
-
-
-
-  /**
-   * Remove the saved possible key position at the current flow level.
-   */
-  void removePossibleSimpleKey() {
-    SimpleKey key = possibleSimpleKeys.remove(flowLevel);
-    if (key != null && key.isRequired()) {
-      throw new ScannerException("while scanning a simple key", key.getMark(),
-          "could not find expected ':'", reader.getMark());
-    }
-  }
 
 
 
@@ -381,50 +356,6 @@ final class ScannerImplJava implements Scanner {
           "expected a comment or a line break, but found " + s + "(" + c + ")", reader.getMark());
     }
     return commentToken;
-  }
-
-  /**
-   * <pre>
-   * The YAML 1.2 specification does not restrict characters for anchors and
-   * aliases. This may lead to problems.
-   * see <a href=
-   * "https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to">issue 485</a>
-   * This implementation tries to follow <a href=
-   * "https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md">RFC-0003</a>
-   * </pre>
-   */
-  Token scanAnchor(boolean isAnchor) {
-    Optional<Mark> startMark = reader.getMark();
-    int indicator = reader.peek();
-    String name = indicator == '*' ? "alias" : "anchor";
-    reader.forward();
-    int length = 0;
-    int c = reader.peek(length);
-    // Anchor may not contain ",[]{}"
-    while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
-      length++;
-      c = reader.peek(length);
-    }
-    if (length == 0) {
-      final String s = String.valueOf(Character.toChars(c));
-      throw new ScannerException("while scanning an " + name, startMark,
-          "unexpected character found " + s + "(" + c + ")", reader.getMark());
-    }
-    String value = reader.prefixForward(length);
-    c = reader.peek();
-    if (CharConstants.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
-      final String s = String.valueOf(Character.toChars(c));
-      throw new ScannerException("while scanning an " + name, startMark,
-          "unexpected character found " + s + "(" + c + ")", reader.getMark());
-    }
-    Optional<Mark> endMark = reader.getMark();
-    Token tok;
-    if (isAnchor) {
-      tok = new AnchorToken(new Anchor(value), startMark, endMark);
-    } else {
-      tok = new AliasToken(new Anchor(value), startMark, endMark);
-    }
-    return tok;
   }
 
   /**

@@ -2,11 +2,14 @@ package org.snakeyaml.engine.v2.scanner
 
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.comments.CommentType
+import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.tokens.AliasToken
+import org.snakeyaml.engine.v2.tokens.AnchorToken
 import org.snakeyaml.engine.v2.tokens.BlockEndToken
 import org.snakeyaml.engine.v2.tokens.BlockEntryToken
 import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
@@ -974,10 +977,7 @@ class ScannerImpl(
 
     //endregion
 
-    //@formatter:off
-
     //region Scanners - create tokens
-
 
     /**
      * ```
@@ -1030,7 +1030,8 @@ class ScannerImpl(
                 commentSeen = true
                 var type: CommentType
                 if (columnBeforeComment != 0
-                    && !(lastToken != null && lastToken.tokenId == Token.ID.BlockEntry)) {
+                    && !(lastToken != null && lastToken.tokenId == Token.ID.BlockEntry)
+                ) {
                     type = CommentType.IN_LINE
                     inlineStartColumn = reader.column
                 } else if (inlineStartColumn == reader.column) {
@@ -1050,8 +1051,12 @@ class ScannerImpl(
             if (breaksOpt.isPresent) { // found a line-break
                 if (settings.parseComments && !commentSeen) {
                     if (columnBeforeComment == 0) {
-                        addToken(CommentToken(CommentType.BLANK_LINE, breaksOpt.get(), startMark,
-                            reader.getMark()))
+                        addToken(
+                            CommentToken(
+                                CommentType.BLANK_LINE, breaksOpt.get(), startMark,
+                                reader.getMark(),
+                            ),
+                        )
                     }
                 }
                 if (isBlockContext()) {
@@ -1067,21 +1072,86 @@ class ScannerImpl(
     private fun scanComment(type: CommentType): CommentToken = scannerJava.scanComment(type)
     private fun scanDirective(): List<Token> = scannerJava.scanDirective()
     private fun scanDirectiveName(startMark: Optional<Mark>): String = scannerJava.scanDirectiveName(startMark)
-    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): List<Int> = scannerJava.scanYamlDirectiveValue(startMark)
+    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): List<Int> =
+        scannerJava.scanYamlDirectiveValue(startMark)
+
     private fun scanYamlDirectiveNumber(startMark: Optional<Mark>): Int = scannerJava.scanYamlDirectiveNumber(startMark)
-    private fun scanTagDirectiveValue(startMark: Optional<Mark>): List<String> = scannerJava.scanTagDirectiveValue(startMark)
-    private fun scanTagDirectiveHandle(startMark: Optional<Mark>): String = scannerJava.scanTagDirectiveHandle(startMark)
-    private fun scanTagDirectivePrefix(startMark: Optional<Mark>): String = scannerJava.scanTagDirectivePrefix(startMark)
-    private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken = scannerJava.scanDirectiveIgnoredLine(startMark)
-    private fun scanAnchor(isAnchor: Boolean): Token = scannerJava.scanAnchor(isAnchor)
+    private fun scanTagDirectiveValue(startMark: Optional<Mark>): List<String> =
+        scannerJava.scanTagDirectiveValue(startMark)
+
+    private fun scanTagDirectiveHandle(startMark: Optional<Mark>): String =
+        scannerJava.scanTagDirectiveHandle(startMark)
+
+    private fun scanTagDirectivePrefix(startMark: Optional<Mark>): String =
+        scannerJava.scanTagDirectivePrefix(startMark)
+
+    private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken =
+        scannerJava.scanDirectiveIgnoredLine(startMark)
+
+
+    /**
+     * ```
+     * The YAML 1.2 specification does not restrict characters for anchors and
+     * aliases. This may lead to problems.
+     * see [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
+     * This implementation tries to follow [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
+     * ```
+     */
+    private fun scanAnchor(isAnchor: Boolean): Token {
+        val startMark = reader.getMark()
+        val indicator = reader.peek()
+        val name = if (indicator == '*'.code) "alias" else "anchor"
+        reader.forward()
+        var length = 0
+        var c = reader.peek(length)
+        // Anchor may not contain ",[]{}"
+        while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
+            length++
+            c = reader.peek(length)
+        }
+        if (length == 0) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = "while scanning an $name",
+                problemMark = startMark,
+                context = "unexpected character found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        val value = reader.prefixForward(length)
+        c = reader.peek()
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
+            val s = String(Character.toChars(c))
+            throw ScannerException(
+                problem = "while scanning an $name",
+                problemMark = startMark,
+                context = "unexpected character found $s($c)",
+                contextMark = reader.getMark(),
+            )
+        }
+        val endMark = reader.getMark()
+        return if (isAnchor) {
+            AnchorToken(Anchor(value), startMark, endMark)
+        } else {
+            AliasToken(Anchor(value), startMark, endMark)
+        }
+    }
+
+
     private fun scanTag(): Token = scannerJava.scanTag()
     private fun scanBlockScalar(style: ScalarStyle): List<Token> = scannerJava.scanBlockScalar(style)
-    private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping = scannerJava.scanBlockScalarIndicators(startMark)
-    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken = scannerJava.scanBlockScalarIgnoredLine(startMark)
+    private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping =
+        scannerJava.scanBlockScalarIndicators(startMark)
+
+    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken =
+        scannerJava.scanBlockScalarIgnoredLine(startMark)
+
     private fun scanBlockScalarIndentation(): BreakIntentHolder = scannerJava.scanBlockScalarIndentation()
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder = scannerJava.scanBlockScalarBreaks(indent)
     private fun scanFlowScalar(style: ScalarStyle): Token = scannerJava.scanFlowScalar(style)
-    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String = scannerJava.scanFlowScalarNonSpaces(doubleQuoted ,startMark)
+    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String =
+        scannerJava.scanFlowScalarNonSpaces(doubleQuoted, startMark)
+
     private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarSpaces(startMark)
     private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String = scannerJava.scanFlowScalarBreaks(startMark)
 
@@ -1112,9 +1182,10 @@ class ScannerImpl(
                     || c == ':'.code
                     && CharConstants.NULL_BL_T_LINEBR.has(
                         reader.peek(length + 1),
-                        if (isFlowContext())",[]{}" else "")
+                        if (isFlowContext()) ",[]{}" else "",
+                    )
                     || isFlowContext() && ",[]{}".indexOf(c.toChar()) != -1
-                    ) {
+                ) {
                     break
                 }
                 length++
@@ -1131,7 +1202,7 @@ class ScannerImpl(
                 spaces.isEmpty()
                 || reader.peek() == '#'.code
                 || isBlockContext() && reader.column < plainIndent
-                ) {
+            ) {
                 break
             }
         }
@@ -1140,14 +1211,20 @@ class ScannerImpl(
 
     private fun atEndOfPlain(): Boolean = scannerJava.atEndOfPlain()
     private fun scanPlainSpaces(): String = scannerJava.scanPlainSpaces()
-    private fun scanTagHandle(name: String, startMark: Optional<Mark>): String = scannerJava.scanTagHandle(name, startMark)
-    private fun scanTagUri(name: String, range: CharConstants, startMark: Optional<Mark>): String = scannerJava.scanTagUri(name, range, startMark)
-    private fun scanUriEscapes(name: String, startMark: Optional<Mark>): String = scannerJava.scanUriEscapes(name, startMark)
+    private fun scanTagHandle(name: String, startMark: Optional<Mark>): String =
+        scannerJava.scanTagHandle(name, startMark)
+
+    private fun scanTagUri(name: String, range: CharConstants, startMark: Optional<Mark>): String =
+        scannerJava.scanTagUri(name, range, startMark)
+
+    private fun scanUriEscapes(name: String, startMark: Optional<Mark>): String =
+        scannerJava.scanUriEscapes(name, startMark)
+
     private fun scanLineBreak(): Optional<String> = scannerJava.scanLineBreak()
 
     //endregion
 
-    private fun makeTokenList(vararg tokens: Token): List<Token> = scannerJava.makeTokenList()
+    private fun makeTokenList(vararg tokens: Token): List<Token> = scannerJava.makeTokenList(*tokens)
     //@formatter:on
 
     companion object {

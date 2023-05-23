@@ -25,10 +25,10 @@ import java.util.Optional
  * @param problemMark Position of the `problem` within the document.
  */
 class ScannerException @JvmOverloads constructor(
-    context: String? = null,
-    contextMark: Optional<Mark> = Optional.empty<Mark>(),
     problem: String,
     problemMark: Optional<Mark>,
+    context: String? = null,
+    contextMark: Optional<Mark> = Optional.empty<Mark>(),
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(
     context = context,

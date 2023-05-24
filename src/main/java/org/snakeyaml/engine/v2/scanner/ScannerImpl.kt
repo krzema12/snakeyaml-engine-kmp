@@ -35,6 +35,7 @@ import org.snakeyaml.engine.v2.tokens.ValueToken
 import java.nio.ByteBuffer
 import java.util.Optional
 import java.util.regex.Pattern
+import kotlin.collections.set
 
 
 /**
@@ -552,7 +553,7 @@ class ScannerImpl(
     private fun fetchDocumentStart(): Unit = fetchDocumentIndicator(true)
 
     /** Fetch a document-end token (`...`). */
-    private fun fetchDocumentEnd() = fetchDocumentIndicator(false)
+    private fun fetchDocumentEnd(): Unit = fetchDocumentIndicator(false)
 
     /**
      * Fetch a document indicator, either `---` for "document-start", or else `...` for "document-end.
@@ -578,9 +579,9 @@ class ScannerImpl(
         addToken(token)
     }
 
-    private fun fetchFlowSequenceStart() = fetchFlowCollectionStart(false)
+    private fun fetchFlowSequenceStart(): Unit = fetchFlowCollectionStart(false)
 
-    private fun fetchFlowMappingStart() = fetchFlowCollectionStart(true)
+    private fun fetchFlowMappingStart(): Unit = fetchFlowCollectionStart(true)
 
     /**
      * Fetch a flow-style collection start, which is either a sequence or a mapping. The type is
@@ -613,9 +614,9 @@ class ScannerImpl(
         addToken(token)
     }
 
-    private fun fetchFlowSequenceEnd() = fetchFlowCollectionEnd(false)
+    private fun fetchFlowSequenceEnd(): Unit = fetchFlowCollectionEnd(false)
 
-    private fun fetchFlowMappingEnd() = fetchFlowCollectionEnd(true)
+    private fun fetchFlowMappingEnd(): Unit = fetchFlowCollectionEnd(true)
 
     /**
      * Fetch a flow-style collection end, which is either a sequence or a mapping. The type is
@@ -827,18 +828,17 @@ class ScannerImpl(
         addToken(token)
     }
 
-
     /**
      * Fetch a literal scalar, denoted with a vertical-bar. This is the type best used for source code
      * and other content, such as binary data, which must be included verbatim.
      */
-    private fun fetchLiteral() = fetchBlockScalar(ScalarStyle.LITERAL)
+    private fun fetchLiteral(): Unit = fetchBlockScalar(ScalarStyle.LITERAL)
 
     /**
      * Fetch a folded scalar, denoted with a greater-than sign. This is the type best used for long
      * content, such as the text of a chapter or description.
      */
-    private fun fetchFolded() = fetchBlockScalar(ScalarStyle.FOLDED)
+    private fun fetchFolded(): Unit = fetchBlockScalar(ScalarStyle.FOLDED)
 
     /**
      * Fetch a block scalar (literal or folded).
@@ -856,10 +856,10 @@ class ScannerImpl(
     }
 
     /** Fetch a single-quoted (') scalar. */
-    private fun fetchSingle() = fetchFlowScalar(ScalarStyle.SINGLE_QUOTED)
+    private fun fetchSingle(): Unit = fetchFlowScalar(ScalarStyle.SINGLE_QUOTED)
 
     /** Fetch a double-quoted (") scalar. */
-    private fun fetchDouble() = fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED)
+    private fun fetchDouble(): Unit = fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED)
 
     /** Fetch a flow scalar (single- or double-quoted). */
     private fun fetchFlowScalar(style: ScalarStyle?) {
@@ -1041,7 +1041,7 @@ class ScannerImpl(
                     type = CommentType.BLOCK
                 }
                 val token = scanComment(type)
-                if (settings.parseComments && token != null) {
+                if (settings.parseComments) {
                     addToken(token)
                 }
             }
@@ -1069,7 +1069,7 @@ class ScannerImpl(
         }
     }
 
-    private fun scanComment(type: CommentType?): CommentToken? {
+    private fun scanComment(type: CommentType): CommentToken {
         // See the specification for details.
         val startMark = reader.getMark()
         reader.forward()
@@ -1079,7 +1079,7 @@ class ScannerImpl(
         }
         val value = reader.prefixForward(length)
         val endMark = reader.getMark()
-        return CommentToken(type!!, value, startMark, endMark)
+        return CommentToken(type, value, startMark, endMark)
     }
 
     private fun scanDirective(): List<Token> {
@@ -1452,27 +1452,28 @@ class ScannerImpl(
         val commentToken = scanBlockScalarIgnoredLine(startMark)
 
         // Determine the indentation level and go to the first non-empty line.
-        var minIndent = indent + 1
-        if (minIndent < 1) {
-            minIndent = 1
-        }
+        val minIndent = (indent + 1).coerceAtLeast(1)
         var breaks: String
         val maxIndent: Int
         val blockIndent: Int
         var endMark: Optional<Mark>
-        if (chomping.increment.isPresent) {
-            // increment is explicit
-            blockIndent = minIndent + chomping.increment.get() - 1
-            val brme = scanBlockScalarBreaks(blockIndent)
-            breaks = brme.breaks
-            endMark = brme.endMark
-        } else {
-            // increment (block indent) must be detected in the first non-empty line.
-            val brme = scanBlockScalarIndentation()
-            breaks = brme.breaks
-            maxIndent = brme.maxIndent
-            endMark = brme.endMark
-            blockIndent = minIndent.coerceAtLeast(maxIndent)
+        when (val chompingIncrement = chomping.increment) {
+            null -> {
+                // increment (block indent) must be detected in the first non-empty line.
+                val brme = scanBlockScalarIndentation()
+                breaks = brme.breaks
+                maxIndent = brme.maxIndent
+                endMark = brme.endMark
+                blockIndent = minIndent.coerceAtLeast(maxIndent)
+            }
+
+            else -> {
+                // increment is explicit
+                blockIndent = minIndent + chompingIncrement - 1
+                val brme = scanBlockScalarBreaks(blockIndent)
+                breaks = brme.breaks
+                endMark = brme.endMark
+            }
         }
         var lineBreakOpt = Optional.empty<String>()
         // Scan the inner part of the block scalar.
@@ -1519,11 +1520,11 @@ class ScannerImpl(
             }
         }
         // Chomp the tail.
-        if (chomping.value === Chomping.Indicator.CLIP || chomping.value === Chomping.Indicator.KEEP) {
+        if (chomping.addExistingFinalLineBreak) {
             // add the final line break (if exists !) TODO find out if to add anyway
             stringBuilder.append(lineBreakOpt.orElse(""))
         }
-        if (chomping.value === Chomping.Indicator.KEEP) {
+        if (chomping.retainTrailingEmptyLines) {
             // any trailing empty lines are considered to be part of the scalar’s content
             stringBuilder.append(breaks)
         }
@@ -1548,8 +1549,8 @@ class ScannerImpl(
      */
     private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping {
         // See the specification for details.
-        var indicator = Int.MIN_VALUE
-        var increment: Optional<Int> = Optional.empty()
+        val indicator: Int?
+        val increment: Int?
         var c = reader.peek()
         if (c == '-'.code || c == '+'.code) {
             indicator = c
@@ -1565,8 +1566,10 @@ class ScannerImpl(
                         contextMark = reader.getMark(),
                     )
                 }
-                increment = Optional.of(incr)
+                increment = incr
                 reader.forward()
+            } else {
+                increment = null
             }
         } else if (Character.isDigit(c)) {
             val incr = String(Character.toChars(c)).toInt()
@@ -1578,13 +1581,18 @@ class ScannerImpl(
                     contextMark = reader.getMark(),
                 )
             }
-            increment = Optional.of(incr)
+            increment = incr
             reader.forward()
             c = reader.peek()
             if (c == '-'.code || c == '+'.code) {
                 indicator = c
                 reader.forward()
+            } else {
+                indicator = null
             }
+        } else {
+            increment = null
+            indicator = null
         }
         c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
@@ -1597,6 +1605,7 @@ class ScannerImpl(
             )
         }
         return Chomping(indicator, increment)
+            ?: throw IllegalArgumentException("Unexpected block chomping indicator: $indicator")
     }
 
 
@@ -2262,50 +2271,72 @@ private class BreakIntentHolder(
     val endMark: Optional<Mark>,
 )
 
+//region Chomping
+/**
+ * Chomping controls how final line breaks and trailing empty lines are interpreted.
+ * YAML provides three chomping methods:
+ *
+ * * [Chomping.Strip]
+ * * [Chomping.Clip]
+ * * [Chomping.Keep]
+ */
+private sealed interface Chomping {
+    val increment: Int?
 
-private class Chomping(
-    val value: Indicator,
-    val increment: Optional<Int>,
-) {
-    constructor(indicatorCodePoint: Int, increment: Optional<Int>) : this(parse(indicatorCodePoint), increment)
+    /** Whether to add the final line break (if it exists) */
+    val addExistingFinalLineBreak: Boolean
 
-    enum class Indicator {
-        STRIP,
-        CLIP,
-        KEEP
+    /** Whether any trailing empty lines are considered to be part of the scalar’s content */
+    val retainTrailingEmptyLines: Boolean
+
+    /**
+     * Clipping is the default behavior used if no explicit chomping indicator is specified.
+     * In this case, the final line break character is preserved in the scalar’s content.
+     * However, any trailing empty lines are excluded from the scalar’s content.
+     */
+    @JvmInline
+    value class Clip(override val increment: Int?) : Chomping {
+        override val addExistingFinalLineBreak: Boolean get() = true
+        override val retainTrailingEmptyLines: Boolean get() = false
     }
 
-    companion object {
-        private fun parse(codePoint: Int): Indicator {
-            return when (codePoint) {
-                '+'.code      -> Indicator.KEEP
-                '-'.code      -> Indicator.STRIP
-                Int.MIN_VALUE -> Indicator.CLIP
-                else          -> throw IllegalArgumentException("Unexpected block chomping indicator: $codePoint")
-            }
-        }
+    /**
+     * Stripping is specified by the `-` chomping indicator.
+     * In this case, the final line break and any trailing empty lines are excluded from the scalar’s content.
+     */
+    @JvmInline
+    value class Strip(override val increment: Int?) : Chomping {
+        override val addExistingFinalLineBreak: Boolean get() = false
+        override val retainTrailingEmptyLines: Boolean get() = false
+    }
+
+    /**
+     * Keeping is specified by the `+` chomping indicator.
+     * In this case, the final line break and any trailing empty lines are considered to be part of the scalar’s
+     * content. These additional lines are not subject to folding.
+     */
+    @JvmInline
+    value class Keep(override val increment: Int?) : Chomping {
+        override val addExistingFinalLineBreak: Boolean get() = true
+        override val retainTrailingEmptyLines: Boolean get() = true
     }
 }
 
-//internal sealed interface Chomping2 {
-//    val increment: Int?
-//
-//    @JvmInline
-//    value class STRIP(override val increment: Int?) : Chomping2
-//    @JvmInline
-//    value class CLIP(override val increment: Int?) : Chomping2
-//    @JvmInline
-//    value class KEEP(override val increment: Int?) : Chomping2
-//}
-//
-//internal fun Chomping2(
-//    indicatorCodePoint: Int,
-//    increment: Int?,
-//): Chomping2 {
-//    return when (indicatorCodePoint) {
-//        '+'.code      -> Chomping2.KEEP(increment)
-//        '-'.code      -> Chomping2.STRIP(increment)
-//        Int.MIN_VALUE -> Chomping2.CLIP(increment)
-//        else          -> throw IllegalArgumentException("Unexpected block chomping indicator: $indicatorCodePoint")
-//    }
-//}
+
+/**
+ * Create a new [Chomping] instance based on the [indicatorCodePoint].
+ *
+ * @returns `null` if [indicatorCodePoint] is unknown, else a matching [Chomping] instance.
+ */
+private fun Chomping(
+    indicatorCodePoint: Int?,
+    increment: Int?,
+): Chomping? {
+    return when (indicatorCodePoint) {
+        '+'.code -> Chomping.Keep(increment)
+        '-'.code -> Chomping.Strip(increment)
+        null     -> Chomping.Clip(increment)
+        else     -> null
+    }
+}
+//endregion

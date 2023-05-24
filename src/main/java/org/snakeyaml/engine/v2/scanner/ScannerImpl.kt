@@ -914,9 +914,8 @@ class ScannerImpl(
      */
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
-        return if (reader.column == 0) {
-            "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
-        } else false
+        return checkDirective()
+            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -925,9 +924,8 @@ class ScannerImpl(
      */
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
-        return if (reader.column == 0) {
-            "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
-        } else false
+        return checkDirective()
+            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -949,22 +947,16 @@ class ScannerImpl(
      * Returns `true` if the next thing on the reader is a value token.
      */
     private fun checkValue(): Boolean {
-        // VALUE(flow context): ':'
-        return if (isFlowContext()) {
-            true
-        } else {
-            // VALUE(block context): ':' (' '|'\n')
-            CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1))
-        }
+        return isFlowContext() // VALUE(flow context): ':'
+            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
     private fun checkPlain(): Boolean {
-        // * A plain scalar may start with any non-space character except: '-', '?', ':', ',', '[', ']',
-        // * '{', '}', '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;', '%', '@', '`'.
+        // * A plain scalar may start with any non-space character except:
+        // '-', '?', ':', ',', '[', ']', '{', '}', '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;', '%', '@', '`'.
         val c = reader.peek()
-        // If the next char is NOT one of the forbidden chars above or
-        // whitespace, then this is the start of a plain scalar.
+        // If the next char is NOT one of the forbidden chars above or whitespace, then this is the start of a plain scalar.
         val notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`")
         return if (notForbidden) {
             true // plain scalar
@@ -1034,7 +1026,7 @@ class ScannerImpl(
             // past the comment.
             if (reader.peek() == '#'.code) {
                 commentSeen = true
-                var type: CommentType
+                val type: CommentType
                 if (columnBeforeComment != 0
                     && !(lastToken != null && lastToken?.tokenId == Token.ID.BlockEntry)
                 ) {
@@ -1203,15 +1195,17 @@ class ScannerImpl(
         val number = reader.prefixForward(length)
         if (length > 3) {
             throw ScannerException(
-                "while scanning a YAML directive", startMark,
-                "found a number which cannot represent a valid version: $number", reader.getMark(),
+                problem = "while scanning a YAML directive",
+                problemMark = startMark,
+                context = "found a number which cannot represent a valid version: $number",
+                contextMark = reader.getMark(),
             )
         }
         return number.toInt()
     }
 
     /**
-     * Read a %TAG directive value:
+     * Read a `%TAG` directive value:
      * ```
      * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
      * ```
@@ -1230,7 +1224,7 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a %TAG directive's handle. This is YAML's c-tag-handle.
+     * Scan a `%TAG` directive's handle. This is YAML's c-tag-handle.
      *
      * @param startMark - start
      * @return the directive value
@@ -1535,11 +1529,9 @@ class ScannerImpl(
      * Scan a block scalar indicator. The block scalar indicator includes two optional components,
      * which may appear in either order.
      *
-     *
      * A block indentation indicator is a non-zero digit describing the indentation level of the block
      * scalar to follow. This indentation is an additional number of spaces relative to the current
      * indentation level.
-     *
      *
      * A block chomping indicator is a + or -, selecting the chomping mode away from the default
      * (clip) to either -(strip) or +(keep).
@@ -1618,10 +1610,12 @@ class ScannerImpl(
         }
 
         // If a comment occurs, scan to just before the end of line.
-        var commentToken: CommentToken? = null
-        if (reader.peek() == '#'.code) {
-            commentToken = scanComment(CommentType.IN_LINE)
-        }
+        val commentToken: CommentToken? =
+            if (reader.peek() == '#'.code) {
+                scanComment(CommentType.IN_LINE)
+            } else {
+                null
+            }
         // If the next character is not a null or line break, an error has
         // occurred.
         val c = reader.peek()
@@ -1817,8 +1811,7 @@ class ScannerImpl(
             length++
         }
         val whitespaces = reader.prefixForward(length)
-        val c = reader.peek()
-        if (c == 0) {
+        if (reader.peek() == 0) {
             // A flow scalar cannot end with an end-of-stream
             throw ScannerException(
                 problem = "while scanning a quoted scalar",
@@ -1850,7 +1843,8 @@ class ScannerImpl(
         while (true) {
             // Instead of checking indentation, we check for document separators.
             val prefix = reader.prefix(3)
-            if (("---" == prefix || "..." == prefix)
+            if (
+                ("---" == prefix || "..." == prefix)
                 && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
             ) {
                 throw ScannerException(
@@ -1945,7 +1939,10 @@ class ScannerImpl(
                 && CharConstants.NULL_BL_T_LINEBR.has(c)
             ) {
                 wsLength++
-                if (!CharConstants.LINEBR.has(c) && (c != '\r'.code || reader.peek(wsLength + 1) != '\n'.code) && c != 0xFEFF
+                if (
+                    !CharConstants.LINEBR.has(c)
+                    && (c != '\r'.code || reader.peek(wsLength + 1) != '\n'.code)
+                    && c != 0xFEFF
                 ) {
                     wsColumn++
                 } else {
@@ -1956,7 +1953,11 @@ class ScannerImpl(
 
         // if we see, a comment or end of string or change decrease in indent, we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.
-        if (reader.peek(wsLength) == '#'.code || reader.peek(wsLength + 1) == 0 || isBlockContext() && wsColumn < indent) {
+        if (
+            reader.peek(wsLength) == '#'.code
+            || reader.peek(wsLength + 1) == 0
+            || isBlockContext() && wsColumn < indent
+        ) {
             return true
         }
 
@@ -1987,16 +1988,15 @@ class ScannerImpl(
             length++
         }
         val whitespaces = reader.prefixForward(length)
-        val lineBreak = scanLineBreak()
-        if (lineBreak != null) {
-            allowSimpleKey = true
-            var prefix = reader.prefix(3)
-            if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
-                return ""
-            }
-            if (settings.parseComments && atEndOfPlain()) {
-                return ""
-            }
+        val lineBreak = scanLineBreak() ?: return whitespaces
+
+        allowSimpleKey = true
+        var prefix = reader.prefix(3)
+        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+            return ""
+        } else if (settings.parseComments && atEndOfPlain()) {
+            return ""
+        } else {
             val breaks = StringBuilder()
             while (true) {
                 if (reader.peek() == ' '.code) {
@@ -2020,7 +2020,6 @@ class ScannerImpl(
                 else              -> breaks.toString()
             }
         }
-        return whitespaces
     }
 
     /**
@@ -2085,7 +2084,6 @@ class ScannerImpl(
      * Scan a Tag URI. This scanning is valid for both local and global tag directives, because both
      * appear to be valid URIs as far as scanning is concerned. The difference may be distinguished
      * later, in parsing. This method will scan for ns-uri-char*, which covers both cases.
-     *
      *
      * This method performs no verification that the scanned URI conforms to any particular kind of
      * URI specification.
@@ -2215,17 +2213,13 @@ class ScannerImpl(
      * @return tokens to be used
      */
     private fun makeTokenList(vararg tokens: Token?): List<Token> {
-        val tokenList: MutableList<Token> = ArrayList()
-        for (token in tokens) {
-            if (token == null) {
-                continue
+        return buildList {
+            for (token in tokens) {
+                if (token != null && (settings.parseComments || token !is CommentToken)) {
+                    add(token)
+                }
             }
-            if (!settings.parseComments && token is CommentToken) {
-                continue
-            }
-            tokenList.add(token)
         }
-        return tokenList
     }
 
     //endregion
@@ -2254,6 +2248,7 @@ private class BreakIntentHolder(
 )
 
 //region Chomping
+
 /**
  * Chomping controls how final line breaks and trailing empty lines are interpreted.
  * YAML provides three chomping methods:
@@ -2321,4 +2316,5 @@ private fun Chomping(
         else     -> null
     }
 }
+
 //endregion

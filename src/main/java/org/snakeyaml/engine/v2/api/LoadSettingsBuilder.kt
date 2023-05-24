@@ -178,7 +178,6 @@ class LoadSettingsBuilder internal constructor() {
      * Manage YAML directive value which defines the version of the YAML specification. This parser
      * supports YAML 1.2, but it can parse most of YAML 1.1 and YAML 1.0
      *
-     *
      * This function allows to control the version management. For instance if the document contains
      * old version the parser can be adapted to compensate the problem. Or it can fail to indicate
      * that the incoming version is not supported.

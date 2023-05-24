@@ -88,7 +88,6 @@ abstract class BaseRepresenter(
      */
     private fun findRepresenterFor(data: Any): RepresentToNode? {
         val clazz = data::class
-        println("finding representer for ${clazz.qualifiedName}")
         // check the same class
         return if (clazz in representers) {
             representers[clazz]

@@ -1048,12 +1048,12 @@ class ScannerImpl(
             // If we scanned a line break, then (depending on flow level),
             // simple keys may be allowed.
             val breaksOpt = scanLineBreak()
-            if (breaksOpt.isPresent) { // found a line-break
+            if (breaksOpt != null) { // found a line-break
                 if (settings.parseComments && !commentSeen) {
                     if (columnBeforeComment == 0) {
                         addToken(
                             CommentToken(
-                                CommentType.BLANK_LINE, breaksOpt.get(), startMark,
+                                CommentType.BLANK_LINE, breaksOpt, startMark,
                                 reader.getMark(),
                             ),
                         )
@@ -1283,7 +1283,7 @@ class ScannerImpl(
             }
         }
         val c = reader.peek()
-        if (!scanLineBreak().isPresent && c != 0) {
+        if (scanLineBreak() == null && c != 0) {
             val s = String(Character.toChars(c))
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
@@ -1475,7 +1475,7 @@ class ScannerImpl(
                 endMark = brme.endMark
             }
         }
-        var lineBreakOpt = Optional.empty<String>()
+        var lineBreak: String? = null
         // Scan the inner part of the block scalar.
         if (reader.column < blockIndent && indent != reader.column) {
             // it means that there is indent, but less than expected
@@ -1495,7 +1495,7 @@ class ScannerImpl(
                 length++
             }
             stringBuilder.append(reader.prefixForward(length))
-            lineBreakOpt = scanLineBreak()
+            lineBreak = scanLineBreak()
             val brme = scanBlockScalarBreaks(blockIndent)
             breaks = brme.breaks
             endMark = brme.endMark
@@ -1505,7 +1505,7 @@ class ScannerImpl(
                 // This is the folding according to the specification:
                 if (
                     style == ScalarStyle.FOLDED
-                    && "\n" == lineBreakOpt.orElse("")
+                    && "\n" == lineBreak
                     && leadingNonSpace
                     && " \t".indexOf(reader.peek().toChar()) == -1
                 ) {
@@ -1513,7 +1513,7 @@ class ScannerImpl(
                         stringBuilder.append(" ")
                     }
                 } else {
-                    stringBuilder.append(lineBreakOpt.orElse(""))
+                    stringBuilder.append(lineBreak ?: "")
                 }
             } else {
                 break
@@ -1522,7 +1522,7 @@ class ScannerImpl(
         // Chomp the tail.
         if (chomping.addExistingFinalLineBreak) {
             // add the final line break (if exists !) TODO find out if to add anyway
-            stringBuilder.append(lineBreakOpt.orElse(""))
+            stringBuilder.append(lineBreak ?: "")
         }
         if (chomping.retainTrailingEmptyLines) {
             // any trailing empty lines are considered to be part of the scalar’s content
@@ -1629,7 +1629,7 @@ class ScannerImpl(
         // If the next character is not a null or line break, an error has
         // occurred.
         val c = reader.peek()
-        if (!scanLineBreak().isPresent && c != 0) {
+        if (scanLineBreak() == null && c != 0) {
             val s = String(Character.toChars(c))
             throw ScannerException(
                 problem = SCANNING_SCALAR,
@@ -1657,7 +1657,7 @@ class ScannerImpl(
             if (reader.peek() != ' '.code) {
                 // If the character isn't a space, it must be some kind of
                 // line-break; scan the line break and track it.
-                chunks.append(scanLineBreak().orElse(""))
+                chunks.append(scanLineBreak() ?: "")
                 endMark = reader.getMark()
             } else {
                 // If the character is a space, move forward to the next
@@ -1688,9 +1688,9 @@ class ScannerImpl(
 
         // Consume one or more line breaks followed by any amount of spaces,
         // until we find something that isn't a line-break.
-        var lineBreakOpt: Optional<String>
-        while (scanLineBreak().also { lineBreakOpt = it }.isPresent) {
-            chunks.append(lineBreakOpt.get())
+        var lineBreak: String?
+        while (scanLineBreak().also { lineBreak = it } != null) {
+            chunks.append(lineBreak)
             endMark = reader.getMark()
             // Scan past up to (indent) spaces on the next line, then forward
             // past them.
@@ -1799,7 +1799,7 @@ class ScannerImpl(
                             contextMark = reader.getMark(),
                         )
                     }
-                } else if (scanLineBreak().isPresent) {
+                } else if (scanLineBreak() != null) {
                     chunks.append(scanFlowScalarBreaks(startMark))
                 } else {
                     val s = String(Character.toChars(c))
@@ -1838,10 +1838,10 @@ class ScannerImpl(
         // If we encounter a line break, scan it into our assembled string...
         val lineBreakOpt = scanLineBreak()
         return buildString {
-            if (lineBreakOpt.isPresent) {
+            if (lineBreakOpt != null) {
                 val breaks = scanFlowScalarBreaks(startMark)
-                if ("\n" != lineBreakOpt.get()) {
-                    append(lineBreakOpt.get())
+                if ("\n" != lineBreakOpt) {
+                    append(lineBreakOpt)
                 } else if (breaks.isEmpty()) {
                     append(" ")
                 }
@@ -1876,8 +1876,8 @@ class ScannerImpl(
             // If we stopped at a line break, add that; otherwise, return the
             // assembled set of scalar breaks.
             val lineBreakOpt = scanLineBreak()
-            if (lineBreakOpt.isPresent) {
-                chunks.append(lineBreakOpt.get())
+            if (lineBreakOpt != null) {
+                chunks.append(lineBreakOpt)
             } else {
                 return chunks.toString()
             }
@@ -1999,8 +1999,8 @@ class ScannerImpl(
             length++
         }
         val whitespaces = reader.prefixForward(length)
-        val lineBreakOpt = scanLineBreak()
-        if (lineBreakOpt.isPresent) {
+        val lineBreak = scanLineBreak()
+        if (lineBreak != null) {
             allowSimpleKey = true
             var prefix = reader.prefix(3)
             if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
@@ -2015,8 +2015,8 @@ class ScannerImpl(
                     reader.forward()
                 } else {
                     val lbOpt = scanLineBreak()
-                    if (lbOpt.isPresent) {
-                        breaks.append(lbOpt.get())
+                    if (lbOpt != null) {
+                        breaks.append(lbOpt)
                         prefix = reader.prefix(3)
                         if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
                             return ""
@@ -2027,9 +2027,9 @@ class ScannerImpl(
                 }
             }
             return when {
-                "\n" != lineBreakOpt.orElse("") -> lineBreakOpt.orElse("") + breaks
-                breaks.isEmpty()                -> " "
-                else                            -> breaks.toString()
+                "\n" != lineBreak -> lineBreak + breaks
+                breaks.isEmpty()  -> " "
+                else              -> breaks.toString()
             }
         }
         return whitespaces
@@ -2157,9 +2157,8 @@ class ScannerImpl(
             length++
         }
         // See the specification for details.
-        // URIs containing 16 and 32 bit Unicode characters are
-        // encoded in UTF-8, and then each octet is written as a
-        // separate character.
+        // URIs containing 16 and 32 bit Unicode characters are encoded in UTF-8,
+        // and then each octet is written as a separate character.
         val beginningMark = reader.getMark()
         val buff = ByteBuffer.allocate(length)
         while (reader.peek() == '%'.code) {
@@ -2207,9 +2206,9 @@ class ScannerImpl(
      * '\u2029  : '\u2029'
      * default : ''
      * ```
-     * @returns transformed character or empty string if no line break detected
+     * @returns transformed character, or empty string if no line break detected
      */
-    private fun scanLineBreak(): Optional<String> {
+    private fun scanLineBreak(): String? {
         val c = reader.peek()
         if (c == '\r'.code || c == '\n'.code || c == '\u0085'.code) {
             if (c == '\r'.code && '\n'.code == reader.peek(1)) {
@@ -2217,12 +2216,12 @@ class ScannerImpl(
             } else {
                 reader.forward()
             }
-            return Optional.of("\n")
+            return "\n"
         } else if (c == '\u2028'.code || c == '\u2029'.code) {
             reader.forward()
-            return Optional.of(String(Character.toChars(c)))
+            return String(Character.toChars(c))
         }
-        return Optional.empty()
+        return null
     }
 
 

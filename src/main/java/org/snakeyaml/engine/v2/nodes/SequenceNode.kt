@@ -26,9 +26,9 @@ import java.util.*
  */
 class SequenceNode @JvmOverloads constructor(
     tag: Tag,
-    resolved: Boolean = true,
     override val value: List<Node>,
     flowStyle: FlowStyle,
+    resolved: Boolean = true,
     startMark: Optional<Mark> = Optional.empty<Mark>(),
     endMark: Optional<Mark> = Optional.empty<Mark>(),
 ) : CollectionNode<Node>(

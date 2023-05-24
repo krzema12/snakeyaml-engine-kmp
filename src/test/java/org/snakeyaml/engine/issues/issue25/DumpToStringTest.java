@@ -13,16 +13,17 @@
  */
 package org.snakeyaml.engine.issues.issue25;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
 public class DumpToStringTest {
@@ -34,8 +35,8 @@ public class DumpToStringTest {
     DumpSettings dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build();
     Dump dump = new Dump(dumpSettings);
     class Something {
-
-      final int doesntmatter = 0;
+      @SuppressWarnings("unused")
+      final int doesNotMatter = 0;
     }
     Something something = new Something();
     data.put("before", "bla");
@@ -46,7 +47,8 @@ public class DumpToStringTest {
     } catch (YamlEngineException e) {
       assertEquals(
           "Representer is not defined for class org.snakeyaml.engine.issues.issue25.DumpToStringTest$1Something",
-          e.getMessage());
+          e.getMessage()
+      );
     }
     String output = dump.dumpToString(data);
     assertEquals("before: bla\n", output);

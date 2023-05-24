@@ -13,11 +13,12 @@
  */
 package org.snakeyaml.engine.issues.issue44;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+
+import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProtectedClassesTest {
 
@@ -32,7 +33,7 @@ public class ProtectedClassesTest {
     public ExampleRepresenter(DumpSettings settings) {
       super(settings);
       this.representers.clear();
-      this.representers.put(Boolean.class, new RepresentBoolean());
+      this.representers.put(getKotlinClass(Boolean.class), getRepresentBoolean());
     }
   }
 }

@@ -250,8 +250,12 @@ class Composer(
         }
         val children = ArrayList<Node>()
         val node = SequenceNode(
-            nodeTag, resolved, children, startEvent.flowStyle,
-            startEvent.startMark, Optional.empty<Mark>(),
+            tag = nodeTag,
+            value = children,
+            flowStyle = startEvent.flowStyle,
+            resolved = resolved,
+            startMark = startEvent.startMark,
+            endMark = Optional.empty<Mark>(),
         )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())

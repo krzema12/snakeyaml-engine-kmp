@@ -39,7 +39,7 @@ open class JsonSchema(
         Tag.INT to ConstructYamlJsonInt(),
         Tag.FLOAT to ConstructYamlJsonFloat(),
         Tag.BINARY to ConstructYamlBinary(),
-        Tag(UUID::class.java) to ConstructUuidClass(),
-        Tag(Optional::class.java) to ConstructOptionalClass(scalarResolver),
+        Tag(UUID::class) to ConstructUuidClass(),
+        Tag(Optional::class) to ConstructOptionalClass(scalarResolver),
     ),
 ) : Schema

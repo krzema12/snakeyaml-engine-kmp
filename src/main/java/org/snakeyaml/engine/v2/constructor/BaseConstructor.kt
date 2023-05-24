@@ -54,8 +54,8 @@ abstract class BaseConstructor(
         return if (optionalNode.isPresent && Tag.NULL != optionalNode.get().tag) {
             construct(optionalNode.get())
         } else {
-            val construct = tagConstructors[Tag.NULL]
-            construct!!.construct(optionalNode.orElse(null))
+            val construct = tagConstructors[Tag.NULL]!!
+            construct.construct(optionalNode.orElse(null))
         }
     }
 

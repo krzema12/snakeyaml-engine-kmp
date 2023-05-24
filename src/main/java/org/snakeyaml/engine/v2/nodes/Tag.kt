@@ -14,70 +14,71 @@
 package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.UriEncoder
+import kotlin.reflect.KClass
 
 class Tag {
-  val value: String
+    val value: String
 
-  constructor(tag: String) {
-    require(tag.isNotEmpty()) { "Tag must not be empty." }
-    require(tag.trim { it <= ' ' }.length == tag.length) { "Tag must not contain leading or trailing spaces." }
-    value = UriEncoder.encode(tag)
-  }
-
-  /**
-   * Create a global tag to dump the fully qualified class name
-   *
-   * @param clazz - the class to use the name
-   */
-  constructor(clazz: Class<out Any?>) {
-    value = PREFIX + UriEncoder.encode(clazz.name)
-  }
-
-  override fun toString(): String = value
-
-  override fun equals(other: Any?): Boolean =
-    when (other) {
-      is Tag -> value == other.value
-      else   -> false
+    constructor(tag: String) {
+        require(tag.isNotEmpty()) { "Tag must not be empty." }
+        require(tag.trim { it <= ' ' }.length == tag.length) { "Tag must not contain leading or trailing spaces." }
+        value = UriEncoder.encode(tag)
     }
 
-  override fun hashCode(): Int = value.hashCode()
+    /**
+     * Create a global tag to dump the fully qualified class name
+     *
+     * @param clazz - the class to use the name
+     */
+    constructor(clazz: KClass<*>) {
+        value = PREFIX + UriEncoder.encode(clazz.qualifiedName!!)
+    }
 
-  companion object {
-    const val PREFIX = "tag:yaml.org,2002:"
+    override fun toString(): String = value
 
-    @JvmField
-    val SET = Tag(PREFIX + "set")
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            is Tag -> value == other.value
+            else   -> false
+        }
 
-    @JvmField
-    val BINARY = Tag(PREFIX + "binary")
+    override fun hashCode(): Int = value.hashCode()
 
-    @JvmField
-    val INT = Tag(PREFIX + "int")
+    companion object {
+        const val PREFIX = "tag:yaml.org,2002:"
 
-    @JvmField
-    val FLOAT = Tag(PREFIX + "float")
+        @JvmField
+        val SET = Tag(PREFIX + "set")
 
-    @JvmField
-    val BOOL = Tag(PREFIX + "bool")
+        @JvmField
+        val BINARY = Tag(PREFIX + "binary")
 
-    @JvmField
-    val NULL = Tag(PREFIX + "null")
+        @JvmField
+        val INT = Tag(PREFIX + "int")
 
-    @JvmField
-    val STR = Tag(PREFIX + "str")
+        @JvmField
+        val FLOAT = Tag(PREFIX + "float")
 
-    @JvmField
-    val SEQ = Tag(PREFIX + "seq")
+        @JvmField
+        val BOOL = Tag(PREFIX + "bool")
 
-    @JvmField
-    val MAP = Tag(PREFIX + "map")
+        @JvmField
+        val NULL = Tag(PREFIX + "null")
 
-    /** Used to indicate a DUMMY node that contains comments, when there is no other (empty document) */
-    @JvmField
-    val COMMENT = Tag(PREFIX + "comment")
+        @JvmField
+        val STR = Tag(PREFIX + "str")
 
-    @JvmField
-    val ENV_TAG = Tag("!ENV_VARIABLE")
-  }
+        @JvmField
+        val SEQ = Tag(PREFIX + "seq")
+
+        @JvmField
+        val MAP = Tag(PREFIX + "map")
+
+        /** Used to indicate a DUMMY node that contains comments, when there is no other (empty document) */
+        @JvmField
+        val COMMENT = Tag(PREFIX + "comment")
+
+        @JvmField
+        val ENV_TAG = Tag("!ENV_VARIABLE")
+    }
 }

@@ -21,12 +21,12 @@ import org.snakeyaml.engine.v2.nodes.Node
  *
  * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
  */
-interface RepresentToNode {
+fun interface RepresentToNode {
     /**
      * Create a Node
      *
      * @param data the instance to represent
      * @return Node to dump
      */
-    fun representData(data: Any?): Node?
+    fun representData(data: Any): Node
 }

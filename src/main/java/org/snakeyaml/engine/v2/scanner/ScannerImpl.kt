@@ -132,7 +132,7 @@ class ScannerImpl(
      * may start at the current position.
      * ```
      */
-    private var allowSimpleKey  = true
+    private var allowSimpleKey = true
 
     init {
         fetchStreamStart() // Add the STREAM-START token.
@@ -2241,8 +2241,6 @@ class ScannerImpl(
         return tokenList
     }
 
-    //@formatter:on
-
     companion object {
 
         private const val DIRECTIVE_PREFIX = "while scanning a directive"
@@ -2256,3 +2254,58 @@ class ScannerImpl(
         private val NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]")
     }
 }
+
+
+private class BreakIntentHolder(
+    val breaks: String,
+    val maxIndent: Int,
+    val endMark: Optional<Mark>,
+)
+
+
+private class Chomping(
+    val value: Indicator,
+    val increment: Optional<Int>,
+) {
+    constructor(indicatorCodePoint: Int, increment: Optional<Int>) : this(parse(indicatorCodePoint), increment)
+
+    enum class Indicator {
+        STRIP,
+        CLIP,
+        KEEP
+    }
+
+    companion object {
+        private fun parse(codePoint: Int): Indicator {
+            return when (codePoint) {
+                '+'.code      -> Indicator.KEEP
+                '-'.code      -> Indicator.STRIP
+                Int.MIN_VALUE -> Indicator.CLIP
+                else          -> throw IllegalArgumentException("Unexpected block chomping indicator: $codePoint")
+            }
+        }
+    }
+}
+
+//internal sealed interface Chomping2 {
+//    val increment: Int?
+//
+//    @JvmInline
+//    value class STRIP(override val increment: Int?) : Chomping2
+//    @JvmInline
+//    value class CLIP(override val increment: Int?) : Chomping2
+//    @JvmInline
+//    value class KEEP(override val increment: Int?) : Chomping2
+//}
+//
+//internal fun Chomping2(
+//    indicatorCodePoint: Int,
+//    increment: Int?,
+//): Chomping2 {
+//    return when (indicatorCodePoint) {
+//        '+'.code      -> Chomping2.KEEP(increment)
+//        '-'.code      -> Chomping2.STRIP(increment)
+//        Int.MIN_VALUE -> Chomping2.CLIP(increment)
+//        else          -> throw IllegalArgumentException("Unexpected block chomping indicator: $indicatorCodePoint")
+//    }
+//}

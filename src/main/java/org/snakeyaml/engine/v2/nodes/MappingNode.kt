@@ -32,13 +32,13 @@ import java.util.*
  */
 class MappingNode @JvmOverloads constructor(
   tag: Tag,
-  resolved: Boolean = true,
   /**
    * Applications may need to replace the content (Spring Boot).
    * Merging was removed, but it may be implemented.
    */
   override var value: MutableList<NodeTuple>,
   flowStyle: FlowStyle,
+  resolved: Boolean = true,
   startMark: Optional<Mark> = Optional.empty<Mark>(),
   endMark: Optional<Mark> = Optional.empty<Mark>(),
 ) : CollectionNode<NodeTuple>(

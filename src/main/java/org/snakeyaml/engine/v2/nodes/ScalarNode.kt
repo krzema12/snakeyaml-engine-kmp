@@ -32,9 +32,9 @@ import java.util.*
  */
 class ScalarNode @JvmOverloads constructor(
   tag: Tag,
-  resolved: Boolean = true,
   val value: String,
   val scalarStyle: ScalarStyle,
+  resolved: Boolean = true,
   startMark: Optional<Mark> = Optional.empty<Mark>(),
   endMark: Optional<Mark> = Optional.empty<Mark>(),
 ) : Node(tag, startMark, endMark, resolved = resolved) {

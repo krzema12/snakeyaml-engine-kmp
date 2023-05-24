@@ -137,7 +137,7 @@ public class EmitterTest {
 
   // Issue #158
   @Test
-  public void testWriteSupplementaryUnicode() throws IOException {
+  public void testWriteSupplementaryUnicode() {
     DumpSettings settings = DumpSettings.builder().setUseUnicodeEncoding(false).build();
     String burger = new String(Character.toChars(0x1f354));
     String halfBurger = "\uD83C";

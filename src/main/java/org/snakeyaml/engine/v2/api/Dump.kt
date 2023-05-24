@@ -19,7 +19,6 @@ import org.snakeyaml.engine.v2.representer.BaseRepresenter
 import org.snakeyaml.engine.v2.representer.StandardRepresenter
 import org.snakeyaml.engine.v2.serializer.Serializer
 import java.io.StringWriter
-import java.util.Objects
 
 /**
  * Common way to serialize any Java instance(s). The instance is stateful. Only one of the 'dump'
@@ -44,8 +43,7 @@ class Dump @JvmOverloads constructor(
     ) {
         val serializer = Serializer(settings, Emitter(settings, streamDataWriter))
         serializer.emitStreamStart()
-        while (instancesIterator.hasNext()) {
-            val instance = instancesIterator.next()
+        for (instance in instancesIterator) {
             val node = representer.represent(instance)
             serializer.serializeDocument(node)
         }
@@ -90,7 +88,7 @@ class Dump @JvmOverloads constructor(
     }
 
     /**
-     * Dump the provided Node into a YAML stream.
+     * Dump the provided [Node] into a YAML stream.
      *
      * @param node - YAML node to be serialized to YAML document
      * @param streamDataWriter - stream to write to
@@ -103,11 +101,7 @@ class Dump @JvmOverloads constructor(
     }
 }
 
-/**
- * Internal helper class to support dumping to String
- */
+/** Internal helper class to support dumping to [String] */
 private class StreamToStringWriter : StringWriter(), StreamDataWriter {
-    override fun flush() {
-        super<StringWriter>.flush()
-    }
+    override fun flush(): Unit = super<StringWriter>.flush()
 }

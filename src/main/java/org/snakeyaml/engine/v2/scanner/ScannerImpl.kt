@@ -70,8 +70,7 @@ class ScannerImpl(
     private val reader: StreamReader,
 ) : Scanner {
     /** List of processed tokens that are not yet emitted. */
-    // maybe make this an ArrayDeque?
-    private val tokens: MutableList<Token> = ArrayList(100)
+    private val tokens: ArrayDeque<Token> = ArrayDeque(100)
 
     /** Past indentation levels. */
     private val indents = ArrayDeque<Int>(10)
@@ -139,13 +138,18 @@ class ScannerImpl(
         fetchStreamStart() // Add the STREAM-START token.
     }
 
-    /** Check whether the next token is one of the given types. */
+    /**
+     * Check whether the next token is present.
+     *
+     * If no [choices] are provided, then any token is considered valid.
+     * If any [choices] are provided, then the next token must match one of the [Token.ID]s.
+     */
     override fun checkToken(vararg choices: Token.ID): Boolean {
         while (needMoreTokens()) {
             fetchMoreTokens()
         }
-        val firstTokenId = tokens.firstOrNull()?.tokenId ?: return false
-        return choices.isEmpty() || choices.any { choice -> firstTokenId == choice }
+        val firstTokenId = tokens.firstOrNull()?.tokenId
+        return firstTokenId != null && (choices.isEmpty() || firstTokenId in choices)
     }
 
     /** Return the next token, but do not delete it from the queue. */
@@ -168,11 +172,13 @@ class ScannerImpl(
 
     //region Private methods.
 
+    /** Add a [token] to the end of [tokens] */
     private fun addToken(token: Token) {
         lastToken = token
-        tokens.add(token)
+        tokens.addLast(token)
     }
 
+    /** Add a [token] at a specific [index] */
     private fun addToken(index: Int, token: Token) {
         if (index == tokens.size) {
             lastToken = token
@@ -182,7 +188,7 @@ class ScannerImpl(
 
     private fun addAllTokens(tokens: List<Token>) {
         lastToken = tokens.last()
-        this.tokens.addAll(tokens)
+        this.tokens += tokens
     }
 
     private fun isBlockContext(): Boolean = flowLevel == 0

@@ -207,7 +207,7 @@ class ScannerImpl(
         return nextPossibleSimpleKey() == tokensTaken
     }
 
-    /** Fetch one or more tokens from the StreamReader. */
+    /** Fetch one or more tokens from the [StreamReader]. */
     private fun fetchMoreTokens() {
         if (reader.documentIndex > settings.codePointLimit) {
             throw YamlEngineException("The incoming YAML document exceeds the limit: ${settings.codePointLimit} code points.")
@@ -384,26 +384,25 @@ class ScannerImpl(
      * ```
      */
     private fun stalePossibleSimpleKeys() {
-        if (possibleSimpleKeys.isNotEmpty()) {
-            val iterator = possibleSimpleKeys.values.iterator()
-            while (iterator.hasNext()) {
-                val key = iterator.next()
-                if (key.line != reader.line || reader.index - key.index > 1024) {
-                    // If the key is not on the same line as the current
-                    // position OR the difference in column between the token
-                    // start and the current position is more than the maximum
-                    // simple key length, then this cannot be a simple key.
-                    if (key.isRequired) {
-                        // If the key was required, this implies an error condition.
-                        throw ScannerException(
-                            context = "while scanning a simple key",
-                            contextMark = key.mark,
-                            problem = "could not find expected ':'",
-                            problemMark = reader.getMark(),
-                        )
-                    }
-                    iterator.remove()
+        val iterator = possibleSimpleKeys.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next().value
+
+            if (key.line != reader.line || reader.index - key.index > 1024) {
+                // If the key is not on the same line as the current
+                // position OR the difference in column between the token
+                // start and the current position is more than the maximum
+                // simple key length, then this cannot be a simple key.
+                if (key.isRequired) {
+                    // If the key was required, this implies an error condition.
+                    throw ScannerException(
+                        context = "while scanning a simple key",
+                        contextMark = key.mark,
+                        problem = "could not find expected ':'",
+                        problemMark = reader.getMark(),
+                    )
                 }
+                iterator.remove()
             }
         }
     }

@@ -71,7 +71,7 @@ class ScannerImpl(
 ) : Scanner {
     /** List of processed tokens that are not yet emitted. */
     // maybe make this an ArrayDeque?
-    private val tokens: MutableList<Token> = ArrayList<Token>(100)
+    private val tokens: MutableList<Token> = ArrayList(100)
 
     /** Past indentation levels. */
     private val indents = ArrayDeque<Int>(10)
@@ -367,7 +367,6 @@ class ScannerImpl(
         return possibleSimpleKeys.values.firstOrNull()?.tokenNumber ?: -1
     }
 
-    //region Simple keys treatment.
     /**
      * ```
      * Remove entries that are no longer possible simple keys. According to
@@ -497,6 +496,7 @@ class ScannerImpl(
         indent = column
         return true
     }
+
     //endregion
 
     //region Fetchers - add tokens to the stream (can call scanners)
@@ -888,9 +888,11 @@ class ScannerImpl(
         val tok = scanPlain()
         addToken(tok)
     }
+
     //endregion
 
     //region Checkers.
+
     /**
      * Returns `true` if the next thing on the reader is a directive, given that the leading `%` has
      * already been checked.
@@ -911,7 +913,6 @@ class ScannerImpl(
             "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
         } else false
     }
-
 
     /**
      * Returns true if the next thing on the reader is a document-end (`...`).
@@ -1111,7 +1112,6 @@ class ScannerImpl(
         return makeTokenList(token, commentToken)
     }
 
-
     /**
      * Scan a directive name. Directive names are a series of non-space characters.
      */
@@ -1177,7 +1177,6 @@ class ScannerImpl(
         return listOf(major, minor)
     }
 
-
     /**
      * Read a %YAML directive number: this is either the major or the minor part. Stop reading at a
      * non-digit character (usually either '.' or '\n').
@@ -1206,7 +1205,6 @@ class ScannerImpl(
         return number.toInt()
     }
 
-
     /**
      * Read a %TAG directive value:
      * ```
@@ -1225,7 +1223,6 @@ class ScannerImpl(
         val prefix = scanTagDirectivePrefix(startMark)
         return listOf(handle, prefix)
     }
-
 
     /**
      * Scan a %TAG directive's handle. This is YAML's c-tag-handle.
@@ -1249,7 +1246,6 @@ class ScannerImpl(
         return value
     }
 
-
     /**
      * Scan a `%TAG` directive's prefix. This is YAML's ns-tag-prefix.
      */
@@ -1268,7 +1264,6 @@ class ScannerImpl(
         }
         return value
     }
-
 
     private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken? {
         // See the specification for details.
@@ -1294,7 +1289,6 @@ class ScannerImpl(
         }
         return commentToken
     }
-
 
     /**
      * ```
@@ -1343,7 +1337,6 @@ class ScannerImpl(
             AliasToken(Anchor(value), startMark, endMark)
         }
     }
-
 
     /**
      * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
@@ -1533,7 +1526,6 @@ class ScannerImpl(
         return makeTokenList(commentToken, scalarToken)
     }
 
-
     /**
      * Scan a block scalar indicator. The block scalar indicator includes two optional components,
      * which may appear in either order.
@@ -1608,7 +1600,6 @@ class ScannerImpl(
             ?: throw IllegalArgumentException("Unexpected block chomping indicator: $indicator")
     }
 
-
     /**
      * Scan to the end of the line after a block scalar has been scanned; the only things that are
      * permitted at this time are comments and spaces.
@@ -1673,7 +1664,6 @@ class ScannerImpl(
         return BreakIntentHolder(chunks.toString(), maxIndent, endMark)
     }
 
-
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {
         // See the specification for details.
         val chunks = StringBuilder()
@@ -1703,7 +1693,6 @@ class ScannerImpl(
         // Return both the assembled intervening string and the end-mark.
         return BreakIntentHolder(chunks.toString(), -1, endMark)
     }
-
 
     /**
      * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
@@ -1736,7 +1725,6 @@ class ScannerImpl(
         val endMark = reader.getMark()
         return ScalarToken(chunks, false, startMark, endMark, style)
     }
-
 
     /**
      * Scan some number of flow-scalar non-space characters.
@@ -1816,7 +1804,6 @@ class ScannerImpl(
         }
     }
 
-
     private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String {
         // See the specification for details.
         var length = 0
@@ -1852,7 +1839,6 @@ class ScannerImpl(
         }
     }
 
-
     private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String {
         // See the specification for details.
         val chunks = StringBuilder()
@@ -1883,7 +1869,6 @@ class ScannerImpl(
             }
         }
     }
-
 
     /**
      * Scan a plain scalar.
@@ -1939,7 +1924,6 @@ class ScannerImpl(
         return ScalarToken(chunks.toString(), true, startMark, endMark)
     }
 
-
     /**
      * Helper for scanPlainSpaces method when comments are enabled.
      * The ensures that blank lines and comments following a multi-line plain token are not swallowed
@@ -1989,7 +1973,6 @@ class ScannerImpl(
         return false
     }
 
-
     /**
      * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar
      */
@@ -2034,7 +2017,6 @@ class ScannerImpl(
         }
         return whitespaces
     }
-
 
     /**
      * Scan a Tag handle. A Tag handle takes one of three forms:
@@ -2094,7 +2076,6 @@ class ScannerImpl(
         return reader.prefixForward(length)
     }
 
-
     /**
      * Scan a Tag URI. This scanning is valid for both local and global tag directives, because both
      * appear to be valid URIs as far as scanning is concerned. The difference may be distinguished
@@ -2140,7 +2121,6 @@ class ScannerImpl(
         }
         return chunks.toString()
     }
-
 
     /**
      * Scan a sequence of `%`-escaped URI escape codes and convert them into a String representing the
@@ -2193,7 +2173,6 @@ class ScannerImpl(
         }
     }
 
-
     /**
      * Scan a line break, transforming:
      *
@@ -2224,11 +2203,6 @@ class ScannerImpl(
         return null
     }
 
-
-    //endregion
-
-
-    //endregion
     /**
      * Ignore Comment token if they are null, or Comments should not be parsed
      *
@@ -2248,6 +2222,10 @@ class ScannerImpl(
         }
         return tokenList
     }
+
+    //endregion
+
+    //endregion
 
     companion object {
 

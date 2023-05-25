@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -414,7 +416,7 @@ public class SerializerWithCommentEnabledTest {
     private final List<Event> eventList = new ArrayList<>();
 
     @Override
-    public void emit(Event event) {
+    public void emit(@NotNull Event event) {
       eventList.add(event);
     }
 

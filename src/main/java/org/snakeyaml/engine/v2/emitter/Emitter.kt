@@ -70,8 +70,10 @@ class Emitter(
     //region Characteristics of the last emitted character
     /** current position of the last emitted character */
     private var column = 0
+
     /** is the last emitted character whitespace? */
     private var whitespace = true
+
     /** is the last emitted character an indention character (indentation space, `-`, `?`, or `:`)? */
     private var indention = true
     //endregion
@@ -105,6 +107,7 @@ class Emitter(
 
     /** Scalar analysis */
     private var analysis: ScalarAnalysis? = null
+
     /** Scalar style */
     private var scalarStyle: Optional<ScalarStyle> = Optional.empty()
 
@@ -120,6 +123,8 @@ class Emitter(
 
     override fun emit(event: Event): Unit = emitterJava.emit(event)
 
+    //region States
+    //region Stream handlers.
     private inner class ExpectStreamStart : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
@@ -128,6 +133,8 @@ class Emitter(
         override fun expect() = TODO("Not yet implemented")
     }
 
+    //endregion
+    //region Document handlers.
     private inner class ExpectFirstDocumentStart : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
@@ -144,6 +151,10 @@ class Emitter(
         override fun expect() = TODO("Not yet implemented")
     }
 
+    //endregion
+    //region Node handlers.
+    //endregion
+    //region Flow sequence handlers.
     private inner class ExpectFirstFlowSequenceItem : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
@@ -151,7 +162,8 @@ class Emitter(
     private inner class ExpectFlowSequenceItem : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
-
+    //endregion
+    //region Flow mapping handlers.
     private inner class ExpectFirstFlowMappingKey : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
@@ -160,6 +172,7 @@ class Emitter(
         override fun expect() = TODO("Not yet implemented")
     }
 
+
     private inner class ExpectFlowMappingSimpleValue : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
@@ -167,14 +180,8 @@ class Emitter(
     private inner class ExpectFlowMappingValue : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
-
-    private inner class ExpectFirstBlockSequenceItem : EmitterState {
-        override fun expect() = TODO("Not yet implemented")
-    }
-
-    private inner class ExpectBlockSequenceItem : EmitterState {
-        override fun expect() = TODO("Not yet implemented")
-    }
+    //endregion
+    //region Block sequence handlers.
 
     private inner class ExpectFirstBlockMappingKey : EmitterState {
         override fun expect() = TODO("Not yet implemented")
@@ -191,6 +198,29 @@ class Emitter(
     private inner class ExpectBlockMappingValue : EmitterState {
         override fun expect() = TODO("Not yet implemented")
     }
+
+
+    private inner class ExpectFirstBlockSequenceItem : EmitterState {
+        override fun expect() = TODO("Not yet implemented")
+    }
+
+    private inner class ExpectBlockSequenceItem : EmitterState {
+        override fun expect() = TODO("Not yet implemented")
+    }
+    //endregion
+    //region Checkers.
+    //endregion
+    //region Anchor, Tag, and Scalar processors.
+    //endregion
+    //region Analyzers.
+    //endregion
+    //region Writers.
+    //endregion
+    //region Scalar streams.
+    //endregion
+    //endregion
+
+    //endregion
 
     companion object {
         private val ESCAPE_REPLACEMENTS: Map<Char, String> = mapOf(

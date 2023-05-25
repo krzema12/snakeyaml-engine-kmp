@@ -346,8 +346,9 @@ public final class EmitterJava implements Emitable {
       throw new EmitterException("expecting nothing, but got " + event);
     }
   }
+  //endregion
 
-  // Document handlers.
+  //region Document handlers.
 
   private class ExpectFirstDocumentStart implements EmitterState {
 

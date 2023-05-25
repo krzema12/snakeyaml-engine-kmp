@@ -16,9 +16,7 @@ package org.snakeyaml.engine.v2.comments
 import org.snakeyaml.engine.v2.events.CommentEvent
 import org.snakeyaml.engine.v2.events.Event
 import org.snakeyaml.engine.v2.parser.Parser
-import java.util.AbstractQueue
-import java.util.Objects
-import java.util.Queue
+import java.util.*
 
 /**
  * Used by the Composer and Emitter to collect comment events so that they can be used at a later
@@ -27,58 +25,50 @@ import java.util.Queue
 class CommentEventsCollector {
     private val eventSource: Queue<Event>
     private val expectedCommentTypes: Array<out CommentType>
-    private var commentLineList: MutableList<CommentLine>
+    private val commentLineList: MutableList<CommentLine> = mutableListOf()
 
     /**
      * Constructor used to collect comment events emitted by a Parser.
      *
      * @param parser               the event source.
-     * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-     * collected.
+     * @param expectedCommentTypes the comment types expected.
+     *                             Any comment types not included are not collected.
      */
     constructor(parser: Parser, vararg expectedCommentTypes: CommentType) {
         eventSource = object : AbstractQueue<Event>() {
             override fun offer(e: Event): Boolean = throw UnsupportedOperationException()
             override fun poll(): Event = parser.next()
-            override fun peek(): Event = parser.peekEvent()
+            override fun peek(): Event? = parser.peekEvent()
             override fun iterator(): MutableIterator<Event> = throw UnsupportedOperationException()
             override val size: Int
                 get() = throw UnsupportedOperationException()
         }
         this.expectedCommentTypes = expectedCommentTypes
-        commentLineList = ArrayList()
     }
 
     /**
      * Constructor used to collect events emitted by the Serializer.
      *
      * @param eventSource          the event source.
-     * @param expectedCommentTypes the comment types expected. Any comment types not included are not
-     * collected.
+     * @param expectedCommentTypes the comment types expected.
+     *                             Any comment types not included are not collected.
      */
     constructor(eventSource: Queue<Event>, vararg expectedCommentTypes: CommentType) {
         this.eventSource = eventSource
         this.expectedCommentTypes = expectedCommentTypes
-        commentLineList = ArrayList()
     }
 
     /**
      * Determine if the event is a comment of one of the expected types set during construction.
      *
      * @param event the event to test.
-     * @return `true` if the events is a comment of the expected type; Otherwise, false.
+     * @return `true` if the events is a comment of the expected type; Otherwise, `false`.
      */
     private fun isEventExpected(event: Event?): Boolean {
-        if (event == null || event.eventId !== Event.ID.Comment) {
-            return false
-        }
-        val commentEvent = event as CommentEvent
-        for (type in expectedCommentTypes) {
-            if (commentEvent.commentType == type) {
-                return true
-            }
-        }
-        return false
+        return event != null
+            && event.eventId == Event.ID.Comment
+            && event is CommentEvent
+            && event.commentType in expectedCommentTypes
     }
 
     /**
@@ -86,7 +76,7 @@ class CommentEventsCollector {
      * on the event source. Collection stops as soon as a non comment or comment of the unexpected
      * type is encountered.
      *
-     * @return this object.
+     * @returns this instance.
      */
     fun collectEvents(): CommentEventsCollector {
         collectEvents(null)
@@ -110,7 +100,7 @@ class CommentEventsCollector {
             }
         }
         while (isEventExpected(eventSource.peek())) {
-            val e = Objects.requireNonNull(eventSource.poll())
+            val e = eventSource.poll()
             commentLineList.add(CommentLine(e as CommentEvent))
         }
         return null
@@ -137,9 +127,9 @@ class CommentEventsCollector {
      */
     fun consume(): List<CommentLine> {
         return try {
-            commentLineList
+            commentLineList.toList()
         } finally {
-            commentLineList = ArrayList()
+            commentLineList.clear()
         }
     }
 

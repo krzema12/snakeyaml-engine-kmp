@@ -37,8 +37,13 @@ public final class ScalarAnalysis {
    * @param allowSingleQuoted - true if single quotes are allowed
    * @param allowBlock - true if block style is allowed
    */
-  public ScalarAnalysis(String scalar, boolean empty, boolean multiline, boolean allowFlowPlain,
-      boolean allowBlockPlain, boolean allowSingleQuoted, boolean allowBlock) {
+  public ScalarAnalysis(String scalar,
+                        boolean empty,
+                        boolean multiline,
+                        boolean allowFlowPlain,
+                        boolean allowBlockPlain,
+                        boolean allowSingleQuoted,
+                        boolean allowBlock) {
     this.scalar = scalar;
     this.empty = empty;
     this.multiline = multiline;

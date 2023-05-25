@@ -13,17 +13,7 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
+import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.comments.CommentEventsCollector;
@@ -33,23 +23,14 @@ import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.CharConstants;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.events.AliasEvent;
-import org.snakeyaml.engine.v2.events.CollectionEndEvent;
-import org.snakeyaml.engine.v2.events.CollectionStartEvent;
-import org.snakeyaml.engine.v2.events.CommentEvent;
-import org.snakeyaml.engine.v2.events.DocumentEndEvent;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.NodeEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <pre>
@@ -102,39 +83,62 @@ public final class Emitter implements Emitable {
 
   private final StreamDataWriter stream;
 
-  // Emitter is a state machine with a stack of states to handle nested structures.
+  /**
+   * Emitter is a state machine with a stack of states to handle nested structures.
+   */
   private final kotlin.collections.ArrayDeque<EmitterState> states;
-  private EmitterState state; // current state
 
-  // Current event and the event queue.
-  private final Queue<Event> events;
+  /**
+   * current state
+   */
+  private EmitterState state;
+
+  /**
+   * Current event and the event queue.
+   */
+  private final ArrayDeque<Event> events;
   private Event event;
 
-  // The current indentation level and the stack of previous indents.
+  /**
+   * The current indentation level and the stack of previous indents.
+   */
   private final kotlin.collections.ArrayDeque<Integer> indents;
-  private Integer indent; // can be null to choose the best
+  /**
+   * can be `null` to choose the best
+   */
+  @Nullable
+  private Integer indent;
 
-  // Flow level.
+  /**
+   * Flow level.
+   */
   private int flowLevel;
 
-  // Contexts.
+  /**
+   * Contexts.
+   */
   private boolean rootContext;
   private boolean mappingContext;
   private boolean simpleKeyContext;
 
-  //
-  // Characteristics of the last emitted character:
-  // - current position.
-  // - is it a whitespace?
-  // - is it an indention character (indentation space, '-', '?', or ':')?
+  /**
+   * Characteristics of the last emitted character:
+   * - current position.
+   * - is it a whitespace?
+   * - is it an indention character (indentation space, '-', '?', or ':')?
+   */
   private int column;
   private boolean whitespace;
   private boolean indention;
   private boolean openEnded;
 
-  // Formatting details.
+  /**
+   * Formatting details.
+   */
   private final Boolean canonical;
-  // pretty print flow by adding extra line breaks
+  /**
+   * pretty print flow by adding extra line breaks
+   */
   private final Boolean multiLineFlow;
 
   private final boolean allowUnicode;
@@ -147,25 +151,33 @@ public final class Emitter implements Emitable {
   private final int maxSimpleKeyLength;
   private final boolean emitComments;
 
-  // Tag prefixes.
+  /**
+   * Tag prefixes.
+   */
   private Map<String, String> tagPrefixes;
 
-  // Prepared anchor and tag.
+  /**
+   * Prepared anchor and tag.
+   */
   private Optional<Anchor> preparedAnchor;
   private String preparedTag;
 
-  // Scalar analysis and style.
+  /**
+   * Scalar analysis and style.
+   */
   private ScalarAnalysis analysis;
   private Optional<ScalarStyle> scalarStyle;
 
-  // Comment processing
+  /**
+   * Comment processing
+   */
   private final CommentEventsCollector blockCommentsCollector;
   private final CommentEventsCollector inlineCommentsCollector;
 
   /**
    * Create
    *
-   * @param opts - configuration options
+   * @param opts   - configuration options
    * @param stream - output stream
    */
   public Emitter(DumpSettings opts, StreamDataWriter stream) {
@@ -230,8 +242,7 @@ public final class Emitter implements Emitable {
     this.scalarStyle = Optional.empty();
 
     // Comment processing
-    this.blockCommentsCollector =
-        new CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK);
+    this.blockCommentsCollector = new CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK);
     this.inlineCommentsCollector = new CommentEventsCollector(events, CommentType.IN_LINE);
   }
 
@@ -312,9 +323,9 @@ public final class Emitter implements Emitable {
     }
   }
 
-  // States
+  //region States
 
-  // Stream handlers.
+  //region Stream handlers.
 
   private class ExpectStreamStart implements EmitterState {
 
@@ -450,8 +461,9 @@ public final class Emitter implements Emitable {
       expectNode(true, false, false);
     }
   }
+  //endregion
 
-  // Node handlers.
+  //region Node handlers.
 
   private void expectNode(boolean root, boolean mapping, boolean simpleKey) {
     rootContext = root;
@@ -510,8 +522,9 @@ public final class Emitter implements Emitable {
     indent = indents.removeLastOrNull();
     state = states.removeLastOrNull();
   }
+  //endregion
 
-  // Flow sequence handlers.
+  //region Flow sequence handlers.
 
   private void expectFlowSequence() {
     writeIndicator("[", true, true, false);
@@ -582,8 +595,9 @@ public final class Emitter implements Emitable {
       }
     }
   }
+  //endregion
 
-  // Flow mapping handlers.
+  //region Flow mapping handlers.
 
   private void expectFlowMapping() {
     writeIndicator("{", true, true, false);
@@ -687,8 +701,9 @@ public final class Emitter implements Emitable {
       writeInlineComments();
     }
   }
+  //endregion
 
-  // Block sequence handlers.
+  //region Block sequence handlers.
 
   private void expectBlockSequence() {
     boolean indentless = mappingContext && !indention;
@@ -744,8 +759,9 @@ public final class Emitter implements Emitable {
       }
     }
   }
+  //endregion
 
-  // Block mapping handlers.
+  // region Block mapping handlers.
   private void expectBlockMapping() {
     increaseIndent(false, false);
     state = new ExpectFirstBlockMappingKey();
@@ -836,8 +852,9 @@ public final class Emitter implements Emitable {
       writeInlineComments();
     }
   }
+  //endregion
 
-  // Checkers.
+  //region Checkers.
 
   private boolean checkEmptySequence() {
     return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty()
@@ -882,8 +899,9 @@ public final class Emitter implements Emitable {
         || (event.getEventId() == Event.ID.Scalar && !analysis.isEmpty() && !analysis.isMultiline())
         || checkEmptySequence() || checkEmptyMapping());
   }
+  //endregion
 
-  // Anchor, Tag, and Scalar processors.
+  //region Anchor, Tag, and Scalar processors.
 
   private void processAnchor(String indicator) {
     NodeEvent ev = (NodeEvent) event;
@@ -908,7 +926,7 @@ public final class Emitter implements Emitable {
       }
       if ((!canonical || !tag.isPresent())
           && ((!scalarStyle.isPresent() && ev.getImplicit().canOmitTagInPlainScalar())
-              || (scalarStyle.isPresent() && ev.getImplicit().canOmitTagInNonPlainScalar()))) {
+          || (scalarStyle.isPresent() && ev.getImplicit().canOmitTagInNonPlainScalar()))) {
         preparedTag = null;
         return;
       }
@@ -944,7 +962,7 @@ public final class Emitter implements Emitable {
     if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
       if (!(simpleKeyContext && (analysis.isEmpty() || analysis.isMultiline()))
           && ((flowLevel != 0 && analysis.isAllowFlowPlain())
-              || (flowLevel == 0 && analysis.isAllowBlockPlain()))) {
+          || (flowLevel == 0 && analysis.isAllowBlockPlain()))) {
         return Optional.empty();
       }
     }
@@ -995,7 +1013,9 @@ public final class Emitter implements Emitable {
     scalarStyle = Optional.empty();
   }
 
-  // Analyzers.
+  //endregion
+
+  //region Analyzers.
 
   private String prepareVersion(SpecVersion version) {
     if (version.getMajor() != 1) {
@@ -1233,8 +1253,9 @@ public final class Emitter implements Emitable {
     return new ScalarAnalysis(scalar, false, lineBreaks, allowFlowPlain, allowBlockPlain,
         allowSingleQuoted, allowBlock);
   }
+  //endregion
 
-  // Writers.
+  //region Writers.
 
   void flushStream() {
     stream.flush();
@@ -1249,7 +1270,7 @@ public final class Emitter implements Emitable {
   }
 
   void writeIndicator(String indicator, boolean needWhitespace, boolean whitespace,
-      boolean indentation) {
+                      boolean indentation) {
     if (!this.whitespace && needWhitespace) {
       this.column++;
       stream.write(SPACE);
@@ -1312,8 +1333,10 @@ public final class Emitter implements Emitable {
     stream.write(prefixText);
     writeLineBreak(null);
   }
+  //endregion
 
-  // Scalar streams.
+  //region Scalar streams.
+
   private void writeSingleQuoted(String text, boolean split) {
     writeIndicator("'", true, false, false);
     boolean spaces = false;
@@ -1701,4 +1724,6 @@ public final class Emitter implements Emitable {
       end++;
     }
   }
+  //endregion
+  //endregion
 }

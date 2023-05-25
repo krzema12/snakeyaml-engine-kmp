@@ -11,108 +11,74 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.emitter;
+package org.snakeyaml.engine.v2.emitter
 
 /**
  * Accumulate information to choose the scalar style
+ *
+ * @param scalar - the data to analyse
+ * @param empty - true for empty scalar
+ * @param multiline - true if it may take many lines
+ * @param allowFlowPlain - `true` if can be plain in flow context
+ * @param allowBlockPlain - `true` if can be plain in block context
+ * @param allowSingleQuoted - true if single quotes are allowed
+ * @param allowBlock - true if block style is allowed
  */
-public final class ScalarAnalysis {
+class ScalarAnalysis(
+    /** the scalar to be analysed */
+    private val scalar: String,
+    /** `true` when empty */
+    private val empty: Boolean,
+    /**
+     * getter
+     *
+     * @return true if it may take many lines
+     */
+    private val multiline: Boolean,
+    /**
+     * getter
+     *
+     * @return `true` if can be plain in flow context
+     */
+    private val allowFlowPlain: Boolean,
+    /**
+     * getter
+     *
+     * @return true if can be plain in block context
+     */
+    private val allowBlockPlain: Boolean,
+    /**
+     * getter
+     *
+     * @return true if single quotes are allowed
+     */
+    private val allowSingleQuoted: Boolean,
+    /**
+     * getter
+     *
+     * @return true when block style is allowed for this scalar
+     */
+    private val allowBlock: Boolean,
+) {
 
-  private final String scalar;
-  private final boolean empty;
-  private final boolean multiline;
-  private final boolean allowFlowPlain;
-  private final boolean allowBlockPlain;
-  private final boolean allowSingleQuoted;
-  private final boolean allowBlock;
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("scalar"))
+    fun getScalar(): String = scalar
 
-  /**
-   * Create
-   *
-   * @param scalar - the data to analyse
-   * @param empty - true for empty scalar
-   * @param multiline - true if it may take many lines
-   * @param allowFlowPlain - `true` if can be plain in flow context
-   * @param allowBlockPlain - `true` if can be plain in block context
-   * @param allowSingleQuoted - true if single quotes are allowed
-   * @param allowBlock - true if block style is allowed
-   */
-  public ScalarAnalysis(String scalar,
-                        boolean empty,
-                        boolean multiline,
-                        boolean allowFlowPlain,
-                        boolean allowBlockPlain,
-                        boolean allowSingleQuoted,
-                        boolean allowBlock) {
-    this.scalar = scalar;
-    this.empty = empty;
-    this.multiline = multiline;
-    this.allowFlowPlain = allowFlowPlain;
-    this.allowBlockPlain = allowBlockPlain;
-    this.allowSingleQuoted = allowSingleQuoted;
-    this.allowBlock = allowBlock;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("empty"))
+    fun isEmpty(): Boolean = empty
 
-  /**
-   * getter
-   *
-   * @return the scalar to be analysed
-   */
-  public String getScalar() {
-    return scalar;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("multiline"))
+    fun isMultiline(): Boolean = multiline
 
-  /**
-   * getter
-   *
-   * @return true when empty
-   */
-  public boolean isEmpty() {
-    return empty;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("allowFlowPlain"))
+    fun isAllowFlowPlain(): Boolean = allowFlowPlain
 
-  /**
-   * getter
-   *
-   * @return true if it may take many lines
-   */
-  public boolean isMultiline() {
-    return multiline;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("allowBlockPlain"))
+    fun isAllowBlockPlain(): Boolean = allowBlockPlain
 
-  /**
-   * getter
-   *
-   * @return true if can be plain in flow context
-   */
-  public boolean isAllowFlowPlain() {
-    return allowFlowPlain;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("allowSingleQuoted"))
+    fun isAllowSingleQuoted(): Boolean = allowSingleQuoted
 
-  /**
-   * getter
-   *
-   * @return true if can be plain in block context
-   */
-  public boolean isAllowBlockPlain() {
-    return allowBlockPlain;
-  }
-
-  /**
-   * getter
-   *
-   * @return true if single quotes are allowed
-   */
-  public boolean isAllowSingleQuoted() {
-    return allowSingleQuoted;
-  }
-
-  /**
-   * getter
-   *
-   * @return true when block style is allowed for this scalar
-   */
-  public boolean isAllowBlock() {
-    return allowBlock;
-  }
+    //@Deprecated("temp helper for java->jt migration", ReplaceWith("allowBlock"))
+    fun isAllowBlock(): Boolean = allowBlock
 }

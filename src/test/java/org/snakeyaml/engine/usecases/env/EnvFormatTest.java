@@ -36,7 +36,7 @@ import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 @org.junit.jupiter.api.Tag("fast")
 public class EnvFormatTest {
 
-  public static final Pattern ENV_FORMAT = BaseScalarResolver.ENV_FORMAT;
+  public static final Pattern ENV_FORMAT = BaseScalarResolver.ENV_FORMAT.toPattern();
 
   @Test
   public void testMatchBasic() {

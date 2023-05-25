@@ -27,6 +27,7 @@ import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.resolver.BaseScalarResolver
 import java.util.Optional
 import java.util.TreeSet
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Construct standard Java classes
@@ -51,34 +52,31 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
      *
      * @param node - mapping to check the duplications
      */
-    protected fun flattenMapping(node: MappingNode) {
-        processDuplicateKeys(node)
-    }
+    private fun flattenMapping(node: MappingNode): Unit = processDuplicateKeys(node)
 
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
      * @param node - the source
      */
-    protected fun processDuplicateKeys(node: MappingNode) {
+    private fun processDuplicateKeys(node: MappingNode) {
         val nodeValue = node.value
         val keys: MutableMap<Any?, Int> = HashMap(nodeValue.size)
         val toRemove = TreeSet<Int>()
-        var i = 0
-        for (tuple in nodeValue) {
+        for ((i, tuple) in nodeValue.withIndex()) {
             val keyNode = tuple.keyNode
             val key = constructKey(keyNode, node.startMark, tuple.keyNode.startMark)
             val prevIndex = keys.put(key, i)
             if (prevIndex != null) {
                 if (!settings.allowDuplicateKeys) {
                     throw DuplicateKeyException(
-                        node.startMark, key!!,
-                        tuple.keyNode.startMark,
+                        contextMark = node.startMark,
+                        key = key!!,
+                        problemMark = tuple.keyNode.startMark,
                     )
                 }
                 toRemove.add(prevIndex)
             }
-            i += 1
         }
         val indices2remove = toRemove.descendingIterator()
         while (indices2remove.hasNext()) {
@@ -87,19 +85,21 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     private fun constructKey(
-        keyNode: Node, contextMark: Optional<Mark>,
+        keyNode: Node,
+        contextMark: Optional<Mark>,
         problemMark: Optional<Mark>,
     ): Any? {
         val key = constructObject(keyNode)
-        if (key != null) {
-            try {
-                key.hashCode() // check circular dependencies
-            } catch (e: Exception) {
-                throw ConstructorException(
-                    "while constructing a mapping", contextMark,
-                    "found unacceptable key $key", problemMark, e,
-                )
-            }
+        try {
+            key.hashCode() // check circular dependencies
+        } catch (e: Exception) {
+            throw ConstructorException(
+                context = "while constructing a mapping",
+                contextMark = contextMark,
+                problem = "found unacceptable key $key",
+                problemMark = problemMark,
+                cause = e,
+            )
         }
         return key
     }
@@ -114,17 +114,14 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         super.constructSet2ndStep(node, set)
     }
 
-    /**
-     * Create Set instances
-     */
+    /** Create [Set] instances */
     inner class ConstructYamlSet : ConstructNode {
-        override fun construct(node: Node?): Any? {
-            return if (node!!.isRecursive) {
-                if (constructedObjects.containsKey(node)) constructedObjects[node] else createEmptySetForNode(
-                    (node as MappingNode?)!!,
-                )
+        override fun construct(node: Node?): Any {
+            require(node is MappingNode)
+            return if (node.isRecursive) {
+                constructedObjects[node] ?: createEmptySetForNode(node)
             } else {
-                constructSet((node as MappingNode?)!!)
+                constructSet(node)
             }
         }
 
@@ -137,47 +134,39 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         }
     }
 
-    /**
-     * Create String instances
-     */
+    /** Create [String] instances */
     inner class ConstructYamlStr : ConstructScalar() {
-        override fun construct(node: Node?): Any {
-            return constructScalar(node)
-        }
+        override fun construct(node: Node?): String = constructScalar(node)
     }
 
-    /**
-     * Create the List implementation (configured in setting)
-     */
+    /** Create the [List] implementation (configured in setting) */
     inner class ConstructYamlSeq : ConstructNode {
-        override fun construct(node: Node?): Any {
-            val seqNode = node as SequenceNode?
-            return if (node!!.isRecursive) {
-                createEmptyListForNode(seqNode!!)
+        override fun construct(node: Node?): List<*> {
+            val seqNode = node as SequenceNode
+            return if (node.isRecursive) {
+                createEmptyListForNode(seqNode)
             } else {
-                constructSequence(seqNode!!)
+                constructSequence(seqNode)
             }
         }
 
         override fun constructRecursive(node: Node, `object`: Any) {
             if (node.isRecursive) {
-                constructSequenceStep2((node as SequenceNode), `object` as MutableList<Any?>)
+                constructSequenceStep2(node as SequenceNode, `object` as MutableList<Any?>)
             } else {
                 throw YamlEngineException("Unexpected recursive sequence structure. Node: $node")
             }
         }
     }
 
-    /**
-     * Create Map instance
-     */
+    /** Create [Map] instance */
     inner class ConstructYamlMap : ConstructNode {
-        override fun construct(node: Node?): Any? {
-            val mappingNode = node as MappingNode?
-            return if (node!!.isRecursive) {
-                createEmptyMapFor(mappingNode!!)
+        override fun construct(node: Node?): Map<*, *> {
+            val mappingNode = node as MappingNode
+            return if (node.isRecursive) {
+                createEmptyMapFor(mappingNode)
             } else {
-                constructMapping(mappingNode!!)
+                constructMapping(mappingNode)
             }
         }
 
@@ -193,33 +182,20 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     /**
      * Construct scalar for format `${VARIABLE}` replacing the template with the value from environment.
      *
-     * @see [Variable
-     * substitution](https://bitbucket.org/snakeyaml/snakeyaml/wiki/Variable%20substitution)
-     *
-     * @see [Variable
-     * substitution](https://docs.docker.com/compose/compose-file/.variable-substitution)
+     * See [Variable substitution](https://bitbucket.org/snakeyaml/snakeyaml/wiki/Variable%20substitution),
+     * [Variable substitution](https://docs.docker.com/compose/compose-file/.variable-substitution)
      */
     inner class ConstructEnv : ConstructScalar() {
         override fun construct(node: Node?): Any? {
             val scalar = constructScalar(node)
-            val opt = settings.envConfig
-            return if (opt.isPresent) {
-                val config = opt.get()
-                val matcher = BaseScalarResolver.ENV_FORMAT.matcher(scalar)
-                matcher.matches()
-                val name = matcher.group(1)
-                val value = matcher.group(3)
-                val nonNullValue = value ?: ""
-                val separator = matcher.group(2)
+            val config = settings.envConfig.getOrNull()
+            return if (config != null) {
+                val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar) ?: error("failed to match scalar")
+                val (name, separator, value) = matchResult.destructured
                 val env = getEnv(name)
-                val overruled = config.getValueFor(name, separator, nonNullValue, env)
+                val overruled = config.getValueFor(name, separator, value, env)
                 overruled.orElseGet {
-                    apply(
-                        name,
-                        separator,
-                        nonNullValue,
-                        env,
-                    )
+                    apply(name, separator, value, env)
                 }
             } else {
                 scalar
@@ -230,7 +206,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * Implement the logic for missing and unset variables
          *
          * @param name        - variable name in the template
-         * @param separator   - separator in the template, can be :-, -, :?, ?
+         * @param separator   - separator in the template, can be `:-`, `-`, `:?`, `?`
          * @param value       - default value or the error in the template
          * @param environment - the value from environment for the provided variable
          * @return the value to apply in the template
@@ -238,37 +214,21 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         fun apply(name: String, separator: String?, value: String, environment: String?): String {
             if (!environment.isNullOrEmpty()) {
                 return environment
-            }
-            // variable is either unset or empty
-            if (separator != null) {
+            } else if (separator != null) { // variable is either unset or empty
                 // there is a default value or error
-                if (separator == "?") {
+                if (separator == "?" && environment == null) {
+                    throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
+                } else if (separator == ":?") {
                     if (environment == null) {
-                        throw MissingEnvironmentVariableException(
-                            "Missing mandatory variable $name: $value",
-                        )
+                        throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
+                    } else if (environment.isEmpty()) {
+                        throw MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
                     }
                 }
-                if (separator == ":?") {
-                    if (environment == null) {
-                        throw MissingEnvironmentVariableException(
-                            "Missing mandatory variable $name: $value",
-                        )
-                    }
-                    if (environment.isEmpty()) {
-                        throw MissingEnvironmentVariableException(
-                            "Empty mandatory variable $name: $value",
-                        )
-                    }
-                }
-                if (separator.startsWith(":")) {
-                    if (environment.isNullOrEmpty()) {
-                        return value
-                    }
-                } else {
-                    if (environment == null) {
-                        return value
-                    }
+                if (separator.startsWith(":") && environment.isNullOrEmpty()) {
+                    return value
+                } else if (environment == null) {
+                    return value
                 }
             }
             return ""
@@ -278,7 +238,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * Get value of the environment variable
          *
          * @param key - the name of the variable
-         * @return value or null if not set
+         * @return value or `null` if not set
          */
         private fun getEnv(key: String?): String? = System.getenv(key)
     }

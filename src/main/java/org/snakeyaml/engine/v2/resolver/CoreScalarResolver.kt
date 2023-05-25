@@ -27,7 +27,7 @@ class CoreScalarResolver : BaseScalarResolver(
         addImplicitResolver(Tag.INT, INT, "-+0123456789");
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
         addImplicitResolver(Tag.NULL, NULL, "n\u0000");
-        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
+        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT.toPattern(), "$");
     },
 ) {
 

@@ -206,10 +206,9 @@ public class ParserImplJava implements Parser {
     while (scanner.checkToken(Token.ID.Directive)) {
       @SuppressWarnings("rawtypes")
       DirectiveToken token = (DirectiveToken) scanner.next();
-      Optional<List<?>> dirOption = token.getValue();
-      if (dirOption.isPresent()) {
+      final List<?> directiveValue = token.getValue();
+      if (directiveValue != null) {
         // the value must be present
-        List<?> directiveValue = dirOption.get();
         if (token.getName().equals(DirectiveToken.YAML_DIRECTIVE)) {
           if (yamlSpecVersion.isPresent()) {
             throw new ParserException("found duplicate YAML directive", token.getStartMark());
@@ -299,8 +298,8 @@ public class ParserImplJava implements Parser {
           if (!directiveTags.containsKey(handle)) {
             throw new ParserException(
                 "found undefined tag handle " + handle,
-                "while parsing a node",
                 startMark,
+                "while parsing a node",
                 tagMark);
           }
           tag = Optional.of(directiveTags.get(handle) + suffix);
@@ -358,8 +357,8 @@ public class ParserImplJava implements Parser {
           Token token = scanner.peekToken();
           throw new ParserException(
               "expected the node content, but found '" + token.getTokenId() + "'",
-              "while parsing a " + (block ? "block" : "flow") + " node",
               startMark,
+              "while parsing a " + (block ? "block" : "flow") + " node",
               token.getStartMark());
         }
       }
@@ -592,8 +591,8 @@ public class ParserImplJava implements Parser {
         Token token = scanner.peekToken();
         throw new ParserException(
             "expected <block end>, but found '" + token.getTokenId() + "'",
-            "while parsing a block collection",
             markPop(),
+            "while parsing a block collection",
             token.getStartMark());
       }
       Token token = scanner.next();
@@ -704,8 +703,8 @@ public class ParserImplJava implements Parser {
         Token token = scanner.peekToken();
         throw new ParserException(
             "expected <block end>, but found '" + token.getTokenId() + "'",
-            "while parsing a block mapping",
             markPop(),
+            "while parsing a block mapping",
             token.getStartMark());
       }
       Token token = scanner.next();
@@ -831,8 +830,8 @@ public class ParserImplJava implements Parser {
             Token token = scanner.peekToken();
             throw new ParserException(
                 "expected ',' or ']', but got " + token.getTokenId(),
-                "while parsing a flow sequence",
                 markPop(),
+                "while parsing a flow sequence",
                 token.getStartMark());
           }
         }
@@ -954,8 +953,8 @@ public class ParserImplJava implements Parser {
             Token token = scanner.peekToken();
             throw new ParserException(
                 "expected ',' or '}', but got " + token.getTokenId(),
-                "while parsing a flow mapping",
                 markPop(),
+                "while parsing a flow mapping",
                 token.getStartMark());
           }
         }

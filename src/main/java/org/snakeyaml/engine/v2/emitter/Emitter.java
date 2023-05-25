@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
@@ -246,7 +247,7 @@ public final class Emitter implements Emitable {
     this.inlineCommentsCollector = new CommentEventsCollector(events, CommentType.IN_LINE);
   }
 
-  public void emit(Event event) {
+  public void emit(@NotNull Event event) {
     this.events.add(event);
     while (!needMoreEvents()) {
       this.event = this.events.poll();

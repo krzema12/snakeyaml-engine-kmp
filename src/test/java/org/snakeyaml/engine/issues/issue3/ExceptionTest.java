@@ -30,6 +30,7 @@ class ExceptionTest {
     Load load = new Load(LoadSettings.builder().build());
     YamlEngineException exception =
         assertThrows(YamlEngineException.class, () -> load.loadFromString("!!seq abc"));
+    System.err.println(exception.getMessage());
     assertTrue(exception.getMessage().contains("java.lang.ClassCastException"));
     assertTrue(exception.getMessage().contains("org.snakeyaml.engine.v2.nodes.ScalarNode"));
     assertTrue(exception.getMessage().contains("cannot be cast to"));

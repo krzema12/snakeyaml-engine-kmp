@@ -232,22 +232,26 @@ open class StandardRepresenter(
         }
     }
 
-
     init {
-        representers[String::class] = representString
-        representers[Boolean::class] = representBoolean
-        representers[Char::class] = representString
-        representers[UUID::class] = representUuid
-        representers[Optional::class] = representOptional
-        representers[ByteArray::class] = representByteArray
+        representers.putAll(
+            mapOf(
+                String::class to representString,
+                Boolean::class to representBoolean,
+                Char::class to representString,
+                UUID::class to representUuid,
+                Optional::class to representOptional,
+                ByteArray::class to representByteArray,
 
-        representers[ShortArray::class] = representPrimitiveArray
-        representers[IntArray::class] = representPrimitiveArray
-        representers[LongArray::class] = representPrimitiveArray
-        representers[FloatArray::class] = representPrimitiveArray
-        representers[DoubleArray::class] = representPrimitiveArray
-        representers[CharArray::class] = representPrimitiveArray
-        representers[BooleanArray::class] = representPrimitiveArray
+                // primitive arrays
+                ShortArray::class to representPrimitiveArray,
+                IntArray::class to representPrimitiveArray,
+                LongArray::class to representPrimitiveArray,
+                FloatArray::class to representPrimitiveArray,
+                DoubleArray::class to representPrimitiveArray,
+                CharArray::class to representPrimitiveArray,
+                BooleanArray::class to representPrimitiveArray,
+            ),
+        )
 
         parentClassRepresenters.putAll(
             mapOf(
@@ -260,7 +264,5 @@ open class StandardRepresenter(
                 Enum::class to representEnum,
             ),
         )
-
-
     }
 }

@@ -140,19 +140,21 @@ class CommentEventsCollector private constructor(
     fun isEmpty(): Boolean = commentLineList.isEmpty()
 }
 
-private interface EventQueue {
-    fun poll(): Event
-    fun peek(): Event?
+
+private class EventQueue(
+    private val pollFn: () -> Event,
+    private val peekFn: () -> Event?,
+) {
+    constructor(parser: Parser) : this(
+        pollFn = parser::next,
+        peekFn = parser::peekEvent,
+    )
+
+    constructor(eventQueue: ArrayDeque<Event>) : this(
+        pollFn = eventQueue::removeFirst,
+        peekFn = eventQueue::firstOrNull,
+    )
+
+    fun poll(): Event = pollFn()
+    fun peek(): Event? = peekFn()
 }
-
-private fun EventQueue(parser: Parser): EventQueue =
-    object : EventQueue {
-        override fun poll(): Event = parser.next()
-        override fun peek(): Event? = parser.peekEvent()
-    }
-
-private fun EventQueue(eventQueue: ArrayDeque<Event>): EventQueue =
-    object : EventQueue {
-        override fun poll(): Event = eventQueue.removeFirst()
-        override fun peek(): Event? = eventQueue.firstOrNull()
-    }

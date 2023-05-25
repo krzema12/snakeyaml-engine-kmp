@@ -37,11 +37,12 @@ interface Parser : Iterator<Event> {
     /**
      * Return the next event, but do not delete it from the stream.
      *
-     * @returns the event that will be returned on the next call to [next]
+     * @returns the event that will be returned on the next call to [next],
+     *          or `null` if the end has been reached
      * @throws org.snakeyaml.engine.v2.exceptions.ParserException in case of malformed input
      * or [NoSuchElementException] in case no event is available.
      */
-    fun peekEvent(): Event
+    fun peekEvent(): Event?
 
     /**
      * Returns the next event.

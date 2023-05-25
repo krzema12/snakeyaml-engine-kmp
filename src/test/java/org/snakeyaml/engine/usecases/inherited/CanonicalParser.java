@@ -15,9 +15,11 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -45,14 +47,12 @@ import org.snakeyaml.engine.v2.tokens.Token;
 public class CanonicalParser implements Parser {
 
   private final String label;
-  private final ArrayList<Event> events;
+  private final ArrayList<Event> events = new ArrayList<>();
   private final CanonicalScanner scanner;
-  private boolean parsed;
+  private boolean parsed = false;
 
   public CanonicalParser(String data, String label) {
     this.label = label;
-    events = new ArrayList<>();
-    parsed = false;
     scanner = new CanonicalScanner(data, label);
   }
 
@@ -191,7 +191,7 @@ public class CanonicalParser implements Parser {
   /**
    * Get the next event.
    */
-  @NotNull
+  @Nullable
   public Event peekEvent() {
     if (!parsed) {
       parse();

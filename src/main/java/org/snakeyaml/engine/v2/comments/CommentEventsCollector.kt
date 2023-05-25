@@ -16,7 +16,9 @@ package org.snakeyaml.engine.v2.comments
 import org.snakeyaml.engine.v2.events.CommentEvent
 import org.snakeyaml.engine.v2.events.Event
 import org.snakeyaml.engine.v2.parser.Parser
-import java.util.*
+import java.util.AbstractQueue
+import java.util.Objects
+import java.util.Queue
 
 /**
  * Used by the Composer and Emitter to collect comment events so that they can be used at a later
@@ -24,7 +26,7 @@ import java.util.*
  */
 class CommentEventsCollector {
     private val eventSource: Queue<Event>
-    private val expectedCommentTypes: Array<CommentType>
+    private val expectedCommentTypes: Array<out CommentType>
     private var commentLineList: MutableList<CommentLine>
 
     /**
@@ -36,26 +38,14 @@ class CommentEventsCollector {
      */
     constructor(parser: Parser, vararg expectedCommentTypes: CommentType) {
         eventSource = object : AbstractQueue<Event>() {
-            override fun offer(e: Event): Boolean {
-                throw UnsupportedOperationException()
-            }
-
-            override fun poll(): Event {
-                return parser.next()
-            }
-
-            override fun peek(): Event {
-                return parser.peekEvent()
-            }
-
-            override fun iterator(): MutableIterator<Event> {
-                throw UnsupportedOperationException()
-            }
-
+            override fun offer(e: Event): Boolean = throw UnsupportedOperationException()
+            override fun poll(): Event = parser.next()
+            override fun peek(): Event = parser.peekEvent()
+            override fun iterator(): MutableIterator<Event> = throw UnsupportedOperationException()
             override val size: Int
                 get() = throw UnsupportedOperationException()
         }
-        this.expectedCommentTypes = expectedCommentTypes as Array<CommentType>
+        this.expectedCommentTypes = expectedCommentTypes
         commentLineList = ArrayList()
     }
 
@@ -68,7 +58,7 @@ class CommentEventsCollector {
      */
     constructor(eventSource: Queue<Event>, vararg expectedCommentTypes: CommentType) {
         this.eventSource = eventSource
-        this.expectedCommentTypes = expectedCommentTypes as Array<CommentType>
+        this.expectedCommentTypes = expectedCommentTypes
         commentLineList = ArrayList()
     }
 

@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 /**
  * Hold 2 values, [tag] and a [Pattern]
  */
-internal class ResolverTuple(
+internal data class ResolverTuple(
     val tag: Tag,
     val regexp: Pattern,
 ) {

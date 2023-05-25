@@ -24,7 +24,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver
+import org.snakeyaml.engine.v2.resolver.BaseScalarResolver
 import java.util.Optional
 import java.util.TreeSet
 
@@ -205,7 +205,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
             val opt = settings.envConfig
             return if (opt.isPresent) {
                 val config = opt.get()
-                val matcher = JsonScalarResolver.ENV_FORMAT.matcher(scalar)
+                val matcher = BaseScalarResolver.ENV_FORMAT.matcher(scalar)
                 matcher.matches()
                 val name = matcher.group(1)
                 val value = matcher.group(3)

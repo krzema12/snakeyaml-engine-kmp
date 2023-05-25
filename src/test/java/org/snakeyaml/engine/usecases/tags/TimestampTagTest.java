@@ -13,14 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.tags;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.ConstructNode;
@@ -29,9 +21,18 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.schema.JsonSchema;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Example of parsing a !!timestamp tag
@@ -75,11 +76,16 @@ public class TimestampTagTest {
     }
   }
 
-  public static final class MyScalarResolver extends JsonScalarResolver {
+  public static final class MyScalarResolver extends BaseScalarResolver {
+    private final JsonScalarResolver delegate = new JsonScalarResolver();
 
     // this is taken from YAML 1.1 types
     public static final Pattern TIMESTAMP = Pattern.compile(
         "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
+
+    public MyScalarResolver() {
+      super();
+    }
 
     @NotNull
     @Override
@@ -87,7 +93,7 @@ public class TimestampTagTest {
       if (TIMESTAMP.matcher(value).matches()) {
         return myTimeTag;
       } else {
-        return super.resolve(value, implicit);
+        return delegate.resolve(value, implicit);
       }
     }
   }

@@ -11,106 +11,82 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.resolver
 
-import org.jetbrains.annotations.NotNull;
-import org.snakeyaml.engine.v2.nodes.Tag;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import org.snakeyaml.engine.v2.nodes.Tag
+import java.util.regex.Pattern
 
 /**
  * Base resolver
  */
-public abstract class BaseScalarResolver implements ScalarResolver {
+abstract class BaseScalarResolver @JvmOverloads constructor(
+    /**
+     * Register all the resolvers to be applied
+     */
+    buildImplicitResolvers: ImplicitResolversBuilder.() -> Unit = {},
+) : ScalarResolver {
 
-  /**
-   * No value indication
-   */
-  public static final Pattern EMPTY = Pattern.compile("^$");
+    /** Map from the char to the resolver which may begin with this char */
+    private val yamlImplicitResolvers: Map<Char?, List<ResolverTuple>>
 
-  /**
-   * group 1: name, group 2: separator, group 3: value
-   */
-  @java.lang.SuppressWarnings("squid:S4784")
-  public static final Pattern ENV_FORMAT =
-      Pattern.compile("^\\$\\{\\s*(\\w+)(?:(:?[-?])(\\w+)?)?\\s*}$");
-
-  /**
-   * Map from the char to the resolver which may begin with this char
-   */
-  protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<>();
-
-  /**
-   * Create
-   */
-  public BaseScalarResolver() {
-    addImplicitResolvers();
-  }
-
-  /**
-   * Add a resolver to resolve a value that matches the provided regular expression to the provided
-   * tag
-   *
-   * @param tag    the Tag to assign when the value matches
-   * @param regexp the RE which is applied for every value
-   * @param first  the possible first characters (this is merely for performance improvement) to
-   *               skip RE evaluation to gain time
-   */
-  public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
-    if (first == null) {
-      List<ResolverTuple> curr =
-          yamlImplicitResolvers.computeIfAbsent(null, c -> new ArrayList<>());
-      curr.add(new ResolverTuple(tag, regexp));
-    } else {
-      char[] chars = first.toCharArray();
-      for (char chr : chars) {
-        // special case: for null
-        final Character theC = chr == 0 ? null : chr;
-        List<ResolverTuple> curr = yamlImplicitResolvers.computeIfAbsent(theC, k -> new ArrayList<>());
-        curr.add(new ResolverTuple(tag, regexp));
-      }
+    init {
+        yamlImplicitResolvers = ImplicitResolversBuilder().apply(buildImplicitResolvers).resolvers()
     }
-  }
 
-  /**
-   * Register all the resolvers to be applied
-   */
-  abstract void addImplicitResolvers();
+    override fun resolve(value: String, implicit: Boolean): Tag {
+        if (!implicit) return Tag.STR
 
-  @Override
-  @NotNull
-  public Tag resolve(@NotNull String value, boolean implicit) {
-    if (!implicit) {
-      return Tag.STR;
+        val resolverKey = value.getOrNull(0) ?: '\u0000'
+
+        val resolvers = yamlImplicitResolvers[resolverKey]
+            ?: yamlImplicitResolvers[null]
+            ?: emptyList()
+
+        return resolvers
+            .firstOrNull { v -> v.regexp.matcher(value).matches() }
+            ?.tag
+            ?: Tag.STR
     }
-    final List<ResolverTuple> resolvers;
-    if (value.length() == 0) {
-      resolvers = yamlImplicitResolvers.get('\0');
-    } else {
-      resolvers = yamlImplicitResolvers.get(value.charAt(0));
-    }
-    if (resolvers != null) {
-      for (ResolverTuple v : resolvers) {
-        Tag tag = v.getTag();
-        Pattern regexp = v.getRegexp();
-        if (regexp.matcher(value).matches()) {
-          return tag;
+
+    class ImplicitResolversBuilder {
+        private val resolvers: MutableMap<Char?, MutableList<ResolverTuple>> = mutableMapOf()
+
+        internal fun resolvers(): Map<Char?, MutableList<ResolverTuple>> = resolvers.toMap()
+
+        /**
+         * Add a resolver to resolve a value that matches the provided regular expression to the provided
+         * tag
+         *
+         * @param tag    the Tag to assign when the value matches
+         * @param regexp the RE which is applied for every value
+         * @param first  the possible first characters (this is merely for performance improvement) to
+         * skip RE evaluation to gain time
+         */
+        fun addImplicitResolver(tag: Tag, regexp: Pattern, first: String?) {
+            val keys = first?.toCharArray()
+                ?.map { chr ->
+                    // special case: for null
+                    if (chr.code == 0) null else chr
+                }
+                ?: listOf(null)
+
+            for (key in keys.distinct()) {
+                val curr = resolvers.getOrPut(key) { mutableListOf() }
+                curr.add(ResolverTuple(tag, regexp))
+            }
         }
-      }
     }
-    if (yamlImplicitResolvers.containsKey(null)) {
-      for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
-        Tag tag = v.getTag();
-        Pattern regexp = v.getRegexp();
-        if (regexp.matcher(value).matches()) {
-          return tag;
-        }
-      }
+
+    companion object {
+        /**
+         * No value indication
+         */
+        val EMPTY: Pattern = Pattern.compile("^$")
+
+        /**
+         * group 1: name, group 2: separator, group 3: value
+         */
+        @JvmField
+        val ENV_FORMAT: Pattern = Pattern.compile("^\\$\\{\\s*(\\w+)(?:(:?[-?])(\\w+)?)?\\s*}$")
     }
-    return Tag.STR;
-  }
 }

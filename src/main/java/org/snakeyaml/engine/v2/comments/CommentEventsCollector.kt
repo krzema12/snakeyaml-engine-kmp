@@ -16,15 +16,15 @@ package org.snakeyaml.engine.v2.comments
 import org.snakeyaml.engine.v2.events.CommentEvent
 import org.snakeyaml.engine.v2.events.Event
 import org.snakeyaml.engine.v2.parser.Parser
-import java.util.*
 
 /**
  * Used by the Composer and Emitter to collect comment events so that they can be used at a later
  * point in the process.
  */
-class CommentEventsCollector {
-    private val eventSource: Queue<Event>
-    private val expectedCommentTypes: Array<out CommentType>
+class CommentEventsCollector private constructor(
+    private val eventSource: EventQueue,
+    private val expectedCommentTypes: Array<out CommentType>,
+) {
     private val commentLineList: MutableList<CommentLine> = mutableListOf()
 
     /**
@@ -34,17 +34,13 @@ class CommentEventsCollector {
      * @param expectedCommentTypes the comment types expected.
      *                             Any comment types not included are not collected.
      */
-    constructor(parser: Parser, vararg expectedCommentTypes: CommentType) {
-        eventSource = object : AbstractQueue<Event>() {
-            override fun offer(e: Event): Boolean = throw UnsupportedOperationException()
-            override fun poll(): Event = parser.next()
-            override fun peek(): Event? = parser.peekEvent()
-            override fun iterator(): MutableIterator<Event> = throw UnsupportedOperationException()
-            override val size: Int
-                get() = throw UnsupportedOperationException()
-        }
-        this.expectedCommentTypes = expectedCommentTypes
-    }
+    constructor(
+        parser: Parser,
+        vararg expectedCommentTypes: CommentType,
+    ) : this(
+        EventQueue(parser),
+        expectedCommentTypes,
+    )
 
     /**
      * Constructor used to collect events emitted by the Serializer.
@@ -53,10 +49,13 @@ class CommentEventsCollector {
      * @param expectedCommentTypes the comment types expected.
      *                             Any comment types not included are not collected.
      */
-    constructor(eventSource: Queue<Event>, vararg expectedCommentTypes: CommentType) {
-        this.eventSource = eventSource
-        this.expectedCommentTypes = expectedCommentTypes
-    }
+    constructor(
+        eventSource: ArrayDeque<Event>,
+        vararg expectedCommentTypes: CommentType,
+    ) : this(
+        EventQueue(eventSource),
+        expectedCommentTypes,
+    )
 
     /**
      * Determine if the event is a comment of one of the expected types set during construction.
@@ -140,3 +139,20 @@ class CommentEventsCollector {
      */
     fun isEmpty(): Boolean = commentLineList.isEmpty()
 }
+
+private interface EventQueue {
+    fun poll(): Event
+    fun peek(): Event?
+}
+
+private fun EventQueue(parser: Parser): EventQueue =
+    object : EventQueue {
+        override fun poll(): Event = parser.next()
+        override fun peek(): Event? = parser.peekEvent()
+    }
+
+private fun EventQueue(eventQueue: ArrayDeque<Event>): EventQueue =
+    object : EventQueue {
+        override fun poll(): Event = eventQueue.removeFirst()
+        override fun peek(): Event? = eventQueue.firstOrNull()
+    }

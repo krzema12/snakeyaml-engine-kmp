@@ -97,7 +97,7 @@ public final class EmitterJava implements Emitable {
   /**
    * Current event and the event queue.
    */
-  private final ArrayDeque<Event> events;
+  private final kotlin.collections.ArrayDeque<Event> events;
   private Event event;
 
   /**
@@ -188,7 +188,7 @@ public final class EmitterJava implements Emitable {
     this.states = new kotlin.collections.ArrayDeque<>(100);
     this.state = new ExpectStreamStart();
     // Current event and the event queue.
-    this.events = new ArrayDeque<>(100);
+    this.events = new kotlin.collections.ArrayDeque<>(100);
     this.event = null;
     // The current indentation level and the stack of previous indents.
     this.indents = new kotlin.collections.ArrayDeque<>(10);
@@ -250,7 +250,7 @@ public final class EmitterJava implements Emitable {
   public void emit(@NotNull Event event) {
     this.events.add(event);
     while (!needMoreEvents()) {
-      this.event = this.events.poll();
+      this.event = this.events.removeFirst();
       this.state.expect();
       this.event = null;
     }
@@ -417,7 +417,7 @@ public final class EmitterJava implements Emitable {
       if (event.getEventId() != Event.ID.DocumentStart || events.isEmpty()) {
         return false;
       }
-      Event nextEvent = events.peek();
+      Event nextEvent = events.first();
       if (nextEvent.getEventId() == Event.ID.Scalar) {
         ScalarEvent e = (ScalarEvent) nextEvent;
         return !e.getAnchor().isPresent()
@@ -859,12 +859,12 @@ public final class EmitterJava implements Emitable {
 
   private boolean checkEmptySequence() {
     return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty()
-        && events.peek().getEventId() == Event.ID.SequenceEnd;
+        && events.first().getEventId() == Event.ID.SequenceEnd;
   }
 
   private boolean checkEmptyMapping() {
     return event.getEventId() == Event.ID.MappingStart && !events.isEmpty()
-        && events.peek().getEventId() == Event.ID.MappingEnd;
+        && events.first().getEventId() == Event.ID.MappingEnd;
   }
 
   private boolean checkSimpleKey() {

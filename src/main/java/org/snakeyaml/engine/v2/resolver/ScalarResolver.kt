@@ -11,15 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.resolver
 
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.nodes.Tag
 
 /**
- * ScalarResolver tries to detect a type of scalar value by its content (when the tag is implicit)
+ * `ScalarResolver` tries to detect a type of scalar value by its content (when the tag is implicit)
  */
-public interface ScalarResolver {
-
+fun interface ScalarResolver {
   /**
    * Resolve (detect) the tag of the scalar node of the given type.
    *
@@ -27,5 +26,5 @@ public interface ScalarResolver {
    * @param implicit - true if there was no tag specified (the tag will be resolved)
    * @return the Tag that matches the contents
    */
-  Tag resolve(String value, Boolean implicit);
+  fun resolve(value: String, implicit: Boolean): Tag
 }

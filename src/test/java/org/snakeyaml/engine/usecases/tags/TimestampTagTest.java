@@ -81,8 +81,9 @@ public class TimestampTagTest {
     public static final Pattern TIMESTAMP = Pattern.compile(
         "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
 
+    @NotNull
     @Override
-    public Tag resolve(String value, Boolean implicit) {
+    public Tag resolve(@NotNull String value, boolean implicit) {
       if (TIMESTAMP.matcher(value).matches()) {
         return myTimeTag;
       } else {

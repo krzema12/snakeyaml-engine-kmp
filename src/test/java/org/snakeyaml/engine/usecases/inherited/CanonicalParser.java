@@ -16,6 +16,8 @@ package org.snakeyaml.engine.usecases.inherited;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -165,6 +167,7 @@ public class CanonicalParser implements Parser {
     parsed = true;
   }
 
+  @NotNull
   public Event next() {
     if (!parsed) {
       parse();
@@ -175,7 +178,7 @@ public class CanonicalParser implements Parser {
   /**
    * Check the type of the next event.
    */
-  public boolean checkEvent(Event.ID choice) {
+  public boolean checkEvent(@NotNull Event.ID choice) {
     if (!parsed) {
       parse();
     }
@@ -188,6 +191,7 @@ public class CanonicalParser implements Parser {
   /**
    * Get the next event.
    */
+  @NotNull
   public Event peekEvent() {
     if (!parsed) {
       parse();

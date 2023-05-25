@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.common.Anchor;
@@ -144,17 +146,6 @@ public class ParserImpl implements Parser {
   private Map<String, String> directiveTags;
 
   /**
-   * @param reader - the input
-   * @param settings - the configuration options
-   * @deprecated use the other constructor with LoadSettings first
-   */
-  @Deprecated
-  public ParserImpl(StreamReader reader, LoadSettings settings) {
-    this(settings, reader);
-  }
-
-
-  /**
    * Create
    *
    * @param settings - configuration options
@@ -162,16 +153,6 @@ public class ParserImpl implements Parser {
    */
   public ParserImpl(LoadSettings settings, StreamReader reader) {
     this(settings, new ScannerImpl(settings, reader));
-  }
-
-  /**
-   * @param scanner - input
-   * @param settings - configuration options
-   * @deprecated use the other constructor with LoadSettings first
-   */
-  @Deprecated
-  public ParserImpl(Scanner scanner, LoadSettings settings) {
-    this(settings, scanner);
   }
 
   /**
@@ -193,7 +174,8 @@ public class ParserImpl implements Parser {
   /**
    * Check the ID of the next event.
    */
-  public boolean checkEvent(Event.ID id) {
+  @Override
+  public boolean checkEvent(@NotNull Event.ID id) {
     peekEvent();
     return currentEvent.isPresent() && currentEvent.get().getEventId() == id;
   }
@@ -201,6 +183,8 @@ public class ParserImpl implements Parser {
   /**
    * Get the next event (and keep it). Produce the event if not yet present.
    */
+  @NotNull
+  @Override
   public Event peekEvent() {
     produce();
     return currentEvent.orElseThrow(() -> new NoSuchElementException("No more Events found."));
@@ -209,6 +193,8 @@ public class ParserImpl implements Parser {
   /**
    * Consume the event (get the next event and removed it).
    */
+  @NotNull
+  @Override
   public Event next() {
     Event value = peekEvent();
     currentEvent = Optional.empty();
@@ -432,6 +418,7 @@ public class ParserImpl implements Parser {
 
   private class ParseStreamStart implements Production {
 
+    @Override @NotNull
     public Event produce() {
       // Parse the stream start.
       StreamStartToken token = (StreamStartToken) scanner.next();
@@ -444,6 +431,7 @@ public class ParserImpl implements Parser {
 
   private class ParseImplicitDocumentStart implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseImplicitDocumentStart());
@@ -468,6 +456,7 @@ public class ParserImpl implements Parser {
 
   private class ParseDocumentStart implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseDocumentStart());
@@ -532,6 +521,7 @@ public class ParserImpl implements Parser {
 
   private class ParseDocumentEnd implements Production {
 
+    @Override @NotNull
     public Event produce() {
       // Parse the document end.
       Token token = scanner.peekToken();
@@ -557,6 +547,7 @@ public class ParserImpl implements Parser {
 
   private class ParseDocumentContent implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseDocumentContent());
@@ -595,6 +586,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockNode implements Production {
 
+    @Override @NotNull
     public Event produce() {
       return parseNode(true, false);
     }
@@ -604,6 +596,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockSequenceFirstEntry implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Token token = scanner.next();
       markPush(token.getStartMark());
@@ -613,6 +606,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockSequenceEntryKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseBlockSequenceEntryKey());
@@ -646,6 +640,7 @@ public class ParserImpl implements Parser {
       this.token = token;
     }
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseBlockSequenceEntryValue(token));
@@ -663,6 +658,7 @@ public class ParserImpl implements Parser {
 
   private class ParseIndentlessSequenceEntryKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseIndentlessSequenceEntryKey());
@@ -687,6 +683,7 @@ public class ParserImpl implements Parser {
       this.token = token;
     }
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseIndentlessSequenceEntryValue(token));
@@ -705,6 +702,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockMappingFirstKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Token token = scanner.next();
       markPush(token.getStartMark());
@@ -714,6 +712,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockMappingKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseBlockMappingKey());
@@ -747,6 +746,7 @@ public class ParserImpl implements Parser {
 
   private class ParseBlockMappingValue implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Value)) {
         Token token = scanner.next();
@@ -775,6 +775,7 @@ public class ParserImpl implements Parser {
 
     List<CommentToken> tokens = new LinkedList<>();
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         tokens.add((CommentToken) scanner.next());
@@ -800,6 +801,7 @@ public class ParserImpl implements Parser {
       this.tokens = tokens;
     }
 
+    @Override @NotNull
     public Event produce() {
       if (!tokens.isEmpty()) {
         return produceCommentEvent(tokens.remove(0));
@@ -823,6 +825,7 @@ public class ParserImpl implements Parser {
    */
   private class ParseFlowSequenceFirstEntry implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Token token = scanner.next();
       markPush(token.getStartMark());
@@ -838,6 +841,7 @@ public class ParserImpl implements Parser {
       this.first = first;
     }
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Comment)) {
         state = Optional.of(new ParseFlowSequenceEntry(first));
@@ -885,6 +889,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowEndComment implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Event event = produceCommentEvent((CommentToken) scanner.next());
       if (!scanner.checkToken(Token.ID.Comment)) {
@@ -896,6 +901,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowSequenceEntryMappingKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Token token = scanner.next();
       if (!scanner.checkToken(Token.ID.Value, Token.ID.FlowEntry, Token.ID.FlowSequenceEnd)) {
@@ -910,6 +916,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowSequenceEntryMappingValue implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Value)) {
         Token token = scanner.next();
@@ -930,6 +937,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowSequenceEntryMappingEnd implements Production {
 
+    @Override @NotNull
     public Event produce() {
       state = Optional.of(new ParseFlowSequenceEntry(false));
       Token token = scanner.peekToken();
@@ -948,6 +956,7 @@ public class ParserImpl implements Parser {
    */
   private class ParseFlowMappingFirstKey implements Production {
 
+    @Override @NotNull
     public Event produce() {
       Token token = scanner.next();
       markPush(token.getStartMark());
@@ -963,6 +972,7 @@ public class ParserImpl implements Parser {
       this.first = first;
     }
 
+    @Override @NotNull
     public Event produce() {
       if (!scanner.checkToken(Token.ID.FlowMappingEnd)) {
         if (!first) {
@@ -1005,6 +1015,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowMappingValue implements Production {
 
+    @Override @NotNull
     public Event produce() {
       if (scanner.checkToken(Token.ID.Value)) {
         Token token = scanner.next();
@@ -1025,6 +1036,7 @@ public class ParserImpl implements Parser {
 
   private class ParseFlowMappingEmptyValue implements Production {
 
+    @Override @NotNull
     public Event produce() {
       state = Optional.of(new ParseFlowMappingKey(false));
       return processEmptyScalar(scanner.peekToken().getStartMark());

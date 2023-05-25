@@ -15,6 +15,8 @@ package org.snakeyaml.engine.v2.parser;
 
 
 import java.util.Iterator;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.exceptions.ParserException;
 
@@ -36,7 +38,7 @@ public interface Parser extends Iterator<Event> {
    *         more events are available.
    * @throws ParserException Thrown in case of malformed input.
    */
-  boolean checkEvent(Event.ID choice);
+  boolean checkEvent(@NotNull Event.ID choice);
 
   /**
    * Return the next event, but do not delete it from the stream.
@@ -45,6 +47,7 @@ public interface Parser extends Iterator<Event> {
    * @throws ParserException Thrown in case of malformed input or NoSuchElementException in case no
    *         event is available.
    */
+  @NotNull
   Event peekEvent();
 
   /**
@@ -56,5 +59,6 @@ public interface Parser extends Iterator<Event> {
    * @return the next parsed event
    * @throws ParserException Thrown in case of malformed input.
    */
+  @NotNull
   Event next();
 }

@@ -11,37 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser;
+package org.snakeyaml.engine.v2.parser
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.common.SpecVersion
+import java.util.*
 
 /**
  * Store the internal state for directives
  */
-class VersionTagsTuple {
+internal data class VersionTagsTuple(
+    val specVersion: Optional<SpecVersion>,
+    val tags: Map<String, String>,
+) {
 
-  private final Optional<SpecVersion> specVersion;
-  private final Map<String, String> tags;
+    @Deprecated("help during java->kt auto convert", ReplaceWith("specVersion"))
+    @JvmName("getSpecVersionJvm")
+    fun getSpecVersion() = specVersion
 
-  public VersionTagsTuple(Optional<SpecVersion> specVersion, Map<String, String> tags) {
-    Objects.requireNonNull(specVersion);
-    this.specVersion = specVersion;
-    this.tags = tags;
-  }
+    @Deprecated("help during java->kt auto convert", ReplaceWith("tags"))
+    @JvmName("getTagsJvm")
+    fun getTags() = tags
 
-  public Optional<SpecVersion> getSpecVersion() {
-    return specVersion;
-  }
-
-  public Map<String, String> getTags() {
-    return tags;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("VersionTagsTuple<%s, %s>", specVersion, tags);
-  }
+    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
 }

@@ -49,7 +49,7 @@ public class TimestampTagTest {
     Load loader = new Load(settings);
     LocalDateTime obj =
         (LocalDateTime) loader.loadFromString("!!timestamp 2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
   }
 
   @Test
@@ -57,7 +57,7 @@ public class TimestampTagTest {
     LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
     Load loader = new Load(settings);
     LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
 
     assertEquals(2020, loader.loadFromString("2020"));
     assertEquals(3, ((List<String>) loader.loadFromString("[a, b, c]")).size());
@@ -100,6 +100,7 @@ public class TimestampTagTest {
       return new MyScalarResolver();
     }
 
+    @NotNull
     @Override
     public Map<Tag, ConstructNode> getSchemaTagConstructors() {
       Map<Tag, ConstructNode> parent = super.getSchemaTagConstructors();

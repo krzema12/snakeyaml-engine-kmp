@@ -11,37 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.resolver
 
-import java.util.Objects;
-import java.util.regex.Pattern;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.nodes.Tag
+import java.util.regex.Pattern
 
 /**
- * Hold 2 values, tag and pattern
+ * Hold 2 values, [tag] and a [Pattern]
  */
-final class ResolverTuple {
-
-  private final Tag tag;
-  private final Pattern regexp;
-
-  public ResolverTuple(Tag tag, Pattern regexp) {
-    Objects.requireNonNull(tag);
-    Objects.requireNonNull(regexp);
-    this.tag = tag;
-    this.regexp = regexp;
-  }
-
-  public Tag getTag() {
-    return tag;
-  }
-
-  public Pattern getRegexp() {
-    return regexp;
-  }
-
-  @Override
-  public String toString() {
-    return "Tuple tag=" + tag + " regexp=" + regexp;
-  }
+internal class ResolverTuple(
+    val tag: Tag,
+    val regexp: Pattern,
+) {
+    override fun toString(): String = "Tuple tag=$tag regexp=$regexp"
 }

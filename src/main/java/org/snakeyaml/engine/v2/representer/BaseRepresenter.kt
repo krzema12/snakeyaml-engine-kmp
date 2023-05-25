@@ -67,7 +67,7 @@ abstract class BaseRepresenter(
     private var objectToRepresent: Any? = null
 
     /**
-     * Represent the provided Java instance to a Node
+     * Represent the provided Java instance to a [Node]
      *
      * @param data - Java instance to be represented
      * @return The Node to be serialized
@@ -84,21 +84,19 @@ abstract class BaseRepresenter(
      * instance to a Node
      *
      * @param data - the data to be serialized
-     * @return RepresentToNode to call to create a Node
+     * @return [RepresentToNode] to call to create a Node
+     * @throws [YamlEngineException] if there is no representer defined for the class of [data]
      */
-    private fun findRepresenterFor(data: Any): RepresentToNode? {
-        val clazz = data::class
+    private fun findRepresenterFor(data: Any): RepresentToNode {
         // check the same class
-        return if (clazz in representers) {
-            representers[clazz]
-        } else {
+        return representers.getOrElse(data::class) {
             // check the parents
             for ((key, value) in parentClassRepresenters) {
                 if (key.isInstance(data)) {
                     return value
                 }
             }
-            null
+            throw YamlEngineException("Representer is not defined for class ${data::class.java.name}")
         }
     }
 
@@ -119,14 +117,13 @@ abstract class BaseRepresenter(
                 nullRepresenter.representData(Unit)
             } else {
                 val representer = findRepresenterFor(data)
-                    ?: throw YamlEngineException("Representer is not defined for class ${data::class.java.name}")
                 representer.representData(data)
             }
         }
     }
 
     /**
-     * Create Node for string, using PLAIN scalar style if possible
+     * Create Node for string, using [ScalarStyle.PLAIN] if possible
      *
      * @param tag - the tag for [Node]
      * @param value - the source
@@ -137,7 +134,7 @@ abstract class BaseRepresenter(
         tag: Tag,
         value: String,
         style: ScalarStyle = ScalarStyle.PLAIN,
-    ): Node {
+    ): ScalarNode {
         return ScalarNode(
             tag = tag,
             value = value,
@@ -153,7 +150,11 @@ abstract class BaseRepresenter(
      * @param flowStyle - the flow style
      * @return the Node from the source iterable
      */
-    protected fun representSequence(tag: Tag, sequence: Iterable<*>, flowStyle: FlowStyle): Node {
+    protected fun representSequence(
+        tag: Tag,
+        sequence: Iterable<*>,
+        flowStyle: FlowStyle,
+    ): SequenceNode {
         var size = 10 // default for ArrayList
         if (sequence is List<*>) {
             size = sequence.size
@@ -182,12 +183,11 @@ abstract class BaseRepresenter(
     /**
      * Create a tuple for one key pair
      *
-     * @param entry - Map entry
+     * @receiver - Map entry
      * @return the tuple where both key and value are converted to Node
      */
-    protected open fun representMappingEntry(entry: Map.Entry<*, *>): NodeTuple {
-        return NodeTuple(representData(entry.key), representData(entry.value))
-    }
+    protected open fun Map.Entry<*, *>.toNodeTuple(): NodeTuple =
+        NodeTuple(representData(key), representData(value))
 
     /**
      * Create [Node] for the provided [Map]
@@ -197,13 +197,17 @@ abstract class BaseRepresenter(
      * @param flowStyle - the style of Node
      * @return Node for the source Map
      */
-    protected fun representMapping(tag: Tag, mapping: Map<*, *>, flowStyle: FlowStyle): Node {
+    protected fun representMapping(
+        tag: Tag,
+        mapping: Map<*, *>,
+        flowStyle: FlowStyle,
+    ): MappingNode {
         val value: MutableList<NodeTuple> = ArrayList(mapping.size)
         val node = MappingNode(tag, value, flowStyle)
         representedObjects[objectToRepresent] = node
         var bestStyle = FlowStyle.FLOW
         for (entry in mapping.entries) {
-            val tuple = representMappingEntry(entry)
+            val tuple = entry.toNodeTuple()
             if (!(tuple.keyNode is ScalarNode && tuple.keyNode.isPlain)) {
                 bestStyle = FlowStyle.BLOCK
             }

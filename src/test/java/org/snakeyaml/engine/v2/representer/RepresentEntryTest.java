@@ -73,8 +73,8 @@ public class RepresentEntryTest {
 
     @NotNull
     @Override
-    protected NodeTuple representMappingEntry(@NotNull Map.Entry<?, ?> entry) {
-      NodeTuple tuple = super.representMappingEntry(entry);
+    protected NodeTuple toNodeTuple(@NotNull Map.Entry<?, ?> entry) {
+      NodeTuple tuple = super.toNodeTuple(entry);
       List<CommentLine> keyBlockComments = new ArrayList<>();
       keyBlockComments.add(new CommentLine(Optional.empty(), Optional.empty(),
           "Key node block comment", CommentType.BLOCK));

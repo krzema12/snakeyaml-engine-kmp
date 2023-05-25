@@ -236,14 +236,13 @@ class ParserImpl(
     private fun parseBlockNodeOrIndentlessSequence(): Event = parseNode(block = true, indentlessSequence = true)
 
     private fun parseNode(block: Boolean, indentlessSequence: Boolean): Event {
-        val event: Event
         var startMark: Optional<Mark> = Optional.empty()
         var endMark: Optional<Mark> = Optional.empty()
         var tagMark: Optional<Mark> = Optional.empty()
         if (scanner.checkToken(Token.ID.Alias)) {
             val token = scanner.next() as AliasToken
-            event = AliasEvent(Optional.of(token.value), token.startMark, token.endMark)
             state = Optional.of(states.removeLast())
+            return AliasEvent(Optional.of(token.value), token.startMark, token.endMark)
         } else {
             val anchor: Optional<Anchor>
             val tagTupleValue: TagTuple?
@@ -301,12 +300,15 @@ class ParserImpl(
                 endMark = startMark
             }
             val implicit = !tag.isPresent
-            if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
-                endMark = scanner.peekToken().endMark
-                event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
-                state = Optional.of(ParseIndentlessSequenceEntryKey())
-            } else {
-                if (scanner.checkToken(Token.ID.Scalar)) {
+            when {
+                indentlessSequence && scanner.checkToken(Token.ID.BlockEntry) -> {
+
+                    endMark = scanner.peekToken().endMark
+                    state = Optional.of(ParseIndentlessSequenceEntryKey())
+                    return SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                scanner.checkToken(Token.ID.Scalar)                           -> {
                     val token = scanner.next() as ScalarToken
                     endMark = token.endMark
                     val implicitValues = when {
@@ -314,30 +316,41 @@ class ParserImpl(
                         !tag.isPresent                -> ImplicitTuple(plain = false, nonPlain = true)
                         else                          -> ImplicitTuple(plain = false, nonPlain = false)
                     }
-                    event = ScalarEvent(
+                    state = Optional.of(states.removeLast())
+                    return ScalarEvent(
                         anchor, tag, implicitValues, token.value, token.style,
                         startMark, endMark,
                     )
-                    state = Optional.of(states.removeLast())
-                } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {
+                }
+
+                scanner.checkToken(Token.ID.FlowSequenceStart)                -> {
                     endMark = scanner.peekToken().endMark
-                    event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
                     state = Optional.of(ParseFlowSequenceFirstEntry())
-                } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
+                    return SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                }
+
+                scanner.checkToken(Token.ID.FlowMappingStart)                 -> {
                     endMark = scanner.peekToken().endMark
-                    event = MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
                     state = Optional.of(ParseFlowMappingFirstKey())
-                } else if (block && scanner.checkToken(Token.ID.BlockSequenceStart)) {
+                    return MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                }
+
+                block && scanner.checkToken(Token.ID.BlockSequenceStart)      -> {
                     endMark = scanner.peekToken().startMark
-                    event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
                     state = Optional.of(ParseBlockSequenceFirstEntry())
-                } else if (block && scanner.checkToken(Token.ID.BlockMappingStart)) {
+                    return SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                block && scanner.checkToken(Token.ID.BlockMappingStart)       -> {
                     endMark = scanner.peekToken().startMark
-                    event = MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
                     state = Optional.of(ParseBlockMappingFirstKey())
-                } else if (anchor.isPresent || tag.isPresent) {
+                    return MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                anchor.isPresent || tag.isPresent                             -> {
                     // Empty scalars are allowed even if a tag or an anchor is specified.
-                    event = ScalarEvent(
+                    state = Optional.of(states.removeLast())
+                    return ScalarEvent(
                         anchor = anchor,
                         tag = tag,
                         implicit = ImplicitTuple(implicit, false),
@@ -346,8 +359,9 @@ class ParserImpl(
                         startMark = startMark,
                         endMark = endMark,
                     )
-                    state = Optional.of(states.removeLast())
-                } else {
+                }
+
+                else                                                          -> {
                     val token = scanner.peekToken()
                     throw ParserException(
                         problem = "expected the node content, but found '" + token.tokenId + "'",
@@ -358,7 +372,6 @@ class ParserImpl(
                 }
             }
         }
-        return event
     }
 
 

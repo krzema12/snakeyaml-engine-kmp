@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
+import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 
 /*
  * ${VARIABLE:-default} evaluates to default if VARIABLE is unset or empty in the environment.
@@ -36,7 +36,7 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 @org.junit.jupiter.api.Tag("fast")
 public class EnvFormatTest {
 
-  public static final Pattern ENV_FORMAT = JsonScalarResolver.ENV_FORMAT;
+  public static final Pattern ENV_FORMAT = BaseScalarResolver.ENV_FORMAT;
 
   @Test
   public void testMatchBasic() {

@@ -26,8 +26,8 @@ import java.util.*
  */
 class ParserException @JvmOverloads constructor(
     problem: String?,
-    context: String? = null,
     contextMark: Optional<Mark>,
+    context: String? = null,
     problemMark: Optional<Mark> = Optional.empty<Mark>(),
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(

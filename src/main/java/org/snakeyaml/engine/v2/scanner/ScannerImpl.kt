@@ -1086,12 +1086,12 @@ class ScannerImpl(
         val endMark: Optional<Mark>
         reader.forward()
         val name = scanDirectiveName(startMark)
-        val value: Optional<List<*>>
+        val value: List<Any>?
         if (DirectiveToken.YAML_DIRECTIVE == name) {
-            value = Optional.of(scanYamlDirectiveValue(startMark))
+            value = scanYamlDirectiveValue(startMark)
             endMark = reader.getMark()
         } else if (DirectiveToken.TAG_DIRECTIVE == name) {
-            value = Optional.of(scanTagDirectiveValue(startMark))
+            value = scanTagDirectiveValue(startMark)
             endMark = reader.getMark()
         } else {
             endMark = reader.getMark()
@@ -1102,7 +1102,7 @@ class ScannerImpl(
             if (ff > 0) {
                 reader.forward(ff)
             }
-            value = Optional.empty()
+            value = null
         }
         val commentToken = scanDirectiveIgnoredLine(startMark)
         val token: DirectiveToken<*> = DirectiveToken(name, value, startMark, endMark)

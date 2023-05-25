@@ -11,15 +11,53 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser;
+package org.snakeyaml.engine.v2.parser
 
 import org.snakeyaml.engine.v2.api.LoadSettings
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.common.FlowStyle
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.common.SpecVersion
+import org.snakeyaml.engine.v2.events.AliasEvent
+import org.snakeyaml.engine.v2.events.CommentEvent
+import org.snakeyaml.engine.v2.events.DocumentEndEvent
+import org.snakeyaml.engine.v2.events.DocumentStartEvent
+import org.snakeyaml.engine.v2.events.Event
+import org.snakeyaml.engine.v2.events.ImplicitTuple
+import org.snakeyaml.engine.v2.events.MappingEndEvent
+import org.snakeyaml.engine.v2.events.MappingStartEvent
+import org.snakeyaml.engine.v2.events.ScalarEvent
+import org.snakeyaml.engine.v2.events.SequenceEndEvent
+import org.snakeyaml.engine.v2.events.SequenceStartEvent
+import org.snakeyaml.engine.v2.events.StreamEndEvent
+import org.snakeyaml.engine.v2.events.StreamStartEvent
+import org.snakeyaml.engine.v2.exceptions.Mark
+import org.snakeyaml.engine.v2.exceptions.ParserException
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.Scanner
 import org.snakeyaml.engine.v2.scanner.ScannerImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
+import org.snakeyaml.engine.v2.tokens.AliasToken
+import org.snakeyaml.engine.v2.tokens.AnchorToken
+import org.snakeyaml.engine.v2.tokens.BlockEntryToken
+import org.snakeyaml.engine.v2.tokens.CommentToken
+import org.snakeyaml.engine.v2.tokens.DirectiveToken
+import org.snakeyaml.engine.v2.tokens.ScalarToken
+import org.snakeyaml.engine.v2.tokens.StreamEndToken
+import org.snakeyaml.engine.v2.tokens.StreamStartToken
+import org.snakeyaml.engine.v2.tokens.TagToken
+import org.snakeyaml.engine.v2.tokens.TagTuple
+import org.snakeyaml.engine.v2.tokens.Token
+import java.util.LinkedList
+import java.util.Optional
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
+import kotlin.jvm.optionals.getOrNull
 
 /**
- * <pre>
+ * ```
  * # The following YAML grammar is LL(1) and is parsed by a recursive descent parser.
  *
  * stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
@@ -78,20 +116,862 @@ import org.snakeyaml.engine.v2.scanner.StreamReader
  * flow_mapping: { FLOW-MAPPING-START }
  * flow_sequence_entry: { ALIAS ANCHOR TAG SCALAR FLOW-SEQUENCE-START FLOW-MAPPING-START KEY }
  * flow_mapping_entry: { ALIAS ANCHOR TAG SCALAR FLOW-SEQUENCE-START FLOW-MAPPING-START KEY }
- * </pre>
- * <p>
- * Since writing a recursive-descendant parser is a straightforward task, we do not give many
- * comments here.
+ * ```
+ *
+ * Since writing a recursive-descendant parser is a straightforward task, we do not give many comments here.
+ *
+ * @param[settings] tokenizer
  */
-class ParserImpl @JvmOverloads constructor(
+class ParserImpl(
     private val settings: LoadSettings,
     private val scanner: Scanner,
-    private val parserJava: ParserImplJava = ParserImplJava(settings, scanner),
-) : Parser by parserJava {
+) : Parser {
+
+    private val states: ArrayDeque<Production> = ArrayDeque(100)
+    private val marksStack: ArrayDeque<Optional<Mark>> = ArrayDeque(100)
+
+    /** parsed event */
+    private var currentEvent: Optional<Event> = Optional.empty()
+
+    private var state: Optional<Production> = Optional.of(ParseStreamStart()) // prepare the next state
+
+    private var directiveTags: MutableMap<String, String> = DEFAULT_TAGS.toMutableMap()
 
     constructor(
         settings: LoadSettings,
         reader: StreamReader,
     ) : this(settings, ScannerImpl(settings, reader))
 
+
+    /** Check the ID of the next event. */
+    override fun checkEvent(choice: Event.ID): Boolean {
+        peekEvent()
+        return currentEvent.getOrNull()?.eventId == choice
+    }
+
+    /** Get the next event (and keep it). Produce the event if not yet present. */
+    override fun peekEvent(): Event {
+        produce()
+        return currentEvent.orElseThrow { NoSuchElementException("No more Events found.") }
+    }
+
+    /** Consume the event (get the next event and removed it). */
+    override fun next(): Event {
+        val value = peekEvent()
+        currentEvent = Optional.empty()
+        return value
+    }
+
+    /**
+     * Produce the event if not yet present.
+     *
+     * @returns `true` if there is another event
+     */
+    override fun hasNext(): Boolean {
+        produce()
+        return currentEvent.isPresent
+    }
+
+    private fun produce() {
+        if (!currentEvent.isPresent) {
+            state.ifPresent { production -> currentEvent = Optional.of(production.produce()) }
+        }
+    }
+
+    private fun produceCommentEvent(token: CommentToken): CommentEvent {
+        // state = state, that no change in state
+        return CommentEvent(
+            token.commentType,
+            token.value,
+            token.startMark,
+            token.endMark,
+        )
+    }
+
+    private fun processDirectives(): VersionTagsTuple {
+        var yamlSpecVersion: Optional<SpecVersion> = Optional.empty()
+        val tagHandles = HashMap<String, String>()
+        while (scanner.checkToken(Token.ID.Directive)) {
+            val directive = scanner.next() as DirectiveToken<*>
+            if (directive.value != null) {
+                // the value must be present
+                if (directive.name == DirectiveToken.YAML_DIRECTIVE) {
+                    if (yamlSpecVersion.isPresent) {
+                        throw ParserException("found duplicate YAML directive", directive.startMark)
+                    }
+                    val major = directive.value[0] as Int
+                    val minor = directive.value[1] as Int
+                    yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(SpecVersion(major, minor)))
+                } else if (directive.name == DirectiveToken.TAG_DIRECTIVE) {
+                    val handle = directive.value[0] as String
+                    val prefix = directive.value[1] as String
+                    if (tagHandles.containsKey(handle)) {
+                        throw ParserException("duplicate tag handle $handle", directive.startMark)
+                    }
+                    tagHandles[handle] = prefix
+                }
+            }
+        }
+        val detectedTagHandles = HashMap<String, String>()
+        if (tagHandles.isNotEmpty()) {
+            // copy from tagHandles
+            detectedTagHandles.putAll(tagHandles)
+        }
+        for ((key, value) in DEFAULT_TAGS) {
+            // do not overwrite re-defined tags
+            if (!tagHandles.containsKey(key)) {
+                tagHandles[key] = value
+            }
+        }
+        directiveTags = tagHandles
+        // data for the event (no default tags added)
+        return VersionTagsTuple(yamlSpecVersion, detectedTagHandles)
+    }
+
+
+    private fun parseFlowNode(): Event = parseNode(block = false, indentlessSequence = false)
+
+    private fun parseBlockNodeOrIndentlessSequence(): Event = parseNode(block = true, indentlessSequence = true)
+
+
+    private fun parseNode(block: Boolean, indentlessSequence: Boolean): Event {
+        val event: Event
+        var startMark: Optional<Mark> = Optional.empty()
+        var endMark: Optional<Mark> = Optional.empty()
+        var tagMark: Optional<Mark> = Optional.empty()
+        if (scanner.checkToken(Token.ID.Alias)) {
+            val token = scanner.next() as AliasToken
+            event = AliasEvent(Optional.of(token.value), token.startMark, token.endMark)
+            state = Optional.of(states.removeLast())
+        } else {
+            val anchor: Optional<Anchor>
+            val tagTupleValue: TagTuple?
+            if (scanner.checkToken(Token.ID.Anchor)) {
+                val token = scanner.next() as AnchorToken
+                startMark = token.startMark
+                endMark = token.endMark
+                anchor = Optional.of(token.value)
+                if (scanner.checkToken(Token.ID.Tag)) {
+                    val tagToken = scanner.next() as TagToken
+                    tagMark = tagToken.startMark
+                    endMark = tagToken.endMark
+                    tagTupleValue = tagToken.value
+                } else {
+                    tagTupleValue = null
+                }
+            } else if (scanner.checkToken(Token.ID.Tag)) {
+                val tagToken = scanner.next() as TagToken
+                startMark = tagToken.startMark
+                tagMark = startMark
+                endMark = tagToken.endMark
+                tagTupleValue = tagToken.value
+                if (scanner.checkToken(Token.ID.Anchor)) {
+                    val token = scanner.next() as AnchorToken
+                    endMark = token.endMark
+                    anchor = Optional.of(token.value)
+                } else {
+                    anchor = Optional.empty()
+                }
+            } else {
+                tagTupleValue = null
+                anchor = Optional.empty()
+            }
+            val tag: Optional<String>
+            if (tagTupleValue != null) {
+                val handle = tagTupleValue.handle.getOrNull()
+                tag = if (handle != null) {
+                    if (!directiveTags.containsKey(handle)) {
+                        throw ParserException(
+                            problem = "found undefined tag handle $handle",
+                            contextMark = startMark,
+                            context = "while parsing a node",
+                            problemMark = tagMark,
+                        )
+                    }
+                    Optional.of(directiveTags[handle] + tagTupleValue.suffix)
+                } else {
+                    Optional.of(tagTupleValue.suffix)
+                }
+            } else {
+                tag = Optional.empty()
+            }
+            if (!startMark.isPresent) {
+                startMark = scanner.peekToken().startMark
+                endMark = startMark
+            }
+            val implicit = !tag.isPresent
+            if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
+                endMark = scanner.peekToken().endMark
+                event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                state = Optional.of(ParseIndentlessSequenceEntryKey())
+            } else {
+                if (scanner.checkToken(Token.ID.Scalar)) {
+                    val token = scanner.next() as ScalarToken
+                    endMark = token.endMark
+                    val implicitValues = when {
+                        token.plain && !tag.isPresent -> ImplicitTuple(plain = true, nonPlain = false)
+                        !tag.isPresent                -> ImplicitTuple(plain = false, nonPlain = true)
+                        else                          -> ImplicitTuple(plain = false, nonPlain = false)
+                    }
+                    event = ScalarEvent(
+                        anchor, tag, implicitValues, token.value, token.style,
+                        startMark, endMark,
+                    )
+                    state = Optional.of(states.removeLast())
+                } else if (scanner.checkToken(Token.ID.FlowSequenceStart)) {
+                    endMark = scanner.peekToken().endMark
+                    event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                    state = Optional.of(ParseFlowSequenceFirstEntry())
+                } else if (scanner.checkToken(Token.ID.FlowMappingStart)) {
+                    endMark = scanner.peekToken().endMark
+                    event = MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                    state = Optional.of(ParseFlowMappingFirstKey())
+                } else if (block && scanner.checkToken(Token.ID.BlockSequenceStart)) {
+                    endMark = scanner.peekToken().startMark
+                    event = SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                    state = Optional.of(ParseBlockSequenceFirstEntry())
+                } else if (block && scanner.checkToken(Token.ID.BlockMappingStart)) {
+                    endMark = scanner.peekToken().startMark
+                    event = MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                    state = Optional.of(ParseBlockMappingFirstKey())
+                } else if (anchor.isPresent || tag.isPresent) {
+                    // Empty scalars are allowed even if a tag or an anchor is specified.
+                    event = ScalarEvent(
+                        anchor = anchor,
+                        tag = tag,
+                        implicit = ImplicitTuple(implicit, false),
+                        value = "",
+                        scalarStyle = ScalarStyle.PLAIN,
+                        startMark = startMark,
+                        endMark = endMark,
+                    )
+                    state = Optional.of(states.removeLast())
+                } else {
+                    val token = scanner.peekToken()
+                    throw ParserException(
+                        problem = "expected the node content, but found '" + token.tokenId + "'",
+                        contextMark = startMark,
+                        context = "while parsing a " + (if (block) "block" else "flow") + " node",
+                        problemMark = token.startMark,
+                    )
+                }
+            }
+        }
+        return event
+    }
+
+
+    /**
+     * <pre>
+     * block_mapping     ::= BLOCK-MAPPING_START
+     * ((KEY block_node_or_indentless_sequence?)?
+     * (VALUE block_node_or_indentless_sequence?)?)*
+     * BLOCK-END
+    </pre> *
+     */
+    private fun processEmptyScalar(mark: Optional<Mark>): Event {
+        return ScalarEvent(
+            anchor = Optional.empty(),
+            tag = Optional.empty(),
+            implicit = ImplicitTuple(plain = true, nonPlain = false),
+            value = "",
+            scalarStyle = ScalarStyle.PLAIN,
+            startMark = mark,
+            endMark = mark,
+        )
+    }
+
+    private fun markPop(): Optional<Mark>? = marksStack.removeLastOrNull()
+
+    private fun markPush(mark: Optional<Mark>): Unit = marksStack.addLast(mark)
+
+
+    private inner class ParseStreamStart : Production {
+        override fun produce(): Event {
+            // Parse the stream start.
+            val token = scanner.next() as StreamStartToken
+            val event: Event = StreamStartEvent(token.startMark, token.endMark)
+            // Prepare the next state.
+            state = Optional.of(ParseImplicitDocumentStart())
+            return event
+        }
+    }
+
+    private inner class ParseImplicitDocumentStart : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseImplicitDocumentStart())
+                return produceCommentEvent(scanner.next() as CommentToken)
+            }
+            return if (!scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.StreamEnd)) {
+                // Parse an implicit document.
+                val token = scanner.peekToken()
+                val startMark = token.startMark
+                val event: Event = DocumentStartEvent(
+                    isExplicit = false,
+                    specVersion = Optional.empty(),
+                    tags = emptyMap(),
+                    startMark = startMark,
+                    endMark = startMark,
+                )
+                // Prepare the next state.
+                states.addLast(ParseDocumentEnd())
+                state = Optional.of(ParseBlockNode())
+                event
+            } else {
+                // explicit document detected
+                ParseDocumentStart().produce()
+            }
+        }
+    }
+
+    private inner class ParseDocumentStart : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseDocumentStart())
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            // Parse any extra document end indicators.
+            while (scanner.checkToken(Token.ID.DocumentEnd)) {
+                scanner.next()
+            }
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseDocumentStart())
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            // Parse an explicit document.
+            val event: Event
+            if (!scanner.checkToken(Token.ID.StreamEnd)) {
+                var token = scanner.peekToken()
+                val startMark = token.startMark
+                val tuple = processDirectives()
+                while (scanner.checkToken(Token.ID.Comment)) {
+                    scanner.next()
+                }
+                return if (!scanner.checkToken(Token.ID.StreamEnd)) {
+                    if (!scanner.checkToken(Token.ID.DocumentStart)) {
+                        throw ParserException(
+                            problem = "expected '<document start>', but found '${scanner.peekToken().tokenId}'",
+                            contextMark = scanner.peekToken().startMark,
+                        )
+                    }
+                    token = scanner.next()
+                    val endMark = token.endMark
+                    event = DocumentStartEvent(
+                        isExplicit = true,
+                        specVersion = tuple.specVersion,
+                        tags = tuple.tags,
+                        startMark = startMark,
+                        endMark = endMark,
+                    )
+                    states.addLast(ParseDocumentEnd())
+                    state = Optional.of(ParseDocumentContent())
+                    event
+                } else {
+                    throw ParserException(
+                        problem = "expected '<document start>', but found '${scanner.peekToken().tokenId}'",
+                        contextMark = scanner.peekToken().startMark,
+                    )
+                }
+            }
+            // Parse the end of the stream.
+            val token = scanner.next() as StreamEndToken
+            event = StreamEndEvent(token.startMark, token.endMark)
+            if (!states.isEmpty()) {
+                throw YamlEngineException("Unexpected end of stream. States left: $states")
+            }
+            if (!marksStack.isEmpty()) {
+                throw YamlEngineException("Unexpected end of stream. Marks left: $marksStack")
+            }
+            state = Optional.empty()
+            return event
+        }
+    }
+
+    private inner class ParseDocumentEnd : Production {
+        override fun produce(): Event {
+            // Parse the document end.
+            var token = scanner.peekToken()
+            val startMark: Optional<Mark> = token.startMark
+            var endMark = startMark
+            var explicit = false
+            if (scanner.checkToken(Token.ID.DocumentEnd)) {
+                token = scanner.next()
+                endMark = token.endMark
+                explicit = true
+            } else if (scanner.checkToken(Token.ID.Directive)) {
+                throw ParserException(
+                    problem = "expected '<document end>' before directives, but found '${scanner.peekToken().tokenId}'",
+                    contextMark = scanner.peekToken().startMark,
+                )
+            }
+            directiveTags.clear() // directive tags do not survive between the documents
+
+            scanner.resetDocumentIndex()
+            val event: Event = DocumentEndEvent(explicit, startMark, endMark)
+            // Prepare the next state.
+            state = Optional.of(ParseDocumentStart())
+            return event
+        }
+    }
+
+    private inner class ParseDocumentContent : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseDocumentContent())
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            return if (
+                scanner.checkToken(Token.ID.Directive, Token.ID.DocumentStart, Token.ID.DocumentEnd, Token.ID.StreamEnd)
+            ) {
+                val event = processEmptyScalar(scanner.peekToken().startMark)
+                state = Optional.of(states.removeLast())
+                event
+            } else {
+                ParseBlockNode().produce()
+            }
+        }
+    }
+
+    /**
+     * ```
+     *  block_node_or_indentless_sequence ::= ALIAS
+     *                | properties (block_content | indentless_block_sequence)?
+     *                | block_content
+     *                | indentless_block_sequence
+     *  block_node    ::= ALIAS
+     *                    | properties block_content?
+     *                    | block_content
+     *  flow_node     ::= ALIAS
+     *                    | properties flow_content?
+     *                    | flow_content
+     *  properties    ::= TAG ANCHOR? | ANCHOR TAG?
+     *  block_content     ::= block_collection | flow_collection | SCALAR
+     *  flow_content      ::= flow_collection | SCALAR
+     *  block_collection  ::= block_sequence | block_mapping
+     *  flow_collection   ::= flow_sequence | flow_mapping
+     * ```
+     */
+    private inner class ParseBlockNode : Production {
+        override fun produce(): Event = parseNode(block = true, indentlessSequence = false)
+    }
+
+    // indentless_sequence ::= (BLOCK-ENTRY block_node?)+
+    private inner class ParseBlockSequenceFirstEntry : Production {
+        override fun produce(): Event {
+            val token = scanner.next()
+            markPush(token.startMark)
+            return ParseBlockSequenceEntryKey().produce()
+        }
+    }
+
+    private inner class ParseBlockSequenceEntryKey : Production {
+        override fun produce(): Event {
+
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseBlockSequenceEntryKey())
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            if (scanner.checkToken(Token.ID.BlockEntry)) {
+                val token = scanner.next() as BlockEntryToken
+                return ParseBlockSequenceEntryValue(token).produce()
+            }
+            if (!scanner.checkToken(Token.ID.BlockEnd)) {
+                val token = scanner.peekToken()
+                throw ParserException(
+                    "expected <block end>, but found '" + token.tokenId + "'",
+                    markPop()!!,
+                    "while parsing a block collection",
+                    token.startMark,
+                )
+            }
+            val token = scanner.next()
+            val event: Event = SequenceEndEvent(token.startMark, token.endMark)
+            state = Optional.of(states.removeLast())
+            markPop()
+            return event
+        }
+    }
+
+    private inner class ParseBlockSequenceEntryValue(
+        private val token: BlockEntryToken,
+    ) : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseBlockSequenceEntryValue(token))
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            return if (!scanner.checkToken(Token.ID.BlockEntry, Token.ID.BlockEnd)) {
+                states.addLast(ParseBlockSequenceEntryKey())
+                ParseBlockNode().produce()
+            } else {
+                state = Optional.of(ParseBlockSequenceEntryKey())
+                processEmptyScalar(token.endMark)
+            }
+        }
+    }
+
+    private inner class ParseIndentlessSequenceEntryKey : Production {
+        override fun produce(): Event {
+
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseIndentlessSequenceEntryKey())
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            if (scanner.checkToken(Token.ID.BlockEntry)) {
+                val token = scanner.next() as BlockEntryToken
+                return ParseIndentlessSequenceEntryValue(token).produce()
+            }
+            val token = scanner.peekToken()
+            val event: Event = SequenceEndEvent(token.startMark, token.endMark)
+            state = Optional.of(states.removeLast())
+            return event
+        }
+    }
+
+    private inner class ParseIndentlessSequenceEntryValue(
+        private val token: BlockEntryToken,
+    ) : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseIndentlessSequenceEntryValue(token))
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            return if (!scanner.checkToken(
+                    Token.ID.BlockEntry, Token.ID.Key, Token.ID.Value,
+                    Token.ID.BlockEnd,
+                )
+            ) {
+                states.addLast(ParseIndentlessSequenceEntryKey())
+                ParseBlockNode().produce()
+            } else {
+                state = Optional.of(ParseIndentlessSequenceEntryKey())
+                processEmptyScalar(token.endMark)
+            }
+
+        }
+    }
+
+    private inner class ParseBlockMappingFirstKey : Production {
+        override fun produce(): Event {
+            val token = scanner.next()
+            markPush(token.startMark)
+            return ParseBlockMappingKey().produce()
+        }
+    }
+
+    private inner class ParseBlockMappingKey : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseBlockMappingKey())
+                return produceCommentEvent(scanner.next() as CommentToken)
+            }
+            if (scanner.checkToken(Token.ID.Key)) {
+                val token = scanner.next()
+                return if (!scanner.checkToken(Token.ID.Key, Token.ID.Value, Token.ID.BlockEnd)) {
+                    states.addLast(ParseBlockMappingValue())
+                    parseBlockNodeOrIndentlessSequence()
+                } else {
+                    state = Optional.of(ParseBlockMappingValue())
+                    processEmptyScalar(token.endMark)
+                }
+            }
+            if (!scanner.checkToken(Token.ID.BlockEnd)) {
+                val token = scanner.peekToken()
+                throw ParserException(
+                    "expected <block end>, but found '" + token.tokenId + "'",
+                    markPop()!!,
+                    "while parsing a block mapping",
+                    token.startMark,
+                )
+            }
+            val token = scanner.next()
+            val event: Event = MappingEndEvent(token.startMark, token.endMark)
+            state = Optional.of(states.removeLast())
+            markPop()
+            return event
+        }
+    }
+
+    private inner class ParseBlockMappingValue : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Value)) {
+                val token = scanner.next()
+                return if (scanner.checkToken(Token.ID.Comment)) {
+                    val p: Production = ParseBlockMappingValueComment()
+                    state = Optional.of(p)
+                    p.produce()
+                } else if (!scanner.checkToken(Token.ID.Key, Token.ID.Value, Token.ID.BlockEnd)) {
+                    states.addLast(ParseBlockMappingKey())
+                    parseBlockNodeOrIndentlessSequence()
+                } else {
+                    state = Optional.of(ParseBlockMappingKey())
+                    processEmptyScalar(token.endMark)
+                }
+            } else if (scanner.checkToken(Token.ID.Scalar)) {
+                states.addLast(ParseBlockMappingKey())
+                return parseBlockNodeOrIndentlessSequence()
+            }
+            state = Optional.of(ParseBlockMappingKey())
+            val token = scanner.peekToken()
+            return processEmptyScalar(token.startMark)
+        }
+    }
+
+    private inner class ParseBlockMappingValueComment : Production {
+
+        var tokens: MutableList<CommentToken> = LinkedList()
+
+        override fun produce(): Event {
+            return if (scanner.checkToken(Token.ID.Comment)) {
+                tokens.add(scanner.next() as CommentToken)
+                produce()
+            } else if (!scanner.checkToken(Token.ID.Key, Token.ID.Value, Token.ID.BlockEnd)) {
+                if (tokens.isNotEmpty()) {
+                    return produceCommentEvent(tokens.removeAt(0))
+                }
+                states.addLast(ParseBlockMappingKey())
+                parseBlockNodeOrIndentlessSequence()
+            } else {
+                state = Optional.of(ParseBlockMappingValueCommentList(tokens))
+                processEmptyScalar(scanner.peekToken().startMark)
+            }
+
+        }
+    }
+
+    private inner class ParseBlockMappingValueCommentList(
+        private val tokens: MutableList<CommentToken>,
+    ) : Production {
+        override fun produce(): Event {
+            return if (tokens.isNotEmpty()) {
+                produceCommentEvent(tokens.removeFirst())
+            } else {
+                ParseBlockMappingKey().produce()
+            }
+        }
+    }
+
+    /**
+     * <pre>
+     * flow_sequence     ::= FLOW-SEQUENCE-START
+     *                       (flow_sequence_entry FLOW-ENTRY)*
+     *                       flow_sequence_entry?
+     *                       FLOW-SEQUENCE-END
+     * flow_sequence_entry   ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+     * Note that while production rules for both flow_sequence_entry and
+     * flow_mapping_entry are equal, their interpretations are different.
+     * For `flow_sequence_entry`, the part `KEY flow_node? (VALUE flow_node?)?`
+     * generate an inline mapping (set syntax).
+     * </pre>
+     */
+    private inner class ParseFlowSequenceFirstEntry : Production {
+        override fun produce(): Event {
+            val token = scanner.next()
+            markPush(token.startMark)
+            return ParseFlowSequenceEntry(true).produce()
+        }
+    }
+
+    private inner class ParseFlowSequenceEntry(
+        private val first: Boolean,
+    ) : Production {
+        override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(ParseFlowSequenceEntry(first))
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
+            if (!scanner.checkToken(Token.ID.FlowSequenceEnd)) {
+                if (!first) {
+                    if (scanner.checkToken(Token.ID.FlowEntry)) {
+                        scanner.next()
+                        if (scanner.checkToken(Token.ID.Comment)) {
+                            state = Optional.of(ParseFlowSequenceEntry(true))
+                            return produceCommentEvent((scanner.next() as CommentToken))
+                        }
+                    } else {
+                        val token = scanner.peekToken()
+                        throw ParserException(
+                            problem = "expected ',' or ']', but got ${token.tokenId}",
+                            contextMark = markPop()!!,
+                            context = "while parsing a flow sequence",
+                            problemMark = token.startMark,
+                        )
+                    }
+                }
+                if (scanner.checkToken(Token.ID.Key)) {
+                    val token = scanner.peekToken()
+                    val event: Event = MappingStartEvent(
+                        anchor = Optional.empty(),
+                        tag = Optional.empty(),
+                        implicit = true,
+                        flowStyle = FlowStyle.FLOW,
+                        startMark = token.startMark,
+                        endMark = token.endMark,
+                    )
+                    state = Optional.of(ParseFlowSequenceEntryMappingKey())
+                    return event
+                } else if (!scanner.checkToken(Token.ID.FlowSequenceEnd)) {
+                    states.addLast(ParseFlowSequenceEntry(false))
+                    return parseFlowNode()
+                }
+            }
+            val token = scanner.next()
+            val event: Event = SequenceEndEvent(token.startMark, token.endMark)
+            state = if (!scanner.checkToken(Token.ID.Comment)) {
+                Optional.of(states.removeLast())
+            } else {
+                Optional.of(ParseFlowEndComment())
+            }
+            markPop()
+            return event
+        }
+    }
+
+    private inner class ParseFlowEndComment : Production {
+        override fun produce(): Event {
+
+            val event: Event = produceCommentEvent(scanner.next() as CommentToken)
+            if (!scanner.checkToken(Token.ID.Comment)) {
+                state = Optional.of(states.removeLast())
+            }
+            return event
+        }
+    }
+
+    private inner class ParseFlowSequenceEntryMappingKey : Production {
+        override fun produce(): Event {
+
+            val token = scanner.next()
+            return if (!scanner.checkToken(Token.ID.Value, Token.ID.FlowEntry, Token.ID.FlowSequenceEnd)) {
+                states.addLast(ParseFlowSequenceEntryMappingValue())
+                parseFlowNode()
+            } else {
+                state = Optional.of(ParseFlowSequenceEntryMappingValue())
+                processEmptyScalar(token.endMark)
+            }
+        }
+    }
+
+    private inner class ParseFlowSequenceEntryMappingValue : Production {
+        override fun produce(): Event {
+            return if (scanner.checkToken(Token.ID.Value)) {
+                val token = scanner.next()
+                if (!scanner.checkToken(Token.ID.FlowEntry, Token.ID.FlowSequenceEnd)) {
+                    states.addLast(ParseFlowSequenceEntryMappingEnd())
+                    parseFlowNode()
+                } else {
+                    state = Optional.of(ParseFlowSequenceEntryMappingEnd())
+                    processEmptyScalar(token.endMark)
+                }
+            } else {
+                state = Optional.of(ParseFlowSequenceEntryMappingEnd())
+                val token = scanner.peekToken()
+                processEmptyScalar(token.startMark)
+            }
+        }
+    }
+
+    private inner class ParseFlowSequenceEntryMappingEnd : Production {
+        override fun produce(): Event {
+            state = Optional.of(ParseFlowSequenceEntry(false))
+            val token = scanner.peekToken()
+            return MappingEndEvent(token.startMark, token.endMark)
+        }
+    }
+
+
+    /**
+     * <pre>
+     *   flow_mapping  ::= FLOW-MAPPING-START
+     *          (flow_mapping_entry FLOW-ENTRY)*
+     *          flow_mapping_entry?
+     *          FLOW-MAPPING-END
+     *   flow_mapping_entry    ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+     * </pre>
+     */
+    private inner class ParseFlowMappingFirstKey : Production {
+        override fun produce(): Event {
+            val token = scanner.next()
+            markPush(token.startMark)
+            return ParseFlowMappingKey(true).produce()
+        }
+    }
+
+    private inner class ParseFlowMappingKey(
+        private val first: Boolean,
+    ) : Production {
+        override fun produce(): Event {
+            if (!scanner.checkToken(Token.ID.FlowMappingEnd)) {
+                if (!first) {
+                    if (scanner.checkToken(Token.ID.FlowEntry)) {
+                        scanner.next()
+                    } else {
+                        val token = scanner.peekToken()
+                        throw ParserException(
+                            problem = "expected ',' or '}', but got ${token.tokenId}",
+                            contextMark = markPop()!!,
+                            context = "while parsing a flow mapping",
+                            problemMark = token.startMark,
+                        )
+                    }
+                }
+                if (scanner.checkToken(Token.ID.Key)) {
+                    val token = scanner.next()
+                    return if (!scanner.checkToken(Token.ID.Value, Token.ID.FlowEntry, Token.ID.FlowMappingEnd)) {
+                        states.addLast(ParseFlowMappingValue())
+                        parseFlowNode()
+                    } else {
+                        state = Optional.of(ParseFlowMappingValue())
+                        processEmptyScalar(token.endMark)
+                    }
+                } else if (!scanner.checkToken(Token.ID.FlowMappingEnd)) {
+                    states.addLast(ParseFlowMappingEmptyValue())
+                    return parseFlowNode()
+                }
+            }
+            val token = scanner.next()
+            val event: Event = MappingEndEvent(token.startMark, token.endMark)
+            markPop()
+            state = if (!scanner.checkToken(Token.ID.Comment)) {
+                Optional.of(states.removeLast())
+            } else {
+                Optional.of(ParseFlowEndComment())
+            }
+            return event
+        }
+    }
+
+    private inner class ParseFlowMappingValue : Production {
+        override fun produce(): Event {
+            return if (scanner.checkToken(Token.ID.Value)) {
+                val token = scanner.next()
+                if (!scanner.checkToken(Token.ID.FlowEntry, Token.ID.FlowMappingEnd)) {
+                    states.addLast(ParseFlowMappingKey(false))
+                    parseFlowNode()
+                } else {
+                    state = Optional.of(ParseFlowMappingKey(false))
+                    processEmptyScalar(token.endMark)
+                }
+            } else {
+                state = Optional.of(ParseFlowMappingKey(false))
+                val token = scanner.peekToken()
+                processEmptyScalar(token.startMark)
+            }
+        }
+    }
+
+    private inner class ParseFlowMappingEmptyValue : Production {
+        override fun produce(): Event {
+            state = Optional.of(ParseFlowMappingKey(false))
+            return processEmptyScalar(scanner.peekToken().startMark)
+        }
+    }
+
+    companion object {
+        private val DEFAULT_TAGS: Map<String, String> = mapOf(
+            "!" to "!",
+            "!!" to Tag.PREFIX,
+        )
+    }
 }

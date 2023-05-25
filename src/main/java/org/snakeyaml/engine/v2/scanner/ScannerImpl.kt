@@ -1086,7 +1086,7 @@ class ScannerImpl(
         val endMark: Optional<Mark>
         reader.forward()
         val name = scanDirectiveName(startMark)
-        val value: List<Any>?
+        val value: DirectiveToken.TokenValue?
         if (DirectiveToken.YAML_DIRECTIVE == name) {
             value = scanYamlDirectiveValue(startMark)
             endMark = reader.getMark()
@@ -1105,7 +1105,7 @@ class ScannerImpl(
             value = null
         }
         val commentToken = scanDirectiveIgnoredLine(startMark)
-        val token: DirectiveToken<*> = DirectiveToken(name, value, startMark, endMark)
+        val token = DirectiveToken(value, startMark, endMark)
         return makeTokenList(token, commentToken)
     }
 
@@ -1143,7 +1143,7 @@ class ScannerImpl(
         return value
     }
 
-    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): List<Int> {
+    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): DirectiveToken.YamlDirective {
         // See the specification for details.
         while (reader.peek() == ' '.code) {
             reader.forward()
@@ -1171,12 +1171,12 @@ class ScannerImpl(
                 contextMark = reader.getMark(),
             )
         }
-        return listOf(major, minor)
+        return DirectiveToken.YamlDirective(major, minor)
     }
 
     /**
-     * Read a %YAML directive number: this is either the major or the minor part. Stop reading at a
-     * non-digit character (usually either '.' or '\n').
+     * Read a `%YAML` directive number: this is either the major or the minor part. Stop reading at a
+     * non-digit character (usually either `.` or `\n`).
      */
     private fun scanYamlDirectiveNumber(startMark: Optional<Mark>): Int {
         // See the specification for details.
@@ -1184,8 +1184,10 @@ class ScannerImpl(
         if (!Character.isDigit(c)) {
             val s = String(Character.toChars(c))
             throw ScannerException(
-                DIRECTIVE_PREFIX, startMark,
-                "expected a digit, but found $s($c)", reader.getMark(),
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "expected a digit, but found $s($c)",
+                contextMark = reader.getMark(),
             )
         }
         var length = 0
@@ -1210,7 +1212,7 @@ class ScannerImpl(
      * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
      * ```
      */
-    private fun scanTagDirectiveValue(startMark: Optional<Mark>): List<String> {
+    private fun scanTagDirectiveValue(startMark: Optional<Mark>): DirectiveToken.TagDirective {
         // See the specification for details.
         while (reader.peek() == ' '.code) {
             reader.forward()
@@ -1220,7 +1222,7 @@ class ScannerImpl(
             reader.forward()
         }
         val prefix = scanTagDirectivePrefix(startMark)
-        return listOf(handle, prefix)
+        return DirectiveToken.TagDirective(handle, prefix)
     }
 
     /**

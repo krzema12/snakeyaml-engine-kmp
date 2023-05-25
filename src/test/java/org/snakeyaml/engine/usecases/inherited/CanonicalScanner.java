@@ -252,11 +252,8 @@ public class CanonicalScanner implements Scanner {
     char chunk2 = data.charAt(index + DIRECTIVE.length());
     if (DIRECTIVE.equals(chunk1) && "\n\0".indexOf(chunk2) != -1) {
       index += DIRECTIVE.length();
-      List<Integer> implicit = new ArrayList<Integer>(2);
-      implicit.add(1);
-      implicit.add(1);
-      return new DirectiveToken(DirectiveToken.YAML_DIRECTIVE, implicit, mark,
-          mark);
+      final DirectiveToken.YamlDirective implicit = new DirectiveToken.YamlDirective(1, 1);
+      return new DirectiveToken(implicit, mark, mark);
     } else {
       throw new CanonicalException("invalid directive: " + chunk1 + " " + chunk2 + " in " + label);
     }

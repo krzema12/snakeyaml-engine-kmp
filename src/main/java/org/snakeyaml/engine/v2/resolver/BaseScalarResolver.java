@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.ArrayList;
@@ -81,7 +82,8 @@ public abstract class BaseScalarResolver implements ScalarResolver {
   abstract void addImplicitResolvers();
 
   @Override
-  public Tag resolve(String value, Boolean implicit) {
+  @NotNull
+  public Tag resolve(@NotNull String value, boolean implicit) {
     if (!implicit) {
       return Tag.STR;
     }

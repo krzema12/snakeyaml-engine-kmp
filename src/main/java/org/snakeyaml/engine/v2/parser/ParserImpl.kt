@@ -190,29 +190,32 @@ class ParserImpl(
 
     private fun processDirectives(): VersionTagsTuple {
         var yamlSpecVersion: Optional<SpecVersion> = Optional.empty()
-        val tagHandles = HashMap<String, String>()
+        val tagHandles = mutableMapOf<String, String>()
+
         while (scanner.checkToken(Token.ID.Directive)) {
-            val directive = scanner.next() as DirectiveToken<*>
-            if (directive.value != null) {
-                // the value must be present
-                if (directive.name == DirectiveToken.YAML_DIRECTIVE) {
-                    if (yamlSpecVersion.isPresent) {
-                        throw ParserException("found duplicate YAML directive", directive.startMark)
-                    }
-                    val major = directive.value[0] as Int
-                    val minor = directive.value[1] as Int
-                    yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(SpecVersion(major, minor)))
-                } else if (directive.name == DirectiveToken.TAG_DIRECTIVE) {
-                    val handle = directive.value[0] as String
-                    val prefix = directive.value[1] as String
+            val directive = scanner.next() as DirectiveToken
+
+            if (directive.value == null) continue
+
+            when (directive.value) {
+                is DirectiveToken.TagDirective  -> {
+                    val (handle, prefix) = directive.value
                     if (tagHandles.containsKey(handle)) {
                         throw ParserException("duplicate tag handle $handle", directive.startMark)
                     }
                     tagHandles[handle] = prefix
                 }
+
+                is DirectiveToken.YamlDirective -> {
+                    if (yamlSpecVersion.isPresent) {
+                        throw ParserException("found duplicate YAML directive", directive.startMark)
+                    }
+                    val (major, minor) = directive.value
+                    yamlSpecVersion = Optional.of(settings.getVersionFunction().apply(SpecVersion(major, minor)))
+                }
             }
         }
-        val detectedTagHandles = HashMap<String, String>()
+        val detectedTagHandles = mutableMapOf<String, String>()
         if (tagHandles.isNotEmpty()) {
             // copy from tagHandles
             detectedTagHandles.putAll(tagHandles)
@@ -228,11 +231,9 @@ class ParserImpl(
         return VersionTagsTuple(yamlSpecVersion, detectedTagHandles)
     }
 
-
     private fun parseFlowNode(): Event = parseNode(block = false, indentlessSequence = false)
 
     private fun parseBlockNodeOrIndentlessSequence(): Event = parseNode(block = true, indentlessSequence = true)
-
 
     private fun parseNode(block: Boolean, indentlessSequence: Boolean): Event {
         val event: Event

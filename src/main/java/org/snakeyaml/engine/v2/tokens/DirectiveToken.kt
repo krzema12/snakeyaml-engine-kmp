@@ -14,24 +14,28 @@
 package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import java.util.Optional
 
-class DirectiveToken<T : Any>(
-    val name: String,
-    val value: List<T>?,
+class DirectiveToken(
+    val value: TokenValue?,
     startMark: Optional<Mark>,
     endMark: Optional<Mark>,
 ) : Token(startMark, endMark) {
 
-    init {
-        if (value != null && value.size != 2) {
-            throw YamlEngineException("Two strings/integers must be provided instead of ${value.size}")
-        }
-    }
-
     override val tokenId: ID
         get() = ID.Directive
+
+    sealed interface TokenValue {
+        fun getName(): String // TODO convert to property after Java->Kotlin conversion
+    }
+
+    data class YamlDirective(val major: Int, val minor: Int) : TokenValue {
+        override fun getName(): String = YAML_DIRECTIVE
+    }
+
+    data class TagDirective(val handle: String, val prefix: String) : TokenValue {
+        override fun getName(): String = TAG_DIRECTIVE
+    }
 
     companion object {
         const val YAML_DIRECTIVE = "YAML"

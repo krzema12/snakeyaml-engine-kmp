@@ -109,10 +109,10 @@ class Emitter(
     private val multiLineFlow: Boolean = opts.isMultiLineFlow
 
     private val allowUnicode = opts.isUseUnicodeEncoding
-    private val bestIndent = if (opts.indent in MIN_INDENT..MAX_INDENT) opts.indent else 2
+    private val bestIndent = if (opts.indent in VALID_INDENT_RANGE) opts.indent else DEFAULT_INDENT
     private val indicatorIndent = opts.indicatorIndent
     private val indentWithIndicator = opts.indentWithIndicator
-    private val bestWidth = opts.width.coerceAtMost(80)
+    private val bestWidth = opts.width.coerceAtMost(MAX_WIDTH)
     private val bestLineBreak = opts.bestLineBreak
     private val splitLines = opts.isSplitLines
     private val maxSimpleKeyLength = opts.maxSimpleKeyLength
@@ -1645,14 +1645,19 @@ class Emitter(
             Tag.PREFIX to "!!",
         )
 
-        /** indent cannot be zero spaces */
-        const val MIN_INDENT = 1
+        /** indent cannot be zero spaces and should not be more than 10 spaces */
+        @JvmField
+        val VALID_INDENT_RANGE = 1..10
 
-        /** indent should not be more than 10 spaces */
-        const val MAX_INDENT = 10
+        @JvmField
+        val VALID_INDICATOR_INDENT_RANGE = (VALID_INDENT_RANGE.first - 1) until VALID_INDENT_RANGE.last
+
+        private const val DEFAULT_INDENT = 2
+
+        private const val MAX_WIDTH = 80
 
         private const val SPACE = " "
 
-        private val HANDLE_FORMAT = Pattern.compile("^![-_\\w]*!$")
+        private val HANDLE_FORMAT: Pattern = Pattern.compile("^![-_\\w]*!$")
     }
 }

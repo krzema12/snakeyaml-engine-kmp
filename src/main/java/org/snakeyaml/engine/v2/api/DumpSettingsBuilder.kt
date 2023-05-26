@@ -25,7 +25,6 @@ import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator
 import org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator
-import java.util.Objects
 import java.util.Optional
 
 /**
@@ -205,33 +204,26 @@ class DumpSettingsBuilder internal constructor() {
      * @return the builder with the provided value
      */
     fun setIndent(indent: Int): DumpSettingsBuilder {
-        if (indent < Emitter.MIN_INDENT) {
-            throw EmitterException("Indent must be at least " + Emitter.MIN_INDENT)
-        }
-        if (indent > Emitter.MAX_INDENT) {
-            throw EmitterException("Indent must be at most " + Emitter.MAX_INDENT)
+        if (indent !in Emitter.VALID_INDENT_RANGE) {
+            throw EmitterException("Indent must be at in range ${Emitter.VALID_INDENT_RANGE}")
         }
         this.indent = indent
         return this
     }
 
     /**
-     * It adds the specified indent for sequence indicator in the block flow. Default is 0. For better
-     * visual results it should be by 2 less than the indent (which is 2 by default) It is 2 chars
-     * less because the first char is '-' and the second char is the space after it.
+     * Adds the specified indent for sequence indicator in the block flow. Default is 0.
+     *
+     * For better visual results it should be by 2 less than the indent (which is 2 by default).
+     * It is 2 chars less because the first char is `-` and the second char is the space after it.
      *
      * @param indicatorIndent - must be non-negative and less than
      * org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT - 1
      * @return the builder with the provided value
      */
     fun setIndicatorIndent(indicatorIndent: Int): DumpSettingsBuilder {
-        if (indicatorIndent < 0) {
-            throw EmitterException("Indicator indent must be non-negative")
-        }
-        if (indicatorIndent > Emitter.MAX_INDENT - 1) {
-            throw EmitterException(
-                "Indicator indent must be at most Emitter.MAX_INDENT-1: " + (Emitter.MAX_INDENT - 1)
-            )
+        if (indicatorIndent !in Emitter.VALID_INDICATOR_INDENT_RANGE) {
+            throw EmitterException("Indicator indent must be in range ${Emitter.VALID_INDICATOR_INDENT_RANGE}")
         }
         this.indicatorIndent = indicatorIndent
         return this
@@ -283,7 +275,7 @@ class DumpSettingsBuilder internal constructor() {
     fun setMaxSimpleKeyLength(maxSimpleKeyLength: Int): DumpSettingsBuilder {
         if (maxSimpleKeyLength > 1024) {
             throw YamlEngineException(
-                "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057"
+                "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057",
             )
         }
         this.maxSimpleKeyLength = maxSimpleKeyLength

@@ -124,11 +124,11 @@ class DumpSettingsTest {
   void setIndent() {
     Exception exception1 =
         assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndent(0));
-    assertEquals("Indent must be at least 1", exception1.getMessage());
+    assertEquals("Indent must be at in range 1..10", exception1.getMessage());
 
     Exception exception2 =
-        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndent(12));
-    assertEquals("Indent must be at most 10", exception2.getMessage());
+        assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndent(11));
+    assertEquals("Indent must be at in range 1..10", exception2.getMessage());
   }
 
   @Test
@@ -136,12 +136,11 @@ class DumpSettingsTest {
   void setIndicatorIndent() {
     Exception exception1 =
         assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndicatorIndent(-1));
-    assertEquals("Indicator indent must be non-negative", exception1.getMessage());
+    assertEquals("Indicator indent must be in range 0..9", exception1.getMessage());
 
     Exception exception2 =
         assertThrows(EmitterException.class, () -> DumpSettings.builder().setIndicatorIndent(10));
-    assertEquals("Indicator indent must be at most Emitter.MAX_INDENT-1: 9",
-        exception2.getMessage());
+    assertEquals("Indicator indent must be in range 0..9", exception2.getMessage());
   }
 
   @Test

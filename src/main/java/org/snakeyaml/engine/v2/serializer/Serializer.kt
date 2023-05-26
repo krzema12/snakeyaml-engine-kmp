@@ -33,7 +33,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.nodes.AnchorNode
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.NodeTuple
 import org.snakeyaml.engine.v2.nodes.NodeType
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
@@ -68,31 +67,25 @@ class Serializer(
             ),
         )
         anchorNode(node)
-        settings.explicitRootTag.ifPresent { tag: Tag ->
-            node.tag = tag
-        }
+        settings.explicitRootTag.ifPresent { tag -> node.tag = tag }
         serializeNode(node)
         emitable.emit(DocumentEndEvent(settings.isExplicitEnd))
         serializedNodes.clear()
         anchors.clear()
     }
 
-    /**
-     * Emit [StreamStartEvent]
-     */
+    /** Emit [StreamStartEvent] */
     fun emitStreamStart() {
         emitable.emit(StreamStartEvent())
     }
 
-    /**
-     * Emit [StreamEndEvent]
-     */
+    /** Emit [StreamEndEvent] */
     fun emitStreamEnd() {
         emitable.emit(StreamEndEvent())
     }
 
     private fun anchorNode(node: Node) {
-        val realNode = (node as? AnchorNode)?.realNode ?: node
+        val realNode = if (node is AnchorNode) node.realNode else node
 
         if (anchors.containsKey(realNode)) {
             // it looks weird, anchor does contain the key node, but we call computeIfAbsent()
@@ -100,28 +93,28 @@ class Serializer(
             anchors.computeIfAbsent(realNode) { settings.anchorGenerator.nextAnchor(realNode) }
         } else {
             anchors[realNode] =
-                if (realNode.anchor.isPresent) settings.anchorGenerator.nextAnchor(realNode) else null
+                if (realNode.anchor.isPresent) {
+                    settings.anchorGenerator.nextAnchor(realNode)
+                } else {
+                    null
+                }
             when (realNode.nodeType) {
-                NodeType.SEQUENCE -> {
-                    val seqNode = realNode as SequenceNode
-                    val list: List<Node> = seqNode.value
-                    for (item in list) {
+                NodeType.SEQUENCE                -> {
+                    require(realNode is SequenceNode)
+                    for (item in realNode.value) {
                         anchorNode(item)
                     }
                 }
 
-                NodeType.MAPPING  -> {
-                    val mappingNode = realNode as MappingNode
-                    val map: List<NodeTuple> = mappingNode.value
-                    for (`object` in map) {
-                        val key: Node = `object`.keyNode
-                        val value: Node = `object`.valueNode
+                NodeType.MAPPING                 -> {
+                    require(realNode is MappingNode)
+                    for ((key, value) in realNode.value) {
                         anchorNode(key)
                         anchorNode(value)
                     }
                 }
 
-                else              -> {}
+                NodeType.SCALAR, NodeType.ANCHOR -> {}
             }
         }
     }
@@ -132,7 +125,7 @@ class Serializer(
      * @param node - content
      */
     private fun serializeNode(node: Node) {
-        val realNode = (node as? AnchorNode)?.realNode ?: node
+        val realNode = if (node is AnchorNode) node.realNode else node
 
         val tAlias = Optional.ofNullable(anchors[realNode])
         if (serializedNodes.contains(realNode)) {
@@ -141,17 +134,20 @@ class Serializer(
             serializedNodes.add(realNode)
             when (realNode.nodeType) {
                 NodeType.SCALAR   -> {
-                    val scalarNode = realNode as ScalarNode
+                    require(realNode is ScalarNode)
                     serializeComments(realNode.blockComments)
-                    val detectedTag: Tag = settings.schema.scalarResolver.resolve(scalarNode.value, true)
-                    val defaultTag: Tag = settings.schema.scalarResolver.resolve(scalarNode.value, false)
+                    val detectedTag = settings.schema.scalarResolver.resolve(realNode.value, true)
+                    val defaultTag = settings.schema.scalarResolver.resolve(realNode.value, false)
                     val tuple = ImplicitTuple(
-                        realNode.tag == detectedTag,
-                        realNode.tag == defaultTag,
+                        plain = realNode.tag == detectedTag,
+                        nonPlain = realNode.tag == defaultTag,
                     )
                     val event = ScalarEvent(
-                        tAlias, Optional.of<String>(realNode.tag.value), tuple,
-                        scalarNode.value, scalarNode.scalarStyle,
+                        anchor = tAlias,
+                        tag = Optional.of(realNode.tag.value),
+                        implicit = tuple,
+                        value = realNode.value,
+                        scalarStyle = realNode.scalarStyle,
                     )
                     emitable.emit(event)
                     serializeComments(realNode.inLineComments)
@@ -159,17 +155,18 @@ class Serializer(
                 }
 
                 NodeType.SEQUENCE -> {
-                    val seqNode = realNode as SequenceNode
+                    require(realNode is SequenceNode)
                     serializeComments(realNode.blockComments)
                     val implicitS = realNode.tag == Tag.SEQ
                     emitable.emit(
                         SequenceStartEvent(
-                            tAlias, Optional.of<String>(realNode.tag.value),
-                            implicitS, seqNode.flowStyle,
+                            anchor = tAlias,
+                            tag = Optional.of(realNode.tag.value),
+                            implicit = implicitS,
+                            flowStyle = realNode.flowStyle,
                         ),
                     )
-                    val list: List<Node> = seqNode.value
-                    for (item in list) {
+                    for (item in realNode.value) {
                         serializeNode(item)
                     }
                     emitable.emit(SequenceEndEvent())
@@ -177,26 +174,21 @@ class Serializer(
                     serializeComments(realNode.endComments)
                 }
 
-                else              -> {
+                NodeType.MAPPING  -> {
+                    require(realNode is MappingNode)
                     serializeComments(realNode.blockComments)
-                    val implicitM = realNode.tag == Tag.MAP
-                    val mappingNode = realNode as MappingNode
-                    val map: List<NodeTuple> = mappingNode.value
-                    if (mappingNode.tag !== Tag.COMMENT) {
-                        emitable
-                            .emit(
-                                MappingStartEvent(
-                                    tAlias,
-                                    Optional.of<String>(mappingNode.tag.value),
-                                    implicitM,
-                                    mappingNode.flowStyle,
-                                    Optional.empty<Mark>(),
-                                    Optional.empty<Mark>(),
-                                ),
-                            )
-                        for (entry in map) {
-                            val key: Node = entry.keyNode
-                            val value: Node = entry.valueNode
+                    if (realNode.tag != Tag.COMMENT) {
+                        emitable.emit(
+                            MappingStartEvent(
+                                anchor = tAlias,
+                                tag = Optional.of(realNode.tag.value),
+                                implicit = realNode.tag == Tag.MAP,
+                                flowStyle = realNode.flowStyle,
+                                startMark = Optional.empty<Mark>(),
+                                endMark = Optional.empty<Mark>(),
+                            ),
+                        )
+                        for ((key, value) in realNode.value) {
                             serializeNode(key)
                             serializeNode(value)
                         }
@@ -205,20 +197,23 @@ class Serializer(
                         serializeComments(realNode.endComments)
                     }
                 }
+
+                else              -> {
+                    error("Could not handle node type ${realNode.nodeType}")
+                }
             }
         }
     }
 
     private fun serializeComments(comments: List<CommentLine>?) {
-        if (comments == null) {
-            return
-        }
+        if (comments == null) return
+
         for (line in comments) {
             val commentEvent = CommentEvent(
-                line.commentType,
-                line.value,
-                line.startMark,
-                line.endMark,
+                commentType = line.commentType,
+                value = line.value,
+                startMark = line.startMark,
+                endMark = line.endMark,
             )
             emitable.emit(commentEvent)
         }

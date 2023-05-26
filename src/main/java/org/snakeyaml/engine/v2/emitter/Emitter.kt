@@ -316,7 +316,6 @@ class Emitter(
 
     private inner class ExpectDocumentRoot : EmitterState {
         override fun expect() {
-
             event = blockCommentsCollector.collectEventsAndPoll(event)
             if (!blockCommentsCollector.isEmpty()) {
                 writeBlockComment()
@@ -326,7 +325,7 @@ class Emitter(
                 }
             }
             states.addLast(ExpectDocumentEnd())
-            expectNode(root = true, mapping = false, simpleKey = false)
+            expectNode(root = true)
         }
     }
 
@@ -335,10 +334,9 @@ class Emitter(
     //region Node handlers.
 
     private fun expectNode(
-        // TODO try adding defaults to these params
-        root: Boolean,
-        mapping: Boolean,
-        simpleKey: Boolean,
+        root: Boolean = false,
+        mapping: Boolean = false,
+        simpleKey: Boolean = false,
     ) {
         rootContext = root
         mappingContext = mapping
@@ -432,7 +430,7 @@ class Emitter(
                     writeIndent()
                 }
                 states.addLast(ExpectFlowSequenceItem())
-                expectNode(root = false, mapping = false, simpleKey = false)
+                expectNode()
                 event = inlineCommentsCollector.collectEvents(event)
                 writeInlineComments()
             }
@@ -467,7 +465,7 @@ class Emitter(
                     writeIndent()
                 }
                 states.addLast(ExpectFlowSequenceItem())
-                expectNode(root = false, mapping = false, simpleKey = false)
+                expectNode()
                 event = inlineCommentsCollector.collectEvents(event)
                 writeInlineComments()
             }
@@ -479,7 +477,7 @@ class Emitter(
     //region Flow mapping handlers.
 
     private fun expectFlowMapping() {
-        writeIndicator(indicator = "{", needWhitespace = true, whitespace = true, indentation = false)
+        writeIndicator(indicator = "{", needWhitespace = true, whitespace = true)
         flowLevel++
         increaseIndent(isFlow = true, indentless = false)
         if (multiLineFlow) {
@@ -505,11 +503,11 @@ class Emitter(
                 }
                 if (!canonical && checkSimpleKey()) {
                     states.addLast(ExpectFlowMappingSimpleValue())
-                    expectNode(root = false, mapping = true, simpleKey = true)
+                    expectNode(mapping = true, simpleKey = true)
                 } else {
                     writeIndicator(indicator = "?", needWhitespace = true)
                     states.addLast(ExpectFlowMappingValue())
-                    expectNode(root = false, mapping = true, simpleKey = false)
+                    expectNode(mapping = true)
                 }
             }
 
@@ -541,11 +539,11 @@ class Emitter(
                 }
                 if (!canonical && checkSimpleKey()) {
                     states.addLast(ExpectFlowMappingSimpleValue())
-                    expectNode(false, mapping = true, simpleKey = true)
+                    expectNode(mapping = true, simpleKey = true)
                 } else {
                     writeIndicator(indicator = "?", needWhitespace = true)
                     states.addLast(ExpectFlowMappingValue())
-                    expectNode(false, mapping = true, simpleKey = false)
+                    expectNode(mapping = true)
                 }
             }
 
@@ -558,7 +556,7 @@ class Emitter(
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
-            expectNode(root = false, mapping = true, simpleKey = false)
+            expectNode(mapping = true)
             inlineCommentsCollector.collectEvents(event)
             writeInlineComments()
         }
@@ -573,7 +571,7 @@ class Emitter(
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
-            expectNode(root = false, mapping = true, simpleKey = false)
+            expectNode(mapping = true)
             inlineCommentsCollector.collectEvents(event)
             writeInlineComments()
 
@@ -623,7 +621,7 @@ class Emitter(
                     indent = indents.removeLastOrNull()
                 }
                 states.addLast(ExpectBlockSequenceItem(false))
-                expectNode(root = false, mapping = false, simpleKey = false)
+                expectNode()
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
             }
@@ -659,11 +657,11 @@ class Emitter(
                 writeIndent()
                 if (checkSimpleKey()) {
                     states.addLast(ExpectBlockMappingSimpleValue())
-                    expectNode(root = false, mapping = true, simpleKey = true)
+                    expectNode(mapping = true, simpleKey = true)
                 } else {
                     writeIndicator(indicator = "?", needWhitespace = true, indentation = true)
                     states.addLast(ExpectBlockMappingValue())
-                    expectNode(root = false, mapping = true, simpleKey = false)
+                    expectNode(mapping = true)
                 }
             }
         }
@@ -689,7 +687,7 @@ class Emitter(
                 indent = indents.removeLastOrNull()
             }
             states.addLast(ExpectBlockMappingKey(false))
-            expectNode(root = false, mapping = true, simpleKey = false)
+            expectNode(mapping = true)
             inlineCommentsCollector.collectEvents()
             writeInlineComments()
         }
@@ -714,7 +712,7 @@ class Emitter(
             event = blockCommentsCollector.collectEventsAndPoll(event)
             writeBlockComment()
             states.addLast(ExpectBlockMappingKey(false))
-            expectNode(root = false, mapping = true, simpleKey = false)
+            expectNode(mapping = true)
             inlineCommentsCollector.collectEvents(event)
             writeInlineComments()
         }

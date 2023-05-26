@@ -14,6 +14,8 @@
 package org.snakeyaml.engine.v2.serializer;
 
 import java.text.NumberFormat;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.nodes.Node;
 
@@ -22,7 +24,7 @@ import org.snakeyaml.engine.v2.nodes.Node;
  */
 public class NumberAnchorGenerator implements AnchorGenerator {
 
-  private int lastAnchorId = 0;
+  private int lastAnchorId;
 
   /**
    * Create
@@ -39,7 +41,8 @@ public class NumberAnchorGenerator implements AnchorGenerator {
    * @param node - ignored
    * @return value with format 'id001'
    */
-  public Anchor nextAnchor(Node node) {
+  @NotNull
+  public Anchor nextAnchor(@NotNull Node node) {
     this.lastAnchorId++;
     NumberFormat format = NumberFormat.getNumberInstance();
     format.setMinimumIntegerDigits(3);

@@ -59,7 +59,6 @@ class Emitter(
     private val opts: DumpSettings,
     private val stream: StreamDataWriter,
 ) : Emitable {
-//    private val emitterJava = EmitterJava(opts, stream)
 
     /** [Emitter] is a state machine with a stack of states to handle nested structures. */
     private val states: ArrayDeque<EmitterState> = ArrayDeque(100)
@@ -108,15 +107,15 @@ class Emitter(
     /** pretty print flow by adding extra line breaks */
     private val multiLineFlow: Boolean = opts.isMultiLineFlow
 
-    private val allowUnicode = opts.isUseUnicodeEncoding
-    private val bestIndent = if (opts.indent in VALID_INDENT_RANGE) opts.indent else DEFAULT_INDENT
-    private val indicatorIndent = opts.indicatorIndent
-    private val indentWithIndicator = opts.indentWithIndicator
-    private val bestWidth = opts.width.coerceAtMost(MAX_WIDTH)
-    private val bestLineBreak = opts.bestLineBreak
-    private val splitLines = opts.isSplitLines
-    private val maxSimpleKeyLength = opts.maxSimpleKeyLength
-    private val emitComments = opts.dumpComments
+    private val allowUnicode: Boolean = opts.isUseUnicodeEncoding
+    private val bestIndent: Int = if (opts.indent in VALID_INDENT_RANGE) opts.indent else DEFAULT_INDENT
+    private val indicatorIndent: Int get() = opts.indicatorIndent
+    private val indentWithIndicator: Boolean get() = opts.indentWithIndicator
+    private val bestWidth: Int = opts.width.coerceAtMost(MAX_WIDTH)
+    private val bestLineBreak: String get() = opts.bestLineBreak
+    private val splitLines: Boolean get() = opts.isSplitLines
+    private val maxSimpleKeyLength: Int get() = opts.maxSimpleKeyLength
+    private val emitComments: Boolean get() = opts.dumpComments
     //endregion
 
     /** Tag prefixes. */
@@ -169,36 +168,24 @@ class Emitter(
 
             is StreamEndEvent     -> false
 
-            else                  -> if (emitComments) {
+            else                  ->
                 // To collect any comment events
-                needEvents(iter, 1)
-            } else {
-                false
-            }
+                if (emitComments) needEvents(iter, 1) else false
         }
     }
 
     private fun needEvents(iter: Iterator<Event>, count: Int): Boolean {
         var level = 0
         var actualCount = 0
-        while (iter.hasNext()) {
-            val event = iter.next()
+        for (event in iter) {
             if (event is CommentEvent) {
                 continue
             }
             actualCount++
             when (event) {
-                is DocumentStartEvent, is CollectionStartEvent -> {
-                    level++
-                }
-
-                is DocumentEndEvent, is CollectionEndEvent     -> {
-                    level--
-                }
-
-                is StreamEndEvent                              -> {
-                    level = -1
-                }
+                is DocumentStartEvent, is CollectionStartEvent -> level++
+                is DocumentEndEvent, is CollectionEndEvent     -> level--
+                is StreamEndEvent                              -> level = -1
             }
             if (level < 0) {
                 return false
@@ -210,11 +197,7 @@ class Emitter(
     private fun increaseIndent(isFlow: Boolean, indentless: Boolean) {
         indents.addLast(indent)
         if (indent == null) {
-            indent = if (isFlow) {
-                bestIndent
-            } else {
-                0
-            }
+            indent = if (isFlow) bestIndent else 0
         } else if (!indentless) {
             indent = indent!! + bestIndent
         }
@@ -266,7 +249,7 @@ class Emitter(
 
         private fun handleDocumentStartEvent(ev: DocumentStartEvent) {
             if ((ev.specVersion.isPresent || ev.tags.isNotEmpty()) && openEnded) {
-                writeIndicator(indicator = "...", needWhitespace = true, whitespace = false, indentation = false)
+                writeIndicator(indicator = "...", needWhitespace = true)
                 writeIndent()
             }
             ev.specVersion.ifPresent { version: SpecVersion? ->
@@ -280,7 +263,7 @@ class Emitter(
                 && ev.tags.isEmpty() && !checkEmptyDocument())
             if (!implicit) {
                 writeIndent()
-                writeIndicator(indicator = "---", needWhitespace = true, whitespace = false, indentation = false)
+                writeIndicator(indicator = "---", needWhitespace = true)
                 if (canonical) {
                     writeIndent()
                 }
@@ -320,7 +303,7 @@ class Emitter(
             if (event!!.eventId == Event.ID.DocumentEnd) {
                 writeIndent()
                 if ((event as DocumentEndEvent).isExplicit) {
-                    writeIndicator(indicator = "...", needWhitespace = true, whitespace = false, indentation = false)
+                    writeIndicator(indicator = "...", needWhitespace = true)
                     writeIndent()
                 }
                 flushStream()
@@ -351,7 +334,12 @@ class Emitter(
 
     //region Node handlers.
 
-    private fun expectNode(root: Boolean, mapping: Boolean, simpleKey: Boolean) {
+    private fun expectNode(
+        // TODO try adding defaults to these params
+        root: Boolean,
+        mapping: Boolean,
+        simpleKey: Boolean,
+    ) {
         rootContext = root
         mappingContext = mapping
         simpleKeyContext = simpleKey
@@ -432,7 +420,7 @@ class Emitter(
             if (event!!.eventId == Event.ID.SequenceEnd) {
                 indent = indents.removeLastOrNull()
                 flowLevel--
-                writeIndicator(indicator = "]", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = "]")
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
                 state = states.removeLastOrNull()!!
@@ -458,12 +446,12 @@ class Emitter(
                 indent = indents.removeLastOrNull()
                 flowLevel--
                 if (canonical) {
-                    writeIndicator(indicator = ",", needWhitespace = false, whitespace = false, indentation = false)
+                    writeIndicator(indicator = ",")
                     writeIndent()
                 } else if (multiLineFlow) {
                     writeIndent()
                 }
-                writeIndicator(indicator = "]", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = "]")
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
                 if (multiLineFlow) {
@@ -473,7 +461,7 @@ class Emitter(
             } else if (event is CommentEvent) {
                 event = blockCommentsCollector.collectEvents(event)
             } else {
-                writeIndicator(indicator = ",", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = ",")
                 writeBlockComment()
                 if (canonical || column > bestWidth && splitLines || multiLineFlow) {
                     writeIndent()
@@ -507,7 +495,7 @@ class Emitter(
             if (event!!.eventId == Event.ID.MappingEnd) {
                 indent = indents.removeLastOrNull()
                 flowLevel--
-                writeIndicator(indicator = "}", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = "}")
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
                 state = states.removeLastOrNull()!!
@@ -519,9 +507,9 @@ class Emitter(
                     states.addLast(ExpectFlowMappingSimpleValue())
                     expectNode(root = false, mapping = true, simpleKey = true)
                 } else {
-                    writeIndicator(indicator = "?", needWhitespace = true, whitespace = false, indentation = false)
+                    writeIndicator(indicator = "?", needWhitespace = true)
                     states.addLast(ExpectFlowMappingValue())
-                    expectNode(false, mapping = true, simpleKey = false)
+                    expectNode(root = false, mapping = true, simpleKey = false)
                 }
             }
 
@@ -534,18 +522,18 @@ class Emitter(
                 indent = indents.removeLastOrNull()
                 flowLevel--
                 if (canonical) {
-                    writeIndicator(indicator = ",", needWhitespace = false, whitespace = false, indentation = false)
+                    writeIndicator(indicator = ",")
                     writeIndent()
                 }
                 if (multiLineFlow) {
                     writeIndent()
                 }
-                writeIndicator(indicator = "}", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = "}")
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
                 state = states.removeLastOrNull()!!
             } else {
-                writeIndicator(indicator = ",", needWhitespace = false, whitespace = false, indentation = false)
+                writeIndicator(indicator = ",")
                 event = blockCommentsCollector.collectEventsAndPoll(event)
                 writeBlockComment()
                 if (canonical || column > bestWidth && splitLines || multiLineFlow) {
@@ -555,7 +543,7 @@ class Emitter(
                     states.addLast(ExpectFlowMappingSimpleValue())
                     expectNode(false, mapping = true, simpleKey = true)
                 } else {
-                    writeIndicator(indicator = "?", needWhitespace = true, whitespace = false, indentation = false)
+                    writeIndicator(indicator = "?", needWhitespace = true)
                     states.addLast(ExpectFlowMappingValue())
                     expectNode(false, mapping = true, simpleKey = false)
                 }
@@ -566,7 +554,7 @@ class Emitter(
 
     private inner class ExpectFlowMappingSimpleValue : EmitterState {
         override fun expect() {
-            writeIndicator(indicator = ":", needWhitespace = false, whitespace = false, indentation = false)
+            writeIndicator(indicator = ":")
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
@@ -581,7 +569,7 @@ class Emitter(
             if (canonical || column > bestWidth || multiLineFlow) {
                 writeIndent()
             }
-            writeIndicator(indicator = ":", needWhitespace = true, whitespace = false, indentation = false)
+            writeIndicator(indicator = ":", needWhitespace = true)
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
@@ -619,7 +607,7 @@ class Emitter(
                 if (!indentWithIndicator || first) {
                     writeWhitespace(indicatorIndent)
                 }
-                writeIndicator(indicator = "-", needWhitespace = true, whitespace = false, indentation = true)
+                writeIndicator(indicator = "-", needWhitespace = true, indentation = true)
                 if (indentWithIndicator && first) {
                     indent = indent!! + indicatorIndent
                 }
@@ -673,7 +661,7 @@ class Emitter(
                     states.addLast(ExpectBlockMappingSimpleValue())
                     expectNode(root = false, mapping = true, simpleKey = true)
                 } else {
-                    writeIndicator(indicator = "?", needWhitespace = true, whitespace = false, indentation = true)
+                    writeIndicator(indicator = "?", needWhitespace = true, indentation = true)
                     states.addLast(ExpectBlockMappingValue())
                     expectNode(root = false, mapping = true, simpleKey = false)
                 }
@@ -684,7 +672,7 @@ class Emitter(
     private inner class ExpectBlockMappingSimpleValue : EmitterState {
         override fun expect() {
 
-            writeIndicator(indicator = ":", needWhitespace = false, whitespace = false, indentation = false)
+            writeIndicator(indicator = ":")
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             if (!isFoldedOrLiteral(event!!)) {
                 if (writeInlineComments()) {
@@ -792,12 +780,7 @@ class Emitter(
             if (!preparedAnchor.isPresent) {
                 preparedAnchor = anchorOption
             }
-            writeIndicator(
-                indicator = indicator + anchor,
-                needWhitespace = true,
-                whitespace = false,
-                indentation = false,
-            )
+            writeIndicator(indicator = indicator + anchor, needWhitespace = true)
         }
         preparedAnchor = Optional.empty()
     }
@@ -836,12 +819,8 @@ class Emitter(
         if (preparedTag == null) {
             preparedTag = prepareTag(tag.get())
         }
-        writeIndicator(
-            indicator = preparedTag!!,
-            needWhitespace = true,
-            whitespace = false,
-            indentation = false,
-        )
+        // TODO refactor this?
+        writeIndicator(indicator = preparedTag!!, needWhitespace = true)
         preparedTag = null
     }
 
@@ -967,7 +946,11 @@ class Emitter(
         // Empty scalar is a special case.
         if (scalar.isEmpty()) {
             return ScalarAnalysis(
-                scalar, empty = true, false, allowFlowPlain = false, allowBlockPlain = true,
+                scalar = scalar,
+                empty = true,
+                multiline = false,
+                allowFlowPlain = false,
+                allowBlockPlain = true,
                 allowSingleQuoted = true,
                 allowBlock = false,
             )
@@ -1164,8 +1147,10 @@ class Emitter(
     }
 
     private fun writeIndicator(
-        indicator: String, needWhitespace: Boolean, whitespace: Boolean,
-        indentation: Boolean,
+        indicator: String,
+        needWhitespace: Boolean = false,
+        whitespace: Boolean = false,
+        indentation: Boolean = false,
     ) {
         if (!this.whitespace && needWhitespace) {
             column++
@@ -1229,12 +1214,7 @@ class Emitter(
 
     //region Scalar streams.
     private fun writeSingleQuoted(text: String, split: Boolean) {
-        writeIndicator(
-            indicator = "'",
-            needWhitespace = true,
-            whitespace = false,
-            indentation = false,
-        )
+        writeIndicator(indicator = "'", needWhitespace = true)
         var spaces = false
         var breaks = false
         var start = 0
@@ -1293,11 +1273,11 @@ class Emitter(
             }
             end++
         }
-        writeIndicator(indicator = "'", needWhitespace = false, whitespace = false, indentation = false)
+        writeIndicator(indicator = "'")
     }
 
     private fun writeDoubleQuoted(text: String, split: Boolean) {
-        writeIndicator(indicator = "\"", needWhitespace = true, whitespace = false, indentation = false)
+        writeIndicator(indicator = "\"", needWhitespace = true)
         var start = 0
         var end = 0
         while (end <= text.length) {
@@ -1372,7 +1352,7 @@ class Emitter(
             }
             end += 1
         }
-        writeIndicator(indicator = "\"", needWhitespace = false, whitespace = false, indentation = false)
+        writeIndicator(indicator = "\"")
     }
 
     private fun writeCommentLines(commentLines: List<CommentLine>): Boolean {
@@ -1385,14 +1365,13 @@ class Emitter(
                     if (firstComment) {
                         firstComment = false
                         writeIndicator(
-                            "#", commentLine.commentType == CommentType.IN_LINE,
-                            whitespace = false,
-                            indentation = false,
+                            indicator = "#",
+                            needWhitespace = commentLine.commentType == CommentType.IN_LINE,
                         )
                         indentColumns = if (column > 0) column - 1 else 0
                     } else {
                         writeWhitespace(indentColumns)
-                        writeIndicator(indicator = "#", needWhitespace = false, whitespace = false, indentation = false)
+                        writeIndicator(indicator = "#")
                     }
                     stream.write(commentLine.value)
                     writeLineBreak(null)
@@ -1433,7 +1412,7 @@ class Emitter(
 
     private fun writeFolded(text: String, split: Boolean) {
         val hints = determineBlockHints(text)
-        writeIndicator(indicator = ">$hints", needWhitespace = true, whitespace = false, indentation = false)
+        writeIndicator(indicator = ">$hints", needWhitespace = true)
         if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
             openEnded = true
         }
@@ -1501,7 +1480,7 @@ class Emitter(
 
     private fun writeLiteral(text: String) {
         val hints = determineBlockHints(text)
-        writeIndicator(indicator = "|$hints", needWhitespace = true, whitespace = false, indentation = false)
+        writeIndicator(indicator = "|$hints", needWhitespace = true)
         if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
             openEnded = true
         }

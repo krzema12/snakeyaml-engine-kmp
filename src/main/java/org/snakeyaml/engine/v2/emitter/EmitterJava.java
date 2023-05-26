@@ -247,6 +247,7 @@ public final class EmitterJava implements Emitable {
     this.inlineCommentsCollector = new CommentEventsCollector(events, CommentType.IN_LINE);
   }
 
+  @Override
   public void emit(@NotNull Event event) {
     this.events.add(event);
     while (!needMoreEvents()) {
@@ -901,6 +902,7 @@ public final class EmitterJava implements Emitable {
         || (event.getEventId() == Event.ID.Scalar && !analysis.isEmpty() && !analysis.isMultiline())
         || checkEmptySequence() || checkEmptyMapping());
   }
+
   //endregion
 
   //region Anchor, Tag, and Scalar processors.
@@ -1085,7 +1087,6 @@ public final class EmitterJava implements Emitable {
     return "!<" + suffixText + ">";
   }
 
-
   private ScalarAnalysis analyzeScalar(String scalar) {
     // Empty scalar is a special case.
     if (scalar.length() == 0) {
@@ -1255,6 +1256,7 @@ public final class EmitterJava implements Emitable {
     return new ScalarAnalysis(scalar, false, lineBreaks, allowFlowPlain, allowBlockPlain,
         allowSingleQuoted, allowBlock);
   }
+
   //endregion
 
   //region Writers.
@@ -1335,6 +1337,7 @@ public final class EmitterJava implements Emitable {
     stream.write(prefixText);
     writeLineBreak(null);
   }
+
   //endregion
 
   //region Scalar streams.

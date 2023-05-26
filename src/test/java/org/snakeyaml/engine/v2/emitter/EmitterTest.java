@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -293,5 +292,23 @@ public class EmitterTest {
 
   public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
 
+  }
+
+  @Test
+  public void testIndicatorIndentRange() {
+    assertTrue(
+        Emitter.VALID_INDICATOR_INDENT_RANGE.getStart() >= 0,
+        "indicator indent range start must be non-negative"
+    );
+    assertEquals(
+        Emitter.VALID_INDENT_RANGE.getStart() - 1,
+        Emitter.VALID_INDICATOR_INDENT_RANGE.getStart(),
+        "indicator indent range start must be one less than the indent range start"
+    );
+    assertEquals(
+        Emitter.VALID_INDENT_RANGE.getEndInclusive() - 1,
+        Emitter.VALID_INDICATOR_INDENT_RANGE.getEndInclusive(),
+        "indicator indent range end must be one less than the indent range end"
+    );
   }
 }

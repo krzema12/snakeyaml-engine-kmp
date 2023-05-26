@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.events.Event
  * Helper for [ParserImpl]. A grammar rule to apply given the symbols on top of its stack and
  * the next input token
  *
- * @see [](http://en.wikipedia.org/wiki/LL_parser)
+ * See http://en.wikipedia.org/wiki/LL_parser
  */
 internal fun interface Production {
     /**

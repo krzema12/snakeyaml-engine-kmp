@@ -192,7 +192,7 @@ class Composer(
 
     private fun registerAnchor(anchor: Anchor, node: Node) {
         anchors[anchor] = node
-        node.anchor = Optional.of<Anchor>(anchor)
+        node.anchor = Optional.of(anchor)
     }
 
     /**

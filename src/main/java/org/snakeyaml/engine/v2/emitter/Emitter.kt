@@ -862,7 +862,7 @@ class Emitter(
         }
         if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.isAllowBlock()) {
-                return Optional.of<ScalarStyle?>(ev.scalarStyle)
+                return Optional.of(ev.scalarStyle)
             }
         }
         if (ev.isPlain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
@@ -1252,7 +1252,7 @@ class Emitter(
             if (end < text.length) {
                 ch = text[end]
             }
-            if (ch == null || ch in  "\"\\\u0085\u2028\u2029\uFEFF" || !('\u0020' <= ch && ch <= '\u007E')) {
+            if (ch == null || ch in "\"\\\u0085\u2028\u2029\uFEFF" || !('\u0020' <= ch && ch <= '\u007E')) {
                 if (start < end) {
                     val len = end - start
                     column += len

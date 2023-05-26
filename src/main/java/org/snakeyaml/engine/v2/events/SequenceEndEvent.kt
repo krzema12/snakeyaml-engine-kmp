@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Marks the end of a sequence.
@@ -22,7 +21,7 @@ import java.util.Optional
  * @see SequenceStartEvent
  */
 class SequenceEndEvent : CollectionEndEvent {
-    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor(startMark: Mark?, endMark: Mark?) : super(startMark, endMark)
     constructor() : super()
 
     override val eventId: ID

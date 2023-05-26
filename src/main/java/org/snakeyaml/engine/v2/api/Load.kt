@@ -20,7 +20,6 @@ import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
-import java.util.Optional
 
 /**
  * Common way to load Java instance(s). This class is not thread-safe. Which means that all the
@@ -168,7 +167,7 @@ class Load @JvmOverloads constructor(
                 hasNext()
             }
             val node = composer.next()
-            return constructor.constructSingleDocument(Optional.of(node))
+            return constructor.constructSingleDocument(node)
         }
 
         override fun remove(): Unit = throw UnsupportedOperationException("Removing is not supported.")

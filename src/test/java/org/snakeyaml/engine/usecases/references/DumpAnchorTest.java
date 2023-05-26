@@ -14,21 +14,20 @@
 package org.snakeyaml.engine.usecases.references;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.StringReader;
-import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.StreamDataWriter;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 import org.snakeyaml.engine.v2.utils.TestUtils;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 public class DumpAnchorTest {
@@ -37,10 +36,10 @@ public class DumpAnchorTest {
   public void test_anchor_test() {
     String str = TestUtils.getResource("/anchor/issue481.yaml");
     Compose compose = new Compose(LoadSettings.builder().build());
-    Node node = compose.composeReader(new StringReader(str)).get();
+    Node node = compose.composeReader(new StringReader(str));
 
     DumpSettings setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setAnchorGenerator(node1 -> node1.getAnchor().get()).build();
+        .setAnchorGenerator(node1 -> node1.getAnchor()).build();
     Dump yaml = new Dump(setting);
 
     StreamDataWriter writer = new MyDumperWriter();

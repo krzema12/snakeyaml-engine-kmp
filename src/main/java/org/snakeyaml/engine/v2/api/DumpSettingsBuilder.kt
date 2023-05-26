@@ -25,7 +25,6 @@ import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator
 import org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator
-import java.util.Optional
 
 /**
  * Builder pattern implementation for DumpSettings
@@ -35,9 +34,9 @@ class DumpSettingsBuilder internal constructor() {
     private var explicitStart = false
     private var explicitEnd = false
     private var nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.ESCAPE
-    private var explicitRootTag: Optional<Tag> = Optional.empty()
+    private var explicitRootTag: Tag? = null
     private var anchorGenerator: AnchorGenerator = NumberAnchorGenerator()
-    private var yamlDirective: Optional<SpecVersion> = Optional.empty()
+    private var yamlDirective: SpecVersion? = null
     private var tagDirective: Map<String, String> = emptyMap()
     private var defaultFlowStyle: FlowStyle = FlowStyle.AUTO
     private var defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN
@@ -106,7 +105,7 @@ class DumpSettingsBuilder internal constructor() {
      * @param explicitRootTag - specify the root tag
      * @return the builder with the provided value
      */
-    fun setExplicitRootTag(explicitRootTag: Optional<Tag>): DumpSettingsBuilder {
+    fun setExplicitRootTag(explicitRootTag: Tag?): DumpSettingsBuilder {
         this.explicitRootTag = explicitRootTag
         return this
     }
@@ -128,7 +127,7 @@ class DumpSettingsBuilder internal constructor() {
      * @param yamlDirective - the version to be used in the directive
      * @return the builder with the provided value
      */
-    fun setYamlDirective(yamlDirective: Optional<SpecVersion>): DumpSettingsBuilder {
+    fun setYamlDirective(yamlDirective: SpecVersion?): DumpSettingsBuilder {
         this.yamlDirective = yamlDirective
         return this
     }

@@ -16,7 +16,7 @@ package org.snakeyaml.engine.v2.constructor.core
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
-import java.util.*
+import java.util.Locale
 
 /**
  * Create Double instances for float

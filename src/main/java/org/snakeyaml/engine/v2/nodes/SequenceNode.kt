@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Represents a sequence.
@@ -29,8 +28,8 @@ class SequenceNode @JvmOverloads constructor(
     override val value: List<Node>,
     flowStyle: FlowStyle,
     resolved: Boolean = true,
-    startMark: Optional<Mark> = Optional.empty<Mark>(),
-    endMark: Optional<Mark> = Optional.empty<Mark>(),
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : CollectionNode<Node>(
     tag,
     flowStyle,

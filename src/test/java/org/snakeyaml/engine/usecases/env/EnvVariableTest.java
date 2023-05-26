@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,12 +39,13 @@ class EnvVariableTest {
   @DisplayName("Parse docker-compose.yaml example")
   public void testDockerCompose() {
     Load loader =
-        new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
+        new Load(LoadSettings.builder().setEnvConfig(new EnvConfig() {
+        }).build());
     String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
-        "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"),
+            "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"),
         output);
   }
 
@@ -56,18 +56,19 @@ class EnvVariableTest {
     provided.put(KEY1, "VVVAAA111");
     System.setProperty(EMPTY, "VVVAAA222");
     Load loader = new Load(
-        LoadSettings.builder().setEnvConfig(Optional.of(new CustomEnvConfig(provided))).build());
+        LoadSettings.builder().setEnvConfig(new CustomEnvConfig(provided)).build());
     String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
-        "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"),
+            "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"),
         output);
   }
 
   private String load(String template) {
     Load loader =
-        new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
+        new Load(LoadSettings.builder().setEnvConfig((new EnvConfig() {
+        })).build());
     return (String) loader.loadFromString(template);
   }
 

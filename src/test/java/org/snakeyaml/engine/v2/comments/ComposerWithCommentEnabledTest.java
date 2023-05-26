@@ -13,8 +13,13 @@
  */
 package org.snakeyaml.engine.v2.comments;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.composer.Composer;
+import org.snakeyaml.engine.v2.constructor.StandardConstructor;
+import org.snakeyaml.engine.v2.nodes.*;
+import org.snakeyaml.engine.v2.parser.ParserImpl;
+import org.snakeyaml.engine.v2.scanner.StreamReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -22,17 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.composer.Composer;
-import org.snakeyaml.engine.v2.constructor.StandardConstructor;
-import org.snakeyaml.engine.v2.nodes.MappingNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.SequenceNode;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ComposerWithCommentEnabledTest {
 
@@ -166,7 +163,7 @@ public class ComposerWithCommentEnabledTest {
   @Test
   public void testEmpty() {
     String data = "";
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "" //
     };
 
@@ -180,7 +177,7 @@ public class ComposerWithCommentEnabledTest {
   @Test
   public void testParseWithOnlyComment() {
     String data = "# Comment";
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "Block Comment", //
         "MappingNode", //
     };
@@ -198,7 +195,7 @@ public class ComposerWithCommentEnabledTest {
         "key: # Comment\n" + //
         "  value\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        ScalarNode: key", //
@@ -221,7 +218,7 @@ public class ComposerWithCommentEnabledTest {
         "  value\n" + //
         "\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        ScalarNode: key", //
@@ -243,7 +240,7 @@ public class ComposerWithCommentEnabledTest {
     String data = "" + //
         "\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "Block Comment", //
         "MappingNode", //
     };
@@ -263,7 +260,7 @@ public class ComposerWithCommentEnabledTest {
         "\n" + //
         "\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        Block Comment", //
@@ -289,7 +286,7 @@ public class ComposerWithCommentEnabledTest {
         "    hij\n" + //
         "\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        ScalarNode: abc", //
@@ -308,7 +305,7 @@ public class ComposerWithCommentEnabledTest {
   public void testDirectiveLineEndComment() {
     String data = "%YAML 1.1 #Comment\n---\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "ScalarNode: " //
     };
 
@@ -328,7 +325,7 @@ public class ComposerWithCommentEnabledTest {
         "- item # InlineComment2\n" + //
         "# Comment\n";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        Block Comment", //
@@ -370,7 +367,7 @@ public class ComposerWithCommentEnabledTest {
         "# Block Comment7\n" + //
         "";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        Block Comment", //
@@ -437,7 +434,7 @@ public class ComposerWithCommentEnabledTest {
         "# Block Comment4\n" + //
         "";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "SequenceNode", //
         "    Block Comment", //
         "    Block Comment", //
@@ -469,7 +466,7 @@ public class ComposerWithCommentEnabledTest {
         "# Block Comment2\n" + //
         "";
 
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "Block Comment", //
         "SequenceNode", //
         "    ScalarNode: item1", //
@@ -499,7 +496,7 @@ public class ComposerWithCommentEnabledTest {
         "abc: def # commment\n" + //
         "\n" + //
         "\n";
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        Block Comment", "        ScalarNode: abc", //
@@ -510,7 +507,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.getSingleNode().get());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);
@@ -525,7 +522,7 @@ public class ComposerWithCommentEnabledTest {
         "abc: def # commment\n" + //
         "\n" + //
         "\n";
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        Block Comment", //
@@ -539,7 +536,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.getSingleNode().get());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);
@@ -568,7 +565,7 @@ public class ComposerWithCommentEnabledTest {
     String data = "userProps:\n" + //
         "#password\n" + //
         "pass: mySecret\n";
-    String[] expected = new String[] { //
+    String[] expected = new String[]{ //
         "MappingNode", //
         "    Tuple", //
         "        ScalarNode: userProps", //
@@ -580,7 +577,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.getSingleNode().get());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);

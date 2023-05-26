@@ -13,15 +13,6 @@
  */
 package org.snakeyaml.engine.v2.representer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -35,6 +26,14 @@ import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.emitter.Emitter;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.serializer.Serializer;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("fast")
 public class RepresentEntryTest {
@@ -76,12 +75,12 @@ public class RepresentEntryTest {
     protected NodeTuple toNodeTuple(@NotNull Map.Entry<?, ?> entry) {
       NodeTuple tuple = super.toNodeTuple(entry);
       List<CommentLine> keyBlockComments = new ArrayList<>();
-      keyBlockComments.add(new CommentLine(Optional.empty(), Optional.empty(),
+      keyBlockComments.add(new CommentLine(null, null,
           "Key node block comment", CommentType.BLOCK));
       tuple.getKeyNode().setBlockComments(keyBlockComments);
 
       List<CommentLine> valueEndComments = new ArrayList<>();
-      valueEndComments.add(new CommentLine(Optional.empty(), Optional.empty(),
+      valueEndComments.add(new CommentLine(null, null,
           "Value node inline comment", CommentType.IN_LINE));
       tuple.getValueNode().setEndComments(valueEndComments);
 

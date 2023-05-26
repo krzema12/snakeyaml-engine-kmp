@@ -20,11 +20,11 @@ import org.snakeyaml.engine.v2.nodes.Node
  * Functional interface to define Anchor for dumping
  */
 fun interface AnchorGenerator {
-  /**
-   * Create anchor
-   *
-   * @param node - the node to refer to
-   * @return unique name
-   */
-  fun nextAnchor(node: Node): Anchor
+    /**
+     * Create anchor
+     *
+     * @param node - the node to refer to
+     * @return unique name
+     */
+    fun nextAnchor(node: Node): Anchor
 }

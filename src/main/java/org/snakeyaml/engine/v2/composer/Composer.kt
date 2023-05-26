@@ -26,7 +26,6 @@ import org.snakeyaml.engine.v2.events.NodeEvent
 import org.snakeyaml.engine.v2.events.ScalarEvent
 import org.snakeyaml.engine.v2.events.SequenceStartEvent
 import org.snakeyaml.engine.v2.exceptions.ComposerException
-import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
@@ -37,7 +36,6 @@ import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.parser.Parser
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
-import java.util.Optional
 
 /**
  * Creates a node graph from parser events.
@@ -80,23 +78,19 @@ class Composer(
      *
      * If the stream contains more than one document an exception is thrown.
      *
-     * @return The root node of the document or `Optional.empty()` if no document is
+     * @return The root node of the document or `null` if no document is
      * available.
      */
-    val singleNode: Optional<Node>
+    val singleNode: Node?
         get() {
             // Drop the STREAM-START event.
             parser.next()
             // Compose a document if the stream is not empty.
-            val document = if (!parser.checkEvent(Event.ID.StreamEnd)) {
-                Optional.of(next())
-            } else {
-                Optional.empty<Node>()
-            }
+            val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
             // Ensure that the stream contains no more documents.
             if (!parser.checkEvent(Event.ID.StreamEnd)) {
                 val event = parser.next()
-                val previousDocMark = document.flatMap { obj: Node -> obj.startMark }
+                val previousDocMark = document?.startMark
                 throw ComposerException(
                     problem = "expected a single document in the stream",
                     problemMark = previousDocMark,
@@ -127,7 +121,7 @@ class Composer(
                 value = children,
                 flowStyle = FlowStyle.BLOCK,
                 startMark = startMark,
-                endMark = Optional.empty(),
+                endMark = null,
             )
             node.blockComments = (commentLines)
             return node
@@ -135,7 +129,7 @@ class Composer(
         // Drop the DOCUMENT-START event.
         parser.next()
         // Compose the root node.
-        val node = composeNode(Optional.empty())
+        val node = composeNode(null)
         // Drop the DOCUMENT-END event.
         blockCommentsCollector.collectEvents()
         if (!blockCommentsCollector.isEmpty()) {
@@ -148,9 +142,9 @@ class Composer(
         return node
     }
 
-    private fun composeNode(parent: Optional<Node>): Node {
+    private fun composeNode(parent: Node?): Node {
         blockCommentsCollector.collectEvents()
-        parent.ifPresent { e: Node ->
+        parent?.let { e: Node ->
             recursiveNodes.add(e) // TODO add unit test for this line
         }
         val node: Node
@@ -174,7 +168,7 @@ class Composer(
             inlineCommentsCollector.collectEvents().consume()
         } else {
             val event = parser.peekEvent() as NodeEvent
-            val anchor: Optional<Anchor> = event.anchor
+            val anchor: Anchor? = event.anchor
             // the check for duplicate anchors has been removed (issue 174)
             node = if (parser.checkEvent(Event.ID.Scalar)) {
                 composeScalarNode(anchor, blockCommentsCollector.consume())
@@ -184,7 +178,7 @@ class Composer(
                 composeMappingNode(anchor)
             }
         }
-        parent.ifPresent { o: Node ->
+        parent?.let { o: Node ->
             recursiveNodes.remove(o) // TODO add unit test for this line
         }
         return node
@@ -192,7 +186,7 @@ class Composer(
 
     private fun registerAnchor(anchor: Anchor, node: Node) {
         anchors[anchor] = node
-        node.anchor = Optional.of(anchor)
+        node.anchor = anchor
     }
 
     /**
@@ -202,16 +196,16 @@ class Composer(
      * @param blockComments - comments before the Node
      * @return Node
      */
-    private fun composeScalarNode(anchor: Optional<Anchor>, blockComments: List<CommentLine>): ScalarNode {
+    private fun composeScalarNode(anchor: Anchor?, blockComments: List<CommentLine>): ScalarNode {
         val ev = parser.next() as ScalarEvent
-        val tag: Optional<String> = ev.tag
+        val tag: String? = ev.tag
         val resolved: Boolean
         val nodeTag: Tag
-        if (!tag.isPresent || tag.get() == "!") {
+        if (tag == null || tag == "!") {
             nodeTag = scalarResolver.resolve(ev.value, ev.implicit.canOmitTagInPlainScalar())
             resolved = true
         } else {
-            nodeTag = Tag(tag.get())
+            nodeTag = Tag(tag)
             resolved = false
         }
         val node = ScalarNode(
@@ -222,7 +216,7 @@ class Composer(
             startMark = ev.startMark,
             endMark = ev.endMark,
         )
-        anchor.ifPresent { a: Anchor ->
+        anchor?.let { a: Anchor ->
             registerAnchor(a, node)
         }
         node.blockComments = (blockComments)
@@ -236,16 +230,16 @@ class Composer(
      * @param anchor - anchor if present
      * @return parsed Node
      */
-    private fun composeSequenceNode(anchor: Optional<Anchor>): SequenceNode {
+    private fun composeSequenceNode(anchor: Anchor?): SequenceNode {
         val startEvent = parser.next() as SequenceStartEvent
-        val tag: Optional<String> = startEvent.tag
+        val tag: String? = startEvent.tag
         val nodeTag: Tag
         val resolved: Boolean
-        if (!tag.isPresent || tag.get() == "!") {
+        if (tag == null || tag == "!") {
             nodeTag = Tag.SEQ
             resolved = true
         } else {
-            nodeTag = Tag(tag.get())
+            nodeTag = Tag(tag)
             resolved = false
         }
         val children = ArrayList<Node>()
@@ -255,12 +249,12 @@ class Composer(
             flowStyle = startEvent.flowStyle,
             resolved = resolved,
             startMark = startEvent.startMark,
-            endMark = Optional.empty<Mark>(),
+            endMark = null,
         )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }
-        anchor.ifPresent { a: Anchor ->
+        anchor?.let { a: Anchor ->
             registerAnchor(a, node)
         }
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
@@ -268,7 +262,7 @@ class Composer(
             if (parser.checkEvent(Event.ID.SequenceEnd)) {
                 break
             }
-            children.add(composeNode(Optional.of(node)))
+            children.add(composeNode(node))
         }
         if (startEvent.isFlow()) {
             node.inLineComments = (inlineCommentsCollector.collectEvents().consume())
@@ -287,16 +281,16 @@ class Composer(
      *
      * @param anchor - anchor if present
      */
-    private fun composeMappingNode(anchor: Optional<Anchor>): MappingNode {
+    private fun composeMappingNode(anchor: Anchor?): MappingNode {
         val startEvent = parser.next() as MappingStartEvent
-        val tag: Optional<String> = startEvent.tag
+        val tag: String? = startEvent.tag
         val nodeTag: Tag
         val resolved: Boolean
-        if (!tag.isPresent || tag.get() == "!") {
+        if (tag == null || tag == "!") {
             nodeTag = Tag.MAP
             resolved = true
         } else {
-            nodeTag = Tag(tag.get())
+            nodeTag = Tag(tag)
             resolved = false
         }
         val children: MutableList<NodeTuple> = ArrayList()
@@ -306,12 +300,12 @@ class Composer(
             value = children,
             flowStyle = startEvent.flowStyle,
             startMark = startEvent.startMark,
-            endMark = Optional.empty<Mark>(),
+            endMark = null,
         )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }
-        anchor.ifPresent { a: Anchor ->
+        anchor?.let { a: Anchor ->
             registerAnchor(a, node)
         }
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
@@ -351,7 +345,7 @@ class Composer(
      * @param node - the source
      * @return node
      */
-    private fun composeKeyNode(node: MappingNode): Node = composeNode(Optional.of(node))
+    private fun composeKeyNode(node: MappingNode): Node = composeNode(node)
 
     /**
      * To be able to override `composeNode(node)` which is a value
@@ -359,5 +353,5 @@ class Composer(
      * @param node - the source
      * @return node
      */
-    private fun composeValueNode(node: MappingNode): Node = composeNode(Optional.of(node))
+    private fun composeValueNode(node: MappingNode): Node = composeNode(node)
 }

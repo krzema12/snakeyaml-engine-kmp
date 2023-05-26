@@ -14,13 +14,12 @@
 package org.snakeyaml.engine.v2.parser
 
 import org.snakeyaml.engine.v2.common.SpecVersion
-import java.util.Optional
 
 /**
  * Store the internal state for directives
  */
 internal data class VersionTagsTuple(
-    val specVersion: Optional<SpecVersion>,
+    val specVersion: SpecVersion?,
     val tags: Map<String, String>,
 ) {
     override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"

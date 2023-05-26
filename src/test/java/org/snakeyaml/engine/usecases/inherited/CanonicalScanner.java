@@ -13,33 +13,15 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.scanner.Scanner;
-import org.snakeyaml.engine.v2.tokens.AliasToken;
-import org.snakeyaml.engine.v2.tokens.AnchorToken;
-import org.snakeyaml.engine.v2.tokens.DirectiveToken;
-import org.snakeyaml.engine.v2.tokens.DocumentEndToken;
-import org.snakeyaml.engine.v2.tokens.DocumentStartToken;
-import org.snakeyaml.engine.v2.tokens.FlowEntryToken;
-import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken;
-import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken;
-import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken;
-import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken;
-import org.snakeyaml.engine.v2.tokens.KeyToken;
-import org.snakeyaml.engine.v2.tokens.ScalarToken;
-import org.snakeyaml.engine.v2.tokens.StreamEndToken;
-import org.snakeyaml.engine.v2.tokens.StreamStartToken;
-import org.snakeyaml.engine.v2.tokens.TagToken;
-import org.snakeyaml.engine.v2.tokens.TagTuple;
-import org.snakeyaml.engine.v2.tokens.Token;
-import org.snakeyaml.engine.v2.tokens.ValueToken;
+import org.snakeyaml.engine.v2.tokens.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CanonicalScanner implements Scanner {
 
@@ -91,7 +73,7 @@ public class CanonicalScanner implements Scanner {
 
   private final String data;
   private final String label;
-  private final Optional<Mark> mark;
+  private final Mark mark;
   public ArrayList<Token> tokens;
   private int index;
   private boolean scanned;
@@ -100,9 +82,9 @@ public class CanonicalScanner implements Scanner {
     this.data = data + "\0";
     this.label = label;
     this.index = 0;
-    this.tokens = new ArrayList<Token>();
+    this.tokens = new ArrayList<>();
     this.scanned = false;
-    this.mark = Optional.of(new Mark("test", 0, 0, 0, data.toCharArray(), 0));
+    this.mark = new Mark("test", 0, 0, 0, data.toCharArray(), 0);
   }
 
   public boolean checkToken(Token.ID... choices) {
@@ -294,7 +276,7 @@ public class CanonicalScanner implements Scanner {
     } else {
       value = "!" + value;
     }
-    return new TagToken(new TagTuple(Optional.of(""), value), mark, mark);
+    return new TagToken(new TagTuple("", value), mark, mark);
   }
 
   private Token scanScalar() {

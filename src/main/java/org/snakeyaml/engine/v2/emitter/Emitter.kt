@@ -39,7 +39,6 @@ import org.snakeyaml.engine.v2.exceptions.EmitterException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.StreamReader
-import java.util.Optional
 import java.util.TreeSet
 import java.util.regex.Pattern
 
@@ -119,14 +118,14 @@ class Emitter(
     /** Tag prefixes. */
     private var tagPrefixes: MutableMap<String?, String> = mutableMapOf()
 
-    private var preparedAnchor: Optional<Anchor> = Optional.empty()
+    private var preparedAnchor: Anchor? = null
     private var preparedTag: String? = null
 
     /** Scalar analysis */
     private var analysis: ScalarAnalysis? = null
 
     /** Scalar style */
-    private var scalarStyle: Optional<ScalarStyle> = Optional.empty()
+    private var scalarStyle: ScalarStyle? = null
 
     //region Comment processing
     private val blockCommentsCollector = CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK)
@@ -249,19 +248,23 @@ class Emitter(
 
 
         private fun handleDocumentStartEvent(ev: DocumentStartEvent) {
-            if ((ev.specVersion.isPresent || ev.tags.isNotEmpty()) && openEnded) {
+            if ((ev.specVersion != null || ev.tags.isNotEmpty()) && openEnded) {
                 writeIndicator(indicator = "...", needWhitespace = true)
                 writeIndent()
             }
-            ev.specVersion.ifPresent { version: SpecVersion? ->
+            ev.specVersion?.let { version: SpecVersion? ->
                 writeVersionDirective(prepareVersion(version!!))
             }
             tagPrefixes = LinkedHashMap(DEFAULT_TAG_PREFIXES)
             if (ev.tags.isNotEmpty()) {
                 handleTagDirectives(ev.tags)
             }
-            val implicit = (first && !ev.explicit && !canonical && !ev.specVersion.isPresent
-                && ev.tags.isEmpty() && !checkEmptyDocument())
+            val implicit = first
+                && !ev.explicit
+                && !canonical
+                && ev.specVersion == null
+                && ev.tags.isEmpty()
+                && !checkEmptyDocument()
             if (!implicit) {
                 writeIndent()
                 writeIndicator(indicator = "---", needWhitespace = true)
@@ -314,8 +317,9 @@ class Emitter(
             val nextEvent = events.first()
             if (nextEvent.eventId == Event.ID.Scalar) {
                 val e = nextEvent as ScalarEvent
-                return (!e.anchor.isPresent
-                    && !e.tag.isPresent && e.value.isEmpty())
+                return e.anchor == null
+                    && e.tag == null
+                    && e.value.isEmpty()
             }
             return false
         }
@@ -750,25 +754,25 @@ class Emitter(
     private fun checkSimpleKey(): Boolean {
         var length = 0
         if (event is NodeEvent) {
-            val anchorOpt: Optional<Anchor> = (event as NodeEvent).anchor
-            if (anchorOpt.isPresent) {
-                if (!preparedAnchor.isPresent) {
-                    preparedAnchor = anchorOpt
+            val anchor = (event as NodeEvent).anchor
+            if (anchor != null) {
+                if (preparedAnchor == null) {
+                    preparedAnchor = anchor
                 }
-                length += anchorOpt.get().value.length
+                length += anchor.value.length
             }
         }
-        val tag: Optional<String> =
+        val tag: String? =
             if (event!!.eventId == Event.ID.Scalar) {
                 (event as ScalarEvent).tag
             } else if (event is CollectionStartEvent) {
                 (event as CollectionStartEvent).tag
             } else {
-                Optional.empty()
+                null
             }
-        if (tag.isPresent) {
+        if (tag != null) {
             if (preparedTag == null) {
-                preparedTag = prepareTag(tag.get())
+                preparedTag = prepareTag(tag)
             }
             length += preparedTag!!.length
         }
@@ -795,94 +799,93 @@ class Emitter(
 
     private fun processAnchor(indicator: String) {
         val ev = event as NodeEvent
-        val anchorOption: Optional<Anchor> = ev.anchor
-        if (anchorOption.isPresent) {
-            val anchor = anchorOption.get()
-            if (!preparedAnchor.isPresent) {
-                preparedAnchor = anchorOption
+        val anchor: Anchor? = ev.anchor
+        if (anchor != null) {
+            if (preparedAnchor == null) {
+                preparedAnchor = anchor
             }
             writeIndicator(indicator = indicator + anchor, needWhitespace = true)
         }
-        preparedAnchor = Optional.empty()
+        preparedAnchor = null
     }
 
     private fun processTag() {
-        var tag: Optional<String>
+        var tag: String?
         if (event!!.eventId == Event.ID.Scalar) {
             val ev = event as ScalarEvent
             tag = ev.tag
-            if (!scalarStyle.isPresent) {
+            if (scalarStyle == null) {
                 scalarStyle = chooseScalarStyle(ev)
             }
             if (
-                (!canonical || !tag.isPresent)
+                (!canonical || tag == null)
                 && (
-                    !scalarStyle.isPresent
+                    scalarStyle == null
                         && ev.implicit.canOmitTagInPlainScalar()
-                        || scalarStyle.isPresent
+                        || scalarStyle != null
                         && ev.implicit.canOmitTagInNonPlainScalar()
                     )
             ) {
                 preparedTag = null
                 return
-            } else if (ev.implicit.canOmitTagInPlainScalar() && !tag.isPresent) {
-                tag = Optional.of("!")
+            } else if (ev.implicit.canOmitTagInPlainScalar() && tag == null) {
+                tag = "!"
                 preparedTag = null
             }
         } else {
             val ev = event as CollectionStartEvent
             tag = ev.tag
-            if ((!canonical || !tag.isPresent) && ev.isImplicit()) {
+            if ((!canonical || tag == null) && ev.isImplicit()) {
                 preparedTag = null
                 return
             }
         }
-        if (!tag.isPresent) {
+        if (tag == null) {
             throw EmitterException("tag is not specified")
         }
-        val indicator = preparedTag ?: prepareTag(tag.get())
+        val indicator = preparedTag ?: prepareTag(tag)
         writeIndicator(indicator = indicator, needWhitespace = true)
     }
 
-    private fun chooseScalarStyle(ev: ScalarEvent): Optional<ScalarStyle> {
+    private fun chooseScalarStyle(ev: ScalarEvent): ScalarStyle? {
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
         if (!ev.plain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
-            return Optional.of(ScalarStyle.DOUBLE_QUOTED)
+            return ScalarStyle.DOUBLE_QUOTED
         }
         if (ev.plain && ev.implicit.canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis!!.empty || analysis!!.multiline))
                 && (flowLevel != 0 && analysis!!.allowFlowPlain || flowLevel == 0 && analysis!!.allowBlockPlain)
             ) {
-                return Optional.empty()
+                return null
             }
         }
         if (!ev.plain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.allowBlock) {
-                return Optional.of(ev.scalarStyle)
+                return ev.scalarStyle
             }
         }
         if (ev.plain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
             if (analysis!!.allowSingleQuoted && !(simpleKeyContext && analysis!!.multiline)) {
-                return Optional.of(ScalarStyle.SINGLE_QUOTED)
+                return ScalarStyle.SINGLE_QUOTED
             }
         }
-        return Optional.of(ScalarStyle.DOUBLE_QUOTED)
+        return ScalarStyle.DOUBLE_QUOTED
     }
 
     private fun processScalar(ev: ScalarEvent) {
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (!scalarStyle.isPresent) {
+        if (scalarStyle == null) {
             scalarStyle = chooseScalarStyle(ev)
         }
         val split = !simpleKeyContext && splitLines
-        if (!scalarStyle.isPresent) {
+        if (scalarStyle == null) {
             writePlain(analysis!!.scalar, split)
         } else {
-            when (scalarStyle.get()) {
+            when (scalarStyle) {
                 ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
                 ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
                 ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
@@ -891,7 +894,7 @@ class Emitter(
             }
         }
         analysis = null
-        scalarStyle = Optional.empty()
+        scalarStyle = null
     }
 
     //endregion

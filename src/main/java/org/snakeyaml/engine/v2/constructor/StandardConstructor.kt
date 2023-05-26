@@ -25,9 +25,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.resolver.BaseScalarResolver
-import java.util.Optional
 import java.util.TreeSet
-import kotlin.jvm.optionals.getOrNull
 
 /**
  * Construct standard Java classes
@@ -86,8 +84,8 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
 
     private fun constructKey(
         keyNode: Node,
-        contextMark: Optional<Mark>,
-        problemMark: Optional<Mark>,
+        contextMark: Mark?,
+        problemMark: Mark?,
     ): Any? {
         val key = constructObject(keyNode)
         try {
@@ -186,17 +184,15 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
      * [Variable substitution](https://docs.docker.com/compose/compose-file/.variable-substitution)
      */
     inner class ConstructEnv : ConstructScalar() {
-        override fun construct(node: Node?): Any? {
+        override fun construct(node: Node?): Any {
             val scalar = constructScalar(node)
-            val config = settings.envConfig.getOrNull()
+            val config = settings.envConfig
             return if (config != null) {
                 val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar) ?: error("failed to match scalar")
                 val (name, separator, value) = matchResult.destructured
                 val env = getEnv(name)
                 val overruled = config.getValueFor(name, separator, value, env)
-                overruled.orElseGet {
-                    apply(name, separator, value, env)
-                }
+                overruled ?: apply(name, separator, value, env)
             } else {
                 scalar
             }

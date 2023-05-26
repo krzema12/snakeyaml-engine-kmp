@@ -19,10 +19,10 @@ import org.snakeyaml.engine.v2.events.Event
  * Define a way to serialize an event to output stream
  */
 fun interface Emitable {
-  /**
-   * Serialise event to bytes
-   *
-   * @param event - the source
-   */
-  fun emit(event: Event)
+    /**
+     * Serialise event to bytes
+     *
+     * @param event - the source
+     */
+    fun emit(event: Event)
 }

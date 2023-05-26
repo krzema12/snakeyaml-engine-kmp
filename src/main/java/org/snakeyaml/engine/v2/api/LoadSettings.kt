@@ -17,7 +17,6 @@ import org.snakeyaml.engine.v2.common.SpecVersion
 import org.snakeyaml.engine.v2.env.EnvConfig
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.Schema
-import java.util.Optional
 import java.util.function.Function
 import java.util.function.IntFunction
 import java.util.function.UnaryOperator
@@ -39,7 +38,7 @@ class LoadSettings internal constructor(
     @JvmField val useMarks: Boolean,
     // general
     private val customProperties: Map<SettingKey, Any>,
-    @JvmField val envConfig: Optional<EnvConfig>,
+    @JvmField val envConfig: EnvConfig?,
     @JvmField val parseComments: Boolean,
     @JvmField val codePointLimit: Int,
     @JvmField val schema: Schema,

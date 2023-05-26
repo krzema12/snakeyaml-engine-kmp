@@ -13,11 +13,6 @@
  */
 package org.snakeyaml.engine.v2.composer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,6 +20,8 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Compose;
 import org.snakeyaml.engine.v2.exceptions.ComposerException;
 import org.snakeyaml.engine.v2.nodes.Node;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class ComposerTest {
@@ -49,9 +46,8 @@ class ComposerTest {
   void composeAnchor() {
     String data = "--- &113\n{name: Bill, age: 18}";
     Compose compose = new Compose(LoadSettings.builder().build());
-    Optional<Node> optionalNode = compose.composeString(data);
-    assertTrue(optionalNode.isPresent());
-    Node node = optionalNode.get();
-    assertEquals("113", node.getAnchor().get().getValue());
+    Node optionalNode = compose.composeString(data);
+    assertNotNull(optionalNode);
+    assertEquals("113", optionalNode.getAnchor().getValue());
   }
 }

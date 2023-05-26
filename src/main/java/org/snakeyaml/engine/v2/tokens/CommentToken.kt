@@ -15,13 +15,12 @@ package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 class CommentToken(
     val commentType: CommentType,
     val value: String,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : Token(startMark, endMark) {
 
     override val tokenId: ID

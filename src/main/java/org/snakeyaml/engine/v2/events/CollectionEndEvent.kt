@@ -14,12 +14,11 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Base class for the end events of the collection nodes.
  */
 abstract class CollectionEndEvent : Event {
-    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor(startMark: Mark?, endMark: Mark?) : super(startMark, endMark)
     constructor() : super()
 }

@@ -13,8 +13,6 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import java.util.*
-
 /**
  * Parsing exception when the marks are available
  *
@@ -26,9 +24,9 @@ import java.util.*
  */
 open class MarkedYamlEngineException protected constructor(
     val context: String?,
-    val contextMark: Optional<Mark>,
+    val contextMark: Mark?,
     val problem: String?,
-    val problemMark: Optional<Mark>,
+    val problemMark: Mark?,
     cause: Throwable? = null,
 ) : YamlEngineException("$context; $problem; $problemMark", cause) {
 
@@ -44,23 +42,23 @@ open class MarkedYamlEngineException protected constructor(
         if (context != null) {
             appendLine(context)
         }
-        if (contextMark.isPresent) {
-            val problemIsPresent = problem != null && problemMark.isPresent
+        if (contextMark != null) {
+            val problemIsPresent = problem != null && problemMark != null
 
             if (
                 !problemIsPresent
-                || contextMark.get().name == problemMark.get().name
-                || contextMark.get().line != problemMark.get().line
-                || contextMark.get().column != problemMark.get().column
+                || contextMark.name == problemMark?.name
+                || contextMark.line != problemMark?.line
+                || contextMark.column != problemMark.column
             ) {
-                appendLine(contextMark.get())
+                appendLine(contextMark)
             }
         }
         if (problem != null) {
             appendLine(problem)
         }
-        if (problemMark.isPresent) {
-            appendLine(problemMark.get())
+        if (problemMark != null) {
+            appendLine(problemMark)
         }
     }
 }

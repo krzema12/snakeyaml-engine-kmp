@@ -13,9 +13,7 @@
  */
 package org.snakeyaml.engine.v2.tokens
 
-import java.util.Optional
-
 class TagTuple(
-    val handle: Optional<String>,
+    val handle: String?,
     val suffix: String,
 )

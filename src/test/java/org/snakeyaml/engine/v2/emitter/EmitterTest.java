@@ -13,28 +13,10 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
+import org.snakeyaml.engine.v2.api.*;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.events.DocumentStartEvent;
@@ -42,6 +24,11 @@ import org.snakeyaml.engine.v2.events.ImplicitTuple;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.exceptions.ComposerException;
+
+import java.io.StringWriter;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 public class EmitterTest {
@@ -143,11 +130,11 @@ public class EmitterTest {
     StreamDataWriter output = new MyDumperWriter();
     Emitter emitter = new Emitter(settings, output);
 
-    emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
-        Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(true, false),
-        burger + halfBurger, ScalarStyle.DOUBLE_QUOTED, Optional.empty(), Optional.empty()));
+    emitter.emit(new StreamStartEvent(null, null));
+    emitter.emit(new DocumentStartEvent(false, null, new HashMap<>(), null,
+        null));
+    emitter.emit(new ScalarEvent(null, null, new ImplicitTuple(true, false),
+        burger + halfBurger, ScalarStyle.DOUBLE_QUOTED, null, null));
     String expected = "! \"\\U0001f354\\ud83c\"";
     assertEquals(expected, output.toString());
   }

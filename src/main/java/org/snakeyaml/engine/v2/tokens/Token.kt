@@ -14,14 +14,13 @@
 package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * A unit of YAML data
  */
 sealed class Token(
-    val startMark: Optional<Mark>,
-    val endMark: Optional<Mark>,
+    val startMark: Mark?,
+    val endMark: Mark?,
 ) {
 
     /**

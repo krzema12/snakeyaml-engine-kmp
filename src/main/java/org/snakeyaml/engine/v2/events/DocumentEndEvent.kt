@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Marks the end of a document.
@@ -23,8 +22,8 @@ import java.util.Optional
  */
 class DocumentEndEvent @JvmOverloads constructor(
     val isExplicit: Boolean,
-    startMark: Optional<Mark> = Optional.empty(),
-    endMark: Optional<Mark> = Optional.empty(),
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : Event(startMark, endMark) {
 
     override val eventId: ID

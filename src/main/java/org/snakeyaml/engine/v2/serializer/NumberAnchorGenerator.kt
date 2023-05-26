@@ -22,7 +22,7 @@ import org.snakeyaml.engine.v2.nodes.Node
  * @param lastAnchorId - the number to start from
  */
 class NumberAnchorGenerator(
-    private var lastAnchorId: UInt = 0u
+    private var lastAnchorId: UInt = 0u,
 ) : AnchorGenerator {
     /**
      * Create value increasing the number

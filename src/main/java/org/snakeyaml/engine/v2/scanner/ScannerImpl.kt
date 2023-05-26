@@ -33,7 +33,6 @@ import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
 import java.nio.ByteBuffer
-import java.util.Optional
 import java.util.regex.Pattern
 import kotlin.collections.set
 
@@ -355,7 +354,7 @@ class ScannerImpl(
         }
         throw ScannerException(
             context = "while scanning for the next token",
-            contextMark = Optional.empty(),
+            contextMark = null,
             problem = "found character '$chRepresentation' that cannot start any token. (Do not use $chRepresentation for indentation)",
             problemMark = reader.getMark(),
         )
@@ -677,7 +676,7 @@ class ScannerImpl(
         if (isBlockContext()) {
             // Are we allowed to start a new entry?
             if (!allowSimpleKey) {
-                throw ScannerException("", Optional.empty(), "sequence entries are not allowed here", reader.getMark())
+                throw ScannerException("", null, "sequence entries are not allowed here", reader.getMark())
             }
 
             // We may need to add BLOCK-SEQUENCE-START.
@@ -1083,7 +1082,7 @@ class ScannerImpl(
     private fun scanDirective(): List<Token> {
         // See the specification for details.
         val startMark = reader.getMark()
-        val endMark: Optional<Mark>
+        val endMark: Mark?
         reader.forward()
         val name = scanDirectiveName(startMark)
         val value: DirectiveToken.TokenValue?
@@ -1112,7 +1111,7 @@ class ScannerImpl(
     /**
      * Scan a directive name. Directive names are a series of non-space characters.
      */
-    private fun scanDirectiveName(startMark: Optional<Mark>): String {
+    private fun scanDirectiveName(startMark: Mark?): String {
         // See the specification for details.
         var length = 0
         // A Directive-name is a sequence of alphanumeric characters
@@ -1143,7 +1142,7 @@ class ScannerImpl(
         return value
     }
 
-    private fun scanYamlDirectiveValue(startMark: Optional<Mark>): DirectiveToken.YamlDirective {
+    private fun scanYamlDirectiveValue(startMark: Mark?): DirectiveToken.YamlDirective {
         // See the specification for details.
         while (reader.peek() == ' '.code) {
             reader.forward()
@@ -1178,7 +1177,7 @@ class ScannerImpl(
      * Read a `%YAML` directive number: this is either the major or the minor part. Stop reading at a
      * non-digit character (usually either `.` or `\n`).
      */
-    private fun scanYamlDirectiveNumber(startMark: Optional<Mark>): Int {
+    private fun scanYamlDirectiveNumber(startMark: Mark?): Int {
         // See the specification for details.
         val c = reader.peek()
         if (!Character.isDigit(c)) {
@@ -1212,7 +1211,7 @@ class ScannerImpl(
      * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
      * ```
      */
-    private fun scanTagDirectiveValue(startMark: Optional<Mark>): DirectiveToken.TagDirective {
+    private fun scanTagDirectiveValue(startMark: Mark?): DirectiveToken.TagDirective {
         // See the specification for details.
         while (reader.peek() == ' '.code) {
             reader.forward()
@@ -1231,7 +1230,7 @@ class ScannerImpl(
      * @param startMark - start
      * @return the directive value
      */
-    private fun scanTagDirectiveHandle(startMark: Optional<Mark>): String {
+    private fun scanTagDirectiveHandle(startMark: Mark?): String {
         // See the specification for details.
         val value = scanTagHandle("directive", startMark)
         val c = reader.peek()
@@ -1250,7 +1249,7 @@ class ScannerImpl(
     /**
      * Scan a `%TAG` directive's prefix. This is YAML's ns-tag-prefix.
      */
-    private fun scanTagDirectivePrefix(startMark: Optional<Mark>): String {
+    private fun scanTagDirectivePrefix(startMark: Mark?): String {
         // See the specification for details.
         val value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
         val c = reader.peek()
@@ -1266,7 +1265,7 @@ class ScannerImpl(
         return value
     }
 
-    private fun scanDirectiveIgnoredLine(startMark: Optional<Mark>): CommentToken? {
+    private fun scanDirectiveIgnoredLine(startMark: Mark?): CommentToken? {
         // See the specification for details.
         while (reader.peek() == ' '.code) {
             reader.forward()
@@ -1426,7 +1425,7 @@ class ScannerImpl(
                 contextMark = reader.getMark(),
             )
         }
-        val value = TagTuple(Optional.ofNullable(handle), suffix)
+        val value = TagTuple((handle), suffix)
         val endMark = reader.getMark()
         return TagToken(value, startMark, endMark)
     }
@@ -1450,7 +1449,7 @@ class ScannerImpl(
         var breaks: String
         val maxIndent: Int
         val blockIndent: Int
-        var endMark: Optional<Mark>
+        var endMark: Mark?
         when (val chompingIncrement = chomping.increment) {
             null -> {
                 // increment (block indent) must be detected in the first non-empty line.
@@ -1538,7 +1537,7 @@ class ScannerImpl(
      * A block chomping indicator is a + or -, selecting the chomping mode away from the default
      * (clip) to either -(strip) or +(keep).
      */
-    private fun scanBlockScalarIndicators(startMark: Optional<Mark>): Chomping {
+    private fun scanBlockScalarIndicators(startMark: Mark?): Chomping {
         // See the specification for details.
         val indicator: Int?
         val increment: Int?
@@ -1603,7 +1602,7 @@ class ScannerImpl(
      * Scan to the end of the line after a block scalar has been scanned; the only things that are
      * permitted at this time are comments and spaces.
      */
-    private fun scanBlockScalarIgnoredLine(startMark: Optional<Mark>): CommentToken? {
+    private fun scanBlockScalarIgnoredLine(startMark: Mark?): CommentToken? {
         // See the specification for details.
 
         // Forward past any number of trailing spaces
@@ -1641,7 +1640,7 @@ class ScannerImpl(
         // See the specification for details.
         val chunks = StringBuilder()
         var maxIndent = 0
-        var endMark: Optional<Mark> = reader.getMark()
+        var endMark: Mark? = reader.getMark()
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
         // leading spaces on any of these lines.
@@ -1668,7 +1667,7 @@ class ScannerImpl(
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {
         // See the specification for details.
         val chunks = StringBuilder()
-        var endMark: Optional<Mark> = reader.getMark()
+        var endMark: Mark? = reader.getMark()
         var col = reader.column
         // Scan for up to the expected indentation-level of spaces, then move
         // forward past that amount.
@@ -1730,7 +1729,7 @@ class ScannerImpl(
     /**
      * Scan some number of flow-scalar non-space characters.
      */
-    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Optional<Mark>): String {
+    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Mark?): String {
         // See the specification for details.
         val chunks = StringBuilder()
         while (true) {
@@ -1805,7 +1804,7 @@ class ScannerImpl(
         }
     }
 
-    private fun scanFlowScalarSpaces(startMark: Optional<Mark>): String {
+    private fun scanFlowScalarSpaces(startMark: Mark?): String {
         // See the specification for details.
         var length = 0
         // Scan through any number of whitespace (space, tab) characters, consuming them.
@@ -1839,7 +1838,7 @@ class ScannerImpl(
         }
     }
 
-    private fun scanFlowScalarBreaks(startMark: Optional<Mark>): String {
+    private fun scanFlowScalarBreaks(startMark: Mark?): String {
         // See the specification for details.
         val chunks = StringBuilder()
         while (true) {
@@ -1880,7 +1879,7 @@ class ScannerImpl(
      */
     private fun scanPlain(): Token {
         val chunks = StringBuilder()
-        val startMark: Optional<Mark> = reader.getMark()
+        val startMark: Mark? = reader.getMark()
         var endMark = startMark
         val plainIndent = indent + 1
         var spaces = ""
@@ -2041,7 +2040,7 @@ class ScannerImpl(
      * tag handles. I have allowed it anyway.
      * ```
      */
-    private fun scanTagHandle(name: String, startMark: Optional<Mark>): String {
+    private fun scanTagHandle(name: String, startMark: Mark?): String {
         var c = reader.peek()
         if (c != '!'.code) {
             val s = String(Character.toChars(c))
@@ -2090,7 +2089,7 @@ class ScannerImpl(
      * This method performs no verification that the scanned URI conforms to any particular kind of
      * URI specification.
      */
-    private fun scanTagUri(name: String, range: CharConstants, startMark: Optional<Mark>): String {
+    private fun scanTagUri(name: String, range: CharConstants, startMark: Mark?): String {
         // See the specification for details.
         // Note: we do not check if URI is well-formed.
         val chunks = StringBuilder()
@@ -2134,7 +2133,7 @@ class ScannerImpl(
      * This method fails for more than 256 bytes' worth of URI-encoded characters in a row. Is this
      * possible? Is this a use-case?
      */
-    private fun scanUriEscapes(name: String, startMark: Optional<Mark>): String {
+    private fun scanUriEscapes(name: String, startMark: Mark?): String {
         // First, look ahead to see how many URI-escaped characters we should
         // expect, so we can use the correct buffer size.
         var length = 1
@@ -2246,7 +2245,7 @@ class ScannerImpl(
 private class BreakIntentHolder(
     val breaks: String,
     val maxIndent: Int,
-    val endMark: Optional<Mark>,
+    val endMark: Mark?,
 )
 
 //region Chomping

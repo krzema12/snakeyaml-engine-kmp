@@ -22,24 +22,20 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver
 import java.util.Optional
 
 /**
- * Create instances of Optional
+ * Create instances of [Optional]
  */
 class ConstructOptionalClass(private val scalarResolver: ScalarResolver) : ConstructScalar() {
     override fun construct(node: Node?): Optional<Any> {
-        if (node?.nodeType !== NodeType.SCALAR) {
+        if (node?.nodeType != NodeType.SCALAR) {
             throw ConstructorException(
                 "while constructing Optional",
-                Optional.empty(),
+                null,
                 "found non scalar node",
                 node!!.startMark,
             )
         }
         val value = constructScalar(node)
         val implicitTag = scalarResolver.resolve(value, true)
-        return if (implicitTag.equals(Tag.NULL)) {
-            Optional.empty<Any>()
-        } else {
-            Optional.of(value)
-        }
+        return if (implicitTag == Tag.NULL) Optional.empty() else Optional.of(value)
     }
 }

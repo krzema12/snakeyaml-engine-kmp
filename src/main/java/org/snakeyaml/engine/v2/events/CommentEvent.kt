@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Marks a comment block value.
@@ -28,8 +27,8 @@ class CommentEvent(
      * @return Value a comment line string without the leading '#' or a blank line.
      */
     val value: String,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : Event(startMark, endMark) {
 
     override val eventId: ID

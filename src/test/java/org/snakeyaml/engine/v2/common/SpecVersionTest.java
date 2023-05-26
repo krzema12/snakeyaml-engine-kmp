@@ -13,9 +13,6 @@
  */
 package org.snakeyaml.engine.v2.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,6 +21,9 @@ import org.snakeyaml.engine.v2.api.lowlevel.Compose;
 import org.snakeyaml.engine.v2.exceptions.YamlVersionException;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @Tag("fast")
 class SpecVersionTest {
 
@@ -31,7 +31,7 @@ class SpecVersionTest {
   @DisplayName("Version 1.2 is accepted")
   void version12() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 1.2").build();
-    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.2\n---\nfoo").get();
+    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.2\n---\nfoo");
     assertEquals("foo", node.getValue());
   }
 
@@ -39,7 +39,7 @@ class SpecVersionTest {
   @DisplayName("Version 1.3 is accepted by default")
   void version13() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 1.3").build();
-    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.3\n---\nfoo").get();
+    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.3\n---\nfoo");
     assertEquals("foo", node.getValue());
   }
 
@@ -55,7 +55,7 @@ class SpecVersionTest {
           }
         }).build();
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> new Compose(settings).composeString("%YAML 1.3\n---\nfoo").get());
+        () -> new Compose(settings).composeString("%YAML 1.3\n---\nfoo"));
     assertEquals("Too high.", exception.getMessage());
   }
 
@@ -64,7 +64,7 @@ class SpecVersionTest {
   void version20() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 2.0").build();
     YamlVersionException exception = assertThrows(YamlVersionException.class,
-        () -> new Compose(settings).composeString("%YAML 2.0\n---\nfoo").get());
+        () -> new Compose(settings).composeString("%YAML 2.0\n---\nfoo"));
     assertEquals("Version{major=2, minor=0}", exception.getMessage());
   }
 }

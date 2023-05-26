@@ -13,21 +13,16 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class TokenTest {
 
   @Test
   void testToString() {
-    Token token = new ScalarToken("a", true, Optional.empty(), Optional.empty());
+    Token token = new ScalarToken("a", true, null, null);
     assertEquals("<scalar> plain=true style=: value=a", token.toString());
   }
 }

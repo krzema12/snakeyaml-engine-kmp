@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Marks the start of a stream that might contain multiple documents.
@@ -29,7 +28,7 @@ import java.util.*
  *
  */
 class StreamStartEvent : Event {
-    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor(startMark: Mark?, endMark: Mark?) : super(startMark, endMark)
     constructor() : super()
 
     override val eventId: ID

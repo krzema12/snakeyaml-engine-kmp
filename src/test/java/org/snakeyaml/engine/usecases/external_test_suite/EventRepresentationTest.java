@@ -13,27 +13,17 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.AliasEvent;
-import org.snakeyaml.engine.v2.events.DocumentEndEvent;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceEndEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.events.*;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 class EventRepresentationTest {
@@ -60,7 +50,7 @@ class EventRepresentationTest {
   @Test
   @DisplayName("Represent AliasEvent")
   void testAliasEvent() {
-    AliasEvent event = new AliasEvent(Optional.of(new Anchor("a")));
+    AliasEvent event = new AliasEvent(new Anchor("a"));
     EventRepresentation representation = new EventRepresentation(event);
     assertTrue(representation.isSameAs("=ALI *a"));
     assertTrue(representation.isSameAs("=ALI *b"));
@@ -72,11 +62,11 @@ class EventRepresentationTest {
   @Test
   @DisplayName("Represent DocumentStartEvent")
   void testDocumentStartEvent() {
-    valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC ---");
-    valid(new DocumentStartEvent(true, Optional.empty(), Collections.emptyMap()), "+DOC");
+    valid(new DocumentStartEvent(true, null, Collections.emptyMap()), "+DOC ---");
+    valid(new DocumentStartEvent(true, null, Collections.emptyMap()), "+DOC");
 
-    valid(new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap()), "+DOC");
-    valid(new DocumentStartEvent(false, Optional.empty(), Collections.emptyMap()), "+DOC ---");
+    valid(new DocumentStartEvent(false, null, Collections.emptyMap()), "+DOC");
+    valid(new DocumentStartEvent(false, null, Collections.emptyMap()), "+DOC ---");
   }
 
   @Test
@@ -90,17 +80,17 @@ class EventRepresentationTest {
   @Test
   @DisplayName("Represent SequenceStartEvent")
   void testSequenceStartEvent() {
-    valid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    valid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.FLOW), "+SEQ [] &a <ttt>");
-    valid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    valid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.BLOCK), "+SEQ &a <ttt>");
-    invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    invalid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.BLOCK), "+SEQ *a <ttt>");
-    invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    invalid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.BLOCK), "+SEQ &a <t>");
-    invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    invalid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.BLOCK), "+SEQ <ttt>");
-    invalid(new SequenceStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    invalid(new SequenceStartEvent(new Anchor("a"), "ttt", false,
         FlowStyle.BLOCK), "+SEQ *a");
   }
 
@@ -114,29 +104,29 @@ class EventRepresentationTest {
   @Test
   @DisplayName("Represent ScalarEvent")
   void testScalarEvent() {
-    valid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"),
+    valid(new ScalarEvent(new Anchor("a"), "ttt",
         new ImplicitTuple(false, false), "v1", ScalarStyle.FOLDED), "=VAL &a <ttt> >v1");
 
-    invalid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"),
+    invalid(new ScalarEvent(new Anchor("a"), "ttt",
         new ImplicitTuple(false, false), "v1", ScalarStyle.PLAIN), "=VAL <ttt> >v1");
-    invalid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"),
+    invalid(new ScalarEvent(new Anchor("a"), "ttt",
         new ImplicitTuple(false, false), "v1", ScalarStyle.PLAIN), "=VAL &a >v1");
-    invalid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"),
+    invalid(new ScalarEvent(new Anchor("a"), "ttt",
         new ImplicitTuple(false, false), "v1", ScalarStyle.PLAIN), "=VAL &a <ttt>");
-    invalid(new ScalarEvent(Optional.of(new Anchor("a")), Optional.of("ttt"),
+    invalid(new ScalarEvent(new Anchor("a"), ("ttt"),
         new ImplicitTuple(false, false), "v1", ScalarStyle.PLAIN), "=VAL &a <ttt> |v1");
   }
 
   @Test
   @DisplayName("Represent MappingStartEvent")
   void testMappingStartEvent() {
-    invalid(new MappingStartEvent(Optional.of(new Anchor("a")), Optional.of("ttt"), false,
+    invalid(new MappingStartEvent((new Anchor("a")), ("ttt"), false,
         FlowStyle.FLOW), "+MAP");
     valid(
-        new MappingStartEvent(Optional.empty(),
-            Optional.of(org.snakeyaml.engine.v2.nodes.Tag.MAP.getValue()), false, FlowStyle.FLOW),
+        new MappingStartEvent(null,
+            org.snakeyaml.engine.v2.nodes.Tag.MAP.getValue(), false, FlowStyle.FLOW),
         "+MAP");
-    valid(new MappingStartEvent(Optional.empty(), Optional.empty(), false, FlowStyle.FLOW), "+MAP");
+    valid(new MappingStartEvent(null, null, false, FlowStyle.FLOW), "+MAP");
   }
 
   private void valid(Event event, String expectation) {

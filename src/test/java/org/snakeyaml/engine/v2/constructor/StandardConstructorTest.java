@@ -13,9 +13,6 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -23,15 +20,17 @@ import org.snakeyaml.engine.v2.api.lowlevel.Compose;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @Tag("fast")
 class StandardConstructorTest {
 
   @Test
   void constructMergeExample() {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Optional<Node> node = compose.composeString(TestUtils.getResource("/load/list1.yaml"));
+    Node node = compose.composeString(TestUtils.getResource("/load/list1.yaml"));
     StandardConstructor constructor = new StandardConstructor(LoadSettings.builder().build());
-    Object object = constructor.construct(node.get());
+    Object object = constructor.construct(node);
     assertNotNull(object);
   }
 }

@@ -19,7 +19,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlVersionException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
-import java.util.Optional
 import java.util.function.IntFunction
 import java.util.function.UnaryOperator
 
@@ -49,8 +48,7 @@ class LoadSettingsBuilder internal constructor() {
     /** to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack */
     private var maxAliasesForCollections: Int = 50
     private var useMarks: Boolean = true
-    private var envConfig: Optional<EnvConfig> =
-        Optional.empty() // no ENV substitution by default
+    private var envConfig: EnvConfig? = null // no ENV substitution by default
     private var codePointLimit: Int = 3 * 1024 * 1024 // 3 MB
     private var schema: Schema = JsonSchema()
 
@@ -201,7 +199,7 @@ class LoadSettingsBuilder internal constructor() {
      * @see [Variable
      * substitution](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation.markdown-header-variable-substitution)
      */
-    fun setEnvConfig(envConfig: Optional<EnvConfig>): LoadSettingsBuilder {
+    fun setEnvConfig(envConfig: EnvConfig?): LoadSettingsBuilder {
         this.envConfig = envConfig
         return this
     }

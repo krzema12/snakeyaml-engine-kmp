@@ -20,7 +20,6 @@ import org.snakeyaml.engine.v2.common.SpecVersion
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.Schema
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator
-import java.util.Optional
 
 /**
  * Immutable configuration for serialisation. Description for all the fields can be found in the
@@ -29,9 +28,9 @@ import java.util.Optional
 class DumpSettings internal constructor(
     val isExplicitStart: Boolean,
     val isExplicitEnd: Boolean,
-    @JvmField val explicitRootTag: Optional<Tag>,
+    @JvmField val explicitRootTag: Tag?,
     @JvmField val anchorGenerator: AnchorGenerator,
-    @JvmField val yamlDirective: Optional<SpecVersion>,
+    @JvmField val yamlDirective: SpecVersion?,
     @JvmField val tagDirective: Map<String, String>,
     @JvmField val defaultFlowStyle: FlowStyle,
     @JvmField val defaultScalarStyle: ScalarStyle,

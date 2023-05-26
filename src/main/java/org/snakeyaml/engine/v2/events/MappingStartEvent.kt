@@ -16,7 +16,6 @@ package org.snakeyaml.engine.v2.events
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Marks the beginning of a mapping node.
@@ -35,12 +34,12 @@ import java.util.Optional
  * @see MappingEndEvent
  */
 class MappingStartEvent @JvmOverloads constructor(
-    anchor: Optional<Anchor>,
-    tag: Optional<String>,
+    anchor: Anchor?,
+    tag: String?,
     implicit: Boolean,
     flowStyle: FlowStyle,
-    startMark: Optional<Mark> = Optional.empty(),
-    endMark: Optional<Mark> = Optional.empty(),
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : CollectionStartEvent(anchor, tag, implicit, flowStyle, startMark, endMark) {
 
     override val eventId: ID

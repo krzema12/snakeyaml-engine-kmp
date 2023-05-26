@@ -14,19 +14,18 @@
 package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Basic unit of output from a [org.snakeyaml.engine.v2.parser.Parser] or input of a
  * [org.snakeyaml.engine.v2.emitter.Emitter].
  */
 abstract class Event @JvmOverloads constructor(
-    val startMark: Optional<Mark> = Optional.empty(),
-    val endMark: Optional<Mark> = Optional.empty(),
+    val startMark: Mark? = null,
+    val endMark: Mark? = null,
 ) {
 
     init {
-        if (startMark.isPresent && !endMark.isPresent || !startMark.isPresent && endMark.isPresent) {
+        if (startMark != null && endMark == null || startMark == null && endMark != null) {
             throw NullPointerException("Both marks must be either present or absent.")
         }
     }

@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Represents a scalar node.
@@ -31,19 +30,19 @@ import java.util.*
  * @see org.snakeyaml.engine.v2.events.ScalarEvent
  */
 class ScalarNode @JvmOverloads constructor(
-  tag: Tag,
-  val value: String,
-  val scalarStyle: ScalarStyle,
-  resolved: Boolean = true,
-  startMark: Optional<Mark> = Optional.empty<Mark>(),
-  endMark: Optional<Mark> = Optional.empty<Mark>(),
+    tag: Tag,
+    val value: String,
+    val scalarStyle: ScalarStyle,
+    resolved: Boolean = true,
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : Node(tag, startMark, endMark, resolved = resolved) {
 
-  override val nodeType: NodeType
-    get() = NodeType.SCALAR
+    override val nodeType: NodeType
+        get() = NodeType.SCALAR
 
-  override fun toString(): String = "<${this.javaClass.name} (tag=$tag, value=$value)>"
+    override fun toString(): String = "<${this.javaClass.name} (tag=$tag, value=$value)>"
 
-  val isPlain: Boolean
-    get() = scalarStyle == ScalarStyle.PLAIN
+    val isPlain: Boolean
+        get() = scalarStyle == ScalarStyle.PLAIN
 }

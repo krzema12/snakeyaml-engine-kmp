@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Base class for all events that mark the beginning of a node.
@@ -29,7 +28,7 @@ abstract class NodeEvent(
      *
      * @return Anchor of this node or `null` if no anchor is defined.
      */
-    val anchor: Optional<Anchor>,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    val anchor: Anchor?,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : Event(startMark, endMark)

@@ -964,11 +964,11 @@ class ScannerImpl(
             if (isBlockContext()) {
                 // It may also start with '-', '?', ':' if it is followed by a non-space character
                 // in the block context
-                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && "-?:".indexOf(c.toChar()) != -1
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && c.toChar() in "-?:"
             } else {
                 // It may also start with '-', '?' if it is followed by a non-space character
                 // except ',' or ']' in the flow context
-                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]") && "-?".indexOf(c.toChar()) != -1
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]") && c.toChar() in "-?"
             }
         }
     }
@@ -1483,7 +1483,7 @@ class ScannerImpl(
         }
         while (reader.column == blockIndent && reader.peek() != 0) {
             stringBuilder.append(breaks)
-            val leadingNonSpace = " \t".indexOf(reader.peek().toChar()) == -1
+            val leadingNonSpace = reader.peek().toChar() !in " \t"
             var length = 0
             while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
                 length++
@@ -1501,7 +1501,7 @@ class ScannerImpl(
                     style == ScalarStyle.FOLDED
                     && "\n" == lineBreak
                     && leadingNonSpace
-                    && " \t".indexOf(reader.peek().toChar()) == -1
+                    && reader.peek().toChar() !in " \t"
                 ) {
                     if (breaks.isEmpty()) {
                         stringBuilder.append(" ")
@@ -1749,7 +1749,7 @@ class ScannerImpl(
             if (!doubleQuoted && c == '\''.code && reader.peek(1) == '\''.code) {
                 chunks.append("'")
                 reader.forward(2)
-            } else if (doubleQuoted && c == '\''.code || !doubleQuoted && "\"\\".indexOf(c.toChar()) != -1) {
+            } else if (doubleQuoted && c == '\''.code || !doubleQuoted && c.toChar() in "\"\\") {
                 chunks.appendCodePoint(c)
                 reader.forward()
             } else if (doubleQuoted && c == '\\'.code) {
@@ -1809,7 +1809,7 @@ class ScannerImpl(
         // See the specification for details.
         var length = 0
         // Scan through any number of whitespace (space, tab) characters, consuming them.
-        while (" \t".indexOf(reader.peek(length).toChar()) != -1) {
+        while (reader.peek(length).toChar() in " \t") {
             length++
         }
         val whitespaces = reader.prefixForward(length)
@@ -1857,7 +1857,7 @@ class ScannerImpl(
                 )
             }
             // Scan past any number of spaces and tabs, ignoring them
-            while (" \t".indexOf(reader.peek().toChar()) != -1) {
+            while (reader.peek().toChar() in " \t") {
                 reader.forward()
             }
             // If we stopped at a line break, add that; otherwise, return the
@@ -1900,7 +1900,7 @@ class ScannerImpl(
                         reader.peek(length + 1),
                         if (isFlowContext()) ",[]{}" else "",
                     )
-                    || isFlowContext() && ",[]{}".indexOf(c.toChar()) != -1
+                    || isFlowContext() && c.toChar() in ",[]{}"
                 ) {
                     break
                 }

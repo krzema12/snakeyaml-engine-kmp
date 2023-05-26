@@ -976,7 +976,7 @@ class Emitter(
             // Check for indicators.
             if (index == 0) {
                 // Leading indicators are special characters.
-                if ("#,[]{}&*!|>'\"%@`".indexOf(c.toChar()) != -1) {
+                if (c.toChar() in "#,[]{}&*!|>'\"%@`") {
                     flowIndicators = true
                     blockIndicators = true
                 }
@@ -992,7 +992,7 @@ class Emitter(
                 }
             } else {
                 // Some indicators cannot appear within a scalar as well.
-                if (",?[]{}".indexOf(c.toChar()) != -1) {
+                if (c.toChar() in ",?[]{}") {
                     flowIndicators = true
                 }
                 if (c == ':'.code) {
@@ -1252,7 +1252,7 @@ class Emitter(
             if (end < text.length) {
                 ch = text[end]
             }
-            if (ch == null || "\"\\\u0085\u2028\u2029\uFEFF".indexOf(ch) != -1 || !('\u0020' <= ch && ch <= '\u007E')) {
+            if (ch == null || ch in  "\"\\\u0085\u2028\u2029\uFEFF" || !('\u0020' <= ch && ch <= '\u007E')) {
                 if (start < end) {
                     val len = end - start
                     column += len

@@ -42,7 +42,7 @@ abstract class Node @JvmOverloads constructor(
     val startMark: Optional<Mark>,
 
     @JvmField
-    protected var endMark: Optional<Mark>,
+    var endMark: Optional<Mark>,
 
     /**
      * `true` when the tag is assigned by the resolver
@@ -82,7 +82,7 @@ abstract class Node @JvmOverloads constructor(
 
     /**
      * The ordered list of in-line comments. The first of which appears at the end of the line
-     * respresent by this node. The rest are in the following lines, indented per the Spec to indicate
+     * represented by this node. The rest are in the following lines, indented per the Spec to indicate
      * they are continuation of the inline comment.
      *
      * @return the comment line list.
@@ -136,6 +136,4 @@ abstract class Node @JvmOverloads constructor(
      * @return the value if it was specified
      */
     fun getProperty(key: String): Any? = properties?.get(key)
-
-    fun getEndMark(): Optional<Mark> = endMark // Java interop function, to be removed when everything is Kotlin
 }

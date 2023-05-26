@@ -36,7 +36,6 @@ public class InheritedCanonicalTest extends InheritedImportTest {
     File[] files = getStreamsByExtension(".canonical");
     assertTrue(files.length > 0, "No test files found.");
     for (final File file : files) {
-      System.err.println(file.getCanonicalPath());
       try (InputStream input = Files.newInputStream(file.toPath())) {
         List<Token> tokens = canonicalScan(input, file.getName());
         assertFalse(tokens.isEmpty(), "expect tokens are not empty");
@@ -66,7 +65,6 @@ public class InheritedCanonicalTest extends InheritedImportTest {
     final File[] files = getStreamsByExtension(".canonical");
     assertTrue(files.length > 0, "No test files found.");
     for (final File file : files) {
-      System.err.println(file.getCanonicalPath());
       try (InputStream input = Files.newInputStream(file.toPath())) {
         List<Event> tokens = canonicalParse(input, file.getName());
         assertFalse(tokens.isEmpty(), "expect tokens are not empty");

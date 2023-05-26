@@ -424,8 +424,6 @@ class Emitter(
         indent = indents.removeLastOrNull()
         state = states.removeLastOrNull()!!
     }
-
-
     //endregion
 
     //region Flow sequence handlers.
@@ -439,7 +437,6 @@ class Emitter(
         }
         state = ExpectFirstFlowSequenceItem()
     }
-
 
     private inner class ExpectFirstFlowSequenceItem : EmitterState {
         override fun expect() {
@@ -622,7 +619,7 @@ class Emitter(
         override fun expect() {
             if (!first && event!!.eventId == Event.ID.SequenceEnd) {
                 indent = indents.removeLastOrNull()
-                state = states.removeLastOrNull()!!
+                state = states.removeLast()
             } else if (event is CommentEvent) {
                 blockCommentsCollector.collectEvents(event)
             } else {
@@ -784,12 +781,13 @@ class Emitter(
             length += analysis!!.getScalar().length
         }
         return length < maxSimpleKeyLength
-            && (event!!.eventId == Event.ID.Alias
-            || event!!.eventId == Event.ID.Scalar
-            && !analysis!!.isEmpty()
-            && !analysis!!.isMultiline()
-            || checkEmptySequence()
-            || checkEmptyMapping()
+            && (
+            event!!.eventId == Event.ID.Alias
+                || event!!.eventId == Event.ID.Scalar
+                && !analysis!!.isEmpty()
+                && !analysis!!.isMultiline()
+                || checkEmptySequence()
+                || checkEmptyMapping()
             )
     }
 
@@ -829,8 +827,7 @@ class Emitter(
             ) {
                 preparedTag = null
                 return
-            }
-            if (ev.implicit.canOmitTagInPlainScalar() && !tag.isPresent) {
+            } else if (ev.implicit.canOmitTagInPlainScalar() && !tag.isPresent) {
                 tag = Optional.of("!")
                 preparedTag = null
             }
@@ -863,8 +860,7 @@ class Emitter(
                 return Optional.empty()
             }
         }
-        if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)
-        ) {
+        if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.isAllowBlock()) {
                 return Optional.of<ScalarStyle?>(ev.scalarStyle)
             }
@@ -913,27 +909,25 @@ class Emitter(
     private fun prepareTag(tag: String): String {
         if (tag.isEmpty()) {
             throw EmitterException("tag must not be empty")
-        }
-        if ("!" == tag) {
+        } else if ("!" == tag) {
             return tag
         }
-        var handle: String? = null
-        var suffix = tag
-        // shall the tag prefixes be sorted as in PyYAML?
-        for (prefix in tagPrefixes.keys) {
-            if (prefix != null && tag.startsWith(prefix) && ("!" == prefix || prefix.length < tag.length)) {
-                handle = prefix
-            }
+        val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
+            prefix != null
+                && tag.startsWith(prefix)
+                && ("!" == prefix || prefix.length < tag.length)
         }
-        if (handle != null) {
-            suffix = tag.substring(handle.length)
-            handle = tagPrefixes[handle]
+        val handle: String?
+        val suffix: String
+        if (matchedPrefix != null) {
+            handle = tagPrefixes[matchedPrefix]
+            suffix = tag.substring(matchedPrefix.length)
+        } else {
+            handle = null
+            suffix = tag
         }
-        val end = suffix.length
-        val suffixText = if (end > 0) suffix.substring(0, end) else ""
-        return if (handle != null) {
-            handle + suffixText
-        } else "!<$suffixText>"
+        val suffixText = suffix.take(suffix.length)
+        return if (handle != null) handle + suffixText else "!<$suffixText>"
     }
 
     private fun analyzeScalar(scalar: String): ScalarAnalysis {
@@ -1127,11 +1121,11 @@ class Emitter(
 
     //region Writers.
 
-    private fun flushStream() = stream.flush()
+    private fun flushStream(): Unit = stream.flush()
 
-    private fun writeStreamStart() = Unit // BOM is written by Writer.
+    private fun writeStreamStart(): Unit = Unit // BOM is written by Writer.
 
-    private fun writeStreamEnd() = flushStream()
+    private fun writeStreamEnd(): Unit = flushStream()
 
     private fun writeIndicator(
         indicator: String,
@@ -1562,7 +1556,7 @@ class Emitter(
 
     companion object {
         private val ESCAPE_REPLACEMENTS: Map<Char, String> = mapOf(
-            '\u0000' to "0",
+            0.toChar() to "0",
             '\u0007' to "a",
             '\u0008' to "b",
             '\u0009' to "t",

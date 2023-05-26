@@ -29,7 +29,6 @@ import org.snakeyaml.engine.v2.events.SequenceEndEvent
 import org.snakeyaml.engine.v2.events.SequenceStartEvent
 import org.snakeyaml.engine.v2.events.StreamEndEvent
 import org.snakeyaml.engine.v2.events.StreamStartEvent
-import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.nodes.AnchorNode
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
@@ -184,8 +183,8 @@ class Serializer(
                                 tag = Optional.of(realNode.tag.value),
                                 implicit = realNode.tag == Tag.MAP,
                                 flowStyle = realNode.flowStyle,
-                                startMark = Optional.empty<Mark>(),
-                                endMark = Optional.empty<Mark>(),
+                                startMark = Optional.empty(),
+                                endMark = Optional.empty(),
                             ),
                         )
                         for ((key, value) in realNode.value) {
@@ -198,9 +197,7 @@ class Serializer(
                     }
                 }
 
-                else              -> {
-                    error("Could not handle node type ${realNode.nodeType}")
-                }
+                NodeType.ANCHOR   -> {}
             }
         }
     }

@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.parser
 
 import org.snakeyaml.engine.v2.common.SpecVersion
-import java.util.*
+import java.util.Optional
 
 /**
  * Store the internal state for directives
@@ -23,14 +23,5 @@ internal data class VersionTagsTuple(
     val specVersion: Optional<SpecVersion>,
     val tags: Map<String, String>,
 ) {
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("specVersion"))
-    @JvmName("getSpecVersionJvm")
-    fun getSpecVersion() = specVersion
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("tags"))
-    @JvmName("getTagsJvm")
-    fun getTags() = tags
-
     override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
 }

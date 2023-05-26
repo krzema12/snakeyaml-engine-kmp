@@ -17,7 +17,7 @@ import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
+import java.util.Optional
 import java.util.stream.Collectors
 
 /**
@@ -29,7 +29,7 @@ class ScalarEvent @JvmOverloads constructor(
     /**
      * Tag of this scalar.
      *
-     * @return The tag of this scalar, or `null` if no explicit tag is available.
+     * @returns The tag of this scalar, or `null` if no explicit tag is available.
      */
     val tag: Optional<String>,
     // The implicit flag of a scalar event is a pair of boolean values that
@@ -43,7 +43,7 @@ class ScalarEvent @JvmOverloads constructor(
      */
     val value: String,
     /**
-     * Style of the scalar.
+     * Indicates the style of the scalar
      *
      * * `null` - Flow Style - Plain
      * * `'\''` - Flow Style - Single-Quoted
@@ -53,8 +53,6 @@ class ScalarEvent @JvmOverloads constructor(
      *
      * @return Style of the scalar.
      */
-    // style flag of a scalar event indicates the style of the scalar. Possible
-    // values are None, '', '\'', '"', '|', '>'
     val scalarStyle: ScalarStyle,
     startMark: Optional<Mark> = Optional.empty(),
     endMark: Optional<Mark> = Optional.empty(),
@@ -63,25 +61,8 @@ class ScalarEvent @JvmOverloads constructor(
     override val eventId: ID
         get() = ID.Scalar
 
-    val isPlain: Boolean
+    val plain: Boolean
         get() = scalarStyle == ScalarStyle.PLAIN
-
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("tag"))
-    @JvmName("getTagJvm")
-    fun getTag() = tag
-    @Deprecated("help during java->kt auto convert", ReplaceWith("implicit"))
-    @JvmName("getImplicitJvm")
-    fun getImplicit() = implicit
-    @Deprecated("help during java->kt auto convert", ReplaceWith("scalarStyle"))
-    @JvmName("getScalarStyleJvm")
-    fun getScalarStyle() = scalarStyle
-    @Deprecated("help during java->kt auto convert", ReplaceWith("isPlain"))
-    @JvmName("isPlainJvm")
-    fun isPlain() = isPlain
-    @Deprecated("help during java->kt auto convert", ReplaceWith("value"))
-    @JvmName("getValueJvm")
-    fun getValue() = value
 
     override fun toString(): String {
         return buildString {

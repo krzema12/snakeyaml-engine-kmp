@@ -194,7 +194,10 @@ class Emitter(
         return actualCount < count
     }
 
-    private fun increaseIndent(isFlow: Boolean, indentless: Boolean) {
+    private fun increaseIndent(
+        isFlow: Boolean = false,
+        indentless: Boolean = false,
+    ) {
         indents.addLast(indent)
         if (indent == null) {
             indent = if (isFlow) bestIndent else 0
@@ -279,6 +282,31 @@ class Emitter(
                 val prefixText = prepareTagPrefix(prefix!!)
                 writeTagDirective(handleText, prefixText)
             }
+        }
+
+        private fun prepareTagHandle(handle: String): String {
+            if (handle.isEmpty()) {
+                throw EmitterException("tag handle must not be empty")
+            } else if (handle[0] != '!' || handle[handle.length - 1] != '!') {
+                throw EmitterException("tag handle must start and end with '!': $handle")
+            } else if ("!" != handle && !HANDLE_FORMAT.matcher(handle).matches()) {
+                throw EmitterException("invalid character in the tag handle: $handle")
+            }
+            return handle
+        }
+
+        private fun prepareTagPrefix(prefix: String): String {
+            if (prefix.isEmpty()) {
+                throw EmitterException("tag prefix must not be empty")
+            }
+            val chunks = java.lang.StringBuilder()
+            val start = 0
+            var end = if (prefix[0] == '!') 1 else 0
+            while (end < prefix.length) {
+                end++
+            }
+            chunks.append(prefix, start, end)
+            return chunks.toString()
         }
 
         private fun checkEmptyDocument(): Boolean {
@@ -391,8 +419,8 @@ class Emitter(
     }
 
     private fun expectScalar() {
-        increaseIndent(true, indentless = false)
-        processScalar()
+        increaseIndent(isFlow = true)
+        processScalar(event as ScalarEvent)
         indent = indents.removeLastOrNull()
         state = states.removeLastOrNull()!!
     }
@@ -403,9 +431,9 @@ class Emitter(
     //region Flow sequence handlers.
 
     private fun expectFlowSequence() {
-        writeIndicator(indicator = "[", needWhitespace = true, whitespace = true, indentation = false)
+        writeIndicator(indicator = "[", needWhitespace = true, whitespace = true)
         flowLevel++
-        increaseIndent(isFlow = true, indentless = false)
+        increaseIndent(isFlow = true)
         if (multiLineFlow) {
             writeIndent()
         }
@@ -479,7 +507,7 @@ class Emitter(
     private fun expectFlowMapping() {
         writeIndicator(indicator = "{", needWhitespace = true, whitespace = true)
         flowLevel++
-        increaseIndent(isFlow = true, indentless = false)
+        increaseIndent(isFlow = true)
         if (multiLineFlow) {
             writeIndent()
         }
@@ -582,19 +610,16 @@ class Emitter(
     //region Block sequence handlers.
     private fun expectBlockSequence() {
         val indentless = mappingContext && !indention
-        increaseIndent(false, indentless)
+        increaseIndent(indentless = indentless)
         state = ExpectFirstBlockSequenceItem()
     }
 
     private inner class ExpectFirstBlockSequenceItem : EmitterState {
-        override fun expect() {
-            ExpectBlockSequenceItem(true).expect()
-        }
+        override fun expect(): Unit = ExpectBlockSequenceItem(true).expect()
     }
 
     private inner class ExpectBlockSequenceItem(private val first: Boolean) : EmitterState {
         override fun expect() {
-
             if (!first && event!!.eventId == Event.ID.SequenceEnd) {
                 indent = indents.removeLastOrNull()
                 state = states.removeLastOrNull()!!
@@ -610,7 +635,7 @@ class Emitter(
                     indent = indent!! + indicatorIndent
                 }
                 if (!blockCommentsCollector.isEmpty()) {
-                    increaseIndent(isFlow = false, indentless = false)
+                    increaseIndent()
                     writeBlockComment()
                     if (event is ScalarEvent) {
                         analysis = analyzeScalar((event as ScalarEvent).value)
@@ -633,7 +658,7 @@ class Emitter(
     // region Block mapping handlers.
 
     private fun expectBlockMapping() {
-        increaseIndent(isFlow = false, indentless = false)
+        increaseIndent()
         state = ExpectFirstBlockMappingKey()
     }
 
@@ -669,19 +694,18 @@ class Emitter(
 
     private inner class ExpectBlockMappingSimpleValue : EmitterState {
         override fun expect() {
-
             writeIndicator(indicator = ":")
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             if (!isFoldedOrLiteral(event!!)) {
                 if (writeInlineComments()) {
-                    increaseIndent(isFlow = true, indentless = false)
+                    increaseIndent(isFlow = true)
                     writeIndent()
                     indent = indents.removeLastOrNull()
                 }
             }
             event = blockCommentsCollector.collectEventsAndPoll(event)
             if (!blockCommentsCollector.isEmpty()) {
-                increaseIndent(isFlow = true, indentless = false)
+                increaseIndent(isFlow = true)
                 writeBlockComment()
                 writeIndent()
                 indent = indents.removeLastOrNull()
@@ -693,20 +717,15 @@ class Emitter(
         }
 
         private fun isFoldedOrLiteral(event: Event): Boolean {
-            if (event.eventId != Event.ID.Scalar) {
-                return false
-            }
-            val scalarEvent = event as ScalarEvent
-            val style = scalarEvent.scalarStyle
-            return style == ScalarStyle.FOLDED || style == ScalarStyle.LITERAL
+            return event is ScalarEvent
+                && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
         }
     }
 
     private inner class ExpectBlockMappingValue : EmitterState {
         override fun expect() {
-
             writeIndent()
-            writeIndicator(indicator = ":", needWhitespace = true, whitespace = false, indentation = true)
+            writeIndicator(indicator = ":", needWhitespace = true, indentation = true)
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
             event = blockCommentsCollector.collectEventsAndPoll(event)
@@ -717,20 +736,20 @@ class Emitter(
             writeInlineComments()
         }
     }
-
-
     //endregion
 
     //region Checkers.
 
     private fun checkEmptySequence(): Boolean {
-        return event!!.eventId == Event.ID.SequenceStart && !events.isEmpty() && events.first()
-            .eventId == Event.ID.SequenceEnd
+        return event!!.eventId == Event.ID.SequenceStart
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.SequenceEnd
     }
 
     private fun checkEmptyMapping(): Boolean {
-        return event!!.eventId == Event.ID.MappingStart && !events.isEmpty() && events.first()
-            .eventId == Event.ID.MappingEnd
+        return event!!.eventId == Event.ID.MappingStart
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.MappingEnd
     }
 
     private fun checkSimpleKey(): Boolean {
@@ -744,12 +763,14 @@ class Emitter(
                 length += anchorOpt.get().value.length
             }
         }
-        var tag: Optional<String> = Optional.empty()
-        if (event!!.eventId == Event.ID.Scalar) {
-            tag = (event as ScalarEvent).tag
-        } else if (event is CollectionStartEvent) {
-            tag = (event as CollectionStartEvent).tag
-        }
+        val tag: Optional<String> =
+            if (event!!.eventId == Event.ID.Scalar) {
+                (event as ScalarEvent).tag
+            } else if (event is CollectionStartEvent) {
+                (event as CollectionStartEvent).tag
+            } else {
+                Optional.empty()
+            }
         if (tag.isPresent) {
             if (preparedTag == null) {
                 preparedTag = prepareTag(tag.get())
@@ -762,8 +783,14 @@ class Emitter(
             }
             length += analysis!!.getScalar().length
         }
-        return length < maxSimpleKeyLength && (event!!.eventId == Event.ID.Alias || event!!.eventId == Event.ID.Scalar && !analysis!!.isEmpty() && !analysis!!.isMultiline()
-            || checkEmptySequence() || checkEmptyMapping())
+        return length < maxSimpleKeyLength
+            && (event!!.eventId == Event.ID.Alias
+            || event!!.eventId == Event.ID.Scalar
+            && !analysis!!.isEmpty()
+            && !analysis!!.isMultiline()
+            || checkEmptySequence()
+            || checkEmptyMapping()
+            )
     }
 
     //endregion
@@ -791,10 +818,14 @@ class Emitter(
             if (!scalarStyle.isPresent) {
                 scalarStyle = chooseScalarStyle(ev)
             }
-            if ((!canonical || !tag.isPresent)
-                && (!scalarStyle.isPresent && ev.implicit
-                    .canOmitTagInPlainScalar() || scalarStyle.isPresent && ev.implicit
-                    .canOmitTagInNonPlainScalar())
+            if (
+                (!canonical || !tag.isPresent)
+                && (
+                    !scalarStyle.isPresent
+                        && ev.implicit.canOmitTagInPlainScalar()
+                        || scalarStyle.isPresent
+                        && ev.implicit.canOmitTagInNonPlainScalar()
+                    )
             ) {
                 preparedTag = null
                 return
@@ -814,12 +845,8 @@ class Emitter(
         if (!tag.isPresent) {
             throw EmitterException("tag is not specified")
         }
-        if (preparedTag == null) {
-            preparedTag = prepareTag(tag.get())
-        }
-        // TODO refactor this?
-        writeIndicator(indicator = preparedTag!!, needWhitespace = true)
-        preparedTag = null
+        val indicator = preparedTag ?: prepareTag(tag.get())
+        writeIndicator(indicator = indicator, needWhitespace = true)
     }
 
     private fun chooseScalarStyle(ev: ScalarEvent): Optional<ScalarStyle> {
@@ -836,8 +863,7 @@ class Emitter(
                 return Optional.empty()
             }
         }
-        if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL
-                || ev.scalarStyle == ScalarStyle.FOLDED)
+        if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)
         ) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.isAllowBlock()) {
                 return Optional.of<ScalarStyle?>(ev.scalarStyle)
@@ -851,8 +877,7 @@ class Emitter(
         return Optional.of(ScalarStyle.DOUBLE_QUOTED)
     }
 
-    private fun processScalar() {
-        val ev = event as ScalarEvent
+    private fun processScalar(ev: ScalarEvent) {
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
@@ -875,7 +900,6 @@ class Emitter(
         scalarStyle = Optional.empty()
     }
 
-
     //endregion
 
     //region Analyzers.
@@ -884,34 +908,6 @@ class Emitter(
             throw EmitterException("unsupported YAML version: $version")
         }
         return version.representation
-    }
-
-    private fun prepareTagHandle(handle: String): String {
-        if (handle.isEmpty()) {
-            throw EmitterException("tag handle must not be empty")
-        } else if (handle[0] != '!' || handle[handle.length - 1] != '!') {
-            throw EmitterException("tag handle must start and end with '!': $handle")
-        } else if ("!" != handle && !HANDLE_FORMAT.matcher(handle).matches()) {
-            throw EmitterException("invalid character in the tag handle: $handle")
-        }
-        return handle
-    }
-
-    private fun prepareTagPrefix(prefix: String): String {
-        if (prefix.isEmpty()) {
-            throw EmitterException("tag prefix must not be empty")
-        }
-        val chunks = java.lang.StringBuilder()
-        val start = 0
-        var end = 0
-        if (prefix[0] == '!') {
-            end = 1
-        }
-        while (end < prefix.length) {
-            end++
-        }
-        chunks.append(prefix, start, end)
-        return chunks.toString()
     }
 
     private fun prepareTag(tag: String): String {
@@ -1090,8 +1086,7 @@ class Emitter(
         if (trailingSpace) {
             allowBlock = false
         }
-        // Spaces at the beginning of a new line are only acceptable for block
-        // scalars.
+        // Spaces at the beginning of a new line are only acceptable for block scalars.
         if (breakSpace) {
             allowSingleQuoted = false
             allowBlockPlain = false
@@ -1132,17 +1127,11 @@ class Emitter(
 
     //region Writers.
 
-    private fun flushStream() {
-        stream.flush()
-    }
+    private fun flushStream() = stream.flush()
 
-    private fun writeStreamStart() { // TODO maybe remove this function...?
-        // BOM is written by Writer.
-    }
+    private fun writeStreamStart() = Unit // BOM is written by Writer.
 
-    private fun writeStreamEnd() {
-        flushStream()
-    }
+    private fun writeStreamEnd() = flushStream()
 
     private fun writeIndicator(
         indicator: String,
@@ -1164,49 +1153,35 @@ class Emitter(
     private fun writeIndent() {
         val indentToWrite = indent ?: 0
         if (!indention || column > indentToWrite || column == indentToWrite && !whitespace) {
-            writeLineBreak(null)
+            writeLineBreak()
         }
         writeWhitespace(indentToWrite - column)
     }
 
     private fun writeWhitespace(length: Int) {
-        if (length <= 0) {
-            return
-        }
+        if (length <= 0) return
         whitespace = true
-        for (i in 0 until length) {
-            stream.write(" ")
-        }
+        stream.write(SPACE.repeat(length))
         column += length
     }
 
-    private fun writeLineBreak(data: String?) {
+    private fun writeLineBreak(data: String? = null) {
         whitespace = true
         indention = true
         column = 0
-        if (data == null) {
-            stream.write(bestLineBreak)
-        } else {
-            stream.write(data)
-        }
+        stream.write(data ?: bestLineBreak)
     }
 
-    fun writeVersionDirective(versionText: String?) {
-        stream.write("%YAML ")
-        stream.write(versionText!!)
-        writeLineBreak(null)
+    fun writeVersionDirective(versionText: String) {
+        stream.write("%YAML $versionText")
+        writeLineBreak()
     }
 
     fun writeTagDirective(handleText: String, prefixText: String) {
-        // XXX: not sure 4 invocations better than StringBuilders created by str
-        // + str
-        stream.write("%TAG ")
-        stream.write(handleText)
-        stream.write(SPACE)
-        stream.write(prefixText)
-        writeLineBreak(null)
+        // XXX: not sure 4 invocations better than StringBuilders created by str + str
+        stream.write("%TAG $handleText $prefixText")
+        writeLineBreak()
     }
-
 
     //endregion
 
@@ -1237,12 +1212,12 @@ class Emitter(
             } else if (breaks) {
                 if (ch.code == 0 || CharConstants.LINEBR.hasNo(ch.code)) {
                     if (text[start] == '\n') {
-                        writeLineBreak(null)
+                        writeLineBreak()
                     }
                     val data = text.substring(start, end)
                     for (br in data.toCharArray()) {
                         if (br == '\n') {
-                            writeLineBreak(null)
+                            writeLineBreak()
                         } else {
                             writeLineBreak(br.toString())
                         }
@@ -1329,11 +1304,7 @@ class Emitter(
             }
             if (0 < end && end < text.length - 1 && (ch == ' ' || start >= end) && column + (end - start) > bestWidth && split) {
                 var data: String
-                data = if (start >= end) {
-                    "\\"
-                } else {
-                    text.substring(start, end) + "\\"
-                }
+                data = (if (start >= end) "\\" else text.substring(start, end) + "\\")
                 if (start < end) {
                     start = end
                 }
@@ -1372,9 +1343,9 @@ class Emitter(
                         writeIndicator(indicator = "#")
                     }
                     stream.write(commentLine.value)
-                    writeLineBreak(null)
+                    writeLineBreak()
                 } else {
-                    writeLineBreak(null)
+                    writeLineBreak()
                     writeIndent()
                 }
                 wroteComment = true
@@ -1415,7 +1386,7 @@ class Emitter(
             openEnded = true
         }
         if (!writeInlineComments()) {
-            writeLineBreak(null)
+            writeLineBreak()
         }
         var leadingSpace = true
         var spaces = false
@@ -1430,16 +1401,12 @@ class Emitter(
             if (breaks) {
                 if (ch.code == 0 || CharConstants.LINEBR.hasNo(ch.code)) {
                     if (!leadingSpace && ch.code != 0 && ch != ' ' && text[start] == '\n') {
-                        writeLineBreak(null)
+                        writeLineBreak()
                     }
                     leadingSpace = ch == ' '
                     val data = text.substring(start, end)
                     for (br in data.toCharArray()) {
-                        if (br == '\n') {
-                            writeLineBreak(null)
-                        } else {
-                            writeLineBreak(br.toString())
-                        }
+                        writeLineBreak(if (br == '\n') null else br.toString())
                     }
                     if (ch.code != 0) {
                         writeIndent()
@@ -1463,7 +1430,7 @@ class Emitter(
                     column += len
                     stream.write(text, start, len)
                     if (ch.code == 0) {
-                        writeLineBreak(null)
+                        writeLineBreak()
                     }
                     start = end
                 }
@@ -1483,7 +1450,7 @@ class Emitter(
             openEnded = true
         }
         if (!writeInlineComments()) {
-            writeLineBreak(null)
+            writeLineBreak()
         }
         var breaks = true
         var start = 0
@@ -1498,7 +1465,7 @@ class Emitter(
                     val data = text.substring(start, end)
                     for (br in data.toCharArray()) {
                         if (br == '\n') {
-                            writeLineBreak(null)
+                            writeLineBreak()
                         } else {
                             writeLineBreak(br.toString())
                         }
@@ -1512,7 +1479,7 @@ class Emitter(
                 if (ch.code == 0 || CharConstants.LINEBR.has(ch.code)) {
                     stream.write(text, start, end - start)
                     if (ch.code == 0) {
-                        writeLineBreak(null)
+                        writeLineBreak()
                     }
                     start = end
                 }
@@ -1562,15 +1529,11 @@ class Emitter(
             } else if (breaks) {
                 if (CharConstants.LINEBR.hasNo(ch.code)) {
                     if (text[start] == '\n') {
-                        writeLineBreak(null)
+                        writeLineBreak()
                     }
                     val data = text.substring(start, end)
                     for (br in data.toCharArray()) {
-                        if (br == '\n') {
-                            writeLineBreak(null)
-                        } else {
-                            writeLineBreak(br.toString())
-                        }
+                        writeLineBreak(if (br == '\n') null else br.toString())
                     }
                     writeIndent()
                     whitespace = false
@@ -1596,7 +1559,6 @@ class Emitter(
     //endregion
 
     //endregion
-
 
     companion object {
         private val ESCAPE_REPLACEMENTS: Map<Char, String> = mapOf(

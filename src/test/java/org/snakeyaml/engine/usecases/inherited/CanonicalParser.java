@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -191,13 +190,13 @@ public class CanonicalParser implements Parser {
   /**
    * Get the next event.
    */
-  @Nullable
+  @NotNull
   public Event peekEvent() {
     if (!parsed) {
       parse();
     }
     if (events.isEmpty()) {
-      return null;
+      throw new NoSuchElementException("No more Events found.");
     } else {
       return events.get(0);
     }
@@ -205,6 +204,9 @@ public class CanonicalParser implements Parser {
 
   @Override
   public boolean hasNext() {
-    return peekEvent() != null;
+    if (!parsed) {
+      parse();
+    }
+    return !events.isEmpty();
   }
 }

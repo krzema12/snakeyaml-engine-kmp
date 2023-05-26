@@ -32,10 +32,4 @@ abstract class NodeEvent(
     val anchor: Optional<Anchor>,
     startMark: Optional<Mark>,
     endMark: Optional<Mark>,
-) : Event(startMark, endMark) {
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("anchor"))
-    @JvmName("getAnchorJvm")
-    fun getAnchor() = anchor
-
-}
+) : Event(startMark, endMark)

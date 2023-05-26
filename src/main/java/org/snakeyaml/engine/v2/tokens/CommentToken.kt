@@ -24,15 +24,6 @@ class CommentToken(
     endMark: Optional<Mark>,
 ) : Token(startMark, endMark) {
 
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("commentType"))
-    @JvmName("getCommentTypeJvm")
-    fun getCommentType() = commentType
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("value"))
-    @JvmName("getValueJvm")
-    fun getValue() = value
-
     override val tokenId: ID
         get() = ID.Comment
 }

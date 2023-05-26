@@ -43,8 +43,6 @@ import java.util.Optional
 import java.util.TreeSet
 import java.util.regex.Pattern
 
-// TODO check if single-use functions can be put inside the state classes
-
 /**
  * <pre>
  * Emitter expects events obeying the following grammar:
@@ -262,7 +260,7 @@ class Emitter(
             if (ev.tags.isNotEmpty()) {
                 handleTagDirectives(ev.tags)
             }
-            val implicit = (first && !ev.isExplicit && !canonical && !ev.specVersion.isPresent
+            val implicit = (first && !ev.explicit && !canonical && !ev.specVersion.isPresent
                 && ev.tags.isEmpty() && !checkEmptyDocument())
             if (!implicit) {
                 writeIndent()
@@ -636,7 +634,7 @@ class Emitter(
                     writeBlockComment()
                     if (event is ScalarEvent) {
                         analysis = analyzeScalar((event as ScalarEvent).value)
-                        if (!analysis!!.isEmpty()) {
+                        if (!analysis!!.empty) {
                             writeIndent()
                         }
                     }
@@ -778,14 +776,14 @@ class Emitter(
             if (analysis == null) {
                 analysis = analyzeScalar((event as ScalarEvent).value)
             }
-            length += analysis!!.getScalar().length
+            length += analysis!!.scalar.length
         }
         return length < maxSimpleKeyLength
             && (
             event!!.eventId == Event.ID.Alias
                 || event!!.eventId == Event.ID.Scalar
-                && !analysis!!.isEmpty()
-                && !analysis!!.isMultiline()
+                && !analysis!!.empty
+                && !analysis!!.multiline
                 || checkEmptySequence()
                 || checkEmptyMapping()
             )
@@ -850,23 +848,23 @@ class Emitter(
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (!ev.isPlain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
+        if (!ev.plain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
             return Optional.of(ScalarStyle.DOUBLE_QUOTED)
         }
-        if (ev.isPlain && ev.implicit.canOmitTagInPlainScalar()) {
-            if (!(simpleKeyContext && (analysis!!.isEmpty() || analysis!!.isMultiline()))
-                && (flowLevel != 0 && analysis!!.isAllowFlowPlain() || flowLevel == 0 && analysis!!.isAllowBlockPlain())
+        if (ev.plain && ev.implicit.canOmitTagInPlainScalar()) {
+            if (!(simpleKeyContext && (analysis!!.empty || analysis!!.multiline))
+                && (flowLevel != 0 && analysis!!.allowFlowPlain || flowLevel == 0 && analysis!!.allowBlockPlain)
             ) {
                 return Optional.empty()
             }
         }
-        if (!ev.isPlain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
-            if (flowLevel == 0 && !simpleKeyContext && analysis!!.isAllowBlock()) {
+        if (!ev.plain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
+            if (flowLevel == 0 && !simpleKeyContext && analysis!!.allowBlock) {
                 return Optional.of(ev.scalarStyle)
             }
         }
-        if (ev.isPlain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
-            if (analysis!!.isAllowSingleQuoted() && !(simpleKeyContext && analysis!!.isMultiline())) {
+        if (ev.plain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
+            if (analysis!!.allowSingleQuoted && !(simpleKeyContext && analysis!!.multiline)) {
                 return Optional.of(ScalarStyle.SINGLE_QUOTED)
             }
         }
@@ -882,13 +880,13 @@ class Emitter(
         }
         val split = !simpleKeyContext && splitLines
         if (!scalarStyle.isPresent) {
-            writePlain(analysis!!.getScalar(), split)
+            writePlain(analysis!!.scalar, split)
         } else {
             when (scalarStyle.get()) {
-                ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.getScalar(), split)
-                ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.getScalar(), split)
-                ScalarStyle.FOLDED        -> writeFolded(analysis!!.getScalar(), split)
-                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.getScalar())
+                ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
+                ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
+                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
+                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
                 else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
             }
         }

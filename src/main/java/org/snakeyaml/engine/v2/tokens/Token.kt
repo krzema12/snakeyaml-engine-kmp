@@ -33,18 +33,6 @@ sealed class Token(
 
     override fun toString(): String = tokenId.toString()
 
-    @Deprecated("help during java->kt auto convert", ReplaceWith("tokenId"))
-    @JvmName("getTokenIdJvm")
-    fun getTokenId() = tokenId
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("startMark"))
-    @JvmName("getStartMarkJvm")
-    fun getStartMark() = startMark
-
-    @Deprecated("help during java->kt auto convert", ReplaceWith("endMark"))
-    @JvmName("getEndMarkJvm")
-    fun getEndMark() = endMark
-
     enum class ID(
         private val description: String,
     ) {

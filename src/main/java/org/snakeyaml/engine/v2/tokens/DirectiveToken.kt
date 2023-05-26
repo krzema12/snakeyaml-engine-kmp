@@ -26,15 +26,15 @@ class DirectiveToken(
         get() = ID.Directive
 
     sealed interface TokenValue {
-        fun getName(): String // TODO convert to property after Java->Kotlin conversion
+        val name: String
     }
 
     data class YamlDirective(val major: Int, val minor: Int) : TokenValue {
-        override fun getName(): String = YAML_DIRECTIVE
+        override val name: String get() = YAML_DIRECTIVE
     }
 
     data class TagDirective(val handle: String, val prefix: String) : TokenValue {
-        override fun getName(): String = TAG_DIRECTIVE
+        override val name: String get() = TAG_DIRECTIVE
     }
 
     companion object {

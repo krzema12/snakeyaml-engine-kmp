@@ -66,6 +66,23 @@ class ScalarEvent @JvmOverloads constructor(
     val isPlain: Boolean
         get() = scalarStyle == ScalarStyle.PLAIN
 
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("tag"))
+    @JvmName("getTagJvm")
+    fun getTag() = tag
+    @Deprecated("help during java->kt auto convert", ReplaceWith("implicit"))
+    @JvmName("getImplicitJvm")
+    fun getImplicit() = implicit
+    @Deprecated("help during java->kt auto convert", ReplaceWith("scalarStyle"))
+    @JvmName("getScalarStyleJvm")
+    fun getScalarStyle() = scalarStyle
+    @Deprecated("help during java->kt auto convert", ReplaceWith("isPlain"))
+    @JvmName("isPlainJvm")
+    fun isPlain() = isPlain
+    @Deprecated("help during java->kt auto convert", ReplaceWith("value"))
+    @JvmName("getValueJvm")
+    fun getValue() = value
+
     override fun toString(): String {
         return buildString {
             append("=VAL")

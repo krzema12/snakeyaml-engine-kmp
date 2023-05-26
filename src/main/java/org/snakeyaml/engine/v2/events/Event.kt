@@ -38,6 +38,10 @@ abstract class Event @JvmOverloads constructor(
      */
     abstract val eventId: ID
 
+    @Deprecated("x", ReplaceWith("eventId"))
+    @JvmName("getEventIdJvm")
+    fun getEventId() = eventId
+
     /**
      * ID of a non-abstract Event
      */

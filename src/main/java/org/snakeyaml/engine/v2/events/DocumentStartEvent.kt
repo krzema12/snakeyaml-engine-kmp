@@ -41,6 +41,20 @@ class DocumentStartEvent @JvmOverloads constructor(
     endMark: Optional<Mark> = Optional.empty(),
 ) : Event(startMark, endMark) {
 
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("isExplicit"))
+    @JvmName("isExplicitJvm")
+    fun isExplicit() = isExplicit
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("specVersion"))
+    @JvmName("specVersionJvm")
+    fun getSpecVersion() = specVersion
+
+    @Deprecated("help during java->kt auto convert", ReplaceWith("tags"))
+    @JvmName("tagsJvm")
+    fun getTags() = tags
+
+
     override val eventId: ID
         get() = ID.DocumentStart
 

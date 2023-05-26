@@ -51,4 +51,8 @@ tasks.withType<Test>().configureEach {
         showStackTraces = true
         showStandardStreams = true
     }
+    environment(
+        "EnvironmentKey1" to "EnvironmentValue1",
+        "EnvironmentEmpty" to "",
+    )
 }

@@ -20,7 +20,7 @@ class CharConstants private constructor(content: String) {
 
     fun hasNo(c: Int): Boolean = !has(c)
 
-    fun has(c: Int, additional: String): Boolean = has(c) || additional.indexOf(c.toChar()) != -1
+    fun has(c: Int, additional: String): Boolean = has(c) || c.toChar() in additional
 
     fun hasNo(c: Int, additional: String): Boolean = !has(c, additional)
 

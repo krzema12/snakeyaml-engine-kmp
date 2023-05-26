@@ -31,16 +31,16 @@ import java.util.Optional
  * Builder pattern implementation for DumpSettings
  */
 class DumpSettingsBuilder internal constructor() {
-    private var customProperties: MutableMap<SettingKey, Any> = HashMap()
+    private var customProperties: MutableMap<SettingKey, Any> = mutableMapOf()
     private var explicitStart = false
     private var explicitEnd = false
-    private var nonPrintableStyle: NonPrintableStyle
-    private var explicitRootTag: Optional<Tag>
-    private var anchorGenerator: AnchorGenerator
-    private var yamlDirective: Optional<SpecVersion>
-    private var tagDirective: Map<String, String>
-    private var defaultFlowStyle: FlowStyle
-    private var defaultScalarStyle: ScalarStyle
+    private var nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.ESCAPE
+    private var explicitRootTag: Optional<Tag> = Optional.empty()
+    private var anchorGenerator: AnchorGenerator = NumberAnchorGenerator()
+    private var yamlDirective: Optional<SpecVersion> = Optional.empty()
+    private var tagDirective: Map<String, String> = emptyMap()
+    private var defaultFlowStyle: FlowStyle = FlowStyle.AUTO
+    private var defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN
 
     // emitter
     private var canonical = false
@@ -54,21 +54,7 @@ class DumpSettingsBuilder internal constructor() {
     private var maxSimpleKeyLength = 128
     private var indentWithIndicator = false
     private var dumpComments = false
-    private var schema: Schema
-
-    /**
-     * Create builder
-     */
-    init {
-        explicitRootTag = Optional.empty()
-        tagDirective = HashMap()
-        anchorGenerator = NumberAnchorGenerator(0)
-        yamlDirective = Optional.empty()
-        defaultFlowStyle = FlowStyle.AUTO
-        defaultScalarStyle = ScalarStyle.PLAIN
-        nonPrintableStyle = NonPrintableStyle.ESCAPE
-        schema = JsonSchema()
-    }
+    private var schema: Schema = JsonSchema()
 
     /**
      * Define flow style

@@ -11,36 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
-import org.snakeyaml.engine.v2.common.SpecVersion;
+import org.snakeyaml.engine.v2.common.SpecVersion
 
 /**
  * Indication of invalid YAML version
+ * @param specVersion - the specified version
  */
-public class YamlVersionException extends YamlEngineException {
-
-  /**
-   * specified version
-   */
-  private final SpecVersion specVersion;
-
-  /**
-   * Create
-   *
-   * @param specVersion - the version
-   */
-  public YamlVersionException(SpecVersion specVersion) {
-    super(specVersion.toString());
-    this.specVersion = specVersion;
-  }
-
-  /**
-   * getter
-   *
-   * @return its version
-   */
-  public SpecVersion getSpecVersion() {
-    return specVersion;
-  }
-}
+class YamlVersionException(
+    val specVersion: SpecVersion,
+) : YamlEngineException(specVersion.toString())

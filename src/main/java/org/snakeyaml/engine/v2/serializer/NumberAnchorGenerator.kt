@@ -11,41 +11,28 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.serializer;
+package org.snakeyaml.engine.v2.serializer
 
-import java.text.NumberFormat;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Simple generate of the format id + number
+ *
+ * @param lastAnchorId - the number to start from
  */
-public class NumberAnchorGenerator implements AnchorGenerator {
-
-  private int lastAnchorId = 0;
-
-  /**
-   * Create
-   *
-   * @param lastAnchorId - the number to start from
-   */
-  public NumberAnchorGenerator(int lastAnchorId) {
-    this.lastAnchorId = lastAnchorId;
-  }
-
-  /**
-   * Create value increasing the number
-   *
-   * @param node - ignored
-   * @return value with format 'id001'
-   */
-  public Anchor nextAnchor(Node node) {
-    this.lastAnchorId++;
-    NumberFormat format = NumberFormat.getNumberInstance();
-    format.setMinimumIntegerDigits(3);
-    format.setMaximumFractionDigits(0);// issue 172
-    format.setGroupingUsed(false);
-    String anchorId = format.format(this.lastAnchorId);
-    return new Anchor("id" + anchorId);
-  }
+class NumberAnchorGenerator(
+    private var lastAnchorId: UInt = 0u
+) : AnchorGenerator {
+    /**
+     * Create value increasing the number
+     *
+     * @param node - ignored
+     * @return value with format 'id001'
+     */
+    override fun nextAnchor(node: Node): Anchor {
+        lastAnchorId++
+        val anchorId = lastAnchorId.toString().padStart(3, '0')
+        return Anchor("id$anchorId")
+    }
 }

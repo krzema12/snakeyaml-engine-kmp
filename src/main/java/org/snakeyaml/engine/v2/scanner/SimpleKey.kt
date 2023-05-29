@@ -11,63 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.scanner;
+package org.snakeyaml.engine.v2.scanner
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Simple keys treatment.
- * <p>
- * Helper class for {@link ScannerImpl}.
- * </p>
+ *
+ * Helper class for [ScannerImpl].
  */
-final class SimpleKey {
-
-  private final int tokenNumber;
-  private final boolean required;
-  private final int index;
-  private final int line;
-  private final int column;
-  private final Optional<Mark> mark;
-
-  public SimpleKey(int tokenNumber, boolean required, int index, int line, int column,
-      Optional<Mark> mark) {
-    this.tokenNumber = tokenNumber;
-    this.required = required;
-    this.index = index;
-    this.line = line;
-    this.column = column;
-    this.mark = mark;
-  }
-
-  public int getTokenNumber() {
-    return this.tokenNumber;
-  }
-
-  public int getColumn() {
-    return this.column;
-  }
-
-  public Optional<Mark> getMark() {
-    return mark;
-  }
-
-  public int getIndex() {
-    return index;
-  }
-
-  public int getLine() {
-    return line;
-  }
-
-  public boolean isRequired() {
-    return required;
-  }
-
-  @Override
-  public String toString() {
-    return "SimpleKey - tokenNumber=" + tokenNumber + " required=" + required + " index=" + index
-        + " line=" + line + " column=" + column;
-  }
+internal class SimpleKey(
+    val tokenNumber: Int,
+    val isRequired: Boolean,
+    val index: Int,
+    val line: Int,
+    val column: Int,
+    val mark: Optional<Mark>,
+) {
+    override fun toString(): String =
+        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
 }

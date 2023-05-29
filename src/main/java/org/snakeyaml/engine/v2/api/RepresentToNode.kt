@@ -11,24 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api
 
-
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Create a Node Graph out of the provided Native Data Structure (Java instance). (this is opposite
- * to ConstructNode)
+ * to [ConstructNode])
  *
- * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
+ * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
  */
-public interface RepresentToNode {
-
-  /**
-   * Create a Node
-   *
-   * @param data the instance to represent
-   * @return Node to dump
-   */
-  Node representData(Object data);
+fun interface RepresentToNode {
+    /**
+     * Create a Node
+     *
+     * @param data the instance to represent
+     * @return Node to dump
+     */
+    fun representData(data: Any): Node
 }

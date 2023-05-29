@@ -11,99 +11,76 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.core;
+package org.snakeyaml.engine.v2.constructor.core
 
-import java.math.BigInteger;
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.exceptions.ConstructorException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.exceptions.ConstructorException
+import org.snakeyaml.engine.v2.nodes.Node
+import java.math.BigInteger
 
 /**
  * Create instances for numbers (Integer, Long, BigInteger)
  */
-public class ConstructYamlCoreInt extends ConstructScalar {
-
-  private static final int[][] RADIX_MAX = new int[17][2];
-
-  static {
-    int[] radixList = new int[] {8, 10, 16};
-    for (int radix : radixList) {
-      RADIX_MAX[radix] =
-          new int[] {maxLen(Integer.MAX_VALUE, radix), maxLen(Long.MAX_VALUE, radix)};
-    }
-  }
-
-  private static int maxLen(final int max, final int radix) {
-    return Integer.toString(max, radix).length();
-  }
-
-  private static int maxLen(final long max, final int radix) {
-    return Long.toString(max, radix).length();
-  }
-
-  protected static Number createLongOrBigInteger(final String number, final int radix) {
-    try {
-      return Long.valueOf(number, radix);
-    } catch (NumberFormatException e1) {
-      return new BigInteger(number, radix);
-    }
-  }
-
-  @Override
-  public Object construct(Node node) {
-    String value = constructScalar(node);
-    if (value.isEmpty()) {
-      throw new ConstructorException("while constructing an int", node.getStartMark(),
-          "found empty value", node.getStartMark());
-    }
-    return createIntNumber(value);
-  }
-
-  public Object createIntNumber(String value) {
-    int sign = +1;
-    char first = value.charAt(0);
-    if (first == '-') {
-      sign = -1;
-      value = value.substring(1);
-    } else if (first == '+') {
-      value = value.substring(1);
-    }
-    int base;
-    if ("0".equals(value)) {
-      return Integer.valueOf(0);
-    } else if (value.startsWith("0x")) {
-      value = value.substring(2);
-      base = 16;
-    } else if (value.startsWith("0o")) {
-      value = value.substring(2);
-      base = 8;
-    } else {
-      return createNumber(sign, value, 10);
-    }
-    return createNumber(sign, value, base);
-  }
-
-  private Number createNumber(int sign, String number, int radix) {
-    final int len = number != null ? number.length() : 0;
-    if (sign < 0) {
-      number = "-" + number;
-    }
-    final int[] maxArr = radix < RADIX_MAX.length ? RADIX_MAX[radix] : null;
-    if (maxArr != null) {
-      final boolean gtInt = len > maxArr[0];
-      if (gtInt) {
-        if (len > maxArr[1]) {
-          return new BigInteger(number, radix);
+class ConstructYamlCoreInt : ConstructScalar() {
+    override fun construct(node: Node?): Number {
+        val value = constructScalar(node)
+        if (value.isEmpty()) {
+            throw ConstructorException(
+                "while constructing an int", node!!.startMark,
+                "found empty value", node.startMark,
+            )
         }
-        return createLongOrBigInteger(number, radix);
-      }
+        return createIntNumber(value)
     }
-    Number result;
-    try {
-      result = Integer.valueOf(number, radix);
-    } catch (NumberFormatException e) {
-      result = createLongOrBigInteger(number, radix);
+
+    private fun createIntNumber(value: String): Number {
+        val (sign: Int, numeral: String) = when (value.firstOrNull()) {
+            '-'  -> -1 to value.substring(1)
+            '+'  -> +1 to value.substring(1)
+            else -> +1 to value
+        }
+
+        val (base: Int, number: String) = when {
+            numeral == "0"           -> return 0
+            numeral.startsWith("0x") -> 16 to numeral.substring(2)
+            numeral.startsWith("0o") -> 8 to numeral.substring(2)
+            else                     -> 10 to numeral
+        }
+
+        return createNumber(sign, number, base)
     }
-    return result;
-  }
+
+    private fun createNumber(sign: Int, numeric: String, radix: Int): Number {
+        val len = numeric.length
+        val number: String = if (sign < 0) "-$numeric" else numeric
+        val maxArr = if (radix < RADIX_MAX.size) RADIX_MAX[radix] else null
+        if (maxArr != null) {
+            val gtInt = len > maxArr[0]
+            if (gtInt) {
+                return if (len > maxArr[1]) {
+                    BigInteger(number, radix)
+                } else {
+                    number.toLongOrBigInteger(radix)
+                }
+            }
+        }
+        return number.toIntOrNull(radix) ?: number.toLongOrBigInteger(radix)
+    }
+
+    companion object {
+        private val RADIX_MAX = Array(17) { IntArray(2) }
+
+        init {
+            val radixList = intArrayOf(8, 10, 16)
+            for (radix in radixList) {
+                RADIX_MAX[radix] = intArrayOf(
+                    Int.MAX_VALUE.toString(radix).length,
+                    Long.MAX_VALUE.toString(radix).length,
+                )
+            }
+        }
+
+        private fun String.toLongOrBigInteger(radix: Int): Number =
+            toLongOrNull(radix) ?: toBigInteger(radix)
+    }
 }

@@ -11,126 +11,112 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api.lowlevel;
+package org.snakeyaml.engine.v2.api.lowlevel
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v2.composer.Composer;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import org.snakeyaml.engine.v2.api.LoadSettings
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader
+import org.snakeyaml.engine.v2.composer.Composer
+import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.parser.ParserImpl
+import org.snakeyaml.engine.v2.scanner.StreamReader
+import java.io.InputStream
+import java.io.Reader
+import java.io.StringReader
+import java.util.Optional
 
 /**
  * Helper to compose input stream to Node
+ * @param settings - configuration
  */
-public class Compose {
+class Compose(
+    private val settings: LoadSettings,
+) {
 
-  private final LoadSettings settings;
+    /**
+     * Parse a YAML stream and produce [Node]
+     *
+     * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
+     * (it will be parsed as content)
+     * @return parsed [Node] if available
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeReader(yaml: Reader): Optional<Node> =
+        Composer(
+            settings,
+            ParserImpl(settings, StreamReader(settings, yaml)),
+        ).singleNode
 
-  /**
-   * Create instance with provided {@link LoadSettings}
-   *
-   * @param settings - configuration
-   */
-  public Compose(LoadSettings settings) {
-    Objects.requireNonNull(settings, "LoadSettings cannot be null");
-    this.settings = settings;
-  }
+    /**
+     * Parse a YAML stream and produce [Node]
+     *
+     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
+     * encoding is UTF-16 or UTF-32
+     * @return parsed [Node] if available
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeInputStream(yaml: InputStream): Optional<Node> =
+        Composer(
+            settings,
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))),
+        ).singleNode
 
-  /**
-   * Parse a YAML stream and produce {@link Node}
-   *
-   * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
-   *        (it will be parsed as content)
-   * @return parsed {@link Node} if available
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Optional<Node> composeReader(Reader yaml) {
-    Objects.requireNonNull(yaml, "Reader cannot be null");
-    return new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml)))
-        .getSingleNode();
-  }
+    /**
+     * Parse a YAML stream and produce [Node]
+     *
+     * @param yaml - YAML document(s).
+     * @return parsed [Node] if available
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeString(yaml: String): Optional<Node> =
+        Composer(
+            settings,
+            ParserImpl(settings, StreamReader(settings, StringReader(yaml))),
+        ).singleNode
 
-  /**
-   * Parse a YAML stream and produce {@link Node}
-   *
-   * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-   *        encoding is UTF-16 or UTF-32
-   * @return parsed {@link Node} if available
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Optional<Node> composeInputStream(InputStream yaml) {
-    Objects.requireNonNull(yaml, "InputStream cannot be null");
-    return new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml))))
-        .getSingleNode();
-  }
+    // Compose all documents
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml stream of YAML documents
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeAllFromReader(yaml: Reader): Iterable<Node> =
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, yaml)),
+            )
+        }
 
-  /**
-   * Parse a YAML stream and produce {@link Node}
-   *
-   * @param yaml - YAML document(s).
-   * @return parsed {@link Node} if available
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Optional<Node> composeString(String yaml) {
-    Objects.requireNonNull(yaml, "String cannot be null");
-    return new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml))))
-        .getSingleNode();
-  }
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
+     * encoding is UTF-16 or UTF-32
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> =
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))),
+            )
+        }
 
-  // Compose all documents
-
-  /**
-   * Parse all YAML documents in a stream and produce corresponding representation trees.
-   *
-   * @param yaml stream of YAML documents
-   * @return parsed root Nodes for all the specified YAML documents
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Iterable<Node> composeAllFromReader(Reader yaml) {
-    Objects.requireNonNull(yaml, "Reader cannot be null");
-    return () -> new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml)));
-  }
-
-  /**
-   * Parse all YAML documents in a stream and produce corresponding representation trees.
-   *
-   * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-   *        encoding is UTF-16 or UTF-32
-   * @return parsed root Nodes for all the specified YAML documents
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Iterable<Node> composeAllFromInputStream(InputStream yaml) {
-    Objects.requireNonNull(yaml, "InputStream cannot be null");
-    return () -> new Composer(settings,
-        new ParserImpl(settings, new StreamReader(settings, new YamlUnicodeReader(yaml))));
-  }
-
-  /**
-   * Parse all YAML documents in a stream and produce corresponding representation trees.
-   *
-   * @param yaml - YAML document(s).
-   * @return parsed root Nodes for all the specified YAML documents
-   * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2762107">Processing Overview</a>
-   */
-  public Iterable<Node> composeAllFromString(String yaml) {
-    Objects.requireNonNull(yaml, "String cannot be null");
-    // do not use lambda to keep Iterable and Iterator visible
-    return new Iterable<Node>() {
-      public Iterator<Node> iterator() {
-        return new Composer(settings,
-            new ParserImpl(settings, new StreamReader(settings, new StringReader(yaml))));
-      }
-    };
-  }
+    /**
+     * Parse all YAML documents in a stream and produce corresponding representation trees.
+     *
+     * @param yaml - YAML document(s).
+     * @return parsed root Nodes for all the specified YAML documents
+     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
+     */
+    fun composeAllFromString(yaml: String): Iterable<Node> =
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, StringReader(yaml))),
+            )
+        }
 }
-
-

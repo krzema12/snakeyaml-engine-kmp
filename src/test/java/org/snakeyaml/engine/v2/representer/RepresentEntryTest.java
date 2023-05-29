@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -63,15 +65,16 @@ public class RepresentEntryTest {
         stringOutputStream.toString());
   }
 
-  private class CommentedEntryRepresenter extends StandardRepresenter {
+  private static class CommentedEntryRepresenter extends StandardRepresenter {
 
     public CommentedEntryRepresenter(DumpSettings settings) {
       super(settings);
     }
 
+    @NotNull
     @Override
-    protected NodeTuple representMappingEntry(Map.Entry<?, ?> entry) {
-      NodeTuple tuple = super.representMappingEntry(entry);
+    protected NodeTuple toNodeTuple(@NotNull Map.Entry<?, ?> entry) {
+      NodeTuple tuple = super.toNodeTuple(entry);
       List<CommentLine> keyBlockComments = new ArrayList<>();
       keyBlockComments.add(new CommentLine(Optional.empty(), Optional.empty(),
           "Key node block comment", CommentType.BLOCK));
@@ -86,7 +89,7 @@ public class RepresentEntryTest {
     }
   }
 
-  private class StringOutputStream extends StringWriter implements StreamDataWriter {
+  private static class StringOutputStream extends StringWriter implements StreamDataWriter {
 
   }
 }

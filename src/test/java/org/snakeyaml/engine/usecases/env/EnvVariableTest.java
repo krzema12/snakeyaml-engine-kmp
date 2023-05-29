@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
@@ -40,7 +41,7 @@ class EnvVariableTest {
   public void testDockerCompose() {
     Load loader =
         new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
-    String resource = TestUtils.getResource("env/docker-compose.yaml");
+    String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
@@ -51,12 +52,12 @@ class EnvVariableTest {
   @Test
   @DisplayName("Custom EVN config example")
   public void testCustomEnvConfig() {
-    HashMap<String, String> provided = new HashMap();
+    HashMap<String, String> provided = new HashMap<>();
     provided.put(KEY1, "VVVAAA111");
     System.setProperty(EMPTY, "VVVAAA222");
     Load loader = new Load(
         LoadSettings.builder().setEnvConfig(Optional.of(new CustomEnvConfig(provided))).build());
-    String resource = TestUtils.getResource("env/docker-compose.yaml");
+    String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
@@ -67,8 +68,7 @@ class EnvVariableTest {
   private String load(String template) {
     Load loader =
         new Load(LoadSettings.builder().setEnvConfig(Optional.of(new EnvConfig() {})).build());
-    String loaded = (String) loader.loadFromString(template);
-    return loaded;
+    return (String) loader.loadFromString(template);
   }
 
   @Test

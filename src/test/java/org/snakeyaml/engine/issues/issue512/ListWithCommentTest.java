@@ -29,7 +29,7 @@ public class ListWithCommentTest {
   @Test
   @DisplayName("Issue 512 from SnakeYAML")
   public void testList() {
-    String str = TestUtils.getResource("comments/issue512.yaml");
+    String str = TestUtils.getResource("/comments/issue512.yaml");
     LoadSettings options = LoadSettings.builder().setParseComments(true).build();
     Load load = new Load(options);
     List<String> obj = (List<String>) load.loadFromString(str);

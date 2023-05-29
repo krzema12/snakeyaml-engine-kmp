@@ -35,7 +35,7 @@ public class IndentWithIndicatorTest {
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());
 
-    String doc = TestUtils.getResource("indentation/issue416-1.yaml");
+    String doc = TestUtils.getResource("/indentation/issue416-1.yaml");
 
     assertEquals(doc, output);
   }
@@ -48,7 +48,7 @@ public class IndentWithIndicatorTest {
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());
 
-    String doc = TestUtils.getResource("indentation/issue416-2.yaml");
+    String doc = TestUtils.getResource("/indentation/issue416-2.yaml");
 
     assertEquals(doc, output);
   }
@@ -61,7 +61,7 @@ public class IndentWithIndicatorTest {
     Dump dumper = new Dump(settings);
     String output = dumper.dumpToString(createData());
 
-    String doc = TestUtils.getResource("indentation/issue416_3.yaml");
+    String doc = TestUtils.getResource("/indentation/issue416_3.yaml");
 
     assertEquals(doc, output);
   }

@@ -11,30 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.env;
+package org.snakeyaml.engine.v2.env
 
-import java.util.Optional;
+import java.util.*
 
 /**
  * Configurator for ENV format
  *
- * @see <a href=
- *      "https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-variable-substitution">Variable
- *      substitution</a>
+ * See [Variable substitution](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation.markdown-header-variable-substitution)
  */
-public interface EnvConfig {
-
+interface EnvConfig {
   /**
    * Implement deviation from the standard logic. TODO implement wiki page
    *
-   * @param name - variable name in the template
-   * @param separator - separator in the template, can be :-, -, :?, ? or null if not present
-   * @param value - default value or the error in the template or empty if not present
-   * @param environment - the value from environment for the provided variable or null if unset
-   * @return the value to apply in the template or empty to follow the standard logic
+   * @param name variable name in the template
+   * @param separator separator in the template, can be `:-`, `-`, `:?`, `?` or `null` if not present
+   * @param value default value or the error in the template or empty if not present
+   * @param environment the value from environment for the provided variable or `null` if unset
+   * @returns the value to apply in the template or empty to follow the standard logic
    */
-  default Optional<String> getValueFor(String name, String separator, String value,
-      String environment) {
-    return Optional.empty();
+  fun getValueFor(
+      name: String,
+      separator: String?,
+      value: String?,
+      environment: String?,
+  ): Optional<String> {
+    return Optional.empty()
   }
 }

@@ -11,46 +11,37 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.emitter;
+package org.snakeyaml.engine.v2.emitter
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.comments.CommentEventsCollector;
-import org.snakeyaml.engine.v2.comments.CommentLine;
-import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.ArrayStack;
-import org.snakeyaml.engine.v2.common.CharConstants;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.events.AliasEvent;
-import org.snakeyaml.engine.v2.events.CollectionEndEvent;
-import org.snakeyaml.engine.v2.events.CollectionStartEvent;
-import org.snakeyaml.engine.v2.events.CommentEvent;
-import org.snakeyaml.engine.v2.events.DocumentEndEvent;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.NodeEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
-import org.snakeyaml.engine.v2.exceptions.EmitterException;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import org.snakeyaml.engine.v2.api.DumpSettings
+import org.snakeyaml.engine.v2.api.StreamDataWriter
+import org.snakeyaml.engine.v2.comments.CommentEventsCollector
+import org.snakeyaml.engine.v2.comments.CommentLine
+import org.snakeyaml.engine.v2.comments.CommentType
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.common.CharConstants
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.common.SpecVersion
+import org.snakeyaml.engine.v2.events.AliasEvent
+import org.snakeyaml.engine.v2.events.CollectionEndEvent
+import org.snakeyaml.engine.v2.events.CollectionStartEvent
+import org.snakeyaml.engine.v2.events.CommentEvent
+import org.snakeyaml.engine.v2.events.DocumentEndEvent
+import org.snakeyaml.engine.v2.events.DocumentStartEvent
+import org.snakeyaml.engine.v2.events.Event
+import org.snakeyaml.engine.v2.events.MappingStartEvent
+import org.snakeyaml.engine.v2.events.NodeEvent
+import org.snakeyaml.engine.v2.events.ScalarEvent
+import org.snakeyaml.engine.v2.events.SequenceStartEvent
+import org.snakeyaml.engine.v2.events.StreamEndEvent
+import org.snakeyaml.engine.v2.events.StreamStartEvent
+import org.snakeyaml.engine.v2.exceptions.EmitterException
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.scanner.StreamReader
+import java.util.Optional
+import java.util.TreeSet
+import java.util.regex.Pattern
 
 /**
  * <pre>
@@ -62,1643 +53,1542 @@ import org.snakeyaml.engine.v2.scanner.StreamReader;
  * mapping ::= MAPPING-START (node node)* MAPPING-END
  * </pre>
  */
-public final class Emitter implements Emitable {
+class Emitter(
+    private val opts: DumpSettings,
+    private val stream: StreamDataWriter,
+) : Emitable {
 
-  private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<>();
-  /**
-   * indent cannot be zero spaces
-   */
-  public static final int MIN_INDENT = 1;
-  /**
-   * indent should not be more than 10 spaces
-   */
-  public static final int MAX_INDENT = 10;
+    /** [Emitter] is a state machine with a stack of states to handle nested structures. */
+    private val states: ArrayDeque<EmitterState> = ArrayDeque(100)
 
-  private static final String SPACE = " ";
+    /** current state */
+    private var state: EmitterState = ExpectStreamStart()
 
-  static {
-    ESCAPE_REPLACEMENTS.put('\0', "0");
-    ESCAPE_REPLACEMENTS.put('\u0007', "a");
-    ESCAPE_REPLACEMENTS.put('\u0008', "b");
-    ESCAPE_REPLACEMENTS.put('\u0009', "t");
-    ESCAPE_REPLACEMENTS.put('\n', "n");
-    ESCAPE_REPLACEMENTS.put('\u000B', "v");
-    ESCAPE_REPLACEMENTS.put('\u000C', "f");
-    ESCAPE_REPLACEMENTS.put('\r', "r");
-    ESCAPE_REPLACEMENTS.put('\u001B', "e");
-    ESCAPE_REPLACEMENTS.put('"', "\"");
-    ESCAPE_REPLACEMENTS.put('\\', "\\");
-    ESCAPE_REPLACEMENTS.put('\u0085', "N");
-    ESCAPE_REPLACEMENTS.put('\u00A0', "_");
-    ESCAPE_REPLACEMENTS.put('\u2028', "L");
-    ESCAPE_REPLACEMENTS.put('\u2029', "P");
-  }
+    /** The event queue */
+    private val events: ArrayDeque<Event> = ArrayDeque(100)
 
-  private static final Map<String, String> DEFAULT_TAG_PREFIXES = new LinkedHashMap<>();
+    /** Current event */
+    private var event: Event? = null
 
-  static {
-    DEFAULT_TAG_PREFIXES.put("!", "!");
-    DEFAULT_TAG_PREFIXES.put(Tag.PREFIX, "!!");
-  }
+    /** The stack of previous indents */
+    private val indents: ArrayDeque<Int?> = ArrayDeque(100)
 
-  private final StreamDataWriter stream;
+    /** The current indentation level. Can be `null` to choose the best */
+    private var indent: Int? = null
 
-  // Emitter is a state machine with a stack of states to handle nested structures.
-  private final ArrayStack<EmitterState> states;
-  private EmitterState state; // current state
+    /** Flow level */
+    private var flowLevel = 0
 
-  // Current event and the event queue.
-  private final Queue<Event> events;
-  private Event event;
+    //region Contexts
+    private var rootContext = false
+    private var mappingContext = false
+    private var simpleKeyContext = false
+    //endregion
 
-  // The current indentation level and the stack of previous indents.
-  private final ArrayStack<Integer> indents;
-  private Integer indent; // can be null to choose the best
+    //region Characteristics of the last emitted character
+    /** current position of the last emitted character */
+    private var column = 0
 
-  // Flow level.
-  private int flowLevel;
+    /** is the last emitted character whitespace? */
+    private var whitespace = true
 
-  // Contexts.
-  private boolean rootContext;
-  private boolean mappingContext;
-  private boolean simpleKeyContext;
+    /** is the last emitted character an indention character (indentation space, `-`, `?`, or `:`)? */
+    private var indention = true
+    //endregion
 
-  //
-  // Characteristics of the last emitted character:
-  // - current position.
-  // - is it a whitespace?
-  // - is it an indention character (indentation space, '-', '?', or ':')?
-  private int column;
-  private boolean whitespace;
-  private boolean indention;
-  private boolean openEnded;
+    /** Whether the document requires an explicit document indicator */
+    private var openEnded = false
 
-  // Formatting details.
-  private final Boolean canonical;
-  // pretty print flow by adding extra line breaks
-  private final Boolean multiLineFlow;
+    //region Formatting details.
+    private val canonical: Boolean = opts.isCanonical
 
-  private final boolean allowUnicode;
-  private int bestIndent;
-  private final int indicatorIndent;
-  private final boolean indentWithIndicator;
-  private int bestWidth;
-  private final String bestLineBreak;
-  private final boolean splitLines;
-  private final int maxSimpleKeyLength;
-  private final boolean emitComments;
+    /** pretty print flow by adding extra line breaks */
+    private val multiLineFlow: Boolean = opts.isMultiLineFlow
 
-  // Tag prefixes.
-  private Map<String, String> tagPrefixes;
+    private val allowUnicode: Boolean = opts.isUseUnicodeEncoding
+    private val bestIndent: Int = if (opts.indent in VALID_INDENT_RANGE) opts.indent else DEFAULT_INDENT
+    private val indicatorIndent: Int get() = opts.indicatorIndent
+    private val indentWithIndicator: Boolean get() = opts.indentWithIndicator
+    private val bestWidth: Int = opts.width.coerceAtMost(MAX_WIDTH)
+    private val bestLineBreak: String get() = opts.bestLineBreak
+    private val splitLines: Boolean get() = opts.isSplitLines
+    private val maxSimpleKeyLength: Int get() = opts.maxSimpleKeyLength
+    private val emitComments: Boolean get() = opts.dumpComments
+    //endregion
 
-  // Prepared anchor and tag.
-  private Optional<Anchor> preparedAnchor;
-  private String preparedTag;
+    /** Tag prefixes. */
+    private var tagPrefixes: MutableMap<String?, String> = mutableMapOf()
 
-  // Scalar analysis and style.
-  private ScalarAnalysis analysis;
-  private Optional<ScalarStyle> scalarStyle;
+    private var preparedAnchor: Optional<Anchor> = Optional.empty()
+    private var preparedTag: String? = null
 
-  // Comment processing
-  private final CommentEventsCollector blockCommentsCollector;
-  private final CommentEventsCollector inlineCommentsCollector;
+    /** Scalar analysis */
+    private var analysis: ScalarAnalysis? = null
 
-  /**
-   * Create
-   *
-   * @param opts - configuration options
-   * @param stream - output stream
-   */
-  public Emitter(DumpSettings opts, StreamDataWriter stream) {
-    this.stream = stream;
-    // Emitter is a state machine with a stack of states to handle nested
-    // structures.
-    this.states = new ArrayStack<>(100);
-    this.state = new ExpectStreamStart();
-    // Current event and the event queue.
-    this.events = new ArrayDeque<>(100);
-    this.event = null;
-    // The current indentation level and the stack of previous indents.
-    this.indents = new ArrayStack<>(10);
-    this.indent = null;
-    // Flow level.
-    this.flowLevel = 0;
-    // Contexts.
-    mappingContext = false;
-    simpleKeyContext = false;
+    /** Scalar style */
+    private var scalarStyle: Optional<ScalarStyle> = Optional.empty()
 
-    //
-    // Characteristics of the last emitted character:
-    // - current position.
-    // - is it a whitespace?
-    // - is it an indention character
-    // (indentation space, '-', '?', or ':')?
-    column = 0;
-    whitespace = true;
-    indention = true;
+    //region Comment processing
+    private val blockCommentsCollector = CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK)
+    private val inlineCommentsCollector = CommentEventsCollector(events, CommentType.IN_LINE)
+    //endregion
 
-    // Whether the document requires an explicit document indicator
-    openEnded = false;
-
-    // Formatting details.
-    this.canonical = opts.isCanonical();
-    this.multiLineFlow = opts.isMultiLineFlow();
-    this.allowUnicode = opts.isUseUnicodeEncoding();
-    this.bestIndent = 2;
-    if ((opts.getIndent() > MIN_INDENT) && (opts.getIndent() < MAX_INDENT)) {
-      this.bestIndent = opts.getIndent();
-    }
-    this.indicatorIndent = opts.getIndicatorIndent();
-    this.indentWithIndicator = opts.getIndentWithIndicator();
-    this.bestWidth = 80;
-    if (opts.getWidth() > this.bestIndent * 2) {
-      this.bestWidth = opts.getWidth();
-    }
-    this.bestLineBreak = opts.getBestLineBreak();
-    this.splitLines = opts.isSplitLines();
-    this.maxSimpleKeyLength = opts.getMaxSimpleKeyLength();
-    this.emitComments = opts.getDumpComments();
-
-    // Tag prefixes.
-    this.tagPrefixes = new LinkedHashMap<>();
-
-    // Prepared anchor and tag.
-    this.preparedAnchor = Optional.empty();
-    this.preparedTag = null;
-
-    // Scalar analysis and style.
-    this.analysis = null;
-    this.scalarStyle = Optional.empty();
-
-    // Comment processing
-    this.blockCommentsCollector =
-        new CommentEventsCollector(events, CommentType.BLANK_LINE, CommentType.BLOCK);
-    this.inlineCommentsCollector = new CommentEventsCollector(events, CommentType.IN_LINE);
-  }
-
-  public void emit(Event event) {
-    this.events.add(event);
-    while (!needMoreEvents()) {
-      this.event = this.events.poll();
-      this.state.expect();
-      this.event = null;
-    }
-  }
-
-  // In some cases, we wait for a few next events before emitting.
-
-  private boolean needMoreEvents() {
-    if (events.isEmpty()) {
-      return true;
-    }
-    Iterator<Event> iter = events.iterator();
-    Event event = iter.next();
-    while (event instanceof CommentEvent) {
-      if (!iter.hasNext()) {
-        return true;
-      }
-      event = iter.next();
-    }
-
-    if (event instanceof DocumentStartEvent) {
-      return needEvents(iter, 1);
-    } else if (event instanceof SequenceStartEvent) {
-      return needEvents(iter, 2);
-    } else if (event instanceof MappingStartEvent) {
-      return needEvents(iter, 3);
-    } else if (event instanceof StreamStartEvent) {
-      return needEvents(iter, 2);
-    } else if (event instanceof StreamEndEvent) {
-      return false;
-    } else if (emitComments) {
-      // To collect any comment events
-      return needEvents(iter, 1);
-    }
-    return false;
-  }
-
-  private boolean needEvents(Iterator<Event> iter, int count) {
-    int level = 0;
-    int actualCount = 0;
-    while (iter.hasNext()) {
-      Event event = iter.next();
-      if (event instanceof CommentEvent) {
-        continue;
-      }
-      actualCount++;
-      if (event instanceof DocumentStartEvent || event instanceof CollectionStartEvent) {
-        level++;
-      } else if (event instanceof DocumentEndEvent || event instanceof CollectionEndEvent) {
-        level--;
-      } else if (event instanceof StreamEndEvent) {
-        level = -1;
-      }
-      if (level < 0) {
-        return false;
-      }
-    }
-    return actualCount < count;
-  }
-
-  private void increaseIndent(boolean isFlow, boolean indentless) {
-    indents.push(indent);
-    if (indent == null) {
-      if (isFlow) {
-        indent = bestIndent;
-      } else {
-        indent = 0;
-      }
-    } else if (!indentless) {
-      this.indent += bestIndent;
-    }
-  }
-
-  // States
-
-  // Stream handlers.
-
-  private class ExpectStreamStart implements EmitterState {
-
-    public void expect() {
-      if (event.getEventId() == Event.ID.StreamStart) {
-        writeStreamStart();
-        state = new ExpectFirstDocumentStart();
-      } else {
-        throw new EmitterException("expected StreamStartEvent, but got " + event);
-      }
-    }
-  }
-
-  private class ExpectNothing implements EmitterState {
-
-    public void expect() {
-      throw new EmitterException("expecting nothing, but got " + event);
-    }
-  }
-
-  // Document handlers.
-
-  private class ExpectFirstDocumentStart implements EmitterState {
-
-    public void expect() {
-      new ExpectDocumentStart(true).expect();
-    }
-  }
-
-  private class ExpectDocumentStart implements EmitterState {
-
-    private final boolean first;
-
-    public ExpectDocumentStart(boolean first) {
-      this.first = first;
-    }
-
-    public void expect() {
-      if (event.getEventId() == Event.ID.DocumentStart) {
-        DocumentStartEvent ev = (DocumentStartEvent) event;
-        handleDocumentStartEvent(ev);
-        state = new ExpectDocumentRoot();
-      } else if (event.getEventId() == Event.ID.StreamEnd) {
-        writeStreamEnd();
-        state = new ExpectNothing();
-      } else if (event instanceof CommentEvent) {
-        blockCommentsCollector.collectEvents(event);
-        writeBlockComment();
-        // state = state; remains unchanged
-      } else {
-        throw new EmitterException("expected DocumentStartEvent, but got " + event);
-      }
-    }
-
-    private void handleDocumentStartEvent(DocumentStartEvent ev) {
-      if ((ev.getSpecVersion().isPresent() || !ev.getTags().isEmpty()) && openEnded) {
-        writeIndicator("...", true, false, false);
-        writeIndent();
-      }
-      ev.getSpecVersion().ifPresent(version -> writeVersionDirective(prepareVersion(version)));
-      tagPrefixes = new LinkedHashMap<>(DEFAULT_TAG_PREFIXES);
-      if (!ev.getTags().isEmpty()) {
-        handleTagDirectives(ev.getTags());
-      }
-      boolean implicit = first && !ev.isExplicit() && !canonical && !ev.getSpecVersion().isPresent()
-          && (ev.getTags().isEmpty()) && !checkEmptyDocument();
-      if (!implicit) {
-        writeIndent();
-        writeIndicator("---", true, false, false);
-        if (canonical) {
-          writeIndent();
+    override fun emit(event: Event) {
+        this.events.add(event)
+        while (!needMoreEvents()) {
+            this.event = this.events.removeFirst()
+            this.state.expect()
+            this.event = null
         }
-      }
     }
 
-    private void handleTagDirectives(Map<String, String> tags) {
-      Set<String> handles = new TreeSet<>(tags.keySet());
-      for (String handle : handles) {
-        String prefix = tags.get(handle);
-        tagPrefixes.put(prefix, handle);
-        String handleText = prepareTagHandle(handle);
-        String prefixText = prepareTagPrefix(prefix);
-        writeTagDirective(handleText, prefixText);
-      }
-    }
-
-    private boolean checkEmptyDocument() {
-      if (event.getEventId() != Event.ID.DocumentStart || events.isEmpty()) {
-        return false;
-      }
-      Event nextEvent = events.peek();
-      if (nextEvent.getEventId() == Event.ID.Scalar) {
-        ScalarEvent e = (ScalarEvent) nextEvent;
-        return !e.getAnchor().isPresent() && !e.getTag().isPresent() && e.getImplicit() != null
-            && e.getValue().length() == 0;
-      }
-      return false;
-    }
-  }
-
-  private class ExpectDocumentEnd implements EmitterState {
-
-    public void expect() {
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      writeBlockComment();
-      if (event.getEventId() == Event.ID.DocumentEnd) {
-        writeIndent();
-        if (((DocumentEndEvent) event).isExplicit()) {
-          writeIndicator("...", true, false, false);
-          writeIndent();
+    // In some cases, we wait for a few next events before emitting.
+    private fun needMoreEvents(): Boolean {
+        if (events.isEmpty()) {
+            return true
         }
-        flushStream();
-        state = new ExpectDocumentStart(false);
-      } else {
-        throw new EmitterException("expected DocumentEndEvent, but got " + event);
-      }
-    }
-  }
-
-  private class ExpectDocumentRoot implements EmitterState {
-
-    public void expect() {
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      if (!blockCommentsCollector.isEmpty()) {
-        writeBlockComment();
-        if (event instanceof DocumentEndEvent) {
-          new ExpectDocumentEnd().expect();
-          return;
+        val iter: Iterator<Event> = events.iterator()
+        var event = iter.next()
+        while (event is CommentEvent) {
+            if (!iter.hasNext()) {
+                return true
+            }
+            event = iter.next()
         }
-      }
-      states.push(new ExpectDocumentEnd());
-      expectNode(true, false, false);
+        return when (event) {
+            is DocumentStartEvent -> needEvents(iter, 1)
+
+            is SequenceStartEvent -> needEvents(iter, 2)
+
+            is MappingStartEvent  -> needEvents(iter, 3)
+
+            is StreamStartEvent   -> needEvents(iter, 2)
+
+            is StreamEndEvent     -> false
+
+            else                  ->
+                // To collect any comment events
+                if (emitComments) needEvents(iter, 1) else false
+        }
     }
-  }
 
-  // Node handlers.
-
-  private void expectNode(boolean root, boolean mapping, boolean simpleKey) {
-    rootContext = root;
-    mappingContext = mapping;
-    simpleKeyContext = simpleKey;
-    if (event.getEventId() == Event.ID.Alias) {
-      expectAlias();
-    } else if (event.getEventId() == Event.ID.Scalar || event.getEventId() == Event.ID.SequenceStart
-        || event.getEventId() == Event.ID.MappingStart) {
-      processAnchor("&");
-      processTag();
-      handleNodeEvent(event.getEventId());
-    } else {
-      throw new EmitterException("expected NodeEvent, but got " + event.getEventId());
+    private fun needEvents(iter: Iterator<Event>, count: Int): Boolean {
+        var level = 0
+        var actualCount = 0
+        for (event in iter) {
+            if (event is CommentEvent) {
+                continue
+            }
+            actualCount++
+            when (event) {
+                is DocumentStartEvent, is CollectionStartEvent -> level++
+                is DocumentEndEvent, is CollectionEndEvent     -> level--
+                is StreamEndEvent                              -> level = -1
+            }
+            if (level < 0) {
+                return false
+            }
+        }
+        return actualCount < count
     }
-  }
 
-  private void handleNodeEvent(Event.ID id) {
-    switch (id) {
-      case Scalar:
-        expectScalar();
-        break;
-      case SequenceStart:
-        if (flowLevel != 0 || canonical || ((SequenceStartEvent) event).isFlow()
-            || checkEmptySequence()) {
-          expectFlowSequence();
+    private fun increaseIndent(
+        isFlow: Boolean = false,
+        indentless: Boolean = false,
+    ) {
+        indents.addLast(indent)
+        if (indent == null) {
+            indent = if (isFlow) bestIndent else 0
+        } else if (!indentless) {
+            indent = indent!! + bestIndent
+        }
+    }
+
+    //region States
+
+    //region Stream handlers.
+    private inner class ExpectStreamStart : EmitterState {
+        override fun expect() {
+            if (event?.eventId == Event.ID.StreamStart) {
+                writeStreamStart()
+                state = ExpectFirstDocumentStart()
+            } else {
+                throw EmitterException("expected StreamStartEvent, but got $event")
+            }
+        }
+    }
+
+    private inner class ExpectNothing : EmitterState {
+        override fun expect(): Unit = throw EmitterException("expecting nothing, but got $event")
+    }
+
+    //endregion
+
+    //region Document handlers.
+    private inner class ExpectFirstDocumentStart : EmitterState {
+        override fun expect(): Unit = ExpectDocumentStart(true).expect()
+    }
+
+    private inner class ExpectDocumentStart(private val first: Boolean) : EmitterState {
+        override fun expect() {
+            if (event!!.eventId == Event.ID.DocumentStart) {
+                val ev = event as DocumentStartEvent
+                handleDocumentStartEvent(ev)
+                state = ExpectDocumentRoot()
+            } else if (event!!.eventId == Event.ID.StreamEnd) {
+                writeStreamEnd()
+                state = ExpectNothing()
+            } else if (event is CommentEvent) {
+                blockCommentsCollector.collectEvents(event)
+                writeBlockComment()
+                // state = state; remains unchanged
+            } else {
+                throw EmitterException("expected DocumentStartEvent, but got $event")
+            }
+        }
+
+
+        private fun handleDocumentStartEvent(ev: DocumentStartEvent) {
+            if ((ev.specVersion.isPresent || ev.tags.isNotEmpty()) && openEnded) {
+                writeIndicator(indicator = "...", needWhitespace = true)
+                writeIndent()
+            }
+            ev.specVersion.ifPresent { version: SpecVersion? ->
+                writeVersionDirective(prepareVersion(version!!))
+            }
+            tagPrefixes = LinkedHashMap(DEFAULT_TAG_PREFIXES)
+            if (ev.tags.isNotEmpty()) {
+                handleTagDirectives(ev.tags)
+            }
+            val implicit = (first && !ev.explicit && !canonical && !ev.specVersion.isPresent
+                && ev.tags.isEmpty() && !checkEmptyDocument())
+            if (!implicit) {
+                writeIndent()
+                writeIndicator(indicator = "---", needWhitespace = true)
+                if (canonical) {
+                    writeIndent()
+                }
+            }
+        }
+
+        private fun handleTagDirectives(tags: Map<String, String>) {
+            val handles: Set<String> = TreeSet(tags.keys)
+            for (handle in handles) {
+                val prefix = tags[handle]
+                tagPrefixes[prefix] = handle
+                val handleText = prepareTagHandle(handle)
+                val prefixText = prepareTagPrefix(prefix!!)
+                writeTagDirective(handleText, prefixText)
+            }
+        }
+
+        private fun prepareTagHandle(handle: String): String {
+            if (handle.isEmpty()) {
+                throw EmitterException("tag handle must not be empty")
+            } else if (handle[0] != '!' || handle[handle.length - 1] != '!') {
+                throw EmitterException("tag handle must start and end with '!': $handle")
+            } else if ("!" != handle && !HANDLE_FORMAT.matcher(handle).matches()) {
+                throw EmitterException("invalid character in the tag handle: $handle")
+            }
+            return handle
+        }
+
+        private fun prepareTagPrefix(prefix: String): String {
+            if (prefix.isEmpty()) {
+                throw EmitterException("tag prefix must not be empty")
+            }
+            val chunks = java.lang.StringBuilder()
+            val start = 0
+            var end = if (prefix[0] == '!') 1 else 0
+            while (end < prefix.length) {
+                end++
+            }
+            chunks.append(prefix, start, end)
+            return chunks.toString()
+        }
+
+        private fun checkEmptyDocument(): Boolean {
+            if (event!!.eventId != Event.ID.DocumentStart || events.isEmpty()) {
+                return false
+            }
+            val nextEvent = events.first()
+            if (nextEvent.eventId == Event.ID.Scalar) {
+                val e = nextEvent as ScalarEvent
+                return (!e.anchor.isPresent
+                    && !e.tag.isPresent && e.value.isEmpty())
+            }
+            return false
+        }
+    }
+
+    private inner class ExpectDocumentEnd : EmitterState {
+        override fun expect() {
+
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            writeBlockComment()
+            if (event!!.eventId == Event.ID.DocumentEnd) {
+                writeIndent()
+                if ((event as DocumentEndEvent).isExplicit) {
+                    writeIndicator(indicator = "...", needWhitespace = true)
+                    writeIndent()
+                }
+                flushStream()
+                state = ExpectDocumentStart(false)
+            } else {
+                throw EmitterException("expected DocumentEndEvent, but got $event")
+            }
+        }
+    }
+
+    private inner class ExpectDocumentRoot : EmitterState {
+        override fun expect() {
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            if (!blockCommentsCollector.isEmpty()) {
+                writeBlockComment()
+                if (event is DocumentEndEvent) {
+                    ExpectDocumentEnd().expect()
+                    return
+                }
+            }
+            states.addLast(ExpectDocumentEnd())
+            expectNode(root = true)
+        }
+    }
+
+    //endregion
+
+    //region Node handlers.
+
+    private fun expectNode(
+        root: Boolean = false,
+        mapping: Boolean = false,
+        simpleKey: Boolean = false,
+    ) {
+        rootContext = root
+        mappingContext = mapping
+        simpleKeyContext = simpleKey
+        when (event!!.eventId) {
+            Event.ID.Alias                                                 -> {
+                expectAlias()
+            }
+
+            Event.ID.Scalar, Event.ID.SequenceStart, Event.ID.MappingStart -> {
+                processAnchor("&")
+                processTag()
+                handleNodeEvent(event!!.eventId)
+            }
+
+            else                                                           -> {
+                throw EmitterException("expected NodeEvent, but got " + event!!.eventId)
+            }
+        }
+    }
+
+    private fun handleNodeEvent(id: Event.ID) {
+        when (id) {
+            Event.ID.Scalar        -> expectScalar()
+            Event.ID.SequenceStart -> if (flowLevel != 0 || canonical || (event as SequenceStartEvent).isFlow()
+                || checkEmptySequence()
+            ) {
+                expectFlowSequence()
+            } else {
+                expectBlockSequence()
+            }
+
+            Event.ID.MappingStart  -> if (flowLevel != 0 || canonical || (event as MappingStartEvent).isFlow()
+                || checkEmptyMapping()
+            ) {
+                expectFlowMapping()
+            } else {
+                expectBlockMapping()
+            }
+
+            else                   -> throw IllegalStateException()
+        }
+    }
+
+    private fun expectAlias() {
+        state = if (event is AliasEvent) {
+            processAnchor("*")
+            states.removeLast()
         } else {
-          expectBlockSequence();
+            throw EmitterException("Expecting Alias.")
         }
-        break;
-      case MappingStart:
-        if (flowLevel != 0 || canonical || ((MappingStartEvent) event).isFlow()
-            || checkEmptyMapping()) {
-          expectFlowMapping();
-        } else {
-          expectBlockMapping();
-        }
-        break;
-      default:
-        throw new IllegalStateException();
     }
-  }
 
-  private void expectAlias() {
-    if (event instanceof AliasEvent) {
-      processAnchor("*");
-      state = states.pop();
-    } else {
-      throw new EmitterException("Expecting Alias.");
+    private fun expectScalar() {
+        increaseIndent(isFlow = true)
+        processScalar(event as ScalarEvent)
+        indent = indents.removeLastOrNull()
+        state = states.removeLastOrNull()!!
     }
-  }
+    //endregion
 
-  private void expectScalar() {
-    increaseIndent(true, false);
-    processScalar();
-    indent = indents.pop();
-    state = states.pop();
-  }
+    //region Flow sequence handlers.
 
-  // Flow sequence handlers.
-
-  private void expectFlowSequence() {
-    writeIndicator("[", true, true, false);
-    flowLevel++;
-    increaseIndent(true, false);
-    if (multiLineFlow) {
-      writeIndent();
-    }
-    state = new ExpectFirstFlowSequenceItem();
-  }
-
-  private class ExpectFirstFlowSequenceItem implements EmitterState {
-
-    public void expect() {
-      if (event.getEventId() == Event.ID.SequenceEnd) {
-        indent = indents.pop();
-        flowLevel--;
-        writeIndicator("]", false, false, false);
-        inlineCommentsCollector.collectEvents();
-        writeInlineComments();
-        state = states.pop();
-      } else if (event instanceof CommentEvent) {
-        blockCommentsCollector.collectEvents(event);
-        writeBlockComment();
-      } else {
-        if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
-          writeIndent();
-        }
-        states.push(new ExpectFlowSequenceItem());
-        expectNode(false, false, false);
-        event = inlineCommentsCollector.collectEvents(event);
-        writeInlineComments();
-      }
-    }
-  }
-
-  private class ExpectFlowSequenceItem implements EmitterState {
-
-    public void expect() {
-      if (event.getEventId() == Event.ID.SequenceEnd) {
-        indent = indents.pop();
-        flowLevel--;
-        if (canonical) {
-          writeIndicator(",", false, false, false);
-          writeIndent();
-        } else if (multiLineFlow) {
-          writeIndent();
-        }
-        writeIndicator("]", false, false, false);
-        inlineCommentsCollector.collectEvents();
-        writeInlineComments();
+    private fun expectFlowSequence() {
+        writeIndicator(indicator = "[", needWhitespace = true, whitespace = true)
+        flowLevel++
+        increaseIndent(isFlow = true)
         if (multiLineFlow) {
-          writeIndent();
+            writeIndent()
         }
-        state = states.pop();
-      } else if (event instanceof CommentEvent) {
-        event = blockCommentsCollector.collectEvents(event);
-      } else {
-        writeIndicator(",", false, false, false);
-        writeBlockComment();
-        if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
-          writeIndent();
-        }
-        states.push(new ExpectFlowSequenceItem());
-        expectNode(false, false, false);
-        event = inlineCommentsCollector.collectEvents(event);
-        writeInlineComments();
-      }
+        state = ExpectFirstFlowSequenceItem()
     }
-  }
 
-  // Flow mapping handlers.
+    private inner class ExpectFirstFlowSequenceItem : EmitterState {
+        override fun expect() {
+            if (event!!.eventId == Event.ID.SequenceEnd) {
+                indent = indents.removeLastOrNull()
+                flowLevel--
+                writeIndicator(indicator = "]")
+                inlineCommentsCollector.collectEvents()
+                writeInlineComments()
+                state = states.removeLastOrNull()!!
+            } else if (event is CommentEvent) {
+                blockCommentsCollector.collectEvents(event)
+                writeBlockComment()
+            } else {
+                if (canonical || column > bestWidth && splitLines || multiLineFlow) {
+                    writeIndent()
+                }
+                states.addLast(ExpectFlowSequenceItem())
+                expectNode()
+                event = inlineCommentsCollector.collectEvents(event)
+                writeInlineComments()
+            }
 
-  private void expectFlowMapping() {
-    writeIndicator("{", true, true, false);
-    flowLevel++;
-    increaseIndent(true, false);
-    if (multiLineFlow) {
-      writeIndent();
+        }
     }
-    state = new ExpectFirstFlowMappingKey();
-  }
 
-  private class ExpectFirstFlowMappingKey implements EmitterState {
-
-    public void expect() {
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      writeBlockComment();
-      if (event.getEventId() == Event.ID.MappingEnd) {
-        indent = indents.pop();
-        flowLevel--;
-        writeIndicator("}", false, false, false);
-        inlineCommentsCollector.collectEvents();
-        writeInlineComments();
-        state = states.pop();
-      } else {
-        if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
-          writeIndent();
+    private inner class ExpectFlowSequenceItem : EmitterState {
+        override fun expect() {
+            if (event!!.eventId == Event.ID.SequenceEnd) {
+                indent = indents.removeLastOrNull()
+                flowLevel--
+                if (canonical) {
+                    writeIndicator(indicator = ",")
+                    writeIndent()
+                } else if (multiLineFlow) {
+                    writeIndent()
+                }
+                writeIndicator(indicator = "]")
+                inlineCommentsCollector.collectEvents()
+                writeInlineComments()
+                if (multiLineFlow) {
+                    writeIndent()
+                }
+                state = states.removeLastOrNull()!!
+            } else if (event is CommentEvent) {
+                event = blockCommentsCollector.collectEvents(event)
+            } else {
+                writeIndicator(indicator = ",")
+                writeBlockComment()
+                if (canonical || column > bestWidth && splitLines || multiLineFlow) {
+                    writeIndent()
+                }
+                states.addLast(ExpectFlowSequenceItem())
+                expectNode()
+                event = inlineCommentsCollector.collectEvents(event)
+                writeInlineComments()
+            }
         }
-        if (!canonical && checkSimpleKey()) {
-          states.push(new ExpectFlowMappingSimpleValue());
-          expectNode(false, true, true);
-        } else {
-          writeIndicator("?", true, false, false);
-          states.push(new ExpectFlowMappingValue());
-          expectNode(false, true, false);
-        }
-      }
     }
-  }
 
-  private class ExpectFlowMappingKey implements EmitterState {
+    //endregion
 
-    public void expect() {
-      if (event.getEventId() == Event.ID.MappingEnd) {
-        indent = indents.pop();
-        flowLevel--;
-        if (canonical) {
-          writeIndicator(",", false, false, false);
-          writeIndent();
-        }
+    //region Flow mapping handlers.
+
+    private fun expectFlowMapping() {
+        writeIndicator(indicator = "{", needWhitespace = true, whitespace = true)
+        flowLevel++
+        increaseIndent(isFlow = true)
         if (multiLineFlow) {
-          writeIndent();
+            writeIndent()
         }
-        writeIndicator("}", false, false, false);
-        inlineCommentsCollector.collectEvents();
-        writeInlineComments();
-        state = states.pop();
-      } else {
-        writeIndicator(",", false, false, false);
-        event = blockCommentsCollector.collectEventsAndPoll(event);
-        writeBlockComment();
-        if (canonical || (column > bestWidth && splitLines) || multiLineFlow) {
-          writeIndent();
+        state = ExpectFirstFlowMappingKey()
+    }
+
+    private inner class ExpectFirstFlowMappingKey : EmitterState {
+        override fun expect() {
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            writeBlockComment()
+            if (event!!.eventId == Event.ID.MappingEnd) {
+                indent = indents.removeLastOrNull()
+                flowLevel--
+                writeIndicator(indicator = "}")
+                inlineCommentsCollector.collectEvents()
+                writeInlineComments()
+                state = states.removeLastOrNull()!!
+            } else {
+                if (canonical || column > bestWidth && splitLines || multiLineFlow) {
+                    writeIndent()
+                }
+                if (!canonical && checkSimpleKey()) {
+                    states.addLast(ExpectFlowMappingSimpleValue())
+                    expectNode(mapping = true, simpleKey = true)
+                } else {
+                    writeIndicator(indicator = "?", needWhitespace = true)
+                    states.addLast(ExpectFlowMappingValue())
+                    expectNode(mapping = true)
+                }
+            }
+
         }
-        if (!canonical && checkSimpleKey()) {
-          states.push(new ExpectFlowMappingSimpleValue());
-          expectNode(false, true, true);
+    }
+
+    private inner class ExpectFlowMappingKey : EmitterState {
+        override fun expect() {
+            if (event!!.eventId == Event.ID.MappingEnd) {
+                indent = indents.removeLastOrNull()
+                flowLevel--
+                if (canonical) {
+                    writeIndicator(indicator = ",")
+                    writeIndent()
+                }
+                if (multiLineFlow) {
+                    writeIndent()
+                }
+                writeIndicator(indicator = "}")
+                inlineCommentsCollector.collectEvents()
+                writeInlineComments()
+                state = states.removeLastOrNull()!!
+            } else {
+                writeIndicator(indicator = ",")
+                event = blockCommentsCollector.collectEventsAndPoll(event)
+                writeBlockComment()
+                if (canonical || column > bestWidth && splitLines || multiLineFlow) {
+                    writeIndent()
+                }
+                if (!canonical && checkSimpleKey()) {
+                    states.addLast(ExpectFlowMappingSimpleValue())
+                    expectNode(mapping = true, simpleKey = true)
+                } else {
+                    writeIndicator(indicator = "?", needWhitespace = true)
+                    states.addLast(ExpectFlowMappingValue())
+                    expectNode(mapping = true)
+                }
+            }
+
+        }
+    }
+
+    private inner class ExpectFlowMappingSimpleValue : EmitterState {
+        override fun expect() {
+            writeIndicator(indicator = ":")
+            event = inlineCommentsCollector.collectEventsAndPoll(event)
+            writeInlineComments()
+            states.addLast(ExpectFlowMappingKey())
+            expectNode(mapping = true)
+            inlineCommentsCollector.collectEvents(event)
+            writeInlineComments()
+        }
+    }
+
+    private inner class ExpectFlowMappingValue : EmitterState {
+        override fun expect() {
+            if (canonical || column > bestWidth || multiLineFlow) {
+                writeIndent()
+            }
+            writeIndicator(indicator = ":", needWhitespace = true)
+            event = inlineCommentsCollector.collectEventsAndPoll(event)
+            writeInlineComments()
+            states.addLast(ExpectFlowMappingKey())
+            expectNode(mapping = true)
+            inlineCommentsCollector.collectEvents(event)
+            writeInlineComments()
+
+        }
+    }
+    //endregion
+
+    //region Block sequence handlers.
+    private fun expectBlockSequence() {
+        val indentless = mappingContext && !indention
+        increaseIndent(indentless = indentless)
+        state = ExpectFirstBlockSequenceItem()
+    }
+
+    private inner class ExpectFirstBlockSequenceItem : EmitterState {
+        override fun expect(): Unit = ExpectBlockSequenceItem(true).expect()
+    }
+
+    private inner class ExpectBlockSequenceItem(private val first: Boolean) : EmitterState {
+        override fun expect() {
+            if (!first && event!!.eventId == Event.ID.SequenceEnd) {
+                indent = indents.removeLastOrNull()
+                state = states.removeLast()
+            } else if (event is CommentEvent) {
+                blockCommentsCollector.collectEvents(event)
+            } else {
+                writeIndent()
+                if (!indentWithIndicator || first) {
+                    writeWhitespace(indicatorIndent)
+                }
+                writeIndicator(indicator = "-", needWhitespace = true, indentation = true)
+                if (indentWithIndicator && first) {
+                    indent = indent!! + indicatorIndent
+                }
+                if (!blockCommentsCollector.isEmpty()) {
+                    increaseIndent()
+                    writeBlockComment()
+                    if (event is ScalarEvent) {
+                        analysis = analyzeScalar((event as ScalarEvent).value)
+                        if (!analysis!!.empty) {
+                            writeIndent()
+                        }
+                    }
+                    indent = indents.removeLastOrNull()
+                }
+                states.addLast(ExpectBlockSequenceItem(false))
+                expectNode()
+                inlineCommentsCollector.collectEvents()
+                writeInlineComments()
+            }
+        }
+    }
+
+    //endregion
+
+    // region Block mapping handlers.
+
+    private fun expectBlockMapping() {
+        increaseIndent()
+        state = ExpectFirstBlockMappingKey()
+    }
+
+    private inner class ExpectFirstBlockMappingKey : EmitterState {
+        override fun expect() {
+            ExpectBlockMappingKey(true).expect()
+        }
+    }
+
+    private inner class ExpectBlockMappingKey(
+        private val first: Boolean,
+    ) : EmitterState {
+        override fun expect() {
+
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            writeBlockComment()
+            if (!first && event!!.eventId == Event.ID.MappingEnd) {
+                indent = indents.removeLastOrNull()
+                state = states.removeLastOrNull()!!
+            } else {
+                writeIndent()
+                if (checkSimpleKey()) {
+                    states.addLast(ExpectBlockMappingSimpleValue())
+                    expectNode(mapping = true, simpleKey = true)
+                } else {
+                    writeIndicator(indicator = "?", needWhitespace = true, indentation = true)
+                    states.addLast(ExpectBlockMappingValue())
+                    expectNode(mapping = true)
+                }
+            }
+        }
+    }
+
+    private inner class ExpectBlockMappingSimpleValue : EmitterState {
+        override fun expect() {
+            writeIndicator(indicator = ":")
+            event = inlineCommentsCollector.collectEventsAndPoll(event)
+            if (!isFoldedOrLiteral(event!!)) {
+                if (writeInlineComments()) {
+                    increaseIndent(isFlow = true)
+                    writeIndent()
+                    indent = indents.removeLastOrNull()
+                }
+            }
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            if (!blockCommentsCollector.isEmpty()) {
+                increaseIndent(isFlow = true)
+                writeBlockComment()
+                writeIndent()
+                indent = indents.removeLastOrNull()
+            }
+            states.addLast(ExpectBlockMappingKey(false))
+            expectNode(mapping = true)
+            inlineCommentsCollector.collectEvents()
+            writeInlineComments()
+        }
+
+        private fun isFoldedOrLiteral(event: Event): Boolean {
+            return event is ScalarEvent
+                && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
+        }
+    }
+
+    private inner class ExpectBlockMappingValue : EmitterState {
+        override fun expect() {
+            writeIndent()
+            writeIndicator(indicator = ":", needWhitespace = true, indentation = true)
+            event = inlineCommentsCollector.collectEventsAndPoll(event)
+            writeInlineComments()
+            event = blockCommentsCollector.collectEventsAndPoll(event)
+            writeBlockComment()
+            states.addLast(ExpectBlockMappingKey(false))
+            expectNode(mapping = true)
+            inlineCommentsCollector.collectEvents(event)
+            writeInlineComments()
+        }
+    }
+    //endregion
+
+    //region Checkers.
+
+    private fun checkEmptySequence(): Boolean {
+        return event!!.eventId == Event.ID.SequenceStart
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.SequenceEnd
+    }
+
+    private fun checkEmptyMapping(): Boolean {
+        return event!!.eventId == Event.ID.MappingStart
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.MappingEnd
+    }
+
+    private fun checkSimpleKey(): Boolean {
+        var length = 0
+        if (event is NodeEvent) {
+            val anchorOpt: Optional<Anchor> = (event as NodeEvent).anchor
+            if (anchorOpt.isPresent) {
+                if (!preparedAnchor.isPresent) {
+                    preparedAnchor = anchorOpt
+                }
+                length += anchorOpt.get().value.length
+            }
+        }
+        val tag: Optional<String> =
+            if (event!!.eventId == Event.ID.Scalar) {
+                (event as ScalarEvent).tag
+            } else if (event is CollectionStartEvent) {
+                (event as CollectionStartEvent).tag
+            } else {
+                Optional.empty()
+            }
+        if (tag.isPresent) {
+            if (preparedTag == null) {
+                preparedTag = prepareTag(tag.get())
+            }
+            length += preparedTag!!.length
+        }
+        if (event!!.eventId == Event.ID.Scalar) {
+            if (analysis == null) {
+                analysis = analyzeScalar((event as ScalarEvent).value)
+            }
+            length += analysis!!.scalar.length
+        }
+        return length < maxSimpleKeyLength
+            && (
+            event!!.eventId == Event.ID.Alias
+                || event!!.eventId == Event.ID.Scalar
+                && !analysis!!.empty
+                && !analysis!!.multiline
+                || checkEmptySequence()
+                || checkEmptyMapping()
+            )
+    }
+
+    //endregion
+
+    //region Anchor, Tag, and Scalar processors.
+
+    private fun processAnchor(indicator: String) {
+        val ev = event as NodeEvent
+        val anchorOption: Optional<Anchor> = ev.anchor
+        if (anchorOption.isPresent) {
+            val anchor = anchorOption.get()
+            if (!preparedAnchor.isPresent) {
+                preparedAnchor = anchorOption
+            }
+            writeIndicator(indicator = indicator + anchor, needWhitespace = true)
+        }
+        preparedAnchor = Optional.empty()
+    }
+
+    private fun processTag() {
+        var tag: Optional<String>
+        if (event!!.eventId == Event.ID.Scalar) {
+            val ev = event as ScalarEvent
+            tag = ev.tag
+            if (!scalarStyle.isPresent) {
+                scalarStyle = chooseScalarStyle(ev)
+            }
+            if (
+                (!canonical || !tag.isPresent)
+                && (
+                    !scalarStyle.isPresent
+                        && ev.implicit.canOmitTagInPlainScalar()
+                        || scalarStyle.isPresent
+                        && ev.implicit.canOmitTagInNonPlainScalar()
+                    )
+            ) {
+                preparedTag = null
+                return
+            } else if (ev.implicit.canOmitTagInPlainScalar() && !tag.isPresent) {
+                tag = Optional.of("!")
+                preparedTag = null
+            }
         } else {
-          writeIndicator("?", true, false, false);
-          states.push(new ExpectFlowMappingValue());
-          expectNode(false, true, false);
+            val ev = event as CollectionStartEvent
+            tag = ev.tag
+            if ((!canonical || !tag.isPresent) && ev.isImplicit()) {
+                preparedTag = null
+                return
+            }
         }
-      }
-    }
-  }
-
-  private class ExpectFlowMappingSimpleValue implements EmitterState {
-
-    public void expect() {
-      writeIndicator(":", false, false, false);
-      event = inlineCommentsCollector.collectEventsAndPoll(event);
-      writeInlineComments();
-      states.push(new ExpectFlowMappingKey());
-      expectNode(false, true, false);
-      inlineCommentsCollector.collectEvents(event);
-      writeInlineComments();
-    }
-  }
-
-  private class ExpectFlowMappingValue implements EmitterState {
-
-    public void expect() {
-      if (canonical || (column > bestWidth) || multiLineFlow) {
-        writeIndent();
-      }
-      writeIndicator(":", true, false, false);
-      event = inlineCommentsCollector.collectEventsAndPoll(event);
-      writeInlineComments();
-      states.push(new ExpectFlowMappingKey());
-      expectNode(false, true, false);
-      inlineCommentsCollector.collectEvents(event);
-      writeInlineComments();
-    }
-  }
-
-  // Block sequence handlers.
-
-  private void expectBlockSequence() {
-    boolean indentless = mappingContext && !indention;
-    increaseIndent(false, indentless);
-    state = new ExpectFirstBlockSequenceItem();
-  }
-
-  private class ExpectFirstBlockSequenceItem implements EmitterState {
-
-    public void expect() {
-      new ExpectBlockSequenceItem(true).expect();
-    }
-  }
-
-  private class ExpectBlockSequenceItem implements EmitterState {
-
-    private final boolean first;
-
-    public ExpectBlockSequenceItem(boolean first) {
-      this.first = first;
-    }
-
-    public void expect() {
-      if (!this.first && event.getEventId() == Event.ID.SequenceEnd) {
-        indent = indents.pop();
-        state = states.pop();
-      } else if (event instanceof CommentEvent) {
-        blockCommentsCollector.collectEvents(event);
-      } else {
-        writeIndent();
-        if (!indentWithIndicator || this.first) {
-          writeWhitespace(indicatorIndent);
+        if (!tag.isPresent) {
+            throw EmitterException("tag is not specified")
         }
-        writeIndicator("-", true, false, true);
-        if (indentWithIndicator && this.first) {
-          indent += indicatorIndent;
+        val indicator = preparedTag ?: prepareTag(tag.get())
+        writeIndicator(indicator = indicator, needWhitespace = true)
+    }
+
+    private fun chooseScalarStyle(ev: ScalarEvent): Optional<ScalarStyle> {
+        if (analysis == null) {
+            analysis = analyzeScalar(ev.value)
         }
+        if (!ev.plain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
+            return Optional.of(ScalarStyle.DOUBLE_QUOTED)
+        }
+        if (ev.plain && ev.implicit.canOmitTagInPlainScalar()) {
+            if (!(simpleKeyContext && (analysis!!.empty || analysis!!.multiline))
+                && (flowLevel != 0 && analysis!!.allowFlowPlain || flowLevel == 0 && analysis!!.allowBlockPlain)
+            ) {
+                return Optional.empty()
+            }
+        }
+        if (!ev.plain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
+            if (flowLevel == 0 && !simpleKeyContext && analysis!!.allowBlock) {
+                return Optional.of(ev.scalarStyle)
+            }
+        }
+        if (ev.plain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
+            if (analysis!!.allowSingleQuoted && !(simpleKeyContext && analysis!!.multiline)) {
+                return Optional.of(ScalarStyle.SINGLE_QUOTED)
+            }
+        }
+        return Optional.of(ScalarStyle.DOUBLE_QUOTED)
+    }
+
+    private fun processScalar(ev: ScalarEvent) {
+        if (analysis == null) {
+            analysis = analyzeScalar(ev.value)
+        }
+        if (!scalarStyle.isPresent) {
+            scalarStyle = chooseScalarStyle(ev)
+        }
+        val split = !simpleKeyContext && splitLines
+        if (!scalarStyle.isPresent) {
+            writePlain(analysis!!.scalar, split)
+        } else {
+            when (scalarStyle.get()) {
+                ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
+                ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
+                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
+                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
+                else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
+            }
+        }
+        analysis = null
+        scalarStyle = Optional.empty()
+    }
+
+    //endregion
+
+    //region Analyzers.
+    private fun prepareVersion(version: SpecVersion): String {
+        if (version.major != 1) {
+            throw EmitterException("unsupported YAML version: $version")
+        }
+        return version.representation
+    }
+
+    private fun prepareTag(tag: String): String {
+        if (tag.isEmpty()) {
+            throw EmitterException("tag must not be empty")
+        } else if ("!" == tag) {
+            return tag
+        }
+        val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
+            prefix != null
+                && tag.startsWith(prefix)
+                && ("!" == prefix || prefix.length < tag.length)
+        }
+        val handle: String?
+        val suffix: String
+        if (matchedPrefix != null) {
+            handle = tagPrefixes[matchedPrefix]
+            suffix = tag.substring(matchedPrefix.length)
+        } else {
+            handle = null
+            suffix = tag
+        }
+        val suffixText = suffix.take(suffix.length)
+        return if (handle != null) handle + suffixText else "!<$suffixText>"
+    }
+
+    private fun analyzeScalar(scalar: String): ScalarAnalysis {
+        // Empty scalar is a special case.
+        if (scalar.isEmpty()) {
+            return ScalarAnalysis(
+                scalar = scalar,
+                empty = true,
+                multiline = false,
+                allowFlowPlain = false,
+                allowBlockPlain = true,
+                allowSingleQuoted = true,
+                allowBlock = false,
+            )
+        }
+        // Indicators and special characters.
+        var blockIndicators = false
+        var flowIndicators = false
+        var lineBreaks = false
+        var specialCharacters = false
+
+        // Important whitespace combinations.
+        var leadingSpace = false
+        var leadingBreak = false
+        var trailingSpace = false
+        var trailingBreak = false
+        var breakSpace = false
+        var spaceBreak = false
+
+        // Check document indicators.
+        if (scalar.startsWith("---") || scalar.startsWith("...")) {
+            blockIndicators = true
+            flowIndicators = true
+        }
+        // First character or preceded by a whitespace.
+        var precededByWhitespace = true
+        var followedByWhitespace = scalar.length == 1 || CharConstants.NULL_BL_T_LINEBR.has(scalar.codePointAt(1))
+        // The previous character is a space.
+        var previousSpace = false
+
+        // The previous character is a break.
+        var previousBreak = false
+        var index = 0
+        while (index < scalar.length) {
+            val c = scalar.codePointAt(index)
+            // Check for indicators.
+            if (index == 0) {
+                // Leading indicators are special characters.
+                if (c.toChar() in "#,[]{}&*!|>'\"%@`") {
+                    flowIndicators = true
+                    blockIndicators = true
+                }
+                if (c == '?'.code || c == ':'.code) {
+                    flowIndicators = true
+                    if (followedByWhitespace) {
+                        blockIndicators = true
+                    }
+                }
+                if (c == '-'.code && followedByWhitespace) {
+                    flowIndicators = true
+                    blockIndicators = true
+                }
+            } else {
+                // Some indicators cannot appear within a scalar as well.
+                if (c.toChar() in ",?[]{}") {
+                    flowIndicators = true
+                }
+                if (c == ':'.code) {
+                    flowIndicators = true
+                    if (followedByWhitespace) {
+                        blockIndicators = true
+                    }
+                }
+                if (c == '#'.code && precededByWhitespace) {
+                    flowIndicators = true
+                    blockIndicators = true
+                }
+            }
+            // Check for line breaks, special, and unicode characters.
+            val isLineBreak = CharConstants.LINEBR.has(c)
+            if (isLineBreak) {
+                lineBreaks = true
+            }
+            if (!(c == '\n'.code || c in 0x20..0x7E)) {
+                if (c == 0x85
+                    || c in 0xA0..0xD7FF
+                    || c in 0xE000..0xFFFD
+                    || c in 0x10000..0x10FFFF
+                ) {
+                    // unicode is used
+                    if (!allowUnicode) {
+                        specialCharacters = true
+                    }
+                } else {
+                    specialCharacters = true
+                }
+            }
+            // Detect important whitespace combinations.
+            if (c == ' '.code) {
+                if (index == 0) {
+                    leadingSpace = true
+                }
+                if (index == scalar.length - 1) {
+                    trailingSpace = true
+                }
+                if (previousBreak) {
+                    breakSpace = true
+                }
+                previousSpace = true
+                previousBreak = false
+            } else if (isLineBreak) {
+                if (index == 0) {
+                    leadingBreak = true
+                }
+                if (index == scalar.length - 1) {
+                    trailingBreak = true
+                }
+                if (previousSpace) {
+                    spaceBreak = true
+                }
+                previousSpace = false
+                previousBreak = true
+            } else {
+                previousSpace = false
+                previousBreak = false
+            }
+
+            // Prepare for the next character.
+            index += Character.charCount(c)
+            precededByWhitespace = CharConstants.NULL_BL_T.has(c) || isLineBreak
+            followedByWhitespace = true
+            if (index + 1 < scalar.length) {
+                val nextIndex = index + Character.charCount(scalar.codePointAt(index))
+                if (nextIndex < scalar.length) {
+                    followedByWhitespace = CharConstants.NULL_BL_T.has(scalar.codePointAt(nextIndex)) || isLineBreak
+                }
+            }
+        }
+        // Let's decide what styles are allowed.
+        var allowFlowPlain = true
+        var allowBlockPlain = true
+        var allowSingleQuoted = true
+        var allowBlock = true
+        // Leading and trailing whitespaces are bad for plain scalars.
+        if (leadingSpace || leadingBreak || trailingSpace || trailingBreak) {
+            allowBlockPlain = false
+            allowFlowPlain = false
+        }
+        // We do not permit trailing spaces for block scalars.
+        if (trailingSpace) {
+            allowBlock = false
+        }
+        // Spaces at the beginning of a new line are only acceptable for block scalars.
+        if (breakSpace) {
+            allowSingleQuoted = false
+            allowBlockPlain = false
+            allowFlowPlain = false
+        }
+        // Spaces followed by breaks, as well as special character are only allowed for double-quoted scalars.
+        if (spaceBreak || specialCharacters) {
+            allowBlock = false
+            allowSingleQuoted = false
+            allowBlockPlain = false
+            allowFlowPlain = false
+        }
+        // Although the plain scalar writer supports breaks, we never emit
+        // multiline plain scalars in the flow context.
+        if (lineBreaks) {
+            allowFlowPlain = false
+        }
+        // Flow indicators are forbidden for flow plain scalars.
+        if (flowIndicators) {
+            allowFlowPlain = false
+        }
+        // Block indicators are forbidden for block plain scalars.
+        if (blockIndicators) {
+            allowBlockPlain = false
+        }
+        return ScalarAnalysis(
+            scalar = scalar,
+            empty = false,
+            multiline = lineBreaks,
+            allowFlowPlain = allowFlowPlain,
+            allowBlockPlain = allowBlockPlain,
+            allowSingleQuoted = allowSingleQuoted,
+            allowBlock = allowBlock,
+        )
+    }
+
+    //endregion
+
+    //region Writers.
+
+    private fun flushStream(): Unit = stream.flush()
+
+    private fun writeStreamStart(): Unit = Unit // BOM is written by Writer.
+
+    private fun writeStreamEnd(): Unit = flushStream()
+
+    private fun writeIndicator(
+        indicator: String,
+        needWhitespace: Boolean = false,
+        whitespace: Boolean = false,
+        indentation: Boolean = false,
+    ) {
+        if (!this.whitespace && needWhitespace) {
+            column++
+            stream.write(SPACE)
+        }
+        this.whitespace = whitespace
+        indention = indention && indentation
+        column += indicator.length
+        openEnded = false
+        stream.write(indicator)
+    }
+
+    private fun writeIndent() {
+        val indentToWrite = indent ?: 0
+        if (!indention || column > indentToWrite || column == indentToWrite && !whitespace) {
+            writeLineBreak()
+        }
+        writeWhitespace(indentToWrite - column)
+    }
+
+    private fun writeWhitespace(length: Int) {
+        if (length <= 0) return
+        whitespace = true
+        stream.write(SPACE.repeat(length))
+        column += length
+    }
+
+    private fun writeLineBreak(data: String? = null) {
+        whitespace = true
+        indention = true
+        column = 0
+        stream.write(data ?: bestLineBreak)
+    }
+
+    fun writeVersionDirective(versionText: String) {
+        stream.write("%YAML $versionText")
+        writeLineBreak()
+    }
+
+    fun writeTagDirective(handleText: String, prefixText: String) {
+        // XXX: not sure 4 invocations better than StringBuilders created by str + str
+        stream.write("%TAG $handleText $prefixText")
+        writeLineBreak()
+    }
+
+    //endregion
+
+    //region Scalar streams.
+    private fun writeSingleQuoted(text: String, split: Boolean) {
+        writeIndicator(indicator = "'", needWhitespace = true)
+        var spaces = false
+        var breaks = false
+        var start = 0
+        var end = 0
+        var ch: Char
+        while (end <= text.length) {
+            ch = 0.toChar()
+            if (end < text.length) {
+                ch = text[end]
+            }
+            if (spaces) {
+                if (ch != ' ') {
+                    if (start + 1 == end && column > bestWidth && split && start != 0 && end != text.length) {
+                        writeIndent()
+                    } else {
+                        val len = end - start
+                        column += len
+                        stream.write(text, start, len)
+                    }
+                    start = end
+                }
+            } else if (breaks) {
+                if (ch.code == 0 || CharConstants.LINEBR.hasNo(ch.code)) {
+                    if (text[start] == '\n') {
+                        writeLineBreak()
+                    }
+                    val data = text.substring(start, end)
+                    for (br in data.toCharArray()) {
+                        if (br == '\n') {
+                            writeLineBreak()
+                        } else {
+                            writeLineBreak(br.toString())
+                        }
+                    }
+                    writeIndent()
+                    start = end
+                }
+            } else {
+                if (CharConstants.LINEBR.has(ch.code, "\u0000 '")) {
+                    if (start < end) {
+                        val len = end - start
+                        column += len
+                        stream.write(text, start, len)
+                        start = end
+                    }
+                }
+            }
+            if (ch == '\'') {
+                column += 2
+                stream.write("''")
+                start = end + 1
+            }
+            if (ch.code != 0) {
+                spaces = ch == ' '
+                breaks = CharConstants.LINEBR.has(ch.code)
+            }
+            end++
+        }
+        writeIndicator(indicator = "'")
+    }
+
+    private fun writeDoubleQuoted(text: String, split: Boolean) {
+        writeIndicator(indicator = "\"", needWhitespace = true)
+        var start = 0
+        var end = 0
+        while (end <= text.length) {
+            var ch: Char? = null
+            if (end < text.length) {
+                ch = text[end]
+            }
+            if (ch == null || ch in "\"\\\u0085\u2028\u2029\uFEFF" || !('\u0020' <= ch && ch <= '\u007E')) {
+                if (start < end) {
+                    val len = end - start
+                    column += len
+                    stream.write(text, start, len)
+                    start = end
+                }
+                if (ch != null) {
+                    var data: String
+                    if (ESCAPE_REPLACEMENTS.containsKey(ch)) {
+                        data = "\\" + ESCAPE_REPLACEMENTS[ch]
+                    } else {
+                        val codePoint: Int = if (Character.isHighSurrogate(ch) && end + 1 < text.length) {
+                            val ch2 = text[end + 1]
+                            Character.toCodePoint(ch, ch2)
+                        } else {
+                            ch.code
+                        }
+                        if (allowUnicode && StreamReader.isPrintable(codePoint)) {
+                            data = String(Character.toChars(codePoint))
+                            if (Character.charCount(codePoint) == 2) {
+                                end++
+                            }
+                        } else {
+                            // if !allowUnicode or the character is not printable,
+                            // we must encode it
+                            data = if (ch <= '\u00FF') {
+                                val s = "0" + ch.code.toString(16)
+                                "\\x" + s.substring(s.length - 2)
+                            } else if (Character.charCount(codePoint) == 2) {
+                                end++
+                                val s = "000" + java.lang.Long.toHexString(codePoint.toLong())
+                                "\\U" + s.substring(s.length - 8)
+                            } else {
+                                val s = "000" + ch.code.toString(16)
+                                "\\u" + s.substring(s.length - 4)
+                            }
+                        }
+                    }
+                    column += data.length
+                    stream.write(data)
+                    start = end + 1
+                }
+            }
+            if (0 < end && end < text.length - 1 && (ch == ' ' || start >= end) && column + (end - start) > bestWidth && split) {
+                var data: String
+                data = (if (start >= end) "\\" else text.substring(start, end) + "\\")
+                if (start < end) {
+                    start = end
+                }
+                column += data.length
+                stream.write(data)
+                writeIndent()
+                whitespace = false
+                indention = false
+                if (text[start] == ' ') {
+                    data = "\\"
+                    column += data.length
+                    stream.write(data)
+                }
+            }
+            end += 1
+        }
+        writeIndicator(indicator = "\"")
+    }
+
+    private fun writeCommentLines(commentLines: List<CommentLine>): Boolean {
+        var wroteComment = false
+        if (emitComments) {
+            var indentColumns = 0
+            var firstComment = true
+            for (commentLine in commentLines) {
+                if (commentLine.commentType != CommentType.BLANK_LINE) {
+                    if (firstComment) {
+                        firstComment = false
+                        writeIndicator(
+                            indicator = "#",
+                            needWhitespace = commentLine.commentType == CommentType.IN_LINE,
+                        )
+                        indentColumns = if (column > 0) column - 1 else 0
+                    } else {
+                        writeWhitespace(indentColumns)
+                        writeIndicator(indicator = "#")
+                    }
+                    stream.write(commentLine.value)
+                    writeLineBreak()
+                } else {
+                    writeLineBreak()
+                    writeIndent()
+                }
+                wroteComment = true
+            }
+        }
+        return wroteComment
+    }
+
+    private fun writeBlockComment() {
         if (!blockCommentsCollector.isEmpty()) {
-          increaseIndent(false, false);
-          writeBlockComment();
-          if (event instanceof ScalarEvent) {
-            analysis = analyzeScalar(((ScalarEvent) event).getValue());
-            if (!analysis.isEmpty()) {
-              writeIndent();
+            writeIndent()
+            writeCommentLines(blockCommentsCollector.consume())
+        }
+    }
+
+    private fun writeInlineComments(): Boolean {
+        return writeCommentLines(inlineCommentsCollector.consume())
+    }
+
+    private fun determineBlockHints(text: String): String {
+        val hints = StringBuilder()
+        if (CharConstants.LINEBR.has(text[0].code, " ")) {
+            hints.append(bestIndent)
+        }
+        val ch1 = text[text.length - 1]
+        if (CharConstants.LINEBR.hasNo(ch1.code)) {
+            hints.append("-")
+        } else if (text.length == 1 || CharConstants.LINEBR.has(text[text.length - 2].code)) {
+            hints.append("+")
+        }
+        return hints.toString()
+    }
+
+    private fun writeFolded(text: String, split: Boolean) {
+        val hints = determineBlockHints(text)
+        writeIndicator(indicator = ">$hints", needWhitespace = true)
+        if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
+            openEnded = true
+        }
+        if (!writeInlineComments()) {
+            writeLineBreak()
+        }
+        var leadingSpace = true
+        var spaces = false
+        var breaks = true
+        var start = 0
+        var end = 0
+        while (end <= text.length) {
+            var ch = 0.toChar()
+            if (end < text.length) {
+                ch = text[end]
             }
-          }
-          indent = indents.pop();
-        }
-        states.push(new ExpectBlockSequenceItem(false));
-        expectNode(false, false, false);
-        inlineCommentsCollector.collectEvents();
-        writeInlineComments();
-      }
-    }
-  }
-
-  // Block mapping handlers.
-  private void expectBlockMapping() {
-    increaseIndent(false, false);
-    state = new ExpectFirstBlockMappingKey();
-  }
-
-  private class ExpectFirstBlockMappingKey implements EmitterState {
-
-    public void expect() {
-      new ExpectBlockMappingKey(true).expect();
-    }
-  }
-
-  private class ExpectBlockMappingKey implements EmitterState {
-
-    private final boolean first;
-
-    public ExpectBlockMappingKey(boolean first) {
-      this.first = first;
-    }
-
-    public void expect() {
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      writeBlockComment();
-      if (!this.first && event.getEventId() == Event.ID.MappingEnd) {
-        indent = indents.pop();
-        state = states.pop();
-      } else {
-        writeIndent();
-        if (checkSimpleKey()) {
-          states.push(new ExpectBlockMappingSimpleValue());
-          expectNode(false, true, true);
-        } else {
-          writeIndicator("?", true, false, true);
-          states.push(new ExpectBlockMappingValue());
-          expectNode(false, true, false);
-        }
-      }
-    }
-  }
-
-  private boolean isFoldedOrLiteral(Event event) {
-    if (event.getEventId() != Event.ID.Scalar) {
-      return false;
-    }
-    ScalarEvent scalarEvent = (ScalarEvent) event;
-    ScalarStyle style = scalarEvent.getScalarStyle();
-    return style == ScalarStyle.FOLDED || style == ScalarStyle.LITERAL;
-  }
-
-  private class ExpectBlockMappingSimpleValue implements EmitterState {
-
-    public void expect() {
-      writeIndicator(":", false, false, false);
-      event = inlineCommentsCollector.collectEventsAndPoll(event);
-      if (!isFoldedOrLiteral(event)) {
-        if (writeInlineComments()) {
-          increaseIndent(true, false);
-          writeIndent();
-          indent = indents.pop();
-        }
-      }
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      if (!blockCommentsCollector.isEmpty()) {
-        increaseIndent(true, false);
-        writeBlockComment();
-        writeIndent();
-        indent = indents.pop();
-      }
-      states.push(new ExpectBlockMappingKey(false));
-      expectNode(false, true, false);
-      inlineCommentsCollector.collectEvents();
-      writeInlineComments();
-    }
-  }
-
-  private class ExpectBlockMappingValue implements EmitterState {
-
-    public void expect() {
-      writeIndent();
-      writeIndicator(":", true, false, true);
-      event = inlineCommentsCollector.collectEventsAndPoll(event);
-      writeInlineComments();
-      event = blockCommentsCollector.collectEventsAndPoll(event);
-      writeBlockComment();
-      states.push(new ExpectBlockMappingKey(false));
-      expectNode(false, true, false);
-      inlineCommentsCollector.collectEvents(event);
-      writeInlineComments();
-    }
-  }
-
-  // Checkers.
-
-  private boolean checkEmptySequence() {
-    return event.getEventId() == Event.ID.SequenceStart && !events.isEmpty()
-        && events.peek().getEventId() == Event.ID.SequenceEnd;
-  }
-
-  private boolean checkEmptyMapping() {
-    return event.getEventId() == Event.ID.MappingStart && !events.isEmpty()
-        && events.peek().getEventId() == Event.ID.MappingEnd;
-  }
-
-  private boolean checkSimpleKey() {
-    int length = 0;
-    if (event instanceof NodeEvent) {
-      Optional<Anchor> anchorOpt = ((NodeEvent) event).getAnchor();
-      if (anchorOpt.isPresent()) {
-        if (!preparedAnchor.isPresent()) {
-          preparedAnchor = anchorOpt;
-        }
-        length += anchorOpt.get().getValue().length();
-      }
-    }
-    Optional<String> tag = Optional.empty();
-    if (event.getEventId() == Event.ID.Scalar) {
-      tag = ((ScalarEvent) event).getTag();
-    } else if (event instanceof CollectionStartEvent) {
-      tag = ((CollectionStartEvent) event).getTag();
-    }
-    if (tag.isPresent()) {
-      if (preparedTag == null) {
-        preparedTag = prepareTag(tag.get());
-      }
-      length += preparedTag.length();
-    }
-    if (event.getEventId() == Event.ID.Scalar) {
-      if (analysis == null) {
-        analysis = analyzeScalar(((ScalarEvent) event).getValue());
-      }
-      length += analysis.getScalar().length();
-    }
-    return length < maxSimpleKeyLength && (event.getEventId() == Event.ID.Alias
-        || (event.getEventId() == Event.ID.Scalar && !analysis.isEmpty() && !analysis.isMultiline())
-        || checkEmptySequence() || checkEmptyMapping());
-  }
-
-  // Anchor, Tag, and Scalar processors.
-
-  private void processAnchor(String indicator) {
-    NodeEvent ev = (NodeEvent) event;
-    Optional<Anchor> anchorOption = ev.getAnchor();
-    if (anchorOption.isPresent()) {
-      Anchor anchor = anchorOption.get();
-      if (!preparedAnchor.isPresent()) {
-        preparedAnchor = anchorOption;
-      }
-      writeIndicator(indicator + anchor, true, false, false);
-    }
-    preparedAnchor = Optional.empty();
-  }
-
-  private void processTag() {
-    Optional<String> tag;
-    if (event.getEventId() == Event.ID.Scalar) {
-      ScalarEvent ev = (ScalarEvent) event;
-      tag = ev.getTag();
-      if (!scalarStyle.isPresent()) {
-        scalarStyle = chooseScalarStyle(ev);
-      }
-      if ((!canonical || !tag.isPresent())
-          && ((!scalarStyle.isPresent() && ev.getImplicit().canOmitTagInPlainScalar())
-              || (scalarStyle.isPresent() && ev.getImplicit().canOmitTagInNonPlainScalar()))) {
-        preparedTag = null;
-        return;
-      }
-      if (ev.getImplicit().canOmitTagInPlainScalar() && !tag.isPresent()) {
-        tag = Optional.of("!");
-        preparedTag = null;
-      }
-    } else {
-      CollectionStartEvent ev = (CollectionStartEvent) event;
-      tag = ev.getTag();
-      if ((!canonical || !tag.isPresent()) && ev.isImplicit()) {
-        preparedTag = null;
-        return;
-      }
-    }
-    if (!tag.isPresent()) {
-      throw new EmitterException("tag is not specified");
-    }
-    if (preparedTag == null) {
-      preparedTag = prepareTag(tag.get());
-    }
-    writeIndicator(preparedTag, true, false, false);
-    preparedTag = null;
-  }
-
-  private Optional<ScalarStyle> chooseScalarStyle(ScalarEvent ev) {
-    if (analysis == null) {
-      analysis = analyzeScalar(ev.getValue());
-    }
-    if (!ev.isPlain() && ev.getScalarStyle() == ScalarStyle.DOUBLE_QUOTED || this.canonical) {
-      return Optional.of(ScalarStyle.DOUBLE_QUOTED);
-    }
-    if (ev.isPlain() && ev.getImplicit().canOmitTagInPlainScalar()) {
-      if (!(simpleKeyContext && (analysis.isEmpty() || analysis.isMultiline()))
-          && ((flowLevel != 0 && analysis.isAllowFlowPlain())
-              || (flowLevel == 0 && analysis.isAllowBlockPlain()))) {
-        return Optional.empty();
-      }
-    }
-    if (!ev.isPlain() && (ev.getScalarStyle() == ScalarStyle.LITERAL
-        || ev.getScalarStyle() == ScalarStyle.FOLDED)) {
-      if (flowLevel == 0 && !simpleKeyContext && analysis.isAllowBlock()) {
-        return Optional.of(ev.getScalarStyle());
-      }
-    }
-    if (ev.isPlain() || ev.getScalarStyle() == ScalarStyle.SINGLE_QUOTED) {
-      if (analysis.isAllowSingleQuoted() && !(simpleKeyContext && analysis.isMultiline())) {
-        return Optional.of(ScalarStyle.SINGLE_QUOTED);
-      }
-    }
-    return Optional.of(ScalarStyle.DOUBLE_QUOTED);
-  }
-
-  private void processScalar() {
-    ScalarEvent ev = (ScalarEvent) event;
-    if (analysis == null) {
-      analysis = analyzeScalar(ev.getValue());
-    }
-    if (!scalarStyle.isPresent()) {
-      scalarStyle = chooseScalarStyle(ev);
-    }
-    boolean split = !simpleKeyContext && splitLines;
-    if (!scalarStyle.isPresent()) {
-      writePlain(analysis.getScalar(), split);
-    } else {
-      switch (scalarStyle.get()) {
-        case DOUBLE_QUOTED:
-          writeDoubleQuoted(analysis.getScalar(), split);
-          break;
-        case SINGLE_QUOTED:
-          writeSingleQuoted(analysis.getScalar(), split);
-          break;
-        case FOLDED:
-          writeFolded(analysis.getScalar(), split);
-          break;
-        case LITERAL:
-          writeLiteral(analysis.getScalar());
-          break;
-        default:
-          throw new YamlEngineException("Unexpected scalarStyle: " + scalarStyle);
-      }
-    }
-    analysis = null;
-    scalarStyle = Optional.empty();
-  }
-
-  // Analyzers.
-
-  private String prepareVersion(SpecVersion version) {
-    if (version.getMajor() != 1) {
-      throw new EmitterException("unsupported YAML version: " + version);
-    }
-    return version.getRepresentation();
-  }
-
-  private static final Pattern HANDLE_FORMAT = Pattern.compile("^![-_\\w]*!$");
-
-  private String prepareTagHandle(String handle) {
-    if (handle.length() == 0) {
-      throw new EmitterException("tag handle must not be empty");
-    } else if (handle.charAt(0) != '!' || handle.charAt(handle.length() - 1) != '!') {
-      throw new EmitterException("tag handle must start and end with '!': " + handle);
-    } else if (!"!".equals(handle) && !HANDLE_FORMAT.matcher(handle).matches()) {
-      throw new EmitterException("invalid character in the tag handle: " + handle);
-    }
-    return handle;
-  }
-
-  private String prepareTagPrefix(String prefix) {
-    if (prefix.length() == 0) {
-      throw new EmitterException("tag prefix must not be empty");
-    }
-    StringBuilder chunks = new StringBuilder();
-    int start = 0;
-    int end = 0;
-    if (prefix.charAt(0) == '!') {
-      end = 1;
-    }
-    while (end < prefix.length()) {
-      end++;
-    }
-    chunks.append(prefix, start, end);
-    return chunks.toString();
-  }
-
-  private String prepareTag(String tag) {
-    if (tag.length() == 0) {
-      throw new EmitterException("tag must not be empty");
-    }
-    if ("!".equals(tag)) {
-      return tag;
-    }
-    String handle = null;
-    String suffix = tag;
-    // shall the tag prefixes be sorted as in PyYAML?
-    for (String prefix : tagPrefixes.keySet()) {
-      if (tag.startsWith(prefix) && ("!".equals(prefix) || prefix.length() < tag.length())) {
-        handle = prefix;
-      }
-    }
-    if (handle != null) {
-      suffix = tag.substring(handle.length());
-      handle = tagPrefixes.get(handle);
-    }
-
-    int end = suffix.length();
-    String suffixText = end > 0 ? suffix.substring(0, end) : "";
-
-    if (handle != null) {
-      return handle + suffixText;
-    }
-    return "!<" + suffixText + ">";
-  }
-
-
-  private ScalarAnalysis analyzeScalar(String scalar) {
-    // Empty scalar is a special case.
-    if (scalar.length() == 0) {
-      return new ScalarAnalysis(scalar, true, false, false, true, true, false);
-    }
-    // Indicators and special characters.
-    boolean blockIndicators = false;
-    boolean flowIndicators = false;
-    boolean lineBreaks = false;
-    boolean specialCharacters = false;
-
-    // Important whitespace combinations.
-    boolean leadingSpace = false;
-    boolean leadingBreak = false;
-    boolean trailingSpace = false;
-    boolean trailingBreak = false;
-    boolean breakSpace = false;
-    boolean spaceBreak = false;
-
-    // Check document indicators.
-    if (scalar.startsWith("---") || scalar.startsWith("...")) {
-      blockIndicators = true;
-      flowIndicators = true;
-    }
-    // First character or preceded by a whitespace.
-    boolean preceededByWhitespace = true;
-    boolean followedByWhitespace =
-        scalar.length() == 1 || CharConstants.NULL_BL_T_LINEBR.has(scalar.codePointAt(1));
-    // The previous character is a space.
-    boolean previousSpace = false;
-
-    // The previous character is a break.
-    boolean previousBreak = false;
-
-    int index = 0;
-
-    while (index < scalar.length()) {
-      int c = scalar.codePointAt(index);
-      // Check for indicators.
-      if (index == 0) {
-        // Leading indicators are special characters.
-        if ("#,[]{}&*!|>'\"%@`".indexOf(c) != -1) {
-          flowIndicators = true;
-          blockIndicators = true;
-        }
-        if (c == '?' || c == ':') {
-          flowIndicators = true;
-          if (followedByWhitespace) {
-            blockIndicators = true;
-          }
-        }
-        if (c == '-' && followedByWhitespace) {
-          flowIndicators = true;
-          blockIndicators = true;
-        }
-      } else {
-        // Some indicators cannot appear within a scalar as well.
-        if (",?[]{}".indexOf(c) != -1) {
-          flowIndicators = true;
-        }
-        if (c == ':') {
-          flowIndicators = true;
-          if (followedByWhitespace) {
-            blockIndicators = true;
-          }
-        }
-        if (c == '#' && preceededByWhitespace) {
-          flowIndicators = true;
-          blockIndicators = true;
-        }
-      }
-      // Check for line breaks, special, and unicode characters.
-      boolean isLineBreak = CharConstants.LINEBR.has(c);
-      if (isLineBreak) {
-        lineBreaks = true;
-      }
-      if (!(c == '\n' || (0x20 <= c && c <= 0x7E))) {
-        if (c == 0x85 || (c >= 0xA0 && c <= 0xD7FF) || (c >= 0xE000 && c <= 0xFFFD)
-            || (c >= 0x10000 && c <= 0x10FFFF)) {
-          // unicode is used
-          if (!this.allowUnicode) {
-            specialCharacters = true;
-          }
-        } else {
-          specialCharacters = true;
-        }
-      }
-      // Detect important whitespace combinations.
-      if (c == ' ') {
-        if (index == 0) {
-          leadingSpace = true;
-        }
-        if (index == scalar.length() - 1) {
-          trailingSpace = true;
-        }
-        if (previousBreak) {
-          breakSpace = true;
-        }
-        previousSpace = true;
-        previousBreak = false;
-      } else if (isLineBreak) {
-        if (index == 0) {
-          leadingBreak = true;
-        }
-        if (index == scalar.length() - 1) {
-          trailingBreak = true;
-        }
-        if (previousSpace) {
-          spaceBreak = true;
-        }
-        previousSpace = false;
-        previousBreak = true;
-      } else {
-        previousSpace = false;
-        previousBreak = false;
-      }
-
-      // Prepare for the next character.
-      index += Character.charCount(c);
-      preceededByWhitespace = CharConstants.NULL_BL_T.has(c) || isLineBreak;
-      followedByWhitespace = true;
-      if (index + 1 < scalar.length()) {
-        int nextIndex = index + Character.charCount(scalar.codePointAt(index));
-        if (nextIndex < scalar.length()) {
-          followedByWhitespace =
-              (CharConstants.NULL_BL_T.has(scalar.codePointAt(nextIndex))) || isLineBreak;
-        }
-      }
-    }
-    // Let's decide what styles are allowed.
-    boolean allowFlowPlain = true;
-    boolean allowBlockPlain = true;
-    boolean allowSingleQuoted = true;
-    boolean allowBlock = true;
-    // Leading and trailing whitespaces are bad for plain scalars.
-    if (leadingSpace || leadingBreak || trailingSpace || trailingBreak) {
-      allowFlowPlain = allowBlockPlain = false;
-    }
-    // We do not permit trailing spaces for block scalars.
-    if (trailingSpace) {
-      allowBlock = false;
-    }
-    // Spaces at the beginning of a new line are only acceptable for block
-    // scalars.
-    if (breakSpace) {
-      allowFlowPlain = allowBlockPlain = allowSingleQuoted = false;
-    }
-    // Spaces followed by breaks, as well as special character are only
-    // allowed for double quoted scalars.
-    if (spaceBreak || specialCharacters) {
-      allowFlowPlain = allowBlockPlain = allowSingleQuoted = allowBlock = false;
-    }
-    // Although the plain scalar writer supports breaks, we never emit
-    // multiline plain scalars in the flow context.
-    if (lineBreaks) {
-      allowFlowPlain = false;
-    }
-    // Flow indicators are forbidden for flow plain scalars.
-    if (flowIndicators) {
-      allowFlowPlain = false;
-    }
-    // Block indicators are forbidden for block plain scalars.
-    if (blockIndicators) {
-      allowBlockPlain = false;
-    }
-
-    return new ScalarAnalysis(scalar, false, lineBreaks, allowFlowPlain, allowBlockPlain,
-        allowSingleQuoted, allowBlock);
-  }
-
-  // Writers.
-
-  void flushStream() {
-    stream.flush();
-  }
-
-  void writeStreamStart() {
-    // BOM is written by Writer.
-  }
-
-  void writeStreamEnd() {
-    flushStream();
-  }
-
-  void writeIndicator(String indicator, boolean needWhitespace, boolean whitespace,
-      boolean indentation) {
-    if (!this.whitespace && needWhitespace) {
-      this.column++;
-      stream.write(SPACE);
-    }
-    this.whitespace = whitespace;
-    this.indention = this.indention && indentation;
-    this.column += indicator.length();
-    openEnded = false;
-    stream.write(indicator);
-  }
-
-  void writeIndent() {
-    final int indentToWrite;
-    if (this.indent != null) {
-      indentToWrite = this.indent;
-    } else {
-      indentToWrite = 0;
-    }
-    if (!this.indention || this.column > indentToWrite
-        || (this.column == indentToWrite && !this.whitespace)) {
-      writeLineBreak(null);
-    }
-    writeWhitespace(indentToWrite - this.column);
-  }
-
-  private void writeWhitespace(int length) {
-    if (length <= 0) {
-      return;
-    }
-    this.whitespace = true;
-    for (int i = 0; i < length; i++) {
-      stream.write(" ");
-    }
-    this.column += length;
-  }
-
-  private void writeLineBreak(String data) {
-    this.whitespace = true;
-    this.indention = true;
-    this.column = 0;
-    if (data == null) {
-      stream.write(this.bestLineBreak);
-    } else {
-      stream.write(data);
-    }
-  }
-
-  void writeVersionDirective(String versionText) {
-    stream.write("%YAML ");
-    stream.write(versionText);
-    writeLineBreak(null);
-  }
-
-  void writeTagDirective(String handleText, String prefixText) {
-    // XXX: not sure 4 invocations better then StringBuilders created by str
-    // + str
-    stream.write("%TAG ");
-    stream.write(handleText);
-    stream.write(SPACE);
-    stream.write(prefixText);
-    writeLineBreak(null);
-  }
-
-  // Scalar streams.
-  private void writeSingleQuoted(String text, boolean split) {
-    writeIndicator("'", true, false, false);
-    boolean spaces = false;
-    boolean breaks = false;
-    int start = 0;
-    int end = 0;
-    char ch;
-    while (end <= text.length()) {
-      ch = 0;
-      if (end < text.length()) {
-        ch = text.charAt(end);
-      }
-      if (spaces) {
-        if (ch != ' ') {
-          if (start + 1 == end && this.column > this.bestWidth && split && start != 0
-              && end != text.length()) {
-            writeIndent();
-          } else {
-            int len = end - start;
-            this.column += len;
-            stream.write(text, start, len);
-          }
-          start = end;
-        }
-      } else if (breaks) {
-        if (ch == 0 || CharConstants.LINEBR.hasNo(ch)) {
-          if (text.charAt(start) == '\n') {
-            writeLineBreak(null);
-          }
-          String data = text.substring(start, end);
-          for (char br : data.toCharArray()) {
-            if (br == '\n') {
-              writeLineBreak(null);
+            if (breaks) {
+                if (ch.code == 0 || CharConstants.LINEBR.hasNo(ch.code)) {
+                    if (!leadingSpace && ch.code != 0 && ch != ' ' && text[start] == '\n') {
+                        writeLineBreak()
+                    }
+                    leadingSpace = ch == ' '
+                    val data = text.substring(start, end)
+                    for (br in data.toCharArray()) {
+                        writeLineBreak(if (br == '\n') null else br.toString())
+                    }
+                    if (ch.code != 0) {
+                        writeIndent()
+                    }
+                    start = end
+                }
+            } else if (spaces) {
+                if (ch != ' ') {
+                    if (start + 1 == end && column > bestWidth && split) {
+                        writeIndent()
+                    } else {
+                        val len = end - start
+                        column += len
+                        stream.write(text, start, len)
+                    }
+                    start = end
+                }
             } else {
-              writeLineBreak(String.valueOf(br));
+                if (CharConstants.LINEBR.has(ch.code, "\u0000 ")) {
+                    val len = end - start
+                    column += len
+                    stream.write(text, start, len)
+                    if (ch.code == 0) {
+                        writeLineBreak()
+                    }
+                    start = end
+                }
             }
-          }
-          writeIndent();
-          start = end;
+            if (ch.code != 0) {
+                breaks = CharConstants.LINEBR.has(ch.code)
+                spaces = ch == ' '
+            }
+            end++
         }
-      } else {
-        if (CharConstants.LINEBR.has(ch, "\0 '")) {
-          if (start < end) {
-            int len = end - start;
-            this.column += len;
-            stream.write(text, start, len);
-            start = end;
-          }
-        }
-      }
-      if (ch == '\'') {
-        this.column += 2;
-        stream.write("''");
-        start = end + 1;
-      }
-      if (ch != 0) {
-        spaces = ch == ' ';
-        breaks = CharConstants.LINEBR.has(ch);
-      }
-      end++;
     }
-    writeIndicator("'", false, false, false);
-  }
 
-  private void writeDoubleQuoted(String text, boolean split) {
-    writeIndicator("\"", true, false, false);
-    int start = 0;
-    int end = 0;
-    while (end <= text.length()) {
-      Character ch = null;
-      if (end < text.length()) {
-        ch = text.charAt(end);
-      }
-      if (ch == null || "\"\\\u0085\u2028\u2029\uFEFF".indexOf(ch) != -1
-          || !('\u0020' <= ch && ch <= '\u007E')) {
-        if (start < end) {
-          int len = end - start;
-          this.column += len;
-          stream.write(text, start, len);
-          start = end;
+    private fun writeLiteral(text: String) {
+        val hints = determineBlockHints(text)
+        writeIndicator(indicator = "|$hints", needWhitespace = true)
+        if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
+            openEnded = true
         }
-        if (ch != null) {
-          String data;
-
-          if (ESCAPE_REPLACEMENTS.containsKey(ch)) {
-            data = "\\" + ESCAPE_REPLACEMENTS.get(ch);
-          } else {
-            int codePoint;
-
-            if (Character.isHighSurrogate(ch) && end + 1 < text.length()) {
-              char ch2 = text.charAt(end + 1);
-              codePoint = Character.toCodePoint(ch, ch2);
+        if (!writeInlineComments()) {
+            writeLineBreak()
+        }
+        var breaks = true
+        var start = 0
+        var end = 0
+        while (end <= text.length) {
+            var ch = 0.toChar()
+            if (end < text.length) {
+                ch = text[end]
+            }
+            if (breaks) {
+                if (ch.code == 0 || CharConstants.LINEBR.hasNo(ch.code)) {
+                    val data = text.substring(start, end)
+                    for (br in data.toCharArray()) {
+                        if (br == '\n') {
+                            writeLineBreak()
+                        } else {
+                            writeLineBreak(br.toString())
+                        }
+                    }
+                    if (ch.code != 0) {
+                        writeIndent()
+                    }
+                    start = end
+                }
             } else {
-              codePoint = ch;
+                if (ch.code == 0 || CharConstants.LINEBR.has(ch.code)) {
+                    stream.write(text, start, end - start)
+                    if (ch.code == 0) {
+                        writeLineBreak()
+                    }
+                    start = end
+                }
             }
+            if (ch.code != 0) {
+                breaks = CharConstants.LINEBR.has(ch.code)
+            }
+            end++
+        }
+    }
 
-            if (this.allowUnicode && StreamReader.isPrintable(codePoint)) {
-              data = String.valueOf(Character.toChars(codePoint));
-
-              if (Character.charCount(codePoint) == 2) {
-                end++;
-              }
+    private fun writePlain(text: String, split: Boolean) {
+        if (rootContext) {
+            openEnded = true
+        }
+        if (text.isEmpty()) {
+            return
+        }
+        if (!whitespace) {
+            column++
+            stream.write(SPACE)
+        }
+        whitespace = false
+        indention = false
+        var spaces = false
+        var breaks = false
+        var start = 0
+        var end = 0
+        while (end <= text.length) {
+            var ch = 0.toChar()
+            if (end < text.length) {
+                ch = text[end]
+            }
+            if (spaces) {
+                if (ch != ' ') {
+                    if (start + 1 == end && column > bestWidth && split) {
+                        writeIndent()
+                        whitespace = false
+                        indention = false
+                    } else {
+                        val len = end - start
+                        column += len
+                        stream.write(text, start, len)
+                    }
+                    start = end
+                }
+            } else if (breaks) {
+                if (CharConstants.LINEBR.hasNo(ch.code)) {
+                    if (text[start] == '\n') {
+                        writeLineBreak()
+                    }
+                    val data = text.substring(start, end)
+                    for (br in data.toCharArray()) {
+                        writeLineBreak(if (br == '\n') null else br.toString())
+                    }
+                    writeIndent()
+                    whitespace = false
+                    indention = false
+                    start = end
+                }
             } else {
-              // if !allowUnicode or the character is not printable,
-              // we must encode it
-              if (ch <= '\u00FF') {
-                String s = "0" + Integer.toString(ch, 16);
-                data = "\\x" + s.substring(s.length() - 2);
-              } else if (Character.charCount(codePoint) == 2) {
-                end++;
-                String s = "000" + Long.toHexString(codePoint);
-                data = "\\U" + s.substring(s.length() - 8);
-              } else {
-                String s = "000" + Integer.toString(ch, 16);
-                data = "\\u" + s.substring(s.length() - 4);
-              }
+                if (CharConstants.LINEBR.has(ch.code, "\u0000 ")) {
+                    val len = end - start
+                    column += len
+                    stream.write(text, start, len)
+                    start = end
+                }
             }
-          }
-
-          this.column += data.length();
-          stream.write(data);
-          start = end + 1;
-        }
-      }
-      if ((0 < end && end < (text.length() - 1)) && (ch == ' ' || start >= end)
-          && (this.column + (end - start)) > this.bestWidth && split) {
-        String data;
-        if (start >= end) {
-          data = "\\";
-        } else {
-          data = text.substring(start, end) + "\\";
-        }
-        if (start < end) {
-          start = end;
-        }
-        this.column += data.length();
-        stream.write(data);
-        writeIndent();
-        this.whitespace = false;
-        this.indention = false;
-        if (text.charAt(start) == ' ') {
-          data = "\\";
-          this.column += data.length();
-          stream.write(data);
-        }
-      }
-      end += 1;
-    }
-    writeIndicator("\"", false, false, false);
-  }
-
-  private boolean writeCommentLines(List<CommentLine> commentLines) {
-    boolean wroteComment = false;
-    if (emitComments) {
-      int indentColumns = 0;
-      boolean firstComment = true;
-      for (CommentLine commentLine : commentLines) {
-        if (commentLine.getCommentType() != CommentType.BLANK_LINE) {
-          if (firstComment) {
-            firstComment = false;
-            writeIndicator("#", commentLine.getCommentType() == CommentType.IN_LINE, false, false);
-            indentColumns = this.column > 0 ? this.column - 1 : 0;
-          } else {
-            writeWhitespace(indentColumns);
-            writeIndicator("#", false, false, false);
-          }
-          stream.write(commentLine.getValue());
-          writeLineBreak(null);
-        } else {
-          writeLineBreak(null);
-          writeIndent();
-        }
-        wroteComment = true;
-      }
-    }
-    return wroteComment;
-  }
-
-  private void writeBlockComment() {
-    if (!blockCommentsCollector.isEmpty()) {
-      writeIndent();
-      writeCommentLines(blockCommentsCollector.consume());
-    }
-  }
-
-  private boolean writeInlineComments() {
-    return writeCommentLines(inlineCommentsCollector.consume());
-  }
-
-  private String determineBlockHints(String text) {
-    StringBuilder hints = new StringBuilder();
-    if (CharConstants.LINEBR.has(text.charAt(0), " ")) {
-      hints.append(bestIndent);
-    }
-    char ch1 = text.charAt(text.length() - 1);
-    if (CharConstants.LINEBR.hasNo(ch1)) {
-      hints.append("-");
-    } else if (text.length() == 1 || CharConstants.LINEBR.has(text.charAt(text.length() - 2))) {
-      hints.append("+");
-    }
-    return hints.toString();
-  }
-
-  void writeFolded(String text, boolean split) {
-    String hints = determineBlockHints(text);
-    writeIndicator(">" + hints, true, false, false);
-    if (hints.length() > 0 && (hints.charAt(hints.length() - 1) == '+')) {
-      openEnded = true;
-    }
-    if (!writeInlineComments()) {
-      writeLineBreak(null);
-    }
-    boolean leadingSpace = true;
-    boolean spaces = false;
-    boolean breaks = true;
-    int start = 0;
-    int end = 0;
-    while (end <= text.length()) {
-      char ch = 0;
-      if (end < text.length()) {
-        ch = text.charAt(end);
-      }
-      if (breaks) {
-        if (ch == 0 || CharConstants.LINEBR.hasNo(ch)) {
-          if (!leadingSpace && ch != 0 && ch != ' ' && text.charAt(start) == '\n') {
-            writeLineBreak(null);
-          }
-          leadingSpace = ch == ' ';
-          String data = text.substring(start, end);
-          for (char br : data.toCharArray()) {
-            if (br == '\n') {
-              writeLineBreak(null);
-            } else {
-              writeLineBreak(String.valueOf(br));
+            if (ch.code != 0) {
+                spaces = ch == ' '
+                breaks = CharConstants.LINEBR.has(ch.code)
             }
-          }
-          if (ch != 0) {
-            writeIndent();
-          }
-          start = end;
+            end++
         }
-      } else if (spaces) {
-        if (ch != ' ') {
-          if (start + 1 == end && this.column > this.bestWidth && split) {
-            writeIndent();
-          } else {
-            int len = end - start;
-            this.column += len;
-            stream.write(text, start, len);
-          }
-          start = end;
-        }
-      } else {
-        if (CharConstants.LINEBR.has(ch, "\0 ")) {
-          int len = end - start;
-          this.column += len;
-          stream.write(text, start, len);
-          if (ch == 0) {
-            writeLineBreak(null);
-          }
-          start = end;
-        }
-      }
-      if (ch != 0) {
-        breaks = CharConstants.LINEBR.has(ch);
-        spaces = ch == ' ';
-      }
-      end++;
     }
-  }
 
-  void writeLiteral(String text) {
-    String hints = determineBlockHints(text);
-    writeIndicator("|" + hints, true, false, false);
-    if (hints.length() > 0 && (hints.charAt(hints.length() - 1)) == '+') {
-      openEnded = true;
-    }
-    if (!writeInlineComments()) {
-      writeLineBreak(null);
-    }
-    boolean breaks = true;
-    int start = 0;
-    int end = 0;
-    while (end <= text.length()) {
-      char ch = 0;
-      if (end < text.length()) {
-        ch = text.charAt(end);
-      }
-      if (breaks) {
-        if (ch == 0 || CharConstants.LINEBR.hasNo(ch)) {
-          String data = text.substring(start, end);
-          for (char br : data.toCharArray()) {
-            if (br == '\n') {
-              writeLineBreak(null);
-            } else {
-              writeLineBreak(String.valueOf(br));
-            }
-          }
-          if (ch != 0) {
-            writeIndent();
-          }
-          start = end;
-        }
-      } else {
-        if (ch == 0 || CharConstants.LINEBR.has(ch)) {
-          stream.write(text, start, end - start);
-          if (ch == 0) {
-            writeLineBreak(null);
-          }
-          start = end;
-        }
-      }
-      if (ch != 0) {
-        breaks = CharConstants.LINEBR.has(ch);
-      }
-      end++;
-    }
-  }
+    //endregion
 
-  void writePlain(String text, boolean split) {
-    if (rootContext) {
-      openEnded = true;
+    //endregion
+
+    companion object {
+        private val ESCAPE_REPLACEMENTS: Map<Char, String> = mapOf(
+            0.toChar() to "0",
+            '\u0007' to "a",
+            '\u0008' to "b",
+            '\u0009' to "t",
+            '\n' to "n",
+            '\u000B' to "v",
+            '\u000C' to "f",
+            '\r' to "r",
+            '\u001B' to "e",
+            '"' to "\"",
+            '\\' to "\\",
+            '\u0085' to "N",
+            '\u00A0' to "_",
+            '\u2028' to "L",
+            '\u2029' to "P",
+        )
+
+        private val DEFAULT_TAG_PREFIXES: Map<String, String> = mapOf(
+            "!" to "!",
+            Tag.PREFIX to "!!",
+        )
+
+        /** indent cannot be zero spaces and should not be more than 10 spaces */
+        @JvmField
+        val VALID_INDENT_RANGE = 1..10
+
+        @JvmField
+        val VALID_INDICATOR_INDENT_RANGE = (VALID_INDENT_RANGE.first - 1) until VALID_INDENT_RANGE.last
+
+        private const val DEFAULT_INDENT = 2
+
+        private const val MAX_WIDTH = 80
+
+        private const val SPACE = " "
+
+        private val HANDLE_FORMAT: Pattern = Pattern.compile("^![-_\\w]*!$")
     }
-    if (text.length() == 0) {
-      return;
-    }
-    if (!this.whitespace) {
-      this.column++;
-      stream.write(SPACE);
-    }
-    this.whitespace = false;
-    this.indention = false;
-    boolean spaces = false;
-    boolean breaks = false;
-    int start = 0;
-    int end = 0;
-    while (end <= text.length()) {
-      char ch = 0;
-      if (end < text.length()) {
-        ch = text.charAt(end);
-      }
-      if (spaces) {
-        if (ch != ' ') {
-          if (start + 1 == end && this.column > this.bestWidth && split) {
-            writeIndent();
-            this.whitespace = false;
-            this.indention = false;
-          } else {
-            int len = end - start;
-            this.column += len;
-            stream.write(text, start, len);
-          }
-          start = end;
-        }
-      } else if (breaks) {
-        if (CharConstants.LINEBR.hasNo(ch)) {
-          if (text.charAt(start) == '\n') {
-            writeLineBreak(null);
-          }
-          String data = text.substring(start, end);
-          for (char br : data.toCharArray()) {
-            if (br == '\n') {
-              writeLineBreak(null);
-            } else {
-              writeLineBreak(String.valueOf(br));
-            }
-          }
-          writeIndent();
-          this.whitespace = false;
-          this.indention = false;
-          start = end;
-        }
-      } else {
-        if (CharConstants.LINEBR.has(ch, "\0 ")) {
-          int len = end - start;
-          this.column += len;
-          stream.write(text, start, len);
-          start = end;
-        }
-      }
-      if (ch != 0) {
-        spaces = ch == ' ';
-        breaks = CharConstants.LINEBR.has(ch);
-      }
-      end++;
-    }
-  }
 }

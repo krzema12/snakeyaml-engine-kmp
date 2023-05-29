@@ -11,61 +11,51 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.io.IOException
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 
 /**
- * Provide an example of implementation of StreamDataWriter interface which does not throw
- * {@link IOException}
+ * Provide an example of implementation of StreamDataWriter interface which does not throw [IOException]
+ *
+ * @param out - the output
+ * @param cs - encoding to use to translate String to bytes
  */
-public abstract class YamlOutputStreamWriter extends OutputStreamWriter
-    implements StreamDataWriter {
+abstract class YamlOutputStreamWriter(
+    out: OutputStream,
+    cs: Charset,
+) : OutputStreamWriter(out, cs), StreamDataWriter {
+    /**
+     * to be implemented
+     *
+     * @param e - the reason
+     */
+    abstract fun processIOException(e: IOException?)
 
-  /**
-   * Create
-   *
-   * @param out - the output
-   * @param cs - encoding to use to translate String to bytes
-   */
-  public YamlOutputStreamWriter(OutputStream out, Charset cs) {
-    super(out, cs);
-  }
-
-  /**
-   * to be implemented
-   *
-   * @param e - the reason
-   */
-  public abstract void processIOException(IOException e);
-
-  @Override
-  public void flush() {
-    try {
-      super.flush();
-    } catch (IOException e) {
-      processIOException(e);
+    override fun flush() {
+        try {
+            super<StreamDataWriter>.flush()
+        } catch (e: IOException) {
+            processIOException(e)
+        }
     }
-  }
 
-  @Override
-  public void write(String str, int off, int len) {
-    try {
-      super.write(str, off, len);
-    } catch (IOException e) {
-      processIOException(e);
+    override fun write(str: String, off: Int, len: Int) {
+        try {
+            super.write(str, off, len)
+        } catch (e: IOException) {
+            processIOException(e)
+        }
     }
-  }
 
-  @Override
-  public void write(String str) {
-    try {
-      super.write(str);
-    } catch (IOException e) {
-      processIOException(e);
+    override fun write(str: String) {
+        try {
+            super.write(str)
+        } catch (e: IOException) {
+            processIOException(e)
+        }
     }
-  }
 }

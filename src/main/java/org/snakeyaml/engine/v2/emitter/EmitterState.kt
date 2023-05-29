@@ -11,9 +11,8 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.emitter;
+package org.snakeyaml.engine.v2.emitter
 
-interface EmitterState {
-
-  void expect();
+internal fun interface EmitterState {
+    fun expect()
 }

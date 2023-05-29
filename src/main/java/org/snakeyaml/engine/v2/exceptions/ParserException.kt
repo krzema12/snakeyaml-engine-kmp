@@ -11,37 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
-
-import java.util.Optional;
-import org.snakeyaml.engine.v2.parser.Parser;
+import org.snakeyaml.engine.v2.parser.Parser
+import java.util.*
 
 /**
- * Exception thrown by the {@link Parser} implementations in case of malformed input.
+ * Exception thrown by the [Parser] implementations in case of malformed input.
+ *
+ * @param context Part of the input document in which vicinity the problem occurred.
+ * @param contextMark Position of the `context` within the document.
+ * @param problem Part of the input document that caused the problem.
+ * @param problemMark Position of the `problem`. within the document.
  */
-public class ParserException extends MarkedYamlEngineException { // NOSONAR
-
-  /**
-   * Constructs an instance.
-   *
-   * @param context Part of the input document in which vicinity the problem occurred.
-   * @param contextMark Position of the <code>context</code> within the document.
-   * @param problem Part of the input document that caused the problem.
-   * @param problemMark Position of the <code>problem</code>. within the document.
-   */
-  public ParserException(String context, Optional<Mark> contextMark, String problem,
-      Optional<Mark> problemMark) {
-    super(context, contextMark, problem, problemMark, null);
-  }
-
-  /**
-   * Create
-   *
-   * @param problem - the issue
-   * @param problemMark - the position of the issue
-   */
-  public ParserException(String problem, Optional<Mark> problemMark) {
-    super(null, Optional.empty(), problem, problemMark, null);
-  }
-}
+class ParserException @JvmOverloads constructor(
+    problem: String?,
+    contextMark: Optional<Mark>,
+    context: String? = null,
+    problemMark: Optional<Mark> = Optional.empty<Mark>(),
+    cause: Throwable? = null,
+) : MarkedYamlEngineException(
+    context = context,
+    contextMark = contextMark,
+    problem = problem,
+    problemMark = problemMark,
+    cause = cause,
+)

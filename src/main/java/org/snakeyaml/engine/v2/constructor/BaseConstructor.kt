@@ -11,381 +11,333 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor;
+package org.snakeyaml.engine.v2.constructor
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.exceptions.ConstructorException;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.MappingNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.SequenceNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.api.ConstructNode
+import org.snakeyaml.engine.v2.api.LoadSettings
+import org.snakeyaml.engine.v2.exceptions.ConstructorException
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.nodes.*
+import java.util.*
 
 /**
  * Base code
  */
-public abstract class BaseConstructor {
+abstract class BaseConstructor(
+    @JvmField
+    protected val settings: LoadSettings,
+) {
+    /**
+     * Maps (explicit or implicit) tags to the [ConstructNode] implementation.
+     */
+    @JvmField
+    // TODO make this a constructor parameter when StandardConstructor is converted
+    protected val tagConstructors: MutableMap<Tag, ConstructNode> = mutableMapOf()
 
-  /**
-   * It maps the (explicit or implicit) tag to the Construct implementation.
-   */
-  protected final Map<Tag, ConstructNode> tagConstructors;
-  final Map<Node, Object> constructedObjects;
-  private final Set<Node> recursiveObjects;
-  private final ArrayList<RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>> maps2fill;
-  private final ArrayList<RecursiveTuple<Set<Object>, Object>> sets2fill;
-  /**
-   * keep the settings
-   */
-  protected LoadSettings settings;
+    @JvmField
+    protected val constructedObjects: MutableMap<Node, Any?> = mutableMapOf()
 
-  /**
-   * Create
-   *
-   * @param settings - the configuration option
-   */
-  public BaseConstructor(LoadSettings settings) {
-    this.settings = settings;
-    tagConstructors = new HashMap<>();
-    constructedObjects = new HashMap<>();
-    recursiveObjects = new HashSet<>();
-    maps2fill = new ArrayList<>();
-    sets2fill = new ArrayList<>();
-  }
+    private val recursiveObjects: MutableSet<Node> = mutableSetOf()
 
-  /**
-   * Ensure that the stream contains a single document and construct it
-   *
-   * @param optionalNode - composed Node
-   * @return constructed instance
-   */
-  public Object constructSingleDocument(Optional<Node> optionalNode) {
-    if (!optionalNode.isPresent() || Tag.NULL.equals(optionalNode.get().getTag())) {
-      ConstructNode construct = tagConstructors.get(Tag.NULL);
-      return construct.construct(optionalNode.orElse(null));
-    } else {
-      return construct(optionalNode.get());
-    }
-  }
+    private val maps2fill: MutableList<RecursiveTuple<MutableMap<Any?, Any?>, RecursiveTuple<Any?, Any?>>> =
+        mutableListOf()
 
-  /**
-   * Construct complete YAML document. Call the second step in case of recursive structures. At the
-   * end cleans all the state.
-   *
-   * @param node root Node
-   * @return Java instance
-   */
-  protected Object construct(Node node) {
-    try {
-      Object data = constructObject(node);
-      fillRecursive();
-      return data;
-    } catch (YamlEngineException e) {
-      throw e;
-    } catch (RuntimeException e) {
-      throw new YamlEngineException(e);
-    } finally {
-      constructedObjects.clear();
-      recursiveObjects.clear();
-    }
-  }
+    private val sets2fill: MutableList<RecursiveTuple<MutableSet<Any?>, Any?>> = mutableListOf()
 
-  private void fillRecursive() {
-    if (!maps2fill.isEmpty()) {
-      for (RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>> entry : maps2fill) {
-        RecursiveTuple<Object, Object> keyValueTuple = entry.getValue2();
-        entry.getValue1().put(keyValueTuple.getValue1(), keyValueTuple.getValue2());
-      }
-      maps2fill.clear();
-    }
-    if (!sets2fill.isEmpty()) {
-      for (RecursiveTuple<Set<Object>, Object> value : sets2fill) {
-        value.getValue1().add(value.getValue2());
-      }
-      sets2fill.clear();
-    }
-  }
-
-  /**
-   * Construct object from the specified Node. Return existing instance if the node is already
-   * constructed.
-   *
-   * @param node Node to be constructed
-   * @return Java instance
-   */
-  protected Object constructObject(Node node) {
-    Objects.requireNonNull(node, "Node cannot be null");
-    if (constructedObjects.containsKey(node)) {
-      return constructedObjects.get(node);
-    }
-    return constructObjectNoCheck(node);
-  }
-
-  /**
-   * Construct object from the specified Node. It does not check if existing instance the node is
-   * already constructed.
-   *
-   * @param node - the source
-   * @return instantiated object
-   */
-  protected Object constructObjectNoCheck(Node node) {
-    if (recursiveObjects.contains(node)) {
-      throw new ConstructorException(null, Optional.empty(), "found unconstructable recursive node",
-          node.getStartMark());
-    }
-    recursiveObjects.add(node);
-    ConstructNode constructor =
-        findConstructorFor(node).orElseThrow(() -> new ConstructorException(null, Optional.empty(),
-            "could not determine a constructor for the tag " + node.getTag(), node.getStartMark()));
-    Object data = (constructedObjects.containsKey(node)) ? constructedObjects.get(node)
-        : constructor.construct(node);
-
-    constructedObjects.put(node, data);
-    recursiveObjects.remove(node);
-    if (node.isRecursive()) {
-      constructor.constructRecursive(node, data);
-    }
-    return data;
-  }
-
-  /**
-   * Select {@link ConstructNode} inside the provided {@link Node} or the one associated with the
-   * {@link Tag}
-   *
-   * @param node {@link Node} to construct an instance from
-   * @return {@link ConstructNode} implementation for the specified node
-   */
-  protected Optional<ConstructNode> findConstructorFor(Node node) {
-    Tag tag = node.getTag();
-    if (settings.getTagConstructors().containsKey(tag)) {
-      return Optional.of(settings.getTagConstructors().get(tag));
-    } else {
-      if (tagConstructors.containsKey(tag)) {
-        return Optional.of(tagConstructors.get(tag));
-      } else {
-        return Optional.empty();
-      }
-    }
-  }
-
-  /**
-   * Create String from the provided scalar node
-   *
-   * @param node - the source
-   * @return value of the scalar node
-   */
-  protected String constructScalar(ScalarNode node) {
-    return node.getValue();
-  }
-
-  // >>>> DEFAULTS >>>>
-
-  /**
-   * Create List implementation. By default, it returns the value configured in the settings in
-   * getDefaultList(). Any custom List implementation can be provided.
-   *
-   * @param node - the node to fill the List
-   * @return empty List to fill
-   */
-  protected List<Object> createEmptyListForNode(SequenceNode node) {
-    return settings.getDefaultList().apply(node.getValue().size());
-  }
-
-  /**
-   * Create Set implementation. By default, it returns the value configured in the settings in
-   * getDefaultSet(). Any custom Set implementation can be provided.
-   *
-   * @param node - the node to fill the Set
-   * @return empty Set to fill
-   */
-  protected Set<Object> createEmptySetForNode(MappingNode node) {
-    return settings.getDefaultSet().apply(node.getValue().size());
-  }
-
-  /**
-   * Create Map implementation. By default, it returns the value configured in the settings in
-   * getDefaultMap(). Any custom Map implementation can be provided.
-   *
-   * @param node - the node to fill the Map
-   * @return empty Map to fill
-   */
-  protected Map<Object, Object> createEmptyMapFor(MappingNode node) {
-    return settings.getDefaultMap().apply(node.getValue().size());
-  }
-
-  // <<<< DEFAULTS <<<<
-
-  // <<<< NEW instance
-
-  // >>>> Construct => NEW, 2ndStep(filling)
-
-  /**
-   * Create instance of List
-   *
-   * @param node - the source
-   * @return filled List
-   */
-  protected List<Object> constructSequence(SequenceNode node) {
-    List<Object> result = settings.getDefaultList().apply(node.getValue().size());
-    constructSequenceStep2(node, result);
-    return result;
-  }
-
-  /**
-   * Fill the collection with the data from provided node
-   *
-   * @param node - the source
-   * @param collection - the collection to fill
-   */
-  protected void constructSequenceStep2(SequenceNode node, Collection<Object> collection) {
-    for (Node child : node.getValue()) {
-      collection.add(constructObject(child));
-    }
-  }
-
-  /**
-   * Create instance of Set from mapping node
-   *
-   * @param node - the source
-   * @return filled Set
-   */
-  protected Set<Object> constructSet(MappingNode node) {
-    final Set<Object> set = settings.getDefaultSet().apply(node.getValue().size());
-    constructSet2ndStep(node, set);
-    return set;
-  }
-
-  /**
-   * Create filled Map from the provided Node
-   *
-   * @param node - the source
-   * @return filled Map
-   */
-  protected Map<Object, Object> constructMapping(MappingNode node) {
-    final Map<Object, Object> mapping = settings.getDefaultMap().apply(node.getValue().size());
-    constructMapping2ndStep(node, mapping);
-    return mapping;
-  }
-
-  /**
-   * Fill the mapping with the data from provided node
-   *
-   * @param node - the source
-   * @param mapping - empty map to be filled
-   */
-  protected void constructMapping2ndStep(MappingNode node, Map<Object, Object> mapping) {
-    List<NodeTuple> nodeValue = node.getValue();
-    for (NodeTuple tuple : nodeValue) {
-      Node keyNode = tuple.getKeyNode();
-      Node valueNode = tuple.getValueNode();
-      Object key = constructObject(keyNode);
-      if (key != null) {
-        try {
-          key.hashCode();// check circular dependencies
-        } catch (Exception e) {
-          throw new ConstructorException("while constructing a mapping", node.getStartMark(),
-              "found unacceptable key " + key, tuple.getKeyNode().getStartMark(), e);
-        }
-      }
-      Object value = constructObject(valueNode);
-      if (keyNode.isRecursive()) {
-        if (settings.getAllowRecursiveKeys()) {
-          postponeMapFilling(mapping, key, value);
+    /**
+     * Ensure that the stream contains a single document and construct it
+     *
+     * @param optionalNode - composed Node
+     * @return constructed instance
+     */
+    fun constructSingleDocument(optionalNode: Optional<Node>): Any? {
+        return if (optionalNode.isPresent && Tag.NULL != optionalNode.get().tag) {
+            construct(optionalNode.get())
         } else {
-          throw new YamlEngineException(
-              "Recursive key for mapping is detected but it is not configured to be allowed.");
+            val construct = tagConstructors[Tag.NULL]!!
+            construct.construct(optionalNode.orElse(null))
         }
-      } else {
-        mapping.put(key, value);
-      }
     }
-  }
 
-  /**
-   * if keyObject is created it 2 steps we should postpone putting it in map because it may have
-   * different hash after initialization compared to clean just created one. And map of course does
-   * not observe key hashCode changes.
-   *
-   * @param mapping - the mapping to add key/value
-   * @param key - the key to add to map
-   * @param value - the value behind the key
-   */
-  protected void postponeMapFilling(Map<Object, Object> mapping, Object key, Object value) {
-    maps2fill.add(0, new RecursiveTuple(mapping, new RecursiveTuple(key, value)));
-  }
-
-  /**
-   * Fill the Map with the data from the node
-   *
-   * @param node - the source
-   * @param set - empty set to fill
-   */
-  protected void constructSet2ndStep(MappingNode node, Set<Object> set) {
-    List<NodeTuple> nodeValue = node.getValue();
-    for (NodeTuple tuple : nodeValue) {
-      Node keyNode = tuple.getKeyNode();
-      Object key = constructObject(keyNode);
-      if (key != null) {
-        try {
-          key.hashCode();// check circular dependencies
-        } catch (Exception e) {
-          throw new ConstructorException("while constructing a Set", node.getStartMark(),
-              "found unacceptable key " + key, tuple.getKeyNode().getStartMark(), e);
+    /**
+     * Construct complete YAML document. Call the second step in case of recursive structures. At the
+     * end cleans all the state.
+     *
+     * @param node root Node
+     * @return Java instance
+     */
+    protected fun construct(node: Node): Any? {
+        return try {
+            val data = constructObject(node)
+            fillRecursive()
+            data
+        } catch (e: YamlEngineException) {
+            throw e
+        } catch (e: RuntimeException) {
+            throw YamlEngineException(e)
+        } finally {
+            constructedObjects.clear()
+            recursiveObjects.clear()
         }
-      }
-      if (keyNode.isRecursive()) {
-        if (settings.getAllowRecursiveKeys()) {
-          postponeSetFilling(set, key);
-        } else {
-          throw new YamlEngineException(
-              "Recursive key for mapping is detected but it is not configured to be allowed.");
+    }
+
+    private fun fillRecursive() {
+        if (maps2fill.isNotEmpty()) {
+            for (entry in maps2fill) {
+                val keyValueTuple =
+                    entry.value2
+                entry.value1[keyValueTuple.value1] = keyValueTuple.value2
+            }
+            maps2fill.clear()
         }
-      } else {
-        set.add(key);
-      }
-    }
-  }
-
-  /**
-   * if keyObject is created it 2 steps we should postpone putting it into the set because it may
-   * have different hash after initialization compared to clean just created one. And set of course
-   * does not observe value hashCode changes.
-   *
-   * @param set - the set to add the key
-   * @param key - the item to add to the set
-   */
-  protected void postponeSetFilling(Set<Object> set, Object key) {
-    sets2fill.add(0, new RecursiveTuple<>(set, key));
-  }
-
-  private static class RecursiveTuple<T, K> {
-
-    private final T value1;
-    private final K value2;
-
-    public RecursiveTuple(T value1, K value2) {
-      this.value1 = value1;
-      this.value2 = value2;
+        if (sets2fill.isNotEmpty()) {
+            for (value in sets2fill) {
+                value.value1.add(value.value2)
+            }
+            sets2fill.clear()
+        }
     }
 
-    public K getValue2() {
-      return value2;
+    /**
+     * Construct object from the specified Node. Return existing instance if the node is already
+     * constructed.
+     *
+     * @param node Node to be constructed
+     * @return Java instance
+     */
+    protected fun constructObject(node: Node): Any? {
+        return constructedObjects[node] ?: constructObjectNoCheck(node)
     }
 
-    public T getValue1() {
-      return value1;
+    /**
+     * Construct object from the specified Node. It does not check if existing instance the node is
+     * already constructed.
+     *
+     * @param node - the source
+     * @return instantiated object
+     */
+    private fun constructObjectNoCheck(node: Node): Any? {
+        if (recursiveObjects.contains(node)) {
+            throw ConstructorException(
+                null, Optional.empty(), "found unconstructable recursive node",
+                node.startMark,
+            )
+        }
+        recursiveObjects.add(node)
+        val constructor = findConstructorFor(node).orElseThrow {
+            ConstructorException(
+                null, Optional.empty(),
+                "could not determine a constructor for the tag " + node.tag, node.startMark,
+            )
+        }
+        val data = if (constructedObjects.containsKey(node)) constructedObjects[node] else constructor!!.construct(node)
+        constructedObjects[node] = data
+        recursiveObjects.remove(node)
+        if (node.isRecursive) {
+            constructor!!.constructRecursive(node, data!!)
+        }
+        return data
     }
-  }
+
+    /**
+     * Select [ConstructNode] inside the provided [Node] or the one associated with the
+     * [Tag]
+     *
+     * @param node [Node] to construct an instance from
+     * @return [ConstructNode] implementation for the specified node
+     */
+    protected open fun findConstructorFor(node: Node): Optional<ConstructNode> {
+        val tag = node.tag
+        return Optional.ofNullable(settings.tagConstructors[tag] ?: tagConstructors[tag])
+    }
+
+    /**
+     * Create String from the provided scalar node
+     *
+     * @param node - the source
+     * @return value of the scalar node
+     */
+    protected fun constructScalar(node: ScalarNode): String = node.value
+
+    //region DEFAULTS
+    /**
+     * Create List implementation. By default, it returns the value configured in
+     * [LoadSettings.defaultList]. Any custom [List] implementation can be provided.
+     *
+     * @param node - the node to fill the List
+     * @return empty List to fill
+     */
+    protected fun createEmptyListForNode(node: SequenceNode): List<Any?> {
+        return settings.defaultList.apply(node.value.size)
+    }
+
+    /**
+     * Create Set implementation. By default, it returns the value configured in
+     * [LoadSettings.defaultSet]. Any custom [Set] implementation can be provided.
+     *
+     * @param node - the node to fill the Set
+     * @return empty Set to fill
+     */
+    protected fun createEmptySetForNode(node: MappingNode): Set<Any?> {
+        return settings.defaultSet.apply(node.value.size)
+    }
+
+    /**
+     * Create Map implementation. By default, it returns the value configured in
+     * [LoadSettings.defaultMap]. Any custom [Map] implementation can be provided.
+     *
+     * @param node - the node to fill the [Map]
+     * @return empty [Map] to fill
+     */
+    protected fun createEmptyMapFor(node: MappingNode): Map<Any?, Any?> {
+        return settings.defaultMap.apply(node.value.size)
+    }
+    //endregion
+
+    /**
+     * Create instance of List
+     *
+     * @param node - the source
+     * @return filled List
+     */
+    protected fun constructSequence(node: SequenceNode): List<Any?> {
+        val result = settings.defaultList.apply(node.value.size)
+        constructSequenceStep2(node, result)
+        return result
+    }
+
+    /**
+     * Fill the collection with the data from provided node
+     *
+     * @param node - the source
+     * @param collection - the collection to fill
+     */
+    protected fun constructSequenceStep2(node: SequenceNode, collection: MutableCollection<Any?>) {
+        for (child in node.value) {
+            collection.add(constructObject(child))
+        }
+    }
+
+    /**
+     * Create instance of Set from mapping node
+     *
+     * @param node - the source
+     * @return filled Set
+     */
+    protected fun constructSet(node: MappingNode): Set<Any?> {
+        val set = settings.defaultSet.apply(node.value.size)
+        constructSet2ndStep(node, set)
+        return set
+    }
+
+    /**
+     * Create filled Map from the provided Node
+     *
+     * @param node - the source
+     * @return filled Map
+     */
+    protected fun constructMapping(node: MappingNode): Map<Any?, Any?> {
+        val mapping = settings.defaultMap.apply(node.value.size)
+        constructMapping2ndStep(node, mapping)
+        return mapping
+    }
+
+    /**
+     * Fill the mapping with the data from provided node
+     *
+     * @param node - the source
+     * @param mapping - empty map to be filled
+     */
+    protected open fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
+        val nodeValue = node.value
+        for (tuple in nodeValue) {
+            val keyNode = tuple.keyNode
+            val valueNode = tuple.valueNode
+            val key = constructObject(keyNode)
+            if (key != null) {
+                try {
+                    key.hashCode() // check circular dependencies
+                } catch (e: Exception) {
+                    throw ConstructorException(
+                        "while constructing a mapping", node.startMark,
+                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                    )
+                }
+            }
+            val value = constructObject(valueNode)
+            if (keyNode.isRecursive) {
+                if (settings.allowRecursiveKeys) {
+                    postponeMapFilling(mapping, key, value)
+                } else {
+                    throw YamlEngineException(
+                        "Recursive key for mapping is detected but it is not configured to be allowed.",
+                    )
+                }
+            } else {
+                mapping[key] = value
+            }
+        }
+    }
+
+    /**
+     * if keyObject is created it 2 steps we should postpone putting it in map because it may have
+     * different hash after initialization compared to clean just created one. And map of course does
+     * not observe key hashCode changes.
+     *
+     * @param mapping - the mapping to add key/value
+     * @param key - the key to add to map
+     * @param value - the value behind the key
+     */
+    private fun postponeMapFilling(mapping: MutableMap<Any?, Any?>, key: Any?, value: Any?) {
+        maps2fill.add(0, RecursiveTuple(mapping, RecursiveTuple(key, value)))
+    }
+
+    /**
+     * Fill the Map with the data from the node
+     *
+     * @param node - the source
+     * @param set - empty set to fill
+     */
+    protected open fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
+        val nodeValue = node.value
+        for (tuple in nodeValue) {
+            val keyNode = tuple.keyNode
+            val key = constructObject(keyNode)
+            if (key != null) {
+                try {
+                    key.hashCode() // check circular dependencies
+                } catch (e: Exception) {
+                    throw ConstructorException(
+                        "while constructing a Set", node.startMark,
+                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                    )
+                }
+            }
+            if (keyNode.isRecursive) {
+                if (settings.allowRecursiveKeys) {
+                    postponeSetFilling(set, key)
+                } else {
+                    throw YamlEngineException(
+                        "Recursive key for mapping is detected but it is not configured to be allowed.",
+                    )
+                }
+            } else {
+                set.add(key)
+            }
+        }
+    }
+
+    /**
+     * if keyObject is created it 2 steps we should postpone putting it into the set because it may
+     * have different hash after initialization compared to clean just created one. And set of course
+     * does not observe value hashCode changes.
+     *
+     * @param set - the set to add the key
+     * @param key - the item to add to the set
+     */
+    private fun postponeSetFilling(set: MutableSet<Any?>, key: Any?) {
+        sets2fill.add(0, RecursiveTuple(set, key))
+    }
+
+    internal class RecursiveTuple<T, K>(val value1: T, val value2: K)
 }

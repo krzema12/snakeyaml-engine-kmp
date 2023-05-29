@@ -11,127 +11,56 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*
 
 /**
  * Parsing exception when the marks are available
+ *
+ * @param cause - exception which was thrown
+ * @param context - the context of the problem
+ * @param contextMark - position of the context
+ * @param problem - the issue
+ * @param problemMark - position of the issue
  */
-public class MarkedYamlEngineException extends YamlEngineException {
+open class MarkedYamlEngineException protected constructor(
+    val context: String?,
+    val contextMark: Optional<Mark>,
+    val problem: String?,
+    val problemMark: Optional<Mark>,
+    cause: Throwable? = null,
+) : YamlEngineException("$context; $problem; $problemMark", cause) {
 
-  private final String context;
-  private final Optional<Mark> contextMark;
-  private final String problem;
-  private final Optional<Mark> problemMark;
+    override val message: String
+        get() = toString()
 
-  /**
-   * Create
-   *
-   * @param context - the context of the problem
-   * @param contextMark - position of the context
-   * @param problem - the issue
-   * @param problemMark - position of the issue
-   * @param cause - exception which was thrown
-   */
-  protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
-      Optional<Mark> problemMark, Throwable cause) {
-    super(context + "; " + problem + "; " + problemMark, cause);
-    Objects.requireNonNull(contextMark, "contextMark must be provided");
-    Objects.requireNonNull(problemMark, "problemMark must be provided");
-    this.context = context;
-    this.contextMark = contextMark;
-    this.problem = problem;
-    this.problemMark = problemMark;
-  }
+    /**
+     * get readable error
+     *
+     * @return readable problem
+     */
+    override fun toString(): String = buildString {
+        if (context != null) {
+            appendLine(context)
+        }
+        if (contextMark.isPresent) {
+            val problemIsPresent = problem != null && problemMark.isPresent
 
-  /**
-   * Create
-   *
-   * @param context - the context of the problem
-   * @param contextMark - position of the context
-   * @param problem - the issue
-   * @param problemMark - position of the issue
-   */
-  protected MarkedYamlEngineException(String context, Optional<Mark> contextMark, String problem,
-      Optional<Mark> problemMark) {
-    this(context, contextMark, problem, problemMark, null);
-  }
-
-  /**
-   * Getter
-   *
-   * @return the problem
-   */
-  @Override
-  public String getMessage() {
-    return toString();
-  }
-
-  /**
-   * get readable error
-   *
-   * @return readable problem
-   */
-  @Override
-  public String toString() {
-    StringBuilder lines = new StringBuilder();
-    if (context != null) {
-      lines.append(context);
-      lines.append("\n");
+            if (
+                !problemIsPresent
+                || contextMark.get().name == problemMark.get().name
+                || contextMark.get().line != problemMark.get().line
+                || contextMark.get().column != problemMark.get().column
+            ) {
+                appendLine(contextMark.get())
+            }
+        }
+        if (problem != null) {
+            appendLine(problem)
+        }
+        if (problemMark.isPresent) {
+            appendLine(problemMark.get())
+        }
     }
-    if (contextMark.isPresent() && (problem == null || !problemMark.isPresent()
-        || contextMark.get().getName().equals(problemMark.get().getName())
-        || (contextMark.get().getLine() != problemMark.get().getLine())
-        || (contextMark.get().getColumn() != problemMark.get().getColumn()))) {
-      lines.append(contextMark.get());
-      lines.append("\n");
-    }
-    if (problem != null) {
-      lines.append(problem);
-      lines.append("\n");
-    }
-    if (problemMark.isPresent()) {
-      lines.append(problemMark.get());
-      lines.append("\n");
-    }
-    return lines.toString();
-  }
-
-  /**
-   * getter
-   *
-   * @return context of the error
-   */
-  public String getContext() {
-    return context;
-  }
-
-  /**
-   * getter
-   *
-   * @return position of the context of the error
-   */
-  public Optional<Mark> getContextMark() {
-    return contextMark;
-  }
-
-  /**
-   * getter
-   *
-   * @return the issue
-   */
-  public String getProblem() {
-    return problem;
-  }
-
-  /**
-   * getter
-   *
-   * @return position of the issue
-   */
-  public Optional<Mark> getProblemMark() {
-    return problemMark;
-  }
 }

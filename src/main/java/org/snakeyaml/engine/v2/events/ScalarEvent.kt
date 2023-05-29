@@ -11,120 +11,79 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.CharConstants;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.common.CharConstants
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
+import java.util.stream.Collectors
 
 /**
  * Marks a scalar value.
  */
-public final class ScalarEvent extends NodeEvent {
+class ScalarEvent @JvmOverloads constructor(
+    anchor: Optional<Anchor>,
 
-  private final Optional<String> tag;
-  // style flag of a scalar event indicates the style of the scalar. Possible
-  // values are None, '', '\'', '"', '|', '>'
-  private final ScalarStyle style;
-  private final String value;
-  // The implicit flag of a scalar event is a pair of boolean values that
-  // indicate if the tag may be omitted when the scalar is emitted in a plain
-  // and non-plain style correspondingly.
-  private final ImplicitTuple implicit;
+    /**
+     * Tag of this scalar.
+     *
+     * @returns The tag of this scalar, or `null` if no explicit tag is available.
+     */
+    val tag: Optional<String>,
+    // The implicit flag of a scalar event is a pair of boolean values that
+    // indicate if the tag may be omitted when the scalar is emitted in a plain
+    // and non-plain style correspondingly.
+    val implicit: ImplicitTuple,
+    /**
+     * String representation of the value, without quotes and escaping.
+     *
+     * @return Value as Unicode string.
+     */
+    val value: String,
+    /**
+     * Indicates the style of the scalar
+     *
+     * * `null` - Flow Style - Plain
+     * * `'\''` - Flow Style - Single-Quoted
+     * * `"` - Flow Style - Double-Quoted
+     * * `|` - Block Style - Literal
+     * * `&gt;` - Block Style - Folded
+     *
+     * @return Style of the scalar.
+     */
+    val scalarStyle: ScalarStyle,
+    startMark: Optional<Mark> = Optional.empty(),
+    endMark: Optional<Mark> = Optional.empty(),
+) : NodeEvent(anchor, startMark, endMark) {
 
-  public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit,
-      String value, ScalarStyle style, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(anchor, startMark, endMark);
-    Objects.requireNonNull(tag);
-    this.tag = tag;
-    this.implicit = implicit;
-    Objects.requireNonNull(value);
-    this.value = value;
-    Objects.requireNonNull(style);
-    this.style = style;
-  }
+    override val eventId: ID
+        get() = ID.Scalar
 
-  public ScalarEvent(Optional<Anchor> anchor, Optional<String> tag, ImplicitTuple implicit,
-      String value, ScalarStyle style) {
-    this(anchor, tag, implicit, value, style, Optional.empty(), Optional.empty());
-  }
+    val plain: Boolean
+        get() = scalarStyle == ScalarStyle.PLAIN
 
-  /**
-   * Tag of this scalar.
-   *
-   * @return The tag of this scalar, or <code>null</code> if no explicit tag is available.
-   */
-  public Optional<String> getTag() {
-    return this.tag;
-  }
-
-  /**
-   * Style of the scalar.
-   * <dl>
-   * <dt>null</dt>
-   * <dd>Flow Style - Plain</dd>
-   * <dt>'\''</dt>
-   * <dd>Flow Style - Single-Quoted</dd>
-   * <dt>'"'</dt>
-   * <dd>Flow Style - Double-Quoted</dd>
-   * <dt>'|'</dt>
-   * <dd>Block Style - Literal</dd>
-   * <dt>'&gt;'</dt>
-   * <dd>Block Style - Folded</dd>
-   * </dl>
-   *
-   * @return Style of the scalar.
-   */
-  public ScalarStyle getScalarStyle() {
-    return this.style;
-  }
-
-  /**
-   * String representation of the value.
-   * <p>
-   * Without quotes and escaping.
-   * </p>
-   *
-   * @return Value as Unicode string.
-   */
-  public String getValue() {
-    return this.value;
-  }
-
-  public ImplicitTuple getImplicit() {
-    return this.implicit;
-  }
-
-  @Override
-  public ID getEventId() {
-    return ID.Scalar;
-  }
-
-  public boolean isPlain() {
-    return style == ScalarStyle.PLAIN;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder("=VAL");
-    getAnchor().ifPresent(a -> builder.append(" &" + a));
-    if (implicit.bothFalse()) {
-      getTag().ifPresent(theTag -> builder.append(" <" + theTag + ">"));
+    override fun toString(): String {
+        return buildString {
+            append("=VAL")
+            anchor.ifPresent { a -> append(" &$a") }
+            if (implicit.bothFalse()) {
+                tag.ifPresent { theTag: String -> append(" <$theTag>") }
+            }
+            append(" ")
+            append(scalarStyle.toString())
+            append(escapedValue())
+        }
     }
-    builder.append(" ");
-    builder.append(getScalarStyle().toString());
-    builder.append(escapedValue());
-    return builder.toString();
-  }
 
-  // escape
-  public String escapedValue() {
-    return value.codePoints().filter(i -> i < Character.MAX_VALUE)
-        .mapToObj(ch -> CharConstants.escapeChar(String.valueOf(Character.toChars(ch))))
-        .collect(Collectors.joining(""));
-  }
+    fun escapedValue(): String {
+        return value
+            .codePoints()
+            .filter { i: Int -> i < Character.MAX_VALUE.code }
+            .mapToObj { ch: Int ->
+                CharConstants.escapeChar(ch.toChar())
+            }
+            .collect(Collectors.joining(""))
+    }
 }

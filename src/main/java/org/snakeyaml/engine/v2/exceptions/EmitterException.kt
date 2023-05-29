@@ -11,19 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
 /**
  * General exception for during emitting
+ * @param msg - the issue
  */
-public class EmitterException extends YamlEngineException {
-
-  /**
-   * Create
-   *
-   * @param msg - the issue
-   */
-  public EmitterException(String msg) {
-    super(msg);
-  }
-}
+class EmitterException(msg: String) : YamlEngineException(msg)

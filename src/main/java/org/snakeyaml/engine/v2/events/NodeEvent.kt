@@ -11,36 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Base class for all events that mark the beginning of a node.
  */
-public abstract class NodeEvent extends Event {
-
-  private final Optional<Anchor> anchor;
-
-  public NodeEvent(Optional<Anchor> anchor, Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-    Objects.requireNonNull(anchor);
-    this.anchor = anchor;
-  }
-
-  /**
-   * Node anchor by which this node might later be referenced by a {@link AliasEvent}.
-   * <p>
-   * Note that {@link AliasEvent}s are by it self <code>NodeEvent</code>s and use this property to
-   * indicate the referenced anchor.
-   *
-   * @return Anchor of this node or <code>null</code> if no anchor is defined.
-   */
-  public Optional<Anchor> getAnchor() {
-    return this.anchor;
-  }
-}
+abstract class NodeEvent(
+    /**
+     * Node anchor by which this node might later be referenced by a [AliasEvent].
+     *
+     * Note that [AliasEvent]s are by itself [NodeEvent]s and use this property to
+     * indicate the referenced anchor.
+     *
+     * @return Anchor of this node or `null` if no anchor is defined.
+     */
+    val anchor: Optional<Anchor>,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) : Event(startMark, endMark)

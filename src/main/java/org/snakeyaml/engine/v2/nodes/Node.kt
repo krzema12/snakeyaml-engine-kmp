@@ -11,221 +11,129 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.comments.CommentLine;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.comments.CommentLine
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
  * Base class for all nodes.
- * <p>
- * The nodes form the node-graph described in the <a href="https://yaml.org/spec/1.2/spec.html">YAML
- * Specification</a>.
- * </p>
- * <p>
- * While loading, the node graph is usually created by the
- * {@link org.snakeyaml.engine.v2.composer.Composer}.
- * </p>
+ *
+ * The nodes form the node-graph described in the [YAML Specification](https://yaml.org/spec/1.2/spec.html).
+ *
+ * While loading, the node graph is usually created by the [org.snakeyaml.engine.v2.composer.Composer].
+ *
+ * @param tag - the tag
+ * @param startMark - start mark when available
+ * @param endMark - end mark when available
  */
-public abstract class Node {
+abstract class Node @JvmOverloads constructor(
+    /**
+     * Tag of this node.
+     *
+     * Every node has a tag assigned. The tag is either local or global.
+     *
+     * @return Tag of this node.
+     */
+    var tag: Tag,
 
-  private final Optional<Mark> startMark;
-  protected Optional<Mark> endMark;
-  /**
-   * true when the tag is assigned by the resolver
-   */
-  protected boolean resolved;
-  private Tag tag;
-  private boolean recursive;
-  private Optional<Anchor> anchor;
-  private List<CommentLine> inLineComments;
-  private List<CommentLine> blockComments;
-  // End Comments are only on the last node in a document
-  private List<CommentLine> endComments;
-  private Map<String, Object> properties;
+    val startMark: Optional<Mark>,
 
-  /**
-   * Create Node to be parsed
-   *
-   * @param tag - the tag
-   * @param startMark - start mark when available
-   * @param endMark - end mark when available
-   */
-  public Node(Tag tag, Optional<Mark> startMark, Optional<Mark> endMark) {
-    setTag(tag);
-    this.startMark = startMark;
-    this.endMark = endMark;
-    this.recursive = false;
-    this.resolved = true;
-    this.anchor = Optional.empty();
-    this.inLineComments = null;
-    this.blockComments = null;
-    this.endComments = null;
-    this.properties = null;
-  }
+    @JvmField
+    var endMark: Optional<Mark>,
 
-  /**
-   * Tag of this node.
-   * <p>
-   * Every node has a tag assigned. The tag is either local or global.
-   *
-   * @return Tag of this node.
-   */
-  public Tag getTag() {
-    return this.tag;
-  }
+    /**
+     * `true` when the tag is assigned by the resolver
+     */
+    @JvmField
+    protected var resolved: Boolean = true,
+) {
 
-  public void setTag(Tag tag) {
-    Objects.requireNonNull(tag, "tag in a Node is required.");
-    this.tag = tag;
-  }
 
-  public Optional<Mark> getEndMark() {
-    return endMark;
-  }
+    /**
+     * Indicates if this node must be constructed in two steps.
+     *
+     * Two-step construction is required whenever a node is a child (direct or indirect) of it self.
+     * That is, if a recursive structure is build using anchors and aliases.
+     *
+     * Set by [org.snakeyaml.engine.v2.composer.Composer], used during the construction process.
+     *
+     *  Only relevant during loading.
+     *
+     * @return `true` if the node is self referenced.
+     */
+    var isRecursive: Boolean = false
 
-  /**
-   * @return scalar, sequence, mapping
-   */
-  public abstract NodeType getNodeType();
+    /**
+     * Get the anchor if it was defined for this Node
+     *
+     * @return the Anchor if available
+     * @see [3.2.2.2. Anchors and Aliases](https://yaml.org/spec/1.2/spec.html.id2765878)
+     */
 
-  public Optional<Mark> getStartMark() {
-    return startMark;
-  }
+    /**
+     * The anchor for this Node
+     *
+     * @see [3.2.2.2. Anchors and Aliases](https://yaml.org/spec/1.2/spec.html.id2765878)
+     */
+    var anchor: Optional<Anchor> = Optional.empty()
 
-  /**
-   * Node is only equal to itself
-   */
-  @Override
-  public final boolean equals(Object obj) {
-    return super.equals(obj);
-  }
+    /**
+     * The ordered list of in-line comments. The first of which appears at the end of the line
+     * represented by this node. The rest are in the following lines, indented per the Spec to indicate
+     * they are continuation of the inline comment.
+     *
+     * @return the comment line list.
+     */
+    var inLineComments: List<CommentLine>? = null
 
-  /**
-   * Indicates if this node must be constructed in two steps.
-   * <p>
-   * Two-step construction is required whenever a node is a child (direct or indirect) of it self.
-   * That is, if a recursive structure is build using anchors and aliases.
-   * </p>
-   * <p>
-   * Set by {@link org.snakeyaml.engine.v2.composer.Composer}, used during the construction process.
-   * </p>
-   * <p>
-   * Only relevant during loading.
-   * </p>
-   *
-   * @return <code>true</code> if the node is self referenced.
-   */
-  public boolean isRecursive() {
-    return recursive;
-  }
+    /**
+     * The ordered list of blank lines and block comments (full line) that appear before this node.
+     *
+     * @return the comment line list.
+     */
+    var blockComments: List<CommentLine>? = null
 
-  public void setRecursive(boolean recursive) {
-    this.recursive = recursive;
-  }
+    /**
+     * The ordered list of blank lines and block comments (full line) that appear AFTER this node.
+     *
+     *
+     * NOTE: these comment should occur only in the last node in a document, when walking the node
+     * tree "in order"
+     *
+     * @return the comment line list.
+     */
+    // End Comments are only on the last node in a document
+    var endComments: List<CommentLine>? = null
 
-  @Override
-  public final int hashCode() {
-    return super.hashCode();
-  }
+    private var properties: MutableMap<String, Any>? = null
 
-  /**
-   * Get the anchor if it was defined for this Node
-   *
-   * @return the Anchor if available
-   * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
-   */
-  public Optional<Anchor> getAnchor() {
-    return anchor;
-  }
+    /**
+     * @return scalar, sequence, mapping
+     */
+    abstract val nodeType: NodeType
 
-  /**
-   * Set the anchor for this Node
-   *
-   * @param anchor - the Anchor for this Node
-   * @see <a href="https://yaml.org/spec/1.2/spec.html#id2765878">3.2.2.2. Anchors and Aliases</a>
-   */
-  public void setAnchor(Optional<Anchor> anchor) {
-    this.anchor = anchor;
-  }
-
-  /**
-   * Define a custom runtime property. It is not used by Engine but may be used by other tools.
-   *
-   * @param key - the key for the custom property
-   * @param value - the value for the custom property
-   * @return the previous value for the provided key if it was defined
-   */
-  public Object setProperty(String key, Object value) {
-    if (properties == null) {
-      properties = new HashMap<>();
+    /**
+     * Define a custom runtime property. It is not used by Engine but may be used by other tools.
+     *
+     * @param key - the key for the custom property
+     * @param value - the value for the custom property
+     * @return the previous value for the provided key if it was defined
+     */
+    fun setProperty(key: String, value: Any): Any? {
+        if (properties == null) {
+            properties = HashMap()
+        }
+        return properties!!.put(key, value)
     }
-    return properties.put(key, value);
-  }
 
-  /**
-   * Get the custom runtime property.
-   *
-   * @param key - the key of the runtime property
-   * @return the value if it was specified
-   */
-  public Object getProperty(String key) {
-    if (properties == null) {
-      return null;
-    } else {
-      return properties.get(key);
-    }
-  }
-
-
-  /**
-   * The ordered list of in-line comments. The first of which appears at the end of the line
-   * respresent by this node. The rest are in the following lines, indented per the Spec to indicate
-   * they are continuation of the inline comment.
-   *
-   * @return the comment line list.
-   */
-  public List<CommentLine> getInLineComments() {
-    return inLineComments;
-  }
-
-  public void setInLineComments(List<CommentLine> inLineComments) {
-    this.inLineComments = inLineComments;
-  }
-
-  /**
-   * The ordered list of blank lines and block comments (full line) that appear before this node.
-   *
-   * @return the comment line list.
-   */
-  public List<CommentLine> getBlockComments() {
-    return blockComments;
-  }
-
-  public void setBlockComments(List<CommentLine> blockComments) {
-    this.blockComments = blockComments;
-  }
-
-  /**
-   * The ordered list of blank lines and block comments (full line) that appear AFTER this node.
-   * <p>
-   * NOTE: these comment should occur only in the last node in a document, when walking the node
-   * tree "in order"
-   *
-   * @return the comment line list.
-   */
-  public List<CommentLine> getEndComments() {
-    return endComments;
-  }
-
-  public void setEndComments(List<CommentLine> endComments) {
-    this.endComments = endComments;
-  }
+    /**
+     * Get the custom runtime property.
+     *
+     * @param key - the key of the runtime property
+     * @return the value if it was specified
+     */
+    fun getProperty(key: String): Any? = properties?.get(key)
 }

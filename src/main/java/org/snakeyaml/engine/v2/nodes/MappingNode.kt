@@ -11,95 +11,55 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.FlowStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
  * Represents a map.
- * <p>
+ *
+ *
  * A map is a collection of unsorted key-value pairs.
- * </p>
+ *
+ * @param[tag] tag of the node
+ * @param[resolved] true when the tag is implicitly resolved
+ * @param[value] the entries of this map
+ * @param[flowStyle] the flow style of the node
+ * @param[startMark] start
+ * @param[endMark] end
  */
-public class MappingNode extends CollectionNode<NodeTuple> {
-
-  private List<NodeTuple> value;
-
+class MappingNode @JvmOverloads constructor(
+  tag: Tag,
   /**
-   * Create
-   *
-   * @param tag - tag of the node
-   * @param resolved - true when the tag is implicitly resolved
-   * @param value - the value
-   * @param flowStyle - the flow style of the node
-   * @param startMark - start
-   * @param endMark - end
+   * Applications may need to replace the content (Spring Boot).
+   * Merging was removed, but it may be implemented.
    */
-  public MappingNode(Tag tag, boolean resolved, List<NodeTuple> value, FlowStyle flowStyle,
-      Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(tag, flowStyle, startMark, endMark);
-    Objects.requireNonNull(value);
-    this.value = value;
-    this.resolved = resolved;
-  }
+  override var value: MutableList<NodeTuple>,
+  flowStyle: FlowStyle,
+  resolved: Boolean = true,
+  startMark: Optional<Mark> = Optional.empty<Mark>(),
+  endMark: Optional<Mark> = Optional.empty<Mark>(),
+) : CollectionNode<NodeTuple>(
+  tag = tag,
+  flowStyle = flowStyle,
+  startMark = startMark,
+  endMark = endMark,
+  resolved = resolved,
+) {
 
-  /**
-   * Create
-   *
-   * @param tag - tag of the node
-   * @param value - the value
-   * @param flowStyle - the flow style of the node
-   */
-  public MappingNode(Tag tag, List<NodeTuple> value, FlowStyle flowStyle) {
-    this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
-  }
+  override val nodeType: NodeType
+    get() = NodeType.MAPPING
 
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.MAPPING;
-  }
-
-  /**
-   * Returns the entries of this map.
-   *
-   * @return List of entries.
-   */
-  public List<NodeTuple> getValue() {
-    return value;
-  }
-
-  /**
-   * Applications may need to replace the content (Spring Boot). Merging was removed, but it may be
-   * implemented.
-   *
-   * @param merged - merged data to replace the internal value
-   */
-  public void setValue(List<NodeTuple> merged) {
-    Objects.requireNonNull(merged);
-    value = merged;
-  }
-
-  @Override
-  public String toString() {
-    String values;
-    StringBuilder buf = new StringBuilder();
-    for (NodeTuple node : getValue()) {
-      buf.append("{ key=");
-      buf.append(node.getKeyNode());
-      buf.append("; value=");
-      if (node.getValueNode() instanceof CollectionNode) {
-        // to avoid overflow in case of recursive structures
-        buf.append(System.identityHashCode(node.getValueNode()));
-      } else {
-        buf.append(node);
+  override fun toString(): String {
+    val values = value.joinToString("") { node ->
+      val valueNode: Any = when (node.valueNode) {
+        is CollectionNode<*> -> System.identityHashCode(node.valueNode) // avoid overflow in case of recursive structures
+        else                 -> node
       }
-      buf.append(" }");
+      "{ key=${node.keyNode}; value=$valueNode }"
     }
-    values = buf.toString();
-    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", values=" + values + ")>";
+    return "<${this.javaClass.name} (tag=$tag, values=$values)>"
   }
 }

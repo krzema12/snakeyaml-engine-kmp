@@ -11,13 +11,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.common;
+package org.snakeyaml.engine.v2.common
 
 /**
  * Block styles use indentation to denote nesting and scope within the document. In contrast, flow
  * styles rely on explicit indicators to denote nesting and scope.
  */
-public enum FlowStyle {
+enum class FlowStyle {
   /**
    * Flow style
    */

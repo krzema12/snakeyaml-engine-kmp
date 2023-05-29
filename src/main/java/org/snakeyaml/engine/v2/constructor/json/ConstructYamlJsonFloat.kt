@@ -11,40 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor.json;
+package org.snakeyaml.engine.v2.constructor.json
 
-import org.snakeyaml.engine.v2.constructor.ConstructScalar;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Create Double instances for float
  */
-public class ConstructYamlJsonFloat extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    String value = constructScalar(node);
-    if (".inf".equals(value)) {
-      return Double.POSITIVE_INFINITY;
-    } else if ("-.inf".equals(value)) {
-      return Double.NEGATIVE_INFINITY;
-    } else if (".nan".equals(value)) {
-      return Double.NaN;
-    } else {
-      return constructFromString(value);
+open class ConstructYamlJsonFloat : ConstructScalar() {
+    override fun construct(node: Node?): Double {
+        return when (val value = constructScalar(node)) {
+            ".inf"  -> Double.POSITIVE_INFINITY
+            "-.inf" -> Double.NEGATIVE_INFINITY
+            ".nan"  -> Double.NaN
+            else    -> constructFromString(value)
+        }
     }
-  }
 
-  protected Object constructFromString(String value) {
-    int sign = +1;
-    char first = value.charAt(0);
-    if (first == '-') {
-      sign = -1;
-      value = value.substring(1);
-    } else if (first == '+') {
-      value = value.substring(1);
+    private fun constructFromString(value: String): Double {
+        val (sign, number) = when (value.firstOrNull()) {
+            '-'  -> -1 to value.substring(1)
+            '+'  -> +1 to value.substring(1)
+            else -> +1 to value
+        }
+        val d = number.toDouble()
+        return d * sign
     }
-    double d = Double.valueOf(value);
-    return Double.valueOf(d * sign);
-  }
 }

@@ -35,17 +35,12 @@ public class DumpAnchorTest {
 
   @Test
   public void test_anchor_test() {
-    String str = TestUtils.getResource("anchor/issue481.yaml");
+    String str = TestUtils.getResource("/anchor/issue481.yaml");
     Compose compose = new Compose(LoadSettings.builder().build());
     Node node = compose.composeReader(new StringReader(str)).get();
 
     DumpSettings setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
-        .setAnchorGenerator(new AnchorGenerator() {
-          @Override
-          public Anchor nextAnchor(Node node) {
-            return node.getAnchor().get();
-          }
-        }).build();
+        .setAnchorGenerator(node1 -> node1.getAnchor().get()).build();
     Dump yaml = new Dump(setting);
 
     StreamDataWriter writer = new MyDumperWriter();

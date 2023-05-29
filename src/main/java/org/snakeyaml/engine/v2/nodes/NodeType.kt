@@ -11,11 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
 /**
  * Enum for the basic YAML types: scalar, sequence and mapping.
  */
-public enum NodeType {
-  SCALAR, SEQUENCE, MAPPING, ANCHOR
+enum class NodeType {
+  SCALAR,
+  SEQUENCE,
+  MAPPING,
+  ANCHOR,
 }

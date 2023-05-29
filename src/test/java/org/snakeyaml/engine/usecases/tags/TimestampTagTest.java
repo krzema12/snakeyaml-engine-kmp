@@ -13,13 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.tags;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
@@ -27,9 +21,18 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.schema.JsonSchema;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Example of parsing a !!timestamp tag
@@ -47,7 +50,7 @@ public class TimestampTagTest {
     Load loader = new Load(settings);
     LocalDateTime obj =
         (LocalDateTime) loader.loadFromString("!!timestamp 2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
   }
 
   @Test
@@ -55,7 +58,7 @@ public class TimestampTagTest {
     LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
     Load loader = new Load(settings);
     LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
-    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 00, 333000000), obj);
+    assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
 
     assertEquals(2020, loader.loadFromString("2020"));
     assertEquals(3, ((List<String>) loader.loadFromString("[a, b, c]")).size());
@@ -73,29 +76,37 @@ public class TimestampTagTest {
     }
   }
 
-  public static final class MyScalarResolver extends JsonScalarResolver {
+  public static final class MyScalarResolver extends BaseScalarResolver {
+    private final JsonScalarResolver delegate = new JsonScalarResolver();
 
     // this is taken from YAML 1.1 types
     public static final Pattern TIMESTAMP = Pattern.compile(
         "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
 
+    public MyScalarResolver() {
+      super();
+    }
+
+    @NotNull
     @Override
-    public Tag resolve(String value, Boolean implicit) {
+    public Tag resolve(@NotNull String value, boolean implicit) {
       if (TIMESTAMP.matcher(value).matches()) {
         return myTimeTag;
       } else {
-        return super.resolve(value, implicit);
+        return delegate.resolve(value, implicit);
       }
     }
   }
 
   public static final class TimestampSchema extends JsonSchema {
 
+    @NotNull
     @Override
     public ScalarResolver getScalarResolver() {
       return new MyScalarResolver();
     }
 
+    @NotNull
     @Override
     public Map<Tag, ConstructNode> getSchemaTagConstructors() {
       Map<Tag, ConstructNode> parent = super.getSchemaTagConstructors();

@@ -11,69 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
  * Represents a scalar node.
- * <p>
+ *
  * Scalar nodes form the leaves in the node graph.
- * </p>
+ *
+ * @param[tag]
+ * @param[resolved]
+ * @param[value] Value of this scalar
+ * @param[scalarStyle] style of this scalar node
+ * Flow styles - https://yaml.org/spec/1.2/spec.html.id2786942
+ * Block styles - https://yaml.org/spec/1.2/spec.html.id2793652
+ * @see org.snakeyaml.engine.v2.events.ScalarEvent
  */
-public class ScalarNode extends Node {
+class ScalarNode @JvmOverloads constructor(
+  tag: Tag,
+  val value: String,
+  val scalarStyle: ScalarStyle,
+  resolved: Boolean = true,
+  startMark: Optional<Mark> = Optional.empty<Mark>(),
+  endMark: Optional<Mark> = Optional.empty<Mark>(),
+) : Node(tag, startMark, endMark, resolved = resolved) {
 
-  private final ScalarStyle style;
-  private final String value;
+  override val nodeType: NodeType
+    get() = NodeType.SCALAR
 
-  public ScalarNode(Tag tag, boolean resolved, String value, ScalarStyle style,
-      Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(tag, startMark, endMark);
-    Objects.requireNonNull(value, "value in a Node is required.");
-    this.value = value;
-    Objects.requireNonNull(style, "Scalar style must be provided.");
-    this.style = style;
-    this.resolved = resolved;
-  }
+  override fun toString(): String = "<${this.javaClass.name} (tag=$tag, value=$value)>"
 
-  public ScalarNode(Tag tag, String value, ScalarStyle style) {
-    this(tag, true, value, style, Optional.empty(), Optional.empty());
-  }
-
-  /**
-   * Get scalar style of this node.
-   *
-   * @return style of this scalar node
-   * @see org.snakeyaml.engine.v2.events.ScalarEvent Flow styles -
-   *      https://yaml.org/spec/1.2/spec.html#id2786942 Block styles -
-   *      https://yaml.org/spec/1.2/spec.html#id2793652
-   */
-  public ScalarStyle getScalarStyle() {
-    return style;
-  }
-
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.SCALAR;
-  }
-
-  /**
-   * Value of this scalar.
-   *
-   * @return Scalar's value.
-   */
-  public String getValue() {
-    return value;
-  }
-
-  public String toString() {
-    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=" + getValue() + ")>";
-  }
-
-  public boolean isPlain() {
-    return style == ScalarStyle.PLAIN;
-  }
+  val isPlain: Boolean
+    get() = scalarStyle == ScalarStyle.PLAIN
 }

@@ -11,53 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api.lowlevel;
+package org.snakeyaml.engine.v2.api.lowlevel
 
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.Objects;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.api.DumpSettings
+import org.snakeyaml.engine.v2.api.StreamDataWriter
+import org.snakeyaml.engine.v2.emitter.Emitter
+import org.snakeyaml.engine.v2.events.Event
+import java.io.StringWriter
 
 /**
  * Emit the events into a data stream (opposite for Parse)
+ *
+ * @param settings - configuration
  */
-public class Present {
-
-  private final DumpSettings settings;
-
-  /**
-   * Create Present (emitter)
-   *
-   * @param settings - configuration
-   */
-  public Present(DumpSettings settings) {
-    Objects.requireNonNull(settings, "DumpSettings cannot be null");
-    this.settings = settings;
-  }
-
-  /**
-   * Serialise the provided Events
-   *
-   * @param events - the data to serialise
-   * @return - the YAML document
-   */
-  public String emitToString(Iterator<Event> events) {
-    Objects.requireNonNull(events, "events cannot be null");
-    StreamToStringWriter writer = new StreamToStringWriter();
-    final Emitter emitter = new Emitter(settings, writer);
-    events.forEachRemaining(emitter::emit);
-    return writer.toString();
-  }
+class Present(
+    private val settings: DumpSettings,
+) {
+    /**
+     * Serialise the provided Events
+     *
+     * @param events - the data to serialise
+     * @return - the YAML document
+     */
+    fun emitToString(events: Iterator<Event>): String {
+        val writer = StreamToStringWriter()
+        val emitter = Emitter(settings, writer)
+        events.forEachRemaining { event: Event -> emitter.emit(event) }
+        return writer.toString()
+    }
 }
-
 
 /**
  * Internal helper class to support emitting to String
  */
-class StreamToStringWriter extends StringWriter implements StreamDataWriter {
-
+private class StreamToStringWriter : StringWriter(), StreamDataWriter {
+    override fun flush(): Unit = super<StringWriter>.flush()
 }
-

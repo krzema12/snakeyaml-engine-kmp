@@ -99,4 +99,3 @@ class ScannerTest {
     return scanner.next();
   }
 }
-

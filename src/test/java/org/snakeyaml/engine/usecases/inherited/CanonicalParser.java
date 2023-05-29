@@ -15,7 +15,10 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
 import org.snakeyaml.engine.v2.common.Anchor;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -43,14 +46,12 @@ import org.snakeyaml.engine.v2.tokens.Token;
 public class CanonicalParser implements Parser {
 
   private final String label;
-  private final ArrayList<Event> events;
+  private final ArrayList<Event> events = new ArrayList<>();
   private final CanonicalScanner scanner;
-  private boolean parsed;
+  private boolean parsed = false;
 
   public CanonicalParser(String data, String label) {
     this.label = label;
-    events = new ArrayList();
-    parsed = false;
     scanner = new CanonicalScanner(data, label);
   }
 
@@ -165,6 +166,7 @@ public class CanonicalParser implements Parser {
     parsed = true;
   }
 
+  @NotNull
   public Event next() {
     if (!parsed) {
       parse();
@@ -175,7 +177,7 @@ public class CanonicalParser implements Parser {
   /**
    * Check the type of the next event.
    */
-  public boolean checkEvent(Event.ID choice) {
+  public boolean checkEvent(@NotNull Event.ID choice) {
     if (!parsed) {
       parse();
     }
@@ -188,12 +190,13 @@ public class CanonicalParser implements Parser {
   /**
    * Get the next event.
    */
+  @NotNull
   public Event peekEvent() {
     if (!parsed) {
       parse();
     }
     if (events.isEmpty()) {
-      return null;
+      throw new NoSuchElementException("No more Events found.");
     } else {
       return events.get(0);
     }
@@ -201,6 +204,9 @@ public class CanonicalParser implements Parser {
 
   @Override
   public boolean hasNext() {
-    return peekEvent() != null;
+    if (!parsed) {
+      parse();
+    }
+    return !events.isEmpty();
   }
 }

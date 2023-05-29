@@ -11,38 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.exceptions;
+package org.snakeyaml.engine.v2.exceptions
 
 /**
  * General exception to serve as the root
  */
-public class YamlEngineException extends RuntimeException {
+open class YamlEngineException : RuntimeException {
+    /**
+     * @param message - the problem
+     */
+    constructor(message: String) : super(message)
 
-  /**
-   * Create
-   *
-   * @param message - the problem
-   */
-  public YamlEngineException(String message) {
-    super(message);
-  }
+    /**
+     * @param cause - the reason
+     */
+    constructor(cause: Throwable) : super(cause)
 
-  /**
-   * Create
-   *
-   * @param cause - the reason
-   */
-  public YamlEngineException(Throwable cause) {
-    super(cause);
-  }
-
-  /**
-   * Create
-   *
-   * @param message - error
-   * @param cause - the cause
-   */
-  public YamlEngineException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * @param message - error
+     * @param cause - the cause
+     */
+    constructor(message: String, cause: Throwable?) : super(message, cause)
 }

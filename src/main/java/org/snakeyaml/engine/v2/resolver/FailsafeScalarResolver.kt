@@ -11,23 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.resolver;
+package org.snakeyaml.engine.v2.resolver
 
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.nodes.Tag
 
 /**
  * ScalarResolver for JSON Schema
  *
- * @see <a href="https://yaml.org/spec/1.2.2/#101-failsafe-schema">Chapter 10.2. Failsafe Schema</a>
+ * @see [Chapter 10.2. Failsafe Schema](https://yaml.org/spec/1.2.2/.101-failsafe-schema)
  */
-public class FailsafeScalarResolver extends BaseScalarResolver {
-
-
-  /**
-   * Register all the resolvers to be applied
-   */
-  @Override
-  protected void addImplicitResolvers() {
-    addImplicitResolver(Tag.NULL, EMPTY, null);
-  }
-}
+class FailsafeScalarResolver : BaseScalarResolver(
+    {
+        addImplicitResolver(Tag.NULL, EMPTY, null)
+    },
+)

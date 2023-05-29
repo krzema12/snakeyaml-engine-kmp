@@ -13,52 +13,51 @@
  */
 package org.snakeyaml.engine.v2.resolver;
 
-import java.util.regex.Pattern;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.nodes.Tag
+import java.util.regex.Pattern
 
 /**
  * ScalarResolver for Core Schema
  */
-public class CoreScalarResolver extends BaseScalarResolver {
+class CoreScalarResolver : BaseScalarResolver(
+    {
+        addImplicitResolver(Tag.NULL, EMPTY, null);
+        addImplicitResolver(Tag.BOOL, BOOL, "tfTF");
+        // INT must be before FLOAT because the regular expression for FLOAT matches INT
+        addImplicitResolver(Tag.INT, INT, "-+0123456789");
+        addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
+        addImplicitResolver(Tag.NULL, NULL, "n\u0000");
+        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT.toPattern(), "$");
+    },
+) {
 
-  /**
-   * Boolean as defined in Core
-   */
-  public static final Pattern BOOL = Pattern.compile("^(?:true|True|TRUE|false|False|FALSE)$");
+    companion object {
 
-  /**
-   * Float as defined in JSON (Number which is Float)
-   */
-  public static final Pattern FLOAT =
-      Pattern.compile("^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" + // float
-          "|([-+]?\\.(?:inf|Inf|INF))" + // infinity
-          "|(\\.(?:nan|NaN|NAN))$"); // not a number
+        /** Boolean as defined in Core */
+        val BOOL: Pattern = Pattern.compile("^(?:true|True|TRUE|false|False|FALSE)$");
 
-  /**
-   * Integer as defined in Core
-   */
-  public static final Pattern INT = Pattern.compile("^([-+]?[0-9]+)" + // (base 10)
-      "|(0o[0-7]+)" + // (base 8)
-      "|(0x[0-9a-fA-F]+)$" // (base 16)
-  );
+        /**
+         * Float as defined in JSON (Number which is Float).
+         *
+         * Be aware that this regex will also match integers.
+         */
+        val FLOAT: Pattern =
+            Pattern.compile(
+                "^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" + // float
+                    "|([-+]?\\.(?:inf|Inf|INF))" + // infinity
+                    "|(\\.(?:nan|NaN|NAN))$", // not a number
+            )
 
-  /**
-   * Null as defined in Core
-   */
-  public static final Pattern NULL = Pattern.compile("^(?:~|null|Null|NULL| )$");
+        /** Integer as defined in Core */
+        @JvmField
+        val INT: Pattern = Pattern.compile(
+            "^([-+]?[0-9]+)" + // (base 10)
+                "|(0o[0-7]+)" + // (base 8)
+                "|(0x[0-9a-fA-F]+)$", // (base 16)
+        );
 
-  /**
-   * Register all the resolvers to be applied
-   */
-  protected void addImplicitResolvers() {
-    addImplicitResolver(Tag.NULL, EMPTY, null);
-    addImplicitResolver(Tag.BOOL, BOOL, "tfTF");
-    /*
-     * INT must be before FLOAT because the regular expression for FLOAT matches INT
-     */
-    addImplicitResolver(Tag.INT, INT, "-+0123456789");
-    addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
-    addImplicitResolver(Tag.NULL, NULL, "n\u0000");
-    addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$");
-  }
+        /** Null as defined in Core */
+        val NULL: Pattern = Pattern.compile("^(?:~|null|Null|NULL| )$");
+
+    }
 }

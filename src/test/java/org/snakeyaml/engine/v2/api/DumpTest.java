@@ -114,18 +114,17 @@ class DumpTest {
   void dumpToFile() throws IOException {
     DumpSettings settings = DumpSettings.builder().build();
     Dump dump = new Dump(settings);
-    File file = new File("target/temp.yaml");
+    File file = File.createTempFile("snake-yaml-test", ".yaml");
     file.delete();
     assertFalse(file.exists());
     file.getParentFile().mkdirs();
     file.createNewFile();
-    StreamDataWriter writer =
-        new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8) {
-          @Override
-          public void processIOException(IOException e) {
-            throw new RuntimeException(e);
-          }
-        };
+    StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8) {
+      @Override
+      public void processIOException(IOException e) {
+        throw new RuntimeException(e);
+      }
+    };
     dump.dump(ImmutableMap.of("x", 1, "y", 2, "z", 3), writer);
     assertTrue(file.exists());
     file.delete();// on Windows the file is not deleted

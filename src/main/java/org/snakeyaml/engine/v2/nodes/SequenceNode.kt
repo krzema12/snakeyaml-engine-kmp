@@ -11,65 +11,46 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.FlowStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
  * Represents a sequence.
- * <p>
- * A sequence is a ordered collection of nodes.
- * </p>
+ *
+ * A sequence is an ordered collection of nodes.
+ *
+ * @param[value] the [Node]s in this sequence, in the specified order
  */
-public class SequenceNode extends CollectionNode<Node> {
+class SequenceNode @JvmOverloads constructor(
+    tag: Tag,
+    override val value: List<Node>,
+    flowStyle: FlowStyle,
+    resolved: Boolean = true,
+    startMark: Optional<Mark> = Optional.empty<Mark>(),
+    endMark: Optional<Mark> = Optional.empty<Mark>(),
+) : CollectionNode<Node>(
+    tag,
+    flowStyle,
+    startMark,
+    endMark,
+    resolved = resolved,
+) {
+    override val nodeType: NodeType
+        get() = NodeType.SEQUENCE
 
-  private final List<Node> value;
+    override fun toString(): String {
+        val values = value.joinToString(",") { node ->
+            when (node) {
+                // avoid overflow in case of recursive structures
+                is CollectionNode<*> -> System.identityHashCode(node).toString()
 
-  public SequenceNode(Tag tag, boolean resolved, List<Node> value, FlowStyle flowStyle,
-      Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(tag, flowStyle, startMark, endMark);
-    Objects.requireNonNull(value, "value in a Node is required.");
-    this.value = value;
-    this.resolved = resolved;
-  }
+                else                 -> node.toString()
+            }
+        }
 
-  public SequenceNode(Tag tag, List<Node> value, FlowStyle flowStyle) {
-    this(tag, true, value, flowStyle, Optional.empty(), Optional.empty());
-  }
-
-  @Override
-  public NodeType getNodeType() {
-    return NodeType.SEQUENCE;
-  }
-
-  /**
-   * Returns the elements in this sequence.
-   *
-   * @return Nodes in the specified order.
-   */
-  public List<Node> getValue() {
-    return value;
-  }
-
-  public String toString() {
-    StringBuilder buf = new StringBuilder();
-    for (Node node : getValue()) {
-      if (node instanceof CollectionNode) {
-        // to avoid overflow in case of recursive structures
-        buf.append(System.identityHashCode(node));
-      } else {
-        buf.append(node.toString());
-      }
-      buf.append(",");
+        return "<${this.javaClass.name} (tag=$tag, value=[$values])>"
     }
-    // delete last comma
-    if (buf.length() > 0) {
-      buf.deleteCharAt(buf.length() - 1);
-    }
-    return "<" + this.getClass().getName() + " (tag=" + getTag() + ", value=[" + buf + "])>";
-  }
 }

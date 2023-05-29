@@ -11,23 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser;
+package org.snakeyaml.engine.v2.parser
 
-
-import org.snakeyaml.engine.v2.events.Event;
+import org.snakeyaml.engine.v2.events.Event
 
 /**
- * Helper for {@link ParserImpl}. A grammar rule to apply given the symbols on top of its stack and
+ * Helper for [ParserImpl]. A grammar rule to apply given the symbols on top of its stack and
  * the next input token
  *
- * @see <a href="http://en.wikipedia.org/wiki/LL_parser"></a>
+ * See http://en.wikipedia.org/wiki/LL_parser
  */
-interface Production {
-
-  /**
-   * Produce parsed event
-   *
-   * @return parsed event to be added to the stream of events
-   */
-  Event produce();
+internal fun interface Production {
+    /**
+     * Produce parsed event
+     *
+     * @return parsed event to be added to the stream of events
+     */
+    fun produce(): Event
 }

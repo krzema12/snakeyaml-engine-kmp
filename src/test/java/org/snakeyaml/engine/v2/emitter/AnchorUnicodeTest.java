@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -31,7 +33,7 @@ import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
 @Tag("fast")
 public class AnchorUnicodeTest {
 
-  private static final Set<Character> INVALID_ANCHOR = new HashSet();
+  private static final Set<Character> INVALID_ANCHOR = new HashSet<>();
 
   static {
     INVALID_ANCHOR.add('[');
@@ -48,8 +50,9 @@ public class AnchorUnicodeTest {
     DumpSettings settings = DumpSettings.builder().setAnchorGenerator(new AnchorGenerator() {
       int id = 0;
 
+      @NotNull
       @Override
-      public Anchor nextAnchor(Node node) {
+      public Anchor nextAnchor(@NotNull Node node) {
         return new Anchor("タスク" + id++);
       }
     }).build();
@@ -87,12 +90,7 @@ public class AnchorUnicodeTest {
 
 
   private DumpSettings createSettings(final Character invalid) {
-    return DumpSettings.builder().setAnchorGenerator(new AnchorGenerator() {
-      @Override
-      public Anchor nextAnchor(Node node) {
-        return new Anchor("anchor" + invalid);
-      }
-    }).build();
+    return DumpSettings.builder().setAnchorGenerator(node -> new Anchor("anchor" + invalid)).build();
   }
 
   @Test

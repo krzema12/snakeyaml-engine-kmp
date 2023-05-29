@@ -11,21 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.serializer;
+package org.snakeyaml.engine.v2.serializer
 
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.common.Anchor
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Functional interface to define Anchor for dumping
  */
-public interface AnchorGenerator {
-
+fun interface AnchorGenerator {
   /**
    * Create anchor
    *
    * @param node - the node to refer to
    * @return unique name
    */
-  Anchor nextAnchor(Node node);
+  fun nextAnchor(node: Node): Anchor
 }

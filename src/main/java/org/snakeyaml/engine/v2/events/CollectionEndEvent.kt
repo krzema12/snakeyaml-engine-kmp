@@ -11,21 +11,15 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
 /**
  * Base class for the end events of the collection nodes.
  */
-public abstract class CollectionEndEvent extends Event {
-
-  public CollectionEndEvent(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
-
-  public CollectionEndEvent() {
-    super();
-  }
+abstract class CollectionEndEvent : Event {
+    constructor(startMark: Optional<Mark>, endMark: Optional<Mark>) : super(startMark, endMark)
+    constructor() : super()
 }

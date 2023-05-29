@@ -11,9 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.common;
-
-import java.util.Optional;
+package org.snakeyaml.engine.v2.common
 
 /**
  * YAML provides a rich set of scalar styles. Block scalar styles include the literal style and the
@@ -21,36 +19,21 @@ import java.util.Optional;
  * style and the double-quoted style. These styles offer a range of trade-offs between expressive
  * power and readability.
  */
-public enum ScalarStyle {
-  /**
-   * Double quoted scalar
-   */
-  DOUBLE_QUOTED(Optional.of('"')),
-  /**
-   * Single quoted scalar
-   */
-  SINGLE_QUOTED(Optional.of('\'')),
-  /**
-   * Literal scalar
-   */
-  LITERAL(Optional.of('|')),
-  /**
-   * Folded scalar
-   */
-  FOLDED(Optional.of('>')),
-  /**
-   * Plain scalar
-   */
-  PLAIN(Optional.empty());
+enum class ScalarStyle(private val styleOpt: Char?) {
+    /** Double quoted scalar */
+    DOUBLE_QUOTED('"'),
 
-  private final Optional<Character> styleOpt;
+    /** Single quoted scalar */
+    SINGLE_QUOTED('\''),
 
-  ScalarStyle(Optional<Character> style) {
-    this.styleOpt = style;
-  }
+    /** Literal scalar */
+    LITERAL('|'),
 
-  @Override
-  public String toString() {
-    return String.valueOf(styleOpt.orElse(':'));
-  }
+    /** Folded scalar */
+    FOLDED('>'),
+
+    /** Plain scalar */
+    PLAIN(null);
+
+    override fun toString(): String = (styleOpt ?: ':').toString()
 }

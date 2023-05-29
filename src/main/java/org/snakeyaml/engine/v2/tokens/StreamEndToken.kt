@@ -11,19 +11,15 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
-public final class StreamEndToken extends Token {
-
-  public StreamEndToken(Optional<Mark> startMark, Optional<Mark> endMark) {
-    super(startMark, endMark);
-  }
-
-  @Override
-  public Token.ID getTokenId() {
-    return ID.StreamEnd;
-  }
+class StreamEndToken(
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) : Token(startMark, endMark) {
+    override val tokenId: ID
+        get() = ID.StreamEnd
 }

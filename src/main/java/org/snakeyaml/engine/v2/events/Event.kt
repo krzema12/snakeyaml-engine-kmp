@@ -11,55 +11,47 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.events;
+package org.snakeyaml.engine.v2.events
 
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.*
 
 /**
- * Basic unit of output from a {@link org.snakeyaml.engine.v2.parser.Parser} or input of a
- * {@link org.snakeyaml.engine.v2.emitter.Emitter}.
+ * Basic unit of output from a [org.snakeyaml.engine.v2.parser.Parser] or input of a
+ * [org.snakeyaml.engine.v2.emitter.Emitter].
  */
-public abstract class Event {
+abstract class Event @JvmOverloads constructor(
+    val startMark: Optional<Mark> = Optional.empty(),
+    val endMark: Optional<Mark> = Optional.empty(),
+) {
 
-  private final Optional<Mark> startMark;
-  private final Optional<Mark> endMark;
-
-  public Event(Optional<Mark> startMark, Optional<Mark> endMark) {
-    if ((startMark.isPresent() && !endMark.isPresent())
-        || (!startMark.isPresent() && endMark.isPresent())) {
-      throw new NullPointerException("Both marks must be either present or absent.");
+    init {
+        if (startMark.isPresent && !endMark.isPresent || !startMark.isPresent && endMark.isPresent) {
+            throw NullPointerException("Both marks must be either present or absent.")
+        }
     }
-    this.startMark = startMark;
-    this.endMark = endMark;
-  }
 
-  /*
-   * Create Node for emitter
-   */
-  public Event() {
-    this(Optional.empty(), Optional.empty());
-  }
+    /**
+     * Get the type (kind) of this Event
+     *
+     * @return the [ID] of this Event
+     */
+    abstract val eventId: ID
 
-  public Optional<Mark> getStartMark() {
-    return startMark;
-  }
-
-  public Optional<Mark> getEndMark() {
-    return endMark;
-  }
-
-  /**
-   * Get the type (kind) if this Event
-   *
-   * @return the ID of this Event
-   */
-  public abstract Event.ID getEventId();
-
-  /**
-   * ID of a non-abstract Event
-   */
-  public enum ID {
-    Alias, Comment, DocumentEnd, DocumentStart, MappingEnd, MappingStart, Scalar, SequenceEnd, SequenceStart, StreamEnd, StreamStart // NOSONAR
-  }
+    /**
+     * ID of a non-abstract Event
+     */
+    enum class ID {
+        Alias,
+        Comment,
+        DocumentEnd,
+        DocumentStart,
+        MappingEnd,
+        MappingStart,
+        Scalar,
+        SequenceEnd,
+        SequenceStart,
+        StreamEnd,
+        StreamStart,
+    }
 }

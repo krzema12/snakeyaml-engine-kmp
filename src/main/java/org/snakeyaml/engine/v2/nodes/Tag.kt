@@ -11,72 +11,74 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.nodes;
+package org.snakeyaml.engine.v2.nodes
 
-import java.util.Objects;
-import org.snakeyaml.engine.v2.common.UriEncoder;
+import org.snakeyaml.engine.v2.common.UriEncoder
+import kotlin.reflect.KClass
 
-public final class Tag {
+class Tag {
+    val value: String
 
-  public static final String PREFIX = "tag:yaml.org,2002:";
-  public static final Tag SET = new Tag(PREFIX + "set");
-  public static final Tag BINARY = new Tag(PREFIX + "binary");
-  public static final Tag INT = new Tag(PREFIX + "int");
-  public static final Tag FLOAT = new Tag(PREFIX + "float");
-  public static final Tag BOOL = new Tag(PREFIX + "bool");
-  public static final Tag NULL = new Tag(PREFIX + "null");
-  public static final Tag STR = new Tag(PREFIX + "str");
-  public static final Tag SEQ = new Tag(PREFIX + "seq");
-  public static final Tag MAP = new Tag(PREFIX + "map");
-  // For use to indicate a DUMMY node that contains comments, when there is no other (empty
-  // document)
-  public static final Tag COMMENT = new Tag(PREFIX + "comment");
-
-  public static final Tag ENV_TAG = new Tag("!ENV_VARIABLE");
-
-  private final String value;
-
-  public Tag(String tag) {
-    Objects.requireNonNull(tag, "Tag must be provided.");
-    if (tag.isEmpty()) {
-      throw new IllegalArgumentException("Tag must not be empty.");
-    } else if (tag.trim().length() != tag.length()) {
-      throw new IllegalArgumentException("Tag must not contain leading or trailing spaces.");
+    constructor(tag: String) {
+        require(tag.isNotEmpty()) { "Tag must not be empty." }
+        require(tag.trim { it <= ' ' }.length == tag.length) { "Tag must not contain leading or trailing spaces." }
+        value = UriEncoder.encode(tag)
     }
-    this.value = UriEncoder.encode(tag);
-  }
 
-  /**
-   * Create a global tag to dump the fully qualified class name
-   *
-   * @param clazz - the class to use the name
-   */
-  public Tag(Class<? extends Object> clazz) {
-    Objects.requireNonNull(clazz, "Class for tag must be provided.");
-    this.value = Tag.PREFIX + UriEncoder.encode(clazz.getName());
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  @Override
-  public String toString() {
-    return value;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof Tag) {
-      return value.equals(((Tag) obj).getValue());
-    } else {
-      return false;
+    /**
+     * Create a global tag to dump the fully qualified class name
+     *
+     * @param clazz - the class to use the name
+     */
+    constructor(clazz: KClass<*>) {
+        value = PREFIX + UriEncoder.encode(clazz.qualifiedName!!)
     }
-  }
 
-  @Override
-  public int hashCode() {
-    return value.hashCode();
-  }
+    override fun toString(): String = value
+
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            is Tag -> value == other.value
+            else   -> false
+        }
+
+    override fun hashCode(): Int = value.hashCode()
+
+    companion object {
+        const val PREFIX = "tag:yaml.org,2002:"
+
+        @JvmField
+        val SET = Tag(PREFIX + "set")
+
+        @JvmField
+        val BINARY = Tag(PREFIX + "binary")
+
+        @JvmField
+        val INT = Tag(PREFIX + "int")
+
+        @JvmField
+        val FLOAT = Tag(PREFIX + "float")
+
+        @JvmField
+        val BOOL = Tag(PREFIX + "bool")
+
+        @JvmField
+        val NULL = Tag(PREFIX + "null")
+
+        @JvmField
+        val STR = Tag(PREFIX + "str")
+
+        @JvmField
+        val SEQ = Tag(PREFIX + "seq")
+
+        @JvmField
+        val MAP = Tag(PREFIX + "map")
+
+        /** Used to indicate a DUMMY node that contains comments, when there is no other (empty document) */
+        @JvmField
+        val COMMENT = Tag(PREFIX + "comment")
+
+        @JvmField
+        val ENV_TAG = Tag("!ENV_VARIABLE")
+    }
 }
-

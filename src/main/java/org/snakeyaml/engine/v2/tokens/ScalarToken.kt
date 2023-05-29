@@ -11,53 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
-public final class ScalarToken extends Token {
+class ScalarToken @JvmOverloads
+constructor(
+    val value: String,
+    val plain: Boolean,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+    val style: ScalarStyle = ScalarStyle.PLAIN,
+) : Token(startMark, endMark) {
 
-  private final String value;
-  private final boolean plain;
-  private final ScalarStyle style;
+    override val tokenId: ID
+        get() = ID.Scalar
 
-  public ScalarToken(String value, boolean plain, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
-    this(value, plain, ScalarStyle.PLAIN, startMark, endMark);
-  }
-
-  public ScalarToken(String value, boolean plain, ScalarStyle style, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
-    super(startMark, endMark);
-    Objects.requireNonNull(value);
-    this.value = value;
-    this.plain = plain;
-    Objects.requireNonNull(style);
-    this.style = style;
-  }
-
-  public boolean isPlain() {
-    return this.plain;
-  }
-
-  public String getValue() {
-    return this.value;
-  }
-
-  public ScalarStyle getStyle() {
-    return this.style;
-  }
-
-  @Override
-  public Token.ID getTokenId() {
-    return ID.Scalar;
-  }
-
-  @Override
-  public String toString() {
-    return getTokenId().toString() + " plain=" + plain + " style=" + style + " value=" + value;
-  }
+    override fun toString(): String = "$tokenId plain=$plain style=$style value=$value"
 }

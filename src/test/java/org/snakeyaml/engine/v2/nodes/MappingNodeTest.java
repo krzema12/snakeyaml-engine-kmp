@@ -26,9 +26,11 @@ class MappingNodeTest {
 
   @Test
   void testToString() {
-    NodeTuple tuple1 = new NodeTuple(new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN),
-        new ScalarNode(Tag.INT, "1", ScalarStyle.PLAIN));
-    List list = new ArrayList();
+    NodeTuple tuple1 = new NodeTuple(
+        new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN),
+        new ScalarNode(Tag.INT, "1", ScalarStyle.PLAIN)
+    );
+    List<NodeTuple> list = new ArrayList<>();
     list.add(tuple1);
     Node mapping = new MappingNode(Tag.MAP, list, FlowStyle.FLOW);
     NodeTuple tuple2 = new NodeTuple(new ScalarNode(Tag.STR, "self", ScalarStyle.PLAIN), mapping);

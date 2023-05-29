@@ -11,33 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api;
+package org.snakeyaml.engine.v2.api
 
 /**
- * Writer with the same methods as in {@link java.io.Writer} but without throwing IOExceptions The
+ * Writer with the same methods as in [java.io.Writer] but without throwing IOExceptions The
  * purpose of this class is to avoid checked exceptions in every method signature. Implementations
- * must define their own way to react on IOExceptions {@link YamlOutputStreamWriter}
+ * must define their own way to react on IOExceptions [YamlOutputStreamWriter]
  */
-public interface StreamDataWriter {
+interface StreamDataWriter {
+    /**
+     * Flushes this stream by writing any buffered output to the underlying stream.
+     */
+    fun flush() {}
 
-  /**
-   * Flushes this stream by writing any buffered output to the underlying stream.
-   */
-  default void flush() {}
+    /**
+     * write the whole data
+     *
+     * @param str - data to write
+     */
+    fun write(str: String)
 
-  /**
-   * write the whole data
-   *
-   * @param str - data to write
-   */
-  void write(String str);
-
-  /**
-   * Write part of the data
-   *
-   * @param str - the data to write (the source)
-   * @param off - offset to start from
-   * @param len - number of chars to write
-   */
-  void write(String str, int off, int len);
+    /**
+     * Write part of the data
+     *
+     * @param str - the data to write (the source)
+     * @param off - offset to start from
+     * @param len - number of chars to write
+     */
+    fun write(str: String, off: Int, len: Int)
 }

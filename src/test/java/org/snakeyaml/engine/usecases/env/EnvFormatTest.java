@@ -13,30 +13,28 @@
  */
 package org.snakeyaml.engine.usecases.env;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
 
-/*
- * ${VARIABLE:-default} evaluates to default if VARIABLE is unset or empty in the environment.
- * ${VARIABLE-default} evaluates to default only if VARIABLE is unset in the environment.
- *
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * {@code ${VARIABLE:-default}} evaluates to default if {@code VARIABLE} is unset or empty in the environment.
+ * {@code ${VARIABLE-default}} evaluates to default only if VARIABLE is unset in the environment.
+ * <p>
  * Similarly, the following syntax allows you to specify mandatory variables:
- *
- * ${VARIABLE:?err} exits with an error message containing err if VARIABLE is unset or empty in the
- * environment. ${VARIABLE?err} exits with an error message containing err if VARIABLE is unset in
+ * <p>
+ * {@code ${VARIABLE:?err}} exits with an error message containing err if {@code VARIABLE} is unset or empty in the
+ * environment. {@code ${VARIABLE?err}} exits with an error message containing err if {@code VARIABLE} is unset in
  * the environment.
  */
 @org.junit.jupiter.api.Tag("fast")
 public class EnvFormatTest {
 
-  public static final Pattern ENV_FORMAT = JsonScalarResolver.ENV_FORMAT;
+  public static final Pattern ENV_FORMAT = BaseScalarResolver.ENV_FORMAT.toPattern();
 
   @Test
   public void testMatchBasic() {
@@ -50,10 +48,10 @@ public class EnvFormatTest {
     assertTrue(ENV_FORMAT.matcher("${\tVARIABLE  }").matches());
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE}");
-    matcher.matches();
+    assertTrue(matcher.matches(), "expect that ENV_FORMAT matches '${VARIABLE}'");
     assertEquals("VARIABLE", matcher.group(1));
-    assertNull(matcher.group(3));
     assertNull(matcher.group(2));
+    assertNull(matcher.group(3));
 
     assertFalse(ENV_FORMAT.matcher("${VARI ABLE}").matches());
   }
@@ -67,10 +65,10 @@ public class EnvFormatTest {
     assertTrue(ENV_FORMAT.matcher("${ VARIABLE-}").matches());
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE-default}");
-    matcher.matches();
+    assertTrue(matcher.matches(), "expect that ENV_FORMAT matches '${VARIABLE-default}'");
     assertEquals("VARIABLE", matcher.group(1));
-    assertEquals("default", matcher.group(3));
     assertEquals("-", matcher.group(2));
+    assertEquals("default", matcher.group(3));
 
     assertFalse(ENV_FORMAT.matcher("${VARIABLE -default}").matches());
     assertFalse(ENV_FORMAT.matcher("${VARIABLE - default}").matches());
@@ -84,10 +82,10 @@ public class EnvFormatTest {
     assertTrue(ENV_FORMAT.matcher("${ VARIABLE:-}").matches());
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE:-default}");
-    matcher.matches();
+    assertTrue(matcher.matches(), "expect that ENV_FORMAT matches '${VARIABLE:-default}'");
     assertEquals("VARIABLE", matcher.group(1));
-    assertEquals("default", matcher.group(3));
     assertEquals(":-", matcher.group(2));
+    assertEquals("default", matcher.group(3));
 
     assertFalse(ENV_FORMAT.matcher("${VARIABLE :-default}").matches());
     assertFalse(ENV_FORMAT.matcher("${VARIABLE : -default}").matches());
@@ -101,10 +99,10 @@ public class EnvFormatTest {
     assertTrue(ENV_FORMAT.matcher("${ VARIABLE:? }").matches());
 
     Matcher matcher = ENV_FORMAT.matcher("${VARIABLE:?err}");
-    matcher.matches();
+    assertTrue(matcher.matches(), "expect that ENV_FORMAT matches '${VARIABLE:?err}'");
     assertEquals("VARIABLE", matcher.group(1));
-    assertEquals("err", matcher.group(3));
     assertEquals(":?", matcher.group(2));
+    assertEquals("err", matcher.group(3));
 
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE :?err }").matches());
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE : ?err }").matches());
@@ -118,10 +116,10 @@ public class EnvFormatTest {
     assertTrue(ENV_FORMAT.matcher("${ VARIABLE:?}").matches());
 
     Matcher matcher = ENV_FORMAT.matcher("${ VARIABLE?err }");
-    matcher.matches();
+    assertTrue(matcher.matches(), "expect that ENV_FORMAT matches '${ VARIABLE?err }'");
     assertEquals("VARIABLE", matcher.group(1));
-    assertEquals("err", matcher.group(3));
     assertEquals("?", matcher.group(2));
+    assertEquals("err", matcher.group(3));
 
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE ?err }").matches());
     assertFalse(ENV_FORMAT.matcher("${ VARIABLE ?err }").matches());

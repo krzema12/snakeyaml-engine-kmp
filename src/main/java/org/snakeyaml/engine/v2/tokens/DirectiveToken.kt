@@ -11,44 +11,34 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.tokens;
+package org.snakeyaml.engine.v2.tokens
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v2.exceptions.Mark
+import java.util.Optional
 
-public final class DirectiveToken<T> extends Token {
+class DirectiveToken(
+    val value: TokenValue?,
+    startMark: Optional<Mark>,
+    endMark: Optional<Mark>,
+) : Token(startMark, endMark) {
 
-  public static final String YAML_DIRECTIVE = "YAML";
-  public static final String TAG_DIRECTIVE = "TAG";
-  private final String name;
-  private final Optional<List<T>> value;
+    override val tokenId: ID
+        get() = ID.Directive
 
-  public DirectiveToken(String name, Optional<List<T>> value, Optional<Mark> startMark,
-      Optional<Mark> endMark) {
-    super(startMark, endMark);
-    Objects.requireNonNull(name);
-    this.name = name;
-    Objects.requireNonNull(value);
-    if (value.isPresent() && value.get().size() != 2) {
-      throw new YamlEngineException(
-          "Two strings/integers must be provided instead of " + value.get().size());
+    sealed interface TokenValue {
+        val name: String
     }
-    this.value = value;
-  }
 
-  public String getName() {
-    return this.name;
-  }
+    data class YamlDirective(val major: Int, val minor: Int) : TokenValue {
+        override val name: String get() = YAML_DIRECTIVE
+    }
 
-  public Optional<List<T>> getValue() {
-    return this.value;
-  }
+    data class TagDirective(val handle: String, val prefix: String) : TokenValue {
+        override val name: String get() = TAG_DIRECTIVE
+    }
 
-  @Override
-  public Token.ID getTokenId() {
-    return ID.Directive;
-  }
+    companion object {
+        const val YAML_DIRECTIVE = "YAML"
+        const val TAG_DIRECTIVE = "TAG"
+    }
 }

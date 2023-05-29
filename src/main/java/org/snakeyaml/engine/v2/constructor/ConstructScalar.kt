@@ -11,33 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor;
+package org.snakeyaml.engine.v2.constructor
 
-import java.util.HashMap;
-import java.util.Map;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.api.ConstructNode
+import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 /**
  * Share common code for scalar constructs
  */
-public abstract class ConstructScalar implements ConstructNode {
+abstract class ConstructScalar : ConstructNode {
+    /**
+     * Create String from the provided scalar node
+     *
+     * @param node - the source
+     * @return value of the scalar node
+     */
+    protected open fun constructScalar(node: Node?): String = (node as ScalarNode).value
 
-  protected static final Map<String, Boolean> BOOL_VALUES = new HashMap<>();
-
-  static {
-    BOOL_VALUES.put("true", Boolean.TRUE);
-    BOOL_VALUES.put("false", Boolean.FALSE);
-  }
-
-  /**
-   * Create String from the provided scalar node
-   *
-   * @param node - the source
-   * @return value of the scalar node
-   */
-  protected String constructScalar(Node node) {
-    return ((ScalarNode) node).getValue();
-  }
+    companion object {
+        @JvmField
+        internal val BOOL_VALUES: Map<String, Boolean> = mapOf(
+            "true" to true,
+            "false" to false,
+        )
+    }
 }

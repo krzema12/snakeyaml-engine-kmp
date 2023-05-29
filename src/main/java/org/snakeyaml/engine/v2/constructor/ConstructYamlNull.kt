@@ -11,17 +11,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.constructor;
+package org.snakeyaml.engine.v2.constructor
 
-import org.snakeyaml.engine.v2.nodes.Node;
+import org.snakeyaml.engine.v2.nodes.Node
 
-/**
- * Create null
- */
-public class ConstructYamlNull extends ConstructScalar {
-
-  @Override
-  public Object construct(Node node) {
-    return null;
-  }
+/** Create `null` */
+class ConstructYamlNull : ConstructScalar() {
+    override fun construct(node: Node?): Any? = null
 }

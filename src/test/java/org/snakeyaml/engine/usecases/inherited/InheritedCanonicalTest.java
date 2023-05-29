@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -35,11 +35,11 @@ public class InheritedCanonicalTest extends InheritedImportTest {
   public void testCanonicalScanner() throws IOException {
     File[] files = getStreamsByExtension(".canonical");
     assertTrue(files.length > 0, "No test files found.");
-    for (int i = 0; i < files.length; i++) {
-      InputStream input = new FileInputStream(files[i]);
-      List<Token> tokens = canonicalScan(input, files[i].getName());
-      input.close();
-      assertFalse(tokens.isEmpty());
+    for (final File file : files) {
+      try (InputStream input = Files.newInputStream(file.toPath())) {
+        List<Token> tokens = canonicalScan(input, file.getName());
+        assertFalse(tokens.isEmpty(), "expect tokens are not empty");
+      }
     }
   }
 
@@ -62,13 +62,13 @@ public class InheritedCanonicalTest extends InheritedImportTest {
   @Test
   @DisplayName("Canonical parse")
   public void testCanonicalParser() throws IOException {
-    File[] files = getStreamsByExtension(".canonical");
+    final File[] files = getStreamsByExtension(".canonical");
     assertTrue(files.length > 0, "No test files found.");
-    for (int i = 0; i < files.length; i++) {
-      InputStream input = new FileInputStream(files[i]);
-      List<Event> tokens = canonicalParse(input, files[i].getName());
-      input.close();
-      assertFalse(tokens.isEmpty());
+    for (final File file : files) {
+      try (InputStream input = Files.newInputStream(file.toPath())) {
+        List<Event> tokens = canonicalParse(input, file.getName());
+        assertFalse(tokens.isEmpty(), "expect tokens are not empty");
+      }
     }
   }
 }

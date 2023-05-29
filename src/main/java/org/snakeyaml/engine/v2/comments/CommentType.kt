@@ -11,22 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.comments;
+package org.snakeyaml.engine.v2.comments
 
 /**
  * The type of comment line.
  */
-public enum CommentType {
-  /**
-   * empty line
-   */
-  BLANK_LINE,
-  /**
-   * comment which start with #
-   */
-  BLOCK,
-  /**
-   * ending the line
-   */
-  IN_LINE
+enum class CommentType {
+    /** empty line  */
+    BLANK_LINE,
+
+    /** comment which start with `#`  */
+    BLOCK,
+
+    /** ending the line  */
+    IN_LINE
 }

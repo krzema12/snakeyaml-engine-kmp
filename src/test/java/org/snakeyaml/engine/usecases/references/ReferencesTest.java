@@ -13,11 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.references;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.HashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,6 +20,10 @@ import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 public class ReferencesTest {
@@ -36,18 +35,18 @@ public class ReferencesTest {
    * @return YAML to parse
    */
   private String createDump(int size) {
-    HashMap root = new HashMap();
-    HashMap s1, s2, t1, t2;
+    HashMap<Object, Object> root = new HashMap<>();
+    HashMap<Object, Object> s1, s2, t1, t2;
     s1 = root;
-    s2 = new HashMap();
+    s2 = new HashMap<>();
     /*
      * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
      * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
      */
     for (int i = 0; i < size; i++) {
 
-      t1 = new HashMap();
-      t2 = new HashMap();
+      t1 = new HashMap<>();
+      t2 = new HashMap<>();
       t1.put("foo", "1");
       t2.put("bar", "2");
 
@@ -62,7 +61,8 @@ public class ReferencesTest {
 
     // this is VERY BAD code
     // the map has itself as a key (no idea why it may be used except of a DoS attack)
-    HashMap f = new HashMap();
+    HashMap<Object, Object> f = new HashMap<>();
+    //noinspection CollectionAddedToSelf
     f.put(f, "a");
     f.put("g", root);
 
@@ -88,7 +88,7 @@ public class ReferencesTest {
           e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 
@@ -131,7 +131,7 @@ public class ReferencesTest {
           e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 }

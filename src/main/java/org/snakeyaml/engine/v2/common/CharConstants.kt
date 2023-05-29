@@ -11,136 +11,127 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.common;
+package org.snakeyaml.engine.v2.common
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+class CharConstants private constructor(content: String) {
+    val contains = BooleanArray(ASCII_SIZE) { false }
 
-public final class CharConstants {
+    fun has(c: Int): Boolean = c < ASCII_SIZE && contains[c]
 
-  private static final String ALPHA_S =
-      "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+    fun hasNo(c: Int): Boolean = !has(c)
 
-  private static final String LINEBR_S = "\n";
-  private final static String FULL_LINEBR_S = "\r" + LINEBR_S;
-  private static final String NULL_OR_LINEBR_S = "\0" + FULL_LINEBR_S;
-  private static final String NULL_BL_LINEBR_S = " " + NULL_OR_LINEBR_S;
-  private static final String NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S;
-  private static final String NULL_BL_T_S = "\0 \t";
+    fun has(c: Int, additional: String): Boolean = has(c) || c.toChar() in additional
 
-  // the suffix must not contain the “[”, “]”, “{”, “}” and “,” characters.
-  // These characters would cause ambiguity with flow collection structures.
-  // https://yaml.org/spec/1.2.2/#691-node-tags
-  private static final String URI_CHARS_SUFFIX_S = ALPHA_S + "-;/?:@&=+$_.!~*'()%";
+    fun hasNo(c: Int, additional: String): Boolean = !has(c, additional)
 
-  public static final CharConstants LINEBR = new CharConstants(LINEBR_S);
-  public static final CharConstants NULL_OR_LINEBR = new CharConstants(NULL_OR_LINEBR_S);
-  public static final CharConstants NULL_BL_LINEBR = new CharConstants(NULL_BL_LINEBR_S);
-  public static final CharConstants NULL_BL_T_LINEBR = new CharConstants(NULL_BL_T_LINEBR_S);
-  public static final CharConstants NULL_BL_T = new CharConstants(NULL_BL_T_S);
-  // prefix may contain ,[]
-  public static final CharConstants URI_CHARS_FOR_TAG_PREFIX =
-      new CharConstants(URI_CHARS_SUFFIX_S + ",[]");
-  public static final CharConstants URI_CHARS_FOR_TAG_SUFFIX =
-      new CharConstants(URI_CHARS_SUFFIX_S);
-
-  public static final CharConstants ALPHA = new CharConstants(ALPHA_S);
-
-  private static final int ASCII_SIZE = 128;
-  boolean[] contains = new boolean[ASCII_SIZE];
-
-  private CharConstants(String content) {
-    Arrays.fill(contains, false);
-    for (int i = 0; i < content.length(); i++) {
-      int c = content.codePointAt(i);
-      contains[c] = true;
+    init {
+        content.codePoints().forEach { i ->
+            contains[i] = true
+        }
     }
-  }
 
-  public boolean has(int c) {
-    return (c < ASCII_SIZE) && contains[c];
-  }
+    companion object {
+        private const val ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
+        private const val LINEBR_S = "\n"
+        private const val FULL_LINEBR_S = "\r" + LINEBR_S
+        private const val NULL_OR_LINEBR_S = "\u0000" + FULL_LINEBR_S
+        private const val NULL_BL_LINEBR_S = " $NULL_OR_LINEBR_S"
+        private const val NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S
+        private const val NULL_BL_T_S = "\u0000 \t"
 
-  public boolean hasNo(int c) {
-    return !has(c);
-  }
+        // the suffix must not contain the “[”, “]”, “{”, “}” and “,” characters.
+        // These characters would cause ambiguity with flow collection structures.
+        // https://yaml.org/spec/1.2.2/#691-node-tags
+        private const val URI_CHARS_SUFFIX_S = "$ALPHA_S-;/?:@&=+\$_.!~*'()%"
 
-  public boolean has(int c, String additional) {
-    return has(c) || additional.indexOf(c) != -1;
-  }
+        @JvmField
+        val LINEBR = CharConstants(LINEBR_S)
 
-  public boolean hasNo(int c, String additional) {
-    return !has(c, additional);
-  }
+        @JvmField
+        val NULL_OR_LINEBR = CharConstants(NULL_OR_LINEBR_S)
 
-  /**
-   * A mapping from an escaped character in the input stream to the character that they should be
-   * replaced with.
-   * <p>
-   * YAML defines several common and a few uncommon escape sequences.
-   */
-  public static final Map<Character, String> ESCAPE_REPLACEMENTS;
+        @JvmField
+        val NULL_BL_LINEBR = CharConstants(NULL_BL_LINEBR_S)
 
-  /**
-   * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
-   * escape sequences are used to handle unicode escaping in the following formats, where H is a
-   * hexadecimal character:
-   *
-   * <pre>
-   * &#92;xHH         : escaped 8-bit Unicode character
-   * &#92;uHHHH       : escaped 16-bit Unicode character
-   * &#92;UHHHHHHHH   : escaped 32-bit Unicode character
-   * </pre>
-   */
-  public static final Map<Character, Integer> ESCAPE_CODES;
+        @JvmField
+        val NULL_BL_T_LINEBR = CharConstants(NULL_BL_T_LINEBR_S)
 
-  static {
-    Map<Character, String> escapes = new HashMap<>();
-    escapes.put(Character.valueOf('0'), "\0");// ASCII null
-    escapes.put(Character.valueOf('a'), "\u0007");// ASCII bell
-    escapes.put(Character.valueOf('b'), "\u0008"); // ASCII backspace
-    escapes.put(Character.valueOf('t'), "\u0009"); // ASCII horizontal tab
-    escapes.put(Character.valueOf('n'), "\n");// ASCII newline (line feed; &#92;n maps to 0x0A)
-    escapes.put(Character.valueOf('v'), "\u000B");// ASCII vertical tab
-    escapes.put(Character.valueOf('f'), "\u000C");// ASCII form-feed
-    escapes.put(Character.valueOf('r'), "\r");// carriage-return (&#92;r maps to 0x0D)
-    escapes.put(Character.valueOf('e'), "\u001B");// ASCII escape character (Esc)
-    escapes.put(Character.valueOf(' '), "\u0020");// ASCII space
-    escapes.put(Character.valueOf('"'), "\"");// ASCII double-quote
-    escapes.put(Character.valueOf('/'), "/");// ASCII slash, for JSON compatibility.
-    escapes.put(Character.valueOf('\\'), "\\");// ASCII backslash
-    escapes.put(Character.valueOf('N'), "\u0085");// Unicode next line
-    escapes.put(Character.valueOf('_'), "\u00A0");// Unicode non-breaking-space
-    escapes.put(Character.valueOf('L'), "\u2028");// Unicode line-separator
-    escapes.put(Character.valueOf('P'), "\u2029");// Unicode paragraph separator
-    ESCAPE_REPLACEMENTS = Collections.unmodifiableMap(escapes);
+        @JvmField
+        val NULL_BL_T = CharConstants(NULL_BL_T_S)
 
-    Map<Character, Integer> escapeCodes = new HashMap<>();
-    escapeCodes.put(Character.valueOf('x'), 2);// 8-bit Unicode
-    escapeCodes.put(Character.valueOf('u'), 4);// 16-bit Unicode
-    // 32-bit Unicode (Supplementary characters are supported)
-    escapeCodes.put(Character.valueOf('U'), 8);
-    ESCAPE_CODES = Collections.unmodifiableMap(escapeCodes);
-  }
+        // prefix may contain ,[]
+        @JvmField
+        val URI_CHARS_FOR_TAG_PREFIX = CharConstants("$URI_CHARS_SUFFIX_S,[]")
 
-  /**
-   * Replace a single character with its string representation
-   *
-   * @param chRepresentation - the char to escape
-   * @return the same string or its escaped representation
-   */
-  public static String escapeChar(String chRepresentation) {
-    for (Character s : ESCAPE_REPLACEMENTS.keySet()) {
-      String v = ESCAPE_REPLACEMENTS.get(s);
-      if (" ".equals(v) || "/".equals(v) || "\"".equals(v)) {
-        continue;
-      }
-      if (v.equals(chRepresentation)) {
-        return "\\" + s; // '<TAB>' -> '\t'
-      }
+        @JvmField
+        val URI_CHARS_FOR_TAG_SUFFIX = CharConstants(URI_CHARS_SUFFIX_S)
+
+        @JvmField
+        val ALPHA = CharConstants(ALPHA_S)
+
+        private const val ASCII_SIZE = 128
+
+        /**
+         * A mapping from an escaped character in the input stream to the character that they should be replaced with.
+         *
+         * YAML defines several common and a few uncommon escape sequences.
+         */
+        @JvmField
+        val ESCAPE_REPLACEMENTS: Map<Char, String> = mapOf(
+            '0' to "\u0000", // ASCII null
+            'a' to "\u0007", // ASCII bell
+            'b' to "\u0008", // ASCII backspace
+            't' to "\u0009", // ASCII horizontal tab
+            'n' to "\n",     // ASCII newline (line feed; \n maps to 0x0A)
+            'v' to "\u000B", // ASCII vertical tab
+            'f' to "\u000C", // ASCII form-feed
+            'r' to "\r",     // carriage-return (\r maps to 0x0D)
+            'e' to "\u001B", // ASCII escape character (Esc)
+            ' ' to "\u0020", // ASCII space
+            '"' to "\"",     // ASCII double-quote
+            '/' to "/",      // ASCII slash, for JSON compatibility.
+            '\\' to "\\",    // ASCII backslash
+            'N' to "\u0085", // Unicode next line
+            '_' to "\u00A0", // Unicode non-breaking-space
+            'L' to "\u2028", // Unicode line-separator
+            'P' to "\u2029", // Unicode paragraph separator
+        )
+
+        /**
+         * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
+         * escape sequences are used to handle unicode escaping in the following formats, where `H` is a
+         * hexadecimal character:
+         *
+         * * `\xHH`         : escaped 8-bit Unicode character
+         * * `\uHHHH`       : escaped 16-bit Unicode character
+         * * `\UHHHHHHHH`   : escaped 32-bit Unicode character
+         */
+        @JvmField
+        val ESCAPE_CODES: Map<Char, Int> = mapOf(
+            'x' to 2, // 8-bit Unicode
+            'u' to 4, // 16-bit Unicode
+            'U' to 8, // 32-bit Unicode (Supplementary characters are supported)
+        )
+
+        /**
+         * Replace a single character with its string representation
+         *
+         * @param char - the char to escape
+         * @return the same string or its escaped representation
+         */
+        @JvmStatic
+        fun escapeChar(char: Char): String {
+            val charString = char.toString()
+            for (s in ESCAPE_REPLACEMENTS.keys) {
+                val v = ESCAPE_REPLACEMENTS[s]
+                if (" " == v || "/" == v || "\"" == v) {
+                    continue
+                }
+                if (v == charString) {
+                    return "\\" + s // '<TAB>' -> '\t'
+                }
+            }
+            return charString
+        }
     }
-    return chRepresentation;
-  }
 }

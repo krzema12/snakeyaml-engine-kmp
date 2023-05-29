@@ -117,6 +117,7 @@ class DumpTest {
     File file = new File("target/temp.yaml");
     file.delete();
     assertFalse(file.exists());
+    file.getParentFile().mkdirs();
     file.createNewFile();
     StreamDataWriter writer =
         new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8) {

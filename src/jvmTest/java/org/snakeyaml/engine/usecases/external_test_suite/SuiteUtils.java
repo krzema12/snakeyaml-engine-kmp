@@ -40,7 +40,7 @@ public class SuiteUtils {
       "HM87-00", "DC7X", "A2M4", "J3BT", "HS5T", "UT92", "W4TN", "FP8R", "WZ62", "7Z25");
 
 
-  public static final String FOLDER_NAME = "src/test/resources/comprehensive-test-suite-data";
+  public static final String FOLDER_NAME = "src/jvmTest/resources/comprehensive-test-suite-data";
 
   public static List<File> getAllFoldersIn(String folder) {
     File file = new File(folder);

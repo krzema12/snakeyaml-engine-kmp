@@ -46,14 +46,14 @@ public abstract class InheritedImportTest {
   }
 
   protected File[] getStreamsByExtension(String extension, boolean onlyIfCanonicalPresent) {
-    File file = new File("src/test/resources" + PATH);
+    File file = new File("src/jvmTest/resources" + PATH);
     assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
     assertTrue(file.isDirectory());
     return file.listFiles(new InheritedFilenameFilter(extension, onlyIfCanonicalPresent));
   }
 
   protected File getFileByName(String name) {
-    File file = new File("src/test/resources" + PATH + "/" + name);
+    File file = new File("src/jvmTest/resources" + PATH + "/" + name);
     assertTrue(file.exists(), "Folder not found: " + file.getAbsolutePath());
     assertTrue(file.isFile());
     return file;

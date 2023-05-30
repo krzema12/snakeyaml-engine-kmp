@@ -1,46 +1,45 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "1.8.21"
-}
-
-dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.4.0")
-    testImplementation("com.google.guava:guava:26.0-jre")
+    buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
+    // only target JVM, for now...
+    //buildsrc.conventions.lang.`kotlin-multiplatform-js`
+    //buildsrc.conventions.lang.`kotlin-multiplatform-native`
 }
 
 group = "org.snakeyaml"
 version = "2.7-SNAPSHOT"
 description = "SnakeYAML Engine"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-
-java {
-    withSourcesJar()
-}
 
 kotlin {
-    jvmToolchain(11)
-
-    target {
+    targets.configureEach {
         compilations.configureEach {
             compilerOptions.configure {
-                jvmTarget.set(JvmTarget.JVM_1_8)
                 freeCompilerArgs.addAll(
                     "-Xjvm-default=all", // TODO remove this once everything is Kotlin
                 )
             }
         }
     }
-}
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
+    sourceSets {
+        commonMain {
+            dependencies {
+                //implementation("com.squareup.okio:okio:3.3.0") // TODO https://github.com/krzema12/snakeyaml-engine-kmp/issues/42
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.4.0")
+                implementation("com.google.guava:guava:26.0-jre")
+            }
+        }
+    }
 }
 
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
     testLogging {
         events(
             TestLogEvent.FAILED,

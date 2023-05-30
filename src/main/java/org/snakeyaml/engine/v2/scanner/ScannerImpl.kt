@@ -33,7 +33,6 @@ import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
 import java.nio.ByteBuffer
-import java.util.regex.Pattern
 import kotlin.collections.set
 
 
@@ -1766,7 +1765,7 @@ class ScannerImpl(
                     length = CharConstants.ESCAPE_CODES[c.toChar()]!!
                     reader.forward()
                     val hex = reader.prefix(length)
-                    if (NOT_HEXA.matcher(hex).find()) {
+                    if (NOT_HEXA.containsMatchIn(hex)) {
                         throw ScannerException(
                             problem = "while scanning a double-quoted scalar",
                             problemMark = startMark,
@@ -2237,7 +2236,7 @@ class ScannerImpl(
         /**
          * A regular expression matching characters which are not in the hexadecimal set (`0-9`, `A-F`, `a-f`).
          */
-        private val NOT_HEXA = Pattern.compile("[^0-9A-Fa-f]")
+        private val NOT_HEXA = Regex("[^0-9A-Fa-f]")
     }
 }
 

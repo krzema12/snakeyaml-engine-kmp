@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.resolver
 
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.regex.Pattern
+
 
 /**
  * Base resolver
@@ -43,7 +43,7 @@ abstract class BaseScalarResolver @JvmOverloads constructor(
             ?: emptyList()
 
         return resolvers
-            .firstOrNull { v -> v.regexp.matcher(value).matches() }
+            .firstOrNull { v -> v.regexp.matches(value) }
             ?.tag
             ?: Tag.STR
     }
@@ -62,7 +62,7 @@ abstract class BaseScalarResolver @JvmOverloads constructor(
          * @param first  the possible first characters (this is merely for performance improvement) to
          * skip RE evaluation to gain time
          */
-        fun addImplicitResolver(tag: Tag, regexp: Pattern, first: String?) {
+        fun addImplicitResolver(tag: Tag, regexp: Regex, first: String?) {
             val keys = first?.toCharArray()
                 ?.map { chr ->
                     // special case: for null
@@ -81,7 +81,7 @@ abstract class BaseScalarResolver @JvmOverloads constructor(
         /**
          * No value indication
          */
-        val EMPTY: Pattern = Pattern.compile("^$")
+        val EMPTY = Regex("^$")
 
         /**
          * group 1: name, group 2: separator, group 3: value

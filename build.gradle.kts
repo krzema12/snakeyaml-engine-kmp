@@ -3,8 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
-    // only target JVM, for now...
-    //buildsrc.conventions.lang.`kotlin-multiplatform-js`
+    buildsrc.conventions.lang.`kotlin-multiplatform-js`
     //buildsrc.conventions.lang.`kotlin-multiplatform-native`
 }
 

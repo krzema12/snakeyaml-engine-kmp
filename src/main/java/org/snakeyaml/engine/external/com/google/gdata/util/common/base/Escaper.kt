@@ -11,50 +11,44 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
+package org.snakeyaml.engine.external.com.google.gdata.util.common.base
 
 /**
  * An object that converts literal text into a format safe for inclusion in a particular context
  * (such as an XML document). Typically (but not always), the inverse process of "unescaping" the
  * text is performed automatically by the relevant scanner.
- * <p>
- * <p>
- * For example, an XML escaper would convert the literal string {@code "Foo<Bar>"} into
- * {@code "Foo&lt;Bar&gt;"} to prevent {@code "<Bar>"} from being confused with an XML tag. When the
+ *
+ * For example, an XML escaper would convert the literal string `"Foo<Bar>"` into
+ * `"Foo&lt;Bar&gt;"` to prevent `"<Bar>"` from being confused with an XML tag. When the
  * resulting XML document is parsed, the scanner API will return this text as the original literal
- * string {@code "Foo<Bar>"}.
- * <p>
- * <p>
- * An {@code Escaper} instance is required to be stateless, and safe when used concurrently by
+ * string `"Foo<Bar>"`.
+ *
+ * An `Escaper` instance is required to be stateless, and safe when used concurrently by
  * multiple threads.
- * <p>
- * <p>
- * Several popular escapers are defined as constants in the class {@link CharEscapers}. To create
- * your own escapers, use {@link CharEscaperBuilder}, or extend {@link CharEscaper} or
- * {@code UnicodeEscaper}.
+ *
+ * Several popular escapers are defined as constants in the class [CharEscapers]. To create
+ * your own escapers, use [CharEscaperBuilder], or extend [CharEscaper] or
+ * [UnicodeEscaper].
  */
-public interface Escaper {
-
+interface Escaper {
   /**
    * Returns the escaped form of a given literal string.
-   * <p>
-   * <p>
+   *
    * Note that this method may treat input characters differently depending on the specific escaper
    * implementation.
-   * <ul>
-   * <li>{@link UnicodeEscaper} handles <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a>
+   *
+   *  * [UnicodeEscaper] handles [UTF-16](http://en.wikipedia.org/wiki/UTF-16)
    * correctly, including surrogate character pairs. If the input is badly formed the escaper should
-   * throw {@link IllegalArgumentException}.
-   * <li>{@link CharEscaper} handles Java characters independently and does not verify the input for
-   * well formed characters. A CharEscaper should not be used in situations where input is not
+   * throw [IllegalArgumentException].
+   *  * [CharEscaper] handles Java characters independently and does not verify the input for
+   * well-formed characters. A CharEscaper should not be used in situations where input is not
    * guaranteed to be restricted to the Basic Multilingual Plane (BMP).
-   * </ul>
    *
    * @param string the literal string to be escaped
-   * @return the escaped form of {@code string}
-   * @throws NullPointerException if {@code string} is null
-   * @throws IllegalArgumentException if {@code string} contains badly formed UTF-16 or cannot be
-   *         escaped for any other reason
+   * @return the escaped form of `string`
+   * @throws NullPointerException if `string` is null
+   * @throws IllegalArgumentException if `string` contains badly formed UTF-16 or cannot be
+   * escaped for any other reason
    */
-  String escape(String string);
+  fun escape(string: String): String
 }

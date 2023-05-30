@@ -13,8 +13,8 @@
  */
 package org.snakeyaml.engine.external.com.google.gdata.util.common.base
 
-import org.snakeyaml.engine.internal.Character
-import org.snakeyaml.engine.internal.toCharArray
+import org.snakeyaml.engine.internal.utils.Character
+import org.snakeyaml.engine.internal.utils.toCharArray
 
 
 /**

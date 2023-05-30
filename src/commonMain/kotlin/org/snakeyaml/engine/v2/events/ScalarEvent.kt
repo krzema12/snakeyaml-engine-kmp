@@ -13,7 +13,7 @@
  */
 package org.snakeyaml.engine.v2.events
 
-import org.snakeyaml.engine.internal.toCodePoints
+import org.snakeyaml.engine.internal.utils.toCodePoints
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle

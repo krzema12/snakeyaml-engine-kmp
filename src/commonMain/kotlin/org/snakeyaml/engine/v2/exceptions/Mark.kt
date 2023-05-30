@@ -13,9 +13,8 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import org.snakeyaml.engine.internal.appendCodePoint
-import org.snakeyaml.engine.internal.codePointCount
-import org.snakeyaml.engine.internal.toCodePoints
+import org.snakeyaml.engine.internal.utils.appendCodePoint
+import org.snakeyaml.engine.internal.utils.toCodePoints
 import org.snakeyaml.engine.v2.common.CharConstants
 import kotlin.jvm.JvmOverloads
 

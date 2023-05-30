@@ -13,7 +13,7 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import org.snakeyaml.engine.internal.Character
+import org.snakeyaml.engine.internal.utils.Character
 
 /**
  * Indicate invalid input stream

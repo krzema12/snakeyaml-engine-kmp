@@ -25,30 +25,16 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base
  *
  * An `Escaper` instance is required to be stateless, and safe when used concurrently by
  * multiple threads.
- *
- * Several popular escapers are defined as constants in the class [CharEscapers]. To create
- * your own escapers, use [CharEscaperBuilder], or extend [CharEscaper] or
- * [UnicodeEscaper].
  */
 internal interface Escaper {
-  /**
-   * Returns the escaped form of a given literal string.
-   *
-   * Note that this method may treat input characters differently depending on the specific escaper
-   * implementation.
-   *
-   *  * [UnicodeEscaper] handles [UTF-16](http://en.wikipedia.org/wiki/UTF-16)
-   * correctly, including surrogate character pairs. If the input is badly formed the escaper should
-   * throw [IllegalArgumentException].
-   *  * [CharEscaper] handles Java characters independently and does not verify the input for
-   * well-formed characters. A CharEscaper should not be used in situations where input is not
-   * guaranteed to be restricted to the Basic Multilingual Plane (BMP).
-   *
-   * @param string the literal string to be escaped
-   * @return the escaped form of `string`
-   * @throws NullPointerException if `string` is null
-   * @throws IllegalArgumentException if `string` contains badly formed UTF-16 or cannot be
-   * escaped for any other reason
-   */
-  fun escape(string: String): String
+    /**
+     * Returns the escaped form of a given literal string.
+     *
+     * @param string the literal string to be escaped
+     * @return the escaped form of `string`
+     * @throws NullPointerException if `string` is null
+     * @throws IllegalArgumentException if `string` contains badly formed UTF-16 or cannot be
+     * escaped for any other reason
+     */
+    fun escape(string: String): String
 }

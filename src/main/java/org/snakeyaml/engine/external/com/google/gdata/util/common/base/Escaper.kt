@@ -30,7 +30,7 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base
  * your own escapers, use [CharEscaperBuilder], or extend [CharEscaper] or
  * [UnicodeEscaper].
  */
-interface Escaper {
+internal interface Escaper {
   /**
    * Returns the escaped form of a given literal string.
    *

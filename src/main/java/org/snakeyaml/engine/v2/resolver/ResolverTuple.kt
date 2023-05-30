@@ -14,14 +14,14 @@
 package org.snakeyaml.engine.v2.resolver
 
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.regex.Pattern
+
 
 /**
- * Hold 2 values, [tag] and a [Pattern]
+ * Hold 2 values, [tag] and a [Regex]
  */
 internal data class ResolverTuple(
     val tag: Tag,
-    val regexp: Pattern,
+    val regexp: Regex,
 ) {
     override fun toString(): String = "Tuple tag=$tag regexp=$regexp"
 }

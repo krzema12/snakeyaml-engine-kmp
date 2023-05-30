@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.resolver
 
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.regex.Pattern
+
 
 /**
  * ScalarResolver for Core Schema
@@ -27,22 +27,21 @@ class CoreScalarResolver : BaseScalarResolver(
         addImplicitResolver(Tag.INT, INT, "-+0123456789")
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.")
         addImplicitResolver(Tag.NULL, NULL, "n\u0000")
-        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT.toPattern(), "$")
+        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$")
     },
 ) {
 
     companion object {
 
         /** Boolean as defined in Core */
-        val BOOL: Pattern = Pattern.compile("^(?:true|True|TRUE|false|False|FALSE)$")
+        val BOOL = Regex("^(?:true|True|TRUE|false|False|FALSE)$")
 
         /**
          * Float as defined in JSON (Number which is Float).
          *
          * Be aware that this regex will also match integers.
          */
-        val FLOAT: Pattern =
-            Pattern.compile(
+        val FLOAT = Regex(
                 "^([-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?)" + // float
                     "|([-+]?\\.(?:inf|Inf|INF))" + // infinity
                     "|(\\.(?:nan|NaN|NAN))$", // not a number
@@ -50,14 +49,14 @@ class CoreScalarResolver : BaseScalarResolver(
 
         /** Integer as defined in Core */
         @JvmField
-        val INT: Pattern = Pattern.compile(
+        val INT = Regex(
             "^([-+]?[0-9]+)" + // (base 10)
                 "|(0o[0-7]+)" + // (base 8)
                 "|(0x[0-9a-fA-F]+)$", // (base 16)
         )
 
         /** Null as defined in Core */
-        val NULL: Pattern = Pattern.compile("^(?:~|null|Null|NULL| )$")
+        val NULL = Regex("^(?:~|null|Null|NULL| )$")
 
     }
 }

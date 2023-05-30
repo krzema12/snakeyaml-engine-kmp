@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.Optional
 import java.util.UUID
-import java.util.regex.Pattern
+
 import kotlin.reflect.KClass
 
 /**
@@ -56,7 +56,7 @@ open class StandardRepresenter(
 
     companion object {
         /** all chars that represent a new line */
-        private val MULTILINE_PATTERN: Pattern = Pattern.compile("[\n\u0085\u2028\u2029]")
+        private val MULTILINE_PATTERN = Regex("[\n\u0085\u2028\u2029]")
     }
 
     /** Create `null` [Node] */
@@ -89,7 +89,7 @@ open class StandardRepresenter(
             value = data.toString()
         }
         // if no other scalar style is explicitly set, use literal style for multiline scalars
-        if (defaultScalarStyle == ScalarStyle.PLAIN && MULTILINE_PATTERN.matcher(value).find()) {
+        if (defaultScalarStyle == ScalarStyle.PLAIN && MULTILINE_PATTERN.containsMatchIn(value)) {
             style = ScalarStyle.LITERAL
         }
         representScalar(tag, value, style)

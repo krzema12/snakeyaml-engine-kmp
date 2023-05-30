@@ -27,8 +27,8 @@ class CoreScalarResolverTest {
 
   @Test
   void resolveImplicitInteger() {
-    assertTrue(CoreScalarResolver.INT.matcher("0o1010").matches());
-    assertFalse(CoreScalarResolver.INT.matcher("0b1010").matches());
+    assertTrue(CoreScalarResolver.INT.matches("0o1010"));
+    assertFalse(CoreScalarResolver.INT.matches("0b1010"));
 
     assertEquals(Tag.STR, scalarResolver.resolve("0b1010", true));
   }

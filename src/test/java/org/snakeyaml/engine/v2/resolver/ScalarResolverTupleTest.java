@@ -15,10 +15,13 @@ package org.snakeyaml.engine.v2.resolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.regex.Pattern;
+;
+import kotlin.text.Regex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.nodes.Tag;
+
+import java.util.regex.Pattern;
 
 @org.junit.jupiter.api.Tag("fast")
 class ScalarResolverTupleTest {
@@ -27,6 +30,6 @@ class ScalarResolverTupleTest {
   @DisplayName("ResolverTuple.toString()")
   void resolveMap() {
     assertEquals("Tuple tag=tag:yaml.org,2002:str regexp=^(?:true|false)$",
-        new ResolverTuple(Tag.STR, Pattern.compile("^(?:true|false)$")).toString());
+        new ResolverTuple(Tag.STR, new Regex("^(?:true|false)$")).toString());
   }
 }

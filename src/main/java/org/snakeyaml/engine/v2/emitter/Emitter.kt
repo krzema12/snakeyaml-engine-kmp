@@ -40,7 +40,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.util.TreeSet
-import java.util.regex.Pattern
 
 /**
  * <pre>
@@ -290,7 +289,7 @@ class Emitter(
                 throw EmitterException("tag handle must not be empty")
             } else if (handle[0] != '!' || handle[handle.length - 1] != '!') {
                 throw EmitterException("tag handle must start and end with '!': $handle")
-            } else if ("!" != handle && !HANDLE_FORMAT.matcher(handle).matches()) {
+            } else if ("!" != handle && !HANDLE_FORMAT.matches(handle)) {
                 throw EmitterException("invalid character in the tag handle: $handle")
             }
             return handle
@@ -1592,6 +1591,6 @@ class Emitter(
 
         private const val SPACE = " "
 
-        private val HANDLE_FORMAT: Pattern = Pattern.compile("^![-_\\w]*!$")
+        private val HANDLE_FORMAT = Regex("^![-_\\w]*!$")
     }
 }

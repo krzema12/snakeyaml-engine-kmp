@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.v2.resolver
 
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.regex.Pattern
+
 
 /**
  * ScalarResolver for JSON Schema
@@ -30,7 +30,7 @@ class JsonScalarResolver : BaseScalarResolver(
         addImplicitResolver(Tag.INT, INT, "-0123456789")
         addImplicitResolver(Tag.FLOAT, FLOAT, "-0123456789.")
         addImplicitResolver(Tag.NULL, NULL, "n\u0000")
-        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT.toPattern(), "$")
+        addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$")
     },
 ) {
 
@@ -38,22 +38,21 @@ class JsonScalarResolver : BaseScalarResolver(
         /**
          * Boolean as defined in JSON
          */
-        val BOOL: Pattern = Pattern.compile("^(?:true|false)$")
+        val BOOL = Regex("^(?:true|false)$")
 
         /**
          * Float as defined in JSON (Number which is Float)
          */
-        val FLOAT: Pattern =
-            Pattern.compile("^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$")
+        val FLOAT = Regex("^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$")
 
         /**
          * Integer as defined in JSON (Number which is Integer)
          */
-        val INT: Pattern = Pattern.compile("^-?(0|[1-9][0-9]*)$")
+        val INT = Regex("^-?(0|[1-9][0-9]*)$")
 
         /**
          * Null as defined in JSON
          */
-        val NULL: Pattern = Pattern.compile("^null$")
+        val NULL = Regex("^null$")
     }
 }

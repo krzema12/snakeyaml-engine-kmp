@@ -61,23 +61,11 @@ package org.snakeyaml.engine.external.com.google.gdata.util.common.base;
 public class PercentEscaper extends UnicodeEscaper {
 
   /**
-   * A string of safe characters that mimics the behavior of {@link java.net.URLEncoder}.
-   */
-  public static final String SAFECHARS_URLENCODER = "-_.*";
-
-  /**
    * A string of characters that do not need to be encoded when used in URI path segments, as
    * specified in RFC 3986. Note that some of these characters do need to be escaped when used in
    * other parts of the URI.
    */
   public static final String SAFEPATHCHARS_URLENCODER = "-_.!~*'()@:$&,;=";
-
-  /**
-   * A string of characters that do not need to be encoded when used in URI query strings, as
-   * specified in RFC 3986. Note that some of these characters do need to be escaped when used in
-   * other parts of the URI.
-   */
-  public static final String SAFEQUERYSTRINGCHARS_URLENCODER = "-_.!~*'()@:$,;/?:";
 
   // In some uri escapers spaces are escaped to '+'
   private static final char[] URI_ESCAPED_SPACE = {'+'};

@@ -57,25 +57,4 @@ public interface Escaper {
    *         escaped for any other reason
    */
   String escape(String string);
-
-  /**
-   * Returns an {@code Appendable} instance which automatically escapes all text appended to it
-   * before passing the resulting text to an underlying {@code Appendable}.
-   * <p>
-   * <p>
-   * Note that this method may treat input characters differently depending on the specific escaper
-   * implementation.
-   * <ul>
-   * <li>{@link UnicodeEscaper} handles <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a>
-   * correctly, including surrogate character pairs. If the input is badly formed the escaper should
-   * throw {@link IllegalArgumentException}.
-   * <li>{@link CharEscaper} handles Java characters independently and does not verify the input for
-   * well formed characters. A CharEscaper should not be used in situations where input is not
-   * guaranteed to be restricted to the Basic Multilingual Plane (BMP).
-   * </ul>
-   *
-   * @param out the underlying {@code Appendable} to append escaped output to
-   * @return an {@code Appendable} which passes text to {@code out} after escaping it.
-   */
-  Appendable escape(Appendable out);
 }

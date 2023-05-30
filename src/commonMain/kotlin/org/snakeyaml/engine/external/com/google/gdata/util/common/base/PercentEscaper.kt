@@ -13,6 +13,9 @@
  */
 package org.snakeyaml.engine.external.com.google.gdata.util.common.base
 
+import org.snakeyaml.engine.utils.Character
+import org.snakeyaml.engine.utils.toCharArray
+
 
 /**
  * An [Escaper] that escapes some set of Java characters using the URI percent encoding
@@ -282,7 +285,12 @@ internal class PercentEscaper(
                 }
                 // If we have skipped any characters, we need to copy them now.
                 if (charsSkipped > 0) {
-                    s.toCharArray(dest, destIndex, unescapedChunkStart, index)
+                    s.toCharArray(
+                        destination = dest,
+                        destinationOffset = destIndex,
+                        startIndex = unescapedChunkStart,
+                        endIndex = end,
+                    )
                     destIndex += charsSkipped
                 }
                 if (escaped.isNotEmpty()) {
@@ -302,10 +310,15 @@ internal class PercentEscaper(
             if (dest.size < endIndex) {
                 dest = dest.copyOf(endIndex)
             }
-            s.toCharArray(dest, destIndex, unescapedChunkStart, end)
+            s.toCharArray(
+                destination = dest,
+                destinationOffset = destIndex,
+                startIndex = unescapedChunkStart,
+                endIndex = end,
+            )
             destIndex = endIndex
         }
-        return String(dest, 0, destIndex)
+        return dest.concatToString(0, destIndex)
     }
 
     companion object {
@@ -349,8 +362,7 @@ internal class PercentEscaper(
         /**
          * Returns the Unicode code point of the character at the given index.
          *
-         * Unlike [Character.codePointAt] or [String.codePointAt] this
-         * method will never fail silently when encountering an invalid surrogate pair.
+         * Unlike [String.get] this method will never fail silently when encountering an invalid surrogate pair.
          *
          * The behaviour of this method is as follows:
          *

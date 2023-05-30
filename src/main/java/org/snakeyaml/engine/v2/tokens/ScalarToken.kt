@@ -15,14 +15,12 @@ package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
-class ScalarToken @JvmOverloads
-constructor(
+class ScalarToken @JvmOverloads constructor(
     val value: String,
     val plain: Boolean,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    startMark: Mark?,
+    endMark: Mark?,
     val style: ScalarStyle = ScalarStyle.PLAIN,
 ) : Token(startMark, endMark) {
 

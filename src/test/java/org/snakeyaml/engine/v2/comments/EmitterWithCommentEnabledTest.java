@@ -14,12 +14,6 @@
 package org.snakeyaml.engine.v2.comments;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
@@ -29,21 +23,17 @@ import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.composer.Composer;
 import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.CommentEvent;
-import org.snakeyaml.engine.v2.events.DocumentEndEvent;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.MappingEndEvent;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceEndEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.parser.ParserImpl;
 import org.snakeyaml.engine.v2.scanner.StreamReader;
 import org.snakeyaml.engine.v2.serializer.Serializer;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class EmitterWithCommentEnabledTest {
@@ -241,7 +231,7 @@ public class EmitterWithCommentEnabledTest {
   @Test
   public void testKeepingNewLineInsideSequence() throws Exception {
     String data = "" + "\n" + "key:\n" +
-    // " \n" + // only supported in a sequence right now
+        // " \n" + // only supported in a sequence right now
         "- item1\n" +
         // "\n" + // Per Spec this is part of plain scalar above
         "- item2\n" +
@@ -340,36 +330,36 @@ public class EmitterWithCommentEnabledTest {
     StreamDataWriter output = new MyWriter();
     Emitter emitter = producePrettyFlowEmitter(output);
 
-    emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
-        Optional.empty()));
-    emitter.emit(new MappingStartEvent(Optional.empty(), Optional.of("yaml.org,2002:map"), true,
+    emitter.emit(new StreamStartEvent(null, null));
+    emitter.emit(new DocumentStartEvent(false, null, new HashMap<>(), null,
+        null));
+    emitter.emit(new MappingStartEvent(null, "yaml.org,2002:map", true,
         FlowStyle.FLOW));
     emitter.emit(
-        new CommentEvent(CommentType.BLOCK, " I'm first", Optional.empty(), Optional.empty()));
+        new CommentEvent(CommentType.BLOCK, " I'm first", null, null));
     ImplicitTuple allImplicit = new ImplicitTuple(true, true);
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "a", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "Hello", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "b", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new MappingStartEvent(Optional.empty(), Optional.of("yaml.org,2002:map"), true,
-        FlowStyle.FLOW, Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "one", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "World", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "a", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "Hello", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "b", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new MappingStartEvent(null, "yaml.org,2002:map", true,
+        FlowStyle.FLOW, null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "one", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "World", ScalarStyle.PLAIN, null, null));
     emitter
-        .emit(new CommentEvent(CommentType.BLOCK, " also me", Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "two", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "eee", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new MappingEndEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new MappingEndEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
-    emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
+        .emit(new CommentEvent(CommentType.BLOCK, " also me", null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "two", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "eee", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new MappingEndEvent(null, null));
+    emitter.emit(new MappingEndEvent(null, null));
+    emitter.emit(new DocumentEndEvent(false, null, null));
+    emitter.emit(new StreamEndEvent(null, null));
 
     String result = output.toString();
     final String data = "{\n" + "  # I'm first\n" + "  a: Hello,\n" + "  b: {\n"
@@ -383,16 +373,16 @@ public class EmitterWithCommentEnabledTest {
     StreamDataWriter output = new MyWriter();
     Emitter emitter = producePrettyFlowEmitter(output);
 
-    emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
-        Optional.empty()));
-    emitter.emit(new MappingStartEvent(Optional.empty(), Optional.of("yaml.org,2002:map"), true,
-        FlowStyle.FLOW, Optional.empty(), Optional.empty()));
+    emitter.emit(new StreamStartEvent(null, null));
+    emitter.emit(new DocumentStartEvent(false, null, new HashMap<>(), null,
+        null));
+    emitter.emit(new MappingStartEvent(null, "yaml.org,2002:map", true,
+        FlowStyle.FLOW, null, null));
     emitter.emit(
-        new CommentEvent(CommentType.BLOCK, " nobody home", Optional.empty(), Optional.empty()));
-    emitter.emit(new MappingEndEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
-    emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
+        new CommentEvent(CommentType.BLOCK, " nobody home", null, null));
+    emitter.emit(new MappingEndEvent(null, null));
+    emitter.emit(new DocumentEndEvent(false, null, null));
+    emitter.emit(new StreamEndEvent(null, null));
 
     String result = output.toString();
     final String data = "{\n" + "  # nobody home\n" + "}\n";
@@ -406,20 +396,20 @@ public class EmitterWithCommentEnabledTest {
     Emitter emitter = producePrettyFlowEmitter(output);
     ImplicitTuple allImplicit = new ImplicitTuple(true, true);
 
-    emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
-        Optional.empty()));
-    emitter.emit(new SequenceStartEvent(Optional.empty(), Optional.of("yaml.org,2002:seq"), true,
-        FlowStyle.FLOW, Optional.empty(), Optional.empty()));
-    emitter.emit(new CommentEvent(CommentType.BLOCK, " red", Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "one", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new CommentEvent(CommentType.BLOCK, " blue", Optional.empty(), Optional.empty()));
-    emitter.emit(new ScalarEvent(Optional.empty(), Optional.of("yaml.org,2002:str"), allImplicit,
-        "two", ScalarStyle.PLAIN, Optional.empty(), Optional.empty()));
-    emitter.emit(new SequenceEndEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
-    emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
+    emitter.emit(new StreamStartEvent(null, null));
+    emitter.emit(new DocumentStartEvent(false, null, new HashMap<>(), null,
+        null));
+    emitter.emit(new SequenceStartEvent(null, "yaml.org,2002:seq", true,
+        FlowStyle.FLOW, null, null));
+    emitter.emit(new CommentEvent(CommentType.BLOCK, " red", null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "one", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new CommentEvent(CommentType.BLOCK, " blue", null, null));
+    emitter.emit(new ScalarEvent(null, "yaml.org,2002:str", allImplicit,
+        "two", ScalarStyle.PLAIN, null, null));
+    emitter.emit(new SequenceEndEvent(null, null));
+    emitter.emit(new DocumentEndEvent(false, null, null));
+    emitter.emit(new StreamEndEvent(null, null));
 
     String result = output.toString();
     final String data = "[\n" + "  # red\n" + "  one,\n" + "  # blue\n" + "  two\n" + "]\n";
@@ -432,16 +422,16 @@ public class EmitterWithCommentEnabledTest {
     MyWriter output = new MyWriter();
     Emitter emitter = producePrettyFlowEmitter(output);
 
-    emitter.emit(new StreamStartEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentStartEvent(false, Optional.empty(), new HashMap<>(), Optional.empty(),
-        Optional.empty()));
-    emitter.emit(new SequenceStartEvent(Optional.empty(), Optional.of("yaml.org,2002:seq"), true,
-        FlowStyle.FLOW, Optional.empty(), Optional.empty()));
+    emitter.emit(new StreamStartEvent(null, null));
+    emitter.emit(new DocumentStartEvent(false, null, new HashMap<>(), null,
+        null));
+    emitter.emit(new SequenceStartEvent(null, "yaml.org,2002:seq", true,
+        FlowStyle.FLOW, null, null));
     emitter.emit(
-        new CommentEvent(CommentType.BLOCK, " nobody home", Optional.empty(), Optional.empty()));
-    emitter.emit(new SequenceEndEvent(Optional.empty(), Optional.empty()));
-    emitter.emit(new DocumentEndEvent(false, Optional.empty(), Optional.empty()));
-    emitter.emit(new StreamEndEvent(Optional.empty(), Optional.empty()));
+        new CommentEvent(CommentType.BLOCK, " nobody home", null, null));
+    emitter.emit(new SequenceEndEvent(null, null));
+    emitter.emit(new DocumentEndEvent(false, null, null));
+    emitter.emit(new StreamEndEvent(null, null));
 
     String result = output.toString();
     final String data = "[\n" + "  # nobody home\n" + "]\n";

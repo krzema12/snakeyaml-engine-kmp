@@ -13,8 +13,6 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import java.util.Optional
-
 /**
  * General exception during construction step
  * @param cause - the reason
@@ -25,9 +23,9 @@ import java.util.Optional
  */
 open class ConstructorException @JvmOverloads constructor(
     context: String?,
-    contextMark: Optional<Mark>,
+    contextMark: Mark?,
     problem: String?,
-    problemMark: Optional<Mark>,
+    problemMark: Mark?,
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(
     context = context,

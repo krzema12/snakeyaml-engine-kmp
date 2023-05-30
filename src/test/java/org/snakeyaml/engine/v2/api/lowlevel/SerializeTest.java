@@ -13,25 +13,19 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.google.common.collect.Lists;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.DocumentEndEvent;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.utils.TestUtils;
+
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class SerializeTest {
@@ -46,8 +40,8 @@ class SerializeTest {
     TestUtils
         .compareEvents(
             Lists.newArrayList(new StreamStartEvent(),
-                new DocumentStartEvent(false, Optional.empty(), new HashMap<>()),
-                new ScalarEvent(Optional.empty(), Optional.empty(), new ImplicitTuple(false, false),
+                new DocumentStartEvent(false, null, new HashMap<>()),
+                new ScalarEvent(null, null, new ImplicitTuple(false, false),
                     "a", ScalarStyle.PLAIN),
                 new DocumentEndEvent(false), new StreamEndEvent()),
             list);

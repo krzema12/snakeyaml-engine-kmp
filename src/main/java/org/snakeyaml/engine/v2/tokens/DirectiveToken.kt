@@ -14,12 +14,11 @@
 package org.snakeyaml.engine.v2.tokens
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 class DirectiveToken(
     val value: TokenValue?,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : Token(startMark, endMark) {
 
     override val tokenId: ID

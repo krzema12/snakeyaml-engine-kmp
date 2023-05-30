@@ -15,14 +15,14 @@ package org.snakeyaml.engine.v2.constructor.json
 
 import org.snakeyaml.engine.v2.constructor.ConstructScalar
 import org.snakeyaml.engine.v2.nodes.Node
-import java.util.*
+import java.util.UUID
 
 /**
  * Create instances of UUID class
  */
 class ConstructUuidClass : ConstructScalar() {
-  override fun construct(node: Node?): UUID {
-    val uuidValue = constructScalar(node)
-    return UUID.fromString(uuidValue)
-  }
+    override fun construct(node: Node?): UUID {
+        val uuidValue = constructScalar(node)
+        return UUID.fromString(uuidValue)
+    }
 }

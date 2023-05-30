@@ -18,10 +18,10 @@ package org.snakeyaml.engine.v2.nodes
  * @param realNode - the source node
  */
 class AnchorNode(
-  /** @returns the origin */
-  val realNode: Node
+    /** @returns the origin */
+    val realNode: Node,
 ) : Node(realNode.tag, realNode.startMark, realNode.endMark) {
 
-  override val nodeType: NodeType
-    get() = NodeType.ANCHOR
+    override val nodeType: NodeType
+        get() = NodeType.ANCHOR
 }

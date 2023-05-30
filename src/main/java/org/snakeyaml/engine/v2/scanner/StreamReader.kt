@@ -92,20 +92,18 @@ class StreamReader(
      *
      * @return [Mark] of the current position or empty [Optional] otherwise
      */
-    fun getMark(): Optional<Mark> {
+    fun getMark(): Mark? {
         return if (useMarks) {
-            Optional.of(
-                Mark(
-                    name = name,
-                    index = index,
-                    line = line,
-                    column = column,
-                    buffer = codePointsWindow,
-                    pointer = pointer,
-                ),
+            Mark(
+                name = name,
+                index = index,
+                line = line,
+                column = column,
+                buffer = codePointsWindow,
+                pointer = pointer,
             )
         } else {
-            Optional.empty()
+            null
         }
     }
 
@@ -198,7 +196,7 @@ class StreamReader(
                         read++
                     }
                 }
-                var nonPrintable: Optional<Int> = Optional.empty()
+                var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {
                     val codePoint = Character.codePointAt(buffer, i)
@@ -206,18 +204,18 @@ class StreamReader(
                     if (isPrintable(codePoint)) {
                         i += Character.charCount(codePoint)
                     } else {
-                        nonPrintable = Optional.of(codePoint)
+                        nonPrintable = codePoint
                         i = read
                     }
                     cpIndex++
                 }
                 dataLength = cpIndex
                 pointer = 0
-                if (nonPrintable.isPresent) {
+                if (nonPrintable != null) {
                     throw ReaderException(
                         name = name,
                         position = cpIndex - 1,
-                        codePoint = nonPrintable.get(),
+                        codePoint = nonPrintable,
                         message = "special characters are not allowed",
                     )
                 }

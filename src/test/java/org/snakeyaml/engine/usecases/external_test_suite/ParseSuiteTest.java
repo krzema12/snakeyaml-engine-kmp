@@ -13,19 +13,17 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.google.common.collect.Streams;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.lowlevel.Parse;
 import org.snakeyaml.engine.v2.events.Event;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParseSuiteTest {
@@ -61,12 +59,12 @@ class ParseSuiteTest {
         shouldFail = !shouldFail;
       }
       if (shouldFail) {
-        assertTrue(result.getError().isPresent(), "Expected error, but got none in file "
+        assertNotNull(result.getError(), "Expected error, but got none in file "
             + data.getName() + ", " + data.getLabel() + "\n" + result.getEvents());
       } else {
-        if (result.getError().isPresent()) {
+        if (result.getError() != null) {
           fail("Testcase: " + data.getName() + "; label: " + data.getLabel()
-              + "\nExpected NO error, but got: " + result.getError().get());
+              + "\nExpected NO error, but got: " + result.getError());
         } else {
           List<ParsePair> pairs =
               Streams.zip(data.getEvents().stream(), result.getEvents().stream(), ParsePair::new)

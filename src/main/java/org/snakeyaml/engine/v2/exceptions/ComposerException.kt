@@ -13,8 +13,6 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import java.util.*
-
 /**
  * General exception during composition step
  *
@@ -25,9 +23,9 @@ import java.util.*
  */
 class ComposerException @JvmOverloads constructor(
     problem: String?,
-    problemMark: Optional<Mark>,
+    problemMark: Mark?,
     context: String = "",
-    contextMark: Optional<Mark> = Optional.empty<Mark>(),
+    contextMark: Mark? = null,
 ) : MarkedYamlEngineException(
     context = context,
     contextMark = contextMark,

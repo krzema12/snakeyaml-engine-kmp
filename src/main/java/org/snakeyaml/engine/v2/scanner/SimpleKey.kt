@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.scanner
 
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Simple keys treatment.
@@ -27,7 +26,7 @@ internal class SimpleKey(
     val index: Int,
     val line: Int,
     val column: Int,
-    val mark: Optional<Mark>,
+    val mark: Mark?,
 ) {
     override fun toString(): String =
         "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"

@@ -13,14 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.binary;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
@@ -37,6 +29,15 @@ import org.snakeyaml.engine.v2.nodes.NodeType;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @org.junit.jupiter.api.Tag("fast")
 public class BinaryRoundTripTest {
@@ -70,7 +71,7 @@ public class BinaryRoundTripTest {
     List<Event> events = ((List<Event>) eventsIter).subList(0, ((List<Event>) eventsIter).size());
     assertEquals(5, events.size());
     ScalarEvent data = (ScalarEvent) events.get(2);
-    assertEquals(Tag.BINARY.toString(), data.getTag().get());
+    assertEquals(Tag.BINARY.toString(), data.getTag());
     assertEquals(ScalarStyle.LITERAL, data.getScalarStyle());
     assertEquals("wpY=", data.getValue());
     ImplicitTuple implicit = data.getImplicit();

@@ -16,7 +16,6 @@ package org.snakeyaml.engine.v2.events
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Base class for the start events of the collection nodes.
@@ -25,18 +24,18 @@ import java.util.*
  * @param[flowStyle] indicates if a collection is block or flow
  */
 abstract class CollectionStartEvent(
-    anchor: Optional<Anchor>,
+    anchor: Anchor?,
 
     /**
      * Tag of this collection.
      *
      * @return The tag of this collection, or `empty` if no explicit tag is available.
      */
-    val tag: Optional<String>,
+    val tag: String?,
     val implicit: Boolean,
     val flowStyle: FlowStyle,
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : NodeEvent(anchor, startMark, endMark) {
 
     /**
@@ -55,9 +54,9 @@ abstract class CollectionStartEvent(
 
     override fun toString(): String {
         return buildString {
-            anchor.ifPresent { a -> append(" &$a") }
+            anchor?.let { a -> append(" &$a") }
             if (!implicit) {
-                tag.ifPresent { theTag: String -> append(" <$theTag>") }
+                tag?.let { theTag: String -> append(" <$theTag>") }
             }
         }
     }

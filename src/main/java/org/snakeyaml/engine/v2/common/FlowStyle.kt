@@ -18,18 +18,18 @@ package org.snakeyaml.engine.v2.common
  * styles rely on explicit indicators to denote nesting and scope.
  */
 enum class FlowStyle {
-  /**
-   * Flow style
-   */
-  FLOW,
+    /**
+     * Flow style
+     */
+    FLOW,
 
-  /**
-   * Block style
-   */
-  BLOCK,
+    /**
+     * Block style
+     */
+    BLOCK,
 
-  /**
-   * Block style for the root level and flow style for other levels
-   */
-  AUTO
+    /**
+     * Block style for the root level and flow style for other levels
+     */
+    AUTO
 }

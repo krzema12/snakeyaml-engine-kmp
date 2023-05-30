@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.exceptions
 
 import org.snakeyaml.engine.v2.parser.Parser
-import java.util.*
 
 /**
  * Exception thrown by the [Parser] implementations in case of malformed input.
@@ -26,9 +25,9 @@ import java.util.*
  */
 class ParserException @JvmOverloads constructor(
     problem: String?,
-    contextMark: Optional<Mark>,
+    contextMark: Mark?,
     context: String? = null,
-    problemMark: Optional<Mark> = Optional.empty<Mark>(),
+    problemMark: Mark? = null,
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(
     context = context,

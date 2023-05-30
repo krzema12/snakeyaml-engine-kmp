@@ -13,15 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.DumpSettings;
@@ -31,6 +23,12 @@ import org.snakeyaml.engine.v2.api.lowlevel.Serialize;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @org.junit.jupiter.api.Tag("fast")
 class ComposeSuiteTest {
@@ -52,14 +50,14 @@ class ComposeSuiteTest {
 
 
   public static ComposeResult composeData(SuiteData data) {
-    Optional<Exception> error = Optional.empty();
+    Exception error = null;
     List<Node> list = new ArrayList();
     try {
       LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
       Iterable<Node> iterable = new Compose(settings).composeAllFromString(data.getInput());
       iterable.forEach(event -> list.add(event));
     } catch (YamlEngineException e) {
-      error = Optional.of(e);
+      error = e;
     }
     return new ComposeResult(list, error);
   }
@@ -69,8 +67,8 @@ class ComposeSuiteTest {
   void runOne() {
     SuiteData data = SuiteUtils.getOne("C4HZ");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
-    Optional<Node> node = new Compose(settings).composeString(data.getInput());
-    assertTrue(node.isPresent());
+    Node node = new Compose(settings).composeString(data.getInput());
+    assertNotNull(node);
     // System.out.println(node);
   }
 
@@ -136,9 +134,9 @@ class ComposeSuiteTest {
 class ComposeResult {
 
   private final List<Node> node;
-  private final Optional<Exception> error;
+  private final Exception error;
 
-  public ComposeResult(List<Node> node, Optional<Exception> error) {
+  public ComposeResult(List<Node> node, Exception error) {
     this.node = node;
     this.error = error;
   }
@@ -147,8 +145,7 @@ class ComposeResult {
     return node;
   }
 
-  public Optional<Exception> getError() {
+  public Exception getError() {
     return error;
   }
 }
-

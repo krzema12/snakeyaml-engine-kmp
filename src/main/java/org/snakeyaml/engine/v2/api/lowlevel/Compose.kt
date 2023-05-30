@@ -22,7 +22,6 @@ import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
 import java.io.StringReader
-import java.util.Optional
 
 /**
  * Helper to compose input stream to Node
@@ -40,7 +39,7 @@ class Compose(
      * @return parsed [Node] if available
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun composeReader(yaml: Reader): Optional<Node> =
+    fun composeReader(yaml: Reader): Node? =
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, yaml)),
@@ -54,7 +53,7 @@ class Compose(
      * @return parsed [Node] if available
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun composeInputStream(yaml: InputStream): Optional<Node> =
+    fun composeInputStream(yaml: InputStream): Node? =
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))),
@@ -67,7 +66,7 @@ class Compose(
      * @return parsed [Node] if available
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun composeString(yaml: String): Optional<Node> =
+    fun composeString(yaml: String): Node? =
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, StringReader(yaml))),

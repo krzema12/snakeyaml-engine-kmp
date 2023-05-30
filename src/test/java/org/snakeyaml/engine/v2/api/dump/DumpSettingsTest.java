@@ -13,20 +13,6 @@
  */
 package org.snakeyaml.engine.v2.api.dump;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TreeMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,6 +24,10 @@ import org.snakeyaml.engine.v2.common.NonPrintableStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.common.SpecVersion;
 import org.snakeyaml.engine.v2.exceptions.EmitterException;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class DumpSettingsTest {
@@ -51,7 +41,7 @@ class DumpSettingsTest {
     assertEquals(2, settings.indent);
     assertEquals(FlowStyle.AUTO, settings.defaultFlowStyle);
     assertEquals(ScalarStyle.PLAIN, settings.defaultScalarStyle);
-    assertEquals(Optional.empty(), settings.explicitRootTag);
+    assertEquals(null, settings.explicitRootTag);
     assertFalse(settings.indentWithIndicator);
     assertFalse(settings.isExplicitEnd());
     assertFalse(settings.isExplicitStart());
@@ -63,7 +53,7 @@ class DumpSettingsTest {
     assertEquals(128, settings.maxSimpleKeyLength);
     assertEquals(NonPrintableStyle.ESCAPE, settings.nonPrintableStyle);
     assertEquals(80, settings.width);
-    assertEquals(Optional.empty(), settings.yamlDirective);
+    assertEquals(null, settings.yamlDirective);
     assertEquals(new HashMap<>(), settings.tagDirective);
     assertNotNull(settings.anchorGenerator);
   }
@@ -147,7 +137,7 @@ class DumpSettingsTest {
   @DisplayName("Dump explicit version")
   void dumpVersion() {
     DumpSettings settings =
-        DumpSettings.builder().setYamlDirective(Optional.of(new SpecVersion(1, 2))).build();
+        DumpSettings.builder().setYamlDirective(new SpecVersion(1, 2)).build();
     Dump dump = new Dump(settings);
     String str = dump.dumpToString("a");
     assertEquals("%YAML 1.2\n" + "--- a\n", str);

@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.common.SpecVersion
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 
 /**
  * Marks the beginning of a document.
@@ -29,7 +28,7 @@ class DocumentStartEvent @JvmOverloads constructor(
     /**
      * @return YAML version the document conforms to.
      */
-    val specVersion: Optional<SpecVersion>,
+    val specVersion: SpecVersion?,
 
     /**
      * Tag shorthands as defined by the `%TAG` directive.
@@ -37,8 +36,8 @@ class DocumentStartEvent @JvmOverloads constructor(
      * @return Mapping of 'handles' to 'prefixes' (the handles include the '!' characters).
      */
     val tags: Map<String, String>,
-    startMark: Optional<Mark> = Optional.empty(),
-    endMark: Optional<Mark> = Optional.empty(),
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : Event(startMark, endMark) {
 
     override val eventId: ID

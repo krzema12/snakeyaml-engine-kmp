@@ -36,7 +36,6 @@ import org.snakeyaml.engine.v2.nodes.NodeType
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.Optional
 
 /**
  * Transform a [Node] Graph to [org.snakeyaml.engine.v2.events.Event] stream and allow provided [Emitable] to present the
@@ -66,7 +65,7 @@ class Serializer(
             ),
         )
         anchorNode(node)
-        settings.explicitRootTag.ifPresent { tag -> node.tag = tag }
+        settings.explicitRootTag?.let { tag -> node.tag = tag }
         serializeNode(node)
         emitable.emit(DocumentEndEvent(settings.isExplicitEnd))
         serializedNodes.clear()
@@ -92,7 +91,7 @@ class Serializer(
             anchors.computeIfAbsent(realNode) { settings.anchorGenerator.nextAnchor(realNode) }
         } else {
             anchors[realNode] =
-                if (realNode.anchor.isPresent) {
+                if (realNode.anchor != null) {
                     settings.anchorGenerator.nextAnchor(realNode)
                 } else {
                     null
@@ -126,7 +125,7 @@ class Serializer(
     private fun serializeNode(node: Node) {
         val realNode = if (node is AnchorNode) node.realNode else node
 
-        val tAlias = Optional.ofNullable(anchors[realNode])
+        val tAlias = (anchors[realNode])
         if (serializedNodes.contains(realNode)) {
             emitable.emit(AliasEvent(tAlias))
         } else {
@@ -143,7 +142,7 @@ class Serializer(
                     )
                     val event = ScalarEvent(
                         anchor = tAlias,
-                        tag = Optional.of(realNode.tag.value),
+                        tag = realNode.tag.value,
                         implicit = tuple,
                         value = realNode.value,
                         scalarStyle = realNode.scalarStyle,
@@ -160,7 +159,7 @@ class Serializer(
                     emitable.emit(
                         SequenceStartEvent(
                             anchor = tAlias,
-                            tag = Optional.of(realNode.tag.value),
+                            tag = realNode.tag.value,
                             implicit = implicitS,
                             flowStyle = realNode.flowStyle,
                         ),
@@ -180,11 +179,11 @@ class Serializer(
                         emitable.emit(
                             MappingStartEvent(
                                 anchor = tAlias,
-                                tag = Optional.of(realNode.tag.value),
+                                tag = realNode.tag.value,
                                 implicit = realNode.tag == Tag.MAP,
                                 flowStyle = realNode.flowStyle,
-                                startMark = Optional.empty(),
-                                endMark = Optional.empty(),
+                                startMark = null,
+                                endMark = null,
                             ),
                         )
                         for ((key, value) in realNode.value) {

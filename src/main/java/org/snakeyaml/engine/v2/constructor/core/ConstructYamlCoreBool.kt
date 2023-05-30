@@ -15,7 +15,7 @@ package org.snakeyaml.engine.v2.constructor.core
 
 import org.snakeyaml.engine.v2.constructor.ConstructScalar
 import org.snakeyaml.engine.v2.nodes.Node
-import java.util.*
+import java.util.Locale
 
 /**
  * Create Boolean instances

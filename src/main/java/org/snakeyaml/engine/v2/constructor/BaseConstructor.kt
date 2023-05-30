@@ -17,8 +17,11 @@ import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.exceptions.ConstructorException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.nodes.*
-import java.util.*
+import org.snakeyaml.engine.v2.nodes.MappingNode
+import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
+import org.snakeyaml.engine.v2.nodes.SequenceNode
+import org.snakeyaml.engine.v2.nodes.Tag
 
 /**
  * Base code
@@ -50,12 +53,12 @@ abstract class BaseConstructor(
      * @param optionalNode - composed Node
      * @return constructed instance
      */
-    fun constructSingleDocument(optionalNode: Optional<Node>): Any? {
-        return if (optionalNode.isPresent && Tag.NULL != optionalNode.get().tag) {
-            construct(optionalNode.get())
+    fun constructSingleDocument(optionalNode: Node?): Any? {
+        return if (optionalNode != null && Tag.NULL != optionalNode.tag) {
+            construct(optionalNode)
         } else {
             val construct = tagConstructors[Tag.NULL]!!
-            construct.construct(optionalNode.orElse(null))
+            construct.construct(optionalNode)
         }
     }
 
@@ -119,22 +122,25 @@ abstract class BaseConstructor(
     private fun constructObjectNoCheck(node: Node): Any? {
         if (recursiveObjects.contains(node)) {
             throw ConstructorException(
-                null, Optional.empty(), "found unconstructable recursive node",
-                node.startMark,
+                context = null,
+                contextMark = null,
+                problem = "found unconstructable recursive node",
+                problemMark = node.startMark,
             )
         }
         recursiveObjects.add(node)
-        val constructor = findConstructorFor(node).orElseThrow {
-            ConstructorException(
-                null, Optional.empty(),
-                "could not determine a constructor for the tag " + node.tag, node.startMark,
+        val constructor = findConstructorFor(node)
+            ?: throw ConstructorException(
+                context = null,
+                contextMark = null,
+                problem = "could not determine a constructor for the tag " + node.tag,
+                problemMark = node.startMark,
             )
-        }
-        val data = if (constructedObjects.containsKey(node)) constructedObjects[node] else constructor!!.construct(node)
+        val data = if (constructedObjects.containsKey(node)) constructedObjects[node] else constructor.construct(node)
         constructedObjects[node] = data
         recursiveObjects.remove(node)
         if (node.isRecursive) {
-            constructor!!.constructRecursive(node, data!!)
+            constructor.constructRecursive(node, data!!)
         }
         return data
     }
@@ -146,9 +152,9 @@ abstract class BaseConstructor(
      * @param node [Node] to construct an instance from
      * @return [ConstructNode] implementation for the specified node
      */
-    protected open fun findConstructorFor(node: Node): Optional<ConstructNode> {
+    protected open fun findConstructorFor(node: Node): ConstructNode? {
         val tag = node.tag
-        return Optional.ofNullable(settings.tagConstructors[tag] ?: tagConstructors[tag])
+        return settings.tagConstructors[tag] ?: tagConstructors[tag]
     }
 
     /**

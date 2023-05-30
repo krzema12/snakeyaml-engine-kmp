@@ -13,12 +13,6 @@
  */
 package org.snakeyaml.engine.v2.constructor;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -27,6 +21,8 @@ import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.snakeyaml.engine.v2.nodes.Node;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 class DefaultConstructorTest {
@@ -62,7 +58,7 @@ class MagicNullConstructor extends StandardConstructor {
 
   @NotNull
   @Override
-  public Optional<ConstructNode> findConstructorFor(@NotNull Node node) {
-    return Optional.of(new ConstructYamlNull());
+  public ConstructNode findConstructorFor(@NotNull Node node) {
+    return new ConstructYamlNull();
   }
 }

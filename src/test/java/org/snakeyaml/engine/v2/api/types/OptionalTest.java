@@ -13,10 +13,7 @@
  */
 package org.snakeyaml.engine.v2.api.types;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.google.common.collect.Lists;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -25,6 +22,10 @@ import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class OptionalTest {
@@ -70,8 +71,11 @@ class OptionalTest {
   void dumpListOfOptional() {
     DumpSettings settings = DumpSettings.builder().build();
     Dump dump = new Dump(settings);
-    String str =
-        dump.dumpToString(Lists.newArrayList(Optional.of(2), Optional.empty(), Optional.of("a")));
+    String str = dump.dumpToString(Lists.newArrayList(
+        Optional.of(2),
+        Optional.empty(),
+        Optional.of("a"))
+    );
     assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
   }
 

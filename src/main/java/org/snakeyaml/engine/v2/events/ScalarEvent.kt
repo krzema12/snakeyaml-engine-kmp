@@ -17,21 +17,20 @@ import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.Optional
 import java.util.stream.Collectors
 
 /**
  * Marks a scalar value.
  */
 class ScalarEvent @JvmOverloads constructor(
-    anchor: Optional<Anchor>,
+    anchor: Anchor?,
 
     /**
      * Tag of this scalar.
      *
      * @returns The tag of this scalar, or `null` if no explicit tag is available.
      */
-    val tag: Optional<String>,
+    val tag: String?,
     // The implicit flag of a scalar event is a pair of boolean values that
     // indicate if the tag may be omitted when the scalar is emitted in a plain
     // and non-plain style correspondingly.
@@ -54,8 +53,8 @@ class ScalarEvent @JvmOverloads constructor(
      * @return Style of the scalar.
      */
     val scalarStyle: ScalarStyle,
-    startMark: Optional<Mark> = Optional.empty(),
-    endMark: Optional<Mark> = Optional.empty(),
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : NodeEvent(anchor, startMark, endMark) {
 
     override val eventId: ID
@@ -67,9 +66,9 @@ class ScalarEvent @JvmOverloads constructor(
     override fun toString(): String {
         return buildString {
             append("=VAL")
-            anchor.ifPresent { a -> append(" &$a") }
+            anchor?.let { a -> append(" &$a") }
             if (implicit.bothFalse()) {
-                tag.ifPresent { theTag: String -> append(" <$theTag>") }
+                tag?.let { theTag: String -> append(" <$theTag>") }
             }
             append(" ")
             append(scalarStyle.toString())

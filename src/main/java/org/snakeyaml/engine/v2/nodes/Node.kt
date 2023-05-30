@@ -16,7 +16,6 @@ package org.snakeyaml.engine.v2.nodes
 import org.snakeyaml.engine.v2.comments.CommentLine
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Base class for all nodes.
@@ -39,10 +38,10 @@ abstract class Node @JvmOverloads constructor(
      */
     var tag: Tag,
 
-    val startMark: Optional<Mark>,
+    val startMark: Mark?,
 
     @JvmField
-    var endMark: Optional<Mark>,
+    var endMark: Mark?,
 
     /**
      * `true` when the tag is assigned by the resolver
@@ -78,7 +77,7 @@ abstract class Node @JvmOverloads constructor(
      *
      * @see [3.2.2.2. Anchors and Aliases](https://yaml.org/spec/1.2/spec.html.id2765878)
      */
-    var anchor: Optional<Anchor> = Optional.empty()
+    var anchor: Anchor? = null
 
     /**
      * The ordered list of in-line comments. The first of which appears at the end of the line

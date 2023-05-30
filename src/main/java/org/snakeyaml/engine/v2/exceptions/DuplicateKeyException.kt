@@ -13,8 +13,6 @@
  */
 package org.snakeyaml.engine.v2.exceptions
 
-import java.util.*
-
 /**
  * Indicate duplicate keys in the same mapping during parsing
  *
@@ -23,9 +21,9 @@ import java.util.*
  * @param problemMark - the problem location
  */
 class DuplicateKeyException(
-    contextMark: Optional<Mark>,
+    contextMark: Mark?,
     key: Any,
-    problemMark: Optional<Mark>,
+    problemMark: Mark?,
 ) : ConstructorException(
     context = "while constructing a mapping",
     contextMark = contextMark,

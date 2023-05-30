@@ -14,17 +14,11 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import java.util.List;
 import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.events.AliasEvent;
-import org.snakeyaml.engine.v2.events.CollectionStartEvent;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.MappingStartEvent;
-import org.snakeyaml.engine.v2.events.NodeEvent;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.SequenceStartEvent;
+import org.snakeyaml.engine.v2.events.*;
 import org.snakeyaml.engine.v2.nodes.Tag;
+
+import java.util.List;
 
 /**
  * Event representation for the external test suite
@@ -56,27 +50,27 @@ public class EventRepresentation {
      */
     if (event instanceof MappingStartEvent) {
       CollectionStartEvent e = (CollectionStartEvent) event;
-      boolean tagIsPresent = e.getTag().isPresent();
+      boolean tagIsPresent = e.getTag() != null;
       String mapTag = Tag.MAP.getValue();
-      if (tagIsPresent && !mapTag.equals(e.getTag().get())) {
+      if (tagIsPresent && !mapTag.equals(e.getTag())) {
         String last = split.get(split.size() - 1);
-        if (!last.equals("<" + e.getTag().get() + ">")) {
+        if (!last.equals("<" + e.getTag() + ">")) {
           return false;
         }
       }
     }
     if (event instanceof SequenceStartEvent) {
       SequenceStartEvent e = (SequenceStartEvent) event;
-      if (e.getTag().isPresent() && !Tag.SEQ.getValue().equals(e.getTag().get())) {
+      if (e.getTag() != null && !Tag.SEQ.getValue().equals(e.getTag())) {
         String last = split.get(split.size() - 1);
-        if (!last.equals("<" + e.getTag().get() + ">")) {
+        if (!last.equals("<" + e.getTag() + ">")) {
           return false;
         }
       }
     }
     if (event instanceof NodeEvent) {
       NodeEvent e = (NodeEvent) event;
-      if (e.getAnchor().isPresent()) {
+      if (e.getAnchor() != null) {
         int indexOfAlias = 1;
         if (event.getEventId().equals(Event.ID.SequenceStart)
             || event.getEventId().equals(Event.ID.MappingStart)) {
@@ -98,11 +92,11 @@ public class EventRepresentation {
     }
     if (event instanceof ScalarEvent) {
       ScalarEvent e = (ScalarEvent) event;
-      if (e.getTag().isPresent()) {
-        String tag = e.getTag().get();
+      if (e.getTag() != null) {
+        String tag = e.getTag();
         ImplicitTuple implicit = e.getImplicit();
         if (implicit.bothFalse()) {
-          if (!data.contains("<" + e.getTag().get() + ">")) {
+          if (!data.contains("<" + e.getTag() + ">")) {
             return false;
           }
         }

@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Base class for the two collection types [mapping][MappingNode] and [ collection][SequenceNode].
@@ -23,21 +22,21 @@ import java.util.*
  * @param[flowStyle] Serialization style of this collection
  */
 abstract class CollectionNode<T> @JvmOverloads constructor(
-  tag: Tag,
-  var flowStyle: FlowStyle,
-  startMark: Optional<Mark>,
-  endMark: Optional<Mark>,
-  resolved: Boolean = true,
+    tag: Tag,
+    var flowStyle: FlowStyle,
+    startMark: Mark?,
+    endMark: Mark?,
+    resolved: Boolean = true,
 ) : Node(tag, startMark, endMark, resolved = resolved) {
 
-  /**
-   * Returns the elements in this sequence.
-   *
-   * @return Nodes in the specified order.
-   */
-  abstract val value: List<T>?
+    /**
+     * Returns the elements in this sequence.
+     *
+     * @return Nodes in the specified order.
+     */
+    abstract val value: List<T>?
 
-  fun setEndMark(value: Optional<Mark>) {
-    super.endMark = value
-  }
+    fun setEndMark(value: Mark?) {
+        super.endMark = value
+    }
 }

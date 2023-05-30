@@ -15,7 +15,6 @@ package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Represents a map.
@@ -31,35 +30,35 @@ import java.util.*
  * @param[endMark] end
  */
 class MappingNode @JvmOverloads constructor(
-  tag: Tag,
-  /**
-   * Applications may need to replace the content (Spring Boot).
-   * Merging was removed, but it may be implemented.
-   */
-  override var value: MutableList<NodeTuple>,
-  flowStyle: FlowStyle,
-  resolved: Boolean = true,
-  startMark: Optional<Mark> = Optional.empty<Mark>(),
-  endMark: Optional<Mark> = Optional.empty<Mark>(),
+    tag: Tag,
+    /**
+     * Applications may need to replace the content (Spring Boot).
+     * Merging was removed, but it may be implemented.
+     */
+    override var value: MutableList<NodeTuple>,
+    flowStyle: FlowStyle,
+    resolved: Boolean = true,
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : CollectionNode<NodeTuple>(
-  tag = tag,
-  flowStyle = flowStyle,
-  startMark = startMark,
-  endMark = endMark,
-  resolved = resolved,
+    tag = tag,
+    flowStyle = flowStyle,
+    startMark = startMark,
+    endMark = endMark,
+    resolved = resolved,
 ) {
 
-  override val nodeType: NodeType
-    get() = NodeType.MAPPING
+    override val nodeType: NodeType
+        get() = NodeType.MAPPING
 
-  override fun toString(): String {
-    val values = value.joinToString("") { node ->
-      val valueNode: Any = when (node.valueNode) {
-        is CollectionNode<*> -> System.identityHashCode(node.valueNode) // avoid overflow in case of recursive structures
-        else                 -> node
-      }
-      "{ key=${node.keyNode}; value=$valueNode }"
+    override fun toString(): String {
+        val values = value.joinToString("") { node ->
+            val valueNode: Any = when (node.valueNode) {
+                is CollectionNode<*> -> System.identityHashCode(node.valueNode) // avoid overflow in case of recursive structures
+                else                 -> node
+            }
+            "{ key=${node.keyNode}; value=$valueNode }"
+        }
+        return "<${this.javaClass.name} (tag=$tag, values=$values)>"
     }
-    return "<${this.javaClass.name} (tag=$tag, values=$values)>"
-  }
 }

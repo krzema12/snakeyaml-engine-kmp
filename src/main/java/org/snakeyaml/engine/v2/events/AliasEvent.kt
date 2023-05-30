@@ -15,20 +15,19 @@ package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * Marks the inclusion of a previously anchored node.
  */
 class AliasEvent @JvmOverloads constructor(
-    anchor: Optional<Anchor>,
-    startMark: Optional<Mark> = Optional.empty(),
-    endMark: Optional<Mark> = Optional.empty(),
+    anchor: Anchor?,
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : NodeEvent(anchor, startMark, endMark) {
     val alias: Anchor
 
     init {
-        alias = anchor.orElseThrow { NullPointerException("Anchor is required in AliasEvent") }
+        alias = anchor ?: throw NullPointerException("Anchor is required in AliasEvent")
     }
 
     override val eventId: ID

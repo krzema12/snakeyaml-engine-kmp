@@ -19,12 +19,12 @@ import org.snakeyaml.engine.v2.nodes.Tag
  * `ScalarResolver` tries to detect a type of scalar value by its content (when the tag is implicit)
  */
 fun interface ScalarResolver {
-  /**
-   * Resolve (detect) the tag of the scalar node of the given type.
-   *
-   * @param value - the value of the scalar node
-   * @param implicit - true if there was no tag specified (the tag will be resolved)
-   * @return the Tag that matches the contents
-   */
-  fun resolve(value: String, implicit: Boolean): Tag
+    /**
+     * Resolve (detect) the tag of the scalar node of the given type.
+     *
+     * @param value - the value of the scalar node
+     * @param implicit - true if there was no tag specified (the tag will be resolved)
+     * @return the Tag that matches the contents
+     */
+    fun resolve(value: String, implicit: Boolean): Tag
 }

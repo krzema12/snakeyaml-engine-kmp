@@ -14,7 +14,6 @@
 package org.snakeyaml.engine.v2.exceptions
 
 import org.snakeyaml.engine.v2.scanner.Scanner
-import java.util.Optional
 
 /**
  * Exception thrown by the [Scanner] implementations in case of malformed input.
@@ -26,9 +25,9 @@ import java.util.Optional
  */
 class ScannerException @JvmOverloads constructor(
     problem: String,
-    problemMark: Optional<Mark>,
+    problemMark: Mark?,
     context: String? = null,
-    contextMark: Optional<Mark> = Optional.empty<Mark>(),
+    contextMark: Mark? = null,
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(
     context = context,

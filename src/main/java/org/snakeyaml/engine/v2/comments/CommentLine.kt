@@ -15,48 +15,25 @@ package org.snakeyaml.engine.v2.comments
 
 import org.snakeyaml.engine.v2.events.CommentEvent
 import org.snakeyaml.engine.v2.exceptions.Mark
-import java.util.*
 
 /**
  * A comment line. Maybe a block comment, blank line, or inline comment.
+ * @param startMark - start position
+ * @param endMark - end position
+ * @param value - Value of this comment
+ * @param commentType - the type
  */
 class CommentLine(
-    startMark: Optional<Mark>,
-    endMark: Optional<Mark>,
-    value: String,
-    commentType: CommentType,
+    /**  */
+    @JvmField
+    val startMark: Mark?,
+    @JvmField
+    val endMark: Mark?,
+    @JvmField
+    val value: String,
+    @JvmField
+    val commentType: CommentType,
 ) {
-    /**
-     * getter
-     *
-     * @return start position
-     */
-    @JvmField
-    val startMark: Optional<Mark>
-
-    /**
-     * getter
-     *
-     * @return end position
-     */
-    @JvmField
-    val endMark: Optional<Mark>
-
-    /**
-     * Value of this comment.
-     *
-     * @return comment's value.
-     */
-    @JvmField
-    val value: String
-
-    /**
-     * getter
-     *
-     * @return type of it
-     */
-    @JvmField
-    val commentType: CommentType
 
     /**
      * Create
@@ -65,22 +42,5 @@ class CommentLine(
      */
     constructor(event: CommentEvent) : this(event.startMark, event.endMark, event.value, event.commentType)
 
-    /**
-     * Create
-     *
-     * @param startMark - start
-     * @param endMark - end
-     * @param value - the comment
-     * @param commentType - the type
-     */
-    init {
-        this.startMark = startMark
-        this.endMark = endMark
-        this.value = value
-        this.commentType = commentType
-    }
-
-    override fun toString(): String {
-        return "<" + this.javaClass.name + " (type=" + commentType + ", value=" + value + ")>"
-    }
+    override fun toString(): String = "<${this.javaClass.name} (type=$commentType, value=$value)>"
 }

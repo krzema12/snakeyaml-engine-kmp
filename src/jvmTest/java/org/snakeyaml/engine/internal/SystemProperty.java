@@ -11,16 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser
+package org.snakeyaml.engine.internal;
 
-import org.snakeyaml.engine.v2.common.SpecVersion
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-/**
- * Store the internal state for directives
- */
-internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
-) {
-    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@ExtendWith(SystemPropertyExtension.class)
+public @interface SystemProperty {
+
+  String key();
+
+  String value();
 }

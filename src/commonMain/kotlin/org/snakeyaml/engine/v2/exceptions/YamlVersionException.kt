@@ -11,16 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser
+package org.snakeyaml.engine.v2.exceptions
 
 import org.snakeyaml.engine.v2.common.SpecVersion
 
 /**
- * Store the internal state for directives
+ * Indication of invalid YAML version
+ * @param specVersion - the specified version
  */
-internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
-) {
-    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
-}
+class YamlVersionException(
+  specVersion: SpecVersion,
+) : YamlEngineException(specVersion.toString())

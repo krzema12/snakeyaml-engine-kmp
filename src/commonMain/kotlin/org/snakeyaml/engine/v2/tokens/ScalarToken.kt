@@ -11,16 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser
+package org.snakeyaml.engine.v2.tokens
 
-import org.snakeyaml.engine.v2.common.SpecVersion
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.exceptions.Mark
+import kotlin.jvm.JvmOverloads
 
-/**
- * Store the internal state for directives
- */
-internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
-) {
-    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
+class ScalarToken @JvmOverloads constructor(
+    val value: String,
+    val plain: Boolean,
+    startMark: Mark?,
+    endMark: Mark?,
+    val style: ScalarStyle = ScalarStyle.PLAIN,
+) : Token(startMark, endMark) {
+
+    override val tokenId: ID
+        get() = ID.Scalar
+
+    override fun toString(): String = "$tokenId plain=$plain style=$style value=$value"
 }

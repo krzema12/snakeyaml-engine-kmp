@@ -11,16 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser
-
-import org.snakeyaml.engine.v2.common.SpecVersion
+package org.snakeyaml.engine.v2.common
 
 /**
- * Store the internal state for directives
+ * YAML Version indicator
+ * @param major - major part of version, must be 1
+ * @param minor - minor part of version, may be 0 or 1
  */
-internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
+class SpecVersion(
+    val major: Int,
+    val minor: Int,
 ) {
-    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
+    /** create readable text */
+    val representation: String
+        get() = "$major.$minor"
+
+    override fun toString(): String = "Version{major=$major, minor=$minor}"
 }

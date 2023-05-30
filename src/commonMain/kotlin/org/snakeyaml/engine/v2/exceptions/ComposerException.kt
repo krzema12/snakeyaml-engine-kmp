@@ -11,16 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.parser
+package org.snakeyaml.engine.v2.exceptions
 
-import org.snakeyaml.engine.v2.common.SpecVersion
+import kotlin.jvm.JvmOverloads
 
 /**
- * Store the internal state for directives
+ * General exception during composition step
+ *
+ * @param context - part of the document
+ * @param contextMark - context position
+ * @param problem - the issue
+ * @param problemMark - the problem location
  */
-internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
-) {
-    override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
-}
+class ComposerException @JvmOverloads constructor(
+    problem: String?,
+    problemMark: Mark?,
+    context: String = "",
+    contextMark: Mark? = null,
+) : MarkedYamlEngineException(
+    context = context,
+    contextMark = contextMark,
+    problem = problem,
+    problemMark = problemMark,
+)

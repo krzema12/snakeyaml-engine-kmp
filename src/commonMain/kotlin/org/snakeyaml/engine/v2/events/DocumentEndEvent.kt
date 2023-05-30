@@ -11,23 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.scanner
+package org.snakeyaml.engine.v2.events
 
 import org.snakeyaml.engine.v2.exceptions.Mark
+import kotlin.jvm.JvmOverloads
 
 /**
- * Simple keys treatment.
+ * Marks the end of a document.
  *
- * Helper class for [ScannerImpl].
+ * This event follows the document's content.
  */
-internal class SimpleKey(
-  val tokenNumber: Int,
-  val isRequired: Boolean,
-  val index: Int,
-  val line: Int,
-  val column: Int,
-  val mark: Mark?,
-) {
-    override fun toString(): String =
-        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
+class DocumentEndEvent @JvmOverloads constructor(
+  val isExplicit: Boolean,
+  startMark: Mark? = null,
+  endMark: Mark? = null,
+) : Event(startMark, endMark) {
+
+    override val eventId: ID
+        get() = ID.DocumentEnd
+
+    override fun toString(): String {
+        return buildString {
+            append("-DOC")
+            if (isExplicit) {
+                append(" ...")
+            }
+        }
+    }
 }

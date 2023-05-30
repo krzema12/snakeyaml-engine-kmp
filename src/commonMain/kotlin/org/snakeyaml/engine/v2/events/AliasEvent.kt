@@ -11,23 +11,28 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.scanner
+package org.snakeyaml.engine.v2.events
 
+import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.exceptions.Mark
+import kotlin.jvm.JvmOverloads
 
 /**
- * Simple keys treatment.
- *
- * Helper class for [ScannerImpl].
+ * Marks the inclusion of a previously anchored node.
  */
-internal class SimpleKey(
-  val tokenNumber: Int,
-  val isRequired: Boolean,
-  val index: Int,
-  val line: Int,
-  val column: Int,
-  val mark: Mark?,
-) {
-    override fun toString(): String =
-        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
+class AliasEvent @JvmOverloads constructor(
+    anchor: Anchor?,
+    startMark: Mark? = null,
+    endMark: Mark? = null,
+) : NodeEvent(anchor, startMark, endMark) {
+    val alias: Anchor
+
+    init {
+        alias = anchor ?: throw NullPointerException("Anchor is required in AliasEvent")
+    }
+
+    override val eventId: ID
+        get() = ID.Alias
+
+    override fun toString(): String = "=ALI *$alias"
 }

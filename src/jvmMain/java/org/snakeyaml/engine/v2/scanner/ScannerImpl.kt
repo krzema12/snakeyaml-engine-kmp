@@ -1333,7 +1333,7 @@ class ScannerImpl(
         return if (isAnchor) {
             AnchorToken(Anchor(value), startMark, endMark)
         } else {
-            AliasToken(Anchor(value), startMark, endMark)
+          AliasToken(Anchor(value), startMark, endMark)
         }
     }
 

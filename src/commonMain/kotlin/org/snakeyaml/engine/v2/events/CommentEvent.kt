@@ -11,23 +11,28 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.scanner
+package org.snakeyaml.engine.v2.events
 
+import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.exceptions.Mark
 
 /**
- * Simple keys treatment.
- *
- * Helper class for [ScannerImpl].
+ * Marks a comment block value.
  */
-internal class SimpleKey(
-  val tokenNumber: Int,
-  val isRequired: Boolean,
-  val index: Int,
-  val line: Int,
-  val column: Int,
-  val mark: Mark?,
-) {
-    override fun toString(): String =
-        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
+class CommentEvent(
+  val commentType: CommentType,
+  /**
+     * String representation of the value, without quotes and escaping.
+     *
+     * @return Value a comment line string without the leading '#' or a blank line.
+     */
+    val value: String,
+  startMark: Mark?,
+  endMark: Mark?,
+) : Event(startMark, endMark) {
+
+    override val eventId: ID
+        get() = ID.Comment
+
+    override fun toString(): String = "=COM $commentType $value"
 }

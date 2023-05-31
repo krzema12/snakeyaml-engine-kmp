@@ -8,6 +8,7 @@ import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
 import io.github.typesafegithub.workflows.domain.RunnerType.UbuntuLatest
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
 import io.github.typesafegithub.workflows.yaml.writeToFile
 
@@ -38,8 +39,8 @@ workflow(
                 path = listOf(
                     "~/.konan/**/*",
                 ),
-                key = "kotlin-konan-\${{ runner.os }}"
-            )
+                key = "kotlin-konan-${expr { runner.os }}",
+            ),
         )
         uses(
             name = "Build",

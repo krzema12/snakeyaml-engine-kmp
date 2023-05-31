@@ -14,9 +14,9 @@
 package org.snakeyaml.engine.v2.api
 
 /**
- * Writer with the same methods as in [java.io.Writer] but without throwing IOExceptions The
+ * Writer with the same methods as in `java.io.Writer` but without throwing `IOException`s The
  * purpose of this class is to avoid checked exceptions in every method signature. Implementations
- * must define their own way to react on IOExceptions [YamlOutputStreamWriter]
+ * must define their own way to react on `IOException`s [YamlOutputStreamWriter]
  */
 interface StreamDataWriter {
     /**

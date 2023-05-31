@@ -1,6 +1,7 @@
 #!/usr/bin/env kotlin
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:0.43.0")
 
+import io.github.typesafegithub.workflows.actions.actions.CacheV3
 import io.github.typesafegithub.workflows.actions.actions.CheckoutV3
 import io.github.typesafegithub.workflows.actions.actions.SetupJavaV3
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
@@ -30,6 +31,15 @@ workflow(
                 distribution = SetupJavaV3.Distribution.Zulu,
                 cache = SetupJavaV3.BuildPlatform.Gradle,
             ),
+        )
+        uses(
+            name = "Cache Kotlin Konan",
+            action = CacheV3(
+                path = listOf(
+                    "~/.konan/**/*",
+                ),
+                key = "kotlin-konan-\${{ runner.os }}"
+            )
         )
         uses(
             name = "Build",

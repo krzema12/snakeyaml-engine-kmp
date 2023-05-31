@@ -44,12 +44,11 @@ class SequenceNode @JvmOverloads constructor(
         val values = value.joinToString(",") { node ->
             when (node) {
                 // avoid overflow in case of recursive structures
-                is CollectionNode<*> -> System.identityHashCode(node).toString()
-
+                is CollectionNode<*> -> "CollectionNode(size:${node.value?.size})"
                 else                 -> node.toString()
             }
         }
 
-        return "<${this.javaClass.name} (tag=$tag, value=[$values])>"
+        return "<${this::class.simpleName} (tag=$tag, value=[$values])>"
     }
 }

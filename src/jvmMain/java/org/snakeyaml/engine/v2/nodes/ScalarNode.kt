@@ -41,7 +41,7 @@ class ScalarNode @JvmOverloads constructor(
     override val nodeType: NodeType
         get() = NodeType.SCALAR
 
-    override fun toString(): String = "<${this.javaClass.name} (tag=$tag, value=$value)>"
+    override fun toString(): String = "<${this::class.simpleName} (tag=$tag, value=$value)>"
 
     val isPlain: Boolean
         get() = scalarStyle == ScalarStyle.PLAIN

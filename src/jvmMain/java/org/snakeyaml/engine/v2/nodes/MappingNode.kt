@@ -53,12 +53,13 @@ class MappingNode @JvmOverloads constructor(
 
     override fun toString(): String {
         val values = value.joinToString("") { node ->
-            val valueNode: Any = when (node.valueNode) {
-                is CollectionNode<*> -> System.identityHashCode(node.valueNode) // avoid overflow in case of recursive structures
-                else                 -> node
+            val valueNode = when (node.valueNode) {
+                // avoid overflow in case of recursive structures
+                is CollectionNode<*> -> "CollectionNode(size:${node.valueNode.value?.size})"
+                else                 -> node.toString()
             }
             "{ key=${node.keyNode}; value=$valueNode }"
         }
-        return "<${this.javaClass.name} (tag=$tag, values=$values)>"
+        return "<${this::class.simpleName} (tag=$tag, values=$values)>"
     }
 }

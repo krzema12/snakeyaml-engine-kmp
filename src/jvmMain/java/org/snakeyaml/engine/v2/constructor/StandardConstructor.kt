@@ -83,9 +83,9 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     private fun constructKey(
-      keyNode: Node,
-      contextMark: Mark?,
-      problemMark: Mark?,
+        keyNode: Node,
+        contextMark: Mark?,
+        problemMark: Mark?,
     ): Any? {
         val key = constructObject(keyNode)
         try {

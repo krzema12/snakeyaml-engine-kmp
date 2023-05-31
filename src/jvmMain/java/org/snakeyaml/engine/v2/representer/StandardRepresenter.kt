@@ -215,7 +215,7 @@ open class StandardRepresenter(
     /** Create Node for [UUID] */
     private val representUuid = RepresentToNode { data ->
         representScalar(
-            getTag(data::class) { Tag(UUID::class) },
+            getTag(data::class) { Tag.forType("java.util.UUID") },
             data.toString(),
         )
     }
@@ -225,7 +225,7 @@ open class StandardRepresenter(
         val opt = data as Optional<*>
         if (opt.isPresent) {
             val node = represent(opt.get())
-            node.tag = Tag(Optional::class)
+            node.tag = Tag.forType("java.util.Optional")
             node
         } else {
             nullRepresenter.representData(Unit)

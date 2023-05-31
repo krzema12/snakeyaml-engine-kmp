@@ -24,8 +24,6 @@ import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonInt
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
-import java.util.Optional
-import java.util.UUID
 
 /**
  * Default schema
@@ -39,7 +37,7 @@ open class JsonSchema(
         Tag.INT to ConstructYamlJsonInt(),
         Tag.FLOAT to ConstructYamlJsonFloat(),
         Tag.BINARY to ConstructYamlBinary(),
-        Tag(UUID::class) to ConstructUuidClass(),
-        Tag(Optional::class) to ConstructOptionalClass(scalarResolver),
+        Tag.forType("java.util.UUID") to ConstructUuidClass(),
+        Tag.forType("java.util.Optional") to ConstructOptionalClass(scalarResolver),
     ),
 ) : Schema

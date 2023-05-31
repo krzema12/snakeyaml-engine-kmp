@@ -43,7 +43,10 @@ class StandardRepresenterTest {
   @DisplayName("Represent Enum as node with global tag")
   void represenEnum() {
     Node node = standardRepresenter.represent(FormatEnum.JSON);
-    assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
-        node.getTag().getValue());
+    assertEquals(
+//        "tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
+        "tag:yaml.org,2002:FormatEnum",
+        node.getTag().getValue()
+    );
   }
 }

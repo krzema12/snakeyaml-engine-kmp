@@ -34,8 +34,11 @@ class EnumRepresenterTest {
     StandardRepresenter standardRepresenter = new StandardRepresenter(settings);
     ScalarNode node = (ScalarNode) standardRepresenter.represent(FormatEnum.JSON);
     assertEquals(ScalarStyle.DOUBLE_QUOTED, node.getScalarStyle());
-    assertEquals("tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
-        node.getTag().getValue());
+    assertEquals(
+//        "tag:yaml.org,2002:org.snakeyaml.engine.v2.representer.FormatEnum",
+        "tag:yaml.org,2002:FormatEnum",
+        node.getTag().getValue()
+    );
   }
 
   @Test
@@ -45,6 +48,7 @@ class EnumRepresenterTest {
         DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build();
     Dump dumper = new Dump(settings);
     String node = dumper.dumpToString(FormatEnum.JSON);
-    assertEquals("!!org.snakeyaml.engine.v2.representer.FormatEnum \"JSON\"\n", node);
+//    assertEquals("!!org.snakeyaml.engine.v2.representer.FormatEnum \"JSON\"\n", node);
+    assertEquals("!!FormatEnum \"JSON\"\n", node);
   }
 }

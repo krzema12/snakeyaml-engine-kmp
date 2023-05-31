@@ -13,22 +13,16 @@
  */
 package org.snakeyaml.engine.v2.common
 
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.Escaper
-import org.snakeyaml.engine.external.com.google.gdata.util.common.base.PercentEscaper
+import org.snakeyaml.engine.external.net.thauvin.erik.urlencoder.UrlEncoder
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
 import java.nio.ByteBuffer
-import java.nio.charset.CodingErrorAction
-import java.nio.charset.StandardCharsets
 
 object UriEncoder {
-    private val UTF8Decoder = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-
-    // Include the [] chars to the SAFEPATHCHARS_URLENCODER to avoid
-    // its escape as required by spec. See
-    private const val SAFE_CHARS = PercentEscaper.SAFEPATHCHARS_URLENCODER + "[]/"
-    private val escaper: Escaper = PercentEscaper(SAFE_CHARS, false)
+    private val urlEncoder = UrlEncoder(
+        safeChars = "-_.!~*'()@:$&,;=[]/", // Include the [] chars to avoid its escape as required by spec
+        plusForSpace = false,
+    )
 
     /**
      * Escape special characters with `%`
@@ -37,7 +31,7 @@ object UriEncoder {
      * @return encoded URI
      */
     @JvmStatic
-    fun encode(uri: String): String = escaper.escape(uri)
+    fun encode(uri: String): String = urlEncoder.encode(uri)
 
     /**
      * Decode `%`-escaped characters. Decoding fails in case of invalid UTF-8
@@ -49,20 +43,20 @@ object UriEncoder {
     @JvmStatic
     @Throws(CharacterCodingException::class)
     fun decode(buff: ByteBuffer): String {
-        val chars = UTF8Decoder.decode(buff)
-        return chars.toString()
+        val content = String(buff.array(), Charsets.UTF_8)
+        return urlEncoder.decode(content)
     }
 
     /**
-     * Decode with [URLDecoder]
+     * Decode with [UrlEncoder]
      *
      * @param buff - the source
      * @return decoded with UTF-8
      */
     @JvmStatic
-    fun decode(buff: String?): String {
+    fun decode(buff: String): String {
         return try {
-            URLDecoder.decode(buff, "UTF-8")
+            urlEncoder.decode(buff)
         } catch (e: UnsupportedEncodingException) {
             throw YamlEngineException(e)
         }

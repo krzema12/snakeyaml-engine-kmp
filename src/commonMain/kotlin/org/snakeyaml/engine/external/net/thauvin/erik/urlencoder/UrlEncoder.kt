@@ -52,7 +52,6 @@ internal class UrlEncoder(
     safeChars: String,
     private val plusForSpace: Boolean,
 ) {
-    private val hexDigits: CharArray = "0123456789ABCDEF".toCharArray()
 
     // see https://www.rfc-editor.org/rfc/rfc3986#page-13
     // and https://url.spec.whatwg.org/#application-x-www-form-urlencoded-percent-encode-set
@@ -198,37 +197,42 @@ internal class UrlEncoder(
      */
     private fun Char.isUnreserved(): Boolean = this <= 'z' && unreservedChars[code]
 
-    private fun StringBuilder.appendEncodedDigit(digit: Int) {
-        append(hexDigits[digit and 0x0F])
-    }
+    companion object {
 
-    private fun StringBuilder.appendEncodedByte(ch: Int) {
-        append("%")
-        appendEncodedDigit(ch shr 4)
-        appendEncodedDigit(ch)
-    }
+        private val hexDigits: CharArray = "0123456789ABCDEF".toCharArray()
 
-    /**
-     * Creates a [BooleanArray] with entries corresponding to the character values for
-     * `0-9`, `A-Z`, `a-z` and those specified in [safeChars] set to `true`.
-     *
-     * The array is as small as is required to hold the given character information.
-     */
-    private fun createUnreservedChars(safeChars: String): BooleanArray {
-        val safeCharArray = safeChars.toCharArray()
-        val maxChar = safeCharArray.maxOf { it.code }.coerceAtLeast('z'.code)
+        private fun StringBuilder.appendEncodedDigit(digit: Int) {
+            append(hexDigits[digit and 0x0F])
+        }
 
-        val unreservedChars = BooleanArray(maxChar + 1)
+        private fun StringBuilder.appendEncodedByte(ch: Int) {
+            append("%")
+            appendEncodedDigit(ch shr 4)
+            appendEncodedDigit(ch)
+        }
 
-        unreservedChars['-'.code] = true
-        unreservedChars['.'.code] = true
-        unreservedChars['_'.code] = true
-        for (c in '0'..'9') unreservedChars[c.code] = true
-        for (c in 'A'..'Z') unreservedChars[c.code] = true
-        for (c in 'a'..'z') unreservedChars[c.code] = true
+        /**
+         * Creates a [BooleanArray] with entries corresponding to the character values for
+         * `0-9`, `A-Z`, `a-z` and those specified in [safeChars] set to `true`.
+         *
+         * The array is as small as is required to hold the given character information.
+         */
+        private fun createUnreservedChars(safeChars: String): BooleanArray {
+            val safeCharArray = safeChars.toCharArray()
+            val maxChar = safeCharArray.maxOf { it.code }.coerceAtLeast('z'.code)
 
-        for (c in safeCharArray) unreservedChars[c.code] = true
+            val unreservedChars = BooleanArray(maxChar + 1)
 
-        return unreservedChars
+            unreservedChars['-'.code] = true
+            unreservedChars['.'.code] = true
+            unreservedChars['_'.code] = true
+            for (c in '0'..'9') unreservedChars[c.code] = true
+            for (c in 'A'..'Z') unreservedChars[c.code] = true
+            for (c in 'a'..'z') unreservedChars[c.code] = true
+
+            for (c in safeCharArray) unreservedChars[c.code] = true
+
+            return unreservedChars
+        }
     }
 }

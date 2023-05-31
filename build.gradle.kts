@@ -59,3 +59,14 @@ tasks.withType<Test>().configureEach {
         "EnvironmentEmpty" to "",
     )
 }
+
+
+val regenWorkflows by tasks.registering(buildsrc.tasks.RegenerateWorkflowsKt::class) {
+    workflowsDir.set(layout.projectDirectory.dir(".github/workflows/"))
+}
+
+tasks.matching { it.name == "prepareKotlinIdeaImport" }.configureEach {
+    // regenerate the workflows whenever IntelliJ is syncing
+    // `:prepareKotlinIdeaImport` is a custom task that IntelliJ injects on-the-fly
+    finalizedBy(regenWorkflows)
+}

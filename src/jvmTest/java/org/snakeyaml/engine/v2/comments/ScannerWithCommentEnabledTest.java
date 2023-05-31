@@ -88,7 +88,7 @@ public class ScannerWithCommentEnabledTest {
 
   private Scanner constructScanner(String input) {
     LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
-    return new ScannerImpl(settings, new StreamReader(settings, new StringReader(input)));
+    return new ScannerImpl(settings, new StreamReader(settings, input));
   }
 
   @Test

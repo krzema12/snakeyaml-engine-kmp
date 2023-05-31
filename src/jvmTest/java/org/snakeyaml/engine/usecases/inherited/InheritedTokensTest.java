@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -79,7 +81,7 @@ public class InheritedTokensTest extends InheritedImportTest {
       List<String> tokens1 = new ArrayList<String>();
       LoadSettings settings = LoadSettings.builder().build();
       StreamReader reader = new StreamReader(settings,
-          new YamlUnicodeReader(new FileInputStream(getFileByName(dataName))));
+          new YamlUnicodeReader(Okio.source(new FileInputStream(getFileByName(dataName)))));
       Scanner scanner = new ScannerImpl(settings, reader);
       try {
         while (scanner.checkToken()) {
@@ -113,7 +115,7 @@ public class InheritedTokensTest extends InheritedImportTest {
       List<String> tokens = new ArrayList<String>();
       InputStream input = new FileInputStream(file);
       LoadSettings settings = LoadSettings.builder().build();
-      StreamReader reader = new StreamReader(settings, new YamlUnicodeReader(input));
+      StreamReader reader = new StreamReader(settings, new YamlUnicodeReader(Okio.source(input)));
       Scanner scanner = new ScannerImpl(settings, reader);
       try {
         while (scanner.checkToken()) {

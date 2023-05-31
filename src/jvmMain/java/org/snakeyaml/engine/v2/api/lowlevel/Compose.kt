@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel
 
+import okio.source
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader
 import org.snakeyaml.engine.v2.composer.Composer
@@ -42,7 +43,7 @@ class Compose(
     fun composeReader(yaml: Reader): Node? =
         Composer(
             settings,
-            ParserImpl(settings, StreamReader(settings, yaml)),
+            ParserImpl(settings, StreamReader(settings, yaml.readText())),
         ).singleNode
 
     /**
@@ -56,7 +57,7 @@ class Compose(
     fun composeInputStream(yaml: InputStream): Node? =
         Composer(
             settings,
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))),
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
         ).singleNode
 
     /**
@@ -69,7 +70,7 @@ class Compose(
     fun composeString(yaml: String): Node? =
         Composer(
             settings,
-            ParserImpl(settings, StreamReader(settings, StringReader(yaml))),
+            ParserImpl(settings, StreamReader(settings, yaml)),
         ).singleNode
 
     // Compose all documents
@@ -84,7 +85,7 @@ class Compose(
         Iterable {
             Composer(
                 settings,
-                ParserImpl(settings, StreamReader(settings, yaml)),
+                ParserImpl(settings, StreamReader(settings, yaml.readText())),
             )
         }
 
@@ -100,7 +101,7 @@ class Compose(
         Iterable {
             Composer(
                 settings,
-                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml))),
+                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
             )
         }
 
@@ -115,7 +116,7 @@ class Compose(
         Iterable {
             Composer(
                 settings,
-                ParserImpl(settings, StreamReader(settings, StringReader(yaml))),
+                ParserImpl(settings, StreamReader(settings, yaml)),
             )
         }
 }

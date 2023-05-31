@@ -13,15 +13,13 @@
  */
 package org.snakeyaml.engine.v2.scanner
 
+import okio.*
+import okio.ByteString.Companion.encodeUtf8
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ReaderException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import java.io.IOException
-import java.io.Reader
-import java.io.StringReader
-import java.util.Optional
 
 /**
  * Read the provided stream of code points into String and implement look-ahead operations. Checks
@@ -32,8 +30,10 @@ import java.util.Optional
  */
 class StreamReader(
     loadSettings: LoadSettings,
-    private val stream: Reader,
+    stream: Source,
 ) {
+    private val stream: BufferedSource = if (stream is BufferedSource) stream else stream.buffer()
+
     private val name: String = loadSettings.label
     private val bufferSize: Int = loadSettings.bufferSize
 
@@ -85,7 +85,10 @@ class StreamReader(
      * @param loadSettings - configuration options
      * @param stream - the input
      */
-    constructor(loadSettings: LoadSettings, stream: String) : this(loadSettings, StringReader(stream))
+    constructor(loadSettings: LoadSettings, stream: String) : this(
+        loadSettings = loadSettings,
+        stream = Buffer().write(stream.encodeUtf8()),
+    )
 
     /**
      * Generate [Mark] if it is configured
@@ -93,18 +96,16 @@ class StreamReader(
      * @return [Mark] of the current position or empty [Optional] otherwise
      */
     fun getMark(): Mark? {
-        return if (useMarks) {
-            Mark(
-                name = name,
-                index = index,
-                line = line,
-                column = column,
-                buffer = codePointsWindow,
-                pointer = pointer,
-            )
-        } else {
-            null
-        }
+        if (!useMarks) return null
+
+        return Mark(
+            name = name,
+            index = index,
+            line = line,
+            column = column,
+            buffer = codePointsWindow,
+            pointer = pointer,
+        )
     }
 
     /**
@@ -185,17 +186,19 @@ class StreamReader(
 
     private fun update() {
         try {
-            var read = stream.read(buffer, 0, bufferSize - 1)
+            val buffer = stream.readUtf8().toCharArray()
+            val read = buffer.size
             if (read > 0) {
                 var cpIndex = dataLength - pointer
                 codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                if (Character.isHighSurrogate(buffer[read - 1])) {
-                    if (stream.read(buffer, read, 1) == -1) {
-                        eof = true
-                    } else {
-                        read++
-                    }
-                }
+                // Okio seems to make this check redundant, which is a good because I have no idea how to convert it sensibly!
+                //if (buffer.last().isHighSurrogate()) {
+                //    if (stream.read(buffer, read, 1) == -1) {
+                //        eof = true
+                //    } else {
+                //        read++
+                //    }
+                //}
                 var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {

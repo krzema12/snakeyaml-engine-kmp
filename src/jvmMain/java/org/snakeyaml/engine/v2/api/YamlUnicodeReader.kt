@@ -13,14 +13,17 @@
  */
 package org.snakeyaml.engine.v2.api
 
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.PushbackInputStream
-import java.io.Reader
+import okio.Buffer
+import okio.ByteString.Companion.toByteString
+import okio.Source
+import okio.Timeout
+import okio.buffer
 import java.nio.charset.Charset
-import java.nio.charset.CodingErrorAction
-import java.nio.charset.StandardCharsets
+import kotlin.text.Charsets.UTF_16BE
+import kotlin.text.Charsets.UTF_16LE
+import kotlin.text.Charsets.UTF_32BE
+import kotlin.text.Charsets.UTF_32LE
+import kotlin.text.Charsets.UTF_8
 
 /**
  * Generic unicode text reader, which will use BOM mark to identify the encoding to be used. If BOM
@@ -33,87 +36,68 @@ import java.nio.charset.StandardCharsets
  * (http://www.yaml.org/spec/1.2/spec.html#id2771184)
  *
  *
- * http://www.unicode.org/unicode/faq/utf_bom.html BOMs: 00 00 FE FF = UTF-32, big-endian FF FE 00
- * 00 = UTF-32, little-endian FE FF = UTF-16, big-endian FF FE = UTF-16, little-endian EF BB BF =
- * UTF-8
+ * http://www.unicode.org/unicode/faq/utf_bom.html BOMs:
+ *
+ * * `00 00 FE FF` = UTF-32, big-endian
+ * * `FF FE 00 00` = UTF-32, little-endian
+ * * `FE FF` = UTF-16, big-endian
+ * * `FF FE` = UTF-16, little-endian
+ * * `EF BB BF` = UTF-8
  *
  * Win2k Notepad: Unicode format = UTF-16LE
- * @param stream InputStream to be read
+ * @param source [Source] to be read
  */
-class YamlUnicodeReader(stream: InputStream?) : Reader() {
-    private var internalIn: PushbackInputStream = PushbackInputStream(stream, BOM_SIZE)
-    private var internalIn2: InputStreamReader? = null
+class YamlUnicodeReader(
+    source: Source,
+) : Source {
 
-    /**
-     * Get stream encoding or NULL if stream is uninitialized. Call init() or read() method to
-     * initialize it.
-     *
-     * @return the name of the character encoding being used by this stream.
-     */
-    @JvmField
-    var encoding: Charset = UTF8
+    private val encodedSource: Source
+
+    /** the name of the character encoding being used by this stream. */
+    val encoding: Charset
 
     /**
      * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only
      * BOM bytes are skipped.
-     *
-     * @throws IOException if InputStream cannot be created
      */
-    @Throws(IOException::class)
-    fun init() {
-        if (internalIn2 != null) {
-            return
-        }
-        val bom = ByteArray(BOM_SIZE)
-        val unread: Int
-        val n: Int = internalIn.read(bom, 0, bom.size)
-        if (bom[0] == 0x00.toByte() && bom[1] == 0x00.toByte() && bom[2] == 0xFE.toByte() && bom[3] == 0xFF.toByte()) {
-            encoding = UTF32BE
-            unread = n - 4
-        } else if (bom[0] == 0xFF.toByte() && bom[1] == 0xFE.toByte() && bom[2] == 0x00.toByte() && bom[3] == 0x00.toByte()) {
-            encoding = UTF32LE
-            unread = n - 4
-        } else if (bom[0] == 0xEF.toByte() && bom[1] == 0xBB.toByte() && bom[2] == 0xBF.toByte()) {
-            encoding = UTF8
-            unread = n - 3
-        } else if (bom[0] == 0xFE.toByte() && bom[1] == 0xFF.toByte()) {
-            encoding = UTF16BE
-            unread = n - 2
-        } else if (bom[0] == 0xFF.toByte() && bom[1] == 0xFE.toByte()) {
-            encoding = UTF16LE
-            unread = n - 2
-        } else {
-            // Unicode BOM mark not found, unread all bytes
-            encoding = UTF8
-            unread = n
-        }
-        if (unread > 0) {
-            internalIn.unread(bom, n - unread, unread)
-        }
+    init {
+        val bufferedSource = source.buffer()
+        val peek = bufferedSource.peek()
 
-        // Use given encoding
-        val decoder = encoding.newDecoder().onUnmappableCharacter(CodingErrorAction.REPORT)
-        internalIn2 = InputStreamReader(internalIn, decoder)
+        val (encoding: Charset, skip: Int) = when {
+            peek.rangeEquals(0, UTF_32LE_MARK) -> UTF_32LE to 4
+            peek.rangeEquals(0, UTF_32BE_MARK) -> UTF_32BE to 4
+            peek.rangeEquals(0, UTF_16LE_MARK) -> UTF_16LE to 2
+            peek.rangeEquals(0, UTF_16BE_MARK) -> UTF_16BE to 2
+            peek.rangeEquals(0, UTF_8_MARK)    -> UTF_8 to 3
+            else                               -> UTF_8 to 0
+        }
+        this.encoding = encoding
+
+        bufferedSource.skip(skip.toLong())
+
+        val bs = bufferedSource.readString(encoding)
+        encodedSource = Buffer().writeString(bs, UTF_8)
     }
 
-    @Throws(IOException::class)
     override fun close() {
-        init()
-        internalIn2!!.close()
+        encodedSource.close()
     }
 
-    @Throws(IOException::class)
-    override fun read(cbuf: CharArray, off: Int, len: Int): Int {
-        init()
-        return internalIn2!!.read(cbuf, off, len)
-    }
+    override fun read(sink: Buffer, byteCount: Long): Long = encodedSource.read(sink, byteCount)
+
+    override fun timeout(): Timeout = encodedSource.timeout()
+
+    fun readString(): String = encodedSource.buffer().readUtf8()
 
     companion object {
-        private val UTF8 = StandardCharsets.UTF_8
-        private val UTF16BE = StandardCharsets.UTF_16BE
-        private val UTF16LE = StandardCharsets.UTF_16LE
-        private val UTF32BE = Charset.forName("UTF-32BE")
-        private val UTF32LE = Charset.forName("UTF-32LE")
-        private const val BOM_SIZE = 4
+        private val UTF_8_MARK = byteArrayOf(0xEF, 0xBB, 0xBF).toByteString()
+        private val UTF_16BE_MARK = byteArrayOf(0xFE, 0xFF).toByteString()
+        private val UTF_16LE_MARK = byteArrayOf(0xFF, 0xFE).toByteString()
+        private val UTF_32BE_MARK = byteArrayOf(0x00, 0x00, 0xFE, 0xFF).toByteString()
+        private val UTF_32LE_MARK = byteArrayOf(0xFF, 0xFE, 0x00, 0x00).toByteString()
+
+        private fun byteArrayOf(vararg values: Int): ByteArray =
+            byteArrayOf(*values.map(Int::toByte).toByteArray())
     }
 }

@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel
 
+import okio.source
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader
 import org.snakeyaml.engine.v2.events.Event
@@ -40,7 +41,7 @@ class Parse(
      */
     fun parseInputStream(yaml: InputStream): Iterable<Event> =
         Iterable {
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml)))
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
         }
 
     /**
@@ -53,7 +54,7 @@ class Parse(
      */
     fun parseReader(yaml: Reader): Iterable<Event> =
         Iterable {
-            ParserImpl(settings, StreamReader(settings, yaml))
+            ParserImpl(settings, StreamReader(settings, yaml.readText()))
         }
 
     /**
@@ -65,6 +66,6 @@ class Parse(
      */
     fun parseString(yaml: String): Iterable<Event> =
         Iterable {
-            ParserImpl(settings, StreamReader(settings, StringReader(yaml)))
+            ParserImpl(settings, StreamReader(settings, yaml))
         }
 }

@@ -108,7 +108,7 @@ class LoadTest {
     InputStream input = new ByteArrayInputStream("bbb\n---\nccc\n---\nddd".getBytes());
     Iterable<Object> v = load.loadAllFromInputStream(input);
     Iterator<Object> iter = v.iterator();
-    assertTrue(iter.hasNext());
+    assertTrue(iter.hasNext(), "expect iterator has next");
     Object o1 = iter.next();
     assertEquals("bbb", o1);
 

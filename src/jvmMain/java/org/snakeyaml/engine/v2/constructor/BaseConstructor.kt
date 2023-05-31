@@ -174,7 +174,7 @@ abstract class BaseConstructor(
      * @return empty List to fill
      */
     protected fun createEmptyListForNode(node: SequenceNode): List<Any?> {
-        return settings.defaultList.apply(node.value.size)
+        return settings.defaultList(node.value.size)
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class BaseConstructor(
      * @return empty Set to fill
      */
     protected fun createEmptySetForNode(node: MappingNode): Set<Any?> {
-        return settings.defaultSet.apply(node.value.size)
+        return settings.defaultSet(node.value.size)
     }
 
     /**
@@ -196,7 +196,7 @@ abstract class BaseConstructor(
      * @return empty [Map] to fill
      */
     protected fun createEmptyMapFor(node: MappingNode): Map<Any?, Any?> {
-        return settings.defaultMap.apply(node.value.size)
+        return settings.defaultMap(node.value.size)
     }
     //endregion
 
@@ -207,7 +207,7 @@ abstract class BaseConstructor(
      * @return filled List
      */
     protected fun constructSequence(node: SequenceNode): List<Any?> {
-        val result = settings.defaultList.apply(node.value.size)
+        val result = settings.defaultList(node.value.size)
         constructSequenceStep2(node, result)
         return result
     }
@@ -231,7 +231,7 @@ abstract class BaseConstructor(
      * @return filled Set
      */
     protected fun constructSet(node: MappingNode): Set<Any?> {
-        val set = settings.defaultSet.apply(node.value.size)
+        val set = settings.defaultSet(node.value.size)
         constructSet2ndStep(node, set)
         return set
     }
@@ -243,7 +243,7 @@ abstract class BaseConstructor(
      * @return filled Map
      */
     protected fun constructMapping(node: MappingNode): Map<Any?, Any?> {
-        val mapping = settings.defaultMap.apply(node.value.size)
+        val mapping = settings.defaultMap(node.value.size)
         constructMapping2ndStep(node, mapping)
         return mapping
     }

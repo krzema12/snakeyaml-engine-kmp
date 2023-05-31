@@ -202,7 +202,7 @@ class ParserImpl(
                         throw ParserException("found duplicate YAML directive", directive.startMark)
                     }
                     val (major, minor) = directive.value
-                    yamlSpecVersion = settings.getVersionFunction().apply(SpecVersion(major, minor))
+                    yamlSpecVersion = settings.versionFunction(SpecVersion(major, minor))
                 }
             }
         }

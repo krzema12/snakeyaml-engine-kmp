@@ -13,14 +13,14 @@
  */
 package org.snakeyaml.engine.v2.api
 
-import org.snakeyaml.engine.v2.common.SpecVersion
+import org.snakeyaml.engine.v2.api.LoadSettings.CollectionProvider
+import org.snakeyaml.engine.v2.api.LoadSettings.SpecVersionMutator
 import org.snakeyaml.engine.v2.env.EnvConfig
 import org.snakeyaml.engine.v2.exceptions.YamlVersionException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
-import java.util.function.IntFunction
-import java.util.function.UnaryOperator
+import java.util.ArrayList
 
 /**
  * Builder pattern implementation for LoadSettings
@@ -29,14 +29,14 @@ class LoadSettingsBuilder internal constructor() {
     private val customProperties: MutableMap<SettingKey, Any> = HashMap()
     private var label = "reader"
     private var tagConstructors: Map<Tag, ConstructNode> = mutableMapOf()
-    private var defaultList: IntFunction<MutableList<Any?>> =
-        IntFunction { initialCapacity: Int -> ArrayList(initialCapacity) }
-    private var defaultSet: IntFunction<MutableSet<Any?>> =
-        IntFunction { initialCapacity: Int -> LinkedHashSet(initialCapacity) }
-    private var defaultMap: IntFunction<MutableMap<Any?, Any?>> =
-        IntFunction { initialCapacity: Int -> LinkedHashMap(initialCapacity) }
-    private var versionFunction: UnaryOperator<SpecVersion> =
-        UnaryOperator { version ->
+    private var defaultList: CollectionProvider<MutableList<Any?>> =
+        CollectionProvider { initialCapacity: Int -> ArrayList(initialCapacity) }
+    private var defaultSet: CollectionProvider<MutableSet<Any?>> =
+        CollectionProvider { initialCapacity: Int -> LinkedHashSet(initialCapacity) }
+    private var defaultMap: CollectionProvider<MutableMap<Any?, Any?>> =
+        CollectionProvider { initialCapacity: Int -> LinkedHashMap(initialCapacity) }
+    private var versionFunction: SpecVersionMutator =
+        SpecVersionMutator { version ->
             if (version.major != 1) throw YamlVersionException(version)
             version
         }
@@ -80,7 +80,7 @@ class LoadSettingsBuilder internal constructor() {
      * @param defaultList - specified List implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    fun setDefaultList(defaultList: IntFunction<MutableList<Any?>>): LoadSettingsBuilder {
+    fun setDefaultList(defaultList: CollectionProvider<MutableList<Any?>>): LoadSettingsBuilder {
         this.defaultList = defaultList
         return this
     }
@@ -91,7 +91,7 @@ class LoadSettingsBuilder internal constructor() {
      * @param defaultSet - specified Set implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    fun setDefaultSet(defaultSet: IntFunction<MutableSet<Any?>>): LoadSettingsBuilder {
+    fun setDefaultSet(defaultSet: CollectionProvider<MutableSet<Any?>>): LoadSettingsBuilder {
         this.defaultSet = defaultSet
         return this
     }
@@ -102,7 +102,7 @@ class LoadSettingsBuilder internal constructor() {
      * @param defaultMap - specified Map implementation (as a function from init size)
      * @return the builder with the provided value
      */
-    fun setDefaultMap(defaultMap: IntFunction<MutableMap<Any?, Any?>>): LoadSettingsBuilder {
+    fun setDefaultMap(defaultMap: CollectionProvider<MutableMap<Any?, Any?>>): LoadSettingsBuilder {
         this.defaultMap = defaultMap
         return this
     }
@@ -185,7 +185,7 @@ class LoadSettingsBuilder internal constructor() {
      * is thrown)
      * @return the builder with the provided value
      */
-    fun setVersionFunction(versionFunction: UnaryOperator<SpecVersion>): LoadSettingsBuilder {
+    fun setVersionFunction(versionFunction: SpecVersionMutator): LoadSettingsBuilder {
         this.versionFunction = versionFunction
         return this
     }

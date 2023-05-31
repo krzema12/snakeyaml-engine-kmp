@@ -17,9 +17,6 @@ import org.snakeyaml.engine.v2.common.SpecVersion
 import org.snakeyaml.engine.v2.env.EnvConfig
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.Schema
-import java.util.function.Function
-import java.util.function.IntFunction
-import java.util.function.UnaryOperator
 
 /**
  * Immutable configuration for loading. Description for all the fields can be found in the builder
@@ -27,10 +24,10 @@ import java.util.function.UnaryOperator
 class LoadSettings internal constructor(
     @JvmField val label: String,
     @JvmField val tagConstructors: Map<Tag, ConstructNode>,
-    @JvmField val defaultList: IntFunction<MutableList<Any?>>,
-    @JvmField val defaultSet: IntFunction<MutableSet<Any?>>,
-    @JvmField val defaultMap: IntFunction<MutableMap<Any?, Any?>>,
-    private val versionFunction: UnaryOperator<SpecVersion>,
+    @JvmField val defaultList: CollectionProvider<MutableList<Any?>>,
+    @JvmField val defaultSet: CollectionProvider<MutableSet<Any?>>,
+    @JvmField val defaultMap: CollectionProvider<MutableMap<Any?, Any?>>,
+    val versionFunction: SpecVersionMutator,
     @JvmField val bufferSize: Int,
     @JvmField val allowDuplicateKeys: Boolean,
     @JvmField val allowRecursiveKeys: Boolean,
@@ -43,8 +40,13 @@ class LoadSettings internal constructor(
     @JvmField val codePointLimit: Int,
     @JvmField val schema: Schema,
 ) {
+    fun interface CollectionProvider<T> {
+        operator fun invoke(initialCapacity: Int): T
+    }
 
-    fun getVersionFunction(): Function<SpecVersion, SpecVersion> = versionFunction
+    fun interface SpecVersionMutator {
+        operator fun invoke(version: SpecVersion): SpecVersion
+    }
 
     fun getCustomProperty(key: SettingKey): Any? = customProperties[key]
 

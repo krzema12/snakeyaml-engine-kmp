@@ -32,7 +32,7 @@ class LoadMappingTest {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings);
     Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadFromString("{}");
-    assertEquals(LoadSettings.builder().build().defaultMap.apply(0), map);
+    assertEquals(LoadSettings.builder().build().defaultMap.invoke(0), map);
   }
 
   @Test

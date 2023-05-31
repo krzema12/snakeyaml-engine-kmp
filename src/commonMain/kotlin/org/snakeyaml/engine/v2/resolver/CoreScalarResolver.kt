@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.v2.resolver
 
 import org.snakeyaml.engine.v2.nodes.Tag
+import kotlin.jvm.JvmField
 
 
 /**

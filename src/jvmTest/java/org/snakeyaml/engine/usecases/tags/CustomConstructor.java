@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.tags;
 
+import org.snakeyaml.engine.internal.TestConstructNode;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
@@ -20,7 +21,7 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 /**
  * Create ImportValueImpl from a scalar node
  */
-public class CustomConstructor implements ConstructNode {
+public class CustomConstructor extends TestConstructNode {
 
   @Override
   public Object construct(Node node) {

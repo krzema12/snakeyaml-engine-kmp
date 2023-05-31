@@ -14,16 +14,6 @@ version = "2.7-SNAPSHOT"
 description = "SnakeYAML Engine"
 
 kotlin {
-    targets.configureEach {
-        compilations.configureEach {
-            compilerOptions.configure {
-                freeCompilerArgs.addAll(
-                    "-Xjvm-default=all", // TODO remove this once everything is Kotlin
-                )
-            }
-        }
-    }
-
     sourceSets {
         commonMain {
             dependencies {

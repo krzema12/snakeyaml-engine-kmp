@@ -19,7 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.internal.TestConstructNode;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -33,7 +36,7 @@ class ConstructNodeTest {
 
   @Test
   void failToConstructRecursive() {
-    ConstructNode constructNode = new ConstructNode() {
+    ConstructNode constructNode = new TestConstructNode() {
 
       @Override
       public Object construct(Node node) {
@@ -45,13 +48,13 @@ class ConstructNodeTest {
     node.setRecursive(true);
     IllegalStateException exception = assertThrows(IllegalStateException.class,
         () -> constructNode.constructRecursive(node, new ArrayList<>()));
-    assertEquals("Not implemented in org.snakeyaml.engine.v2.api.ConstructNodeTest$1",
+    assertEquals("Not implemented in class org.snakeyaml.engine.v2.api.ConstructNodeTest$1",
         exception.getMessage());
   }
 
   @Test
   void failToConstructNonRecursive() {
-    ConstructNode constructNode = new ConstructNode() {
+    ConstructNode constructNode = new TestConstructNode() {
 
       @Override
       public Object construct(Node node) {
@@ -66,4 +69,3 @@ class ConstructNodeTest {
     assertTrue(exception.getMessage().startsWith("Unexpected recursive structure for Node"));
   }
 }
-

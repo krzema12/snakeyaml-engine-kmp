@@ -23,7 +23,6 @@ import org.snakeyaml.engine.v2.nodes.Node
  *
  * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
  */
-@JvmDefaultWithoutCompatibility // TODO remove this once everything is Kotlin
 interface ConstructNode {
     /**
      * Construct a Java instance with all the properties injected when it is possible.
@@ -44,7 +43,7 @@ interface ConstructNode {
      * provided Node
      */
     fun constructRecursive(node: Node, `object`: Any) {
-        check(!node.isRecursive) { "Not implemented in ${javaClass.name}" }
+        check(!node.isRecursive) { "Not implemented in ${this::class}" }
         throw YamlEngineException("Unexpected recursive structure for Node: $node")
     }
 }

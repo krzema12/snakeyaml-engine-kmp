@@ -18,7 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.internal.TestConstructNode;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -48,7 +51,7 @@ class NullConstructorTest {
         "Expected MyConstructNull to be called.");
   }
 
-  private class MyConstructNull implements ConstructNode {
+  private class MyConstructNull extends TestConstructNode {
 
     @Override
     public Object construct(Node node) {

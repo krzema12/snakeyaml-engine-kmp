@@ -15,6 +15,7 @@ package org.snakeyaml.engine.usecases.tags;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.internal.TestConstructNode;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -65,7 +66,7 @@ public class TimestampTagTest {
     assertEquals("[a, b, c]", loader.loadFromString("[a, b, c]").toString());
   }
 
-  public static final class TimestampConstructor implements ConstructNode {
+  public static final class TimestampConstructor extends TestConstructNode {
 
     @Override
     public Object construct(Node node) {

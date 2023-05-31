@@ -13,12 +13,8 @@
  */
 package org.snakeyaml.engine.usecases.env;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
@@ -26,6 +22,12 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.exceptions.MissingEnvironmentVariableException;
 import org.snakeyaml.engine.v2.utils.TestUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
 class EnvVariableTest {
@@ -35,12 +37,18 @@ class EnvVariableTest {
   private static final String EMPTY = "EnvironmentEmpty";
   private static final String VALUE1 = "EnvironmentValue1";
 
+  private static final EnvConfig NULL_ENV_CONFIG = new EnvConfig() {
+    @Nullable
+    @Override
+    public String getValueFor(@NotNull String name, @Nullable String separator, @Nullable String value, @Nullable String environment) {
+      return null;
+    }
+  };
+
   @Test
   @DisplayName("Parse docker-compose.yaml example")
   public void testDockerCompose() {
-    Load loader =
-        new Load(LoadSettings.builder().setEnvConfig(new EnvConfig() {
-        }).build());
+    Load loader = new Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build());
     String resource = TestUtils.getResource("/env/docker-compose.yaml");
     Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
     String output = compose.toString();
@@ -66,9 +74,7 @@ class EnvVariableTest {
   }
 
   private String load(String template) {
-    Load loader =
-        new Load(LoadSettings.builder().setEnvConfig((new EnvConfig() {
-        })).build());
+    Load loader = new Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build());
     return (String) loader.loadFromString(template);
   }
 

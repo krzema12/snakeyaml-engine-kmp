@@ -21,8 +21,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
-import java.util.regex.Pattern;
-
 @org.junit.jupiter.api.Tag("fast")
 class ScalarResolverTupleTest {
 

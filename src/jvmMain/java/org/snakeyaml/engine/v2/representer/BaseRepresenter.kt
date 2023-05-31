@@ -33,11 +33,11 @@ import kotlin.reflect.KClass
  */
 abstract class BaseRepresenter(
 
-  /** scalar style */
+    /** scalar style */
     @JvmField
     protected val defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN,
 
-  /** flow style for collections */
+    /** flow style for collections */
     @JvmField
     protected val defaultFlowStyle: FlowStyle = FlowStyle.AUTO,
 ) {
@@ -131,9 +131,9 @@ abstract class BaseRepresenter(
      * @return Node for string
      */
     protected fun representScalar(
-      tag: Tag,
-      value: String,
-      style: ScalarStyle = ScalarStyle.PLAIN,
+        tag: Tag,
+        value: String,
+        style: ScalarStyle = ScalarStyle.PLAIN,
     ): ScalarNode {
         return ScalarNode(
             tag = tag,
@@ -151,9 +151,9 @@ abstract class BaseRepresenter(
      * @return the Node from the source iterable
      */
     protected fun representSequence(
-      tag: Tag,
-      sequence: Iterable<*>,
-      flowStyle: FlowStyle,
+        tag: Tag,
+        sequence: Iterable<*>,
+        flowStyle: FlowStyle,
     ): SequenceNode {
         var size = 10 // default for ArrayList
         if (sequence is List<*>) {
@@ -198,9 +198,9 @@ abstract class BaseRepresenter(
      * @return Node for the source Map
      */
     protected fun representMapping(
-      tag: Tag,
-      mapping: Map<*, *>,
-      flowStyle: FlowStyle,
+        tag: Tag,
+        mapping: Map<*, *>,
+        flowStyle: FlowStyle,
     ): MappingNode {
         val value: MutableList<NodeTuple> = ArrayList(mapping.size)
         val node = MappingNode(tag, value, flowStyle)

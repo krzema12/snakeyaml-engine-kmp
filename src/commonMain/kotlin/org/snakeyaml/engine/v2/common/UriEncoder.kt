@@ -15,11 +15,10 @@ package org.snakeyaml.engine.v2.common
 
 import okio.Buffer
 import org.snakeyaml.engine.external.net.thauvin.erik.urlencoder.UrlEncoder
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import java.io.UnsupportedEncodingException
-import java.nio.ByteBuffer
+import kotlin.jvm.JvmStatic
 
 object UriEncoder {
+
     private val urlEncoder = UrlEncoder(
         safeChars = "-_.!~*'()@:$&,;=[]/", // Include the [] chars to avoid its escape as required by spec
         plusForSpace = false,
@@ -55,11 +54,5 @@ object UriEncoder {
      * @return decoded with UTF-8
      */
     @JvmStatic
-    fun decode(buff: String): String {
-        return try {
-            urlEncoder.decode(buff)
-        } catch (e: UnsupportedEncodingException) {
-            throw YamlEngineException(e)
-        }
-    }
+    fun decode(buff: String): String = urlEncoder.decode(buff)
 }

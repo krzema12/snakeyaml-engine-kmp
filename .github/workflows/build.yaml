@@ -37,6 +37,12 @@ jobs:
         distribution: 'zulu'
         cache: 'gradle'
     - id: 'step-2'
+      name: 'Cache Kotlin Konan'
+      uses: 'actions/cache@v3'
+      with:
+        path: '~/.konan/**/*'
+        key: 'kotlin-konan-${{ runner.os }}'
+    - id: 'step-3'
       name: 'Build'
       uses: 'gradle/gradle-build-action@v2'
       with:

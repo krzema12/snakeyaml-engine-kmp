@@ -16,6 +16,7 @@ package org.snakeyaml.engine.v2.constructor
 import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
+import kotlin.jvm.JvmField
 
 /**
  * Share common code for scalar constructs

@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.common
 
+import okio.Buffer
 import org.snakeyaml.engine.external.net.thauvin.erik.urlencoder.UrlEncoder
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import java.io.UnsupportedEncodingException
@@ -42,8 +43,8 @@ object UriEncoder {
      */
     @JvmStatic
     @Throws(CharacterCodingException::class)
-    fun decode(buff: ByteBuffer): String {
-        val content = String(buff.array(), Charsets.UTF_8)
+    fun decode(buff: Buffer): String {
+        val content = buff.readByteArray().decodeToString()
         return urlEncoder.decode(content)
     }
 

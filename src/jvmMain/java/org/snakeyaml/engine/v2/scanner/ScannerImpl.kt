@@ -1,5 +1,6 @@
 package org.snakeyaml.engine.v2.scanner
 
+import okio.Buffer
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.common.Anchor
@@ -32,7 +33,6 @@ import org.snakeyaml.engine.v2.tokens.TagToken
 import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
-import java.nio.ByteBuffer
 import kotlin.collections.set
 
 
@@ -1333,7 +1333,7 @@ class ScannerImpl(
         return if (isAnchor) {
             AnchorToken(Anchor(value), startMark, endMark)
         } else {
-          AliasToken(Anchor(value), startMark, endMark)
+            AliasToken(Anchor(value), startMark, endMark)
         }
     }
 
@@ -2143,12 +2143,12 @@ class ScannerImpl(
         // URIs containing 16 and 32 bit Unicode characters are encoded in UTF-8,
         // and then each octet is written as a separate character.
         val beginningMark = reader.getMark()
-        val buff = ByteBuffer.allocate(length)
+        val buff = Buffer()
         while (reader.peek() == '%'.code) {
             reader.forward()
             try {
-                val code = reader.prefix(2).toInt(16).toByte()
-                buff.put(code)
+                val code = reader.prefix(2).toInt(16)
+                buff.writeByte(code)
             } catch (nfe: NumberFormatException) {
                 val c1 = reader.peek()
                 val s1 = String(Character.toChars(c1))
@@ -2163,7 +2163,7 @@ class ScannerImpl(
             }
             reader.forward(2)
         }
-        buff.flip()
+        buff.flush()
         try {
             return UriEncoder.decode(buff)
         } catch (e: CharacterCodingException) {

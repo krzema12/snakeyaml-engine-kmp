@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                //implementation("com.squareup.okio:okio:3.3.0") // TODO https://github.com/krzema12/snakeyaml-engine-kmp/issues/42
+                implementation("com.squareup.okio:okio:3.3.0")
             }
         }
 

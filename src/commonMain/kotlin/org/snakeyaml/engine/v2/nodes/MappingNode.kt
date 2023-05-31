@@ -15,6 +15,7 @@ package org.snakeyaml.engine.v2.nodes
 
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.exceptions.Mark
+import kotlin.jvm.JvmOverloads
 
 /**
  * Represents a map.

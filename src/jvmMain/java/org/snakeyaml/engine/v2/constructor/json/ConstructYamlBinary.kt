@@ -13,9 +13,9 @@
  */
 package org.snakeyaml.engine.v2.constructor.json
 
+import okio.ByteString.Companion.decodeBase64
 import org.snakeyaml.engine.v2.constructor.ConstructScalar
 import org.snakeyaml.engine.v2.nodes.Node
-import java.util.Base64
 
 /**
  * Create instances bytes for binary
@@ -23,7 +23,9 @@ import java.util.Base64
 class ConstructYamlBinary : ConstructScalar() {
     override fun construct(node: Node?): ByteArray {
         // Ignore white spaces for base64 encoded scalar
+        // TODO decodeBase64() doesn't seem to require removing whitespace - perhaps this can be removed?
+        //      I'm leaving it in because I'm not confident about edge case test coverage for whitespaces.
         val noWhiteSpaces = constructScalar(node).replace("\\s".toRegex(), "")
-        return Base64.getDecoder().decode(noWhiteSpaces)
+        return noWhiteSpaces.decodeBase64()?.toByteArray() ?: byteArrayOf()
     }
 }

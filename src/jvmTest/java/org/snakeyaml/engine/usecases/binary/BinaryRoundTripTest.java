@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class BinaryRoundTripTest {
 
   @Test
-  public void testBinary() throws UnsupportedEncodingException {
+  public void testBinary() {
     Dump dumper =
         new Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
     String source = "\u0096";

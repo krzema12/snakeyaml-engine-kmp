@@ -22,7 +22,6 @@ import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
-import java.io.StringReader
 
 /**
  * Helper to compose input stream to Node

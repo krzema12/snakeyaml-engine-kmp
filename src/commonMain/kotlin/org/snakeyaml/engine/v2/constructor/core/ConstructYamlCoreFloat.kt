@@ -16,7 +16,6 @@ package org.snakeyaml.engine.v2.constructor.core
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
-import java.util.Locale
 
 /**
  * Create Double instances for float
@@ -24,6 +23,6 @@ import java.util.Locale
 class ConstructYamlCoreFloat : ConstructYamlJsonFloat() {
     override fun constructScalar(node: Node?): String {
         // to lower case to parse the special values in any case
-        return (node as ScalarNode).value.lowercase(Locale.getDefault())
+        return (node as ScalarNode).value.lowercase()
     }
 }

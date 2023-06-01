@@ -21,7 +21,6 @@ import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
-import java.io.StringReader
 
 /**
  * Read the input stream and parse the content into events (opposite for Present or Emit)

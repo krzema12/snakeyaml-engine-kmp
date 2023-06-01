@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.constructor
 
+import org.snakeyaml.engine.internal.getEnvironmentVariable
 import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.exceptions.ConstructorException
@@ -25,7 +26,6 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.resolver.BaseScalarResolver
-import java.util.TreeSet
 
 /**
  * Construct standard Java classes
@@ -59,8 +59,8 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
      */
     private fun processDuplicateKeys(node: MappingNode) {
         val nodeValue = node.value
-        val keys: MutableMap<Any?, Int> = HashMap(nodeValue.size)
-        val toRemove = TreeSet<Int>()
+        val keys = mutableMapOf<Any?, Int>()
+        val toRemove = mutableSetOf<Int>()
         for ((i, tuple) in nodeValue.withIndex()) {
             val keyNode = tuple.keyNode
             val key = constructKey(keyNode, node.startMark, tuple.keyNode.startMark)
@@ -76,7 +76,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 toRemove.add(prevIndex)
             }
         }
-        val indices2remove = toRemove.descendingIterator()
+        val indices2remove = toRemove.iterator()
         while (indices2remove.hasNext()) {
             nodeValue.removeAt(indices2remove.next())
         }
@@ -188,7 +188,8 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
             val scalar = constructScalar(node)
             val config = settings.envConfig
             return if (config != null) {
-                val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar) ?: error("failed to match scalar")
+                val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar)
+                    ?: error("failed to match scalar")
                 val (name, separator, value) = matchResult.destructured
                 val env = getEnv(name)
                 val overruled = config.getValueFor(name, separator, value, env)
@@ -236,6 +237,6 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * @param key - the name of the variable
          * @return value or `null` if not set
          */
-        private fun getEnv(key: String?): String? = System.getenv(key)
+        private fun getEnv(key: String): String? = getEnvironmentVariable(key)
     }
 }

@@ -13,10 +13,11 @@
  */
 package org.snakeyaml.engine.v2.constructor.core
 
+import org.snakeyaml.engine.internal.createBigInteger
+import org.snakeyaml.engine.internal.toBigInteger
 import org.snakeyaml.engine.v2.constructor.ConstructScalar
 import org.snakeyaml.engine.v2.exceptions.ConstructorException
 import org.snakeyaml.engine.v2.nodes.Node
-import java.math.BigInteger
 
 /**
  * Create instances for numbers (Integer, Long, BigInteger)
@@ -26,8 +27,10 @@ class ConstructYamlCoreInt : ConstructScalar() {
         val value = constructScalar(node)
         if (value.isEmpty()) {
             throw ConstructorException(
-                "while constructing an int", node!!.startMark,
-                "found empty value", node.startMark,
+                context = "while constructing an int",
+                contextMark = node!!.startMark,
+                problem = "found empty value",
+                problemMark = node.startMark,
             )
         }
         return createIntNumber(value)
@@ -52,13 +55,13 @@ class ConstructYamlCoreInt : ConstructScalar() {
 
     private fun createNumber(sign: Int, numeric: String, radix: Int): Number {
         val len = numeric.length
-        val number: String = if (sign < 0) "-$numeric" else numeric
+        val number = if (sign < 0) "-$numeric" else numeric
         val maxArr = if (radix < RADIX_MAX.size) RADIX_MAX[radix] else null
         if (maxArr != null) {
             val gtInt = len > maxArr[0]
             if (gtInt) {
                 return if (len > maxArr[1]) {
-                    BigInteger(number, radix)
+                    createBigInteger(number, radix)
                 } else {
                     number.toLongOrBigInteger(radix)
                 }

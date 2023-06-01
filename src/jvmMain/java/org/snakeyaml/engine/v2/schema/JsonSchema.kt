@@ -26,9 +26,9 @@ import org.snakeyaml.engine.v2.resolver.JsonScalarResolver
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
 
 /**
- * Default schema
+ * Default schema for Kotlin/JVM
  */
-open class JsonSchema(
+actual open class JsonSchema(
     override val scalarResolver: ScalarResolver = JsonScalarResolver(),
     /** Basic constructs */
     override val schemaTagConstructors: Map<Tag, ConstructNode> = mapOf(

@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.constructor.json
 
+import org.snakeyaml.engine.internal.toBigInteger
 import org.snakeyaml.engine.v2.constructor.ConstructScalar
 import org.snakeyaml.engine.v2.nodes.Node
 
@@ -33,6 +34,8 @@ class ConstructYamlJsonInt : ConstructScalar() {
      */
     private fun createIntNumber(number: String): Number {
         // first try integer, then Long, and BigInteger as the last resource
-        return number.toIntOrNull() ?: number.toLongOrNull() ?: number.toBigInteger()
+        return number.toIntOrNull()
+            ?: number.toLongOrNull()
+            ?: number.toBigInteger()
     }
 }

@@ -11,14 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.api
+package org.snakeyaml.engine.v2.constructor.core
 
-import java.io.Serializable
+import org.snakeyaml.engine.v2.constructor.ConstructScalar
+import org.snakeyaml.engine.v2.nodes.Node
 
 /**
- * Type for the custom keys in settings. The keys (used in custom settings) must implement this
- * interface. It makes possible to be 'compiler safe' and define Enum for keys. This way is easier
- * to follow the changes in the key names and avoid a typo. The implementation of this interface
- * must properly implement equals() and hashCode() to be used as keys in a Map
+ * Create Boolean instances
  */
-interface SettingKey : Serializable
+class ConstructYamlCoreBool : ConstructScalar() {
+    override fun construct(node: Node?): Boolean? {
+        val scalar = constructScalar(node)
+        return BOOL_VALUES[scalar.lowercase()]
+    }
+}

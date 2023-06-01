@@ -20,7 +20,6 @@ import org.snakeyaml.engine.v2.exceptions.YamlVersionException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
-import java.util.ArrayList
 
 /**
  * Builder pattern implementation for LoadSettings

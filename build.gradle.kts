@@ -4,6 +4,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
+    // Kotlin/Native is disabled for now because it will make the build slower during this phase of development.
+    // Native target can be enabled when the project is more stable (after all code is KMP).
     //buildsrc.conventions.lang.`kotlin-multiplatform-native`
 }
 

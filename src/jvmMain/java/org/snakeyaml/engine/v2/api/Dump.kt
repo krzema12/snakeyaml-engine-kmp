@@ -13,12 +13,12 @@
  */
 package org.snakeyaml.engine.v2.api
 
+import okio.Buffer
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.representer.BaseRepresenter
 import org.snakeyaml.engine.v2.representer.StandardRepresenter
 import org.snakeyaml.engine.v2.serializer.Serializer
-import java.io.StringWriter
 
 /**
  * Common way to serialize any Java instance(s). The instance is stateful. Only one of the 'dump'
@@ -57,7 +57,7 @@ class Dump @JvmOverloads constructor(
      * @param streamDataWriter - destination I/O writer
      */
     fun dump(yaml: Any?, streamDataWriter: StreamDataWriter) {
-        val iter = setOf(yaml).iterator()
+        val iter = iterator { yield(yaml) }
         dumpAll(iter, streamDataWriter)
     }
 
@@ -69,7 +69,7 @@ class Dump @JvmOverloads constructor(
      * @return String representation of the YAML stream
      */
     fun dumpAllToString(instancesIterator: Iterator<Any?>): String {
-        val writer = StreamToStringWriter()
+        val writer = StringStreamDataWriter()
         dumpAll(instancesIterator, writer)
         return writer.toString()
     }
@@ -82,7 +82,7 @@ class Dump @JvmOverloads constructor(
      * @return String representation of the YAML stream
      */
     fun dumpToString(yaml: Any?): String {
-        val writer = StreamToStringWriter()
+        val writer = StringStreamDataWriter()
         dump(yaml, writer)
         return writer.toString()
     }
@@ -102,6 +102,18 @@ class Dump @JvmOverloads constructor(
 }
 
 /** Internal helper class to support dumping to [String] */
-private class StreamToStringWriter : StringWriter(), StreamDataWriter {
-    override fun flush(): Unit = super<StringWriter>.flush()
+private class StringStreamDataWriter(
+    private val buffer: Buffer = Buffer(),
+) : StreamDataWriter {
+    override fun flush(): Unit = buffer.flush()
+
+    override fun write(str: String) {
+        buffer.writeUtf8(str)
+    }
+
+    override fun write(str: String, off: Int, len: Int) {
+        buffer.writeUtf8(string = str, beginIndex = off, endIndex = off + len)
+    }
+
+    override fun toString(): String = buffer.readUtf8()
 }

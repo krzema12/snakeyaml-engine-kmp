@@ -146,7 +146,7 @@ class Emitter(
         if (events.isEmpty()) {
             return true
         }
-        val iter: Iterator<Event> = events.iterator()
+        val iter = events.iterator()
         var event = iter.next()
         while (event is CommentEvent) {
             if (!iter.hasNext()) {

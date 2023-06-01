@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.v2.api
 
 import okio.Buffer
+import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.Source
 import okio.Timeout
@@ -91,13 +92,13 @@ class YamlUnicodeReader(
     fun readString(): String = encodedSource.buffer().readUtf8()
 
     companion object {
-        private val UTF_8_MARK = byteArrayOf(0xEF, 0xBB, 0xBF).toByteString()
-        private val UTF_16BE_MARK = byteArrayOf(0xFE, 0xFF).toByteString()
-        private val UTF_16LE_MARK = byteArrayOf(0xFF, 0xFE).toByteString()
-        private val UTF_32BE_MARK = byteArrayOf(0x00, 0x00, 0xFE, 0xFF).toByteString()
-        private val UTF_32LE_MARK = byteArrayOf(0xFF, 0xFE, 0x00, 0x00).toByteString()
+        private val UTF_8_MARK = ByteString(0xEF, 0xBB, 0xBF)
+        private val UTF_16BE_MARK = ByteString(0xFE, 0xFF)
+        private val UTF_16LE_MARK = ByteString(0xFF, 0xFE)
+        private val UTF_32BE_MARK = ByteString(0x00, 0x00, 0xFE, 0xFF)
+        private val UTF_32LE_MARK = ByteString(0xFF, 0xFE, 0x00, 0x00)
 
-        private fun byteArrayOf(vararg values: Int): ByteArray =
-            byteArrayOf(*values.map(Int::toByte).toByteArray())
+        private fun ByteString(vararg values: Int): ByteString =
+            values.map(Int::toByte).toByteArray().toByteString()
     }
 }

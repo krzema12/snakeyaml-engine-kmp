@@ -24,16 +24,17 @@ import org.snakeyaml.engine.v2.resolver.CoreScalarResolver
  * Core schema
  */
 class CoreSchema : JsonSchema(CoreScalarResolver()) {
-    private val tagConstructors: Map<Tag, ConstructNode> = mapOf(
-        Tag.BOOL to ConstructYamlCoreBool(),
-        Tag.INT to ConstructYamlCoreInt(),
-        Tag.FLOAT to ConstructYamlCoreFloat(),
-    )
 
     /**
      * Provide constructs to support the schema (bool, int, float)
-     *
-     * @return map
      */
     override val schemaTagConstructors: Map<Tag, ConstructNode> = super.schemaTagConstructors + tagConstructors
+
+    companion object {
+        private val tagConstructors: Map<Tag, ConstructNode> = mapOf(
+            Tag.BOOL to ConstructYamlCoreBool(),
+            Tag.INT to ConstructYamlCoreInt(),
+            Tag.FLOAT to ConstructYamlCoreFloat(),
+        )
+    }
 }

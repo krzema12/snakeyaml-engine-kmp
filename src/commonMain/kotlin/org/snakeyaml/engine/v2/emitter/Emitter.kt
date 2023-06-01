@@ -41,6 +41,7 @@ import org.snakeyaml.engine.v2.exceptions.EmitterException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.StreamReader
+import kotlin.jvm.JvmField
 
 /**
  * <pre>
@@ -1270,7 +1271,7 @@ class Emitter(
                             ch.code
                         }
                         if (allowUnicode && StreamReader.isPrintable(codePoint)) {
-                            data = String(Character.toChars(codePoint))
+                            data = Character.toChars(codePoint).concatToString()
                             if (Character.charCount(codePoint) == 2) {
                                 end++
                             }
@@ -1282,7 +1283,7 @@ class Emitter(
                                 "\\x" + s.substring(s.length - 2)
                             } else if (Character.charCount(codePoint) == 2) {
                                 end++
-                                val s = "000" + codePoint.toLong().toString(16)
+                                val s = "000" + codePoint.toString(16)
                                 "\\U" + s.substring(s.length - 8)
                             } else {
                                 val s = "000" + ch.code.toString(16)

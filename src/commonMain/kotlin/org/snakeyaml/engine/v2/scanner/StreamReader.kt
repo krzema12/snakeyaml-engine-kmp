@@ -15,11 +15,15 @@ package org.snakeyaml.engine.v2.scanner
 
 import okio.*
 import okio.ByteString.Companion.encodeUtf8
+import org.snakeyaml.engine.internal.utils.Character
+import org.snakeyaml.engine.internal.utils.codePointAt
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.common.CharConstants
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ReaderException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * Read the provided stream of code points into String and implement look-ahead operations. Checks
@@ -153,13 +157,16 @@ class StreamReader(
      * @return the String representation
      */
     fun prefix(length: Int): String {
-        return if (length == 0) {
-            ""
-        } else if (ensureEnoughData(length)) {
-            String(codePointsWindow, pointer, length)
-        } else {
-            String(codePointsWindow, pointer, length.coerceAtMost(dataLength - pointer))
+        if (length == 0) return ""
+
+        val stringLength = when {
+            ensureEnoughData(length) -> length
+            else                     -> length.coerceAtMost(dataLength - pointer)
         }
+
+        return codePointsWindow
+            .copyOfRangeSafe(pointer, pointer + stringLength)
+            .joinToString("") { Character.toChars(it).concatToString() }
     }
 
     /**
@@ -186,8 +193,8 @@ class StreamReader(
 
     private fun update() {
         try {
-            val buffer = stream.readUtf8().toCharArray()
-            val read = buffer.size
+            val buffer = stream.readUtf8()
+            val read = buffer.length
             if (read > 0) {
                 var cpIndex = dataLength - pointer
                 codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
@@ -202,7 +209,7 @@ class StreamReader(
                 var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {
-                    val codePoint = Character.codePointAt(buffer, i)
+                    val codePoint = buffer.codePointAt(i)
                     codePointsWindow[cpIndex] = codePoint
                     if (isPrintable(codePoint)) {
                         i += Character.charCount(codePoint)

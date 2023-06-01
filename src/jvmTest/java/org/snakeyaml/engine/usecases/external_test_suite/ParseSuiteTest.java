@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.collect.Streams;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -33,11 +34,12 @@ class ParseSuiteTest {
       SuiteUtils.getAll().stream().filter(data -> !data.getName().equals("JEF9-02"))
           .collect(Collectors.toList());
 
-  // @Test
-  @DisplayName("Parse: Run one test")
   /**
    * This test is used to debug one test (which is given explicitly)
    */
+  @Test
+  @DisplayName("Parse: Run one test")
+  @Disabled
   void runOne() {
     SuiteData data = SuiteUtils.getOne("S98Z");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();

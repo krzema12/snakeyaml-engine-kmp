@@ -20,6 +20,8 @@ import org.snakeyaml.engine.v2.common.SpecVersion
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.schema.Schema
 import org.snakeyaml.engine.v2.serializer.AnchorGenerator
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 
 /**
  * Immutable configuration for serialisation. Description for all the fields can be found in the

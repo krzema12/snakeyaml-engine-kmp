@@ -29,7 +29,10 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver
  * Default schema for Kotlin/JVM
  */
 actual open class JsonSchema(
-    override val scalarResolver: ScalarResolver = JsonScalarResolver(),
+    override val scalarResolver: ScalarResolver,
+) : Schema {
+    actual constructor() : this(scalarResolver = JsonScalarResolver())
+
     /** Basic constructs */
     override val schemaTagConstructors: Map<Tag, ConstructNode> = mapOf(
         Tag.NULL to ConstructYamlNull(),
@@ -39,5 +42,5 @@ actual open class JsonSchema(
         Tag.BINARY to ConstructYamlBinary(),
         Tag.forType("java.util.UUID") to ConstructUuidClass(),
         Tag.forType("java.util.Optional") to ConstructOptionalClass(scalarResolver),
-    ),
-) : Schema
+    )
+}

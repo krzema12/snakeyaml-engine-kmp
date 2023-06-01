@@ -113,7 +113,7 @@ class Composer(
         blockCommentsCollector.collectEvents()
         if (parser.checkEvent(Event.ID.StreamEnd)) {
             val commentLines = blockCommentsCollector.consume()
-            val startMark = commentLines[0].startMark
+            val startMark = commentLines.first().startMark
             val children = mutableListOf<NodeTuple>()
             val node: Node = MappingNode(
                 tag = Tag.COMMENT,

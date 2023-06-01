@@ -13,6 +13,8 @@
  */
 package org.snakeyaml.engine.v2.emitter
 
+import org.snakeyaml.engine.internal.utils.Character
+import org.snakeyaml.engine.internal.utils.codePointAt
 import org.snakeyaml.engine.v2.api.DumpSettings
 import org.snakeyaml.engine.v2.api.StreamDataWriter
 import org.snakeyaml.engine.v2.comments.CommentEventsCollector
@@ -39,7 +41,6 @@ import org.snakeyaml.engine.v2.exceptions.EmitterException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.StreamReader
-import java.util.TreeSet
 
 /**
  * <pre>
@@ -251,10 +252,10 @@ class Emitter(
                 writeIndicator(indicator = "...", needWhitespace = true)
                 writeIndent()
             }
-            ev.specVersion?.let { version: SpecVersion? ->
-                writeVersionDirective(prepareVersion(version!!))
+            ev.specVersion?.let { version ->
+                writeVersionDirective(prepareVersion(version))
             }
-            tagPrefixes = LinkedHashMap(DEFAULT_TAG_PREFIXES)
+            tagPrefixes = DEFAULT_TAG_PREFIXES.toMutableMap()
             if (ev.tags.isNotEmpty()) {
                 handleTagDirectives(ev.tags)
             }
@@ -274,39 +275,31 @@ class Emitter(
         }
 
         private fun handleTagDirectives(tags: Map<String, String>) {
-            val handles: Set<String> = TreeSet(tags.keys)
-            for (handle in handles) {
-                val prefix = tags[handle]
+            for ((handle, prefix) in tags) {
                 tagPrefixes[prefix] = handle
-                val handleText = prepareTagHandle(handle)
-                val prefixText = prepareTagPrefix(prefix!!)
-                writeTagDirective(handleText, prefixText)
+                checkTagHandle(handle)
+                checkTagPrefix(prefix)
+                writeTagDirective(handle, prefix)
             }
         }
 
-        private fun prepareTagHandle(handle: String): String {
-            if (handle.isEmpty()) {
-                throw EmitterException("tag handle must not be empty")
-            } else if (handle[0] != '!' || handle[handle.length - 1] != '!') {
-                throw EmitterException("tag handle must start and end with '!': $handle")
-            } else if ("!" != handle && !HANDLE_FORMAT.matches(handle)) {
-                throw EmitterException("invalid character in the tag handle: $handle")
+        private fun checkTagHandle(handle: String) {
+            when {
+                handle.isEmpty()                                  ->
+                    throw EmitterException("tag handle must not be empty")
+
+                !(handle.startsWith('!') && handle.endsWith('!')) ->
+                    throw EmitterException("tag handle must start and end with '!': $handle")
+
+                handle != "!" && !HANDLE_FORMAT.matches(handle)   ->
+                    throw EmitterException("invalid character in the tag handle: $handle")
             }
-            return handle
         }
 
-        private fun prepareTagPrefix(prefix: String): String {
+        private fun checkTagPrefix(prefix: String) {
             if (prefix.isEmpty()) {
                 throw EmitterException("tag prefix must not be empty")
             }
-            val chunks = java.lang.StringBuilder()
-            val start = 0
-            var end = if (prefix[0] == '!') 1 else 0
-            while (end < prefix.length) {
-                end++
-            }
-            chunks.append(prefix, start, end)
-            return chunks.toString()
         }
 
         private fun checkEmptyDocument(): Boolean {
@@ -326,7 +319,6 @@ class Emitter(
 
     private inner class ExpectDocumentEnd : EmitterState {
         override fun expect() {
-
             event = blockCommentsCollector.collectEventsAndPoll(event)
             writeBlockComment()
             if (event!!.eventId == Event.ID.DocumentEnd) {
@@ -390,21 +382,27 @@ class Emitter(
     private fun handleNodeEvent(id: Event.ID) {
         when (id) {
             Event.ID.Scalar        -> expectScalar()
-            Event.ID.SequenceStart -> if (flowLevel != 0 || canonical || (event as SequenceStartEvent).isFlow()
-                || checkEmptySequence()
-            ) {
-                expectFlowSequence()
-            } else {
-                expectBlockSequence()
-            }
+            Event.ID.SequenceStart ->
+                if (flowLevel != 0
+                    || canonical
+                    || (event as SequenceStartEvent).isFlow()
+                    || checkEmptySequence()
+                ) {
+                    expectFlowSequence()
+                } else {
+                    expectBlockSequence()
+                }
 
-            Event.ID.MappingStart  -> if (flowLevel != 0 || canonical || (event as MappingStartEvent).isFlow()
-                || checkEmptyMapping()
-            ) {
-                expectFlowMapping()
-            } else {
-                expectBlockMapping()
-            }
+            Event.ID.MappingStart  ->
+                if (flowLevel != 0
+                    || canonical
+                    || (event as MappingStartEvent).isFlow()
+                    || checkEmptyMapping()
+                ) {
+                    expectFlowMapping()
+                } else {
+                    expectBlockMapping()
+                }
 
             else                   -> throw IllegalStateException()
         }
@@ -423,8 +421,9 @@ class Emitter(
         increaseIndent(isFlow = true)
         processScalar(event as ScalarEvent)
         indent = indents.removeLastOrNull()
-        state = states.removeLastOrNull()!!
+        state = states.removeLast()
     }
+
     //endregion
 
     //region Flow sequence handlers.
@@ -1264,7 +1263,7 @@ class Emitter(
                     if (ESCAPE_REPLACEMENTS.containsKey(ch)) {
                         data = "\\" + ESCAPE_REPLACEMENTS[ch]
                     } else {
-                        val codePoint: Int = if (Character.isHighSurrogate(ch) && end + 1 < text.length) {
+                        val codePoint: Int = if (ch.isHighSurrogate() && end + 1 < text.length) {
                             val ch2 = text[end + 1]
                             Character.toCodePoint(ch, ch2)
                         } else {
@@ -1283,7 +1282,7 @@ class Emitter(
                                 "\\x" + s.substring(s.length - 2)
                             } else if (Character.charCount(codePoint) == 2) {
                                 end++
-                                val s = "000" + java.lang.Long.toHexString(codePoint.toLong())
+                                val s = "000" + codePoint.toLong().toString(16)
                                 "\\U" + s.substring(s.length - 8)
                             } else {
                                 val s = "000" + ch.code.toString(16)
@@ -1361,10 +1360,10 @@ class Emitter(
 
     private fun determineBlockHints(text: String): String {
         val hints = StringBuilder()
-        if (CharConstants.LINEBR.has(text[0].code, " ")) {
+        if (CharConstants.LINEBR.has(text.first().code, " ")) {
             hints.append(bestIndent)
         }
-        val ch1 = text[text.length - 1]
+        val ch1 = text.last()
         if (CharConstants.LINEBR.hasNo(ch1.code)) {
             hints.append("-")
         } else if (text.length == 1 || CharConstants.LINEBR.has(text[text.length - 2].code)) {
@@ -1376,7 +1375,7 @@ class Emitter(
     private fun writeFolded(text: String, split: Boolean) {
         val hints = determineBlockHints(text)
         writeIndicator(indicator = ">$hints", needWhitespace = true)
-        if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
+        if (hints.endsWith('+')) {
             openEnded = true
         }
         if (!writeInlineComments()) {
@@ -1440,7 +1439,7 @@ class Emitter(
     private fun writeLiteral(text: String) {
         val hints = determineBlockHints(text)
         writeIndicator(indicator = "|$hints", needWhitespace = true)
-        if (hints.isNotEmpty() && hints[hints.length - 1] == '+') {
+        if (hints.endsWith('+')) {
             openEnded = true
         }
         if (!writeInlineComments()) {

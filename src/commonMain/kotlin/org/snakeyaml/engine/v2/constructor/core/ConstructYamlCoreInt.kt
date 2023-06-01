@@ -58,7 +58,7 @@ class ConstructYamlCoreInt : ConstructScalar() {
         val number = if (sign < 0) "-$numeric" else numeric
         val maxArr = if (radix < RADIX_MAX.size) RADIX_MAX[radix] else null
         if (maxArr != null) {
-            val gtInt = len > maxArr[0]
+            val gtInt = len > maxArr.first()
             if (gtInt) {
                 return if (len > maxArr[1]) {
                     createBigInteger(number, radix)

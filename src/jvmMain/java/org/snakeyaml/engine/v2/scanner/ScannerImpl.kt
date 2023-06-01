@@ -155,7 +155,7 @@ class ScannerImpl(
         while (needMoreTokens()) {
             fetchMoreTokens()
         }
-        return tokens[0]
+        return tokens.first()
     }
 
     override fun hasNext(): Boolean = checkToken()
@@ -347,7 +347,7 @@ class ScannerImpl(
         }
         // No? It's an error. Let's produce a nice error message.
         // We do this by converting escaped characters into their escape sequences.
-        var chRepresentation = CharConstants.escapeChar(Character.toChars(c)[0])
+        var chRepresentation = CharConstants.escapeChar(Character.toChars(c).first())
         if (c == '\t'.code) {
             chRepresentation += "(TAB)" // TAB deserves a special clarification
         }

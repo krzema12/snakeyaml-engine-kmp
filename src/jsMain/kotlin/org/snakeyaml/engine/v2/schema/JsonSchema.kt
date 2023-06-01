@@ -2,7 +2,7 @@ package org.snakeyaml.engine.v2.schema
 
 import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.constructor.ConstructYamlNull
-//import org.snakeyaml.engine.v2.constructor.json.ConstructYamlBinary
+import org.snakeyaml.engine.v2.constructor.json.ConstructYamlBinary
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonBool
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonInt
@@ -21,6 +21,6 @@ actual open class JsonSchema(
         Tag.BOOL to ConstructYamlJsonBool(),
         Tag.INT to ConstructYamlJsonInt(),
         Tag.FLOAT to ConstructYamlJsonFloat(),
-//        Tag.BINARY to ConstructYamlBinary(),
+        Tag.BINARY to ConstructYamlBinary(),
     ),
 ) : Schema

@@ -1,6 +1,8 @@
 package org.snakeyaml.engine.v2.scanner
 
 import okio.Buffer
+import org.snakeyaml.engine.internal.utils.Character
+import org.snakeyaml.engine.internal.utils.appendCodePoint
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.common.Anchor
@@ -34,6 +36,7 @@ import org.snakeyaml.engine.v2.tokens.TagTuple
 import org.snakeyaml.engine.v2.tokens.Token
 import org.snakeyaml.engine.v2.tokens.ValueToken
 import kotlin.collections.set
+import kotlin.jvm.JvmInline
 
 
 /**
@@ -1123,7 +1126,7 @@ class ScannerImpl(
         }
         // If the peeked name is empty, an error occurs.
         if (length == 0) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 DIRECTIVE_PREFIX, startMark,
                 "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)", reader.getMark(),
@@ -1132,7 +1135,7 @@ class ScannerImpl(
         val value = reader.prefixForward(length)
         c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 DIRECTIVE_PREFIX, startMark,
                 "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)", reader.getMark(),
@@ -1149,7 +1152,7 @@ class ScannerImpl(
         val major = scanYamlDirectiveNumber(startMark)
         var c = reader.peek()
         if (c != '.'.code) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1161,7 +1164,7 @@ class ScannerImpl(
         val minor = scanYamlDirectiveNumber(startMark)
         c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1179,8 +1182,8 @@ class ScannerImpl(
     private fun scanYamlDirectiveNumber(startMark: Mark?): Int {
         // See the specification for details.
         val c = reader.peek()
-        if (!Character.isDigit(c)) {
-            val s = String(Character.toChars(c))
+        if (!c.toChar().isDigit()) {
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1189,7 +1192,7 @@ class ScannerImpl(
             )
         }
         var length = 0
-        while (Character.isDigit(reader.peek(length))) {
+        while (reader.peek(length).toChar().isDigit()) {
             length++
         }
         val number = reader.prefixForward(length)
@@ -1234,7 +1237,7 @@ class ScannerImpl(
         val value = scanTagHandle("directive", startMark)
         val c = reader.peek()
         if (c != ' '.code) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1253,7 +1256,7 @@ class ScannerImpl(
         val value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
         val c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1278,7 +1281,7 @@ class ScannerImpl(
         }
         val c = reader.peek()
         if (scanLineBreak() == null && c != 0) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
                 problemMark = startMark,
@@ -1310,7 +1313,7 @@ class ScannerImpl(
             c = reader.peek(length)
         }
         if (length == 0) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = "while scanning an $name",
                 problemMark = startMark,
@@ -1321,7 +1324,7 @@ class ScannerImpl(
         val value = reader.prefixForward(length)
         c = reader.peek()
         if (CharConstants.NULL_BL_T_LINEBR.hasNo(c, "?:,]}%@`")) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = "while scanning an $name",
                 problemMark = startMark,
@@ -1371,7 +1374,7 @@ class ScannerImpl(
             if (c != '>'.code) {
                 // If there are any characters between the end of the tag-suffix
                 // URI and the closing &gt;, then an error has occurred.
-                val s = String(Character.toChars(c))
+                val s = Character.toChars(c).concatToString()
                 throw ScannerException(
                     problem = "while scanning a tag",
                     problemMark = startMark,
@@ -1416,7 +1419,7 @@ class ScannerImpl(
         // Check that the next character is allowed to follow a tag-property,
         // if it is not, raise the error.
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = "while scanning a tag",
                 problemMark = startMark,
@@ -1545,8 +1548,8 @@ class ScannerImpl(
             indicator = c
             reader.forward()
             c = reader.peek()
-            if (Character.isDigit(c)) {
-                val incr = String(Character.toChars(c)).toInt()
+            if (c.toChar().isDigit()) {
+                val incr = Character.toChars(c).concatToString().toInt()
                 if (incr == 0) {
                     throw ScannerException(
                         problem = SCANNING_SCALAR,
@@ -1560,8 +1563,8 @@ class ScannerImpl(
             } else {
                 increment = null
             }
-        } else if (Character.isDigit(c)) {
-            val incr = String(Character.toChars(c)).toInt()
+        } else if (c.toChar().isDigit()) {
+            val incr = Character.toChars(c).concatToString().toInt()
             if (incr == 0) {
                 throw ScannerException(
                     problem = SCANNING_SCALAR,
@@ -1585,7 +1588,7 @@ class ScannerImpl(
         }
         c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = SCANNING_SCALAR,
                 problemMark = startMark,
@@ -1620,7 +1623,7 @@ class ScannerImpl(
         // occurred.
         val c = reader.peek()
         if (scanLineBreak() == null && c != 0) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = SCANNING_SCALAR,
                 problemMark = startMark,
@@ -1773,9 +1776,9 @@ class ScannerImpl(
                             contextMark = reader.getMark(),
                         )
                     }
-                    val decimal = hex.toInt(16)
                     try {
-                        val unicode = String(Character.toChars(decimal))
+                        val decimal = hex.toInt(16)
+                        val unicode = Character.toChars(decimal)
                         chunks.append(unicode)
                         reader.forward(length)
                     } catch (e: IllegalArgumentException) {
@@ -1789,7 +1792,7 @@ class ScannerImpl(
                 } else if (scanLineBreak() != null) {
                     chunks.append(scanFlowScalarBreaks(startMark))
                 } else {
-                    val s = String(Character.toChars(c))
+                    val s = Character.toChars(c).concatToString()
                     throw ScannerException(
                         problem = "while scanning a double-quoted scalar",
                         problemMark = startMark,
@@ -2042,7 +2045,7 @@ class ScannerImpl(
     private fun scanTagHandle(name: String, startMark: Mark?): String {
         var c = reader.peek()
         if (c != '!'.code) {
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = SCANNING_PREFIX + name,
                 problemMark = startMark,
@@ -2069,7 +2072,7 @@ class ScannerImpl(
             // !(name) or similar; the trailing '!' is missing.
             if (c != '!'.code) {
                 reader.forward(length)
-                val s = String(Character.toChars(c))
+                val s = Character.toChars(c).concatToString()
                 throw ScannerException(
                     SCANNING_PREFIX + name, startMark,
                     "expected '!', but found $s($c)", reader.getMark(),
@@ -2114,7 +2117,7 @@ class ScannerImpl(
         }
         if (chunks.isEmpty()) {
             // If no URI was found, an error has occurred.
-            val s = String(Character.toChars(c))
+            val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = SCANNING_PREFIX + name,
                 problemMark = startMark,
@@ -2151,9 +2154,9 @@ class ScannerImpl(
                 buff.writeByte(code)
             } catch (nfe: NumberFormatException) {
                 val c1 = reader.peek()
-                val s1 = String(Character.toChars(c1))
+                val s1 = Character.toChars(c1).concatToString()
                 val c2 = reader.peek(1)
-                val s2 = String(Character.toChars(c2))
+                val s2 = Character.toChars(c2).concatToString()
                 throw ScannerException(
                     problem = SCANNING_PREFIX + name,
                     problemMark = startMark,
@@ -2201,7 +2204,7 @@ class ScannerImpl(
             return "\n"
         } else if (c == '\u2028'.code || c == '\u2029'.code) {
             reader.forward()
-            return String(Character.toChars(c))
+            return Character.toChars(c).concatToString()
         }
         return null
     }

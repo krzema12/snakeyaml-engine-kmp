@@ -63,7 +63,12 @@ internal object Character {
 
     internal fun toChars(codePoint: Int): CharArray = when {
         isBmpCodePoint(codePoint) -> charArrayOf(codePoint.toChar())
-        else                      -> charArrayOf(highSurrogateOf(codePoint), lowSurrogateOf(codePoint))
+        else                      -> {
+            val hi = highSurrogateOf(codePoint)
+            val lo = lowSurrogateOf(codePoint)
+            require(isSurrogatePair(hi, lo))
+            charArrayOf(hi, lo)
+        }
     }
 
 //    fun toChars(

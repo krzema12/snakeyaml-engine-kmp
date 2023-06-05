@@ -28,7 +28,7 @@ import org.snakeyaml.engine.v2.resolver.ScalarResolver
  * Default schema for Kotlin/JVM
  */
 actual open class JsonSchema actual constructor(
-    override val scalarResolver: ScalarResolver,
+    final override val scalarResolver: ScalarResolver,
 ) : Schema {
 
     /** Basic constructs */

@@ -26,6 +26,8 @@ import org.snakeyaml.engine.v2.nodes.NodeTuple
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
 /**

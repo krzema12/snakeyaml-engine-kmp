@@ -14,10 +14,9 @@
 package org.snakeyaml.engine.v2.api.lowlevel
 
 import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.api.StreamDataWriter
+import org.snakeyaml.engine.v2.api.StringStreamDataWriter
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.events.Event
-import java.io.StringWriter
 
 /**
  * Emit the events into a data stream (opposite for Parse)
@@ -34,16 +33,9 @@ class Present(
      * @return - the YAML document
      */
     fun emitToString(events: Iterator<Event>): String {
-        val writer = StreamToStringWriter()
+        val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
         events.forEachRemaining { event: Event -> emitter.emit(event) }
         return writer.toString()
     }
-}
-
-/**
- * Internal helper class to support emitting to String
- */
-private class StreamToStringWriter : StringWriter(), StreamDataWriter {
-    override fun flush(): Unit = super<StringWriter>.flush()
 }

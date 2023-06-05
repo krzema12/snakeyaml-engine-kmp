@@ -13,7 +13,6 @@
  */
 package org.snakeyaml.engine.v2.api
 
-import okio.Buffer
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.representer.BaseRepresenter
@@ -99,21 +98,4 @@ class Dump @JvmOverloads constructor(
         serializer.serializeDocument(node)
         serializer.emitStreamEnd()
     }
-}
-
-/** Internal helper class to support dumping to [String] */
-private class StringStreamDataWriter(
-    private val buffer: Buffer = Buffer(),
-) : StreamDataWriter {
-    override fun flush(): Unit = buffer.flush()
-
-    override fun write(str: String) {
-        buffer.writeUtf8(str)
-    }
-
-    override fun write(str: String, off: Int, len: Int) {
-        buffer.writeUtf8(string = str, beginIndex = off, endIndex = off + len)
-    }
-
-    override fun toString(): String = buffer.readUtf8()
 }

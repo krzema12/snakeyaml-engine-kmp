@@ -22,11 +22,9 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import java.math.BigInteger
-import java.nio.charset.StandardCharsets
-import java.util.Base64
 import java.util.Optional
 import java.util.UUID
-
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.reflect.KClass
 
 /**
@@ -74,15 +72,15 @@ open class StandardRepresenter(
             && !StreamReader.isPrintable(value)
         ) {
             tag = Tag.BINARY
-            val bytes = value.toByteArray(StandardCharsets.UTF_8)
+            val bytes = value.encodeToByteArray()
             // sometimes above will just silently fail - it will return incomplete data
             // it happens when String has invalid code points
             // (for example half surrogate character without other half)
-            val checkValue = String(bytes, StandardCharsets.UTF_8)
-            if (checkValue != value) {
+            if (bytes.decodeToString() != value) {
                 throw YamlEngineException("invalid string value has occurred")
             }
-            value = Base64.getEncoder().encodeToString(bytes)
+            @OptIn(ExperimentalEncodingApi::class)
+            value = kotlin.io.encoding.Base64.encode(bytes)
             style = ScalarStyle.LITERAL
         } else {
             tag = Tag.STR
@@ -207,7 +205,8 @@ open class StandardRepresenter(
     private val representByteArray = RepresentToNode { data ->
         representScalar(
             Tag.BINARY,
-            Base64.getEncoder().encodeToString(data as ByteArray),
+            @OptIn(ExperimentalEncodingApi::class)
+            kotlin.io.encoding.Base64.encode(data as ByteArray),
             ScalarStyle.LITERAL,
         )
     }

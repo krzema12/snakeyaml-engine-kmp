@@ -27,9 +27,11 @@ import java.io.Reader
  * Helper to compose input stream to Node
  * @param settings - configuration
  */
-class Compose(
+actual class Compose actual constructor(
     private val settings: LoadSettings,
 ) {
+
+    private val composeString = ComposeString(settings)
 
     /**
      * Parse a YAML stream and produce [Node]
@@ -66,11 +68,7 @@ class Compose(
      * @return parsed [Node] if available
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun composeString(yaml: String): Node? =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, yaml)),
-        ).singleNode
+    actual fun composeString(yaml: String): Node? = composeString.composeString(yaml)
 
     // Compose all documents
     /**
@@ -81,12 +79,10 @@ class Compose(
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeAllFromReader(yaml: Reader): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, yaml.readText())),
-            )
-        }
+        Composer(
+            settings,
+            ParserImpl(settings, StreamReader(settings, yaml.readText())),
+        ).asSequence().asIterable()
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
@@ -97,12 +93,10 @@ class Compose(
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
-            )
-        }
+        Composer(
+            settings,
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
+        ).asSequence().asIterable()
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
@@ -111,11 +105,6 @@ class Compose(
      * @return parsed root Nodes for all the specified YAML documents
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun composeAllFromString(yaml: String): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, yaml)),
-            )
-        }
+    actual fun composeAllFromString(yaml: String): Iterable<Node> =
+        composeString.composeAllFromString(yaml)
 }

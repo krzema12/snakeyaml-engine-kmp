@@ -24,7 +24,6 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 import java.time.LocalDateTime;

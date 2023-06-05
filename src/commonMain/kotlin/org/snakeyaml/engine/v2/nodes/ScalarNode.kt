@@ -26,8 +26,8 @@ import kotlin.jvm.JvmOverloads
  * @param[resolved]
  * @param[value] Value of this scalar
  * @param[scalarStyle] style of this scalar node
- * Flow styles - https://yaml.org/spec/1.2/spec.html.id2786942
- * Block styles - https://yaml.org/spec/1.2/spec.html.id2793652
+ * * Flow styles - https://yaml.org/spec/1.2/spec.html.id2786942
+ * * Block styles - https://yaml.org/spec/1.2/spec.html.id2793652
  * @see org.snakeyaml.engine.v2.events.ScalarEvent
  */
 class ScalarNode @JvmOverloads constructor(

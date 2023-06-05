@@ -15,8 +15,7 @@ package org.snakeyaml.engine.v2.api
 
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.representer.BaseRepresenter
-import org.snakeyaml.engine.v2.representer.StandardRepresenter
+import org.snakeyaml.engine.v2.representer.Representer
 import org.snakeyaml.engine.v2.serializer.Serializer
 
 /**
@@ -27,7 +26,7 @@ import org.snakeyaml.engine.v2.serializer.Serializer
  */
 class Dump @JvmOverloads constructor(
     private val settings: DumpSettings,
-    private val representer: BaseRepresenter = StandardRepresenter(settings),
+    private val representer: Representer = Representer(settings),
 ) {
     /**
      * Dump all the instances from the iterator into a stream with every instance in a separate YAML

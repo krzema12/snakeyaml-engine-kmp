@@ -15,6 +15,7 @@ package org.snakeyaml.engine.v2.representer
 
 import org.snakeyaml.engine.internal.IdentityHashCode
 import org.snakeyaml.engine.internal.identityHashCode
+import org.snakeyaml.engine.v2.api.DumpSettings
 import org.snakeyaml.engine.v2.api.RepresentToNode
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.common.ScalarStyle
@@ -34,7 +35,6 @@ import kotlin.reflect.KClass
  * Represent basic YAML structures: scalar, sequence, mapping
  */
 abstract class BaseRepresenter(
-
     /** scalar style */
     @JvmField
     protected val defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN,
@@ -42,7 +42,13 @@ abstract class BaseRepresenter(
     /** flow style for collections */
     @JvmField
     protected val defaultFlowStyle: FlowStyle = FlowStyle.AUTO,
-) {
+) : Representer {
+
+    constructor(settings: DumpSettings) : this(
+        defaultScalarStyle = settings.defaultScalarStyle,
+        defaultFlowStyle = settings.defaultFlowStyle,
+    )
+
     /**
      * Keep representers which must match the class exactly
      */
@@ -62,8 +68,8 @@ abstract class BaseRepresenter(
      */
     private val representedObjects: AnchorNodeMap = AnchorNodeMap()
 
-    /** in Java `null` is not a type. So we have to keep the null representer separately */
-    protected abstract val nullRepresenter: RepresentToNode
+    /** in Java `null` is not a type. So we have to keep the `null` representer separately */
+    protected open fun nullRepresenter(): Node = representScalar(Tag.NULL, "null")
 
     /** the current object to be converted to [Node] */
     private var objectToRepresent: Any? = null
@@ -74,11 +80,31 @@ abstract class BaseRepresenter(
      * @param data - Java instance to be represented
      * @return The Node to be serialized
      */
-    fun represent(data: Any?): Node {
+    override fun represent(data: Any?): Node {
         val node = representData(data)
         representedObjects.clear()
         objectToRepresent = null
         return node
+    }
+
+    /**
+     * Find the representer and use it to create the Node from instance
+     *
+     * @param data - the source
+     * @return Node for the provided source
+     */
+    private fun representData(data: Any?): Node {
+        objectToRepresent = data
+        // check for identity
+        return representedObjects.getOrElse(identityHashCode(objectToRepresent)) {
+            // check for null first
+            if (data == null) {
+                nullRepresenter()
+            } else {
+                val representer = findRepresenterFor(data)
+                representer.representData(data)
+            }
+        }
     }
 
     /**
@@ -103,26 +129,6 @@ abstract class BaseRepresenter(
     }
 
     /**
-     * Find the representer and use it to create the Node from instance
-     *
-     * @param data - the source
-     * @return Node for the provided source
-     */
-    private fun representData(data: Any?): Node {
-        objectToRepresent = data
-        // check for identity
-        return representedObjects.getOrElse(identityHashCode(objectToRepresent)) {
-            // check for null first
-            if (data == null) {
-                nullRepresenter.representData(Unit)
-            } else {
-                val representer = findRepresenterFor(data)
-                representer.representData(data)
-            }
-        }
-    }
-
-    /**
      * Create Node for string, using [ScalarStyle.PLAIN] if possible
      *
      * @param tag - the tag for [Node]
@@ -135,6 +141,7 @@ abstract class BaseRepresenter(
         value: String,
         style: ScalarStyle = ScalarStyle.PLAIN,
     ): ScalarNode {
+        // TODO try putting defaultScalarStyle in default arg
         return ScalarNode(
             tag = tag,
             value = value,

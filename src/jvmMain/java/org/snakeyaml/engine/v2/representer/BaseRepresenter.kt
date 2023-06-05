@@ -13,6 +13,8 @@
  */
 package org.snakeyaml.engine.v2.representer
 
+import org.snakeyaml.engine.internal.IdentityHashCode
+import org.snakeyaml.engine.internal.identityHashCode
 import org.snakeyaml.engine.v2.api.RepresentToNode
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.common.ScalarStyle
@@ -24,9 +26,7 @@ import org.snakeyaml.engine.v2.nodes.NodeTuple
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
-import java.util.IdentityHashMap
 import kotlin.reflect.KClass
-
 
 /**
  * Represent basic YAML structures: scalar, sequence, mapping
@@ -58,7 +58,7 @@ abstract class BaseRepresenter(
      *
      * The order is important (map can be also a sequence of key-values)
      */
-    private val representedObjects: MutableMap<Any?, AnchorNode> = IdentityHashMap()
+    private val representedObjects: AnchorNodeMap = AnchorNodeMap()
 
     /** in Java `null` is not a type. So we have to keep the null representer separately */
     protected abstract val nullRepresenter: RepresentToNode
@@ -96,7 +96,7 @@ abstract class BaseRepresenter(
                     return value
                 }
             }
-            throw YamlEngineException("Representer is not defined for class ${data::class.java.name}")
+            throw YamlEngineException("Representer is not defined for class ${data::class.simpleName}")
         }
     }
 
@@ -109,9 +109,7 @@ abstract class BaseRepresenter(
     private fun representData(data: Any?): Node {
         objectToRepresent = data
         // check for identity
-        return if (representedObjects.containsKey(objectToRepresent)) {
-            representedObjects.getValue(objectToRepresent)
-        } else {
+        return representedObjects.getOrElse(identityHashCode(objectToRepresent)) {
             // check for null first
             if (data == null) {
                 nullRepresenter.representData(Unit)
@@ -155,26 +153,18 @@ abstract class BaseRepresenter(
         sequence: Iterable<*>,
         flowStyle: FlowStyle,
     ): SequenceNode {
-        var size = 10 // default for ArrayList
-        if (sequence is List<*>) {
-            size = sequence.size
-        }
-        val value: MutableList<Node> = ArrayList(size)
+        val size = (sequence as? List<*>)?.size ?: 10 // default for ArrayList
+        val value: ArrayList<Node> = ArrayList(size)
         val node = SequenceNode(tag, value, flowStyle)
         representedObjects[objectToRepresent] = node
-        var bestStyle = FlowStyle.FLOW
-        for (item in sequence) {
-            val nodeItem = representData(item)
-            if (!(nodeItem is ScalarNode && nodeItem.isPlain)) {
-                bestStyle = FlowStyle.BLOCK
-            }
-            value.add(nodeItem)
-        }
+
+        sequence.mapTo(value) { item -> representData(item) }
+
         if (flowStyle == FlowStyle.AUTO) {
-            node.flowStyle = if (defaultFlowStyle != FlowStyle.AUTO) {
-                (defaultFlowStyle)
-            } else {
-                (bestStyle)
+            node.flowStyle = when {
+                defaultFlowStyle != FlowStyle.AUTO            -> defaultFlowStyle
+                value.none { it is ScalarNode && it.isPlain } -> FlowStyle.BLOCK
+                else                                          -> FlowStyle.FLOW
             }
         }
         return node
@@ -202,35 +192,60 @@ abstract class BaseRepresenter(
         mapping: Map<*, *>,
         flowStyle: FlowStyle,
     ): MappingNode {
-        val value: MutableList<NodeTuple> = ArrayList(mapping.size)
+        val value = ArrayList<NodeTuple>(mapping.size)
         val node = MappingNode(tag, value, flowStyle)
         representedObjects[objectToRepresent] = node
-        var bestStyle = FlowStyle.FLOW
-        for (entry in mapping.entries) {
-            val tuple = entry.toNodeTuple()
-            if (!(tuple.keyNode is ScalarNode && tuple.keyNode.isPlain)) {
-                bestStyle = FlowStyle.BLOCK
-            }
-            if (!(tuple.valueNode is ScalarNode && tuple.valueNode.isPlain)) {
-                bestStyle = FlowStyle.BLOCK
-            }
-            value.add(tuple)
-        }
+        mapping.entries.mapTo(value) { it.toNodeTuple() }
         if (flowStyle == FlowStyle.AUTO) {
-            node.flowStyle =
-                if (defaultFlowStyle != FlowStyle.AUTO) {
-                    defaultFlowStyle
-                } else {
-                    bestStyle
+            node.flowStyle = when (defaultFlowStyle) {
+                FlowStyle.AUTO -> {
+                    val anyKeyOrValueNotPlain =
+                        value.any { (keyNode, valueNode) ->
+                            !(keyNode is ScalarNode && keyNode.isPlain)
+                                ||
+                                !(valueNode is ScalarNode && valueNode.isPlain)
+                        }
+                    if (anyKeyOrValueNotPlain) {
+                        FlowStyle.BLOCK
+                    } else {
+                        FlowStyle.FLOW
+                    }
                 }
+
+                else           -> defaultFlowStyle
+            }
         }
         return node
     }
+}
 
-    companion object {
-        private operator fun MutableMap<Any?, AnchorNode>.set(
-            key: Any?,
-            value: Node,
-        ): AnchorNode? = put(key, AnchorNode(value))
-    }
+private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
+
+    private val contents: MutableMap<IdentityHashCode, AnchorNode> = mutableMapOf()
+    private val contentsView: MutableMap<IdentityHashCode, Node>
+        get() = contents.mapValuesTo(mutableMapOf()) { (_, v) -> v.realNode }
+
+    override val size: Int get() = contents.size
+    override val entries: MutableSet<MutableMap.MutableEntry<IdentityHashCode, Node>> get() = contentsView.entries
+    override val keys: MutableSet<IdentityHashCode> get() = contentsView.keys
+    override val values: MutableCollection<Node> get() = contentsView.values
+
+    override fun clear() = contents.clear()
+    override fun containsKey(key: IdentityHashCode): Boolean = contents.containsKey(key)
+    override fun containsValue(value: Node): Boolean = contents.containsValue(value)
+
+    override fun get(key: IdentityHashCode): Node? = contents[key]
+
+    override fun isEmpty(): Boolean = contents.isEmpty()
+    override fun put(key: IdentityHashCode, value: Node): Node? = contents.put(key, AnchorNode(value))
+    override fun putAll(from: Map<out IdentityHashCode, Node>): Unit =
+        contents.putAll(from.mapValues { (_, v) -> AnchorNode(v) })
+
+    override fun remove(key: IdentityHashCode): Node? = contents.remove(key)
+
+    @JvmName("getAny")
+    operator fun get(key: Any?): Node? = contents[identityHashCode(key)]
+
+    @JvmName("setAny")
+    operator fun set(key: Any?, value: Node): Node? = contents.put(identityHashCode(key), AnchorNode(value))
 }

@@ -46,7 +46,7 @@ public class DumpToStringTest {
       fail("Something must not be accepted without Representer");
     } catch (YamlEngineException e) {
       assertEquals(
-          "Representer is not defined for class org.snakeyaml.engine.issues.issue25.DumpToStringTest$1Something",
+          "Representer is not defined for class Something",
           e.getMessage()
       );
     }

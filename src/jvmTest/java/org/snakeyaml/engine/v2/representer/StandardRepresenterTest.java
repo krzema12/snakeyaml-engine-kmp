@@ -35,7 +35,7 @@ class StandardRepresenterTest {
   void representUnknownClass() {
     YamlEngineException exception = assertThrows(YamlEngineException.class,
         () -> standardRepresenter.represent(TreeRangeSet.create()));
-    assertEquals("Representer is not defined for class com.google.common.collect.TreeRangeSet",
+    assertEquals("Representer is not defined for class TreeRangeSet",
         exception.getMessage());
   }
 

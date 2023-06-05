@@ -80,7 +80,7 @@ public class AnchorUnicodeTest {
       toExport.add(list);
       try {
         dump.dumpToString(toExport);
-        fail();
+        fail("expected dumpToString(toExport) would fail, but it succeeded");
       } catch (Exception e) {
         String message = "Invalid character '" + ch + "' in the anchor: anchor" + ch;
         assertEquals(message, e.getMessage());

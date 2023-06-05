@@ -17,6 +17,7 @@ import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.representer.Representer
 import org.snakeyaml.engine.v2.serializer.Serializer
+import kotlin.jvm.JvmOverloads
 
 /**
  * Common way to serialize any Java instance(s). The instance is stateful. Only one of the 'dump'

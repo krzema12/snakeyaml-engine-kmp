@@ -22,16 +22,14 @@ import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonBool
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonInt
 import org.snakeyaml.engine.v2.nodes.Tag
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
 
 /**
  * Default schema for Kotlin/JVM
  */
-actual open class JsonSchema(
+actual open class JsonSchema actual constructor(
     override val scalarResolver: ScalarResolver,
 ) : Schema {
-    actual constructor() : this(scalarResolver = JsonScalarResolver())
 
     /** Basic constructs */
     override val schemaTagConstructors: Map<Tag, ConstructNode> = mapOf(

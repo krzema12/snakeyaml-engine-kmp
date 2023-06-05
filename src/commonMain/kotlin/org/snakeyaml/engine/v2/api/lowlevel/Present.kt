@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.events.Event
 
 /**
- * Emit the events into a data stream (opposite for Parse)
+ * Emit the events into a data stream (opposite for [Parse])
  *
  * @param settings - configuration
  */
@@ -35,7 +35,7 @@ class Present(
     fun emitToString(events: Iterator<Event>): String {
         val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
-        events.forEachRemaining { event: Event -> emitter.emit(event) }
+        events.forEach { event -> emitter.emit(event) }
         return writer.toString()
     }
 }

@@ -17,6 +17,7 @@ import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,7 +35,7 @@ class YamlUnicodeReaderTest {
   void noBom() throws IOException {
     try (ByteArrayInputStream input = new ByteArrayInputStream("1".getBytes())) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(StandardCharsets.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
+      assertEquals(CharEncoding.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
       assertEquals("1", reader.readString());
     }
   }
@@ -45,7 +46,7 @@ class YamlUnicodeReaderTest {
     try (ByteArrayInputStream input =
              new ByteArrayInputStream(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, (byte) 49})) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(StandardCharsets.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
+      assertEquals(CharEncoding.UTF_8, reader.getEncoding(), "no BOM must be detected as UTF-8");
       assertEquals("1", reader.readString(), "BOM must be skipped, #49 -> 1");
     }
   }
@@ -56,7 +57,7 @@ class YamlUnicodeReaderTest {
     try (ByteArrayInputStream input = new ByteArrayInputStream(new byte[]{(byte) 0x00, (byte) 0x00,
         (byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 0, (byte) 0, (byte) 49,})) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(Charset.forName("UTF-32BE"), reader.getEncoding());
+      assertEquals(CharEncoding.UTF_32BE, reader.getEncoding());
       assertEquals("1", reader.readString(), "BOM must be skipped, #49 -> 1");
     }
   }
@@ -67,7 +68,7 @@ class YamlUnicodeReaderTest {
     try (ByteArrayInputStream input = new ByteArrayInputStream(new byte[]{(byte) 0xFF, (byte) 0xFE,
         (byte) 0x00, (byte) 0x00, (byte) 49, (byte) 0, (byte) 0, (byte) 0})) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(Charset.forName("UTF-32LE"), reader.getEncoding());
+      assertEquals(CharEncoding.UTF_32LE, reader.getEncoding());
       assertEquals("1", reader.readString(), "BOM must be skipped, #49 -> 1");
     }
   }
@@ -78,7 +79,7 @@ class YamlUnicodeReaderTest {
     try (ByteArrayInputStream input =
              new ByteArrayInputStream(new byte[]{(byte) 0xFE, (byte) 0xFF, (byte) 0, (byte) 49,})) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(StandardCharsets.UTF_16BE, reader.getEncoding());
+      assertEquals(CharEncoding.UTF_16BE, reader.getEncoding());
       assertEquals("1", reader.readString(), "BOM must be skipped, #49 -> 1");
     }
   }
@@ -89,7 +90,7 @@ class YamlUnicodeReaderTest {
     try (ByteArrayInputStream input =
              new ByteArrayInputStream(new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 49, (byte) 0})) {
       YamlUnicodeReader reader = new YamlUnicodeReader(Okio.source(input));
-      assertEquals(StandardCharsets.UTF_16LE, reader.getEncoding());
+      assertEquals(CharEncoding.UTF_16LE, reader.getEncoding());
       assertEquals("1", reader.readString(), "BOM must be skipped, #49 -> 1");
     }
   }

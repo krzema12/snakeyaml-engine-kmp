@@ -14,17 +14,17 @@
 package org.snakeyaml.engine.v2.api
 
 import okio.Buffer
+import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.Source
 import okio.Timeout
 import okio.buffer
-import java.nio.charset.Charset
-import kotlin.text.Charsets.UTF_16BE
-import kotlin.text.Charsets.UTF_16LE
-import kotlin.text.Charsets.UTF_32BE
-import kotlin.text.Charsets.UTF_32LE
-import kotlin.text.Charsets.UTF_8
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_16BE
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_16LE
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_32BE
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_32LE
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_8
 
 /**
  * Generic unicode text reader, which will use BOM mark to identify the encoding to be used. If BOM
@@ -55,7 +55,7 @@ class YamlUnicodeReader(
     private val encodedSource: Source
 
     /** the name of the character encoding being used by this stream. */
-    val encoding: Charset
+    val encoding: CharEncoding
 
     /**
      * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only
@@ -65,25 +65,44 @@ class YamlUnicodeReader(
         val bufferedSource = source.buffer()
         val peek = bufferedSource.peek()
 
-        val (encoding: Charset, skip: Int) = when {
-            peek.rangeEquals(0, UTF_32LE_MARK) -> UTF_32LE to 4
-            peek.rangeEquals(0, UTF_32BE_MARK) -> UTF_32BE to 4
-            peek.rangeEquals(0, UTF_16LE_MARK) -> UTF_16LE to 2
-            peek.rangeEquals(0, UTF_16BE_MARK) -> UTF_16BE to 2
-            peek.rangeEquals(0, UTF_8_MARK)    -> UTF_8 to 3
-            else                               -> UTF_8 to 0
+        val detectedEncoding: CharEncoding? = when {
+            peek.rangeEquals(0, UTF_32LE.bom) -> UTF_32LE
+            peek.rangeEquals(0, UTF_32BE.bom) -> UTF_32BE
+            peek.rangeEquals(0, UTF_16LE.bom) -> UTF_16LE
+            peek.rangeEquals(0, UTF_16BE.bom) -> UTF_16BE
+            peek.rangeEquals(0, UTF_8.bom)    -> UTF_8
+            else                              -> null // no BOM detected
         }
-        this.encoding = encoding
 
-        bufferedSource.skip(skip.toLong())
+        if (detectedEncoding != null) {
+            bufferedSource.skip(detectedEncoding.bom.size.toLong())
+        }
 
-        val bs = bufferedSource.readString(encoding)
-        encodedSource = Buffer().writeString(bs, UTF_8)
+        this.encoding = detectedEncoding ?: UTF_8
+
+        val bs = readString(bufferedSource, encoding)
+        encodedSource = Buffer().writeUtf8(bs)
     }
 
-    override fun close() {
-        encodedSource.close()
+    private fun readString(source: BufferedSource, encoding: CharEncoding): String {
+        return when (encoding) {
+            UTF_8    -> source.readUtf8()
+
+            // For UTF-16, read the entire Buffer one char at a time
+            UTF_16BE -> source.concatToString { readShort().toInt().toChar() }
+
+            // For UTF-16LE, do the same thing but swap
+            // the first and last bytes of the Char before creating a string
+            UTF_16LE -> source.concatToString { readShortLe().toInt().toChar() }
+
+            // For UTF-32, read the buffer an Int at a time
+            UTF_32BE -> source.concatToString { readInt().toChar() }
+
+            UTF_32LE -> source.concatToString { readIntLe().toChar() }
+        }
     }
+
+    override fun close(): Unit = encodedSource.close()
 
     override fun read(sink: Buffer, byteCount: Long): Long = encodedSource.read(sink, byteCount)
 
@@ -91,14 +110,30 @@ class YamlUnicodeReader(
 
     fun readString(): String = encodedSource.buffer().readUtf8()
 
-    companion object {
-        private val UTF_8_MARK = ByteString(0xEF, 0xBB, 0xBF)
-        private val UTF_16BE_MARK = ByteString(0xFE, 0xFF)
-        private val UTF_16LE_MARK = ByteString(0xFF, 0xFE)
-        private val UTF_32BE_MARK = ByteString(0x00, 0x00, 0xFE, 0xFF)
-        private val UTF_32LE_MARK = ByteString(0xFF, 0xFE, 0x00, 0x00)
+    enum class CharEncoding(
+        val bom: ByteString,
+    ) {
+        UTF_8(0xEF, 0xBB, 0xBF),
+        UTF_16BE(0xFE, 0xFF),
+        UTF_16LE(0xFF, 0xFE),
+        UTF_32BE(0x00, 0x00, 0xFE, 0xFF),
+        UTF_32LE(0xFF, 0xFE, 0x00, 0x00),
+        ;
 
-        private fun ByteString(vararg values: Int): ByteString =
-            values.map(Int::toByte).toByteArray().toByteString()
+        constructor(vararg values: Int) : this(
+            values.map(Int::toByte).toByteArray().toByteString(),
+        )
+    }
+
+    companion object {
+        private fun BufferedSource.concatToString(
+            readChar: BufferedSource.() -> Char,
+        ): String {
+            return sequence {
+                while (!exhausted()) yield(readChar())
+            }.toList()
+                .toCharArray()
+                .concatToString()
+        }
     }
 }

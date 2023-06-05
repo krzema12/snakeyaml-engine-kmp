@@ -74,7 +74,7 @@ class Mark(
      * @return readable piece of YAML where a problem detected
      */
     @JvmOverloads
-    // TODO this function is only exposed because of testing - mark it as `internal` once everything is Kotlin
+    // TODO this function is only exposed because of testing - mark as `internal` once tests are Kotlin
     fun createSnippet(
         indent: Int = 4,
         maxLength: Int = 75,
@@ -124,19 +124,4 @@ class Mark(
             |$snippet
         """.trimMargin()
     }
-
-//    companion object {
-//        private fun toCodePoints(str: CharArray): IntArray {
-//            val codePoints = IntArray(Character.codePointCount(str, 0, str.size))
-//            var i = 0
-//            var c = 0
-//            while (i < str.size) {
-//                val cp = Character.codePointAt(str, i)
-//                codePoints[c] = cp
-//                i += Character.charCount(cp)
-//                c++
-//            }
-//            return codePoints
-//        }
-//    }
 }

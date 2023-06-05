@@ -39,10 +39,7 @@ class StreamReader(
     private val stream: BufferedSource = if (stream is BufferedSource) stream else stream.buffer()
 
     private val name: String = loadSettings.label
-    private val bufferSize: Int = loadSettings.bufferSize
 
-    // temp buffer for one read operation (to avoid creating the array in stack)
-    private val buffer: CharArray = CharArray(bufferSize)
     private val useMarks: Boolean = loadSettings.useMarks
 
     /** Read data (as a moving window for input stream) */
@@ -97,7 +94,7 @@ class StreamReader(
     /**
      * Generate [Mark] if it is configured
      *
-     * @return [Mark] of the current position or empty [Optional] otherwise
+     * @return [Mark] of the current position, or `null`
      */
     fun getMark(): Mark? {
         if (!useMarks) return null

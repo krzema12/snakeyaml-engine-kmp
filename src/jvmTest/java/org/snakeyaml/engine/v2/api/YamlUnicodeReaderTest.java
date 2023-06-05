@@ -21,8 +21,6 @@ import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

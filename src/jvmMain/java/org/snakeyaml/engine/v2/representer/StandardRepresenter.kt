@@ -30,7 +30,7 @@ open class StandardRepresenter(
 ) : CommonRepresenter(settings) {
 
     /** Create [Node] for [Byte], [Short], [Int], [Long], [BigInteger], [Float], [Double] */
-    private val representJvmNumber = RepresentToNode { data: Any ->
+    private val representJvmNumber = RepresentToNode { data ->
         // TODO add test for very large numbers that can only be BigInteger
         if (data is BigInteger) {
             val value = data.toString()

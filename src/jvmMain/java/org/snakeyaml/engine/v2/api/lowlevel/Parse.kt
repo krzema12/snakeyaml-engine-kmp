@@ -26,9 +26,10 @@ import java.io.Reader
  * Read the input stream and parse the content into events (opposite for Present or Emit)
  * @param settings - configuration
  */
-class Parse(
+actual class Parse(
     private val settings: LoadSettings,
 ) {
+    private val parseString = ParseString(settings)
 
     /**
      * Parse a YAML stream and produce parsing events.
@@ -39,9 +40,8 @@ class Parse(
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun parseInputStream(yaml: InputStream): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
-        }
+        ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
+            .asSequence().asIterable()
 
     /**
      * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM
@@ -52,9 +52,8 @@ class Parse(
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun parseReader(yaml: Reader): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, yaml.readText()))
-        }
+        ParserImpl(settings, StreamReader(settings, yaml.readText()))
+            .asSequence().asIterable()
 
     /**
      * Parse a YAML stream and produce parsing events.
@@ -63,8 +62,6 @@ class Parse(
      * @return parsed events
      * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
-    fun parseString(yaml: String): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, yaml))
-        }
+    actual fun parseString(yaml: String): Iterable<Event> =
+        parseString.parseString(yaml)
 }

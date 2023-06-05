@@ -13,16 +13,12 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel
 
-import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.nodes.Node
 
 /**
  * Helper to compose input stream to Node
- * @param settings - configuration
  */
-expect class Compose(
-    settings: LoadSettings,
-) {
+expect class Compose {
 
     /**
      * Parse a YAML stream and produce [Node]

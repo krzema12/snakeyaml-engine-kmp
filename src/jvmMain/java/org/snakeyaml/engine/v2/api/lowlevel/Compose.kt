@@ -27,7 +27,7 @@ import java.io.Reader
  * Helper to compose input stream to Node
  * @param settings - configuration
  */
-actual class Compose actual constructor(
+actual class Compose(
     private val settings: LoadSettings,
 ) {
 

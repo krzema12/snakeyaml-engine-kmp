@@ -7,7 +7,7 @@ import org.snakeyaml.engine.v2.nodes.Node
  * Helper to compose input stream to Node
  * @param settings - configuration
  */
-actual class Compose actual constructor(settings: LoadSettings) {
+actual class Compose(settings: LoadSettings) {
 
     private val composeString = ComposeString(settings)
 

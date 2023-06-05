@@ -101,10 +101,8 @@ public class TimestampTagTest {
 
   public static final class TimestampSchema extends JsonSchema {
 
-    @NotNull
-    @Override
-    public ScalarResolver getScalarResolver() {
-      return new MyScalarResolver();
+    public TimestampSchema() {
+      super(new MyScalarResolver());
     }
 
     @NotNull

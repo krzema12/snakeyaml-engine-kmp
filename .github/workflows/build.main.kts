@@ -15,7 +15,7 @@ import io.github.typesafegithub.workflows.yaml.writeToFile
 workflow(
     name = "Build",
     on = listOf(
-        Push(branches = listOf("master")),
+        Push(branches = listOf("main")),
         PullRequest(),
     ),
     sourceFile = __FILE__.toPath(),

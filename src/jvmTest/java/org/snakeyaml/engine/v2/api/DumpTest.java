@@ -81,7 +81,7 @@ class DumpTest {
   void dumpAll() {
     DumpSettings settings = DumpSettings.builder().build();
     Dump dump = new Dump(settings);
-    StreamToStringWriter streamToStringWriter = new StreamToStringWriter();
+    StringStreamDataWriter streamToStringWriter = new StringStreamDataWriter();
     List<Object> list = Lists.newArrayList("a", null, Boolean.TRUE);
     dump.dumpAll(list.iterator(), streamToStringWriter);
     assertEquals("a\n" + "--- null\n" + "--- true\n", streamToStringWriter.toString());

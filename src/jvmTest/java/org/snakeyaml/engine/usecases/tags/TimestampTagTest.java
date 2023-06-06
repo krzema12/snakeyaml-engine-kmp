@@ -15,6 +15,7 @@ package org.snakeyaml.engine.usecases.tags;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.internal.TestConstructNode;
 import org.snakeyaml.engine.v2.api.ConstructNode;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -23,7 +24,6 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
 import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
-import org.snakeyaml.engine.v2.resolver.ScalarResolver;
 import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 import java.time.LocalDateTime;
@@ -65,7 +65,7 @@ public class TimestampTagTest {
     assertEquals("[a, b, c]", loader.loadFromString("[a, b, c]").toString());
   }
 
-  public static final class TimestampConstructor implements ConstructNode {
+  public static final class TimestampConstructor extends TestConstructNode {
 
     @Override
     public Object construct(Node node) {
@@ -100,10 +100,8 @@ public class TimestampTagTest {
 
   public static final class TimestampSchema extends JsonSchema {
 
-    @NotNull
-    @Override
-    public ScalarResolver getScalarResolver() {
-      return new MyScalarResolver();
+    public TimestampSchema() {
+      super(new MyScalarResolver());
     }
 
     @NotNull

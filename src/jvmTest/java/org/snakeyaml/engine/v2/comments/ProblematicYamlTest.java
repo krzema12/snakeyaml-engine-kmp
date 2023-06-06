@@ -16,7 +16,6 @@ package org.snakeyaml.engine.v2.comments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -105,7 +104,7 @@ public class ProblematicYamlTest {
     List<CommentType> expectedCommentTypeList = Arrays.asList(//
         CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK);
     ParserImpl parser =
-        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString1)));
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, yamlString1));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -135,7 +134,7 @@ public class ProblematicYamlTest {
     List<CommentType> expectedCommentTypeList = Arrays.asList(//
         CommentType.BLANK_LINE, CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK);
     ParserImpl parser =
-        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString2)));
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, yamlString2));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -161,7 +160,7 @@ public class ProblematicYamlTest {
     );
     List<CommentType> expectedCommentTypeList = Collections.singletonList(CommentType.BLANK_LINE);
     ParserImpl parser =
-        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, new StringReader(yamlString3)));
+        new ParserImpl(LOAD_OPTIONS, new StreamReader(LOAD_OPTIONS, yamlString3));
     assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser);
   }
 
@@ -221,7 +220,7 @@ public class ProblematicYamlTest {
     );
     LoadSettings settings = LoadSettings.builder().build();
     Parser parser =
-        new ParserImpl(settings, new StreamReader(settings, new StringReader(yamlString4)));
+        new ParserImpl(settings, new StreamReader(settings, yamlString4));
     assertEventListEquals(expectedEventIdList, new ArrayList<CommentType>(), parser);
   }
 }

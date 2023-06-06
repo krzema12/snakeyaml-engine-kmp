@@ -14,20 +14,10 @@ version = "2.7-SNAPSHOT"
 description = "SnakeYAML Engine"
 
 kotlin {
-    targets.configureEach {
-        compilations.configureEach {
-            compilerOptions.configure {
-                freeCompilerArgs.addAll(
-                    "-Xjvm-default=all", // TODO remove this once everything is Kotlin
-                )
-            }
-        }
-    }
-
     sourceSets {
         commonMain {
             dependencies {
-                //implementation("com.squareup.okio:okio:3.3.0") // TODO https://github.com/krzema12/snakeyaml-engine-kmp/issues/42
+                implementation("com.squareup.okio:okio:3.3.0")
             }
         }
 

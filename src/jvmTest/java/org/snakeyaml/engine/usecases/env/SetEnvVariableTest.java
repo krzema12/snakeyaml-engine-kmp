@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.utils.SystemProperty;
+import org.snakeyaml.engine.internal.SystemProperty;
 
 @org.junit.jupiter.api.Tag("fast")
 class SetEnvVariableTest {

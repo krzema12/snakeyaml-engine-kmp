@@ -28,10 +28,10 @@ class ConstructOptionalClass(private val scalarResolver: ScalarResolver) : Const
     override fun construct(node: Node?): Optional<Any> {
         if (node?.nodeType != NodeType.SCALAR) {
             throw ConstructorException(
-                "while constructing Optional",
-                null,
-                "found non scalar node",
-                node!!.startMark,
+                context = "while constructing Optional",
+                contextMark = null,
+                problem = "found non scalar node",
+                problemMark = node!!.startMark,
             )
         }
         val value = constructScalar(node)

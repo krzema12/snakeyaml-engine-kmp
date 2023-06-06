@@ -22,16 +22,15 @@ import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonBool
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
 import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonInt
 import org.snakeyaml.engine.v2.nodes.Tag
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
-import java.util.Optional
-import java.util.UUID
 
 /**
- * Default schema
+ * Default schema for Kotlin/JVM
  */
-open class JsonSchema(
-    override val scalarResolver: ScalarResolver = JsonScalarResolver(),
+actual open class JsonSchema actual constructor(
+    final override val scalarResolver: ScalarResolver,
+) : Schema {
+
     /** Basic constructs */
     override val schemaTagConstructors: Map<Tag, ConstructNode> = mapOf(
         Tag.NULL to ConstructYamlNull(),
@@ -39,7 +38,7 @@ open class JsonSchema(
         Tag.INT to ConstructYamlJsonInt(),
         Tag.FLOAT to ConstructYamlJsonFloat(),
         Tag.BINARY to ConstructYamlBinary(),
-        Tag(UUID::class) to ConstructUuidClass(),
-        Tag(Optional::class) to ConstructOptionalClass(scalarResolver),
-    ),
-) : Schema
+        Tag.forType("java.util.UUID") to ConstructUuidClass(),
+        Tag.forType("java.util.Optional") to ConstructOptionalClass(scalarResolver),
+    )
+}

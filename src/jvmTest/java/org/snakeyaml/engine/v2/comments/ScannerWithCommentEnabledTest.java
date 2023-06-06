@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -88,7 +87,7 @@ public class ScannerWithCommentEnabledTest {
 
   private Scanner constructScanner(String input) {
     LoadSettings settings = LoadSettings.builder().setParseComments(true).build();
-    return new ScannerImpl(settings, new StreamReader(settings, new StringReader(input)));
+    return new ScannerImpl(settings, new StreamReader(settings, input));
   }
 
   @Test

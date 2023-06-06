@@ -13,13 +13,15 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static kotlin.text.StringsKt.substringBeforeLast;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 class MappingNodeTest {
@@ -36,8 +38,13 @@ class MappingNodeTest {
     NodeTuple tuple2 = new NodeTuple(new ScalarNode(Tag.STR, "self", ScalarStyle.PLAIN), mapping);
     list.add(tuple2);
     String representation = mapping.toString();
-    assertTrue(representation.startsWith(
-        "<org.snakeyaml.engine.v2.nodes.MappingNode (tag=tag:yaml.org,2002:map, values={ key=<org.snakeyaml.engine.v2.nodes.ScalarNode (tag=tag:yaml.org,2002:str, value=a)>; value=<NodeTuple keyNode=<org.snakeyaml.engine.v2.nodes.ScalarNode (tag=tag:yaml.org,2002:str, value=a)>; valueNode=<org.snakeyaml.engine.v2.nodes.ScalarNode (tag=tag:yaml.org,2002:int, value=1)>> }{ key=<org.snakeyaml.engine.v2.nodes.ScalarNode (tag=tag:yaml.org,2002:str, value=self)>;"));
-
+    assertEquals(
+        "<MappingNode (tag=tag:yaml.org,2002:map, values={ key=<ScalarNode (tag=tag:yaml.org,2002:str, value=a)>; value=<NodeTuple keyNode=<ScalarNode (tag=tag:yaml.org,2002:str, value=a)>; valueNode=<ScalarNode (tag=tag:yaml.org,2002:int, value=1)>> }{ key=<ScalarNode (tag=tag:yaml.org,2002:str, value=self)>;",
+        substringBeforeLast(
+            representation,
+            " value=",
+            representation
+        )
+    );
   }
 }

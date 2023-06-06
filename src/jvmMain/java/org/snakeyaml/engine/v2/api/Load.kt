@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.api
 
+import okio.source
 import org.snakeyaml.engine.v2.composer.Composer
 import org.snakeyaml.engine.v2.constructor.BaseConstructor
 import org.snakeyaml.engine.v2.constructor.StandardConstructor
@@ -51,7 +52,7 @@ class Load @JvmOverloads constructor(
      * @return configured Composer
      */
     private fun createComposer(yamlStream: InputStream): Composer =
-        createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
+        createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream.source())))
 
     /**
      * Create Composer
@@ -69,7 +70,7 @@ class Load @JvmOverloads constructor(
      * @return configured Composer
      */
     private fun createComposer(yamlReader: Reader): Composer =
-        createComposer(StreamReader(settings, yamlReader))
+        createComposer(StreamReader(settings, yamlReader.readText()))
 
     /**
      * Load a single document with the provided [composer]
@@ -123,7 +124,7 @@ class Load @JvmOverloads constructor(
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
     fun loadAllFromInputStream(yamlStream: InputStream): Iterable<Any?> {
-        val composer = createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream)))
+        val composer = createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream.source())))
         return loadAll(composer)
     }
 
@@ -135,7 +136,7 @@ class Load @JvmOverloads constructor(
      * @return an Iterable over the parsed Java objects in this stream in proper sequence
      */
     fun loadAllFromReader(yamlReader: Reader): Iterable<Any?> {
-        val composer = createComposer(StreamReader(settings, yamlReader))
+        val composer = createComposer(StreamReader(settings, yamlReader.readText()))
         return loadAll(composer)
     }
 

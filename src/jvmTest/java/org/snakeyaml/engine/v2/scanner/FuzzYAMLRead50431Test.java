@@ -52,7 +52,10 @@ public class FuzzYAMLRead50431Test {
       load.loadFromString("\"\\UE30EEE");
       fail("Invalid escape code in double quoted scalar should not be accepted");
     } catch (ScannerException e) {
-      assertTrue(e.getMessage().contains("found unknown escape character E30EEE"), e.getMessage());
+      assertEquals(
+          "found unknown escape character E30EEE",
+          e.getMessage().lines().findFirst().orElse(null)
+      );
     }
   }
 

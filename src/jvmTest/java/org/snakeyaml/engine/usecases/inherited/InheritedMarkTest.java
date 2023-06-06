@@ -42,7 +42,7 @@ public class InheritedMarkTest extends InheritedImportTest {
         }
         index += 1;
       }
-      Mark mark = new Mark("testMarks", index, line, column, input.toCharArray(), index);
+      Mark mark = new Mark("testMarks", index, line, column, input, index);
       String snippet = mark.createSnippet(2, 79);
       assertTrue(snippet.indexOf("\n") > -1, "Must only have one '\n'.");
       assertEquals(snippet.indexOf("\n"), snippet.lastIndexOf("\n"),

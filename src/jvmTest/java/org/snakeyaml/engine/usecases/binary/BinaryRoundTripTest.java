@@ -30,7 +30,6 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 import org.snakeyaml.engine.v2.representer.StandardRepresenter;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class BinaryRoundTripTest {
 
   @Test
-  public void testBinary() throws UnsupportedEncodingException {
+  public void testBinary() {
     Dump dumper =
         new Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
     String source = "\u0096";

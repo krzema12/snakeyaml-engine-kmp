@@ -11,7 +11,7 @@ and supports
 
 * Kotlin/JS,
 * Kotlin/JVM,
-* and Kotlin/Native,
+* Kotlin/Native.
 
 SnakeYAML Engine KMP is based on
 [SnakeYAML Engine](https://github.com/krzema12/snakeyaml-engine-kmp).

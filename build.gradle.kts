@@ -27,6 +27,14 @@ kotlin {
                 implementation("com.google.guava:guava:26.0-jre")
             }
         }
+
+        commonTest {
+            dependencies {
+                implementation("io.kotest:kotest-framework-engine:5.6.2")
+                implementation("io.kotest:kotest-framework-api:5.6.2")
+                implementation("io.kotest:kotest-assertions-core:5.6.2")
+            }
+        }
     }
 }
 

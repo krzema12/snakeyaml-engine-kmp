@@ -7,6 +7,7 @@ plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
+    buildsrc.conventions.`yaml-testing`
 }
 
 group = "it.krzeminski"

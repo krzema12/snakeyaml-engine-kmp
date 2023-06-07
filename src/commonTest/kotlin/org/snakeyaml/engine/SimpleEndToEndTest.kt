@@ -13,109 +13,49 @@ import org.snakeyaml.engine.v2.events.ImplicitTuple
 import org.snakeyaml.engine.v2.events.MappingEndEvent
 import org.snakeyaml.engine.v2.events.MappingStartEvent
 import org.snakeyaml.engine.v2.events.ScalarEvent
-import org.snakeyaml.engine.v2.events.SequenceEndEvent
-import org.snakeyaml.engine.v2.events.SequenceStartEvent
 import org.snakeyaml.engine.v2.events.StreamEndEvent
 import org.snakeyaml.engine.v2.events.StreamStartEvent
 
 class SimpleEndToEndTest : FunSpec({
     test("simple case") {
-        val testObject = mapOf(
-            "baz" to "Hey!",
-            "goo" to 123,
-        )
+        // Given
+        val settings = DumpSettings.builder()
+            .build()
+        val stringBuilder = StringBuilder()
+        val writer = object : StreamDataWriter {
+            override fun flush() {
+                // no-op
+            }
 
-        val asYaml = testObject.toYaml()
-        asYaml shouldBe """
-            baz: 'Hey!'
-            goo: 123
+            override fun write(str: String) {
+                stringBuilder.append(str)
+            }
+
+            override fun write(str: String, off: Int, len: Int) {
+                stringBuilder.append(str)
+            }
+        }
+        val emitter = Emitter(opts = settings, stream = writer)
+
+        // When
+        emitter.emit(StreamStartEvent())
+        emitter.emit(DocumentStartEvent(false, null, emptyMap()))
+
+        emitter.emit(MappingStartEvent(null, null, true, FlowStyle.BLOCK))
+        emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, true), "foo", ScalarStyle.PLAIN))
+        emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, true), "bar", ScalarStyle.PLAIN))
+        emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, true), "baz", ScalarStyle.PLAIN))
+        emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, true), "goo", ScalarStyle.PLAIN))
+        emitter.emit(MappingEndEvent())
+
+        emitter.emit(DocumentEndEvent(false))
+        emitter.emit(StreamEndEvent())
+
+        // Then
+        stringBuilder.toString() shouldBe """
+            foo: bar
+            baz: goo
 
         """.trimIndent()
     }
 })
-
-internal fun Any.toYaml(): String {
-    val settings = DumpSettings.builder()
-        // Otherwise line breaks appear in places that create an incorrect YAML, e.g. in the middle of GitHub
-        // expressions.
-        .setWidth(Int.MAX_VALUE)
-        .build()
-    val stringBuilder = StringBuilder()
-    val writer = object : StreamDataWriter {
-        override fun flush() {
-            // no-op
-        }
-
-        override fun write(str: String) {
-            stringBuilder.append(str)
-        }
-
-        override fun write(str: String, off: Int, len: Int) {
-            stringBuilder.append(str)
-        }
-    }
-    val emitter = Emitter(settings, writer)
-    emitter.emit(StreamStartEvent())
-    emitter.emit(DocumentStartEvent(false, null, emptyMap()))
-
-    this.elementToYaml(emitter)
-
-    emitter.emit(DocumentEndEvent(false))
-    emitter.emit(StreamEndEvent())
-    return stringBuilder.toString()
-}
-
-private fun Any?.elementToYaml(emitter: Emitter) {
-    when (this) {
-        is Map<*, *> -> this.mapToYaml(emitter)
-        is List<*> -> this.listToYaml(emitter)
-        is String, is Int, is Float, is Boolean, null -> this.scalarToYaml(emitter)
-        else -> error("Serializing $this is not supported!")
-    }
-}
-
-private fun Map<*, *>.mapToYaml(emitter: Emitter) {
-    emitter.emit(MappingStartEvent(null, null, true, FlowStyle.BLOCK))
-
-    this.forEach { (key, value) ->
-        // key
-        emitter.emit(
-            ScalarEvent(
-                null,
-                null,
-                ImplicitTuple(true, true),
-                key.toString(),
-                ScalarStyle.PLAIN,
-            ),
-        )
-        // value
-        value.elementToYaml(emitter)
-    }
-
-    emitter.emit(MappingEndEvent())
-}
-
-private fun List<*>.listToYaml(emitter: Emitter) {
-    emitter.emit(SequenceStartEvent(null, null, true, FlowStyle.BLOCK))
-
-    this.forEach { value ->
-        value.elementToYaml(emitter)
-    }
-
-    emitter.emit(SequenceEndEvent())
-}
-
-private fun Any?.scalarToYaml(emitter: Emitter) {
-    val scalarStyle = if (this is String) {
-        if (lines().size > 1) {
-            ScalarStyle.LITERAL
-        } else {
-            ScalarStyle.SINGLE_QUOTED
-        }
-    } else {
-        ScalarStyle.PLAIN
-    }
-    emitter.emit(
-        ScalarEvent(null, null, ImplicitTuple(true, true), this.toString(), scalarStyle),
-    )
-}

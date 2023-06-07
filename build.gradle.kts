@@ -10,7 +10,7 @@ plugins {
 
 group = "org.snakeyaml"
 version = "2.7-SNAPSHOT"
-description = "SnakeYAML Engine"
+description = "SnakeYAML Engine KMP"
 
 kotlin {
     sourceSets {

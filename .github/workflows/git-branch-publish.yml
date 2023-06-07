@@ -43,7 +43,7 @@ jobs:
 
       - name: Run publish task
         run: >-
-          ./gradlew publishAllPublicationsToGitHubPublishRepository --stacktrace --info
+          ./gradlew publishAllPublicationsToGitBranchPublishRepository --stacktrace --info
         env:
           GIT_BRANCH_PUBLISH_DIR: ${{ runner.temp }}/m2
 

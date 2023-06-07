@@ -89,6 +89,6 @@ abstract class BaseScalarResolver @JvmOverloads constructor(
          * group 1: name, group 2: separator, group 3: value
          */
         @JvmField
-        val ENV_FORMAT = Regex("^\\$\\{\\s*(\\w+)(?:(:?[-?])(\\w+)?)?\\s*}$")
+        val ENV_FORMAT = Regex("^\\$\\{\\s*(\\w+)(?:(:?[-?])(\\w+)?)?\\s*\\}$")
     }
 }

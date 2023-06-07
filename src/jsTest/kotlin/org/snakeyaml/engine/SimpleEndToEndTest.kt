@@ -1,6 +1,7 @@
 package org.snakeyaml.engine
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import org.snakeyaml.engine.v2.api.DumpSettings
 import org.snakeyaml.engine.v2.api.StreamDataWriter
 import org.snakeyaml.engine.v2.common.FlowStyle
@@ -19,20 +20,19 @@ import org.snakeyaml.engine.v2.events.StreamStartEvent
 
 class SimpleEndToEndTest : FunSpec({
     test("simple case") {
-        val testObject = FooBar(
-            baz = "Hey!",
-            goo = 123,
+        val testObject = mapOf(
+            "baz" to "Hey!",
+            "goo" to 123,
         )
 
         val asYaml = testObject.toYaml()
-        println(asYaml)
+        asYaml shouldBe """
+            baz: 'Hey!'
+            goo: 123
+
+        """.trimIndent()
     }
 })
-
-data class FooBar(
-    val baz: String,
-    val goo: Int,
-)
 
 internal fun Any.toYaml(): String {
     val settings = DumpSettings.builder()
@@ -40,18 +40,18 @@ internal fun Any.toYaml(): String {
         // expressions.
         .setWidth(Int.MAX_VALUE)
         .build()
-    var wholeString = ""
+    val stringBuilder = StringBuilder()
     val writer = object : StreamDataWriter {
         override fun flush() {
             // no-op
         }
 
         override fun write(str: String) {
-            wholeString = str
+            stringBuilder.append(str)
         }
 
         override fun write(str: String, off: Int, len: Int) {
-            wholeString = str
+            stringBuilder.append(str)
         }
     }
     val emitter = Emitter(settings, writer)
@@ -62,7 +62,7 @@ internal fun Any.toYaml(): String {
 
     emitter.emit(DocumentEndEvent(false))
     emitter.emit(StreamEndEvent())
-    return wholeString
+    return stringBuilder.toString()
 }
 
 private fun Any?.elementToYaml(emitter: Emitter) {

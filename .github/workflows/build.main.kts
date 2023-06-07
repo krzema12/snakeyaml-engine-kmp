@@ -5,7 +5,7 @@ import io.github.typesafegithub.workflows.actions.actions.CacheV3
 import io.github.typesafegithub.workflows.actions.actions.CheckoutV3
 import io.github.typesafegithub.workflows.actions.actions.SetupJavaV3
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
-import io.github.typesafegithub.workflows.domain.RunnerType.UbuntuLatest
+import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
 import io.github.typesafegithub.workflows.dsl.expressions.expr
@@ -20,33 +20,39 @@ workflow(
     ),
     sourceFile = __FILE__.toPath(),
 ) {
-    job(
-        id = "build",
-        runsOn = UbuntuLatest,
-    ) {
-        uses(CheckoutV3())
-        uses(
-            name = "Set up JDK",
-            action = SetupJavaV3(
-                javaVersion = "11",
-                distribution = SetupJavaV3.Distribution.Zulu,
-                cache = SetupJavaV3.BuildPlatform.Gradle,
-            ),
-        )
-        uses(
-            name = "Cache Kotlin Konan",
-            action = CacheV3(
-                path = listOf(
-                    "~/.konan/**/*",
+    setOf(
+        UbuntuLatest,
+        MacOSLatest,
+        WindowsLatest,
+    ).forEach { jobRunner ->
+        job(
+            id = "build-on-${jobRunner::class.simpleName}",
+            runsOn = jobRunner,
+        ) {
+            uses(CheckoutV3())
+            uses(
+                name = "Set up JDK",
+                action = SetupJavaV3(
+                    javaVersion = "11",
+                    distribution = SetupJavaV3.Distribution.Zulu,
+                    cache = SetupJavaV3.BuildPlatform.Gradle,
                 ),
-                key = "kotlin-konan-${expr { runner.os }}",
-            ),
-        )
-        uses(
-            name = "Build",
-            action = GradleBuildActionV2(
-                arguments = "build",
-            ),
-        )
+            )
+            uses(
+                name = "Cache Kotlin Konan",
+                action = CacheV3(
+                    path = listOf(
+                        "~/.konan/**/*",
+                    ),
+                    key = "kotlin-konan-${expr { runner.os }}",
+                ),
+            )
+            uses(
+                name = "Build",
+                action = GradleBuildActionV2(
+                    arguments = "build",
+                ),
+            )
+        }
     }
 }.writeToFile()

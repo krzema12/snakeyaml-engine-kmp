@@ -22,8 +22,58 @@ jobs:
     - id: 'step-2'
       name: 'Consistency check'
       run: 'git diff --exit-code ''.github/workflows/build.yaml'''
-  build:
+  build-on-UbuntuLatest:
     runs-on: 'ubuntu-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v3'
+    - id: 'step-1'
+      name: 'Set up JDK'
+      uses: 'actions/setup-java@v3'
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        cache: 'gradle'
+    - id: 'step-2'
+      name: 'Cache Kotlin Konan'
+      uses: 'actions/cache@v3'
+      with:
+        path: '~/.konan/**/*'
+        key: 'kotlin-konan-${{ runner.os }}'
+    - id: 'step-3'
+      name: 'Build'
+      uses: 'gradle/gradle-build-action@v2'
+      with:
+        arguments: 'build'
+  build-on-MacOSLatest:
+    runs-on: 'macos-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v3'
+    - id: 'step-1'
+      name: 'Set up JDK'
+      uses: 'actions/setup-java@v3'
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        cache: 'gradle'
+    - id: 'step-2'
+      name: 'Cache Kotlin Konan'
+      uses: 'actions/cache@v3'
+      with:
+        path: '~/.konan/**/*'
+        key: 'kotlin-konan-${{ runner.os }}'
+    - id: 'step-3'
+      name: 'Build'
+      uses: 'gradle/gradle-build-action@v2'
+      with:
+        arguments: 'build'
+  build-on-WindowsLatest:
+    runs-on: 'windows-latest'
     needs:
     - 'check_yaml_consistency'
     steps:

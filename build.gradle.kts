@@ -5,11 +5,12 @@ plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
+    buildsrc.conventions.`git-branch-publish`
 }
 
 group = "org.snakeyaml"
 version = "2.7-SNAPSHOT"
-description = "SnakeYAML Engine"
+description = "SnakeYAML Engine KMP"
 
 kotlin {
     sourceSets {

@@ -18,4 +18,31 @@ SnakeYAML Engine KMP is based on
 
 ## Status
 
-⚠️ SnakeYAML Engine KMP is **under development**. It is not published.
+⚠️ SnakeYAML Engine KMP is **under development**.
+
+### Snapshot releases
+
+Experimental snapshot versions of SnakeYAML Engine KMP are available. 
+They are published to a GitHub branch, which must be added as a
+[custom Gradle Plugin repository](https://docs.gradle.org/current/userguide/plugins.html#sec:custom_plugin_repositories)
+
+```kts
+// settings.gradle.kts
+
+pluginManagement {
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+
+    // add the Dokkatoo snapshot repository
+    maven("https://github.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
+      name = "SnakeYAML Engine KMP Snapshots"
+      mavenContent {
+        // only include the relevant snapshots
+        includeGroup("org.snakeyaml")
+        snapshotsOnly()
+      }
+    }
+  }
+}
+```

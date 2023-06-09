@@ -34,7 +34,7 @@ pluginManagement {
     mavenCentral()
     gradlePluginPortal()
 
-    // add the Dokkatoo snapshot repository
+    // add the snapshot repository
     maven("https://github.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
       name = "SnakeYAML Engine KMP Snapshots"
       mavenContent {

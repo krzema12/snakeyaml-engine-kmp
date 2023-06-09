@@ -29,7 +29,8 @@ They are published to a GitHub branch, which must be added as a
 ```kts
 // settings.gradle.kts
 
-pluginManagement {
+@Suppress("UnstableApiUsage")
+dependencyResolutionManagement {
   repositories {
     mavenCentral()
     gradlePluginPortal()

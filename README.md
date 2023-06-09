@@ -35,7 +35,7 @@ pluginManagement {
     gradlePluginPortal()
 
     // add the snapshot repository
-    maven("https://github.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
+    maven("https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
       name = "SnakeYAML Engine KMP Snapshots"
       mavenContent {
         // only include the relevant snapshots
@@ -44,5 +44,15 @@ pluginManagement {
       }
     }
   }
+}
+```
+
+Once the repository is configured, add a dependency on the library:
+
+```kts
+// build.gradle.kts
+
+dependencies {
+    implementation("org.snakeyaml:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")
 }
 ```

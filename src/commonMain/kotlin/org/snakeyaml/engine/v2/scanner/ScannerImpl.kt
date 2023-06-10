@@ -15,6 +15,9 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.tokens.*
+import org.snakeyaml.engine.v2.tokens.*
+import kotlin.collections.set
+import kotlin.jvm.JvmInline
 
 
 /**
@@ -202,14 +205,14 @@ class ScannerImpl(
         }
         when (c.toChar()) {
             // Is it a directive?
-            '%' ->
+            '%'  ->
                 if (checkDirective()) {
                     fetchDirective()
                     return
                 }
 
             // Is it the document start?
-            '-' ->
+            '-'  ->
                 if (checkDocumentStart()) {
                     fetchDocumentStart()
                     return
@@ -220,83 +223,83 @@ class ScannerImpl(
                 }
 
             // Is it the document end?
-            '.' ->
+            '.'  ->
                 if (checkDocumentEnd()) {
                     fetchDocumentEnd()
                     return
                 }
 
             // Is it the flow sequence start indicator?
-            '[' -> {
+            '['  -> {
                 fetchFlowSequenceStart()
                 return
             }
 
             // Is it the flow mapping start indicator?
-            '{' -> {
+            '{'  -> {
                 fetchFlowMappingStart()
                 return
             }
 
             // Is it the flow sequence end indicator?
-            ']' -> {
+            ']'  -> {
                 fetchFlowSequenceEnd()
                 return
             }
 
             // Is it the flow mapping end indicator?
-            '}' -> {
+            '}'  -> {
                 fetchFlowMappingEnd()
                 return
             }
 
             // Is it the flow entry indicator?
-            ',' -> {
+            ','  -> {
                 fetchFlowEntry()
                 return
             }
 
             // Is it the key indicator?
-            '?' ->
+            '?'  ->
                 if (checkKey()) {
                     fetchKey()
                     return
                 }
 
             // Is it the value indicator?
-            ':' ->
+            ':'  ->
                 if (checkValue()) {
                     fetchValue()
                     return
                 }
 
             // Is it an alias?
-            '*' -> {
+            '*'  -> {
                 fetchAlias()
                 return
             }
 
             // Is it an anchor?
-            '&' -> {
+            '&'  -> {
                 fetchAnchor()
                 return
             }
 
             // Is it a tag?
-            '!' -> {
+            '!'  -> {
                 fetchTag()
                 return
             }
 
             // Is it a literal scalar?
-            '|' ->
+            '|'  ->
                 if (isBlockContext()) {
                     fetchLiteral()
                     return
                 }
 
             // Is it a folded scalar?
-            '>' ->
+            '>'  ->
                 if (isBlockContext()) {
                     fetchFolded()
                     return
@@ -309,7 +312,7 @@ class ScannerImpl(
             }
 
             // Is it a double quoted scalar?
-            '"' -> {
+            '"'  -> {
                 fetchDouble()
                 return
             }
@@ -1998,8 +2001,8 @@ class ScannerImpl(
             }
             return when {
                 "\n" != lineBreak -> lineBreak + breaks
-                breaks.isEmpty() -> " "
-                else -> breaks.toString()
+                breaks.isEmpty()  -> " "
+                else              -> breaks.toString()
             }
         }
     }
@@ -2295,8 +2298,8 @@ private fun Chomping(
     return when (indicatorCodePoint) {
         '+'.code -> Chomping.Keep(increment)
         '-'.code -> Chomping.Strip(increment)
-        null -> Chomping.Clip(increment)
-        else -> null
+        null     -> Chomping.Clip(increment)
+        else     -> null
     }
 }
 

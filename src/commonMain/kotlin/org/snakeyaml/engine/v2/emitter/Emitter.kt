@@ -148,13 +148,13 @@ class Emitter(
 
             is SequenceStartEvent -> needEvents(iter, 2)
 
-            is MappingStartEvent -> needEvents(iter, 3)
+            is MappingStartEvent  -> needEvents(iter, 3)
 
-            is StreamStartEvent -> needEvents(iter, 2)
+            is StreamStartEvent   -> needEvents(iter, 2)
 
-            is StreamEndEvent -> false
+            is StreamEndEvent     -> false
 
-            else ->
+            else                  ->
                 // To collect any comment events
                 if (emitComments) needEvents(iter, 1) else false
         }
@@ -170,8 +170,8 @@ class Emitter(
             actualCount++
             when (event) {
                 is DocumentStartEvent, is CollectionStartEvent -> level++
-                is DocumentEndEvent, is CollectionEndEvent -> level--
-                is StreamEndEvent -> level = -1
+                is DocumentEndEvent, is CollectionEndEvent     -> level--
+                is StreamEndEvent                              -> level = -1
             }
             if (level < 0) {
                 return false
@@ -273,13 +273,13 @@ class Emitter(
 
         private fun checkTagHandle(handle: String) {
             when {
-                handle.isEmpty() ->
+                handle.isEmpty()                                  ->
                     throw EmitterException("tag handle must not be empty")
 
                 !(handle.startsWith('!') && handle.endsWith('!')) ->
                     throw EmitterException("tag handle must start and end with '!': $handle")
 
-                handle != "!" && !HANDLE_FORMAT.matches(handle) ->
+                handle != "!" && !HANDLE_FORMAT.matches(handle)   ->
                     throw EmitterException("invalid character in the tag handle: $handle")
             }
         }
@@ -351,7 +351,7 @@ class Emitter(
         mappingContext = mapping
         simpleKeyContext = simpleKey
         when (event?.eventId) {
-            Event.ID.Alias -> {
+            Event.ID.Alias                                                 -> {
                 expectAlias()
             }
 
@@ -361,7 +361,7 @@ class Emitter(
                 handleNodeEvent(event!!.eventId)
             }
 
-            else -> {
+            else                                                           -> {
                 throw EmitterException("expected NodeEvent, but got ${event?.eventId}")
             }
         }
@@ -369,7 +369,7 @@ class Emitter(
 
     private fun handleNodeEvent(id: Event.ID) {
         when (id) {
-            Event.ID.Scalar -> expectScalar()
+            Event.ID.Scalar        -> expectScalar()
             Event.ID.SequenceStart ->
                 if (flowLevel != 0
                     || canonical
@@ -381,7 +381,7 @@ class Emitter(
                     expectBlockSequence()
                 }
 
-            Event.ID.MappingStart ->
+            Event.ID.MappingStart  ->
                 if (flowLevel != 0
                     || canonical
                     || (event as MappingStartEvent).isFlow()
@@ -392,7 +392,7 @@ class Emitter(
                     expectBlockMapping()
                 }
 
-            else -> throw IllegalStateException()
+            else                   -> throw IllegalStateException()
         }
     }
 
@@ -873,9 +873,9 @@ class Emitter(
             when (scalarStyle) {
                 ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
                 ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
-                ScalarStyle.FOLDED -> writeFolded(analysis!!.scalar, split)
-                ScalarStyle.LITERAL -> writeLiteral(analysis!!.scalar)
-                else -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
+                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
+                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
+                else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
             }
         }
         analysis = null

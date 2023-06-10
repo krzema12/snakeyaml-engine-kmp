@@ -79,7 +79,7 @@ class Load @JvmOverloads constructor(
      * @return deserialised YAML document
      */
     private fun loadOne(composer: Composer): Any? {
-        val nodeOptional = composer.getSingleNode()
+        val nodeOptional = composer.singleNode()
         return constructor.constructSingleDocument(nodeOptional)
     }
 

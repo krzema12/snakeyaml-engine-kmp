@@ -69,7 +69,7 @@ class Composer(
      *
      * @return The root node of the document or `null` if no document is available.
      */
-    fun getSingleNode(): Node? {
+    fun singleNode(): Node? {
         // Drop the STREAM-START event.
         parser.next()
         // Compose a document if the stream is not empty.

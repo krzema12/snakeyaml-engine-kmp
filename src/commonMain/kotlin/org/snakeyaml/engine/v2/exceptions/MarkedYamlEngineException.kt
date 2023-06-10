@@ -20,7 +20,7 @@ package org.snakeyaml.engine.v2.exceptions
  */
 open class MarkedYamlEngineException private constructor(
     // can't override `message` property, so define a new one
-    // https://youtrack.jetbrains.com/issue/KT-43490/
+    // https://youtrack.jetbrains.com/issue/KT-52653/
     private val readableError: String,
     cause: Throwable? = null,
 ) : YamlEngineException(readableError, cause) {

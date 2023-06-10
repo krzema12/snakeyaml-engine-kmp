@@ -202,14 +202,14 @@ class ScannerImpl(
         }
         when (c.toChar()) {
             // Is it a directive?
-            '%'  ->
+            '%' ->
                 if (checkDirective()) {
                     fetchDirective()
                     return
                 }
 
             // Is it the document start?
-            '-'  ->
+            '-' ->
                 if (checkDocumentStart()) {
                     fetchDocumentStart()
                     return
@@ -220,83 +220,83 @@ class ScannerImpl(
                 }
 
             // Is it the document end?
-            '.'  ->
+            '.' ->
                 if (checkDocumentEnd()) {
                     fetchDocumentEnd()
                     return
                 }
 
             // Is it the flow sequence start indicator?
-            '['  -> {
+            '[' -> {
                 fetchFlowSequenceStart()
                 return
             }
 
             // Is it the flow mapping start indicator?
-            '{'  -> {
+            '{' -> {
                 fetchFlowMappingStart()
                 return
             }
 
             // Is it the flow sequence end indicator?
-            ']'  -> {
+            ']' -> {
                 fetchFlowSequenceEnd()
                 return
             }
 
             // Is it the flow mapping end indicator?
-            '}'  -> {
+            '}' -> {
                 fetchFlowMappingEnd()
                 return
             }
 
             // Is it the flow entry indicator?
-            ','  -> {
+            ',' -> {
                 fetchFlowEntry()
                 return
             }
 
             // Is it the key indicator?
-            '?'  ->
+            '?' ->
                 if (checkKey()) {
                     fetchKey()
                     return
                 }
 
             // Is it the value indicator?
-            ':'  ->
+            ':' ->
                 if (checkValue()) {
                     fetchValue()
                     return
                 }
 
             // Is it an alias?
-            '*'  -> {
+            '*' -> {
                 fetchAlias()
                 return
             }
 
             // Is it an anchor?
-            '&'  -> {
+            '&' -> {
                 fetchAnchor()
                 return
             }
 
             // Is it a tag?
-            '!'  -> {
+            '!' -> {
                 fetchTag()
                 return
             }
 
             // Is it a literal scalar?
-            '|'  ->
+            '|' ->
                 if (isBlockContext()) {
                     fetchLiteral()
                     return
                 }
 
             // Is it a folded scalar?
-            '>'  ->
+            '>' ->
                 if (isBlockContext()) {
                     fetchFolded()
                     return
@@ -309,7 +309,7 @@ class ScannerImpl(
             }
 
             // Is it a double quoted scalar?
-            '"'  -> {
+            '"' -> {
                 fetchDouble()
                 return
             }
@@ -892,7 +892,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+          && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -902,7 +902,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+          && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -925,7 +925,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+          || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -1998,8 +1998,8 @@ class ScannerImpl(
             }
             return when {
                 "\n" != lineBreak -> lineBreak + breaks
-                breaks.isEmpty()  -> " "
-                else              -> breaks.toString()
+                breaks.isEmpty() -> " "
+                else -> breaks.toString()
             }
         }
     }
@@ -2295,8 +2295,8 @@ private fun Chomping(
     return when (indicatorCodePoint) {
         '+'.code -> Chomping.Keep(increment)
         '-'.code -> Chomping.Strip(increment)
-        null     -> Chomping.Clip(increment)
-        else     -> null
+        null -> Chomping.Clip(increment)
+        else -> null
     }
 }
 

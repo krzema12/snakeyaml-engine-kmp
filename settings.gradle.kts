@@ -78,6 +78,11 @@ dependencyResolutionManagement {
             }
             metadataSources { artifact() }
         }
+
+        maven(file("build/internal-maven")) {
+            name = "InternalMaven"
+            mavenContent { includeGroup("org.snakeyaml") }
+        }
     }
 }
 

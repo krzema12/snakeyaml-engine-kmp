@@ -17,11 +17,7 @@ import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.exceptions.ConstructorException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.SequenceNode
-import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.nodes.*
 import kotlin.jvm.JvmField
 
 /**
@@ -88,9 +84,8 @@ abstract class BaseConstructor(
     private fun fillRecursive() {
         if (maps2fill.isNotEmpty()) {
             for (entry in maps2fill) {
-                val keyValueTuple =
-                    entry.value2
-                entry.value1[keyValueTuple.value1] = keyValueTuple.value2
+                val (value1, value2) = entry.value2
+                entry.value1[value1] = value2
             }
             maps2fill.clear()
         }
@@ -103,7 +98,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Construct object from the specified Node. Return existing instance if the node is already
+     * Construct object from the specified [Node]. Return existing instance if [node] is already
      * constructed.
      *
      * @param node Node to be constructed
@@ -114,8 +109,8 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Construct object from the specified Node. It does not check if existing instance the node is
-     * already constructed.
+     * Construct object from the specified [Node]. It does not check if existing instance of [node] is already
+     * constructed.
      *
      * @param node - the source
      * @return instantiated object
@@ -137,7 +132,7 @@ abstract class BaseConstructor(
                 problem = "could not determine a constructor for the tag " + node.tag,
                 problemMark = node.startMark,
             )
-        val data = if (constructedObjects.containsKey(node)) constructedObjects[node] else constructor.construct(node)
+        val data = constructedObjects[node] ?: constructor.construct(node)
         constructedObjects[node] = data
         recursiveObjects.remove(node)
         if (node.isRecursive) {
@@ -346,5 +341,8 @@ abstract class BaseConstructor(
         sets2fill.add(0, RecursiveTuple(set, key))
     }
 
-    internal class RecursiveTuple<T, K>(val value1: T, val value2: K)
+    private data class RecursiveTuple<T, K>(
+        val value1: T,
+        val value2: K,
+    )
 }

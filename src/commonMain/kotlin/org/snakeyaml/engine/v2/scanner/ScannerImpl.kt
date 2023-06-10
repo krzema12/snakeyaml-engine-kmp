@@ -202,8 +202,7 @@ class ScannerImpl(
         if (done) return false
         // If we aren't done, but we have no tokens, we need to scan more.
         if (tokens.isEmpty()) return true
-        // The current token may be a potential simple key, so we
-        // need to look further.
+        // The current token may be a potential simple key, so we need to look further.
         stalePossibleSimpleKeys()
         return nextPossibleSimpleKey() == tokensTaken
     }
@@ -229,14 +228,14 @@ class ScannerImpl(
         }
         when (c.toChar()) {
             // Is it a directive?
-            '%'  ->
+            '%' ->
                 if (checkDirective()) {
                     fetchDirective()
                     return
                 }
 
             // Is it the document start?
-            '-'  ->
+            '-' ->
                 if (checkDocumentStart()) {
                     fetchDocumentStart()
                     return
@@ -247,84 +246,83 @@ class ScannerImpl(
                 }
 
             // Is it the document end?
-            '.'  ->
+            '.' ->
                 if (checkDocumentEnd()) {
                     fetchDocumentEnd()
                     return
                 }
 
             // Is it the flow sequence start indicator?
-            '['  -> {
+            '[' -> {
                 fetchFlowSequenceStart()
                 return
             }
 
             // Is it the flow mapping start indicator?
-            '{'  -> {
+            '{' -> {
                 fetchFlowMappingStart()
                 return
             }
 
             // Is it the flow sequence end indicator?
-            ']'  -> {
+            ']' -> {
                 fetchFlowSequenceEnd()
                 return
             }
 
             // Is it the flow mapping end indicator?
-            '}'  -> {
+            '}' -> {
                 fetchFlowMappingEnd()
                 return
             }
 
             // Is it the flow entry indicator?
-            ','  -> {
+            ',' -> {
                 fetchFlowEntry()
                 return
             }
 
             // Is it the key indicator?
-            '?'  ->
+            '?' ->
                 if (checkKey()) {
                     fetchKey()
                     return
                 }
 
             // Is it the value indicator?
-            ':'  ->
+            ':' ->
                 if (checkValue()) {
                     fetchValue()
                     return
                 }
 
             // Is it an alias?
-            '*'  -> {
+            '*' -> {
                 fetchAlias()
                 return
             }
 
             // Is it an anchor?
-            '&'  -> {
+            '&' -> {
                 fetchAnchor()
                 return
             }
 
             // Is it a tag?
-            '!'  -> {
-
+            '!' -> {
                 fetchTag()
                 return
             }
 
             // Is it a literal scalar?
-            '|'  ->
+            '|' ->
                 if (isBlockContext()) {
                     fetchLiteral()
                     return
                 }
 
             // Is it a folded scalar?
-            '>'  ->
+            '>' ->
                 if (isBlockContext()) {
                     fetchFolded()
                     return
@@ -337,7 +335,7 @@ class ScannerImpl(
             }
 
             // Is it a double quoted scalar?
-            '"'  -> {
+            '"' -> {
                 fetchDouble()
                 return
             }
@@ -360,7 +358,6 @@ class ScannerImpl(
             problem = "found character '$chRepresentation' that cannot start any token. (Do not use $chRepresentation for indentation)",
             problemMark = reader.getMark(),
         )
-
     }
 
     //region Simple keys treatment.
@@ -369,13 +366,13 @@ class ScannerImpl(
      * Return the number of the nearest possible simple key. Actually we don't need to loop through
      * the whole dictionary.
      */
-    private fun nextPossibleSimpleKey(): Int {
+    private fun nextPossibleSimpleKey(): Int? {
         // Because possibleSimpleKeys is ordered we can simply take the first key
-        return possibleSimpleKeys.values.firstOrNull()?.tokenNumber ?: -1
+        return possibleSimpleKeys.values.firstOrNull()?.tokenNumber
     }
 
     /**
-     * ```
+     * ```text
      * Remove entries that are no longer possible simple keys. According to
      * the YAML specification, simple keys
      * - should be limited to a single line,
@@ -916,7 +913,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+          && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -926,7 +923,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+          && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -949,7 +946,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+          || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -1478,7 +1475,7 @@ class ScannerImpl(
             throw ScannerException(
                 "while scanning a block scalar", startMark,
                 " the leading empty lines contain more spaces (" + blockIndent
-                    + ") than the first non-empty line.",
+                  + ") than the first non-empty line.",
                 reader.getMark(),
             )
         }
@@ -1756,13 +1753,13 @@ class ScannerImpl(
             } else if (doubleQuoted && c == '\\'.code) {
                 reader.forward()
                 c = reader.peek()
-                if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_REPLACEMENTS.containsKey(c.toChar())) {
+                if (!Character.isSupplementaryCodePoint(c) && c.toChar() in CharConstants.ESCAPE_REPLACEMENTS) {
                     // The character is one of the single-replacement
                     // types; these are replaced with a literal character
                     // from the mapping.
                     chunks.append(CharConstants.ESCAPE_REPLACEMENTS[c.toChar()])
                     reader.forward()
-                } else if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_CODES.containsKey(c.toChar())) {
+                } else if (!Character.isSupplementaryCodePoint(c) && c.toChar() in CharConstants.ESCAPE_CODES) {
                     // The character is a multi-digit escape sequence, with
                     // length defined by the value in the ESCAPE_CODES map.
                     length = CharConstants.ESCAPE_CODES[c.toChar()]!!
@@ -2019,8 +2016,8 @@ class ScannerImpl(
             }
             return when {
                 "\n" != lineBreak -> lineBreak + breaks
-                breaks.isEmpty()  -> " "
-                else              -> breaks.toString()
+                breaks.isEmpty() -> " "
+                else -> breaks.toString()
             }
         }
     }
@@ -2315,8 +2312,8 @@ private fun Chomping(
     return when (indicatorCodePoint) {
         '+'.code -> Chomping.Keep(increment)
         '-'.code -> Chomping.Strip(increment)
-        null     -> Chomping.Clip(increment)
-        else     -> null
+        null -> Chomping.Clip(increment)
+        else -> null
     }
 }
 

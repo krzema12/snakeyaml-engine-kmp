@@ -30,7 +30,7 @@ import kotlin.jvm.JvmOverloads
  * @param startMark - start mark when available
  * @param endMark - end mark when available
  */
-abstract class Node @JvmOverloads constructor(
+sealed class Node @JvmOverloads constructor(
     /**
      * Tag of this node.
      *
@@ -137,4 +137,6 @@ abstract class Node @JvmOverloads constructor(
      * @return the value if it was specified
      */
     fun getProperty(key: String): Any? = properties?.get(key)
+
+    fun isResolved(): Boolean = resolved
 }

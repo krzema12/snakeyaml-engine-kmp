@@ -20,7 +20,6 @@ import kotlin.jvm.JvmOverloads
 /**
  * Represents a map.
  *
- *
  * A map is a collection of unsorted key-value pairs.
  *
  * @param[tag] tag of the node
@@ -36,7 +35,7 @@ class MappingNode @JvmOverloads constructor(
      * Applications may need to replace the content (Spring Boot).
      * Merging was removed, but it may be implemented.
      */
-    override var value: MutableList<NodeTuple>,
+    override val value: List<NodeTuple>,
     flowStyle: FlowStyle,
     resolved: Boolean = true,
     startMark: Mark? = null,

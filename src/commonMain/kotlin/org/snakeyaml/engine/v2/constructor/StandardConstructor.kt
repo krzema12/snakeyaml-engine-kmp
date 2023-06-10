@@ -16,11 +16,7 @@ package org.snakeyaml.engine.v2.constructor
 import org.snakeyaml.engine.internal.getEnvironmentVariable
 import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.api.LoadSettings
-import org.snakeyaml.engine.v2.exceptions.ConstructorException
-import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException
-import org.snakeyaml.engine.v2.exceptions.Mark
-import org.snakeyaml.engine.v2.exceptions.MissingEnvironmentVariableException
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException
+import org.snakeyaml.engine.v2.exceptions.*
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.SequenceNode
@@ -46,40 +42,43 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     /**
-     * Flattening is not required because merge was removed from YAML 1.2 Only check duplications
+     * Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
      *
      * @param node - mapping to check the duplications
      */
-    private fun flattenMapping(node: MappingNode): Unit = processDuplicateKeys(node)
+    private fun flattenMapping(node: MappingNode): MappingNode = processDuplicateKeys(node)
 
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
      * @param node - the source
      */
-    private fun processDuplicateKeys(node: MappingNode) {
+    private fun processDuplicateKeys(node: MappingNode): MappingNode {
         val nodeValue = node.value
-        val keys = mutableMapOf<Any?, Int>()
-        val toRemove = mutableSetOf<Int>()
-        for ((i, tuple) in nodeValue.withIndex()) {
-            val keyNode = tuple.keyNode
-            val key = constructKey(keyNode, node.startMark, tuple.keyNode.startMark)
-            val prevIndex = keys.put(key, i)
-            if (prevIndex != null) {
+        val groupedByKey = nodeValue
+            .groupingBy { tuple ->
+                constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
+            }.reduce { key, _, tuple ->
+                // subsequent tuples replace previous tuples
                 if (!settings.allowDuplicateKeys) {
                     throw DuplicateKeyException(
                         contextMark = node.startMark,
                         key = key!!,
                         problemMark = tuple.keyNode.startMark,
                     )
+                } else {
+                    tuple
                 }
-                toRemove.add(prevIndex)
             }
-        }
-        val indices2remove = toRemove.iterator()
-        while (indices2remove.hasNext()) {
-            nodeValue.removeAt(indices2remove.next())
-        }
+
+        return MappingNode(
+            tag = node.tag,
+            value = groupedByKey.values.toList(),
+            flowStyle = node.flowStyle,
+            resolved = node.isResolved(),
+            startMark = node.startMark,
+            endMark = node.endMark
+        )
     }
 
     private fun constructKey(
@@ -103,13 +102,13 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        flattenMapping(node)
-        super.constructMapping2ndStep(node, mapping)
+        val flattened = flattenMapping(node)
+        super.constructMapping2ndStep(flattened, mapping)
     }
 
     override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        flattenMapping(node)
-        super.constructSet2ndStep(node, set)
+        val flattened = flattenMapping(node)
+        super.constructSet2ndStep(flattened, set)
     }
 
     /** Create [Set] instances */
@@ -191,7 +190,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar)
                     ?: error("failed to match scalar")
                 val (name, separator, value) = matchResult.destructured
-                val env = getEnv(name)
+                val env = getEnvironmentVariable(name)
                 val overruled = config.getValueFor(name, separator, value, env)
                 overruled ?: apply(name, separator, value, env)
             } else {
@@ -208,35 +207,43 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * @param environment - the value from environment for the provided variable
          * @return the value to apply in the template
          */
-        fun apply(name: String, separator: String?, value: String, environment: String?): String {
-            if (!environment.isNullOrEmpty()) {
-                return environment
-            } else if (separator != null) { // variable is either unset or empty
-                // there is a default value or error
-                if (separator == "?" && environment == null) {
-                    throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
-                } else if (separator == ":?") {
-                    if (environment == null) {
-                        throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
-                    } else if (environment.isEmpty()) {
-                        throw MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
-                    }
-                }
-                if (separator.startsWith(":") && environment.isNullOrEmpty()) {
-                    return value
-                } else if (environment == null) {
-                    return value
-                }
-            }
-            return ""
-        }
+        private fun apply(
+            name: String,
+            separator: String?,
+            value: String,
+            environment: String?,
+        ): String {
+            if (!environment.isNullOrEmpty()) return environment // variable is either unset or empty
+            if (separator == null) return ""
 
-        /**
-         * Get value of the environment variable
-         *
-         * @param key - the name of the variable
-         * @return value or `null` if not set
-         */
-        private fun getEnv(key: String): String? = getEnvironmentVariable(key)
+            fun missingEnvironmentVariable() =
+                MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
+
+            fun emptyEnvironmentVariable() =
+                MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
+
+            return when (separator) {
+                ":-" -> {
+                    if (environment.isNullOrEmpty()) value else ""
+                }
+
+                ":?" -> {
+                    if (environment == null) throw missingEnvironmentVariable()
+                    if (environment.isEmpty()) throw emptyEnvironmentVariable()
+                    value
+                }
+
+                "-" -> {
+                    if (environment == null) value else ""
+                }
+
+                "?" -> {
+                    if (environment == null) throw missingEnvironmentVariable()
+                    ""
+                }
+
+                else -> ""
+            }
+        }
     }
 }

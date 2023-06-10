@@ -81,27 +81,26 @@ class Composer(
      * @return The root node of the document or `null` if no document is
      * available.
      */
-    val singleNode: Node?
-        get() {
-            // Drop the STREAM-START event.
-            parser.next()
-            // Compose a document if the stream is not empty.
-            val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
-            // Ensure that the stream contains no more documents.
-            if (!parser.checkEvent(Event.ID.StreamEnd)) {
-                val event = parser.next()
-                val previousDocMark = document?.startMark
-                throw ComposerException(
-                    problem = "expected a single document in the stream",
-                    problemMark = previousDocMark,
-                    context = "but found another document",
-                    contextMark = event.startMark,
-                )
-            }
-            // Drop the STREAM-END event.
-            parser.next()
-            return document
+    fun singleNode(): Node? {
+        // Drop the STREAM-START event.
+        parser.next()
+        // Compose a document if the stream is not empty.
+        val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
+        // Ensure that the stream contains no more documents.
+        if (!parser.checkEvent(Event.ID.StreamEnd)) {
+            val event = parser.next()
+            val previousDocMark = document?.startMark
+            throw ComposerException(
+                problem = "expected a single document in the stream",
+                problemMark = previousDocMark,
+                context = "but found another document",
+                contextMark = event.startMark,
+            )
         }
+        // Drop the STREAM-END event.
+        parser.next()
+        return document
+    }
 
     /**
      * Reads and composes the next document.

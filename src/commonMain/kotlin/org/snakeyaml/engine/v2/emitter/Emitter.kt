@@ -44,14 +44,14 @@ import org.snakeyaml.engine.v2.scanner.StreamReader
 import kotlin.jvm.JvmField
 
 /**
- * <pre>
+ * ```text
  * Emitter expects events obeying the following grammar:
  * stream ::= STREAM-START document* STREAM-END
  * document ::= DOCUMENT-START node DOCUMENT-END
  * node ::= SCALAR | sequence | mapping
  * sequence ::= SEQUENCE-START node* SEQUENCE-END
  * mapping ::= MAPPING-START (node node)* MAPPING-END
- * </pre>
+ * ```
  */
 class Emitter(
     private val opts: DumpSettings,
@@ -160,13 +160,13 @@ class Emitter(
 
             is SequenceStartEvent -> needEvents(iter, 2)
 
-            is MappingStartEvent  -> needEvents(iter, 3)
+            is MappingStartEvent -> needEvents(iter, 3)
 
-            is StreamStartEvent   -> needEvents(iter, 2)
+            is StreamStartEvent -> needEvents(iter, 2)
 
-            is StreamEndEvent     -> false
+            is StreamEndEvent -> false
 
-            else                  ->
+            else ->
                 // To collect any comment events
                 if (emitComments) needEvents(iter, 1) else false
         }
@@ -182,8 +182,8 @@ class Emitter(
             actualCount++
             when (event) {
                 is DocumentStartEvent, is CollectionStartEvent -> level++
-                is DocumentEndEvent, is CollectionEndEvent     -> level--
-                is StreamEndEvent                              -> level = -1
+                is DocumentEndEvent, is CollectionEndEvent -> level--
+                is StreamEndEvent -> level = -1
             }
             if (level < 0) {
                 return false
@@ -261,11 +261,11 @@ class Emitter(
                 handleTagDirectives(ev.tags)
             }
             val implicit = first
-                && !ev.explicit
-                && !canonical
-                && ev.specVersion == null
-                && ev.tags.isEmpty()
-                && !checkEmptyDocument()
+              && !ev.explicit
+              && !canonical
+              && ev.specVersion == null
+              && ev.tags.isEmpty()
+              && !checkEmptyDocument()
             if (!implicit) {
                 writeIndent()
                 writeIndicator(indicator = "---", needWhitespace = true)
@@ -286,13 +286,13 @@ class Emitter(
 
         private fun checkTagHandle(handle: String) {
             when {
-                handle.isEmpty()                                  ->
+                handle.isEmpty() ->
                     throw EmitterException("tag handle must not be empty")
 
                 !(handle.startsWith('!') && handle.endsWith('!')) ->
                     throw EmitterException("tag handle must start and end with '!': $handle")
 
-                handle != "!" && !HANDLE_FORMAT.matches(handle)   ->
+                handle != "!" && !HANDLE_FORMAT.matches(handle) ->
                     throw EmitterException("invalid character in the tag handle: $handle")
             }
         }
@@ -311,8 +311,8 @@ class Emitter(
             if (nextEvent.eventId == Event.ID.Scalar) {
                 val e = nextEvent as ScalarEvent
                 return e.anchor == null
-                    && e.tag == null
-                    && e.value.isEmpty()
+                  && e.tag == null
+                  && e.value.isEmpty()
             }
             return false
         }
@@ -364,7 +364,7 @@ class Emitter(
         mappingContext = mapping
         simpleKeyContext = simpleKey
         when (event!!.eventId) {
-            Event.ID.Alias                                                 -> {
+            Event.ID.Alias -> {
                 expectAlias()
             }
 
@@ -374,7 +374,7 @@ class Emitter(
                 handleNodeEvent(event!!.eventId)
             }
 
-            else                                                           -> {
+            else -> {
                 throw EmitterException("expected NodeEvent, but got " + event!!.eventId)
             }
         }
@@ -382,7 +382,7 @@ class Emitter(
 
     private fun handleNodeEvent(id: Event.ID) {
         when (id) {
-            Event.ID.Scalar        -> expectScalar()
+            Event.ID.Scalar -> expectScalar()
             Event.ID.SequenceStart ->
                 if (flowLevel != 0
                     || canonical
@@ -394,7 +394,7 @@ class Emitter(
                     expectBlockSequence()
                 }
 
-            Event.ID.MappingStart  ->
+            Event.ID.MappingStart ->
                 if (flowLevel != 0
                     || canonical
                     || (event as MappingStartEvent).isFlow()
@@ -405,7 +405,7 @@ class Emitter(
                     expectBlockMapping()
                 }
 
-            else                   -> throw IllegalStateException()
+            else -> throw IllegalStateException()
         }
     }
 
@@ -716,7 +716,7 @@ class Emitter(
 
         private fun isFoldedOrLiteral(event: Event): Boolean {
             return event is ScalarEvent
-                && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
+              && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
         }
     }
 
@@ -740,14 +740,14 @@ class Emitter(
 
     private fun checkEmptySequence(): Boolean {
         return event!!.eventId == Event.ID.SequenceStart
-            && !events.isEmpty()
-            && events.first().eventId == Event.ID.SequenceEnd
+          && !events.isEmpty()
+          && events.first().eventId == Event.ID.SequenceEnd
     }
 
     private fun checkEmptyMapping(): Boolean {
         return event!!.eventId == Event.ID.MappingStart
-            && !events.isEmpty()
-            && events.first().eventId == Event.ID.MappingEnd
+          && !events.isEmpty()
+          && events.first().eventId == Event.ID.MappingEnd
     }
 
     private fun checkSimpleKey(): Boolean {
@@ -782,14 +782,14 @@ class Emitter(
             length += analysis!!.scalar.length
         }
         return length < maxSimpleKeyLength
-            && (
-            event!!.eventId == Event.ID.Alias
-                || event!!.eventId == Event.ID.Scalar
-                && !analysis!!.empty
-                && !analysis!!.multiline
-                || checkEmptySequence()
-                || checkEmptyMapping()
-            )
+          && (
+          event!!.eventId == Event.ID.Alias
+            || event!!.eventId == Event.ID.Scalar
+            && !analysis!!.empty
+            && !analysis!!.multiline
+            || checkEmptySequence()
+            || checkEmptyMapping()
+          )
     }
 
     //endregion
@@ -819,11 +819,11 @@ class Emitter(
             if (
                 (!canonical || tag == null)
                 && (
-                    scalarStyle == null
-                        && ev.implicit.canOmitTagInPlainScalar()
-                        || scalarStyle != null
-                        && ev.implicit.canOmitTagInNonPlainScalar()
-                    )
+                  scalarStyle == null
+                    && ev.implicit.canOmitTagInPlainScalar()
+                    || scalarStyle != null
+                    && ev.implicit.canOmitTagInNonPlainScalar()
+                  )
             ) {
                 preparedTag = null
                 return
@@ -887,9 +887,9 @@ class Emitter(
             when (scalarStyle) {
                 ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
                 ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
-                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
-                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
-                else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
+                ScalarStyle.FOLDED -> writeFolded(analysis!!.scalar, split)
+                ScalarStyle.LITERAL -> writeLiteral(analysis!!.scalar)
+                else -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
             }
         }
         analysis = null
@@ -914,8 +914,8 @@ class Emitter(
         }
         val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
             prefix != null
-                && tag.startsWith(prefix)
-                && ("!" == prefix || prefix.length < tag.length)
+              && tag.startsWith(prefix)
+              && ("!" == prefix || prefix.length < tag.length)
         }
         val handle: String?
         val suffix: String
@@ -1261,7 +1261,7 @@ class Emitter(
                 }
                 if (ch != null) {
                     var data: String
-                    if (ESCAPE_REPLACEMENTS.containsKey(ch)) {
+                    if (ch in ESCAPE_REPLACEMENTS) {
                         data = "\\" + ESCAPE_REPLACEMENTS[ch]
                     } else {
                         val codePoint: Int = if (ch.isHighSurrogate() && end + 1 < text.length) {

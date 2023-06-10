@@ -3,7 +3,7 @@ package org.snakeyaml.engine
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.api.StreamDataWriter
+import org.snakeyaml.engine.v2.api.StringStreamDataWriter
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.emitter.Emitter
@@ -19,22 +19,8 @@ import org.snakeyaml.engine.v2.events.StreamStartEvent
 class SimpleEndToEndTest : FunSpec({
     test("simple case") {
         // Given
-        val settings = DumpSettings.builder()
-            .build()
-        val stringBuilder = StringBuilder()
-        val writer = object : StreamDataWriter {
-            override fun flush() {
-                // no-op
-            }
-
-            override fun write(str: String) {
-                stringBuilder.append(str)
-            }
-
-            override fun write(str: String, off: Int, len: Int) {
-                stringBuilder.append(str)
-            }
-        }
+        val settings = DumpSettings.builder().build()
+        val writer = StringStreamDataWriter()
         val emitter = Emitter(opts = settings, stream = writer)
 
         // When
@@ -52,7 +38,7 @@ class SimpleEndToEndTest : FunSpec({
         emitter.emit(StreamEndEvent())
 
         // Then
-        stringBuilder.toString() shouldBe """
+        writer.toString() shouldBe """
             foo: bar
             baz: goo
 

@@ -137,4 +137,6 @@ abstract class Node @JvmOverloads constructor(
      * @return the value if it was specified
      */
     fun getProperty(key: String): Any? = properties?.get(key)
+
+    fun isResolved(): Boolean = resolved
 }

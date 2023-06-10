@@ -46,39 +46,50 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     /**
-     * Flattening is not required because merge was removed from YAML 1.2 Only check duplications
+     * Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
      *
      * @param node - mapping to check the duplications
+     * @returns the flattened [node]
      */
-    private fun flattenMapping(node: MappingNode): Unit = processDuplicateKeys(node)
+    private fun flattenMapping(node: MappingNode): MappingNode = processDuplicateKeys(node)
 
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
      * @param node - the source
+     * @returns the result of de-duplicating the keys in [node]
      */
-    private fun processDuplicateKeys(node: MappingNode) {
-        val nodeValue = node.value
-        val keys = mutableMapOf<Any?, Int>()
-        val toRemove = mutableSetOf<Int>()
-        for ((i, tuple) in nodeValue.withIndex()) {
-            val keyNode = tuple.keyNode
-            val key = constructKey(keyNode, node.startMark, tuple.keyNode.startMark)
-            val prevIndex = keys.put(key, i)
-            if (prevIndex != null) {
+    private fun processDuplicateKeys(node: MappingNode): MappingNode {
+        val groupedByKey = node.value.groupingBy { tuple ->
+            constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
+        }
+
+        return if (groupedByKey.eachCount().none { (_, count) -> count > 1 }) {
+            // no duplicate keys - no de-duplication necessary
+            node
+        } else {
+            // duplicate keys detected - must remove duplicated tuples and return a new MappingNode
+            val deduplicatedValues = groupedByKey.reduce { key, _, tuple ->
+                // subsequent tuples replace previous tuples
                 if (!settings.allowDuplicateKeys) {
                     throw DuplicateKeyException(
                         contextMark = node.startMark,
                         key = key!!,
                         problemMark = tuple.keyNode.startMark,
                     )
+                } else {
+                    tuple
                 }
-                toRemove.add(prevIndex)
-            }
-        }
-        val indices2remove = toRemove.iterator()
-        while (indices2remove.hasNext()) {
-            nodeValue.removeAt(indices2remove.next())
+            }.values.toList()
+
+            MappingNode(
+                tag = node.tag,
+                value = deduplicatedValues,
+                flowStyle = node.flowStyle,
+                resolved = node.isResolved(),
+                startMark = node.startMark,
+                endMark = node.endMark
+            )
         }
     }
 

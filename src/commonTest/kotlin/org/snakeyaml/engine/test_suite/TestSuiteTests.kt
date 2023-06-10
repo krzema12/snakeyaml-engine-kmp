@@ -30,7 +30,7 @@ class TestSuiteTests : FunSpec({
 
             SuiteUtils.parseData(data).entries.forEach { (case, result) ->
                 when {
-                    case.skip -> {
+                    case.skip        -> {
                         xtest("case ${case.caseId} is skipped")
                     }
 
@@ -38,7 +38,7 @@ class TestSuiteTests : FunSpec({
                         xtest("case ${case.caseId} is ignored")
                     }
 
-                    case.fail -> {
+                    case.fail        -> {
                         test("expect case ${case.caseId} cannot be parsed - ${data.name}") {
                             withClue("Expected error, but got none") {
                                 result.error shouldNotBe null
@@ -46,7 +46,7 @@ class TestSuiteTests : FunSpec({
                         }
                     }
 
-                    else -> {
+                    else             -> {
                         test("expect case ${case.caseId} can be parsed - ${data.name}") {
                             withClue("Expected no error, but ${result.error}") {
                                 result.error shouldBe null

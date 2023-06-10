@@ -50,7 +50,7 @@ internal sealed interface SuiteDataIdentifier {
                                 index = it.substringAfter(":").toInt()
                             )
 
-                        else -> SuiteId(it)
+                        else      -> SuiteId(it)
                     }
                 }
     }

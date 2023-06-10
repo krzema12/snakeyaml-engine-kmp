@@ -233,11 +233,11 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                     value
                 }
 
-                "-" -> {
+                "-"  -> {
                     if (environment == null) value else ""
                 }
 
-                "?" -> {
+                "?"  -> {
                     if (environment == null) throw missingEnvironmentVariable()
                     ""
                 }

@@ -12,29 +12,7 @@ import org.snakeyaml.engine.v2.common.UriEncoder
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.tokens.AliasToken
-import org.snakeyaml.engine.v2.tokens.AnchorToken
-import org.snakeyaml.engine.v2.tokens.BlockEndToken
-import org.snakeyaml.engine.v2.tokens.BlockEntryToken
-import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
-import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
-import org.snakeyaml.engine.v2.tokens.CommentToken
-import org.snakeyaml.engine.v2.tokens.DirectiveToken
-import org.snakeyaml.engine.v2.tokens.DocumentEndToken
-import org.snakeyaml.engine.v2.tokens.DocumentStartToken
-import org.snakeyaml.engine.v2.tokens.FlowEntryToken
-import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken
-import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken
-import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken
-import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken
-import org.snakeyaml.engine.v2.tokens.KeyToken
-import org.snakeyaml.engine.v2.tokens.ScalarToken
-import org.snakeyaml.engine.v2.tokens.StreamEndToken
-import org.snakeyaml.engine.v2.tokens.StreamStartToken
-import org.snakeyaml.engine.v2.tokens.TagToken
-import org.snakeyaml.engine.v2.tokens.TagTuple
-import org.snakeyaml.engine.v2.tokens.Token
-import org.snakeyaml.engine.v2.tokens.ValueToken
+import org.snakeyaml.engine.v2.tokens.*
 import kotlin.collections.set
 import kotlin.jvm.JvmInline
 
@@ -228,14 +206,14 @@ class ScannerImpl(
         }
         when (c.toChar()) {
             // Is it a directive?
-            '%' ->
+            '%'  ->
                 if (checkDirective()) {
                     fetchDirective()
                     return
                 }
 
             // Is it the document start?
-            '-' ->
+            '-'  ->
                 if (checkDocumentStart()) {
                     fetchDocumentStart()
                     return
@@ -246,83 +224,83 @@ class ScannerImpl(
                 }
 
             // Is it the document end?
-            '.' ->
+            '.'  ->
                 if (checkDocumentEnd()) {
                     fetchDocumentEnd()
                     return
                 }
 
             // Is it the flow sequence start indicator?
-            '[' -> {
+            '['  -> {
                 fetchFlowSequenceStart()
                 return
             }
 
             // Is it the flow mapping start indicator?
-            '{' -> {
+            '{'  -> {
                 fetchFlowMappingStart()
                 return
             }
 
             // Is it the flow sequence end indicator?
-            ']' -> {
+            ']'  -> {
                 fetchFlowSequenceEnd()
                 return
             }
 
             // Is it the flow mapping end indicator?
-            '}' -> {
+            '}'  -> {
                 fetchFlowMappingEnd()
                 return
             }
 
             // Is it the flow entry indicator?
-            ',' -> {
+            ','  -> {
                 fetchFlowEntry()
                 return
             }
 
             // Is it the key indicator?
-            '?' ->
+            '?'  ->
                 if (checkKey()) {
                     fetchKey()
                     return
                 }
 
             // Is it the value indicator?
-            ':' ->
+            ':'  ->
                 if (checkValue()) {
                     fetchValue()
                     return
                 }
 
             // Is it an alias?
-            '*' -> {
+            '*'  -> {
                 fetchAlias()
                 return
             }
 
             // Is it an anchor?
-            '&' -> {
+            '&'  -> {
                 fetchAnchor()
                 return
             }
 
             // Is it a tag?
-            '!' -> {
+            '!'  -> {
                 fetchTag()
                 return
             }
 
             // Is it a literal scalar?
-            '|' ->
+            '|'  ->
                 if (isBlockContext()) {
                     fetchLiteral()
                     return
                 }
 
             // Is it a folded scalar?
-            '>' ->
+            '>'  ->
                 if (isBlockContext()) {
                     fetchFolded()
                     return
@@ -335,7 +313,7 @@ class ScannerImpl(
             }
 
             // Is it a double quoted scalar?
-            '"' -> {
+            '"'  -> {
                 fetchDouble()
                 return
             }
@@ -2016,8 +1994,8 @@ class ScannerImpl(
             }
             return when {
                 "\n" != lineBreak -> lineBreak + breaks
-                breaks.isEmpty() -> " "
-                else -> breaks.toString()
+                breaks.isEmpty()  -> " "
+                else              -> breaks.toString()
             }
         }
     }
@@ -2312,8 +2290,8 @@ private fun Chomping(
     return when (indicatorCodePoint) {
         '+'.code -> Chomping.Keep(increment)
         '-'.code -> Chomping.Strip(increment)
-        null -> Chomping.Clip(increment)
-        else -> null
+        null     -> Chomping.Clip(increment)
+        else     -> null
     }
 }
 

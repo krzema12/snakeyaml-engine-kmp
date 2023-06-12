@@ -84,7 +84,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 flowStyle = node.flowStyle,
                 resolved = node.isResolved(),
                 startMark = node.startMark,
-                endMark = node.endMark
+                endMark = node.endMark,
             )
         }
     }
@@ -110,13 +110,13 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        flattenMapping(node)
-        super.constructMapping2ndStep(node, mapping)
+        val flattened = flattenMapping(node)
+        super.constructMapping2ndStep(flattened, mapping)
     }
 
     override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        flattenMapping(node)
-        super.constructSet2ndStep(node, set)
+        val flattened = flattenMapping(node)
+        super.constructSet2ndStep(flattened, set)
     }
 
     /** Create [Set] instances */

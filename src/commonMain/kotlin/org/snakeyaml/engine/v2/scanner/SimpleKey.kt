@@ -21,12 +21,12 @@ import org.snakeyaml.engine.v2.exceptions.Mark
  * Helper class for [ScannerImpl].
  */
 internal class SimpleKey(
-  val tokenNumber: Int,
-  val isRequired: Boolean,
-  val index: Int,
-  val line: Int,
-  val column: Int,
-  val mark: Mark?,
+    val tokenNumber: Int,
+    val isRequired: Boolean,
+    val index: Int,
+    val line: Int,
+    val column: Int,
+    val mark: Mark?,
 ) {
     override fun toString(): String =
         "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"

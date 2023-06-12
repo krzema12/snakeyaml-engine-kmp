@@ -7,6 +7,7 @@ actual class Parse(
     settings: LoadSettings,
 ) {
     private val parseString = ParseString(settings)
+
     /**
      * Parse a YAML stream and produce parsing events.
      *

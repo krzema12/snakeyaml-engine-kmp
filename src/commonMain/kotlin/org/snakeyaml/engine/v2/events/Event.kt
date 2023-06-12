@@ -21,8 +21,8 @@ import kotlin.jvm.JvmOverloads
  * [org.snakeyaml.engine.v2.emitter.Emitter].
  */
 abstract class Event @JvmOverloads constructor(
-  val startMark: Mark? = null,
-  val endMark: Mark? = null,
+    val startMark: Mark? = null,
+    val endMark: Mark? = null,
 ) {
 
     init {

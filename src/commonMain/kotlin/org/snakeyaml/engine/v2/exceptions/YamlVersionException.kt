@@ -20,5 +20,5 @@ import org.snakeyaml.engine.v2.common.SpecVersion
  * @param specVersion - the specified version
  */
 class YamlVersionException(
-  specVersion: SpecVersion,
+    specVersion: SpecVersion,
 ) : YamlEngineException(specVersion.toString())

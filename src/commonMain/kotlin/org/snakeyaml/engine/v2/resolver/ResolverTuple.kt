@@ -20,8 +20,8 @@ import org.snakeyaml.engine.v2.nodes.Tag
  * Hold 2 values, [tag] and a [Regex]
  */
 internal data class ResolverTuple(
-  val tag: Tag,
-  val regexp: Regex,
+    val tag: Tag,
+    val regexp: Regex,
 ) {
     override fun toString(): String = "Tuple tag=$tag regexp=$regexp"
 }

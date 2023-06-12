@@ -12,29 +12,7 @@ import org.snakeyaml.engine.v2.common.UriEncoder
 import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.tokens.AliasToken
-import org.snakeyaml.engine.v2.tokens.AnchorToken
-import org.snakeyaml.engine.v2.tokens.BlockEndToken
-import org.snakeyaml.engine.v2.tokens.BlockEntryToken
-import org.snakeyaml.engine.v2.tokens.BlockMappingStartToken
-import org.snakeyaml.engine.v2.tokens.BlockSequenceStartToken
-import org.snakeyaml.engine.v2.tokens.CommentToken
-import org.snakeyaml.engine.v2.tokens.DirectiveToken
-import org.snakeyaml.engine.v2.tokens.DocumentEndToken
-import org.snakeyaml.engine.v2.tokens.DocumentStartToken
-import org.snakeyaml.engine.v2.tokens.FlowEntryToken
-import org.snakeyaml.engine.v2.tokens.FlowMappingEndToken
-import org.snakeyaml.engine.v2.tokens.FlowMappingStartToken
-import org.snakeyaml.engine.v2.tokens.FlowSequenceEndToken
-import org.snakeyaml.engine.v2.tokens.FlowSequenceStartToken
-import org.snakeyaml.engine.v2.tokens.KeyToken
-import org.snakeyaml.engine.v2.tokens.ScalarToken
-import org.snakeyaml.engine.v2.tokens.StreamEndToken
-import org.snakeyaml.engine.v2.tokens.StreamStartToken
-import org.snakeyaml.engine.v2.tokens.TagToken
-import org.snakeyaml.engine.v2.tokens.TagTuple
-import org.snakeyaml.engine.v2.tokens.Token
-import org.snakeyaml.engine.v2.tokens.ValueToken
+import org.snakeyaml.engine.v2.tokens.*
 import kotlin.collections.set
 import kotlin.jvm.JvmInline
 
@@ -916,7 +894,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+                && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -926,7 +904,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+                && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -949,7 +927,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+                || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -1476,10 +1454,10 @@ class ScannerImpl(
             // it means that there is indent, but less than expected
             // fix S98Z - Block scalar with more spaces than first content line
             throw ScannerException(
-                "while scanning a block scalar", startMark,
-                " the leading empty lines contain more spaces (" + blockIndent
-                    + ") than the first non-empty line.",
-                reader.getMark(),
+                problem = "while scanning a block scalar",
+                problemMark = startMark,
+                context = " the leading empty lines contain more spaces ($blockIndent) than the first non-empty line.",
+                contextMark = reader.getMark(),
             )
         }
         while (reader.column == blockIndent && reader.peek() != 0) {

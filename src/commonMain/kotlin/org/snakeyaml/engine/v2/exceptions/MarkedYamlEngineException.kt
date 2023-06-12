@@ -17,48 +17,75 @@ package org.snakeyaml.engine.v2.exceptions
  * Parsing exception when the marks are available
  *
  * @param cause - exception which was thrown
- * @param context - the context of the problem
- * @param contextMark - position of the context
- * @param problem - the issue
- * @param problemMark - position of the issue
  */
-open class MarkedYamlEngineException protected constructor(
-    val context: String?,
-    val contextMark: Mark?,
-    val problem: String?,
-    val problemMark: Mark?,
+open class MarkedYamlEngineException private constructor(
+    // can't override `message` property, so define a new one
+    // https://youtrack.jetbrains.com/issue/KT-43490/
+    private val readableError: String,
     cause: Throwable? = null,
-) : YamlEngineException("$context; $problem; $problemMark", cause) {
+) : YamlEngineException(readableError, cause) {
 
-    override val message: String
-        get() = toString()
+    /**
+     * Parsing exception when the marks are available
+     *
+     * @param context - the context of the problem
+     * @param contextMark - position of the context
+     * @param problem - the issue
+     * @param problemMark - position of the issue
+     * @param cause - exception which was thrown
+     */
+    protected constructor(
+        context: String?,
+        contextMark: Mark?,
+        problem: String?,
+        problemMark: Mark?,
+        cause: Throwable? = null,
+    ) : this(
+        readableError = buildReadableError(
+            context = context,
+            contextMark = contextMark,
+            problem = problem,
+            problemMark = problemMark,
+        ),
+        cause = cause,
+    )
 
     /**
      * get readable error
      *
      * @return readable problem
      */
-    override fun toString(): String = buildString {
-        if (context != null) {
-            appendLine(context)
-        }
-        if (contextMark != null) {
-            val problemIsPresent = problem != null && problemMark != null
+    override fun toString(): String = readableError
 
-            if (
-                !problemIsPresent
-                || contextMark.name == problemMark?.name
-                || contextMark.line != problemMark?.line
-                || contextMark.column != problemMark.column
-            ) {
-                appendLine(contextMark)
+    companion object {
+        private fun buildReadableError(
+            context: String?,
+            contextMark: Mark?,
+            problem: String?,
+            problemMark: Mark?,
+        ): String =
+            buildString {
+                if (context != null) {
+                    appendLine(context)
+                }
+                if (contextMark != null) {
+                    val problemIsPresent = problem != null && problemMark != null
+
+                    if (
+                        !problemIsPresent
+                        || contextMark.name == problemMark?.name
+                        || contextMark.line != problemMark?.line
+                        || contextMark.column != problemMark.column
+                    ) {
+                        appendLine(contextMark)
+                    }
+                }
+                if (problem != null) {
+                    appendLine(problem)
+                }
+                if (problemMark != null) {
+                    appendLine(problemMark)
+                }
             }
-        }
-        if (problem != null) {
-            appendLine(problem)
-        }
-        if (problemMark != null) {
-            appendLine(problemMark)
-        }
     }
 }

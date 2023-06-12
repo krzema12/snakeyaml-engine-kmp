@@ -39,7 +39,7 @@ class ComposeString(
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, yaml)),
-        ).singleNode
+        ).getSingleNode()
 
 
     /**

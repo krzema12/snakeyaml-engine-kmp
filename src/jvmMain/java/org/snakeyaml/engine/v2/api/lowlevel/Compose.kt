@@ -45,7 +45,7 @@ actual class Compose(
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, yaml.readText())),
-        ).singleNode()
+        ).getSingleNode()
 
     /**
      * Parse a YAML stream and produce [Node]
@@ -59,7 +59,7 @@ actual class Compose(
         Composer(
             settings,
             ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
-        ).singleNode()
+        ).getSingleNode()
 
     /**
      * Parse a YAML stream and produce [Node]

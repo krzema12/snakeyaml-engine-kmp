@@ -507,7 +507,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.singleNode());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);
@@ -536,7 +536,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.singleNode());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);
@@ -552,7 +552,7 @@ public class ComposerWithCommentEnabledTest {
 
     TestConstructor sut = new TestConstructor(LoadSettings.builder().build());
     Composer composer = newComposerWithCommentsEnabled(data);
-    Object result = sut.constructSingleDocument(composer.singleNode());
+    Object result = sut.constructSingleDocument(composer.getSingleNode());
     assertTrue(result instanceof LinkedHashMap);
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) result;
@@ -577,7 +577,7 @@ public class ComposerWithCommentEnabledTest {
     };
 
     Composer sut = newComposerWithCommentsEnabled(data);
-    List<Node> result = Collections.singletonList(sut.singleNode());
+    List<Node> result = Collections.singletonList(sut.getSingleNode());
 
     printNodeList(result);
     assertNodesEqual(expected, result);

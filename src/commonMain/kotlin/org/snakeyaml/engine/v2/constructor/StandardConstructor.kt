@@ -45,6 +45,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
      * Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
      *
      * @param node - mapping to check the duplications
+     * @returns the flattened [node]
      */
     private fun flattenMapping(node: MappingNode): MappingNode = processDuplicateKeys(node)
 
@@ -52,13 +53,19 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
      * detect and process the duplicate key in mapping according to the configured setting
      *
      * @param node - the source
+     * @returns the result of de-duplicating the keys in [node]
      */
     private fun processDuplicateKeys(node: MappingNode): MappingNode {
-        val nodeValue = node.value
-        val groupedByKey = nodeValue
-            .groupingBy { tuple ->
-                constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
-            }.reduce { key, _, tuple ->
+        val groupedByKey = node.value.groupingBy { tuple ->
+            constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
+        }
+
+        return if (groupedByKey.eachCount().none { (_, count) -> count > 1 }) {
+            // no duplicate keys - no de-duplication necessary
+            node
+        } else {
+            // duplicate keys detected - must remove duplicated tuples and return a new MappingNode
+            val deduplicatedValues = groupedByKey.reduce { key, _, tuple ->
                 // subsequent tuples replace previous tuples
                 if (!settings.allowDuplicateKeys) {
                     throw DuplicateKeyException(
@@ -69,16 +76,17 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 } else {
                     tuple
                 }
-            }
+            }.values.toList()
 
-        return MappingNode(
-            tag = node.tag,
-            value = groupedByKey.values.toList(),
-            flowStyle = node.flowStyle,
-            resolved = node.isResolved(),
-            startMark = node.startMark,
-            endMark = node.endMark
-        )
+            MappingNode(
+                tag = node.tag,
+                value = deduplicatedValues,
+                flowStyle = node.flowStyle,
+                resolved = node.isResolved(),
+                startMark = node.startMark,
+                endMark = node.endMark
+            )
+        }
     }
 
     private fun constructKey(

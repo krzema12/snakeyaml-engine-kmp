@@ -1,53 +1,38 @@
-##############################
-## Java
-##############################
-.mtj.tmp/
+### Kotlin/JVM ###
 *.class
+*.log
+
+hs_err_pid*
+replay_pid*
+*.hprof
+
 *.jar
 *.war
-*.ear
 *.nar
-hs_err_pid*
-.attach_pid*
+*.ear
+*.zip
+*.tar.gz
+*.rar
 
-##############################
-## Maven
-##############################
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-pom.xml.bak
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
 
-##############################
-## Gradle
-##############################
-bin/
+### Gradle ###
 build/
-.gradle
-.gradletasknamecache
-gradle-app.setting
+.gradle/
 !gradle-wrapper.jar
 
-##############################
-## IntelliJ
-##############################
+
+### IntelliJ ###
 out/
-.idea/
+.idea/**
 .idea_modules/
 *.iml
 *.ipr
 *.iws
+!.idea/codeStyles/
+!.idea/codeStyles/**
 
-##############################
-## Eclipse
-##############################
+
+### Eclipse ###
 .settings/
 bin/
 tmp/
@@ -62,21 +47,35 @@ local.properties
 .loadpath
 .factorypath
 
-##############################
-## NetBeans
-##############################
+
+### NetBeans ###
 nbproject/private/
-build/
 nbbuild/
 dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
 
-##############################
-## OS X
-##############################
-.DS_Store
 
-# docker build folder
-?/
+### Linux ###
+*~
+.fuse_hidden*
+.Trash-*
+.nfs*
+
+
+### macOS ###
+.DS_Store
+._*
+
+# Icon must end with two \r
+Icon
+
+
+###########################
+
+
+### Windows ###
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk

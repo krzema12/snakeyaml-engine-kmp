@@ -18,7 +18,8 @@ import org.snakeyaml.engine.v2.api.RepresentToNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.Tag
 import java.math.BigInteger
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
 /**

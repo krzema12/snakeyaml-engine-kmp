@@ -16,9 +16,6 @@ internal object SuiteUtils {
         }
     }
 
-    fun YamlTestData.isIgnored(): Boolean =
-        id in (deviationsWithSuccess union deviationsWithError)
-
     /**
      * Identifiers of tests that should fail.
      */

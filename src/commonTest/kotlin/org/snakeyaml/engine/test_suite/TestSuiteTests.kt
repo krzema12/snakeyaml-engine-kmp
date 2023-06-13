@@ -8,68 +8,71 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotBeEmpty
 import org.snakeyaml.engine.test_suite.SuiteUtils.deviationsWithError
 import org.snakeyaml.engine.test_suite.SuiteUtils.deviationsWithSuccess
-import org.snakeyaml.engine.test_suite.SuiteUtils.isIgnored
 
 
 class TestSuiteTests : FunSpec({
     test("expect correct number of test suites have been generated") {
-        val testSuites = yamlTestSuiteData
-
-        testSuites shouldHaveSize 402
+        YamlTestSuiteData shouldHaveSize 402
     }
 
-    yamlTestSuiteData.forEach { (id, data) ->
+    YamlTestSuiteData.forEach { (id, data) ->
         test("expect all test data can be read - $id") {
             withClue(data) {
                 data.label.shouldNotBeEmpty()
-                when (data) {
-                    is YamlTestData.Error   -> {}
-                    is YamlTestData.Success -> {
-                        data.testEvent.shouldNotBeEmpty()
-                    }
+                if (data is YamlTestData.Success) {
+                    data.testEvent.shouldNotBeEmpty()
                 }
             }
         }
     }
 
-    yamlTestSuiteData.forEach { (id, data) ->
+    YamlTestSuiteData.forEach { (id, data) ->
         val result = SuiteUtils.parseData(data)
 
-        if (data.isIgnored()) {
-            test("expect test $id is ignored because it deviates from the expected result") {
-                when (id) {
-                    in deviationsWithError   ->
-                        withClue("Expected error, but got none") {
-                            result.error shouldNotBe null
-                        }
-
-                    else ->
-                        withClue("Expected no error, but got ${result.error}") {
-                            result.error shouldBe null
-                        }
+        when (id) {
+            in deviationsWithError   ->
+                test("expect test ${data.id} is ignored because it fails, but should succeed") {
+                    withClue("Expected result had an error, but got none") {
+                        result.error shouldNotBe null
+                    }
                 }
-            }
-        } else {
-            when (data) {
-                is YamlTestData.Error   ->
-                    test("expect test $id cannot be parsed - ${data.label}") {
-                        withClue("Expected error, but got none") {
-                            result.error shouldNotBe null
-                        }
+
+            in deviationsWithSuccess ->
+                test("expect test ${data.id} is ignored because succeeds, but it should fail") {
+                    withClue("Expected result did not have an error, but it did") {
+                        result.error shouldBe null
                     }
-
-                is YamlTestData.Success ->
-                    test("expect test $id can be parsed - ${data.label}") {
-                        withClue("Expected no error, but got ${result.error}") {
-                            result.error shouldBe null
-                        }
-
-                        val expectedEvents = data.testEvent.lines().joinToString("\n") { it.trim() }.trim()
-                        val actualEvents = result.events.joinToString("\n") { it.toString().trim() }.trim()
-
-                        actualEvents shouldBe expectedEvents
+                    if (data is YamlTestData.Success) {
+                        result shouldNotHaveEvents data.testEvent
                     }
+                }
+
+            else                     -> {
+                // use if-statement instead of when-statement because of https://youtrack.jetbrains.com/issue/KT-59274
+                if (data is YamlTestData.Error) test("expect test $id cannot be parsed - ${data.label}") {
+                    withClue("Expected error, but got none") {
+                        result.error shouldNotBe null
+                    }
+                } else if (data is YamlTestData.Success) test("expect test $id can be parsed - ${data.label}") {
+                    withClue("Expected no error, but got ${result.error}") {
+                        result.error shouldBe null
+                    }
+                    result shouldHaveEvents data.testEvent
+                }
             }
         }
     }
 })
+
+private infix fun ParseResult.shouldHaveEvents(expectedEvents: String) {
+    val joinedEvents = expectedEvents.lines().joinToString("\n").trim()
+    val actualEvents = events.joinToString("\n")
+    actualEvents shouldBe joinedEvents
+
+}
+
+private infix fun ParseResult.shouldNotHaveEvents(expectedEvents: String) {
+    val joinedExpectedEvents = expectedEvents.lines().joinToString("\n").trim()
+    val actualEvents = events.joinToString("\n")
+    actualEvents shouldNotBe joinedExpectedEvents
+}

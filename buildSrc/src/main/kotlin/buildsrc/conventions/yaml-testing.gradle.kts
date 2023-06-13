@@ -26,15 +26,13 @@ val yamlTestSuite by configurations.registering {
 val downloadYamlTestSuite by tasks.registering(Sync::class) {
     description = "download and unpack YAML Test Suite data"
     group = YAML_TEST_TASK_GROUP
-    from(
-        yamlTestSuite.map { conf ->
-            conf.incoming.artifacts.resolvedArtifacts.map { artifacts ->
-                val testDataZip = artifacts.singleOrNull()?.file
-                    ?: error("expected exactly one YAML test suite zip, but got ${artifacts.map { it.file }}")
-                zipTree(testDataZip)
-            }
-        },
-    ) {
+    from(yamlTestSuite.map { conf ->
+        conf.incoming.artifacts.resolvedArtifacts.map { artifacts ->
+            val testDataZip = artifacts.singleOrNull()?.file
+                ?: error("expected exactly one YAML test suite zip, but got ${artifacts.map { it.file }}")
+            zipTree(testDataZip)
+        }
+    }) {
         eachFile {
             // drop dir `yaml-test-suite-data-2022-01-17/`
             relativePath = relativePath.dropDirectories(1)

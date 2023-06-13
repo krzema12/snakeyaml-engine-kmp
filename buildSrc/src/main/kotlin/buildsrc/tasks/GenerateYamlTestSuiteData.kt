@@ -80,11 +80,12 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
 
         val yamlTestSuiteValuesFile = temporaryDir.resolve("yamlTestSuiteValues.kt")
 
+        // use `internal object` instead of `internal val` to try and avoid https://youtrack.jetbrains.com/issue/KT-59274
         yamlTestSuiteValuesFile.writeText(/* language=kotlin */ """
             ¦package org.snakeyaml.engine.test_suite
             ¦
             ¦/** All YAML test suite data */
-            ¦internal val yamlTestSuiteData: Map<YamlTestData.Id, YamlTestData> = mapOf(
+            ¦internal object YamlTestSuiteData : Map<YamlTestData.Id, YamlTestData> by mapOf(
             ¦$allTestSuiteIdListContents
             ¦)
             ¦
@@ -109,23 +110,23 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         return /* language=kotlin */ """
             ¦|¦package org.snakeyaml.engine.test_suite
             ¦|¦
-            ¦|¦/** 
+            ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`
-            ¦|¦ * 
+            ¦|¦ *
             ¦|¦ * See [https://matrix.yaml.info/details/$id.html](https://matrix.yaml.info/details/$id.html)
             ¦|¦ */
             ¦|¦internal object $objectName: YamlTestData.Error {
             ¦|¦
             ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("${id}")
             ¦|¦
-            ¦|¦  /** The name/label of the test */ 
+            ¦|¦  /** The name/label of the test */
             ¦|¦  // language=text
-            ¦|¦  override val label: String = 
+            ¦|¦  override val label: String =
             ¦|¦${label.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** The YAML input to be parsed or loaded */ 
+            ¦|¦  /** The YAML input to be parsed or loaded */
             ¦|¦  // language=YAML
-            ¦|¦  override val inYaml: String = 
+            ¦|¦  override val inYaml: String =
             ¦|¦${inYaml.tripleQuoted()}
             ¦|¦}
         """.trimMargin(/* language=text */ "¦|¦")
@@ -157,43 +158,43 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         return /* language=kotlin */ """
             ¦|¦package org.snakeyaml.engine.test_suite
             ¦|¦
-            ¦|¦/** 
+            ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`
-            ¦|¦ * 
+            ¦|¦ *
             ¦|¦ * See [https://matrix.yaml.info/details/$id.html](https://matrix.yaml.info/details/$id.html)
             ¦|¦ */
             ¦|¦internal object $objectName: YamlTestData.Success {
             ¦|¦
             ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("$id")
             ¦|¦
-            ¦|¦  /** The name/label of the test */ 
+            ¦|¦  /** The name/label of the test */
             ¦|¦  // language=text
-            ¦|¦  override val label: String = 
+            ¦|¦  override val label: String =
             ¦|¦${label.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** The YAML input to be parsed or loaded */ 
+            ¦|¦  /** The YAML input to be parsed or loaded */
             ¦|¦  // language=YAML
-            ¦|¦  override val inYaml: String = 
+            ¦|¦  override val inYaml: String =
             ¦|¦${inYaml.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** The most normal output a dumper would produce */ 
+            ¦|¦  /** The most normal output a dumper would produce */
             ¦|¦  // language=YAML
-            ¦|¦  override val outYaml: String? = 
+            ¦|¦  override val outYaml: String? =
             ¦|¦${outYaml?.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** Output an emitter would produce */ 
+            ¦|¦  /** Output an emitter would produce */
             ¦|¦  // language=text
-            ¦|¦  override val emitYaml: String? = 
+            ¦|¦  override val emitYaml: String? =
             ¦|¦${emitYaml?.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** The JSON value that shoiuld load the same as in.yaml */ 
+            ¦|¦  /** The JSON value that shoiuld load the same as in.yaml */
             ¦|¦  // language=JSON
-            ¦|¦  override val inJson: String? = 
+            ¦|¦  override val inJson: String? =
             ¦|¦${inJson?.tripleQuoted()}
             ¦|¦
-            ¦|¦  /** The event DSL produced by the parser test program */ 
+            ¦|¦  /** The event DSL produced by the parser test program */
             ¦|¦  // language=text
-            ¦|¦  override val testEvent: String = 
+            ¦|¦  override val testEvent: String =
             ¦|¦${testEvent.tripleQuoted()}
             ¦|¦}
         """.trimMargin(/* language=text */ "¦|¦")
@@ -206,7 +207,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
 
         private fun String.tripleQuoted(): String = /* language=text */ """
                 ¦|¦$TRIPLE_QUOTE
-                ¦|¦${this.lineSequence().joinToString("\n") {"¦$it"} }
+                ¦|¦${this.lineSequence().joinToString("\n") { "¦$it" }}
                 ¦|¦$TRIPLE_QUOTE.trimMargin(/*language=text*/ "¦")
             """.trimMargin("¦|¦")
     }

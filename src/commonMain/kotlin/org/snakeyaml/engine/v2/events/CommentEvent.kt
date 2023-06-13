@@ -20,15 +20,15 @@ import org.snakeyaml.engine.v2.exceptions.Mark
  * Marks a comment block value.
  */
 class CommentEvent(
-  val commentType: CommentType,
-  /**
+    val commentType: CommentType,
+    /**
      * String representation of the value, without quotes and escaping.
      *
      * @return Value a comment line string without the leading '#' or a blank line.
      */
     val value: String,
-  startMark: Mark?,
-  endMark: Mark?,
+    startMark: Mark?,
+    endMark: Mark?,
 ) : Event(startMark, endMark) {
 
     override val eventId: ID

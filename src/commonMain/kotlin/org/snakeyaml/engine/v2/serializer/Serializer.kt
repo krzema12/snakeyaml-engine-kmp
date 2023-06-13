@@ -17,25 +17,8 @@ import org.snakeyaml.engine.v2.api.DumpSettings
 import org.snakeyaml.engine.v2.comments.CommentLine
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.emitter.Emitable
-import org.snakeyaml.engine.v2.events.AliasEvent
-import org.snakeyaml.engine.v2.events.CommentEvent
-import org.snakeyaml.engine.v2.events.DocumentEndEvent
-import org.snakeyaml.engine.v2.events.DocumentStartEvent
-import org.snakeyaml.engine.v2.events.ImplicitTuple
-import org.snakeyaml.engine.v2.events.MappingEndEvent
-import org.snakeyaml.engine.v2.events.MappingStartEvent
-import org.snakeyaml.engine.v2.events.ScalarEvent
-import org.snakeyaml.engine.v2.events.SequenceEndEvent
-import org.snakeyaml.engine.v2.events.SequenceStartEvent
-import org.snakeyaml.engine.v2.events.StreamEndEvent
-import org.snakeyaml.engine.v2.events.StreamStartEvent
-import org.snakeyaml.engine.v2.nodes.AnchorNode
-import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.NodeType
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.SequenceNode
-import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.events.*
+import org.snakeyaml.engine.v2.nodes.*
 
 /**
  * Transform a [Node] Graph to [org.snakeyaml.engine.v2.events.Event] stream and allow provided [Emitable] to present the

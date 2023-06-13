@@ -19,8 +19,8 @@ import org.snakeyaml.engine.v2.common.SpecVersion
  * Store the internal state for directives
  */
 internal data class VersionTagsTuple(
-  val specVersion: SpecVersion?,
-  val tags: Map<String, String>,
+    val specVersion: SpecVersion?,
+    val tags: Map<String, String>,
 ) {
     override fun toString(): String = "VersionTagsTuple<$specVersion, $tags>"
 }

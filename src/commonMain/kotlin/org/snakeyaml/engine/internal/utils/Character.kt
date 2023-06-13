@@ -112,8 +112,8 @@ internal object Character {
 
     private const val SURROGATE_DECODE_OFFSET: Int =
         MIN_SUPPLEMENTARY_CODE_POINT -
-            (MIN_HIGH_SURROGATE.code shl 10) -
-            MIN_LOW_SURROGATE.code
+          (MIN_HIGH_SURROGATE.code shl 10) -
+          MIN_LOW_SURROGATE.code
 
     private const val HIGH_SURROGATE_ENCODE_OFFSET: Char = MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10)
 

@@ -15,12 +15,7 @@ package org.snakeyaml.engine.v2.schema
 
 import org.snakeyaml.engine.v2.api.ConstructNode
 import org.snakeyaml.engine.v2.constructor.ConstructYamlNull
-import org.snakeyaml.engine.v2.constructor.json.ConstructOptionalClass
-import org.snakeyaml.engine.v2.constructor.json.ConstructUuidClass
-import org.snakeyaml.engine.v2.constructor.json.ConstructYamlBinary
-import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonBool
-import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonFloat
-import org.snakeyaml.engine.v2.constructor.json.ConstructYamlJsonInt
+import org.snakeyaml.engine.v2.constructor.json.*
 import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
 

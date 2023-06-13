@@ -65,9 +65,9 @@ class CommentEventsCollector private constructor(
      */
     private fun isEventExpected(event: Event?): Boolean {
         return event != null
-            && event.eventId == Event.ID.Comment
-            && event is CommentEvent
-            && event.commentType in expectedCommentTypes
+                && event.eventId == Event.ID.Comment
+                && event is CommentEvent
+                && event.commentType in expectedCommentTypes
     }
 
     /**

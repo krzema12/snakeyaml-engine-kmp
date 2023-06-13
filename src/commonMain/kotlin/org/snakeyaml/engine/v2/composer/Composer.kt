@@ -19,21 +19,10 @@ import org.snakeyaml.engine.v2.comments.CommentLine
 import org.snakeyaml.engine.v2.comments.CommentType
 import org.snakeyaml.engine.v2.common.Anchor
 import org.snakeyaml.engine.v2.common.FlowStyle
-import org.snakeyaml.engine.v2.events.AliasEvent
-import org.snakeyaml.engine.v2.events.Event
-import org.snakeyaml.engine.v2.events.MappingStartEvent
-import org.snakeyaml.engine.v2.events.NodeEvent
-import org.snakeyaml.engine.v2.events.ScalarEvent
-import org.snakeyaml.engine.v2.events.SequenceStartEvent
+import org.snakeyaml.engine.v2.events.*
 import org.snakeyaml.engine.v2.exceptions.ComposerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.NodeTuple
-import org.snakeyaml.engine.v2.nodes.NodeType
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.SequenceNode
-import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.nodes.*
 import org.snakeyaml.engine.v2.parser.Parser
 import org.snakeyaml.engine.v2.resolver.ScalarResolver
 

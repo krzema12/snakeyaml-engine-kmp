@@ -22,9 +22,9 @@ import kotlin.jvm.JvmOverloads
  * This event follows the document's content.
  */
 class DocumentEndEvent @JvmOverloads constructor(
-  val isExplicit: Boolean,
-  startMark: Mark? = null,
-  endMark: Mark? = null,
+    val isExplicit: Boolean,
+    startMark: Mark? = null,
+    endMark: Mark? = null,
 ) : Event(startMark, endMark) {
 
     override val eventId: ID

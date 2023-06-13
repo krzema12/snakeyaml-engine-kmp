@@ -13,18 +13,9 @@
  */
 package org.snakeyaml.engine.v2.api
 
-import okio.Buffer
-import okio.BufferedSource
-import okio.ByteString
+import okio.*
 import okio.ByteString.Companion.toByteString
-import okio.Source
-import okio.Timeout
-import okio.buffer
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_16BE
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_16LE
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_32BE
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_32LE
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.UTF_8
+import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding.*
 
 /**
  * Generic unicode text reader, which will use BOM mark to identify the encoding to be used. If BOM

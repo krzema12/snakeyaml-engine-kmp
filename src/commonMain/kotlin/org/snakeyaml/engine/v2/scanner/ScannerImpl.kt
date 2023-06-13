@@ -1451,10 +1451,10 @@ class ScannerImpl(
             // it means that there is indent, but less than expected
             // fix S98Z - Block scalar with more spaces than first content line
             throw ScannerException(
-                "while scanning a block scalar", startMark,
-                " the leading empty lines contain more spaces (" + blockIndent
-                  + ") than the first non-empty line.",
-                reader.getMark(),
+                problem = "while scanning a block scalar",
+                problemMark = startMark,
+                context = " the leading empty lines contain more spaces ($blockIndent) than the first non-empty line.",
+                contextMark = reader.getMark(),
             )
         }
         while (reader.column == blockIndent && reader.peek() != 0) {

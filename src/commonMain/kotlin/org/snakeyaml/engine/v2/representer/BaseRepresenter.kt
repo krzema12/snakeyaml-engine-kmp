@@ -20,13 +20,7 @@ import org.snakeyaml.engine.v2.api.RepresentToNode
 import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
-import org.snakeyaml.engine.v2.nodes.AnchorNode
-import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.NodeTuple
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.SequenceNode
-import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.nodes.*
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
@@ -211,8 +205,8 @@ abstract class BaseRepresenter(
                     val anyKeyOrValueNotPlain =
                         value.any { (keyNode, valueNode) ->
                             !(keyNode is ScalarNode && keyNode.isPlain)
-                                ||
-                                !(valueNode is ScalarNode && valueNode.isPlain)
+                                    ||
+                                    !(valueNode is ScalarNode && valueNode.isPlain)
                         }
                     if (anyKeyOrValueNotPlain) {
                         FlowStyle.BLOCK

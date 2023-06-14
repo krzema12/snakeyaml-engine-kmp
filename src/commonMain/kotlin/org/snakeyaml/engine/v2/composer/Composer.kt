@@ -67,30 +67,28 @@ class Composer(
      *
      * If the stream contains more than one document an exception is thrown.
      *
-     * @return The root node of the document or `null` if no document is
-     * available.
+     * @return The root node of the document or `null` if no document is available.
      */
-    val singleNode: Node?
-        get() {
-            // Drop the STREAM-START event.
-            parser.next()
-            // Compose a document if the stream is not empty.
-            val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
-            // Ensure that the stream contains no more documents.
-            if (!parser.checkEvent(Event.ID.StreamEnd)) {
-                val event = parser.next()
-                val previousDocMark = document?.startMark
-                throw ComposerException(
-                    problem = "expected a single document in the stream",
-                    problemMark = previousDocMark,
-                    context = "but found another document",
-                    contextMark = event.startMark,
-                )
-            }
-            // Drop the STREAM-END event.
-            parser.next()
-            return document
+    fun getSingleNode(): Node? {
+        // Drop the STREAM-START event.
+        parser.next()
+        // Compose a document if the stream is not empty.
+        val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
+        // Ensure that the stream contains no more documents.
+        if (!parser.checkEvent(Event.ID.StreamEnd)) {
+            val event = parser.next()
+            val previousDocMark = document?.startMark
+            throw ComposerException(
+                problem = "expected a single document in the stream",
+                problemMark = previousDocMark,
+                context = "but found another document",
+                contextMark = event.startMark,
+            )
         }
+        // Drop the STREAM-END event.
+        parser.next()
+        return document
+    }
 
     /**
      * Reads and composes the next document.
@@ -133,8 +131,8 @@ class Composer(
 
     private fun composeNode(parent: Node?): Node {
         blockCommentsCollector.collectEvents()
-        parent?.let { e: Node ->
-            recursiveNodes.add(e) // TODO add unit test for this line
+        if (parent != null) {
+            recursiveNodes.add(parent) // TODO add unit test for this line
         }
         val node: Node
         if (parser.checkEvent(Event.ID.Alias)) {
@@ -167,8 +165,8 @@ class Composer(
                 composeMappingNode(anchor)
             }
         }
-        parent?.let { o: Node ->
-            recursiveNodes.remove(o) // TODO add unit test for this line
+        if (parent != null) {
+            recursiveNodes.remove(parent) // TODO add unit test for this line
         }
         return node
     }

@@ -5,6 +5,7 @@ plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
+    buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
 }
 

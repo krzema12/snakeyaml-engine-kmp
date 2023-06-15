@@ -44,7 +44,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
-     * @param node - the source
+     * @param node the source
      * @throws DuplicateKeyException if duplicated keys were detected and [LoadSettings.allowDuplicateKeys] is `false`.
      */
     private fun validateDuplicateKeys(node: MappingNode) {
@@ -186,10 +186,10 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         /**
          * Implement the logic for missing and unset variables
          *
-         * @param name        - variable name in the template
-         * @param separator   - separator in the template, can be `:-`, `-`, `:?`, `?`
-         * @param value       - default value or the error in the template
-         * @param environment - the value from environment for the provided variable
+         * @param name         variable name in the template
+         * @param separator    separator in the template, can be `:-`, `-`, `:?`, `?`
+         * @param value        default value or the error in the template
+         * @param environment  the value from environment for the provided variable
          * @return the value to apply in the template
          */
         private fun apply(name: String, separator: String?, value: String, environment: String?): String {
@@ -218,7 +218,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         /**
          * Get value of the environment variable
          *
-         * @param key - the name of the variable
+         * @param key the name of the variable
          * @return value or `null` if not set
          */
         private fun getEnv(key: String): String? = getEnvironmentVariable(key)

@@ -248,11 +248,11 @@ class Emitter(
                 handleTagDirectives(ev.tags)
             }
             val implicit = first
-              && !ev.explicit
-              && !canonical
-              && ev.specVersion == null
-              && ev.tags.isEmpty()
-              && !checkEmptyDocument()
+                && !ev.explicit
+                && !canonical
+                && ev.specVersion == null
+                && ev.tags.isEmpty()
+                && !checkEmptyDocument()
             if (!implicit) {
                 writeIndent()
                 writeIndicator(indicator = "---", needWhitespace = true)
@@ -298,8 +298,8 @@ class Emitter(
             if (nextEvent.eventId == Event.ID.Scalar) {
                 val e = nextEvent as ScalarEvent
                 return e.anchor == null
-                  && e.tag == null
-                  && e.value.isEmpty()
+                    && e.tag == null
+                    && e.value.isEmpty()
             }
             return false
         }
@@ -702,7 +702,7 @@ class Emitter(
 
         private fun isFoldedOrLiteral(event: Event): Boolean {
             return event is ScalarEvent
-              && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
+                && (event.scalarStyle == ScalarStyle.FOLDED || event.scalarStyle == ScalarStyle.LITERAL)
         }
     }
 
@@ -726,14 +726,14 @@ class Emitter(
 
     private fun checkEmptySequence(): Boolean {
         return event?.eventId == Event.ID.SequenceStart
-          && !events.isEmpty()
-          && events.first().eventId == Event.ID.SequenceEnd
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.SequenceEnd
     }
 
     private fun checkEmptyMapping(): Boolean {
         return event?.eventId == Event.ID.MappingStart
-          && !events.isEmpty()
-          && events.first().eventId == Event.ID.MappingEnd
+            && !events.isEmpty()
+            && events.first().eventId == Event.ID.MappingEnd
     }
 
     private fun checkSimpleKey(): Boolean {
@@ -768,14 +768,14 @@ class Emitter(
             length += analysis!!.scalar.length
         }
         return length < maxSimpleKeyLength
-          && (
-          event?.eventId == Event.ID.Alias
-            || event?.eventId == Event.ID.Scalar
-            && !analysis!!.empty
-            && !analysis!!.multiline
-            || checkEmptySequence()
-            || checkEmptyMapping()
-          )
+            && (
+            event?.eventId == Event.ID.Alias
+                || event?.eventId == Event.ID.Scalar
+                && !analysis!!.empty
+                && !analysis!!.multiline
+                || checkEmptySequence()
+                || checkEmptyMapping()
+            )
     }
 
     //endregion
@@ -805,11 +805,11 @@ class Emitter(
             if (
                 (!canonical || tag == null)
                 && (
-                  scalarStyle == null
-                    && ev.implicit.canOmitTagInPlainScalar()
-                    || scalarStyle != null
-                    && ev.implicit.canOmitTagInNonPlainScalar()
-                  )
+                    scalarStyle == null
+                        && ev.implicit.canOmitTagInPlainScalar()
+                        || scalarStyle != null
+                        && ev.implicit.canOmitTagInNonPlainScalar()
+                    )
             ) {
                 preparedTag = null
                 return
@@ -900,8 +900,8 @@ class Emitter(
         }
         val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
             prefix != null
-              && tag.startsWith(prefix)
-              && ("!" == prefix || prefix.length < tag.length)
+                && tag.startsWith(prefix)
+                && ("!" == prefix || prefix.length < tag.length)
         }
         val handle: String?
         val suffix: String

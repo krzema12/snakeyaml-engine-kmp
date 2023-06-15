@@ -31,13 +31,13 @@ val signingPassword: Provider<String> =
 val signingSecretKeyRingFile: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.secretKeyRingFile")
 
-val isReleaseVersion = provider { version.toString().endsWith("-SNAPSHOT") }
+val isReleaseVersion = provider { !version.toString().endsWith("-SNAPSHOT") }
 
 val sonatypeReleaseUrl = isReleaseVersion.map { isRelease ->
     if (isRelease) {
-        "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+        "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
     } else {
-        "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        "https://oss.sonatype.org/content/repositories/snapshots/"
     }
 }
 //endregion
@@ -61,6 +61,18 @@ publishing {
                 license {
                     name.convention("Apache-2.0")
                     url.convention("https://opensource.org/licenses/Apache-2.0")
+                }
+            }
+
+            developers {
+                developer {
+                    email.convention("adam@adamko.dev")
+                }
+
+                developer {
+                    id.set("krzema12")
+                    name.set("Piotr Krzemiński")
+                    email.set("git@krzeminski.it")
                 }
             }
         }

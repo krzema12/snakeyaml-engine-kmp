@@ -42,49 +42,24 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     /**
-     * Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
-     *
-     * @param node - mapping to check the duplications
-     * @returns the flattened [node]
-     */
-    private fun flattenMapping(node: MappingNode): MappingNode = processDuplicateKeys(node)
-
-    /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
      * @param node - the source
-     * @returns the result of de-duplicating the keys in [node]
+     * @throws DuplicateKeyException if duplicated keys were detected and [LoadSettings.allowDuplicateKeys] is `false`.
      */
-    private fun processDuplicateKeys(node: MappingNode): MappingNode {
+    private fun validateDuplicateKeys(node: MappingNode) {
+        if (settings.allowDuplicateKeys) return
+
         val groupedByKey = node.value.groupingBy { tuple ->
             constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
         }
 
-        return if (groupedByKey.eachCount().none { (_, count) -> count > 1 }) {
-            // no duplicate keys - no de-duplication necessary
-            node
-        } else {
-            // duplicate keys detected - must remove duplicated tuples and return a new MappingNode
-            val deduplicatedValues = groupedByKey.reduce { key, _, tuple ->
-                // subsequent tuples replace previous tuples
-                if (!settings.allowDuplicateKeys) {
-                    throw DuplicateKeyException(
-                        contextMark = node.startMark,
-                        key = key!!,
-                        problemMark = tuple.keyNode.startMark,
-                    )
-                } else {
-                    tuple
-                }
-            }.values.toList()
-
-            MappingNode(
-                tag = node.tag,
-                value = deduplicatedValues,
-                flowStyle = node.flowStyle,
-                resolved = node.isResolved(),
-                startMark = node.startMark,
-                endMark = node.endMark,
+        groupedByKey.reduce { key, _, tuple ->
+            // this merge lambda is only called if there are multiple tuples per key
+            throw DuplicateKeyException(
+                contextMark = node.startMark,
+                key = key!!,
+                problemMark = tuple.keyNode.startMark,
             )
         }
     }
@@ -110,13 +85,15 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     }
 
     override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        val flattened = flattenMapping(node)
-        super.constructMapping2ndStep(flattened, mapping)
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructMapping2ndStep(node, mapping)
     }
 
     override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        val flattened = flattenMapping(node)
-        super.constructSet2ndStep(flattened, set)
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructSet2ndStep(node, set)
     }
 
     /** Create [Set] instances */
@@ -215,7 +192,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * @param environment - the value from environment for the provided variable
          * @return the value to apply in the template
          */
-        fun apply(name: String, separator: String?, value: String, environment: String?): String {
+        private fun apply(name: String, separator: String?, value: String, environment: String?): String {
             if (!environment.isNullOrEmpty()) {
                 return environment
             } else if (separator != null) { // variable is either unset or empty

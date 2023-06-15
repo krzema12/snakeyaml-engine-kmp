@@ -40,7 +40,7 @@ dependencyResolutionManagement {
       name = "SnakeYAML Engine KMP Snapshots"
       mavenContent {
         // only include the relevant snapshots
-        includeGroup("org.snakeyaml")
+        includeGroup("it.krzeminski")
         snapshotsOnly()
       }
     }
@@ -54,6 +54,6 @@ Once the repository is configured, add a dependency on the library:
 // build.gradle.kts
 
 dependencies {
-    implementation("org.snakeyaml:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")
+    implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")
 }
 ```

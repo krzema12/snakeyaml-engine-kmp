@@ -2,12 +2,12 @@ plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
-    buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.publishing
+    buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
 }
 
-group = "org.snakeyaml"
+group = "it.krzeminski"
 version = "2.7-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 

@@ -67,8 +67,7 @@ class Composer(
      *
      * If the stream contains more than one document an exception is thrown.
      *
-     * @return The root node of the document or `null` if no document is
-     * available.
+     * @return The root node of the document or `null` if no document is available.
      */
     fun getSingleNode(): Node? {
         // Drop the STREAM-START event.
@@ -132,8 +131,8 @@ class Composer(
 
     private fun composeNode(parent: Node?): Node {
         blockCommentsCollector.collectEvents()
-        parent?.let { e: Node ->
-            recursiveNodes.add(e) // TODO add unit test for this line
+        if (parent != null) {
+            recursiveNodes.add(parent) // TODO add unit test for this line
         }
         val node: Node
         if (parser.checkEvent(Event.ID.Alias)) {
@@ -166,8 +165,8 @@ class Composer(
                 composeMappingNode(anchor)
             }
         }
-        parent?.let { o: Node ->
-            recursiveNodes.remove(o) // TODO add unit test for this line
+        if (parent != null) {
+            recursiveNodes.remove(parent) // TODO add unit test for this line
         }
         return node
     }

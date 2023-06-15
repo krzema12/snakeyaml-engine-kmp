@@ -9,7 +9,7 @@ plugins {
     buildsrc.conventions.`git-branch-publish`
 }
 
-group = "org.snakeyaml"
+group = "it.krzeminski"
 version = "2.7-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 

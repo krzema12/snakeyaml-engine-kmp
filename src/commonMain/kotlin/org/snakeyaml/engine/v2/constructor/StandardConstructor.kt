@@ -41,6 +41,18 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         tagConstructors.putAll(settings.tagConstructors)
     }
 
+    override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructMapping2ndStep(node, mapping)
+    }
+
+    override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructSet2ndStep(node, set)
+    }
+
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
@@ -82,18 +94,6 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
             )
         }
         return key
-    }
-
-    override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
-        validateDuplicateKeys(node)
-        super.constructMapping2ndStep(node, mapping)
-    }
-
-    override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
-        validateDuplicateKeys(node)
-        super.constructSet2ndStep(node, set)
     }
 
     /** Create [Set] instances */
@@ -208,23 +208,25 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
 
             return when (separator) {
-                ":-" -> {
-                    if (environment.isNullOrEmpty()) value else ""
+                ":-" -> when {
+                    environment.isNullOrEmpty() -> value
+                    else                        -> ""
                 }
 
-                ":?" -> {
-                    if (environment == null) throw missingEnvironmentVariable()
-                    if (environment.isEmpty()) throw emptyEnvironmentVariable()
-                    value
+                ":?" -> when {
+                    environment == null   -> throw missingEnvironmentVariable()
+                    environment.isEmpty() -> throw emptyEnvironmentVariable()
+                    else                  -> value
                 }
 
-                "-"  -> {
-                    if (environment == null) value else ""
+                "-"  -> when (environment) {
+                    null -> value
+                    else -> ""
                 }
 
-                "?"  -> {
-                    if (environment == null) throw missingEnvironmentVariable()
-                    ""
+                "?"  -> when (environment) {
+                    null -> throw missingEnvironmentVariable()
+                    else -> ""
                 }
 
                 else -> ""

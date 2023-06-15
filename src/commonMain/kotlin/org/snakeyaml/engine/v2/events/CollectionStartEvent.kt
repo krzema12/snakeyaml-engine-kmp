@@ -54,9 +54,9 @@ abstract class CollectionStartEvent(
 
     override fun toString(): String {
         return buildString {
-            anchor?.let { a -> append(" &$a") }
+            if (anchor != null) append(" &$anchor")
             if (!implicit) {
-                tag?.let { theTag: String -> append(" <$theTag>") }
+                if (tag != null) append(" <$tag>")
             }
         }
     }

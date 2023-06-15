@@ -66,7 +66,7 @@ publishing {
 
             developers {
                 developer {
-                    email.convention("adam@adamko.dev")
+                    email.set("adam@adamko.dev")
                 }
 
                 developer {

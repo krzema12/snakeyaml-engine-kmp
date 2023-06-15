@@ -90,7 +90,7 @@ class ScannerImpl(
     private var indent = -1
 
     /**
-     * ```
+     * ```text
      * A simple key is a key that is not denoted by the '' indicator.
      * Example of simple keys:
      * ---
@@ -761,7 +761,7 @@ class ScannerImpl(
     /**
      * Fetch an alias, which is a reference to an anchor. Aliases take the format:
      *
-     * ```
+     * ```text
      * *(anchor name)
      * ```
      */
@@ -780,7 +780,7 @@ class ScannerImpl(
     /**
      * Fetch an anchor. Anchors take the form:
      *
-     * ```
+     * ```text
      * &(anchor name)
      * ```
      */
@@ -891,7 +891,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-          && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -901,7 +901,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-          && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -924,7 +924,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-          || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -1184,7 +1184,7 @@ class ScannerImpl(
 
     /**
      * Read a `%TAG` directive value:
-     * ```
+     * ```text
      * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
      * ```
      */
@@ -1268,7 +1268,7 @@ class ScannerImpl(
     }
 
     /**
-     * ```
+     * ```text
      * The YAML 1.2 specification does not restrict characters for anchors and
      * aliases. This may lead to problems.
      * see [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
@@ -1316,19 +1316,19 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
-     * c-ns-shorthand-tag, or c-ns-non-specific-tag
+     * Scan a Tag property. A Tag property may be specified in one of three ways: `c-verbatim-tag`,
+     * `c-ns-shorthand-tag`, or `c-ns-non-specific-tag`
      *
-     * c-verbatim-tag takes the form !<ns-uri-char></ns-uri-char>+> and must be delivered verbatim (as-is) to the
+     * `c-verbatim-tag` takes the form `!<ns-uri-char></ns-uri-char>+>` and must be delivered verbatim (as-is) to the
      * application. In particular, verbatim tags are not subject to tag resolution.
      *
-     * c-ns-shorthand-tag is a valid tag handle followed by a non-empty suffix. If the tag handle is a
-     * c-primary-tag-handle ('!') then the suffix must have all exclamation marks properly URI-escaped
-     * (%21); otherwise, the string will look like a named tag handle: !foo!bar would be interpreted
-     * as (handle="!foo!", suffix="bar").
+     * `c-ns-shorthand-tag` is a valid tag handle followed by a non-empty suffix. If the tag handle is a
+     * `c-primary-tag-handle` (`!`) then the suffix must have all exclamation marks properly URI-escaped
+     * (`%21`); otherwise, the string will look like a named tag handle: `!foo!bar` would be interpreted
+     * as (`handle="!foo!", suffix="bar"`).
      *
-     * c-ns-non-specific-tag is always a lone '!'; this is only useful for plain scalars, where its
-     * specification means that the scalar MUST be resolved to have type tag:yaml.org,2002:str.
+     * `c-ns-non-specific-tag` is always a lone `!`; this is only useful for plain scalars, where its
+     * specification means that the scalar MUST be resolved to have type `tag:yaml.org,2002:str`.
      *
      * TODO Note that this method does not enforce rules about local versus global tags!
      */
@@ -1655,12 +1655,10 @@ class ScannerImpl(
 
         // Consume one or more line breaks followed by any amount of spaces,
         // until we find something that isn't a line-break.
-        var lineBreak: String?
-        while (scanLineBreak().also { lineBreak = it } != null) {
+        generateSequence { scanLineBreak() }.forEach { lineBreak ->
             chunks.append(lineBreak)
             endMark = reader.getMark()
-            // Scan past up to (indent) spaces on the next line, then forward
-            // past them.
+            // Scan past up to (indent) spaces on the next line, then forward past them.
             col = reader.column
             while (col < indent && reader.peek() == ' '.code) {
                 reader.forward()
@@ -1675,7 +1673,7 @@ class ScannerImpl(
      * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
      * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
      *
-     * ```
+     * ```text
      * See the specification for details.
      * Note that we loose indentation rules for quoted scalars. Quoted
      * scalars don't need to adhere indentation because &quot; and ' clearly
@@ -1902,7 +1900,7 @@ class ScannerImpl(
     }
 
     /**
-     * Helper for scanPlainSpaces method when comments are enabled.
+     * Helper for [scanPlainSpaces] method when comments are enabled.
      * The ensures that blank lines and comments following a multi-line plain token are not swallowed
      * up
      */
@@ -1910,12 +1908,9 @@ class ScannerImpl(
         // peak ahead to find end of whitespaces and the column at which it occurs
         var wsLength = 0
         var wsColumn = reader.column
-        run {
-            var c: Int
-            while (
-                reader.peek(wsLength).also { c = it } != 0
-                && CharConstants.NULL_BL_T_LINEBR.has(c)
-            ) {
+        generateSequence { reader.peek(wsLength) }
+            .takeWhile { it != 0 && CharConstants.NULL_BL_T_LINEBR.has(it) }
+            .forEach { c ->
                 wsLength++
                 if (
                     !CharConstants.LINEBR.has(c)
@@ -1927,7 +1922,6 @@ class ScannerImpl(
                     wsColumn = 0
                 }
             }
-        }
 
         // if we see, a comment or end of string or change decrease in indent, we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.
@@ -1942,15 +1936,15 @@ class ScannerImpl(
         // if we see, after the space, a key-value followed by a ':', we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.
         if (isBlockContext()) {
-            var c: Int
             var extra = 1
-            while (reader.peek(wsLength + extra).also { c = it } != 0
-                && !CharConstants.NULL_BL_T_LINEBR.has(c)) {
-                if (c == ':'.code && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(wsLength + extra + 1))) {
-                    return true
+            generateSequence { reader.peek(wsLength + extra) }
+                .takeWhile { it != 0 && !CharConstants.NULL_BL_T_LINEBR.has(it) }
+                .forEach { c ->
+                    if (c == ':'.code && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(wsLength + extra + 1))) {
+                        return true
+                    }
+                    extra++
                 }
-                extra++
-            }
         }
 
         // None of the above so safe to chomp the spaces.
@@ -2003,7 +1997,7 @@ class ScannerImpl(
     /**
      * Scan a Tag handle. A Tag handle takes one of three forms:
      *
-     * ```
+     * ```text
      * "!" (c-primary-tag-handle)
      * "!!" (ns-secondary-tag-handle)
      * "!(name)!" (c-named-tag-handle)
@@ -2011,7 +2005,7 @@ class ScannerImpl(
      *
      * Where (name) must be formatted as an ns-word-char.
      *
-     * ```
+     * ```text
      * See the specification for details.
      * For some strange reasons, the specification does not allow '_' in
      * tag handles. I have allowed it anyway.
@@ -2157,7 +2151,7 @@ class ScannerImpl(
     /**
      * Scan a line break, transforming:
      *
-     * ```
+     * ```text
      * '\r\n'   : '\n'
      * '\r'     : '\n'
      * '\n'     : '\n'

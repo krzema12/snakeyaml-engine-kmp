@@ -133,7 +133,7 @@ abstract class BaseConstructor(
                 problem = "could not determine a constructor for the tag " + node.tag,
                 problemMark = node.startMark,
             )
-        val data = if (constructedObjects.containsKey(node)) constructedObjects[node] else constructor.construct(node)
+        val data = constructedObjects[node] ?: constructor.construct(node)
         constructedObjects[node] = data
         recursiveObjects.remove(node)
         if (node.isRecursive) {

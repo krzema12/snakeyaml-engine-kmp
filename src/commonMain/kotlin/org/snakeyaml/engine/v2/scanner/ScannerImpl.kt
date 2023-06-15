@@ -895,7 +895,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-          && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -905,7 +905,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-          && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -928,7 +928,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-          || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -1927,7 +1927,6 @@ class ScannerImpl(
                     wsColumn = 0
                 }
             }
-        }
 
         // if we see, a comment or end of string or change decrease in indent, we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.

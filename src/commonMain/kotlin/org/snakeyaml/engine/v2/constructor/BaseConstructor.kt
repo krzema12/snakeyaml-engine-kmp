@@ -84,9 +84,8 @@ abstract class BaseConstructor(
     private fun fillRecursive() {
         if (maps2fill.isNotEmpty()) {
             for (entry in maps2fill) {
-                val keyValueTuple =
-                    entry.value2
-                entry.value1[keyValueTuple.value1] = keyValueTuple.value2
+                val (value1, value2) = entry.value2
+                entry.value1[value1] = value2
             }
             maps2fill.clear()
         }
@@ -99,7 +98,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Construct object from the specified Node. Return existing instance if the node is already
+     * Construct object from the specified [Node]. Return existing instance if [node] is already
      * constructed.
      *
      * @param node Node to be constructed
@@ -110,8 +109,8 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Construct object from the specified Node. It does not check if existing instance the node is
-     * already constructed.
+     * Construct object from the specified [Node]. It does not check if existing instance of [node] is already
+     * constructed.
      *
      * @param node - the source
      * @return instantiated object
@@ -342,5 +341,8 @@ abstract class BaseConstructor(
         sets2fill.add(0, RecursiveTuple(set, key))
     }
 
-    internal class RecursiveTuple<T, K>(val value1: T, val value2: K)
+    private data class RecursiveTuple<T, K>(
+        val value1: T,
+        val value2: K,
+    )
 }

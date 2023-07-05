@@ -22,7 +22,7 @@ import org.snakeyaml.engine.v2.schema.JsonSchema
 import org.snakeyaml.engine.v2.schema.Schema
 
 /**
- * Builder pattern implementation for LoadSettings
+ * Builder pattern implementation for [LoadSettings]
  */
 class LoadSettingsBuilder internal constructor() {
     private val customProperties: MutableMap<SettingKey, Any> = HashMap()

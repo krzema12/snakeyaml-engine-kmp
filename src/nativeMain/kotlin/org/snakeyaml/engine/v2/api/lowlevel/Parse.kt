@@ -3,7 +3,7 @@ package org.snakeyaml.engine.v2.api.lowlevel
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.events.Event
 
-actual class Parse(
+actual class Parse actual constructor(
     settings: LoadSettings,
 ) {
     private val parseString = ParseString(settings)

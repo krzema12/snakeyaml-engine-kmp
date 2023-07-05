@@ -48,7 +48,9 @@ class Serializer(
             ),
         )
         anchorNode(node)
-        settings.explicitRootTag?.let { tag -> node.tag = tag }
+        if (settings.explicitRootTag != null) {
+            node.tag = settings.explicitRootTag
+        }
         serializeNode(node)
         emitable.emit(DocumentEndEvent(settings.isExplicitEnd))
         serializedNodes.clear()

@@ -68,6 +68,21 @@ dependencyResolutionManagement {
             }
             filter { includeModuleByRegex(".*", ".*kotlin-native-prebuilt.*") }
         }
+
+        ivy("https://github.com/") {
+            name = "GitHub Release"
+            patternLayout {
+                artifact("[organization]/[module]/archive/[revision].[ext]")
+                artifact("[organization]/[module]/archive/refs/tags/[revision].[ext]")
+                artifact("[organization]/[module]/archive/refs/tags/v[revision].[ext]")
+            }
+            metadataSources { artifact() }
+        }
+
+        maven(file("build/internal-maven")) {
+            name = "InternalMaven"
+            mavenContent { includeGroup("org.snakeyaml") }
+        }
     }
 }
 

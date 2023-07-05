@@ -70,14 +70,10 @@ class ScannerImpl(
     /** Had we reached the end of the stream */
     private var done = false
 
-    /**
-     * The number of unclosed `{` and `[`. [isBlockContext] means block context.
-     */
+    /** The number of unclosed `{` and `[`. [isBlockContext] means block context. */
     private var flowLevel = 0
 
-    /**
-     * The last added token
-     */
+    /** The last added token */
     private var lastToken: Token? = null
 
     /**
@@ -954,7 +950,7 @@ class ScannerImpl(
     //region Scanners - create tokens
 
     /**
-     * ```
+     * ```text
      * We ignore spaces, line breaks and comments.
      * If we find a line break in the block context, we set the flag
      * `allow_simple_key` on.
@@ -1202,7 +1198,7 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a `%TAG` directive's handle. This is YAML's c-tag-handle.
+     * Scan a `%TAG` directive's handle. This is YAML's `c-tag-handle`.
      *
      * @param startMark - start
      * @return the directive value
@@ -1224,7 +1220,7 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a `%TAG` directive's prefix. This is YAML's ns-tag-prefix.
+     * Scan a `%TAG` directive's prefix. This is YAML's `ns-tag-prefix`.
      */
     private fun scanTagDirectivePrefix(startMark: Mark?): String {
         // See the specification for details.
@@ -2003,7 +1999,7 @@ class ScannerImpl(
      * "!(name)!" (c-named-tag-handle)
      * ```
      *
-     * Where (name) must be formatted as an ns-word-char.
+     * Where (name) must be formatted as an `ns-word-char`.
      *
      * ```text
      * See the specification for details.

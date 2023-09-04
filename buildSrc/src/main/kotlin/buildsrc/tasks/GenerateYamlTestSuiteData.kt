@@ -1,19 +1,29 @@
 package buildsrc.tasks
 
+import java.io.File
+import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.intellij.lang.annotations.Subst
-import java.io.File
-import javax.inject.Inject
 
+/**
+ * Generate Kotlin code that contains the
+ * [YAML Test Suite data](https://github.com/yaml/yaml-test-suite).
+ *
+ * This is helpful for Kotlin Multiplatform testing, because there's currently no easy way to
+ * access and traverse files in common code.
+ */
 @CacheableTask
 abstract class GenerateYamlTestSuiteData @Inject constructor(
     private val fs: FileSystemOperations
 ) : DefaultTask() {
 
+    /**
+     * The
+     */
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
 
@@ -21,14 +31,17 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
     @get:PathSensitive(RELATIVE)
     abstract val yamlTestSuiteFilesDir: DirectoryProperty
 
+    /** Directory of the current project. Used to relativize file paths in generated code */
     private val rootDir = project.rootDir
 
     @TaskAction
     fun action() {
+        // clear the destination, in case there are any previously generated cases that are now removed
         val destination = destination.asFile.get()
         fs.delete { delete(destination) }
         destination.mkdirs()
 
+        // find all directories with a name file
         val yamlTestSuiteDirs = yamlTestSuiteFilesDir.get().asFile
             .walk()
             .filter { it.isDirectory && it.resolve("===").exists() }
@@ -40,12 +53,22 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         )
 
         val yamlTestSuiteDirsById = yamlTestSuiteDirs.map { dir ->
-            val parentDirContents = dir.parentFile.listFiles()?.toList() ?: emptyList()
-            val id = if (parentDirContents.all { it.isDirectory && it.name.toIntOrNull() != null }) {
-                "${dir.parentFile.name}:${dir.name}"
-            } else {
-                dir.name
+            val parentDirContents = dir.parentFile.listFiles().orEmpty().asList()
+
+            // Some directories contain a single case, while some contain multiple.
+            // Determine a distinct ID for each test case, based on the name and, if there are
+            // multiple cases, the case number.
+
+            val dirHasMultipleCases = parentDirContents.all {
+                it.isDirectory && it.name.toIntOrNull() != null
             }
+
+            val id =
+                if (dirHasMultipleCases) {
+                    "${dir.parentFile.name}:${dir.name}"
+                } else {
+                    dir.name
+                }
             YamlTestSuiteDirSpec(id = id, dir = dir)
         }
 
@@ -98,6 +121,8 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         id: String,
         testCaseDir: File,
     ): String {
+        // parse the data in the directory...
+
         // === -- The name/label of the test
         val label = testCaseDir.resolve("===").takeIf { it.exists() }?.readText()
             ?: error("missing === label in $testCaseDir")
@@ -137,6 +162,8 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         id: String,
         testCaseDir: File,
     ): String {
+        // parse the data in the directory...
+
         // === -- The name/label of the test
         val label = testCaseDir.resolve("===").takeIf { it.exists() }?.readText()
             ?: error("missing === label in $testCaseDir")
@@ -205,6 +232,12 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         @Subst("\"\"\"")
         private const val TRIPLE_QUOTE = /* language=text */ "\"\"\""
 
+        /**
+         * Surround this string in triple string quotes
+         *
+         * So that it looks pretty in code it's indented with a margin, and trimmed using
+         * [trimMargin].
+         */
         private fun String.tripleQuoted(): String = /* language=text */ """
                 ¦|¦$TRIPLE_QUOTE
                 ¦|¦${this.lineSequence().joinToString("\n") { "¦$it" }}

@@ -4,12 +4,18 @@ import buildsrc.conventions.Yaml_testing_gradle.Constants.YAML_TEST_TASK_GROUP
 import buildsrc.utils.asConsumer
 import buildsrc.utils.dropDirectories
 
+/**
+ * Generate code for accessing YAML Test Suite Data in test source sets, in a
+ * KMP-comptaible manner.
+ *
+ * @see [buildsrc.tasks.GenerateYamlTestSuiteData]
+ */
+
 plugins {
     id("buildsrc.conventions.base")
 }
 
-
-object Constants {
+private object Constants {
     const val YAML_TEST_TASK_GROUP = "yaml testing"
 }
 
@@ -42,7 +48,8 @@ val downloadYamlTestSuite by tasks.registering(Sync::class) {
 }
 
 val generateYamlTestSuiteData by tasks.registering(buildsrc.tasks.GenerateYamlTestSuiteData::class) {
-    description = "generate Kotlin code for accessing the YAML Test Suite data in multiplatform code"
+    description =
+        "generate Kotlin code for accessing the YAML Test Suite data in multiplatform code"
     group = YAML_TEST_TASK_GROUP
 
     destination.set(temporaryDir)

@@ -22,6 +22,8 @@ tasks.withType<AbstractArchiveTask>().configureEach {
 
 
 tasks.withType<AbstractCopyTask>().configureEach {
+    // When copy/sync tasks move or exclude files Gradle will retain redundant directories, even if
+    // they're empty. This is usually useless, so by default tell Gradle to remove empty dirs.
     includeEmptyDirs = false
 }
 

@@ -31,7 +31,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation("io.kotest:kotest-framework-engine:5.6.2")
-                implementation("io.kotest:kotest-framework-api:5.6.2")
+                implementation("io.kotest:kotest-framework-api:5.7.2")
                 implementation("io.kotest:kotest-assertions-core:5.6.2")
             }
         }

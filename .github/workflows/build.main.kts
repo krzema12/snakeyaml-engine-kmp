@@ -34,7 +34,7 @@ workflow(
             id = "build-on-${jobRunner::class.simpleName}",
             runsOn = jobRunner,
         ) {
-            uses(CheckoutV3())
+            uses(action = CheckoutV3())
             uses(
                 name = "Set up JDK",
                 action = SetupJavaV3(

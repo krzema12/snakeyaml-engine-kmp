@@ -1,5 +1,5 @@
 #!/usr/bin/env kotlin
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:0.43.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:1.0.0")
 
 import io.github.typesafegithub.workflows.actions.actions.CacheV3
 import io.github.typesafegithub.workflows.actions.actions.CheckoutV3
@@ -34,7 +34,7 @@ workflow(
             id = "build-on-${jobRunner::class.simpleName}",
             runsOn = jobRunner,
         ) {
-            uses(CheckoutV3())
+            uses(action = CheckoutV3())
             uses(
                 name = "Set up JDK",
                 action = SetupJavaV3(

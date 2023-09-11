@@ -24,7 +24,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
-                implementation("com.google.guava:guava:26.0-jre")
+                implementation("com.google.guava:guava:32.1.2-jre")
             }
         }
 

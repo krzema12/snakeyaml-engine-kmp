@@ -2166,8 +2166,6 @@ class ScannerImpl(
      * '\r'     : '\n'
      * '\n'     : '\n'
      * '\x85'   : '\n'
-     * '\u2028' : '\u2028'
-     * '\u2029  : '\u2029'
      * default : ''
      * ```
      * @returns transformed character, or `null`` if no line break detected
@@ -2181,9 +2179,6 @@ class ScannerImpl(
                 reader.forward()
             }
             return "\n"
-        } else if (c == '\u2028'.code || c == '\u2029'.code) {
-            reader.forward()
-            return Character.toChars(c).concatToString()
         }
         return null
     }

@@ -229,6 +229,6 @@ open class CommonRepresenter(
 
     companion object {
         /** all chars that represent a new line */
-        private val MULTILINE_PATTERN = Regex("[\n\u0085\u2028\u2029]")
+        private val MULTILINE_PATTERN = Regex("[\n\u0085]")
     }
 }

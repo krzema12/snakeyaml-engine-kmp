@@ -21,9 +21,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
     private val fs: FileSystemOperations
 ) : DefaultTask() {
 
-    /**
-     * The
-     */
+    /** The directory that will contain the generated Kotlin code. */
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
 
@@ -31,7 +29,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
     @get:PathSensitive(RELATIVE)
     abstract val yamlTestSuiteFilesDir: DirectoryProperty
 
-    /** Directory of the current project. Used to relativize file paths in generated code */
+    /** Directory of the current project. Used to relativize file paths in generated code. */
     private val rootDir = project.rootDir
 
     @TaskAction
@@ -44,7 +42,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         // find all directories with a name file
         val yamlTestSuiteDirs = yamlTestSuiteFilesDir.get().asFile
             .walk()
-            .filter { it.isDirectory && it.resolve("===").exists() }
+            .filter { it.isDirectory && it.findSuiteName() != null }
 
         data class YamlTestSuiteDirSpec(
             val id: String,
@@ -124,10 +122,10 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         // parse the data in the directory...
 
         // === -- The name/label of the test
-        val label = testCaseDir.resolve("===").takeIf { it.exists() }?.readText()
+        val label = testCaseDir.findSuiteName()
             ?: error("missing === label in $testCaseDir")
         // in.yaml -- The YAML input to be parsed or loaded
-        val inYaml = testCaseDir.resolve("in.yaml").takeIf { it.exists() }?.readText()
+        val inYaml = testCaseDir.resolve("in.yaml").readTextOrNull()
             ?: error("missing in.yaml in $testCaseDir")
 
         val relativePath = testCaseDir.relativeTo(rootDir).invariantSeparatorsPath
@@ -165,19 +163,19 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         // parse the data in the directory...
 
         // === -- The name/label of the test
-        val label = testCaseDir.resolve("===").takeIf { it.exists() }?.readText()
+        val label = testCaseDir.findSuiteName()
             ?: error("missing === label in $testCaseDir")
         // in.yaml -- The YAML input to be parsed or loaded
-        val inYaml = testCaseDir.resolve("in.yaml").takeIf { it.exists() }?.readText()
+        val inYaml = testCaseDir.resolve("in.yaml").readTextOrNull()
             ?: error("missing in.yaml in $testCaseDir")
         // out.yaml -- The most normal output a dumper would produce
-        val outYaml = testCaseDir.resolve("out.yaml").takeIf { it.exists() }?.readText()
+        val outYaml = testCaseDir.resolve("out.yaml").readTextOrNull()
         // emit.yaml -- Output an emitter would produce
-        val emitYaml = testCaseDir.resolve("emit.yaml").takeIf { it.exists() }?.readText()
+        val emitYaml = testCaseDir.resolve("emit.yaml").readTextOrNull()
         // in.json -- The JSON value that shoiuld load the same as in.yaml
-        val inJson = testCaseDir.resolve("in.json").takeIf { it.exists() }?.readText()
+        val inJson = testCaseDir.resolve("in.json").readTextOrNull()
         // test.event -- The event DSL produced by the parser test program
-        val testEvent = testCaseDir.resolve("test.event").takeIf { it.exists() }?.readText()
+        val testEvent = testCaseDir.resolve("test.event").readTextOrNull()
             ?: error("missing test.event in $testCaseDir")
 
         val relativePath = testCaseDir.relativeTo(rootDir).invariantSeparatorsPath
@@ -228,6 +226,20 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
     }
 
     companion object {
+
+        /**
+         * Get the YAML Test Suite name (the contents of the file named `===`), or `null` if the file does not exist.
+         *
+         * @receiver must be a directory
+         */
+        private fun File.findSuiteName(): String? {
+            val nameFile = resolve("===")
+            return nameFile.readTextOrNull()
+        }
+
+        /** Read the text content of the file, if it exists. Else, return `null`. */
+        private fun File.readTextOrNull(): String? = if (exists()) readText() else null
+
 
         @Subst("\"\"\"")
         private const val TRIPLE_QUOTE = /* language=text */ "\"\"\""

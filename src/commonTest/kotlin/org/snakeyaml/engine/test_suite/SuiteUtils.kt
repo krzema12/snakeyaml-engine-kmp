@@ -107,6 +107,8 @@ internal object SuiteUtils {
     ).mapToYamlTestDataId()
 
     private fun Set<String>.mapToYamlTestDataId(): Set<YamlTestData.Id> =
-        map { YamlTestData.Id(it.replace("-", ":")) }
-            .toSet()
+        map { id ->
+            val updatedId = id.replace("-", ":")
+            YamlTestData.Id(updatedId)
+        }.toSet()
 }

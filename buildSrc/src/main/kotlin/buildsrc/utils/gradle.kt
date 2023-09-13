@@ -46,13 +46,3 @@ fun Configuration.asConsumer(
 /** Drop the first [count] directories from the path */
 fun RelativePath.dropDirectories(count: Int): RelativePath =
     RelativePath(true, *segments.drop(count).toTypedArray())
-
-
-/** Drop the first directory from the path */
-fun RelativePath.dropDirectoriesWhile(
-    segmentPrediate: (segment: String) -> Boolean
-): RelativePath =
-    RelativePath(
-        true,
-        *segments.dropWhile(segmentPrediate).toTypedArray(),
-    )

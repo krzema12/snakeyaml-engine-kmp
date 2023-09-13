@@ -215,7 +215,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                         throw MissingEnvironmentVariableException.forEmptyVariable(name, value)
 
                     else                  ->
-                        else                  -> value
+                        value
                 }
 
                 "-"  -> when (environment) {

@@ -15,9 +15,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.tokens.*
-import org.snakeyaml.engine.v2.tokens.*
-import kotlin.collections.set
-import kotlin.jvm.JvmInline
 
 
 /**
@@ -1927,6 +1924,7 @@ class ScannerImpl(
                     wsColumn = 0
                 }
             }
+        }
 
         // if we see, a comment or end of string or change decrease in indent, we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.

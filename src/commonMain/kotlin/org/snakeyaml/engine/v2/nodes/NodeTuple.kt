@@ -18,9 +18,12 @@ package org.snakeyaml.engine.v2.nodes
  * @param[keyNode] the node used as the key
  * @param[valueNode] the node used as the value
  */
-data class NodeTuple(
+class NodeTuple(
     val keyNode: Node,
     val valueNode: Node,
 ) {
+    operator fun component1(): Node = keyNode
+    operator fun component2(): Node = valueNode
+
     override fun toString(): String = "<NodeTuple keyNode=$keyNode; valueNode=$valueNode>"
 }

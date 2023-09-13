@@ -335,12 +335,12 @@ class ParserImpl(
 
 
     /**
-     * <pre>
+     * ```text
      * block_mapping     ::= BLOCK-MAPPING_START
      * ((KEY block_node_or_indentless_sequence?)?
      * (VALUE block_node_or_indentless_sequence?)?)*
      * BLOCK-END
-    </pre> *
+     * ```
      */
     private fun processEmptyScalar(mark: Mark?): Event {
         return ScalarEvent(
@@ -490,7 +490,7 @@ class ParserImpl(
     }
 
     /**
-     * ```
+     * ```text
      *  block_node_or_indentless_sequence ::= ALIAS
      *                | properties (block_content | indentless_block_sequence)?
      *                | block_content

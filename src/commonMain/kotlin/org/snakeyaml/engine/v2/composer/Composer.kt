@@ -203,8 +203,8 @@ class Composer(
             startMark = ev.startMark,
             endMark = ev.endMark,
         )
-        anchor?.let { a: Anchor ->
-            registerAnchor(a, node)
+        if (anchor != null) {
+            registerAnchor(anchor, node)
         }
         node.blockComments = (blockComments)
         node.inLineComments = (inlineCommentsCollector.collectEvents().consume())
@@ -241,8 +241,8 @@ class Composer(
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }
-        anchor?.let { a: Anchor ->
-            registerAnchor(a, node)
+        if (anchor != null) {
+            registerAnchor(anchor, node)
         }
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
             blockCommentsCollector.collectEvents()
@@ -258,7 +258,7 @@ class Composer(
         node.setEndMark(endEvent.endMark)
         inlineCommentsCollector.collectEvents()
         if (!inlineCommentsCollector.isEmpty()) {
-            node.inLineComments = (inlineCommentsCollector.consume())
+            node.inLineComments = inlineCommentsCollector.consume()
         }
         return node
     }
@@ -280,20 +280,20 @@ class Composer(
             nodeTag = Tag(tag)
             resolved = false
         }
-        val children: MutableList<NodeTuple> = ArrayList()
+        val children = mutableListOf<NodeTuple>()
         val node = MappingNode(
             tag = nodeTag,
-            resolved = resolved,
             value = children,
             flowStyle = startEvent.flowStyle,
+            resolved = resolved,
             startMark = startEvent.startMark,
             endMark = null,
         )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }
-        anchor?.let { a: Anchor ->
-            registerAnchor(a, node)
+        if (anchor != null) {
+            registerAnchor(anchor, node)
         }
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
             blockCommentsCollector.collectEvents()
@@ -309,7 +309,7 @@ class Composer(
         node.setEndMark(endEvent.endMark)
         inlineCommentsCollector.collectEvents()
         if (!inlineCommentsCollector.isEmpty()) {
-            node.inLineComments = (inlineCommentsCollector.consume())
+            node.inLineComments = inlineCommentsCollector.consume()
         }
         return node
     }

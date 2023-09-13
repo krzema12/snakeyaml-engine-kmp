@@ -26,7 +26,7 @@ import java.io.Reader
  * Read the input stream and parse the content into events (opposite for Present or Emit)
  * @param settings - configuration
  */
-actual class Parse(
+actual class Parse actual constructor(
     private val settings: LoadSettings,
 ) {
     private val parseString = ParseString(settings)

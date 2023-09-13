@@ -1,5 +1,7 @@
 package org.snakeyaml.engine.v2.scanner
 
+import kotlin.collections.set
+import kotlin.jvm.JvmInline
 import okio.Buffer
 import org.snakeyaml.engine.internal.utils.Character
 import org.snakeyaml.engine.internal.utils.appendCodePoint
@@ -13,8 +15,6 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.tokens.*
-import kotlin.collections.set
-import kotlin.jvm.JvmInline
 
 
 /**
@@ -70,14 +70,10 @@ class ScannerImpl(
     /** Had we reached the end of the stream */
     private var done = false
 
-    /**
-     * The number of unclosed `{` and `[`. [isBlockContext] means block context.
-     */
+    /** The number of unclosed `{` and `[`. [isBlockContext] means block context. */
     private var flowLevel = 0
 
-    /**
-     * The last added token
-     */
+    /** The last added token */
     private var lastToken: Token? = null
 
     /**
@@ -90,7 +86,7 @@ class ScannerImpl(
     private var indent = -1
 
     /**
-     * ```
+     * ```text
      * A simple key is a key that is not denoted by the '' indicator.
      * Example of simple keys:
      * ---
@@ -180,8 +176,7 @@ class ScannerImpl(
         if (done) return false
         // If we aren't done, but we have no tokens, we need to scan more.
         if (tokens.isEmpty()) return true
-        // The current token may be a potential simple key, so we
-        // need to look further.
+        // The current token may be a potential simple key, so we need to look further.
         stalePossibleSimpleKeys()
         return nextPossibleSimpleKey() == tokensTaken
     }
@@ -289,7 +284,6 @@ class ScannerImpl(
 
             // Is it a tag?
             '!'  -> {
-
                 fetchTag()
                 return
             }
@@ -338,7 +332,6 @@ class ScannerImpl(
             problem = "found character '$chRepresentation' that cannot start any token. (Do not use $chRepresentation for indentation)",
             problemMark = reader.getMark(),
         )
-
     }
 
     //region Simple keys treatment.
@@ -347,13 +340,13 @@ class ScannerImpl(
      * Return the number of the nearest possible simple key. Actually we don't need to loop through
      * the whole dictionary.
      */
-    private fun nextPossibleSimpleKey(): Int {
+    private fun nextPossibleSimpleKey(): Int? {
         // Because possibleSimpleKeys is ordered we can simply take the first key
-        return possibleSimpleKeys.values.firstOrNull()?.tokenNumber ?: -1
+        return possibleSimpleKeys.values.firstOrNull()?.tokenNumber
     }
 
     /**
-     * ```
+     * ```text
      * Remove entries that are no longer possible simple keys. According to
      * the YAML specification, simple keys
      * - should be limited to a single line,
@@ -656,7 +649,12 @@ class ScannerImpl(
         if (isBlockContext()) {
             // Are we allowed to start a new entry?
             if (!allowSimpleKey) {
-                throw ScannerException("", null, "sequence entries are not allowed here", reader.getMark())
+                throw ScannerException(
+                    "",
+                    null,
+                    "sequence entries are not allowed here",
+                    reader.getMark()
+                )
             }
 
             // We may need to add BLOCK-SEQUENCE-START.
@@ -764,7 +762,7 @@ class ScannerImpl(
     /**
      * Fetch an alias, which is a reference to an anchor. Aliases take the format:
      *
-     * ```
+     * ```text
      * *(anchor name)
      * ```
      */
@@ -783,7 +781,7 @@ class ScannerImpl(
     /**
      * Fetch an anchor. Anchors take the form:
      *
-     * ```
+     * ```text
      * &(anchor name)
      * ```
      */
@@ -894,7 +892,7 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-                && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
@@ -904,7 +902,7 @@ class ScannerImpl(
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-                && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -927,7 +925,7 @@ class ScannerImpl(
      */
     private fun checkValue(): Boolean {
         return isFlowContext() // VALUE(flow context): ':'
-                || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
+            || CharConstants.NULL_BL_T_LINEBR.has(reader.peek(1)) // VALUE(block context): ':' (' '|'\n')
     }
 
     /** Returns `true` if the next thing on the reader is a plain token. */
@@ -957,7 +955,7 @@ class ScannerImpl(
     //region Scanners - create tokens
 
     /**
-     * ```
+     * ```text
      * We ignore spaces, line breaks and comments.
      * If we find a line break in the block context, we set the flag
      * `allow_simple_key` on.
@@ -1187,7 +1185,7 @@ class ScannerImpl(
 
     /**
      * Read a `%TAG` directive value:
-     * ```
+     * ```text
      * s-ignored-space+ c-tag-handle s-ignored-space+ ns-tag-prefix s-l-comments
      * ```
      */
@@ -1205,7 +1203,7 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a `%TAG` directive's handle. This is YAML's c-tag-handle.
+     * Scan a `%TAG` directive's handle. This is YAML's `c-tag-handle`.
      *
      * @param startMark - start
      * @return the directive value
@@ -1227,7 +1225,7 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a `%TAG` directive's prefix. This is YAML's ns-tag-prefix.
+     * Scan a `%TAG` directive's prefix. This is YAML's `ns-tag-prefix`.
      */
     private fun scanTagDirectivePrefix(startMark: Mark?): String {
         // See the specification for details.
@@ -1271,7 +1269,7 @@ class ScannerImpl(
     }
 
     /**
-     * ```
+     * ```text
      * The YAML 1.2 specification does not restrict characters for anchors and
      * aliases. This may lead to problems.
      * see [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
@@ -1319,19 +1317,19 @@ class ScannerImpl(
     }
 
     /**
-     * Scan a Tag property. A Tag property may be specified in one of three ways: c-verbatim-tag,
-     * c-ns-shorthand-tag, or c-ns-non-specific-tag
+     * Scan a Tag property. A Tag property may be specified in one of three ways: `c-verbatim-tag`,
+     * `c-ns-shorthand-tag`, or `c-ns-non-specific-tag`
      *
-     * c-verbatim-tag takes the form !<ns-uri-char></ns-uri-char>+> and must be delivered verbatim (as-is) to the
+     * `c-verbatim-tag` takes the form `!<ns-uri-char></ns-uri-char>+>` and must be delivered verbatim (as-is) to the
      * application. In particular, verbatim tags are not subject to tag resolution.
      *
-     * c-ns-shorthand-tag is a valid tag handle followed by a non-empty suffix. If the tag handle is a
-     * c-primary-tag-handle ('!') then the suffix must have all exclamation marks properly URI-escaped
-     * (%21); otherwise, the string will look like a named tag handle: !foo!bar would be interpreted
-     * as (handle="!foo!", suffix="bar").
+     * `c-ns-shorthand-tag` is a valid tag handle followed by a non-empty suffix. If the tag handle is a
+     * `c-primary-tag-handle` (`!`) then the suffix must have all exclamation marks properly URI-escaped
+     * (`%21`); otherwise, the string will look like a named tag handle: `!foo!bar` would be interpreted
+     * as (`handle="!foo!", suffix="bar"`).
      *
-     * c-ns-non-specific-tag is always a lone '!'; this is only useful for plain scalars, where its
-     * specification means that the scalar MUST be resolved to have type tag:yaml.org,2002:str.
+     * `c-ns-non-specific-tag` is always a lone `!`; this is only useful for plain scalars, where its
+     * specification means that the scalar MUST be resolved to have type `tag:yaml.org,2002:str`.
      *
      * TODO Note that this method does not enforce rules about local versus global tags!
      */
@@ -1655,15 +1653,13 @@ class ScannerImpl(
             reader.forward()
             col++
         }
-
         // Consume one or more line breaks followed by any amount of spaces,
         // until we find something that isn't a line-break.
-        var lineBreak: String?
-        while (scanLineBreak().also { lineBreak = it } != null) {
+        while (true) {
+            val lineBreak = scanLineBreak() ?: break
             chunks.append(lineBreak)
             endMark = reader.getMark()
-            // Scan past up to (indent) spaces on the next line, then forward
-            // past them.
+            // Scan past up to (indent) spaces on the next line, then forward past them.
             col = reader.column
             while (col < indent && reader.peek() == ' '.code) {
                 reader.forward()
@@ -1678,7 +1674,7 @@ class ScannerImpl(
      * Scan a flow-style scalar. Flow scalars are presented in one of two forms; first, a flow scalar
      * may be a double-quoted string; second, a flow scalar may be a single-quoted string.
      *
-     * ```
+     * ```text
      * See the specification for details.
      * Note that we loose indentation rules for quoted scalars. Quoted
      * scalars don't need to adhere indentation because &quot; and ' clearly
@@ -1734,13 +1730,13 @@ class ScannerImpl(
             } else if (doubleQuoted && c == '\\'.code) {
                 reader.forward()
                 c = reader.peek()
-                if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_REPLACEMENTS.containsKey(c.toChar())) {
+                if (!Character.isSupplementaryCodePoint(c) && c.toChar() in CharConstants.ESCAPE_REPLACEMENTS) {
                     // The character is one of the single-replacement
                     // types; these are replaced with a literal character
                     // from the mapping.
                     chunks.append(CharConstants.ESCAPE_REPLACEMENTS[c.toChar()])
                     reader.forward()
-                } else if (!Character.isSupplementaryCodePoint(c) && CharConstants.ESCAPE_CODES.containsKey(c.toChar())) {
+                } else if (!Character.isSupplementaryCodePoint(c) && c.toChar() in CharConstants.ESCAPE_CODES) {
                     // The character is a multi-digit escape sequence, with
                     // length defined by the value in the ESCAPE_CODES map.
                     length = CharConstants.ESCAPE_CODES[c.toChar()]!!
@@ -1839,15 +1835,14 @@ class ScannerImpl(
             while (reader.peek().toChar() in " \t") {
                 reader.forward()
             }
-            // If we stopped at a line break, add that; otherwise, return the
-            // assembled set of scalar breaks.
-            val lineBreakOpt = scanLineBreak()
-            if (lineBreakOpt != null) {
-                chunks.append(lineBreakOpt)
-            } else {
-                return chunks.toString()
-            }
+            // If we stopped at a line break, add that;
+            // otherwise, end the loop
+            val lineBreakOpt = scanLineBreak() ?: break
+            chunks.append(lineBreakOpt)
         }
+
+        // return the assembled set of scalar breaks
+        return chunks.toString()
     }
 
     /**
@@ -1905,7 +1900,7 @@ class ScannerImpl(
     }
 
     /**
-     * Helper for scanPlainSpaces method when comments are enabled.
+     * Helper for [scanPlainSpaces] method when comments are enabled.
      * The ensures that blank lines and comments following a multi-line plain token are not swallowed
      * up
      */
@@ -1913,12 +1908,11 @@ class ScannerImpl(
         // peak ahead to find end of whitespaces and the column at which it occurs
         var wsLength = 0
         var wsColumn = reader.column
-        run {
-            var c: Int
-            while (
-                reader.peek(wsLength).also { c = it } != 0
-                && CharConstants.NULL_BL_T_LINEBR.has(c)
-            ) {
+        while(true) {
+            val c = reader.peek(wsLength)
+            if (c == 0 || !CharConstants.NULL_BL_T_LINEBR.has(c)) {
+                break
+            } else {
                 wsLength++
                 if (
                     !CharConstants.LINEBR.has(c)
@@ -1945,12 +1939,16 @@ class ScannerImpl(
         // if we see, after the space, a key-value followed by a ':', we are done
         // Do not chomp end of lines and blanks, they will be handled by the main loop.
         if (isBlockContext()) {
-            var c: Int
             var extra = 1
-            while (reader.peek(wsLength + extra).also { c = it } != 0
-                && !CharConstants.NULL_BL_T_LINEBR.has(c)) {
-                if (c == ':'.code && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(wsLength + extra + 1))) {
-                    return true
+            while (true) {
+                val c = reader.peek(wsLength + extra)
+                if (c == 0 || CharConstants.NULL_BL_T_LINEBR.has(c)) {
+                    break
+                } else if (c == ':'.code) {
+                    val nextC = reader.peek(wsLength + extra + 1)
+                    if (CharConstants.NULL_BL_T_LINEBR.has(nextC)) {
+                        return true
+                    }
                 }
                 extra++
             }
@@ -1987,7 +1985,10 @@ class ScannerImpl(
                     if (lbOpt != null) {
                         breaks.append(lbOpt)
                         prefix = reader.prefix(3)
-                        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+                        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(
+                                reader.peek(3)
+                            )
+                        ) {
                             return ""
                         }
                     } else {
@@ -2006,15 +2007,15 @@ class ScannerImpl(
     /**
      * Scan a Tag handle. A Tag handle takes one of three forms:
      *
-     * ```
+     * ```text
      * "!" (c-primary-tag-handle)
      * "!!" (ns-secondary-tag-handle)
      * "!(name)!" (c-named-tag-handle)
      * ```
      *
-     * Where (name) must be formatted as an ns-word-char.
+     * Where (name) must be formatted as an `ns-word-char`.
      *
-     * ```
+     * ```text
      * See the specification for details.
      * For some strange reasons, the specification does not allow '_' in
      * tag handles. I have allowed it anyway.
@@ -2160,7 +2161,7 @@ class ScannerImpl(
     /**
      * Scan a line break, transforming:
      *
-     * ```
+     * ```text
      * '\r\n'   : '\n'
      * '\r'     : '\n'
      * '\n'     : '\n'
@@ -2169,7 +2170,7 @@ class ScannerImpl(
      * '\u2029  : '\u2029'
      * default : ''
      * ```
-     * @returns transformed character, or empty string if no line break detected
+     * @returns transformed character, or `null`` if no line break detected
      */
     private fun scanLineBreak(): String? {
         val c = reader.peek()
@@ -2194,12 +2195,12 @@ class ScannerImpl(
      * @return tokens to be used
      */
     private fun makeTokenList(vararg tokens: Token?): List<Token> {
-        return buildList {
-            for (token in tokens) {
-                if (token != null && (settings.parseComments || token !is CommentToken)) {
-                    add(token)
-                }
-            }
+        val notNullTokens = tokens.filterNotNull()
+
+        return if (!settings.parseComments) {
+            notNullTokens.filter { token -> token !is CommentToken }
+        } else {
+            notNullTokens
         }
     }
 
@@ -2210,7 +2211,8 @@ class ScannerImpl(
     companion object {
 
         private const val DIRECTIVE_PREFIX = "while scanning a directive"
-        private const val EXPECTED_ALPHA_ERROR_PREFIX = "expected alphabetic or numeric character, but found "
+        private const val EXPECTED_ALPHA_ERROR_PREFIX =
+            "expected alphabetic or numeric character, but found "
         private const val SCANNING_SCALAR = "while scanning a block scalar"
         private const val SCANNING_PREFIX = "while scanning a "
 

@@ -17,4 +17,19 @@ package org.snakeyaml.engine.v2.exceptions
  * Indicate missing mandatory environment variable in the template
  * @param message - error message
  */
-class MissingEnvironmentVariableException(message: String) : YamlEngineException(message)
+class MissingEnvironmentVariableException(message: String) : YamlEngineException(message) {
+
+    companion object {
+        internal fun forMissingVariable(
+            name: String,
+            value: String,
+        ): MissingEnvironmentVariableException =
+            MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
+
+        internal fun forEmptyVariable(
+            name: String,
+            value: String,
+        ): MissingEnvironmentVariableException =
+            MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
+    }
+}

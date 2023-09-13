@@ -17,7 +17,12 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 class CharConstants private constructor(content: String) {
-    val contains = BooleanArray(ASCII_SIZE) { false }
+    val contains: BooleanArray
+
+    init {
+        val contentCodes = content.map { it.code }
+        contains = BooleanArray(ASCII_SIZE) { it in contentCodes }
+    }
 
     fun has(c: Int): Boolean = c < ASCII_SIZE && contains[c]
 
@@ -27,14 +32,9 @@ class CharConstants private constructor(content: String) {
 
     fun hasNo(c: Int, additional: String): Boolean = !has(c, additional)
 
-    init {
-        content.forEach {
-            contains[it.code] = true
-        }
-    }
-
     companion object {
-        private const val ALPHA_S = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
+        private const val ALPHA_S =
+            "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
         private const val LINEBR_S = "\n"
         private const val FULL_LINEBR_S = "\r" + LINEBR_S
         private const val NULL_OR_LINEBR_S = "\u0000" + FULL_LINEBR_S
@@ -42,9 +42,16 @@ class CharConstants private constructor(content: String) {
         private const val NULL_BL_T_LINEBR_S = "\t" + NULL_BL_LINEBR_S
         private const val NULL_BL_T_S = "\u0000 \t"
 
-        // the suffix must not contain the “[”, “]”, “{”, “}” and “,” characters.
-        // These characters would cause ambiguity with flow collection structures.
-        // https://yaml.org/spec/1.2.2/#691-node-tags
+        /**
+         * The suffix must not contain the characters
+         *
+         * ```text
+         * []{},.
+         * ```
+         *
+         * These characters would cause ambiguity with flow collection structures.
+         * https://yaml.org/spec/1.2.2/#691-node-tags
+         */
         private const val URI_CHARS_SUFFIX_S = "$ALPHA_S-;/?:@&=+\$_.!~*'()%"
 
         @JvmField

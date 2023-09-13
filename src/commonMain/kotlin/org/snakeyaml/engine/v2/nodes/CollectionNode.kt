@@ -22,7 +22,7 @@ import kotlin.jvm.JvmOverloads
  *
  * @param[flowStyle] Serialization style of this collection
  */
-abstract class CollectionNode<T> @JvmOverloads constructor(
+sealed class CollectionNode<T> @JvmOverloads constructor(
     tag: Tag,
     var flowStyle: FlowStyle,
     startMark: Mark?,

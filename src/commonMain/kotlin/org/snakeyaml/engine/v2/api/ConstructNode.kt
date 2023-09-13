@@ -17,7 +17,7 @@ import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.Node
 
 /**
- * Provide a way to construct a Java instance from the composed Node. Support recursive objects if
+ * Provide a way to construct an instance from the composed [Node]. Support recursive objects if
  * it is required. (create Native Data Structure out of Node Graph) (this is the opposite for
  * Represent)
  *
@@ -25,22 +25,21 @@ import org.snakeyaml.engine.v2.nodes.Node
  */
 interface ConstructNode {
     /**
-     * Construct a Java instance with all the properties injected when it is possible.
+     * Construct an instance, with all the properties injected when it is possible.
      *
      * @param node composed [Node]
-     * @return a complete Java instance or empty collection instance if it is recursive
+     * @return a complete Java instance, or an empty collection instance if it is recursive
      */
     fun construct(node: Node?): Any?
 
     /**
      * Apply the second step when constructing recursive structures. Because the instance is already
      * created it can assign a reference to itself. (no need to implement this method for
-     * non-recursive data structures). Fail with a reminder to provide the second step for a recursive
+     * non-recursive data structures). Fails with a reminder to provide the second step for a recursive
      * structure
      *
      * @param node composed [Node]
-     * @param object the instance constructed earlier by `construct(Node node)` for the
-     * provided Node
+     * @param object the instance constructed earlier by [construct] for the provided [Node]
      */
     fun constructRecursive(node: Node, `object`: Any) {
         check(!node.isRecursive) { "Not implemented in ${this::class}" }

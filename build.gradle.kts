@@ -40,10 +40,6 @@ kotlin {
     }
 }
 
-tasks.matching { it.name.startsWith("copyResourcesDebugTest") }.configureEach {
-    mustRunAfter(tasks.yamlTestSuiteDataSources)
-}
-
 tasks.withType<Test>().configureEach {
     environment(
         "EnvironmentKey1" to "EnvironmentValue1",

@@ -30,7 +30,7 @@ import kotlin.jvm.JvmOverloads
  * @param startMark - start mark when available
  * @param endMark - end mark when available
  */
-abstract class Node @JvmOverloads constructor(
+sealed class Node @JvmOverloads constructor(
     /**
      * Tag of this node.
      *

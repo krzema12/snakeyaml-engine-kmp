@@ -41,6 +41,18 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         tagConstructors.putAll(settings.tagConstructors)
     }
 
+    override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructMapping2ndStep(node, mapping)
+    }
+
+    override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
+        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
+        validateDuplicateKeys(node)
+        super.constructSet2ndStep(node, set)
+    }
+
     /**
      * detect and process the duplicate key in mapping according to the configured setting
      *
@@ -82,18 +94,6 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
             )
         }
         return key
-    }
-
-    override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
-        validateDuplicateKeys(node)
-        super.constructMapping2ndStep(node, mapping)
-    }
-
-    override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
-        validateDuplicateKeys(node)
-        super.constructSet2ndStep(node, set)
     }
 
     /** Create [Set] instances */
@@ -175,7 +175,7 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
                 val matchResult = BaseScalarResolver.ENV_FORMAT.matchEntire(scalar)
                     ?: error("failed to match scalar")
                 val (name, separator, value) = matchResult.destructured
-                val env = getEnv(name)
+                val env = getEnvironmentVariable(name)
                 val overruled = config.getValueFor(name, separator, value, env)
                 overruled ?: apply(name, separator, value, env)
             } else {
@@ -192,35 +192,44 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
          * @param environment  the value from environment for the provided variable
          * @return the value to apply in the template
          */
-        private fun apply(name: String, separator: String?, value: String, environment: String?): String {
-            if (!environment.isNullOrEmpty()) {
-                return environment
-            } else if (separator != null) { // variable is either unset or empty
-                // there is a default value or error
-                if (separator == "?" && environment == null) {
-                    throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
-                } else if (separator == ":?") {
-                    if (environment == null) {
-                        throw MissingEnvironmentVariableException("Missing mandatory variable $name: $value")
-                    } else if (environment.isEmpty()) {
-                        throw MissingEnvironmentVariableException("Empty mandatory variable $name: $value")
-                    }
-                }
-                if (separator.startsWith(":") && environment.isNullOrEmpty()) {
-                    return value
-                } else if (environment == null) {
-                    return value
-                }
-            }
-            return ""
-        }
+        private fun apply(
+            name: String,
+            separator: String?,
+            value: String,
+            environment: String?,
+        ): String {
+            if (!environment.isNullOrEmpty()) return environment // variable is either unset or empty
+            if (separator == null) return ""
 
-        /**
-         * Get value of the environment variable
-         *
-         * @param key the name of the variable
-         * @return value or `null` if not set
-         */
-        private fun getEnv(key: String): String? = getEnvironmentVariable(key)
+            return when (separator) {
+                ":-" -> when {
+                    environment.isNullOrEmpty() -> value
+                    else                        -> ""
+                }
+
+                ":?" -> when {
+                    environment == null   ->
+                        throw MissingEnvironmentVariableException.forMissingVariable(name, value)
+
+                    environment.isEmpty() ->
+                        throw MissingEnvironmentVariableException.forEmptyVariable(name, value)
+
+                    else                  ->
+                        value
+                }
+
+                "-"  -> when (environment) {
+                    null -> value
+                    else -> ""
+                }
+
+                "?"  -> when (environment) {
+                    null -> throw MissingEnvironmentVariableException.forMissingVariable(name, value)
+                    else -> ""
+                }
+
+                else -> ""
+            }
+        }
     }
 }

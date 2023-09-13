@@ -67,9 +67,9 @@ class ScalarEvent @JvmOverloads constructor(
     override fun toString(): String {
         return buildString {
             append("=VAL")
-            anchor?.let { a -> append(" &$a") }
+            if (anchor != null) append(" &$anchor")
             if (implicit.bothFalse()) {
-                tag?.let { theTag: String -> append(" <$theTag>") }
+                if (tag != null) append(" <$tag>")
             }
             append(" ")
             append(scalarStyle.toString())
@@ -80,7 +80,7 @@ class ScalarEvent @JvmOverloads constructor(
     fun escapedValue(): String {
         return value
             .toCodePoints()
-            .filter { i: Int -> i < Char.MAX_VALUE.code }
+            .filter { it < Char.MAX_VALUE.code }
             .joinToString("") { ch: Int ->
                 CharConstants.escapeChar(ch.toChar())
             }

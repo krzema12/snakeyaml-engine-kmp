@@ -4,6 +4,9 @@ import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.lowlevel.Parse
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 
+/**
+ * Utilities for running the [YAML Test Suite tests](https://github.com/yaml/yaml-test-suite).
+ */
 internal object SuiteUtils {
 
     fun parseData(data: YamlTestData): ParseResult {
@@ -17,7 +20,18 @@ internal object SuiteUtils {
     }
 
     /**
-     * Identifiers of tests that should fail.
+     * IDs of cases that should **fail** according to YAML Test Suite, but they actually succeed.
+     *
+     * Such deviations are probably because of an enigmatic bug in SnakeYAML-KMP that hasn't been
+     * identified and fixed. This is common for YAML libraries, because YAML is far too complicated!
+     *
+     * As a workaround, the expected outcome of these cases is manually overridden by adding them to
+     * this list.
+     *
+     * If by some chance you've made a change that means that these cases now pass then well done!
+     * You can now remove that ID from this list.
+     *
+     * @see deviationsWithError
      */
     val deviationsWithSuccess: Set<YamlTestData.Id> = setOf(
         //region copied from SnakeYAML
@@ -29,7 +43,9 @@ internal object SuiteUtils {
         "SU5Z",
         //endregion
 
-        //region Additional cases
+        //region Additional cases that SnakeYAML-Java also doesn't pass
+        // (SnakeYAML-Java doesn't use the latest YAML Test Suite data, so it doesn't have
+        // manual exclusions for these cases yet).
         "DK95:01",     // https://matrix.yaml.info/details/DK95:01.html
         "JEF9:02",     // https://matrix.yaml.info/details/JEF9:02.html
         "L24T:01",     // https://matrix.yaml.info/details/L24T:01.html
@@ -37,7 +53,9 @@ internal object SuiteUtils {
     ).mapToYamlTestDataId()
 
     /**
-     * Identifiers of tests that fail with an error
+     * IDs of cases that should **pass** according to YAML Test Suite, but they actually succeed.
+     *
+     * @see deviationsWithSuccess for further explanation.
      */
     val deviationsWithError: Set<YamlTestData.Id> = setOf(
         //region copied from SnakeYAML
@@ -96,7 +114,9 @@ internal object SuiteUtils {
         "Y79Y-010",
         //endregion
 
-        //region Additional cases that SnakeYAML also doesn't pass
+        //region Additional cases that SnakeYAML-Java also doesn't pass
+        // (SnakeYAML-Java doesn't use the latest YAML Test Suite data, so it doesn't have
+        // manual exclusions for these cases yet).
         "6CA3",        // https://matrix.yaml.info/details/6CA3.html
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
         "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html

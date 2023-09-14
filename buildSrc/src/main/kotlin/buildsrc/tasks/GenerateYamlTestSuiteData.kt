@@ -7,14 +7,15 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
+import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.Subst
 
 /**
  * Generate Kotlin code that contains the
  * [YAML Test Suite data](https://github.com/yaml/yaml-test-suite).
  *
- * This is helpful for Kotlin Multiplatform testing, because there's currently no easy way to
- * access and traverse files in common code.
+ * This is necessary for accessing test data in Kotlin Multiplatform tests, because there's
+ * currently no easy way to access and traverse filesystem content in Kotlin Multiplatform code.
  */
 @CacheableTask
 abstract class GenerateYamlTestSuiteData @Inject constructor(
@@ -25,6 +26,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
 
+    /** Directory containing the YAML Test Suite data. */
     @get:InputDirectory
     @get:PathSensitive(RELATIVE)
     abstract val yamlTestSuiteFilesDir: DirectoryProperty
@@ -44,19 +46,13 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
             .walk()
             .filter { it.isDirectory && it.findSuiteName() != null }
 
-        data class YamlTestSuiteDirSpec(
-            val id: String,
-            val dir: File,
-            val objectName: String = "DATA_${id.replace(":", "_")}",
-        )
-
+        // for each test suite directory, create a
         val yamlTestSuiteDirsById = yamlTestSuiteDirs.map { dir ->
             val parentDirContents = dir.parentFile.listFiles().orEmpty().asList()
 
             // Some directories contain a single case, while some contain multiple.
             // Determine a distinct ID for each test case, based on the name and, if there are
             // multiple cases, the case number.
-
             val dirHasMultipleCases = parentDirContents.all {
                 it.isDirectory && it.name.toIntOrNull() != null
             }
@@ -67,28 +63,21 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
                 } else {
                     dir.name
                 }
+
             YamlTestSuiteDirSpec(id = id, dir = dir)
         }
 
-        yamlTestSuiteDirsById.forEach { (id, testCaseDir, objectName) ->
-            // error -- This file indicates the YAML should fail to parse
-            val expectError = testCaseDir.resolve("error").exists()
+        yamlTestSuiteDirsById.forEach { testCase ->
+            // error -- This file indicates the YAML should fail to parse (the file's content is ignored)
+            val expectError = testCase.dir.resolve("error").exists()
 
             val contents = if (expectError) {
-                generateExpectErrorData(
-                    objectName = objectName,
-                    id = id,
-                    testCaseDir = testCaseDir,
-                )
+                generateExpectErrorData(testCase)
             } else {
-                generateExpectSuccessData(
-                    objectName = objectName,
-                    id = id,
-                    testCaseDir = testCaseDir,
-                )
+                generateExpectSuccessData(testCase)
             }
 
-            val destFile = destination.resolve("$objectName.kt")
+            val destFile = destination.resolve("${testCase.objectName}.kt")
 
             destFile.writeText(contents)
         }
@@ -114,21 +103,33 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         )
     }
 
-    private fun generateExpectErrorData(
-        objectName: String,
-        id: String,
-        testCaseDir: File,
-    ): String {
+    /** Data specific to a single YAML Test Suite case. */
+    private data class YamlTestSuiteDirSpec(
+        val id: String,
+        val dir: File,
+        val objectName: String = "DATA_${id.replace(":", "_")}",
+    ) {
+        @Language("http-url-reference")
+        val yamlInfoUrl: String = "https://matrix.yaml.info/details/${id}.html"
+
+        /** The name/label of the test */
+        val label: String
+            get() = dir.findSuiteName()
+                ?: error("missing === label in $dir")
+
+        /** `in.yaml` -- The YAML input to be parsed or loaded */
+        val inYaml: String
+            get() = dir.resolve("in.yaml").readTextOrNull()
+                ?: error("missing in.yaml in $dir")
+    }
+
+    /**
+     * Generate a Kotlin Object for accessing test case data for a case that is expected to fail.
+     */
+    private fun generateExpectErrorData(case: YamlTestSuiteDirSpec): String {
         // parse the data in the directory...
 
-        // === -- The name/label of the test
-        val label = testCaseDir.findSuiteName()
-            ?: error("missing === label in $testCaseDir")
-        // in.yaml -- The YAML input to be parsed or loaded
-        val inYaml = testCaseDir.resolve("in.yaml").readTextOrNull()
-            ?: error("missing in.yaml in $testCaseDir")
-
-        val relativePath = testCaseDir.relativeTo(rootDir).invariantSeparatorsPath
+        val relativePath = case.dir.relativeTo(rootDir).invariantSeparatorsPath
 
         return /* language=kotlin */ """
             ¦|¦package org.snakeyaml.engine.test_suite
@@ -136,49 +137,42 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
             ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`
             ¦|¦ *
-            ¦|¦ * See [https://matrix.yaml.info/details/$id.html](https://matrix.yaml.info/details/$id.html)
+            ¦|¦ * See [${case.yamlInfoUrl}](${case.yamlInfoUrl})
             ¦|¦ */
-            ¦|¦internal object $objectName: YamlTestData.Error {
+            ¦|¦internal object ${case.objectName}: YamlTestData.Error {
             ¦|¦
-            ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("${id}")
+            ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("${case.id}")
             ¦|¦
             ¦|¦  /** The name/label of the test */
             ¦|¦  // language=text
             ¦|¦  override val label: String =
-            ¦|¦${label.tripleQuoted()}
+            ¦|¦${case.label.tripleQuoted()}
             ¦|¦
             ¦|¦  /** The YAML input to be parsed or loaded */
             ¦|¦  // language=YAML
             ¦|¦  override val inYaml: String =
-            ¦|¦${inYaml.tripleQuoted()}
+            ¦|¦${case.inYaml.tripleQuoted()}
             ¦|¦}
         """.trimMargin(/* language=text */ "¦|¦")
     }
 
-    private fun generateExpectSuccessData(
-        objectName: String,
-        id: String,
-        testCaseDir: File,
-    ): String {
+    /**
+     * Generate a Kotlin Object for accessing test case data for a case that is expected to succeed.
+     */
+    private fun generateExpectSuccessData(case: YamlTestSuiteDirSpec): String {
         // parse the data in the directory...
 
-        // === -- The name/label of the test
-        val label = testCaseDir.findSuiteName()
-            ?: error("missing === label in $testCaseDir")
-        // in.yaml -- The YAML input to be parsed or loaded
-        val inYaml = testCaseDir.resolve("in.yaml").readTextOrNull()
-            ?: error("missing in.yaml in $testCaseDir")
         // out.yaml -- The most normal output a dumper would produce
-        val outYaml = testCaseDir.resolve("out.yaml").readTextOrNull()
+        val outYaml = case.dir.resolve("out.yaml").readTextOrNull()
         // emit.yaml -- Output an emitter would produce
-        val emitYaml = testCaseDir.resolve("emit.yaml").readTextOrNull()
+        val emitYaml = case.dir.resolve("emit.yaml").readTextOrNull()
         // in.json -- The JSON value that shoiuld load the same as in.yaml
-        val inJson = testCaseDir.resolve("in.json").readTextOrNull()
+        val inJson = case.dir.resolve("in.json").readTextOrNull()
         // test.event -- The event DSL produced by the parser test program
-        val testEvent = testCaseDir.resolve("test.event").readTextOrNull()
-            ?: error("missing test.event in $testCaseDir")
+        val testEvent = case.dir.resolve("test.event").readTextOrNull()
+            ?: error("missing test.event in ${case.dir}")
 
-        val relativePath = testCaseDir.relativeTo(rootDir).invariantSeparatorsPath
+        val relativePath = case.dir.relativeTo(rootDir).invariantSeparatorsPath
 
         return /* language=kotlin */ """
             ¦|¦package org.snakeyaml.engine.test_suite
@@ -186,21 +180,21 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
             ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`
             ¦|¦ *
-            ¦|¦ * See [https://matrix.yaml.info/details/$id.html](https://matrix.yaml.info/details/$id.html)
+            ¦|¦ * See [${case.yamlInfoUrl}](${case.yamlInfoUrl})
             ¦|¦ */
-            ¦|¦internal object $objectName: YamlTestData.Success {
+            ¦|¦internal object ${case.objectName}: YamlTestData.Success {
             ¦|¦
-            ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("$id")
+            ¦|¦  override val id: YamlTestData.Id = YamlTestData.Id("${case.id}")
             ¦|¦
             ¦|¦  /** The name/label of the test */
             ¦|¦  // language=text
             ¦|¦  override val label: String =
-            ¦|¦${label.tripleQuoted()}
+            ¦|¦${case.label.tripleQuoted()}
             ¦|¦
             ¦|¦  /** The YAML input to be parsed or loaded */
             ¦|¦  // language=YAML
             ¦|¦  override val inYaml: String =
-            ¦|¦${inYaml.tripleQuoted()}
+            ¦|¦${case.inYaml.tripleQuoted()}
             ¦|¦
             ¦|¦  /** The most normal output a dumper would produce */
             ¦|¦  // language=YAML

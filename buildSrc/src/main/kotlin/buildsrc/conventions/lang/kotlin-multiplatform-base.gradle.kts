@@ -18,8 +18,6 @@ plugins {
 
 
 kotlin {
-    jvmToolchain(11)
-
     targets.configureEach {
         compilations.configureEach {
             kotlinOptions {

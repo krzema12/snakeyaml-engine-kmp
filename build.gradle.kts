@@ -1,12 +1,10 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
+    buildsrc.conventions.`yaml-testing`
 }
 
 group = "it.krzeminski"
@@ -21,14 +19,9 @@ kotlin {
             }
         }
 
-        jvmTest {
-            dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
-                implementation("com.google.guava:guava:32.1.2-jre")
-            }
-        }
-
         commonTest {
+            kotlin.srcDirs(tasks.yamlTestSuiteDataSources)
+
             dependencies {
                 implementation(platform("io.kotest:kotest-bom:5.7.2"))
                 implementation("io.kotest:kotest-framework-engine")
@@ -36,23 +29,18 @@ kotlin {
                 implementation("io.kotest:kotest-assertions-core")
             }
         }
+
+        jvmTest {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+                implementation("io.kotest:kotest-runner-junit5")
+                implementation("com.google.guava:guava:32.1.2-jre")
+            }
+        }
     }
 }
 
 tasks.withType<Test>().configureEach {
-    testLogging {
-        events(
-            TestLogEvent.FAILED,
-            TestLogEvent.SKIPPED,
-            TestLogEvent.STANDARD_ERROR,
-            TestLogEvent.STANDARD_OUT,
-        )
-        exceptionFormat = TestExceptionFormat.FULL
-        showCauses = true
-        showExceptions = true
-        showStackTraces = true
-        showStandardStreams = true
-    }
     environment(
         "EnvironmentKey1" to "EnvironmentValue1",
         "EnvironmentEmpty" to "",

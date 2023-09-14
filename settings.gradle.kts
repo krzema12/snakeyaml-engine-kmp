@@ -68,6 +68,17 @@ dependencyResolutionManagement {
             }
             filter { includeModuleByRegex(".*", ".*kotlin-native-prebuilt.*") }
         }
+
+        ivy("https://github.com/") {
+            name = "GitHub Release"
+            // used to download YAML Test Suite data from GitHub
+            patternLayout {
+                artifact("[organization]/[module]/archive/[revision].[ext]")
+                artifact("[organization]/[module]/archive/refs/tags/[revision].[ext]")
+                artifact("[organization]/[module]/archive/refs/tags/v[revision].[ext]")
+            }
+            metadataSources { artifact() }
+        }
     }
 }
 

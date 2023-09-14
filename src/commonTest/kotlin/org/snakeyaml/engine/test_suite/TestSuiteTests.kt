@@ -65,13 +65,13 @@ class TestSuiteTests : FunSpec({
 })
 
 private infix fun ParseResult.shouldHaveEvents(expectedEvents: String) {
-    val actualEvents = events.joinToString("\n")
+    val actualEvents = events?.joinToString("\n")
     actualEvents shouldBe expectedEvents.normalizeLineEndings()
 
 }
 
 private infix fun ParseResult.shouldNotHaveEvents(expectedEvents: String) {
-    val actualEvents = events.joinToString("\n")
+    val actualEvents = events?.joinToString("\n")
     actualEvents shouldNotBe expectedEvents.normalizeLineEndings()
 }
 

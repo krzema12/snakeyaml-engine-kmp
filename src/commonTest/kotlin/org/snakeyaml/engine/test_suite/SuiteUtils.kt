@@ -15,7 +15,7 @@ internal object SuiteUtils {
         return try {
             ParseResult(Parse(settings).parseString(data.inYaml).toList())
         } catch (e: YamlEngineException) {
-            ParseResult(emptyList(), e)
+            ParseResult(null, e)
         }
     }
 

@@ -15,14 +15,13 @@ package org.snakeyaml.engine.issues.issue46;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.exceptions.ScannerException;
 
 /**
  * https://github.com/jruby/jruby/issues/7698
@@ -32,27 +31,34 @@ public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: parse different values")
   void parseDifferentValues() {
-    parse(null, "\n \u2029");
+    parse("\u2029", "\n \u2029");
+    parse("\u2029", "\n\u2029");
+    parse("\u2028", "\n \u2028");
+    parse("\u2028", "\n\u2028");
+    parse("\u2029 1", "\n\u2029 1");
+
     crash("while scanning an alias", "\n\u2029* "); // empty alias is not accepted
-    crash("", "\n\u2029*"); // empty alias is not accepted
+    crash("while scanning an alias", "\n\u2029*"); // empty alias is not accepted
     crash("while scanning an alias", "\n\u2029* 1"); // empty alias is not accepted
-    parse(null, "\n\u2029");
-    parse(Integer.valueOf(1), "\n\u2029 1");
   }
 
   @Test
-  @DisplayName("Issue 46: parse document")
+  @DisplayName("Issue 46: parse document where 2028 is used as leading space (3rd)")
   void parseValid() {
     LoadSettings loadSettings = LoadSettings.builder().build();
     Load load = new Load(loadSettings);
     Object obj = load.loadAllFromString("--- |2-\n\n\u2028  * C\n");
     assertNotNull(obj);
     Iterable iter = (Iterable) obj;
-    Object doc = iter.iterator().next();
-    assertEquals("\n\u2028 * C", doc);
+    try {
+      iter.iterator().next();
+    } catch (ScannerException e) {
+      assertTrue(e.getMessage().contains(
+          " the leading empty lines contain more spaces (2) than the first non-empty line."));
+    }
   }
 
-  // @Test
+  @Test
   @DisplayName("Issue 46: parse document")
   void parseInvalid2() {
     LoadSettings loadSettings = LoadSettings.builder().build();
@@ -61,7 +67,7 @@ public class JRubyPsychTest {
     assertNotNull(obj);
     Iterable iter = (Iterable) obj;
     Object doc = iter.iterator().next();
-    assertEquals("\n\u2028 * C", doc);
+    assertEquals("\n\u2028* C", doc);
   }
 
 
@@ -83,19 +89,15 @@ public class JRubyPsychTest {
   }
 
   @Test
-  @DisplayName("Issue 46: fail to parse invalid")
+  @DisplayName("Issue 46: * is not alias after 2028")
   void failToParseInvalid() {
     LoadSettings loadSettings = LoadSettings.builder().build();
     Load load = new Load(loadSettings);
     Object obj = load.loadAllFromString("\n\u2028* C");
     Iterable iter = (Iterable) obj;
-    try {
-      for (Object o : iter) {
-        System.out.println(o);
-      }
-      fail("Alias before anchor should not be accepted");
-    } catch (Exception e) {
-      assertTrue(e.getMessage().contains("unexpected character found  (32)"), e.getMessage());
+    for (Object o : iter) {
+      System.out.println(o);
+      assertEquals("\u2028* C", o);
     }
   }
 
@@ -107,7 +109,7 @@ public class JRubyPsychTest {
     Object obj = load.loadAllFromString("\n\u2028&C");
     Iterable iter = (Iterable) obj;
     for (Object o : iter) {
-      assertNull(o);
+      assertEquals("\u2028&C", o);
     }
   }
 }

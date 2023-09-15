@@ -103,8 +103,6 @@ class CharConstants private constructor(content: String) {
             '\\' to "\\",    // ASCII backslash
             'N' to "\u0085", // Unicode next line
             '_' to "\u00A0", // Unicode non-breaking-space
-            'L' to "\u2028", // Unicode line-separator
-            'P' to "\u2029", // Unicode paragraph separator
         )
 
         /**

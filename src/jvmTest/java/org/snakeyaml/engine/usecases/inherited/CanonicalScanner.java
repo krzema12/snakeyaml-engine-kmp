@@ -58,10 +58,6 @@ public class CanonicalScanner implements Scanner {
     ESCAPE_REPLACEMENTS.put(Character.valueOf('N'), "\u0085");
     // Unicode non-breaking-space
     ESCAPE_REPLACEMENTS.put(Character.valueOf('_'), "\u00A0");
-    // Unicode line-separator
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('L'), "\u2028");
-    // Unicode paragraph separator
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('P'), "\u2029");
 
     // 8-bit Unicode
     ESCAPE_CODES.put(Character.valueOf('x'), 2);

@@ -1555,8 +1555,6 @@ class Emitter(
             '\\' to "\\",
             '\u0085' to "N",
             '\u00A0' to "_",
-            '\u2028' to "L",
-            '\u2029' to "P",
         )
 
         private val DEFAULT_TAG_PREFIXES: Map<String, String> = mapOf(

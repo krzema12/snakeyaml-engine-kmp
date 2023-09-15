@@ -406,6 +406,7 @@ class ParserImpl(
             }
             // Parse an explicit document.
             if (!scanner.checkToken(Token.ID.StreamEnd)) {
+                scanner.resetDocumentIndex()
                 val tuple = processDirectives()
                 while (scanner.checkToken(Token.ID.Comment)) {
                     scanner.next()
@@ -465,7 +466,6 @@ class ParserImpl(
             }
             directiveTags.clear() // directive tags do not survive between the documents
 
-            scanner.resetDocumentIndex()
             // Prepare the next state.
             state = ParseDocumentStart()
             return DocumentEndEvent(explicit, startMark, endMark)

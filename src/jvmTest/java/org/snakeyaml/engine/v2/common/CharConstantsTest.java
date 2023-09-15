@@ -66,7 +66,7 @@ class CharConstantsTest {
   @DisplayName("ESCAPE_REPLACEMENTS")
   void ESCAPE_REPLACEMENTS() {
     assertEquals(Integer.valueOf(97), Integer.valueOf('a'));
-    assertEquals(17, ESCAPE_REPLACEMENTS.size());
+    assertEquals(15, ESCAPE_REPLACEMENTS.size());
     assertEquals("\r", ESCAPE_REPLACEMENTS.get('r'));
   }
 

@@ -2,7 +2,7 @@
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:1.1.0")
 
 import io.github.typesafegithub.workflows.actions.actions.CacheV3
-import io.github.typesafegithub.workflows.actions.actions.CheckoutV3
+import io.github.typesafegithub.workflows.actions.actions.CheckoutV4
 import io.github.typesafegithub.workflows.actions.actions.SetupJavaV3
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
 import io.github.typesafegithub.workflows.domain.Concurrency
@@ -34,7 +34,7 @@ workflow(
             id = "build-on-${jobRunner::class.simpleName}",
             runsOn = jobRunner,
         ) {
-            uses(action = CheckoutV3())
+            uses(action = CheckoutV4())
             uses(
                 name = "Set up JDK",
                 action = SetupJavaV3(

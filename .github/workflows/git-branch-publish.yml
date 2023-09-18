@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.CURRENT_BRANCH_NAME }}
 
@@ -75,7 +75,7 @@ jobs:
       CI_COMMIT_AUTHOR: ${{ github.workflow }}
     steps:
       - name: Checkout artifacts branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: artifacts
 

@@ -28,7 +28,6 @@ import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -40,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @org.junit.jupiter.api.Tag("fast")
 public class TimestampTagTest {
 
+  // this is an example of the tag from YAML 1.1 spec. It can be anything else
   public static final Tag myTimeTag = new Tag(Tag.PREFIX + "timestamp");
 
   @Test
@@ -59,10 +59,16 @@ public class TimestampTagTest {
     Load loader = new Load(settings);
     LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
     assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
+  }
 
-    assertEquals(2020, loader.loadFromString("2020"));
-    assertEquals(3, ((List<String>) loader.loadFromString("[a, b, c]")).size());
-    assertEquals("[a, b, c]", loader.loadFromString("[a, b, c]").toString());
+  @Test
+  public void testImplicitTagInMap() {
+    LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
+    Load loader = new Load(settings);
+    Map<String, LocalDateTime> map =
+      (Map<String, LocalDateTime>) loader.loadFromString("time: 2020-03-24T13:44:10.333");
+    LocalDateTime time = map.get("time");
+    assertEquals(LocalDateTime.of(2020, 3, 24, 13, 44, 10, 333000000), time);
   }
 
   public static final class TimestampConstructor extends TestConstructNode {
@@ -76,10 +82,14 @@ public class TimestampTagTest {
     }
   }
 
+  /**
+   * This is required to support implicit tags
+   */
   public static final class MyScalarResolver extends BaseScalarResolver {
     private final JsonScalarResolver delegate = new JsonScalarResolver();
 
     // this is taken from YAML 1.1 types
+    // it can be changed to represent the business case
     public static final Pattern TIMESTAMP = Pattern.compile(
         "^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$");
 
@@ -108,7 +118,7 @@ public class TimestampTagTest {
     @Override
     public Map<Tag, ConstructNode> getSchemaTagConstructors() {
       Map<Tag, ConstructNode> parent = super.getSchemaTagConstructors();
-      parent.put(new Tag(Tag.PREFIX + "timestamp"), new TimestampConstructor());
+      parent.put(myTimeTag, new TimestampConstructor());
       return parent;
     }
   }

@@ -13,6 +13,10 @@
  */
 package org.snakeyaml.engine.issues.issue25;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -20,23 +24,18 @@ import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @org.junit.jupiter.api.Tag("fast")
 public class DumpToStringTest {
 
   @Test
   @DisplayName("If Dump instance is called more then once then the results are not predictable.")
   void dumpToStringTwice() {
-    ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
+    LinkedHashMap<String, Object> data = new LinkedHashMap<>();
     DumpSettings dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build();
     Dump dump = new Dump(dumpSettings);
     class Something {
-      @SuppressWarnings("unused")
-      final int doesNotMatter = 0;
+
+      final int doesntmatter = 0;
     }
     Something something = new Something();
     data.put("before", "bla");
@@ -47,10 +46,10 @@ public class DumpToStringTest {
     } catch (YamlEngineException e) {
       assertEquals(
           "Representer is not defined for class Something",
-          e.getMessage()
-      );
+          e.getMessage());
     }
     String output = dump.dumpToString(data);
+    System.out.print("actual " + output);
     assertEquals("before: bla\n", output);
   }
 }

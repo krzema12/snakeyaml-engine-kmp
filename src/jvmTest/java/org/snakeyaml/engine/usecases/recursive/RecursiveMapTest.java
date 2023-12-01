@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -47,15 +47,15 @@ class RecursiveMapTest {
   @Test
   @DisplayName("Dump and Load map with recursive values")
   void loadRecursiveMap2() {
-    Map<String, Object> map1 = new HashMap<>();
+    Map<String, Object> map1 = new LinkedHashMap<>();
     map1.put("name", "first");
-    Map<String, Object> map2 = new HashMap<>();
+    Map<String, Object> map2 = new LinkedHashMap<>();
     map2.put("name", "second");
     map1.put("next", map2);
     map2.put("next", map1);
     Dump dump = new Dump(DumpSettings.builder().build());
     String output1 = dump.dumpToString(map1);
-    assertEquals("&id001\n" + "next:\n" + "  next: *id001\n" + "  name: second\n" + "name: first\n",
+    assertEquals("&id001\n" + "name: first\n" + "next:\n" + "  name: second\n" + "  next: *id001\n",
         output1);
 
     LoadSettings settings = LoadSettings.builder().build();

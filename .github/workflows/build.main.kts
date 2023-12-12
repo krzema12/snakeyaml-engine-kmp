@@ -3,7 +3,7 @@
 
 import io.github.typesafegithub.workflows.actions.actions.CacheV3
 import io.github.typesafegithub.workflows.actions.actions.CheckoutV4
-import io.github.typesafegithub.workflows.actions.actions.SetupJavaV3
+import io.github.typesafegithub.workflows.actions.actions.SetupJavaV4
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
@@ -37,10 +37,10 @@ workflow(
             uses(action = CheckoutV4())
             uses(
                 name = "Set up JDK",
-                action = SetupJavaV3(
+                action = SetupJavaV4(
                     javaVersion = "11",
-                    distribution = SetupJavaV3.Distribution.Zulu,
-                    cache = SetupJavaV3.BuildPlatform.Gradle,
+                    distribution = SetupJavaV4.Distribution.Zulu,
+                    cache = SetupJavaV4.BuildPlatform.Gradle,
                 ),
             )
             uses(

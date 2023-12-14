@@ -80,7 +80,7 @@ jobs:
           ref: artifacts
 
       - name: download local project publication
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: m2-publication
           path: m2

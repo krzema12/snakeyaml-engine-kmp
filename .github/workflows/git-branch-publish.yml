@@ -49,14 +49,14 @@ jobs:
 
       - name: upload build reports
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-report-${{ runner.os }}-${{ github.action }}
           path: "**/build/reports/"
           if-no-files-found: ignore
 
       - name: upload local project publication
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m2-publication
           path: ${{ env.GIT_BRANCH_PUBLISH_DIR }}

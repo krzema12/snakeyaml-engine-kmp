@@ -13,16 +13,20 @@
  */
 package org.snakeyaml.engine.v2.common
 
-import okio.Buffer
-import org.snakeyaml.engine.external.net.thauvin.erik.urlencoder.UrlEncoder
 import kotlin.jvm.JvmStatic
+import net.thauvin.erik.urlencoder.UrlEncoderUtil
+import okio.Buffer
 
 object UriEncoder {
 
-    private val urlEncoder = UrlEncoder(
-        safeChars = "-_.!~*'()@:$&,;=[]/", // Include the [] chars to avoid its escape as required by spec
-        plusForSpace = false,
-    )
+    private const val SAFE_CHARS =
+        "-_.!~*'()@:$&,;=[]/" // Include the [] chars to avoid its escape as required by spec
+
+    private fun urlDecode(content: String): String =
+        UrlEncoderUtil.decode(source = content, plusToSpace = false)
+
+    private fun urlEncode(content: String): String =
+        UrlEncoderUtil.encode(source = content, allow = SAFE_CHARS, spaceToPlus = false)
 
     /**
      * Escape special characters with `%`
@@ -31,7 +35,7 @@ object UriEncoder {
      * @return encoded URI
      */
     @JvmStatic
-    fun encode(uri: String): String = urlEncoder.encode(uri)
+    fun encode(uri: String): String = urlEncode(uri)
 
     /**
      * Decode `%`-escaped characters. Decoding fails in case of invalid UTF-8
@@ -44,15 +48,15 @@ object UriEncoder {
     @Throws(CharacterCodingException::class)
     fun decode(buff: Buffer): String {
         val content = buff.readByteArray().decodeToString()
-        return urlEncoder.decode(content)
+        return decode(content)
     }
 
     /**
-     * Decode with [UrlEncoder]
+     * Decode with [UrlEncoderUtil]
      *
      * @param buff - the source
      * @return decoded with UTF-8
      */
     @JvmStatic
-    fun decode(buff: String): String = urlEncoder.decode(buff)
+    fun decode(buff: String): String = urlDecode(buff)
 }

@@ -18,11 +18,29 @@ SnakeYAML Engine KMP is based on
 
 ## Status
 
-⚠️ SnakeYAML Engine KMP is **under development**.
+The library has been successfully ported to KMP, and is consumed by [kaml](https://github.com/charleskorn/kaml),
+a library that integrates with [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization). However,
+it hasn't been battle-tested well enough yet, so please keep it in mind when integrating with critical workflows.
+
+## How to use
+
+The library is published to Maven Central. Use the following Maven coords:
+
+```kts
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z")
+}
+```
+
+To learn about the API, it's best to start with snakeyaml-engine's (upstream project's) docs [here](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation).
 
 ### Snapshot releases
 
-Experimental snapshot versions of SnakeYAML Engine KMP are available. 
+Snapshot versions of SnakeYAML Engine KMP (straight from the main branch) are available. 
 They are published to a GitHub branch, which must be added as a
 [custom Gradle Plugin repository](https://docs.gradle.org/current/userguide/plugins.html#sec:custom_plugin_repositories)
 

@@ -19,8 +19,9 @@ SnakeYAML Engine KMP is based on
 ## Status
 
 The library has been successfully ported to KMP, and is consumed by [kaml](https://github.com/charleskorn/kaml),
-a library that integrates with [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization). However,
-it hasn't been battle-tested well enough yet, so please keep it in mind when integrating with critical workflows.
+a library that integrates with [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
+
+SnakeYAML Engine KMP uses comprehensive [YAML test suites](https://github.com/yaml/yaml-test-suite) that validate correctness. However, performance has not been evaluated.
 
 ## How to use
 

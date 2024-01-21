@@ -99,7 +99,7 @@ public class ReferencesTest {
   public void parseManyAliasesForCollections() {
     final var minDuration = Duration.ofMillis(400);
     final var maxDuration = Duration.ofSeconds(15);
-    assertTimeout(maxDuration, () -> {
+    final var timeElapsed = assertTimeout(maxDuration, () -> {
       String output = createDump(25);
       // Load
       final var start = Instant.now();
@@ -108,12 +108,12 @@ public class ReferencesTest {
       Load load = new Load(settings);
       load.loadFromString(output);
       final var finish = Instant.now();
-      final var timeElapsed = Duration.between(start, finish);
-      assertTrue(
-        timeElapsed.compareTo(minDuration) > 0, /* timeElapsed > minDuration */
-        "Expected elapsed time (" + (timeElapsed.toMillis() / 1000f) + ") seconds > minDuration (" + (minDuration.toMillis() / 1000f) + " seconds)"
-      );
+      return Duration.between(start, finish);
     });
+    assertTrue(
+      timeElapsed.compareTo(minDuration) > 0, /* timeElapsed > minDuration */
+      "Expected elapsed time (" + (timeElapsed.toMillis() / 1000f) + ") seconds > minDuration (" + (minDuration.toMillis() / 1000f) + " seconds)"
+    );
   }
 
   @Test

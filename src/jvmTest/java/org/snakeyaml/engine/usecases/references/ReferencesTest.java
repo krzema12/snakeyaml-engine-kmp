@@ -37,18 +37,18 @@ public class ReferencesTest {
    * @return YAML to parse
    */
   private String createDump(int size) {
-    LinkedHashMap root = new LinkedHashMap();
-    LinkedHashMap s1, s2, t1, t2;
+    LinkedHashMap<Object, Object> root = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> s1, s2, t1, t2;
     s1 = root;
-    s2 = new LinkedHashMap();
+    s2 = new LinkedHashMap<>();
     /*
      * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
      * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
      */
     for (int i = 0; i < size; i++) {
 
-      t1 = new LinkedHashMap();
-      t2 = new LinkedHashMap();
+      t1 = new LinkedHashMap<>();
+      t2 = new LinkedHashMap<>();
       t1.put("foo", "1");
       t2.put("bar", "2");
 
@@ -63,7 +63,8 @@ public class ReferencesTest {
 
     // this is VERY BAD code
     // the map has itself as a key (no idea why it may be used except of a DoS attack)
-    LinkedHashMap f = new LinkedHashMap();
+    LinkedHashMap<Object, Object> f = new LinkedHashMap<>();
+    //noinspection CollectionAddedToSelf
     f.put(f, "a");
     f.put("g", root);
 
@@ -89,7 +90,7 @@ public class ReferencesTest {
         e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 
@@ -133,7 +134,7 @@ public class ReferencesTest {
         e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 }

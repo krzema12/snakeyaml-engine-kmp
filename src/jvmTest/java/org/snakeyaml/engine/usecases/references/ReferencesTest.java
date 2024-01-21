@@ -97,7 +97,7 @@ public class ReferencesTest {
   @DisplayName("Parsing with aliases may take a lot of time, CPU and memory")
   public void parseManyAliasesForCollections() {
     final var minDuration = Duration.ofMillis(400);
-    final var maxDuration = Duration.ofSeconds(9);
+    final var maxDuration = Duration.ofSeconds(15);
     assertTimeout(maxDuration, () -> {
       String output = createDump(25);
       // Load

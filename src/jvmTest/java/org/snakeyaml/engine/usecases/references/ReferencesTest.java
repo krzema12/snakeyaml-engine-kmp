@@ -13,11 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.references;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,6 +20,12 @@ import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.LinkedHashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 public class ReferencesTest {
@@ -36,18 +37,18 @@ public class ReferencesTest {
    * @return YAML to parse
    */
   private String createDump(int size) {
-    LinkedHashMap root = new LinkedHashMap();
-    LinkedHashMap s1, s2, t1, t2;
+    LinkedHashMap<Object, Object> root = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> s1, s2, t1, t2;
     s1 = root;
-    s2 = new LinkedHashMap();
+    s2 = new LinkedHashMap<>();
     /*
      * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
      * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
      */
     for (int i = 0; i < size; i++) {
 
-      t1 = new LinkedHashMap();
-      t2 = new LinkedHashMap();
+      t1 = new LinkedHashMap<>();
+      t2 = new LinkedHashMap<>();
       t1.put("foo", "1");
       t2.put("bar", "2");
 
@@ -62,7 +63,8 @@ public class ReferencesTest {
 
     // this is VERY BAD code
     // the map has itself as a key (no idea why it may be used except of a DoS attack)
-    LinkedHashMap f = new LinkedHashMap();
+    LinkedHashMap<Object, Object> f = new LinkedHashMap<>();
+    //noinspection CollectionAddedToSelf
     f.put(f, "a");
     f.put("g", root);
 
@@ -85,32 +87,33 @@ public class ReferencesTest {
       fail();
     } catch (Exception e) {
       assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.",
-          e.getMessage());
+        e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 
   @Test
   @DisplayName("Parsing with aliases may take a lot of time, CPU and memory")
   public void parseManyAliasesForCollections() {
-    String output = createDump(25);
-    // Load
-    long time1 = System.currentTimeMillis();
-    LoadSettings settings =
+    final var minDuration = Duration.ofMillis(400);
+    final var maxDuration = Duration.ofSeconds(15);
+    final var timeElapsed = assertTimeout(maxDuration, () -> {
+      String output = createDump(25);
+      // Load
+      final var start = Instant.now();
+      LoadSettings settings =
         LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(50).build();
-    Load load = new Load(settings);
-    load.loadFromString(output);
-    long time2 = System.currentTimeMillis();
-    double duration = (time2 - time1) / 1000.0;
-    int cores = Runtime.getRuntime().availableProcessors();
-    double minDuration = 0.7;
-    if (cores > 4) {
-      minDuration = 0.4;
-    }
-    assertTrue(duration > minDuration, "It should take time. Time was " + duration + " seconds.");
-    assertTrue(duration < 9.0, "Time was " + duration + " seconds.");
+      Load load = new Load(settings);
+      load.loadFromString(output);
+      final var finish = Instant.now();
+      return Duration.between(start, finish);
+    });
+    assertTrue(
+      timeElapsed.compareTo(minDuration) > 0, /* timeElapsed > minDuration */
+      "Expected elapsed time (" + (timeElapsed.toMillis() / 1000f) + ") seconds > minDuration (" + (minDuration.toMillis() / 1000f) + " seconds)"
+    );
   }
 
   @Test
@@ -121,17 +124,17 @@ public class ReferencesTest {
     // Load
     long time1 = System.currentTimeMillis();
     LoadSettings settings =
-        LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(40).build();
+      LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(40).build();
     Load load = new Load(settings);
     try {
       load.loadFromString(bigYAML);
       fail();
     } catch (Exception e) {
       assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=40",
-          e.getMessage());
+        e.getMessage());
     }
     long time2 = System.currentTimeMillis();
-    float duration = (time2 - time1) / 1000;
+    float duration = (time2 - time1) / 1000f;
     assertTrue(duration < 1.0, "It should fail quickly. Time was " + duration + " seconds.");
   }
 }

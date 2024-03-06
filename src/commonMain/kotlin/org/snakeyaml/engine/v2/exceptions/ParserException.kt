@@ -24,7 +24,7 @@ import kotlin.jvm.JvmOverloads
  * @param problemMark Position of the `problem`. within the document.
  */
 class ParserException @JvmOverloads constructor(
-    problem: String?,
+    problem: String,
     contextMark: Mark?,
     context: String? = null,
     problemMark: Mark? = null,

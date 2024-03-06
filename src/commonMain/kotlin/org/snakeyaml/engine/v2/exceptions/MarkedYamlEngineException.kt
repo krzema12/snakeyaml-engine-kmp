@@ -16,46 +16,27 @@ package org.snakeyaml.engine.v2.exceptions
 /**
  * Parsing exception when the marks are available
  *
- * @param cause - exception which was thrown
+ * @param problem A specific problem issue. Must always be present.
+ * @param problemMark Location of the specific problem.
+ * @param context General region of [problem]
+ * @param contextMark General region of [problemMark], e.g. the start of a problematic node
+ * @param cause exception which was thrown
  */
-open class MarkedYamlEngineException private constructor(
-    // can't override `message` property, so define a new one
-    // https://youtrack.jetbrains.com/issue/KT-43490/
-    private val readableError: String,
+open class MarkedYamlEngineException protected constructor(
+    val context: String?,
+    val contextMark: Mark?,
+    val problem: String,
+    val problemMark: Mark?,
     cause: Throwable? = null,
-) : YamlEngineException(readableError, cause) {
-
-    /**
-     * Parsing exception when the marks are available
-     *
-     * @param context - the context of the problem
-     * @param contextMark - position of the context
-     * @param problem - the issue
-     * @param problemMark - position of the issue
-     * @param cause - exception which was thrown
-     */
-    protected constructor(
-        context: String?,
-        contextMark: Mark?,
-        problem: String?,
-        problemMark: Mark?,
-        cause: Throwable? = null,
-    ) : this(
-        readableError = buildReadableError(
-            context = context,
-            contextMark = contextMark,
-            problem = problem,
-            problemMark = problemMark,
-        ),
-        cause = cause,
-    )
-
-    /**
-     * get readable error
-     *
-     * @return readable problem
-     */
-    override fun toString(): String = readableError
+) : YamlEngineException(
+    message = buildReadableError(
+        context = context,
+        contextMark = contextMark,
+        problem = problem,
+        problemMark = problemMark,
+    ),
+    cause = cause,
+) {
 
     companion object {
         private fun buildReadableError(

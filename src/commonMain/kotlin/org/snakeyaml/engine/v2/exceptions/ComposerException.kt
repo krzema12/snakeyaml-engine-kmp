@@ -24,7 +24,7 @@ import kotlin.jvm.JvmOverloads
  * @param problemMark - the problem location
  */
 class ComposerException @JvmOverloads constructor(
-    problem: String?,
+    problem: String,
     problemMark: Mark?,
     context: String = "",
     contextMark: Mark? = null,

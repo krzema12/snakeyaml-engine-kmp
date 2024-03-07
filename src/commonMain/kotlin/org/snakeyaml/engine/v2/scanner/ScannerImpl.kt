@@ -1,7 +1,5 @@
 package org.snakeyaml.engine.v2.scanner
 
-import kotlin.collections.set
-import kotlin.jvm.JvmInline
 import okio.Buffer
 import org.snakeyaml.engine.internal.utils.Character
 import org.snakeyaml.engine.internal.utils.appendCodePoint
@@ -15,6 +13,8 @@ import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.exceptions.ScannerException
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.tokens.*
+import kotlin.collections.set
+import kotlin.jvm.JvmInline
 
 
 /**
@@ -1791,10 +1791,10 @@ class ScannerImpl(
         if (reader.peek() == 0) {
             // A flow scalar cannot end with an end-of-stream
             throw ScannerException(
-                problem = "while scanning a quoted scalar",
-                problemMark = startMark,
-                context = "found unexpected end of stream",
-                contextMark = reader.getMark(),
+                problem = "found unexpected end of stream",
+                problemMark = reader.getMark(),
+                context = "while scanning a quoted scalar",
+                contextMark = startMark,
             )
         }
         // If we encounter a line break, scan it into our assembled string...
@@ -1908,7 +1908,7 @@ class ScannerImpl(
         // peak ahead to find end of whitespaces and the column at which it occurs
         var wsLength = 0
         var wsColumn = reader.column
-        while(true) {
+        while (true) {
             val c = reader.peek(wsLength)
             if (c == 0 || !CharConstants.NULL_BL_T_LINEBR.has(c)) {
                 break

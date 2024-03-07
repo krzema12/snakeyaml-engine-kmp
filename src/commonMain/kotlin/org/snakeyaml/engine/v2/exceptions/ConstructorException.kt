@@ -26,7 +26,7 @@ import kotlin.jvm.JvmOverloads
 open class ConstructorException @JvmOverloads constructor(
     context: String?,
     contextMark: Mark?,
-    problem: String?,
+    problem: String,
     problemMark: Mark?,
     cause: Throwable? = null,
 ) : MarkedYamlEngineException(

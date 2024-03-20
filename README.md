@@ -52,6 +52,8 @@ in two cases:
   change not related to reflecting a newer version of the upstream project, then just the patch version number
   will be incremented.
 
+The release notes for each version mentions which version of the upstream project the given release corresponds to.
+
 ### Snapshot releases
 
 Snapshot versions of SnakeYAML Engine KMP (straight from the main branch) are available. 

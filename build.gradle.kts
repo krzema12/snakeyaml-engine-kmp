@@ -5,6 +5,7 @@ plugins {
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
+    id("dev.adamko.dokkatoo-html") version "2.2.0"
 }
 
 group = "it.krzeminski"
@@ -46,4 +47,25 @@ tasks.withType<Test>().configureEach {
         "EnvironmentKey1" to "EnvironmentValue1",
         "EnvironmentEmpty" to "",
     )
+}
+
+dokkatoo {
+    moduleName = "SnakeYAML Engine KMP"
+
+    val docsDir = layout.projectDirectory.dir("docs")
+
+    dokkatooSourceSets.configureEach {
+        includes.from(docsDir.file("modules.md"))
+    }
+
+    pluginsConfiguration {
+        html {
+            homepageLink = "https://github.com/krzema12/snakeyaml-engine-kmp"
+            customAssets.from(
+                docsDir.files(
+                    "img/homepage.svg",
+                )
+            )
+        }
+    }
 }

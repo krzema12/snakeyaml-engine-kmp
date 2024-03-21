@@ -21,7 +21,7 @@ import org.snakeyaml.engine.v2.tokens.Token
  *
  * The scanner and the parser form together the 'Parse' step in the loading process.
  *
- * @see [3.1. Processes](https://yaml.org/spec/1.2.2/.31-processes)
+ * See [3.1. Processes](https://yaml.org/spec/1.2.2/#31-processes).
  */
 interface Scanner : Iterator<Token> {
     /**

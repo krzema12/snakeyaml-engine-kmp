@@ -1,3 +1,5 @@
+[![Maven Central Version](https://img.shields.io/maven-central/v/it.krzeminski/snakeyaml-engine-kmp?style=for-the-badge)](https://search.maven.org/artifact/it.krzeminski/snakeyaml-engine-kmp/)
+
 # SnakeYAML Engine KMP
 
 ## Overview

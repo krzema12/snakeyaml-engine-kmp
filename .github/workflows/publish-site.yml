@@ -14,7 +14,8 @@ on:
         description: "The branch, tag or SHA to checkout. See actions/checkout 'ref'."
         required: false
         type: string
-
+  release:
+    types: [ published ]
 
 concurrency:
   group: "Publish Site: ${{ github.workflow }}"

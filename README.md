@@ -40,11 +40,11 @@ SnakeYAML Engine KMP is published to
 // build.gradle.kts
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z")
+    implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z")
 }
 ```
 
@@ -64,20 +64,20 @@ They are published to a GitHub branch, which must be added as a
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-  repositories {
-    mavenCentral()
-    gradlePluginPortal()
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
 
-    // add the snapshot repository
-    maven("https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
-      name = "SnakeYAML Engine KMP Snapshots"
-      mavenContent {
-        // only include the relevant snapshots
-        includeGroup("it.krzeminski")
-        snapshotsOnly()
-      }
+        // add the snapshot repository
+        maven("https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
+            name = "SnakeYAML Engine KMP Snapshots"
+            mavenContent {
+                // only include the relevant snapshots
+                includeGroup("it.krzeminski")
+                snapshotsOnly()
+            }
+        }
     }
-  }
 }
 ```
 
@@ -87,6 +87,6 @@ Once the repository is configured, add a dependency on the library:
 // build.gradle.kts
 
 dependencies {
-  implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")
+    implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")
 }
 ```

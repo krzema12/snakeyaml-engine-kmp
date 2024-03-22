@@ -18,6 +18,16 @@ and supports
 SnakeYAML Engine KMP is based on
 [SnakeYAML Engine](https://bitbucket.org/snakeyaml/snakeyaml-engine/).
 
+> [!TIP]
+> Are you wondering if SnakeYAML Engine KMP is for you?
+>
+> SnakeYAML Engine KMP offers fine-grained control and advanced functionality,
+> which is a good fit if you need more customization and flexibility.
+>
+> If you're for a hassle-free YAML parsing experience, we recommend using
+> [kaml](https://github.com/charleskorn/kaml),
+> which is designed for simplicity and ease of integration.
+
 ## Status
 
 The library has been successfully ported to KMP, and is consumed by [kaml](https://github.com/charleskorn/kaml),
@@ -27,11 +37,6 @@ SnakeYAML Engine KMP uses comprehensive [YAML test suites](https://github.com/ya
 that validate correctness. However, performance has not been evaluated.
 
 ## How to use
-
-> [!NOTE]
-> SnakeYAML Engine KMP is a low-level library, only intended to be used by libraries.
->
-> For a more user-friendly version, use https://github.com/charleskorn/kaml.
 
 SnakeYAML Engine KMP is published to
 [Maven Central](https://search.maven.org/artifact/it.krzeminski/snakeyaml-engine-kmp).

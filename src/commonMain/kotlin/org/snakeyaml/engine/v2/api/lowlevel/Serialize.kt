@@ -29,18 +29,20 @@ class Serialize(
     /**
      * Serialize a [Node] and produce events.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param node - [Node] to serialize
      * @return serialized events
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun serializeOne(node: Node): List<Event> = serializeAll(listOf(node))
 
     /**
      * Serialize [Node]s and produce events.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param nodes - [Node]s to serialize
      * @return serialized events
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun serializeAll(nodes: List<Node>): List<Event> {
         val events = mutableListOf<Event>()

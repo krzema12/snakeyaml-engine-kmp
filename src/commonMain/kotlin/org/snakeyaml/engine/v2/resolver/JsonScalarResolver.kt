@@ -19,7 +19,7 @@ import org.snakeyaml.engine.v2.nodes.Tag
 /**
  * ScalarResolver for JSON Schema
  *
- * @see <a href="http://www.yaml.org/spec/1.2/spec.html#id2803231">Chapter 10.2. JSON Schema</a>
+ * See [Chapter 10.2. JSON Schema](http://www.yaml.org/spec/1.2/spec.html#id2803231).
  */
 class JsonScalarResolver : BaseScalarResolver(
     {

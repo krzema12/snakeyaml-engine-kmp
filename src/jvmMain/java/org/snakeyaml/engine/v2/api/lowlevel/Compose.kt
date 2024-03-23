@@ -13,6 +13,8 @@
  */
 package org.snakeyaml.engine.v2.api.lowlevel
 
+import java.io.InputStream
+import java.io.Reader
 import okio.source
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.YamlUnicodeReader
@@ -20,8 +22,6 @@ import org.snakeyaml.engine.v2.composer.Composer
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
-import java.io.InputStream
-import java.io.Reader
 
 /**
  * Helper to compose input stream to Node
@@ -36,10 +36,11 @@ actual class Compose(
     /**
      * Parse a YAML stream and produce [Node]
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
      * (it will be parsed as content)
      * @return parsed [Node] if available
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeReader(yaml: Reader): Node? =
         Composer(
@@ -50,10 +51,11 @@ actual class Compose(
     /**
      * Parse a YAML stream and produce [Node]
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
      * encoding is UTF-16 or UTF-32
      * @return parsed [Node] if available
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeInputStream(yaml: InputStream): Node? =
         Composer(
@@ -64,9 +66,10 @@ actual class Compose(
     /**
      * Parse a YAML stream and produce [Node]
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s).
      * @return parsed [Node] if available
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     actual fun composeString(yaml: String): Node? = composeString.composeString(yaml)
 
@@ -74,9 +77,10 @@ actual class Compose(
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml stream of YAML documents
      * @return parsed root Nodes for all the specified YAML documents
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeAllFromReader(yaml: Reader): Iterable<Node> =
         Composer(
@@ -87,10 +91,11 @@ actual class Compose(
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
      * encoding is UTF-16 or UTF-32
      * @return parsed root Nodes for all the specified YAML documents
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> =
         Composer(
@@ -101,9 +106,10 @@ actual class Compose(
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s).
      * @return parsed root Nodes for all the specified YAML documents
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     actual fun composeAllFromString(yaml: String): Iterable<Node> =
         composeString.composeAllFromString(yaml)

@@ -24,7 +24,7 @@ SnakeYAML Engine KMP is based on
 > SnakeYAML Engine KMP offers fine-grained control and advanced functionality,
 > which is a good fit if you need more customization and flexibility.
 >
-> If you're for a hassle-free YAML parsing experience, we recommend using
+> If you're for a hassle-free YAML (de)serialization experience, we recommend using
 > [kaml](https://github.com/charleskorn/kaml),
 > which is designed for simplicity and ease of integration.
 

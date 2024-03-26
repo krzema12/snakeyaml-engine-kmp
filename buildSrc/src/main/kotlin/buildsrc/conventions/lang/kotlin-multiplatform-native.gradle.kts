@@ -26,5 +26,8 @@ kotlin {
         tvosX64()
         tvosArm64()
         iosArm64()
+
+        // Tier 3
+        mingwX64()
     }
 }

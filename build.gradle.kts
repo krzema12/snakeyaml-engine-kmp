@@ -56,6 +56,11 @@ dokkatoo {
 
     dokkatooSourceSets.configureEach {
         includes.from(docsDir.file("modules.md"))
+
+        externalDocumentationLinks.register("okio") {
+            packageListUrl("https://square.github.io/okio/3.x/okio/okio/package-list")
+            url("https://square.github.io/okio/3.x/okio/")
+        }
     }
 
     pluginsConfiguration {

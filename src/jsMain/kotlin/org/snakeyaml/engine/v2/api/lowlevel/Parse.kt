@@ -11,9 +11,10 @@ actual class Parse actual constructor(
     /**
      * Parse a YAML stream and produce parsing events.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
      * @return parsed events
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     actual fun parseString(yaml: String): Iterable<Event> =
         parseString.parseString(yaml)

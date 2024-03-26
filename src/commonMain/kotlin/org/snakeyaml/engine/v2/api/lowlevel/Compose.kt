@@ -23,9 +23,10 @@ expect class Compose {
     /**
      * Parse a YAML stream and produce [Node]
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s).
      * @return parsed [Node] if available
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeString(yaml: String): Node?
 
@@ -33,9 +34,10 @@ expect class Compose {
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
+     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
+     *
      * @param yaml - YAML document(s).
      * @return parsed root Nodes for all the specified YAML documents
-     * @see [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107)
      */
     fun composeAllFromString(yaml: String): Iterable<Node>
 }

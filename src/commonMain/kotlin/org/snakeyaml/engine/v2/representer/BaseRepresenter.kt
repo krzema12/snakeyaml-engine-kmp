@@ -26,7 +26,7 @@ import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
 /**
- * Represent basic YAML structures: scalar, sequence, mapping
+ * Represent basic YAML structures: scalar, sequence, mapping.
  */
 abstract class BaseRepresenter(
     /** scalar style */

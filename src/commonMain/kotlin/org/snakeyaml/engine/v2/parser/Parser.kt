@@ -20,15 +20,15 @@ import org.snakeyaml.engine.v2.events.Event
  *
  * The parser and the scanner form together the 'Parse' step in the loading process.
  *
- * @see [Figure 3.1. Processing Overview](https://yaml.org/spec/1.2.2/.31-processes)
+ * See [Figure 3.1. Processing Overview](https://yaml.org/spec/1.2.2/#31-processes).
  */
 interface Parser : Iterator<Event> {
 
     /**
      * Check if the next event is one of the given type.
      *
-     * @param choice Event ID to match
-     * @returns `true` if the next event has the given ID. Returns `false` if no
+     * @param choice Event ID to match.
+     * @returns `true` if the next event has the given ID. Returns `false` if no.
      * more events are available.
      * @throws org.snakeyaml.engine.v2.exceptions.ParserException in case of malformed input.
      */

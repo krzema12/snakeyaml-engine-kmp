@@ -4,7 +4,7 @@
 import io.github.typesafegithub.workflows.actions.actions.CacheV4
 import io.github.typesafegithub.workflows.actions.actions.CheckoutV4
 import io.github.typesafegithub.workflows.actions.actions.SetupJavaV4
-import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV2
+import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV3
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
@@ -54,7 +54,7 @@ workflow(
             )
             uses(
                 name = "Build",
-                action = GradleBuildActionV2(
+                action = GradleBuildActionV3(
                     arguments = "build",
                 ),
             )

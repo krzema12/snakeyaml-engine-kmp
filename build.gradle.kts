@@ -17,7 +17,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("com.squareup.okio:okio:3.9.0")
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.4.0")
+                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
             }
         }
 
@@ -56,6 +56,11 @@ dokkatoo {
 
     dokkatooSourceSets.configureEach {
         includes.from(docsDir.file("modules.md"))
+
+        externalDocumentationLinks.register("okio") {
+            packageListUrl("https://square.github.io/okio/3.x/okio/okio/package-list")
+            url("https://square.github.io/okio/3.x/okio/")
+        }
     }
 
     pluginsConfiguration {

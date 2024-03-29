@@ -7,21 +7,25 @@ plugins {
 }
 
 kotlin {
-    linuxX64()
-
-    mingwX64()
-
+    // According to https://kotlinlang.org/docs/native-target-support.html
+    // Tier 1
     macosX64()
     macosArm64()
+    iosSimulatorArm64()
+    iosX64()
 
-    // More specialised targets are disabled for now, since I anticipate low demand.
-    // They can be re-enabled, if there is demand for them.
-    // https://kotlinlang.org/docs/multiplatform-share-on-platforms.html#use-target-shortcuts
-    //ios()     // iosArm64, iosX64
-    //watchos() // watchosArm32, watchosArm64, watchosX64
-    //tvos()    // tvosArm64, tvosX64
+    // Tier 2
+    linuxX64()
+    linuxArm64()
+    watchosSimulatorArm64()
+    watchosX64()
+    watchosArm32()
+    watchosArm64()
+    tvosSimulatorArm64()
+    tvosX64()
+    tvosArm64()
+    iosArm64()
 
-    //iosSimulatorArm64()
-    //tvosSimulatorArm64()
-    //watchosSimulatorArm64()
+    // Tier 3
+    mingwX64()
 }

@@ -18,6 +18,8 @@ plugins {
 
 
 kotlin {
+    applyDefaultHierarchyTemplate()
+
     targets.configureEach {
         compilations.configureEach {
             kotlinOptions {

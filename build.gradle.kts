@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "it.krzeminski"
-version = "2.7.4-SNAPSHOT"
+version = "2.7.4"
 description = "SnakeYAML Engine KMP"
 
 kotlin {

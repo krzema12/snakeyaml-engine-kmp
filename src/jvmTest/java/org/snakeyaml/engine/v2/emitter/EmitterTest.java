@@ -298,4 +298,21 @@ public class EmitterTest {
         "indicator indent range end must be one less than the indent range end"
     );
   }
+
+  @Test
+  public void testAllowSettingBigWidth() {
+    DumpSettingsBuilder builder =
+      DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
+        .setDefaultFlowStyle(FlowStyle.FLOW).setWidth(1000);
+    Map<String, Object> map = new TreeMap<>();
+    map.put("12345", "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
+      "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
+      "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890");
+
+    String output = dump(builder.build(), map);
+    assertEquals("{\"12345\": \"1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
+      "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
+      "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890\"}\n",
+      output);
+  }
 }

@@ -1,10 +1,17 @@
 #!/usr/bin/env kotlin
+@file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:1.14.0")
 
-import io.github.typesafegithub.workflows.actions.actions.CacheV4
-import io.github.typesafegithub.workflows.actions.actions.CheckoutV4
-import io.github.typesafegithub.workflows.actions.actions.SetupJavaV4
-import io.github.typesafegithub.workflows.actions.gradle.GradleBuildActionV3
+@file:Repository("https://github-workflows-kt-bindings.colman.com.br/binding/")
+@file:DependsOn("actions:checkout:v4")
+@file:DependsOn("actions:cache:v4")
+@file:DependsOn("actions:setup-java:v4")
+@file:DependsOn("gradle:gradle-build-action:v3")
+
+import io.github.typesafegithub.workflows.actions.actions.Cache
+import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.gradle.GradleBuildAction
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
@@ -34,18 +41,18 @@ workflow(
             id = "build-on-${jobRunner::class.simpleName}",
             runsOn = jobRunner,
         ) {
-            uses(action = CheckoutV4())
+            uses(action = Checkout())
             uses(
                 name = "Set up JDK",
-                action = SetupJavaV4(
+                action = SetupJava(
                     javaVersion = "11",
-                    distribution = SetupJavaV4.Distribution.Zulu,
-                    cache = SetupJavaV4.BuildPlatform.Gradle,
+                    distribution = SetupJava.Distribution.Zulu,
+                    cache = SetupJava.BuildPlatform.Gradle,
                 ),
             )
             uses(
                 name = "Cache Kotlin Konan",
-                action = CacheV4(
+                action = Cache(
                     path = listOf(
                         "~/.konan/**/*",
                     ),
@@ -54,7 +61,7 @@ workflow(
             )
             uses(
                 name = "Build",
-                action = GradleBuildActionV3(
+                action = GradleBuildAction(
                     arguments = "build",
                 ),
             )

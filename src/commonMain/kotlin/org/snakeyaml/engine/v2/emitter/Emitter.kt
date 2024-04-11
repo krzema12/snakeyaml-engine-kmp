@@ -97,7 +97,7 @@ class Emitter(
     private val bestIndent: Int = if (opts.indent in VALID_INDENT_RANGE) opts.indent else DEFAULT_INDENT
     private val indicatorIndent: Int get() = opts.indicatorIndent
     private val indentWithIndicator: Boolean get() = opts.indentWithIndicator
-    private val bestWidth: Int = opts.width.coerceAtMost(MAX_WIDTH)
+    private val bestWidth: Int = if (opts.width > this.bestIndent * 2) opts.width else DEFAULT_WIDTH
     private val bestLineBreak: String get() = opts.bestLineBreak
     private val splitLines: Boolean get() = opts.isSplitLines
     private val maxSimpleKeyLength: Int get() = opts.maxSimpleKeyLength
@@ -1571,7 +1571,7 @@ class Emitter(
 
         private const val DEFAULT_INDENT = 2
 
-        private const val MAX_WIDTH = 80
+        private const val DEFAULT_WIDTH = 80
 
         private const val SPACE = " "
 

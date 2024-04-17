@@ -5,7 +5,7 @@ plugins {
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
-    id("dev.adamko.dokkatoo-html") version "2.3.0"
+    id("dev.adamko.dokkatoo-html") version "2.3.1"
 }
 
 group = "it.krzeminski"

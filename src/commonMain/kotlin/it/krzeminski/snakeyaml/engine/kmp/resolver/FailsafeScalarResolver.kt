@@ -18,7 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 /**
  * ScalarResolver for JSON Schema
  *
- * @see [Chapter 10.2. Failsafe Schema](https://yaml.org/spec/1.2.2/.101-failsafe-schema)
+ * See [Chapter 10.2. Failsafe Schema](https://yaml.org/spec/1.2.2/#101-failsafe-schema)
  */
 class FailsafeScalarResolver : BaseScalarResolver(
     {

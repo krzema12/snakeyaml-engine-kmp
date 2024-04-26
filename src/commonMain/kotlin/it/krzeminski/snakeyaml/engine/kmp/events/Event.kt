@@ -17,8 +17,8 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import kotlin.jvm.JvmOverloads
 
 /**
- * Basic unit of output from a [org.snakeyaml.engine.v2.parser.Parser] or input of a
- * [org.snakeyaml.engine.v2.emitter.Emitter].
+ * Basic unit of output from a [it.krzeminski.snakeyaml.engine.kmp.parser.Parser] or input of a
+ * [it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter].
  */
 abstract class Event @JvmOverloads constructor(
     val startMark: Mark? = null,

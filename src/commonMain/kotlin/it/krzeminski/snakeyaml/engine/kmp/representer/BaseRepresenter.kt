@@ -13,13 +13,13 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.representer
 
-import it.krzeminski.snakeyaml.engine.kmp.internal.IdentityHashCode
-import it.krzeminski.snakeyaml.engine.kmp.internal.identityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.RepresentToNode
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.IdentityHashCode
+import it.krzeminski.snakeyaml.engine.kmp.internal.identityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -194,14 +194,13 @@ abstract class BaseRepresenter(
         tag: Tag,
         mapping: Map<*, *>,
         flowStyle: FlowStyle,
-    ): it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode {
+    ): MappingNode {
         val value = ArrayList<NodeTuple>(mapping.size)
-        val node =
-          it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode(
+        val node = MappingNode(
             tag,
             value,
             flowStyle
-          )
+        )
         representedObjects[objectToRepresent] = node
         mapping.entries.mapTo(value) { it.toNodeTuple() }
         if (flowStyle == FlowStyle.AUTO) {
@@ -210,8 +209,8 @@ abstract class BaseRepresenter(
                     val anyKeyOrValueNotPlain =
                         value.any { (keyNode, valueNode) ->
                             !(keyNode is ScalarNode && keyNode.isPlain)
-                                    ||
-                                    !(valueNode is ScalarNode && valueNode.isPlain)
+                                ||
+                                !(valueNode is ScalarNode && valueNode.isPlain)
                         }
                     if (anyKeyOrValueNotPlain) {
                         FlowStyle.BLOCK
@@ -229,7 +228,8 @@ abstract class BaseRepresenter(
 
 private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
 
-    private val contents: MutableMap<IdentityHashCode, it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode> = mutableMapOf()
+    private val contents: MutableMap<IdentityHashCode, AnchorNode> =
+        mutableMapOf()
     private val contentsView: MutableMap<IdentityHashCode, Node>
         get() = contents.mapValuesTo(mutableMapOf()) { (_, v) -> v.realNode }
 
@@ -245,14 +245,16 @@ private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
     override fun get(key: IdentityHashCode): Node? = contents[key]
 
     override fun isEmpty(): Boolean = contents.isEmpty()
-    override fun put(key: IdentityHashCode, value: Node): Node? = contents.put(key,
-      it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode(value)
+    override fun put(key: IdentityHashCode, value: Node): Node? = contents.put(
+        key,
+        AnchorNode(value)
     )
+
     override fun putAll(from: Map<out IdentityHashCode, Node>): Unit =
         contents.putAll(from.mapValues { (_, v) ->
-          it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode(
-            v
-          )
+            AnchorNode(
+                v
+            )
         })
 
     override fun remove(key: IdentityHashCode): Node? = contents.remove(key)
@@ -261,7 +263,8 @@ private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
     operator fun get(key: Any?): Node? = contents[identityHashCode(key)]
 
     @JvmName("setAny")
-    operator fun set(key: Any?, value: Node): Node? = contents.put(identityHashCode(key),
-      it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode(value)
+    operator fun set(key: Any?, value: Node): Node? = contents.put(
+        identityHashCode(key),
+        AnchorNode(value)
     )
 }

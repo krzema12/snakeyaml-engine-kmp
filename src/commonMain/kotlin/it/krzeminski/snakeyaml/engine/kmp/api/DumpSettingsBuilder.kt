@@ -183,9 +183,7 @@ class DumpSettingsBuilder internal constructor() {
     /**
      * Define the amount of the spaces for the indent in the block flow style. Default is 2.
      *
-     * @param indent - the number of spaces. Must be within the range
-     * org.snakeyaml.engine.v2.emitter.Emitter.MIN_INDENT and
-     * org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT
+     * @param indent - must in [Emitter.VALID_INDENT_RANGE]
      * @return the builder with the provided value
      */
     fun setIndent(indent: Int): DumpSettingsBuilder {
@@ -202,8 +200,7 @@ class DumpSettingsBuilder internal constructor() {
      * For better visual results it should be by 2 less than the indent (which is 2 by default).
      * It is 2 chars less because the first char is `-` and the second char is the space after it.
      *
-     * @param indicatorIndent - must be non-negative and less than
-     * org.snakeyaml.engine.v2.emitter.Emitter.MAX_INDENT - 1
+     * @param indicatorIndent - must in [Emitter.VALID_INDENT_RANGE]
      * @return the builder with the provided value
      */
     fun setIndicatorIndent(indicatorIndent: Int): DumpSettingsBuilder {
@@ -318,10 +315,10 @@ class DumpSettingsBuilder internal constructor() {
     /**
      * Provide either recommended or custom
      * [schema](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) instead of
-     * default [org.snakeyaml.engine.v2.schema.JsonSchema]. These 3 are available
-     * [org.snakeyaml.engine.v2.schema.FailsafeSchema],
-     * [org.snakeyaml.engine.v2.schema.JsonSchema],
-     * [org.snakeyaml.engine.v2.schema.CoreSchema].
+     * default [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema]. These 3 are available
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema].
      *
      * @param schema - the tag schema
      * @return the builder with the provided value

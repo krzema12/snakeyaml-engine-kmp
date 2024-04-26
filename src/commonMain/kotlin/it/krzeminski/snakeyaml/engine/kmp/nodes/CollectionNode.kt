@@ -23,12 +23,12 @@ import kotlin.jvm.JvmOverloads
  * @param[flowStyle] Serialization style of this collection
  */
 sealed class CollectionNode<T> @JvmOverloads constructor(
-  tag: it.krzeminski.snakeyaml.engine.kmp.nodes.Tag,
-  var flowStyle: FlowStyle,
-  startMark: Mark?,
-  endMark: Mark?,
-  resolved: Boolean = true,
-) : it.krzeminski.snakeyaml.engine.kmp.nodes.Node(tag, startMark, endMark, resolved = resolved) {
+    tag: Tag,
+    var flowStyle: FlowStyle,
+    startMark: Mark?,
+    endMark: Mark?,
+    resolved: Boolean = true,
+) : Node(tag, startMark, endMark, resolved = resolved) {
 
     /**
      * Returns the elements in this sequence.

@@ -21,8 +21,8 @@ import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 
 /**
- * Transform a [Node] Graph to [org.snakeyaml.engine.v2.events.Event] stream and allow provided [Emitable] to present the
- * [org.snakeyaml.engine.v2.events.Event]s into the output stream
+ * Transform a [Node] Graph to [it.krzeminski.snakeyaml.engine.kmp.events.Event] stream and allow provided [Emitable] to present the
+ * [it.krzeminski.snakeyaml.engine.kmp.events.Event]s into the output stream
  *
  * @param settings - dump configuration
  * @param emitable - destination for the event stream
@@ -68,7 +68,7 @@ class Serializer(
     }
 
     private fun anchorNode(node: Node) {
-        val realNode = if (node is it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode) node.realNode else node
+        val realNode = if (node is AnchorNode) node.realNode else node
 
         if (anchors.containsKey(realNode)) {
             // it looks weird, anchor does contain the key node, but we call computeIfAbsent()
@@ -90,7 +90,7 @@ class Serializer(
                 }
 
                 NodeType.MAPPING                 -> {
-                    require(realNode is it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode)
+                    require(realNode is MappingNode)
                     for ((key, value) in realNode.value) {
                         anchorNode(key)
                         anchorNode(value)
@@ -108,7 +108,7 @@ class Serializer(
      * @param node - content
      */
     private fun serializeNode(node: Node) {
-        val realNode = if (node is it.krzeminski.snakeyaml.engine.kmp.nodes.AnchorNode) node.realNode else node
+        val realNode = if (node is AnchorNode) node.realNode else node
 
         val tAlias = (anchors[realNode])
         if (serializedNodes.contains(realNode)) {
@@ -158,7 +158,7 @@ class Serializer(
                 }
 
                 NodeType.MAPPING  -> {
-                    require(realNode is it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode)
+                    require(realNode is MappingNode)
                     serializeComments(realNode.blockComments)
                     if (realNode.tag != Tag.COMMENT) {
                         emitable.emit(

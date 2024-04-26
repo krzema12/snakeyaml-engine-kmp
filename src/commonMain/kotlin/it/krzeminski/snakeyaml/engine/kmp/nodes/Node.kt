@@ -24,7 +24,7 @@ import kotlin.jvm.JvmOverloads
  *
  * The nodes form the node-graph described in the [YAML Specification](https://yaml.org/spec/1.2/spec.html).
  *
- * While loading, the node graph is usually created by the [org.snakeyaml.engine.v2.composer.Composer].
+ * While loading, the node graph is usually created by the [it.krzeminski.snakeyaml.engine.kmp.composer.Composer].
  *
  * @param tag - the tag
  * @param startMark - start mark when available
@@ -59,7 +59,7 @@ sealed class Node @JvmOverloads constructor(
      * Two-step construction is required whenever a node is a child (direct or indirect) of it self.
      * That is, if a recursive structure is build using anchors and aliases.
      *
-     * Set by [org.snakeyaml.engine.v2.composer.Composer], used during the construction process.
+     * Set by [it.krzeminski.snakeyaml.engine.kmp.composer.Composer], used during the construction process.
      *
      *  Only relevant during loading.
      *

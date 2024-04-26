@@ -107,7 +107,7 @@ class Load @JvmOverloads constructor(
      *
      * @param yaml - YAML data to load from (BOM must not be present)
      * @return parsed Java instance
-     * @throws org.snakeyaml.engine.v2.exceptions.YamlEngineException if the YAML is not valid
+     * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException if the YAML is not valid
      */
     fun loadFromString(yaml: String): Any? = loadOne(createComposer(yaml))
 

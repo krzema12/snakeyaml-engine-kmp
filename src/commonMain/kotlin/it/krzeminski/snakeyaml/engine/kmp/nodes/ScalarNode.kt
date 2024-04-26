@@ -28,7 +28,7 @@ import kotlin.jvm.JvmOverloads
  * @param[scalarStyle] style of this scalar node
  * * Flow styles - https://yaml.org/spec/1.2/spec.html.id2786942
  * * Block styles - https://yaml.org/spec/1.2/spec.html.id2793652
- * @see org.snakeyaml.engine.v2.events.ScalarEvent
+ * @see it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent
  */
 class ScalarNode @JvmOverloads constructor(
     tag: Tag,

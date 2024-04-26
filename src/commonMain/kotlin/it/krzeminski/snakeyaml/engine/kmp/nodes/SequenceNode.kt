@@ -31,7 +31,7 @@ class SequenceNode @JvmOverloads constructor(
     resolved: Boolean = true,
     startMark: Mark? = null,
     endMark: Mark? = null,
-) : it.krzeminski.snakeyaml.engine.kmp.nodes.CollectionNode<Node>(
+) : CollectionNode<Node>(
     tag,
     flowStyle,
     startMark,
@@ -45,8 +45,8 @@ class SequenceNode @JvmOverloads constructor(
         val values = value.joinToString(",") { node ->
             when (node) {
                 // avoid overflow in case of recursive structures
-                is it.krzeminski.snakeyaml.engine.kmp.nodes.CollectionNode<*> -> "CollectionNode(size:${node.value?.size})"
-                else                                                                                             -> node.toString()
+                is CollectionNode<*> -> "CollectionNode(size:${node.value?.size})"
+                else                 -> node.toString()
             }
         }
 

@@ -16,7 +16,7 @@ package it.krzeminski.snakeyaml.engine.kmp.exceptions
 import kotlin.jvm.JvmOverloads
 
 /**
- * Exception thrown by the [Scanner][org.snakeyaml.engine.v2.scanner.Scanner]
+ * Exception thrown by the [Scanner][it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner]
  * implementations in case of malformed input.
  *
  * @param context Part of the input document in which vicinity the problem occurred.

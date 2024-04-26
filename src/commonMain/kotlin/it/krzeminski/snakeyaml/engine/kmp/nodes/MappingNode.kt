@@ -31,17 +31,17 @@ import kotlin.jvm.JvmOverloads
  * @param[endMark] end
  */
 class MappingNode @JvmOverloads constructor(
-    tag: it.krzeminski.snakeyaml.engine.kmp.nodes.Tag,
+    tag: Tag,
     /**
      * Applications may need to replace the content (Spring Boot).
      * Merging was removed, but it may be implemented.
      */
-    override val value: List<it.krzeminski.snakeyaml.engine.kmp.nodes.NodeTuple>,
+    override val value: List<NodeTuple>,
     flowStyle: FlowStyle,
     resolved: Boolean = true,
     startMark: Mark? = null,
     endMark: Mark? = null,
-) : it.krzeminski.snakeyaml.engine.kmp.nodes.CollectionNode<it.krzeminski.snakeyaml.engine.kmp.nodes.NodeTuple>(
+) : CollectionNode<NodeTuple>(
     tag = tag,
     flowStyle = flowStyle,
     startMark = startMark,
@@ -49,14 +49,14 @@ class MappingNode @JvmOverloads constructor(
     resolved = resolved,
 ) {
 
-    override val nodeType: it.krzeminski.snakeyaml.engine.kmp.nodes.NodeType
-        get() = it.krzeminski.snakeyaml.engine.kmp.nodes.NodeType.MAPPING
+    override val nodeType: NodeType
+        get() = NodeType.MAPPING
 
     override fun toString(): String {
         val values = value.joinToString("") { node ->
             val valueNode = when (node.valueNode) {
                 // avoid overflow in case of recursive structures
-                is it.krzeminski.snakeyaml.engine.kmp.nodes.CollectionNode<*> -> "CollectionNode(size:${node.valueNode.value?.size})"
+                is CollectionNode<*> -> "CollectionNode(size:${node.valueNode.value?.size})"
                 else                                                                                                                -> node.toString()
             }
             "{ key=${node.keyNode}; value=$valueNode }"

@@ -241,10 +241,10 @@ class LoadSettingsBuilder internal constructor() {
     /**
      * Provide either recommended or custom
      * [schema](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) instead of
-     * default * [org.snakeyaml.engine.v2.schema.CoreSchema] These 3 are available
-     * [org.snakeyaml.engine.v2.schema.FailsafeSchema],
-     * [org.snakeyaml.engine.v2.schema.JsonSchema],
-     * [org.snakeyaml.engine.v2.schema.CoreSchema].
+     * default * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema] These 3 are available
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema].
      *
      * @param schema to be used for parsing
      * @return the builder with the provided value

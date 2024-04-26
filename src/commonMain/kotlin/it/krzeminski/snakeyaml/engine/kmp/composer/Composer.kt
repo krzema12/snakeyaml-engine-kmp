@@ -102,15 +102,14 @@ class Composer(
             val commentLines = blockCommentsCollector.consume()
             val startMark = commentLines.first().startMark
             val children = mutableListOf<NodeTuple>()
-            val node: Node =
-              it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode(
+            val node: Node = MappingNode(
                 tag = Tag.COMMENT,
                 resolved = false,
                 value = children,
                 flowStyle = FlowStyle.BLOCK,
                 startMark = startMark,
                 endMark = null,
-              )
+            )
             node.blockComments = (commentLines)
             return node
         }
@@ -269,7 +268,7 @@ class Composer(
      *
      * @param anchor - anchor if present
      */
-    private fun composeMappingNode(anchor: Anchor?): it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode {
+    private fun composeMappingNode(anchor: Anchor?): MappingNode {
         val startEvent = parser.next() as MappingStartEvent
         val tag: String? = startEvent.tag
         val nodeTag: Tag
@@ -283,14 +282,14 @@ class Composer(
         }
         val children = mutableListOf<NodeTuple>()
         val node =
-          it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode(
-            tag = nodeTag,
-            value = children,
-            flowStyle = startEvent.flowStyle,
-            resolved = resolved,
-            startMark = startEvent.startMark,
-            endMark = null,
-          )
+            MappingNode(
+                tag = nodeTag,
+                value = children,
+                flowStyle = startEvent.flowStyle,
+                resolved = resolved,
+                startMark = startEvent.startMark,
+                endMark = null,
+            )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }
@@ -322,7 +321,7 @@ class Composer(
      * @param children - the list to be extended
      * @param node - the child to the children
      */
-    private fun composeMappingChildren(children: MutableList<NodeTuple>, node: it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode) {
+    private fun composeMappingChildren(children: MutableList<NodeTuple>, node: MappingNode) {
         val itemKey = composeKeyNode(node)
         val itemValue = composeValueNode(node)
         children.add(NodeTuple(itemKey, itemValue))
@@ -334,7 +333,7 @@ class Composer(
      * @param node - the source
      * @return node
      */
-    private fun composeKeyNode(node: it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode): Node = composeNode(node)
+    private fun composeKeyNode(node: MappingNode): Node = composeNode(node)
 
     /**
      * To be able to override `composeNode(node)` which is a value
@@ -342,5 +341,5 @@ class Composer(
      * @param node - the source
      * @return node
      */
-    private fun composeValueNode(node: it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode): Node = composeNode(node)
+    private fun composeValueNode(node: MappingNode): Node = composeNode(node)
 }

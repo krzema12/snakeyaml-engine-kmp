@@ -281,15 +281,14 @@ class Composer(
             resolved = false
         }
         val children = mutableListOf<NodeTuple>()
-        val node =
-            MappingNode(
-                tag = nodeTag,
-                value = children,
-                flowStyle = startEvent.flowStyle,
-                resolved = resolved,
-                startMark = startEvent.startMark,
-                endMark = null,
-            )
+        val node = MappingNode(
+            tag = nodeTag,
+            value = children,
+            flowStyle = startEvent.flowStyle,
+            resolved = resolved,
+            startMark = startEvent.startMark,
+            endMark = null,
+        )
         if (startEvent.isFlow()) {
             node.blockComments = (blockCommentsCollector.consume())
         }

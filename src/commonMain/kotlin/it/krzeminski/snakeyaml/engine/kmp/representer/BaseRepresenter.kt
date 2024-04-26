@@ -196,11 +196,7 @@ abstract class BaseRepresenter(
         flowStyle: FlowStyle,
     ): MappingNode {
         val value = ArrayList<NodeTuple>(mapping.size)
-        val node = MappingNode(
-            tag,
-            value,
-            flowStyle
-        )
+        val node = MappingNode(tag, value, flowStyle)
         representedObjects[objectToRepresent] = node
         mapping.entries.mapTo(value) { it.toNodeTuple() }
         if (flowStyle == FlowStyle.AUTO) {
@@ -228,8 +224,7 @@ abstract class BaseRepresenter(
 
 private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
 
-    private val contents: MutableMap<IdentityHashCode, AnchorNode> =
-        mutableMapOf()
+    private val contents: MutableMap<IdentityHashCode, AnchorNode> = mutableMapOf()
     private val contentsView: MutableMap<IdentityHashCode, Node>
         get() = contents.mapValuesTo(mutableMapOf()) { (_, v) -> v.realNode }
 
@@ -245,17 +240,11 @@ private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
     override fun get(key: IdentityHashCode): Node? = contents[key]
 
     override fun isEmpty(): Boolean = contents.isEmpty()
-    override fun put(key: IdentityHashCode, value: Node): Node? = contents.put(
-        key,
-        AnchorNode(value)
-    )
+    override fun put(key: IdentityHashCode, value: Node): Node? =
+        contents.put(key, AnchorNode(value))
 
     override fun putAll(from: Map<out IdentityHashCode, Node>): Unit =
-        contents.putAll(from.mapValues { (_, v) ->
-            AnchorNode(
-                v
-            )
-        })
+        contents.putAll(from.mapValues { (_, v) -> AnchorNode(v) })
 
     override fun remove(key: IdentityHashCode): Node? = contents.remove(key)
 
@@ -263,8 +252,6 @@ private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
     operator fun get(key: Any?): Node? = contents[identityHashCode(key)]
 
     @JvmName("setAny")
-    operator fun set(key: Any?, value: Node): Node? = contents.put(
-        identityHashCode(key),
-        AnchorNode(value)
-    )
+    operator fun set(key: Any?, value: Node): Node? =
+        contents.put(identityHashCode(key), AnchorNode(value))
 }

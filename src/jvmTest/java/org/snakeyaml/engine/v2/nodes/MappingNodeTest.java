@@ -13,10 +13,10 @@
  */
 package org.snakeyaml.engine.v2.nodes;
 
-import it.krzeminski.snakeyaml.engine.kmp.nodes.*;
-import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

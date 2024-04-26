@@ -13,7 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
 
 public class CanonicalException extends YamlEngineException {
 

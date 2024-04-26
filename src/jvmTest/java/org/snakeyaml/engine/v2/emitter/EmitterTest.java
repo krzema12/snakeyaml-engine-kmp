@@ -13,17 +13,18 @@
  */
 package org.snakeyaml.engine.v2.emitter;
 
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.*;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
-import org.snakeyaml.engine.v2.exceptions.ComposerException;
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.events.DocumentStartEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.ImplicitTuple;
+import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException;
 
 import java.io.StringWriter;
 import java.util.*;

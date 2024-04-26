@@ -17,8 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
 
 @org.junit.jupiter.api.Tag("fast")
 class NodeTest {
@@ -27,19 +30,19 @@ class NodeTest {
   void notEqualToTheSameNode() {
     Node node1 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
     Node node2 = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
-    assertNotEquals(node1, node2, "Nodes with the same contant are not equal");
-    assertNotEquals(node2, node1, "Nodes with the same contant are not equal");
+    assertNotEquals(node1, node2, "Nodes with the same content are not equal");
+    assertNotEquals(node2, node1, "Nodes with the same content are not equal");
   }
 
   @Test
   void equalsToItself() {
-    Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
+    Node node = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
     assertEquals(node, node);
   }
 
   @Test
   void properties() {
-    Node node = new ScalarNode(org.snakeyaml.engine.v2.nodes.Tag.STR, "a", ScalarStyle.PLAIN);
+    Node node = new ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN);
     assertNull(node.getProperty("p"));
     assertNull(node.setProperty("p", "value"));
     assertEquals("value", node.getProperty("p"));

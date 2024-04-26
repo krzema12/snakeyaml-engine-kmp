@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.intellij.lang.annotations.Language;
-import org.snakeyaml.engine.v2.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
 
 public abstract class TestUtils {
 

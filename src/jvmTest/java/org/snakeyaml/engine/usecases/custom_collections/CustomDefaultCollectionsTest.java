@@ -20,8 +20,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 class CustomDefaultCollectionsTest {
@@ -59,4 +59,3 @@ class CustomDefaultCollectionsTest {
     assertEquals("foo", set.last());
   }
 }
-

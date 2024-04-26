@@ -21,15 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.parser.Parser;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent;
+import it.krzeminski.snakeyaml.engine.kmp.parser.Parser;
+import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 @org.junit.jupiter.api.Tag("fast")

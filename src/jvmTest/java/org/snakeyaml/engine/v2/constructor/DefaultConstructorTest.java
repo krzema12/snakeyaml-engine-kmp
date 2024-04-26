@@ -16,11 +16,12 @@ package org.snakeyaml.engine.v2.constructor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.constructor.*;
+import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 import static org.junit.jupiter.api.Assertions.*;
 

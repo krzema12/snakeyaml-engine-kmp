@@ -13,6 +13,8 @@
  */
 package org.snakeyaml.engine.v2.tokens;
 
+import it.krzeminski.snakeyaml.engine.kmp.tokens.ScalarToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

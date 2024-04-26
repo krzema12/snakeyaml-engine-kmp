@@ -24,11 +24,11 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.serializer.AnchorGenerator;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.serializer.AnchorGenerator;
 
 @Tag("fast")
 public class AnchorUnicodeTest {

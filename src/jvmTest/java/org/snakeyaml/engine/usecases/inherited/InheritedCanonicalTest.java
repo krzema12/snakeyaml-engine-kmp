@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.tokens.Token;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedCanonicalTest extends InheritedImportTest {

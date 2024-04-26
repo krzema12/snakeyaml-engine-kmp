@@ -17,12 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.TreeRangeSet;
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 @Tag("fast")
 class StandardRepresenterTest {

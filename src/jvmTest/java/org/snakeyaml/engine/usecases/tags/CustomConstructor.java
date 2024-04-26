@@ -14,9 +14,9 @@
 package org.snakeyaml.engine.usecases.tags;
 
 import org.snakeyaml.engine.internal.TestConstructNode;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
 
 /**
  * Create ImportValueImpl from a scalar node

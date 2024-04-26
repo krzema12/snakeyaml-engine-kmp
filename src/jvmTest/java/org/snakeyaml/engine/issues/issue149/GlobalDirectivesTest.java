@@ -22,10 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Parse;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.exceptions.ParserException;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 @org.junit.jupiter.api.Tag("fast")

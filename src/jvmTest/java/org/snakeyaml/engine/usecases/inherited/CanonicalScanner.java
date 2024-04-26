@@ -13,11 +13,11 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.scanner.Scanner;
-import org.snakeyaml.engine.v2.tokens.*;
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

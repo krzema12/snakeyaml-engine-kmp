@@ -15,13 +15,14 @@ package org.snakeyaml.engine.v2.representer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
 
 @Tag("fast")
 class EnumRepresenterTest {

@@ -14,9 +14,9 @@
 package org.snakeyaml.engine.usecases.external_test_suite;
 
 import com.google.common.base.Splitter;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.events.*;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 
 import java.util.List;
 

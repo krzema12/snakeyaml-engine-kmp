@@ -20,16 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 import org.snakeyaml.engine.internal.TestConstructNode;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.SequenceNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 @org.junit.jupiter.api.Tag("fast")
 class ConstructNodeTest {

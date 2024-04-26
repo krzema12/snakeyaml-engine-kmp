@@ -14,12 +14,13 @@
 package org.snakeyaml.engine.v2.api.lowlevel;
 
 import com.google.common.collect.Lists;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Serialize;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.events.*;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.util.HashMap;

@@ -14,14 +14,14 @@
 package org.snakeyaml.engine.usecases.inherited;
 
 import org.jetbrains.annotations.NotNull;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.common.SpecVersion;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.parser.Parser;
-import org.snakeyaml.engine.v2.tokens.*;
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion;
+import it.krzeminski.snakeyaml.engine.kmp.events.*;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.parser.Parser;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -15,16 +15,16 @@ package org.snakeyaml.engine.usecases.tags;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.resolver.BaseScalarResolver;
+import it.krzeminski.snakeyaml.engine.kmp.resolver.JsonScalarResolver;
+import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
 import org.snakeyaml.engine.internal.TestConstructNode;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
-import org.snakeyaml.engine.v2.resolver.JsonScalarResolver;
-import org.snakeyaml.engine.v2.schema.JsonSchema;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

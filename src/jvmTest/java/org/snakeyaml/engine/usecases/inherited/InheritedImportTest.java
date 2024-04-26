@@ -14,12 +14,12 @@
 package org.snakeyaml.engine.usecases.inherited;
 
 import okio.Okio;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.parser.Parser;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.parser.Parser;
+import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.io.File;

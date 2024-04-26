@@ -13,11 +13,12 @@
  */
 package org.snakeyaml.engine.v2.api;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader.CharEncoding;
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CharEncoding;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

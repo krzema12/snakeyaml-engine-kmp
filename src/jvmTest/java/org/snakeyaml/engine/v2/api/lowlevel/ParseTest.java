@@ -20,12 +20,14 @@ import com.google.common.io.CharSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.StreamEndEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.StreamEndEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 @Tag("fast")

@@ -16,10 +16,10 @@ package org.snakeyaml.engine.usecases.external_test_suite;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Parse;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
 
 import java.io.File;
 import java.io.IOException;

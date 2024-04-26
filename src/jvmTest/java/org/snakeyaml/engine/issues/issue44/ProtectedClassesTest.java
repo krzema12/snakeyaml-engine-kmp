@@ -14,8 +14,8 @@
 package org.snakeyaml.engine.issues.issue44;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 
 import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;

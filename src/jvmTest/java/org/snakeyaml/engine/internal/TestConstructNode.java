@@ -1,9 +1,9 @@
 package org.snakeyaml.engine.internal;
 
 import org.jetbrains.annotations.NotNull;
-import org.snakeyaml.engine.v2.api.ConstructNode;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 public abstract class TestConstructNode implements ConstructNode {
 

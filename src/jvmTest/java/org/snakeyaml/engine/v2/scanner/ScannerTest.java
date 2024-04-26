@@ -20,13 +20,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.NoSuchElementException;
+
+import it.krzeminski.snakeyaml.engine.kmp.scanner.ScannerImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.tokens.AnchorToken;
-import org.snakeyaml.engine.v2.tokens.ScalarToken;
-import org.snakeyaml.engine.v2.tokens.Token;
-import org.snakeyaml.engine.v2.tokens.Token.ID;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.AnchorToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.ScalarToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token.ID;
 
 @org.junit.jupiter.api.Tag("fast")
 class ScannerTest {

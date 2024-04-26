@@ -13,13 +13,13 @@
  */
 package org.snakeyaml.engine.v2.common;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.exceptions.YamlVersionException;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlVersionException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

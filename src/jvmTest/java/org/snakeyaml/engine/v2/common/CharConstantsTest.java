@@ -16,8 +16,9 @@ package org.snakeyaml.engine.v2.common;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.snakeyaml.engine.v2.common.CharConstants.ESCAPE_REPLACEMENTS;
+import static it.krzeminski.snakeyaml.engine.kmp.common.CharConstants.ESCAPE_REPLACEMENTS;
 
+import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

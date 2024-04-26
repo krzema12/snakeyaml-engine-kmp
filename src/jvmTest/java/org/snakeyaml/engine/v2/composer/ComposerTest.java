@@ -16,10 +16,10 @@ package org.snakeyaml.engine.v2.composer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.exceptions.ComposerException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -13,14 +13,15 @@
  */
 package org.snakeyaml.engine.v2.api;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteData;
 import org.snakeyaml.engine.usecases.external_test_suite.SuiteUtils;
-import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.exceptions.ParserException;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 import static org.junit.jupiter.api.Assertions.*;
 

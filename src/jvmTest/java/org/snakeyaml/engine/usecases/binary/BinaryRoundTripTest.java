@@ -14,21 +14,21 @@
 package org.snakeyaml.engine.usecases.binary;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Serialize;
-import org.snakeyaml.engine.v2.common.NonPrintableStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeType;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
-import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Serialize;
+import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.ImplicitTuple;
+import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.NodeType;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class BinaryRoundTripTest {
         DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build());
     ScalarNode scalar = (ScalarNode) standardRepresenter.represent(source);
     // check Node
-    assertEquals(org.snakeyaml.engine.v2.nodes.Tag.BINARY, scalar.getTag());
+    assertEquals(Tag.BINARY, scalar.getTag());
     assertEquals(NodeType.SCALAR, scalar.getNodeType());
     assertEquals("wpY=", scalar.getValue());
     // check Event

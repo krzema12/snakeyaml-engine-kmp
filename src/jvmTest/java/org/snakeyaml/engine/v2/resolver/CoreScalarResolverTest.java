@@ -17,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import it.krzeminski.snakeyaml.engine.kmp.resolver.CoreScalarResolver;
+import it.krzeminski.snakeyaml.engine.kmp.resolver.ScalarResolver;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 
 @org.junit.jupiter.api.Tag("fast")
 class CoreScalarResolverTest {

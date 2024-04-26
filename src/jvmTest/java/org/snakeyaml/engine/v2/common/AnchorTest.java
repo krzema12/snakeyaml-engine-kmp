@@ -13,10 +13,11 @@
  */
 package org.snakeyaml.engine.v2.common;
 
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.exceptions.EmitterException;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.EmitterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,7 +32,7 @@ class AnchorTest {
     NullPointerException exception =
         assertThrows(NullPointerException.class, () -> new Anchor(null));
     assertEquals(
-        "Parameter specified as non-null is null: method org.snakeyaml.engine.v2.common.Anchor.<init>, parameter value",
+        "Parameter specified as non-null is null: method it.krzeminski.snakeyaml.engine.kmp.common.Anchor.<init>, parameter value",
         exception.getMessage()
     );
   }

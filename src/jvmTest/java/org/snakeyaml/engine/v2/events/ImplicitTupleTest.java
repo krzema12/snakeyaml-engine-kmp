@@ -15,6 +15,7 @@ package org.snakeyaml.engine.v2.events;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import it.krzeminski.snakeyaml.engine.kmp.events.ImplicitTuple;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.v2.parser;
 
 import com.google.common.collect.ImmutableMap;
+import it.krzeminski.snakeyaml.engine.kmp.parser.VersionTagsTuple;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

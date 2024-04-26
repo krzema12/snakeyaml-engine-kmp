@@ -92,7 +92,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
 
         // use `internal object` instead of `internal val` to try and avoid https://youtrack.jetbrains.com/issue/KT-59274
         yamlTestSuiteValuesFile.writeText(/* language=kotlin */ """
-            ¦package org.snakeyaml.engine.test_suite
+            ¦package it.krzeminski.snakeyaml.engine.kmp.test_suite
             ¦
             ¦/** All YAML test suite data */
             ¦internal object YamlTestSuiteData : Map<YamlTestData.Id, YamlTestData> by mapOf(
@@ -132,7 +132,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         val relativePath = case.dir.relativeTo(rootDir).invariantSeparatorsPath
 
         return /* language=kotlin */ """
-            ¦|¦package org.snakeyaml.engine.test_suite
+            ¦|¦package it.krzeminski.snakeyaml.engine.kmp.test_suite
             ¦|¦
             ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`
@@ -175,7 +175,7 @@ abstract class GenerateYamlTestSuiteData @Inject constructor(
         val relativePath = case.dir.relativeTo(rootDir).invariantSeparatorsPath
 
         return /* language=kotlin */ """
-            ¦|¦package org.snakeyaml.engine.test_suite
+            ¦|¦package it.krzeminski.snakeyaml.engine.kmp.test_suite
             ¦|¦
             ¦|¦/**
             ¦|¦ * Test case for file `./$relativePath`

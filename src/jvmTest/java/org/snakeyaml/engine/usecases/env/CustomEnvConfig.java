@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.usecases.env;
 
 import org.jetbrains.annotations.NotNull;
-import org.snakeyaml.engine.v2.env.EnvConfig;
+import it.krzeminski.snakeyaml.engine.kmp.env.EnvConfig;
 
 import java.util.Map;
 

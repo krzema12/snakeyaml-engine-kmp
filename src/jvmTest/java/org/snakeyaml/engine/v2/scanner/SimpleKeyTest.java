@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.scanner;
 
+import it.krzeminski.snakeyaml.engine.kmp.scanner.SimpleKey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

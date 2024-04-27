@@ -205,7 +205,8 @@ abstract class BaseRepresenter(
                     val anyKeyOrValueNotPlain =
                         value.any { (keyNode, valueNode) ->
                             !(keyNode is ScalarNode && keyNode.isPlain)
-                                || !(valueNode is ScalarNode && valueNode.isPlain)
+                                ||
+                                !(valueNode is ScalarNode && valueNode.isPlain)
                         }
                     if (anyKeyOrValueNotPlain) {
                         FlowStyle.BLOCK

@@ -57,7 +57,7 @@ class MappingNode @JvmOverloads constructor(
             val valueNode = when (node.valueNode) {
                 // avoid overflow in case of recursive structures
                 is CollectionNode<*> -> "CollectionNode(size:${node.valueNode.value?.size})"
-                else                                                                                                                -> node.toString()
+                else                 -> node.toString()
             }
             "{ key=${node.keyNode}; value=$valueNode }"
         }

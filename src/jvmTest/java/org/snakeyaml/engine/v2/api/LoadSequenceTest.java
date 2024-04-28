@@ -15,6 +15,7 @@ package org.snakeyaml.engine.v2.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;

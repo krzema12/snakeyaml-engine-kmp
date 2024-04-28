@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.v2.exceptions;
 
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

@@ -19,12 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.NoSuchElementException;
+
+import it.krzeminski.snakeyaml.engine.kmp.parser.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.scanner.ScannerImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.ScannerImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 
 @org.junit.jupiter.api.Tag("fast")
 class ParserTest {
@@ -55,4 +57,3 @@ class ParserTest {
     }
   }
 }
-

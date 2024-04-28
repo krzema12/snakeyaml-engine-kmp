@@ -14,10 +14,11 @@
 package org.snakeyaml.engine.v2.api.lowlevel;
 
 import com.google.common.io.CharSource;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

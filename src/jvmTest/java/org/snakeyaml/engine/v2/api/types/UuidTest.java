@@ -16,14 +16,15 @@ package org.snakeyaml.engine.v2.api.types;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
+
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.representer.StandardRepresenter;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 
 @org.junit.jupiter.api.Tag("fast")
 class UuidTest {

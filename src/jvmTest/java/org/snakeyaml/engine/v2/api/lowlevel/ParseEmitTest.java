@@ -21,13 +21,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
 
 /**
  * Test from https://github.com/yaml/yaml-runtimes

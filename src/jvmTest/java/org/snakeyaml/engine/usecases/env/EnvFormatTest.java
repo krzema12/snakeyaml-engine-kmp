@@ -14,7 +14,7 @@
 package org.snakeyaml.engine.usecases.env;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.resolver.BaseScalarResolver;
+import it.krzeminski.snakeyaml.engine.kmp.resolver.BaseScalarResolver;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

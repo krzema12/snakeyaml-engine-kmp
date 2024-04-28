@@ -14,9 +14,9 @@
 package org.snakeyaml.engine.usecases.untrusted;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
 
 import java.util.Iterator;
 

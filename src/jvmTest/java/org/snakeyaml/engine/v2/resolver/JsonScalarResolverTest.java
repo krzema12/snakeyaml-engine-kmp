@@ -15,9 +15,11 @@ package org.snakeyaml.engine.v2.resolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import it.krzeminski.snakeyaml.engine.kmp.resolver.JsonScalarResolver;
+import it.krzeminski.snakeyaml.engine.kmp.resolver.ScalarResolver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 
 @org.junit.jupiter.api.Tag("fast")
 class JsonScalarResolverTest {

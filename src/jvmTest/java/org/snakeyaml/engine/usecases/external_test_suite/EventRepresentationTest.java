@@ -13,12 +13,13 @@
  */
 package org.snakeyaml.engine.usecases.external_test_suite;
 
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.events.*;
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.events.*;
 
 import java.util.Collections;
 
@@ -124,7 +125,7 @@ class EventRepresentationTest {
         FlowStyle.FLOW), "+MAP");
     valid(
         new MappingStartEvent(null,
-            org.snakeyaml.engine.v2.nodes.Tag.MAP.getValue(), false, FlowStyle.FLOW),
+            Tag.MAP.getValue(), false, FlowStyle.FLOW),
         "+MAP");
     valid(new MappingStartEvent(null, null, false, FlowStyle.FLOW), "+MAP");
   }

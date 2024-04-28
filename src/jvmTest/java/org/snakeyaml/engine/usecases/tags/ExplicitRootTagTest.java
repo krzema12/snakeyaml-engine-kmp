@@ -14,9 +14,9 @@
 package org.snakeyaml.engine.usecases.tags;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 
 import java.util.HashMap;
 import java.util.Map;

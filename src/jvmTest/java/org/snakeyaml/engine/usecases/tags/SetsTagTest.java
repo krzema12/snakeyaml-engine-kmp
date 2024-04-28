@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 /**
  * Example of parsing a local tag

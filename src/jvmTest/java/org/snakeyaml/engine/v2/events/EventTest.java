@@ -13,10 +13,13 @@
  */
 package org.snakeyaml.engine.v2.events;
 
+import it.krzeminski.snakeyaml.engine.kmp.events.AliasEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.common.Anchor;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 
 import static org.junit.jupiter.api.Assertions.*;
 

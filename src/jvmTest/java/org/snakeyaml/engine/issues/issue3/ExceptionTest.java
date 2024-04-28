@@ -17,10 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.kotest.matchers.string.StringMatchersKt;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
 
 @org.junit.jupiter.api.Tag("fast")
 class ExceptionTest {
@@ -31,9 +32,9 @@ class ExceptionTest {
     YamlEngineException exception =
         assertThrows(YamlEngineException.class, () -> load.loadFromString("!!seq abc"));
     assertTrue(exception.getMessage().contains("java.lang.ClassCastException"));
-    assertTrue(exception.getMessage().contains("org.snakeyaml.engine.v2.nodes.ScalarNode"));
+    assertTrue(exception.getMessage().contains("it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode"));
     assertTrue(exception.getMessage().contains("cannot be cast to"));
-    assertTrue(exception.getMessage().contains("org.snakeyaml.engine.v2.nodes.SequenceNode"));
+    assertTrue(exception.getMessage().contains("it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode"));
   }
 
   @Test

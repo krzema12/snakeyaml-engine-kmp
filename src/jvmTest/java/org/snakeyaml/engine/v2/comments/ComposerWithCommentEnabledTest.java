@@ -13,13 +13,14 @@
  */
 package org.snakeyaml.engine.v2.comments;
 
+import it.krzeminski.snakeyaml.engine.kmp.comments.CommentLine;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.composer.Composer;
-import org.snakeyaml.engine.v2.constructor.StandardConstructor;
-import org.snakeyaml.engine.v2.nodes.*;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.composer.Composer;
+import it.krzeminski.snakeyaml.engine.kmp.constructor.StandardConstructor;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.*;
+import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

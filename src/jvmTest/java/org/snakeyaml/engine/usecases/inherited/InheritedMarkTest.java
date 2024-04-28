@@ -15,7 +15,7 @@ package org.snakeyaml.engine.usecases.inherited;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.exceptions.Mark;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

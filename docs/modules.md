@@ -19,82 +19,82 @@ SnakeYAML Engine KMP is based on SnakeYAML Engine, so we also recommend reading
 For details of how to use SnakeYAML Engine KMP, view the
 [README on GitHub](https://github.com/krzema12/snakeyaml-engine-kmp?tab=readme-ov-file#snakeyaml-engine-kmp).
 
-# Package org.snakeyaml.engine.v2.api
+# Package it.krzeminski.snakeyaml.engine.kmp.api
 
 The main API interface to be used when integrating with SnakeYAML Engine KMP.
 
-# Package org.snakeyaml.engine.v2.api.lowlevel
+# Package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
 Low-level helper classes for parsing, emitting, and representing.
 
-# Package org.snakeyaml.engine.v2.comments
+# Package it.krzeminski.snakeyaml.engine.kmp.comments
 
 Handling YAML comments.
 
-# Package org.snakeyaml.engine.v2.common
+# Package it.krzeminski.snakeyaml.engine.kmp.common
 
 Common components for parsing YAML nodes.
 
-# Package org.snakeyaml.engine.v2.composer
+# Package it.krzeminski.snakeyaml.engine.kmp.composer
 
 Creating node graphs from parser events.
 
-# Package org.snakeyaml.engine.v2.constructor
+# Package it.krzeminski.snakeyaml.engine.kmp.constructor
 
 Instantiating objects from parsed YAML.
 
-# Package org.snakeyaml.engine.v2.constructor.core
+# Package it.krzeminski.snakeyaml.engine.kmp.constructor.core
 
 YAML specific constructors.
 
-# Package org.snakeyaml.engine.v2.constructor.json
+# Package it.krzeminski.snakeyaml.engine.kmp.constructor.json
 
 JSON specific constructors.
 
-# Package org.snakeyaml.engine.v2.emitter
+# Package it.krzeminski.snakeyaml.engine.kmp.emitter
 
 Serialize events to some output.
 
-# Package org.snakeyaml.engine.v2.env
+# Package it.krzeminski.snakeyaml.engine.kmp.env
 
 Handling Environment Variables.
 
-# Package org.snakeyaml.engine.v2.events
+# Package it.krzeminski.snakeyaml.engine.kmp.events
 
 Basic unit of output from parsing, or emitting.
 
-# Package org.snakeyaml.engine.v2.exceptions
+# Package it.krzeminski.snakeyaml.engine.kmp.exceptions
 
 YAML exceptions.
 
-# Package org.snakeyaml.engine.v2.nodes
+# Package it.krzeminski.snakeyaml.engine.kmp.nodes
 
 The nodes form the node-graph described in the [YAML Specification](https://yaml.org/spec/1.2/spec.html).
 
-# Package org.snakeyaml.engine.v2.parser
+# Package it.krzeminski.snakeyaml.engine.kmp.parser
 
 Parsing (converting YAML into events).
 
-# Package org.snakeyaml.engine.v2.representer
+# Package it.krzeminski.snakeyaml.engine.kmp.representer
 
 Converts instances of objects into YAML.
 
-# Package org.snakeyaml.engine.v2.resolver
+# Package it.krzeminski.snakeyaml.engine.kmp.resolver
 
 Detect a type of scalar value by its content.
 
-# Package org.snakeyaml.engine.v2.scanner
+# Package it.krzeminski.snakeyaml.engine.kmp.scanner
 
 Read some input source and produce tokens.
 
-# Package org.snakeyaml.engine.v2.schema
+# Package it.krzeminski.snakeyaml.engine.kmp.schema
 
 Describes how tags can be constructed.¬
 
-# Package org.snakeyaml.engine.v2.serializer
+# Package it.krzeminski.snakeyaml.engine.kmp.serializer
 
 serializer
 
-# Package org.snakeyaml.engine.v2.tokens
+# Package it.krzeminski.snakeyaml.engine.kmp.tokens
 
 YAML tokens.

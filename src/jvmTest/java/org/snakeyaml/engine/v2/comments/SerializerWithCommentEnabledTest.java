@@ -24,17 +24,17 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.composer.Composer;
-import org.snakeyaml.engine.v2.emitter.Emitable;
-import org.snakeyaml.engine.v2.events.Event;
-import org.snakeyaml.engine.v2.events.Event.ID;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.serializer.Serializer;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.composer.Composer;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitable;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event;
+import it.krzeminski.snakeyaml.engine.kmp.events.Event.ID;
+import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer;
 
 public class SerializerWithCommentEnabledTest {
 

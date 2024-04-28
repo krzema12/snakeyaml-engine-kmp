@@ -16,11 +16,11 @@ package org.snakeyaml.engine.usecases.inherited;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v2.exceptions.ReaderException;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 
 import java.io.File;
 import java.io.FileInputStream;

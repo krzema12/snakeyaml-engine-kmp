@@ -22,14 +22,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.scanner.Scanner;
-import org.snakeyaml.engine.v2.scanner.ScannerImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.tokens.CommentToken;
-import org.snakeyaml.engine.v2.tokens.ScalarToken;
-import org.snakeyaml.engine.v2.tokens.Token;
-import org.snakeyaml.engine.v2.tokens.Token.ID;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.ScannerImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.CommentToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.ScalarToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token.ID;
 
 public class ScannerWithCommentEnabledTest {
 

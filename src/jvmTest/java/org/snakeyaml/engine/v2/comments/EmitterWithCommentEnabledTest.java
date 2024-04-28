@@ -14,20 +14,21 @@
 package org.snakeyaml.engine.v2.comments;
 
 
+import it.krzeminski.snakeyaml.engine.kmp.comments.CommentType;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.composer.Composer;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.*;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.parser.ParserImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.serializer.Serializer;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.composer.Composer;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
+import it.krzeminski.snakeyaml.engine.kmp.events.*;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer;
 
 import java.io.IOException;
 import java.io.StringWriter;

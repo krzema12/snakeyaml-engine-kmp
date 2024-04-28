@@ -20,10 +20,10 @@ import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v2.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettingsBuilder;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
 
 /**
  * Test for issue

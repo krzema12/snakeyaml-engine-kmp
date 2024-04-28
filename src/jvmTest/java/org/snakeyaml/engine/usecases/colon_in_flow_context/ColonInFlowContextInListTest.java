@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInListTest {
@@ -45,5 +45,3 @@ class ColonInFlowContextInListTest {
     assertTrue(list.contains("http://bar"));
   }
 }
-
-

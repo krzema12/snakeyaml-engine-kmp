@@ -15,13 +15,13 @@ package org.snakeyaml.engine.usecases.references;
 
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.nodes.Node;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 import org.snakeyaml.engine.v2.utils.TestUtils;
 
 import java.io.StringReader;

@@ -14,15 +14,15 @@
 package org.snakeyaml.engine.issues.issue23;
 
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.events.DocumentStartEvent;
-import org.snakeyaml.engine.v2.events.ImplicitTuple;
-import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.events.StreamStartEvent;
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
+import it.krzeminski.snakeyaml.engine.kmp.events.DocumentStartEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.ImplicitTuple;
+import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent;
+import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent;
 
 import java.io.StringWriter;
 import java.util.HashMap;

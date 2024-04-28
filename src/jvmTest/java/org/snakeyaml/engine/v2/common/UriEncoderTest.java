@@ -16,6 +16,7 @@ package org.snakeyaml.engine.v2.common;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import it.krzeminski.snakeyaml.engine.kmp.common.UriEncoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

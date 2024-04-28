@@ -31,14 +31,14 @@ import java.util.Map;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.YamlUnicodeReader;
-import org.snakeyaml.engine.v2.scanner.Scanner;
-import org.snakeyaml.engine.v2.scanner.ScannerImpl;
-import org.snakeyaml.engine.v2.scanner.StreamReader;
-import org.snakeyaml.engine.v2.tokens.StreamEndToken;
-import org.snakeyaml.engine.v2.tokens.StreamStartToken;
-import org.snakeyaml.engine.v2.tokens.Token;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.ScannerImpl;
+import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamEndToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamStartToken;
+import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
 
 @org.junit.jupiter.api.Tag("fast")
 public class InheritedTokensTest extends InheritedImportTest {

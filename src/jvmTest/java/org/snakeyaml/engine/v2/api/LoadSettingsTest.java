@@ -19,12 +19,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Map;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.*;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.LoadSettings.SpecVersionMutator;
-import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
-import org.snakeyaml.engine.v2.schema.JsonSchema;
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings.SpecVersionMutator;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.DuplicateKeyException;
+import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
 
 @Tag("fast")
 class LoadSettingsTest {

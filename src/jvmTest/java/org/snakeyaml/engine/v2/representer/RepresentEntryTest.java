@@ -13,19 +13,20 @@
  */
 package org.snakeyaml.engine.v2.representer;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
+import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter;
+import it.krzeminski.snakeyaml.engine.kmp.comments.CommentLine;
+import it.krzeminski.snakeyaml.engine.kmp.comments.CommentType;
+import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle;
+import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter;
+import it.krzeminski.snakeyaml.engine.kmp.nodes.NodeTuple;
+import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
+import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.StreamDataWriter;
-import org.snakeyaml.engine.v2.comments.CommentLine;
-import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.emitter.Emitter;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.serializer.Serializer;
 
 import java.io.StringWriter;
 import java.util.ArrayList;

@@ -1,8 +1,5 @@
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
-import okio.Buffer
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.comments.CommentType
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
@@ -12,9 +9,12 @@ import it.krzeminski.snakeyaml.engine.kmp.common.UriEncoder
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*
 import kotlin.collections.set
 import kotlin.jvm.JvmInline
+import okio.Buffer
 
 
 /**
@@ -123,8 +123,8 @@ class ScannerImpl(
         while (needMoreTokens()) {
             fetchMoreTokens()
         }
-        val firstTokenId = tokens.firstOrNull()?.tokenId
-        return firstTokenId != null && (choices.isEmpty() || firstTokenId in choices)
+        val firstTokenId = tokens.firstOrNull()?.tokenId ?: return false
+        return choices.isEmpty() || firstTokenId in choices
     }
 
     /** Return the next token, but do not delete it from the queue. */
@@ -302,13 +302,13 @@ class ScannerImpl(
                     return
                 }
 
-            // Is it a single quoted scalar?
+            // Is it a single-quoted scalar?
             '\'' -> {
                 fetchSingle()
                 return
             }
 
-            // Is it a double quoted scalar?
+            // Is it a double-quoted scalar?
             '"'  -> {
                 fetchDouble()
                 return
@@ -322,14 +322,17 @@ class ScannerImpl(
         }
         // No? It's an error. Let's produce a nice error message.
         // We do this by converting escaped characters into their escape sequences.
-        var chRepresentation = CharConstants.escapeChar(Character.toChars(c).first())
-        if (c == '\t'.code) {
-            chRepresentation += "(TAB)" // TAB deserves a special clarification
+        val cEscaped = CharConstants.escapeChar(Character.toChars(c).first())
+        val chRepresentation = buildString {
+            append("'$cEscaped'")
+            if (cEscaped == "\\t") {
+                append(" (TAB)")
+            }
         }
         throw ScannerException(
             context = "while scanning for the next token",
             contextMark = null,
-            problem = "found character '$chRepresentation' that cannot start any token. (Do not use $chRepresentation for indentation)",
+            problem = "found character $chRepresentation that cannot start any token. (Do not use $cEscaped for indentation)",
             problemMark = reader.getMark(),
         )
     }
@@ -346,14 +349,12 @@ class ScannerImpl(
     }
 
     /**
-     * ```text
      * Remove entries that are no longer possible simple keys. According to
      * the YAML specification, simple keys
      * - should be limited to a single line,
      * - should be no longer than 1024 characters.
      * Disabling this procedure will allow simple keys of any length and
      * height (may cause problems if indentation is broken though).
-     * ```
      */
     private fun stalePossibleSimpleKeys() {
         val iterator = possibleSimpleKeys.iterator()
@@ -704,7 +705,7 @@ class ScannerImpl(
         val startMark = reader.getMark()
         reader.forward()
         val endMark = reader.getMark()
-        val token: Token = KeyToken(startMark, endMark)
+        val token = KeyToken(startMark, endMark)
         addToken(token)
     }
 
@@ -833,8 +834,8 @@ class ScannerImpl(
         removePossibleSimpleKey()
 
         // Scan and add SCALAR.
-        val tok = scanBlockScalar(style)
-        addAllTokens(tok)
+        val token = scanBlockScalar(style)
+        addAllTokens(token)
     }
 
     /** Fetch a single-quoted (') scalar. */
@@ -844,7 +845,7 @@ class ScannerImpl(
     private fun fetchDouble(): Unit = fetchFlowScalar(ScalarStyle.DOUBLE_QUOTED)
 
     /** Fetch a flow scalar (single- or double-quoted). */
-    private fun fetchFlowScalar(style: ScalarStyle?) {
+    private fun fetchFlowScalar(style: ScalarStyle) {
         // A flow scalar could be a simple key.
         savePossibleSimpleKey()
 
@@ -852,8 +853,8 @@ class ScannerImpl(
         allowSimpleKey = false
 
         // Scan and add SCALAR.
-        val tok = scanFlowScalar(style!!)
-        addToken(tok)
+        val token = scanFlowScalar(style)
+        addToken(token)
     }
 
     /** Fetch a plain scalar. */
@@ -892,17 +893,28 @@ class ScannerImpl(
     private fun checkDocumentStart(): Boolean {
         // DOCUMENT-START: ^ '---' (' '|'\n')
         return checkDirective()
-            && "---" == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "---" == reader.prefix(3)
+            && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /**
-     * Returns true if the next thing on the reader is a document-end (`...`).
+     * Returns `true` if the next thing on the reader is a document-end (`...`).
      * A document-end is always followed immediately by a new line.
      */
     private fun checkDocumentEnd(): Boolean {
         // DOCUMENT-END: ^ '...' (' '|'\n')
         return checkDirective()
-            && "..." == reader.prefix(3) && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+            && "..." == reader.prefix(3)
+            && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
+    }
+
+    /**
+     * @returns `true` if the next thing on the reader is a document-separator (`---`).
+     */
+    private fun checkDocumentSeparator(): Boolean {
+        val prefix = reader.prefix(3)
+        return prefix == "---" || prefix == "..."
+            && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
     }
 
     /** Returns `true` if the next thing on the reader is a block token. */
@@ -931,7 +943,7 @@ class ScannerImpl(
     /** Returns `true` if the next thing on the reader is a plain token. */
     private fun checkPlain(): Boolean {
         // * A plain scalar may start with any non-space character except:
-        // '-', '?', ':', ',', '[', ']', '{', '}', '#', '&amp;', '*', '!', '|', '&gt;', '\'', '\&quot;', '%', '@', '`'.
+        // '-', '?', ':', ',', '[', ']', '{', '}', '#', '&', '*', '!', '|', '>', '\'', '"', '%', '@', '`'.
         val c = reader.peek()
         // If the next char is NOT one of the forbidden chars above or whitespace, then this is the start of a plain scalar.
         val notForbidden = CharConstants.NULL_BL_T_LINEBR.hasNo(c, "-?:,[]{}#&*!|>'\"%@`")
@@ -941,11 +953,13 @@ class ScannerImpl(
             if (isBlockContext()) {
                 // It may also start with '-', '?', ':' if it is followed by a non-space character
                 // in the block context
-                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1)) && c.toChar() in "-?:"
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1))
+                    && c.toChar() in "-?:"
             } else {
                 // It may also start with '-', '?' if it is followed by a non-space character
                 // except ',' or ']' in the flow context
-                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]") && c.toChar() in "-?"
+                CharConstants.NULL_BL_T_LINEBR.hasNo(reader.peek(1), ",]")
+                    && c.toChar() in "-?"
             }
         }
     }
@@ -955,7 +969,6 @@ class ScannerImpl(
     //region Scanners - create tokens
 
     /**
-     * ```text
      * We ignore spaces, line breaks and comments.
      * If we find a line break in the block context, we set the flag
      * `allow_simple_key` on.
@@ -963,8 +976,10 @@ class ScannerImpl(
      * stream. We do not yet support BOM inside the stream as the
      * specification requires. Any such mark will be considered as a part
      * of the document.
-     * TODO: We need to make tab handling rules more sane. A good rule is
-     *       Tabs cannot precede tokens
+     *
+     * TODO: We need to make tab handling rules more sane. A good rule is Tabs cannot precede tokens
+     *
+     * ```text
      * BLOCK-SEQUENCE-START, BLOCK-MAPPING-START, BLOCK-END,
      * KEY(block), VALUE(block), BLOCK-ENTRY
      * So the checking code is
@@ -988,15 +1003,11 @@ class ScannerImpl(
             val startMark = reader.getMark()
             val columnBeforeComment = reader.column
             var commentSeen = false
-            var ff = 0
+
             // Peek ahead until we find the first non-space character, then
             // move forward directly to that character.
-            while (reader.peek(ff) == ' '.code) {
-                ff++
-            }
-            if (ff > 0) {
-                reader.forward(ff)
-            }
+            reader.forwardWhile { c -> c in " " }
+
             // If the character we have skipped forward to is a comment (#),
             // then peek ahead until we find the next end of line. YAML
             // comments are from a # to the next new-line. We then forward
@@ -1004,8 +1015,9 @@ class ScannerImpl(
             if (reader.peek() == '#'.code) {
                 commentSeen = true
                 val type: CommentType
-                if (columnBeforeComment != 0
-                    && !(lastToken != null && lastToken?.tokenId == Token.ID.BlockEntry)
+                if (
+                    columnBeforeComment != 0
+                    && lastToken?.tokenId != Token.ID.BlockEntry
                 ) {
                     type = CommentType.IN_LINE
                     inlineStartColumn = reader.column
@@ -1028,8 +1040,10 @@ class ScannerImpl(
                     if (columnBeforeComment == 0) {
                         addToken(
                             CommentToken(
-                                CommentType.BLANK_LINE, breaksOpt, startMark,
-                                reader.getMark(),
+                                commentType = CommentType.BLANK_LINE,
+                                value = breaksOpt,
+                                startMark = startMark,
+                                endMark = reader.getMark(),
                             ),
                         )
                     }
@@ -1072,13 +1086,7 @@ class ScannerImpl(
             endMark = reader.getMark()
         } else {
             endMark = reader.getMark()
-            var ff = 0
-            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(ff))) {
-                ff++
-            }
-            if (ff > 0) {
-                reader.forward(ff)
-            }
+            reader.forwardWhile { c -> CharConstants.NULL_OR_LINEBR.hasNo(c.code) }
             value = null
         }
         val commentToken = scanDirectiveIgnoredLine(startMark)
@@ -1091,21 +1099,19 @@ class ScannerImpl(
      */
     private fun scanDirectiveName(startMark: Mark?): String {
         // See the specification for details.
-        var length = 0
         // A Directive-name is a sequence of alphanumeric characters
         // (a-z,A-Z,0-9). We scan until we find something that isn't.
         // This disagrees with the specification.
+        val length = reader.peekCount { c -> CharConstants.ALPHA.has(c.code) }
         var c = reader.peek(length)
-        while (CharConstants.ALPHA.has(c)) {
-            length++
-            c = reader.peek(length)
-        }
         // If the peeked name is empty, an error occurs.
         if (length == 0) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
-                DIRECTIVE_PREFIX, startMark,
-                "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)", reader.getMark(),
+                problem = DIRECTIVE_PREFIX,
+                problemMark = startMark,
+                context = "$EXPECTED_ALPHA_ERROR_PREFIX$s($c)",
+                contextMark = reader.getMark(),
             )
         }
         val value = reader.prefixForward(length)
@@ -1121,10 +1127,7 @@ class ScannerImpl(
     }
 
     private fun scanYamlDirectiveValue(startMark: Mark?): DirectiveToken.YamlDirective {
-        // See the specification for details.
-        while (reader.peek() == ' '.code) {
-            reader.forward()
-        }
+        reader.forwardWhile { c -> c == ' ' }
         val major = scanYamlDirectiveNumber(startMark)
         var c = reader.peek()
         if (c != '.'.code) {
@@ -1167,10 +1170,7 @@ class ScannerImpl(
                 contextMark = reader.getMark(),
             )
         }
-        var length = 0
-        while (reader.peek(length).toChar().isDigit()) {
-            length++
-        }
+        val length = reader.peekCount { c -> c.isDigit() }
         val number = reader.prefixForward(length)
         if (length > 3) {
             throw ScannerException(
@@ -1190,14 +1190,9 @@ class ScannerImpl(
      * ```
      */
     private fun scanTagDirectiveValue(startMark: Mark?): DirectiveToken.TagDirective {
-        // See the specification for details.
-        while (reader.peek() == ' '.code) {
-            reader.forward()
-        }
+        reader.forwardWhile { c -> c == ' ' }
         val handle = scanTagDirectiveHandle(startMark)
-        while (reader.peek() == ' '.code) {
-            reader.forward()
-        }
+        reader.forwardWhile { c -> c == ' ' }
         val prefix = scanTagDirectivePrefix(startMark)
         return DirectiveToken.TagDirective(handle, prefix)
     }
@@ -1209,7 +1204,6 @@ class ScannerImpl(
      * @return the directive value
      */
     private fun scanTagDirectiveHandle(startMark: Mark?): String {
-        // See the specification for details.
         val value = scanTagHandle("directive", startMark)
         val c = reader.peek()
         if (c != ' '.code) {
@@ -1228,7 +1222,6 @@ class ScannerImpl(
      * Scan a `%TAG` directive's prefix. This is YAML's `ns-tag-prefix`.
      */
     private fun scanTagDirectivePrefix(startMark: Mark?): String {
-        // See the specification for details.
         val value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
         val c = reader.peek()
         if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
@@ -1244,17 +1237,14 @@ class ScannerImpl(
     }
 
     private fun scanDirectiveIgnoredLine(startMark: Mark?): CommentToken? {
-        // See the specification for details.
-        while (reader.peek() == ' '.code) {
-            reader.forward()
-        }
-        var commentToken: CommentToken? = null
-        if (reader.peek() == '#'.code) {
-            val comment = scanComment(CommentType.IN_LINE)
-            if (settings.parseComments) {
-                commentToken = comment
+        reader.forwardWhile { c -> c == ' ' }
+        val commentToken: CommentToken? =
+            if (reader.peek() == '#'.code) {
+                val comment = scanComment(CommentType.IN_LINE)
+                if (settings.parseComments) comment else null
+            } else {
+                null
             }
-        }
         val c = reader.peek()
         if (scanLineBreak() == null && c != 0) {
             val s = Character.toChars(c).concatToString()
@@ -1269,25 +1259,21 @@ class ScannerImpl(
     }
 
     /**
-     * ```text
      * The YAML 1.2 specification does not restrict characters for anchors and
-     * aliases. This may lead to problems.
-     * see [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
-     * This implementation tries to follow [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
-     * ```
+     * aliases. This may lead to problems, see
+     * [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
+     *
+     * This implementation tries to follow
+     * [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
      */
     private fun scanAnchor(isAnchor: Boolean): Token {
         val startMark = reader.getMark()
         val indicator = reader.peek()
         val name = if (indicator == '*'.code) "alias" else "anchor"
         reader.forward()
-        var length = 0
-        var c = reader.peek(length)
         // Anchor may not contain ",[]{}"
-        while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
-            length++
-            c = reader.peek(length)
-        }
+        val length = reader.peekCount { c -> CharConstants.NULL_BL_T_LINEBR.hasNo(c.code, ",[]{}/.*&") }
+        var c = reader.peek(length)
         if (length == 0) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
@@ -1414,8 +1400,7 @@ class ScannerImpl(
      * @param style - either literal or folded style
      */
     private fun scanBlockScalar(style: ScalarStyle): List<Token> {
-        // See the specification for details.
-        val stringBuilder = StringBuilder()
+        val scalarContent = StringBuilder()
         val startMark = reader.getMark()
         // Scan the header.
         reader.forward()
@@ -1446,7 +1431,6 @@ class ScannerImpl(
                 endMark = brme.endMark
             }
         }
-        var lineBreak: String? = null
         // Scan the inner part of the block scalar.
         if (reader.column < blockIndent && indent != reader.column) {
             // it means that there is indent, but less than expected
@@ -1458,14 +1442,12 @@ class ScannerImpl(
                 contextMark = reader.getMark(),
             )
         }
+        var lineBreak: String? = null
         while (reader.column == blockIndent && reader.peek() != 0) {
-            stringBuilder.append(breaks)
+            scalarContent.append(breaks)
             val leadingNonSpace = reader.peek().toChar() !in " \t"
-            var length = 0
-            while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
-                length++
-            }
-            stringBuilder.append(reader.prefixForward(length))
+            val length = reader.peekCount { c -> CharConstants.NULL_OR_LINEBR.hasNo(c.code) }
+            scalarContent.append(reader.prefixForward(length))
             lineBreak = scanLineBreak()
             val brme = scanBlockScalarBreaks(blockIndent)
             breaks = brme.breaks
@@ -1481,10 +1463,10 @@ class ScannerImpl(
                     && reader.peek().toChar() !in " \t"
                 ) {
                     if (breaks.isEmpty()) {
-                        stringBuilder.append(" ")
+                        scalarContent.append(" ")
                     }
                 } else {
-                    stringBuilder.append(lineBreak ?: "")
+                    scalarContent.append(lineBreak ?: "")
                 }
             } else {
                 break
@@ -1493,14 +1475,14 @@ class ScannerImpl(
         // Chomp the tail.
         if (chomping.addExistingFinalLineBreak) {
             // add the final line break (if exists !) TODO find out if to add anyway
-            stringBuilder.append(lineBreak ?: "")
+            scalarContent.append(lineBreak ?: "")
         }
         if (chomping.retainTrailingEmptyLines) {
             // any trailing empty lines are considered to be part of the scalar’s content
-            stringBuilder.append(breaks)
+            scalarContent.append(breaks)
         }
         // We are done.
-        val scalarToken = ScalarToken(stringBuilder.toString(), false, startMark, endMark, style)
+        val scalarToken = ScalarToken(scalarContent.toString(), false, startMark, endMark, style)
         return makeTokenList(commentToken, scalarToken)
     }
 
@@ -1516,7 +1498,6 @@ class ScannerImpl(
      * (clip) to either -(strip) or +(keep).
      */
     private fun scanBlockScalarIndicators(startMark: Mark?): Chomping {
-        // See the specification for details.
         val indicator: Int?
         val increment: Int?
         var c = reader.peek()
@@ -1581,12 +1562,8 @@ class ScannerImpl(
      * permitted at this time are comments and spaces.
      */
     private fun scanBlockScalarIgnoredLine(startMark: Mark?): CommentToken? {
-        // See the specification for details.
-
         // Forward past any number of trailing spaces
-        while (reader.peek() == ' '.code) {
-            reader.forward()
-        }
+        reader.forwardWhile { c -> c == ' ' }
 
         // If a comment occurs, scan to just before the end of line.
         val commentToken: CommentToken? =
@@ -1699,7 +1676,13 @@ class ScannerImpl(
         }
         reader.forward()
         val endMark = reader.getMark()
-        return ScalarToken(chunks, false, startMark, endMark, style)
+        return ScalarToken(
+            value = chunks,
+            plain = false,
+            startMark = startMark,
+            endMark = endMark,
+            style = style,
+        )
     }
 
     /**
@@ -1781,14 +1764,10 @@ class ScannerImpl(
     }
 
     private fun scanFlowScalarSpaces(startMark: Mark?): String {
-        // See the specification for details.
-        var length = 0
         // Scan through any number of whitespace (space, tab) characters, consuming them.
-        while (reader.peek(length).toChar() in " \t") {
-            length++
-        }
+        val length = reader.peekCount { c -> c in " \t" }
         val whitespaces = reader.prefixForward(length)
-        if (reader.peek() == 0) {
+        if (reader.isEmpty()) {
             // A flow scalar cannot end with an end-of-stream
             throw ScannerException(
                 problem = "found unexpected end of stream",
@@ -1815,15 +1794,10 @@ class ScannerImpl(
     }
 
     private fun scanFlowScalarBreaks(startMark: Mark?): String {
-        // See the specification for details.
         val chunks = StringBuilder()
         while (true) {
             // Instead of checking indentation, we check for document separators.
-            val prefix = reader.prefix(3)
-            if (
-                ("---" == prefix || "..." == prefix)
-                && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))
-            ) {
+            if (checkDocumentSeparator()) {
                 throw ScannerException(
                     problem = "while scanning a quoted scalar",
                     problemMark = startMark,
@@ -1832,9 +1806,7 @@ class ScannerImpl(
                 )
             }
             // Scan past any number of spaces and tabs, ignoring them
-            while (reader.peek().toChar() in " \t") {
-                reader.forward()
-            }
+            reader.forwardWhile { c -> c in " \t" }
             // If we stopped at a line break, add that;
             // otherwise, end the loop
             val lineBreakOpt = scanLineBreak() ?: break
@@ -1867,13 +1839,11 @@ class ScannerImpl(
             }
             while (true) {
                 c = reader.peek(length)
+                val cNext = reader.peek(length + 1)
                 if (
-                    CharConstants.NULL_BL_T_LINEBR.has(c)
-                    || c == ':'.code
-                    && CharConstants.NULL_BL_T_LINEBR.has(
-                        reader.peek(length + 1),
-                        if (isFlowContext()) ",[]{}" else "",
-                    )
+                    CharConstants.NULL_BL_T_LINEBR.has(c) || c == ':'.code
+                    &&
+                    CharConstants.NULL_BL_T_LINEBR.has(cNext, if (isFlowContext()) ",[]{}" else "")
                     || isFlowContext() && c.toChar() in ",[]{}"
                 ) {
                     break
@@ -1896,7 +1866,12 @@ class ScannerImpl(
                 break
             }
         }
-        return ScalarToken(chunks.toString(), true, startMark, endMark)
+        return ScalarToken(
+            value = chunks.toString(),
+            plain = true,
+            startMark = startMark,
+            endMark = endMark,
+        )
     }
 
     /**
@@ -1959,48 +1934,36 @@ class ScannerImpl(
     }
 
     /**
-     * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar
+     * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar.
      */
     private fun scanPlainSpaces(): String {
-        var length = 0
-        while (reader.peek(length) == ' '.code || reader.peek(length) == '\t'.code) {
-            length++
-        }
+        val length = reader.peekCount { c -> c in " \t" }
         val whitespaces = reader.prefixForward(length)
         val lineBreak = scanLineBreak() ?: return whitespaces
 
         allowSimpleKey = true
-        var prefix = reader.prefix(3)
-        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(reader.peek(3))) {
+        if (checkDocumentSeparator() || settings.parseComments && atEndOfPlain()) {
             return ""
-        } else if (settings.parseComments && atEndOfPlain()) {
-            return ""
-        } else {
-            val breaks = StringBuilder()
-            while (true) {
-                if (reader.peek() == ' '.code) {
-                    reader.forward()
-                } else {
-                    val lbOpt = scanLineBreak()
-                    if (lbOpt != null) {
-                        breaks.append(lbOpt)
-                        prefix = reader.prefix(3)
-                        if ("---" == prefix || "..." == prefix && CharConstants.NULL_BL_T_LINEBR.has(
-                                reader.peek(3)
-                            )
-                        ) {
-                            return ""
-                        }
-                    } else {
-                        break
-                    }
+        }
+
+        val breaks = StringBuilder()
+
+        while (true) {
+            reader.forwardWhile { c -> c in " \t" }
+            val lbOpt = scanLineBreak()
+            if (lbOpt != null) {
+                breaks.append(lbOpt)
+                if (checkDocumentSeparator()) {
+                    return ""
                 }
+            } else {
+                break
             }
-            return when {
-                "\n" != lineBreak -> lineBreak + breaks
-                breaks.isEmpty()  -> " "
-                else              -> breaks.toString()
-            }
+        }
+        return when {
+            lineBreak != "\n" -> lineBreak + breaks
+            breaks.isEmpty()  -> " "
+            else              -> breaks.toString()
         }
     }
 
@@ -2053,8 +2016,10 @@ class ScannerImpl(
                 reader.forward(length)
                 val s = Character.toChars(c).concatToString()
                 throw ScannerException(
-                    SCANNING_PREFIX + name, startMark,
-                    "expected '!', but found $s($c)", reader.getMark(),
+                    problem = SCANNING_PREFIX + name,
+                    problemMark = startMark,
+                    context = "expected '!', but found $s($c)",
+                    contextMark = reader.getMark(),
                 )
             }
             length++
@@ -2152,7 +2117,7 @@ class ScannerImpl(
             throw ScannerException(
                 problem = SCANNING_PREFIX + name,
                 problemMark = startMark,
-                context = "expected URI in UTF-8: " + e.message,
+                context = "expected URI in UTF-8: ${e.message}",
                 contextMark = beginningMark,
             )
         }
@@ -2168,19 +2133,21 @@ class ScannerImpl(
      * '\x85'   : '\n'
      * default : ''
      * ```
-     * @returns transformed character, or `null`` if no line break detected
+     * @returns transformed character, or `null` if no line break detected
      */
     private fun scanLineBreak(): String? {
-        val c = reader.peek()
-        if (c == '\r'.code || c == '\n'.code || c == '\u0085'.code) {
-            if (c == '\r'.code && '\n'.code == reader.peek(1)) {
+        val c = reader.peek().toChar()
+
+        if (c == '\r' || c == '\n' || c == '\u0085') {
+            if (c == '\r' && reader.peek(1).toChar() == '\n') {
                 reader.forward(2)
             } else {
-                reader.forward()
+                reader.forward(1)
             }
             return "\n"
+        } else {
+            return null
         }
-        return null
     }
 
     /**
@@ -2204,10 +2171,8 @@ class ScannerImpl(
     //endregion
 
     companion object {
-
         private const val DIRECTIVE_PREFIX = "while scanning a directive"
-        private const val EXPECTED_ALPHA_ERROR_PREFIX =
-            "expected alphabetic or numeric character, but found "
+        private const val EXPECTED_ALPHA_ERROR_PREFIX = "expected alphabetic or numeric character, but found "
         private const val SCANNING_SCALAR = "while scanning a block scalar"
         private const val SCANNING_PREFIX = "while scanning a "
 

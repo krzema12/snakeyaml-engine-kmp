@@ -20,7 +20,7 @@ internal object SuiteUtils {
     }
 
     /**
-     * IDs of cases that should **fail** according to YAML Test Suite, but they actually succeed.
+     * IDs of cases that should **fail** according to YAML Test Suite, but they actually succeed :(
      *
      * Such deviations are probably because of an enigmatic bug in SnakeYAML-KMP that hasn't been
      * identified and fixed. This is common for YAML libraries, because YAML is far too complicated!
@@ -28,13 +28,13 @@ internal object SuiteUtils {
      * As a workaround, the expected outcome of these cases is manually overridden by adding them to
      * this list.
      *
-     * If by some chance you've made a change that means that these cases now pass then well done!
-     * You can now remove that ID from this list.
+     * If by some chance you've made a change and a case now passes: well done!
+     * Remove the case ID from this list.
      *
      * @see deviationsWithError
      */
     val deviationsWithSuccess: Set<YamlTestData.Id> = setOf(
-        //region copied from SnakeYAML
+        //region originally copied from SnakeYAML
         // https://github.com/snakeyaml/snakeyaml-engine/blob/5a35e1fe7f780d1405d5a03470f9f13d32b1638a/src/test/java/org/snakeyaml/engine/usecases/external_test_suite/SuiteUtils.java#L33-L34
         "9C9N",
         "9JBA",
@@ -53,12 +53,12 @@ internal object SuiteUtils {
     ).mapToYamlTestDataId()
 
     /**
-     * IDs of cases that should **pass** according to YAML Test Suite, but they actually succeed.
+     * IDs of cases that should **pass** according to YAML Test Suite, but they actually fail :(
      *
      * @see deviationsWithSuccess for further explanation.
      */
     val deviationsWithError: Set<YamlTestData.Id> = setOf(
-        //region copied from SnakeYAML
+        //region originally copied from SnakeYAML
         // https://github.com/snakeyaml/snakeyaml-engine/blob/5a35e1fe7f780d1405d5a03470f9f13d32b1638a/src/test/java/org/snakeyaml/engine/usecases/external_test_suite/SuiteUtils.java#L35-L40
         "2JQS",
         "3RLN-01",
@@ -85,7 +85,6 @@ internal object SuiteUtils {
         "FP8R",
         "FRK4",
         "HM87-00",
-        "HS5T",
         "HWV9",
         "J3BT",
         "K3WX",
@@ -95,7 +94,6 @@ internal object SuiteUtils {
         "M2N8-00",
         "M7A3",
         "MUS6-03",
-        "NB6Z",
         "NHX8",
         "NJ66",
         "NKF9",
@@ -105,7 +103,6 @@ internal object SuiteUtils {
         "SM9W-01",
         "UKK6-00",
         "UT92",
-        "UV7Q",
         "VJP3-01",
         "W4TN",
         "W5VH",
@@ -120,8 +117,6 @@ internal object SuiteUtils {
         "6CA3",        // https://matrix.yaml.info/details/6CA3.html
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
         "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
-        "DK95:04",     // https://matrix.yaml.info/details/DK95:04.html
-        "DK95:05",     // https://matrix.yaml.info/details/DK95:05.html
         "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
         //endregion
     ).mapToYamlTestDataId()

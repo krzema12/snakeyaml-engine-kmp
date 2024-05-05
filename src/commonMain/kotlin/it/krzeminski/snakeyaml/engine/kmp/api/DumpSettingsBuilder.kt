@@ -183,7 +183,7 @@ class DumpSettingsBuilder internal constructor() {
     /**
      * Define the amount of the spaces for the indent in the block flow style. Default is 2.
      *
-     * @param indent - the number of spaces. Must be in [Emitter.VALID_INDENT_RANGE].
+     * @param indent - must in [Emitter.VALID_INDENT_RANGE]
      * @return the builder with the provided value
      */
     fun setIndent(indent: Int): DumpSettingsBuilder {

@@ -34,7 +34,7 @@ public class TabInFlowContextTest {
       fail("TAB cannot start a token. Found: " + obj);
     } catch (Exception e) {
       assertEquals("while scanning for the next token\n"
-          + "found character '\\t(TAB)' that cannot start any token. (Do not use \\t(TAB) for indentation)\n"
+          + "found character '\\t' (TAB) that cannot start any token. (Do not use \\t for indentation)\n"
           + " in reader, line 2, column 1:\n" + "    \t\"x\": \"y\"\n" + "    ^\n", e.getMessage());
     }
   }
@@ -48,7 +48,7 @@ public class TabInFlowContextTest {
       fail("TAB cannot start a token. Found: " + obj);
     } catch (Exception e) {
       assertEquals("while scanning for the next token\n"
-          + "found character '\\t(TAB)' that cannot start any token. (Do not use \\t(TAB) for indentation)\n"
+          + "found character '\\t' (TAB) that cannot start any token. (Do not use \\t for indentation)\n"
           + " in reader, line 1, column 1:\n" + "    \t  data: 1\n" + "    ^\n", e.getMessage());
     }
   }

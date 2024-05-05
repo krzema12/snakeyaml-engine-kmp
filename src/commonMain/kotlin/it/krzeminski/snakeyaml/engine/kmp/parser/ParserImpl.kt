@@ -394,7 +394,7 @@ class ParserImpl(
         override fun produce(): Event {
             if (scanner.checkToken(Token.ID.Comment)) {
                 state = ParseDocumentStart()
-                return produceCommentEvent((scanner.next() as CommentToken))
+                return produceCommentEvent(scanner.next() as CommentToken)
             }
             // Parse any extra document end indicators.
             while (scanner.checkToken(Token.ID.DocumentEnd)) {
@@ -402,7 +402,7 @@ class ParserImpl(
             }
             if (scanner.checkToken(Token.ID.Comment)) {
                 state = ParseDocumentStart()
-                return produceCommentEvent((scanner.next() as CommentToken))
+                return produceCommentEvent(scanner.next() as CommentToken)
             }
             // Parse an explicit document.
             if (!scanner.checkToken(Token.ID.StreamEnd)) {
@@ -657,7 +657,7 @@ class ParserImpl(
             if (scanner.checkToken(Token.ID.Value)) {
                 val token = scanner.next()
                 return if (scanner.checkToken(Token.ID.Comment)) {
-                    val p: Production = ParseBlockMappingValueComment()
+                    val p = ParseBlockMappingValueComment()
                     state = p
                     p.produce()
                 } else if (!scanner.checkToken(Token.ID.Key, Token.ID.Value, Token.ID.BlockEnd)) {

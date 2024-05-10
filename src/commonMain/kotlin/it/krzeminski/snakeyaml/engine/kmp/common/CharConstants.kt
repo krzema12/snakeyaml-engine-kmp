@@ -105,6 +105,9 @@ class CharConstants private constructor(content: String) {
             '_' to "\u00A0", // Unicode non-breaking-space
         )
 
+        private val escapedReplacements: Map<String, Char> =
+            ESCAPE_REPLACEMENTS.entries.associate { (k, v) -> v to k }
+
         /**
          * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
          * escape sequences are used to handle unicode escaping in the following formats, where `H` is a
@@ -130,16 +133,11 @@ class CharConstants private constructor(content: String) {
         @JvmStatic
         fun escapeChar(char: Char): String {
             val charString = char.toString()
-            for (s in ESCAPE_REPLACEMENTS.keys) {
-                val v = ESCAPE_REPLACEMENTS[s]
-                if (" " == v || "/" == v || "\"" == v) {
-                    continue
-                }
-                if (v == charString) {
-                    return "\\" + s // '<TAB>' -> '\t'
-                }
-            }
-            return charString
+
+            if (char in " /\"") return charString
+
+            val escaped = escapedReplacements[charString] ?: return charString
+            return "\\${escaped}"
         }
     }
 }

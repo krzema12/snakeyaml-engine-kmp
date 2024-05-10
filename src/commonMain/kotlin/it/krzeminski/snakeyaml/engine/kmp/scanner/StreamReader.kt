@@ -13,17 +13,17 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
-import okio.*
-import okio.ByteString.Companion.encodeUtf8
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import okio.*
+import okio.ByteString.Companion.encodeUtf8
 
 /**
  * Reads the provided [stream] of code points, and implements look-ahead operations.
@@ -127,11 +127,19 @@ class StreamReader(
     }
 
     /**
-     * Peek the next code point.
+     * Moves the pointer forward while [predicate] returns `true`.
      *
-     * @return the next code point or `0` if empty
+     * @param predicate The predicate function to apply to each character.
+     * @returns the number characters that matched the predicate.
      */
-    fun peek(): Int = if (ensureEnoughData()) codePointsWindow[pointer] else 0
+    fun forwardWhile(predicate: (c: Char) -> Boolean): Int {
+        val ff = peekCount(predicate)
+        forward(ff)
+        return ff
+    }
+
+    /** @returns `true` if there are no more characters, `false` otherwise. */
+    fun isEmpty(): Boolean = peek() == 0
 
     /**
      * Peek the next [index]-th code point.
@@ -142,6 +150,20 @@ class StreamReader(
      * @return the next [index]-th code point or `0` if empty
      */
     fun peek(index: Int): Int = if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
+
+    /**
+     * Counts the number of consecutive characters for which [predicate] returns `true`.
+     * The counting starts from the current position of the pointer and stops when the predicate returns `false`.
+     *
+     * @returns the number of consecutive characters that match [predicate]
+     */
+    fun peekCount(predicate: (c: Char) -> Boolean): Int {
+        var ff = 0
+        while (predicate(peek(ff).toChar())) {
+            ff++
+        }
+        return ff
+    }
 
     /**
      * Create [String] from code points.
@@ -191,14 +213,6 @@ class StreamReader(
             if (read > 0) {
                 var cpIndex = dataLength - pointer
                 codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                // Okio seems to make this check redundant, which is a good because I have no idea how to convert it sensibly!
-                //if (buffer.last().isHighSurrogate()) {
-                //    if (stream.read(buffer, read, 1) == -1) {
-                //        eof = true
-                //    } else {
-                //        read++
-                //    }
-                //}
                 var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {
@@ -273,13 +287,13 @@ class StreamReader(
         @JvmStatic
         fun isPrintable(c: Int): Boolean {
             return c in 0x20..0x7E
-                    || c == 0x9
-                    || c == 0xA
-                    || c == 0xD
-                    || c == 0x85
-                    || c in 0xA0..0xD7FF
-                    || c in 0xE000..0xFFFD
-                    || c in 0x10000..0x10FFFF
+                || c == 0x9
+                || c == 0xA
+                || c == 0xD
+                || c == 0x85
+                || c in 0xA0..0xD7FF
+                || c in 0xE000..0xFFFD
+                || c in 0x10000..0x10FFFF
         }
 
         /**

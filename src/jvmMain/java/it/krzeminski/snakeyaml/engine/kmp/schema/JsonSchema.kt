@@ -19,15 +19,11 @@ import it.krzeminski.snakeyaml.engine.kmp.constructor.json.*
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.resolver.ScalarResolver
 
-/**
- * Default schema for Kotlin/JVM
- */
-actual open class JsonSchema actual constructor(
-    final override val scalarResolver: ScalarResolver,
-) : Schema {
-
-    /** Basic constructs */
-    override val schemaTagConstructors: Map<Tag, ConstructNode> = mapOf(
+/** Basic constructs */
+internal actual fun schemaTagConstructors(
+    scalarResolver: ScalarResolver
+): Map<Tag, ConstructNode> =
+    mapOf(
         Tag.NULL to ConstructYamlNull(),
         Tag.BOOL to ConstructYamlJsonBool(),
         Tag.INT to ConstructYamlJsonInt(),
@@ -36,4 +32,3 @@ actual open class JsonSchema actual constructor(
         Tag.forType("java.util.UUID") to ConstructUuidClass(),
         Tag.forType("java.util.Optional") to ConstructOptionalClass(scalarResolver),
     )
-}

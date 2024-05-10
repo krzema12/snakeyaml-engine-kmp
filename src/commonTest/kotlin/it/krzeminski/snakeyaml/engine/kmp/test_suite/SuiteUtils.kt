@@ -85,7 +85,6 @@ internal object SuiteUtils {
         "FP8R",
         "FRK4",
         "HM87-00",
-        "HS5T",
         "HWV9",
         "J3BT",
         "K3WX",
@@ -95,7 +94,6 @@ internal object SuiteUtils {
         "M2N8-00",
         "M7A3",
         "MUS6-03",
-        "NB6Z",
         "NHX8",
         "NJ66",
         "NKF9",
@@ -105,7 +103,6 @@ internal object SuiteUtils {
         "SM9W-01",
         "UKK6-00",
         "UT92",
-        "UV7Q",
         "VJP3-01",
         "W4TN",
         "W5VH",
@@ -120,8 +117,6 @@ internal object SuiteUtils {
         "6CA3",        // https://matrix.yaml.info/details/6CA3.html
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
         "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
-        "DK95:04",     // https://matrix.yaml.info/details/DK95:04.html
-        "DK95:05",     // https://matrix.yaml.info/details/DK95:05.html
         "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
         //endregion
     ).mapToYamlTestDataId()

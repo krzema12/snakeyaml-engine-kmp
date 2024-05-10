@@ -13,8 +13,6 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.emitter
 
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter
 import it.krzeminski.snakeyaml.engine.kmp.comments.CommentEventsCollector
@@ -27,6 +25,8 @@ import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion
 import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.EmitterException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import kotlin.jvm.JvmField
@@ -392,7 +392,7 @@ class Emitter(
                     expectBlockMapping()
                 }
 
-            else                   -> throw IllegalStateException()
+            else                   -> error("Unexpected Event.ID $id")
         }
     }
 

@@ -52,8 +52,10 @@ class ComposeString(
      * @return parsed root Nodes for all the specified YAML documents
      */
     fun composeAllFromString(yaml: String): Iterable<Node> =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, yaml)),
-        ).asSequence().asIterable()
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, yaml)),
+            )
+        }
 }

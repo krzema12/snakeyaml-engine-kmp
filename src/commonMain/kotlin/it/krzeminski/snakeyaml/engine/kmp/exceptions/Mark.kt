@@ -22,12 +22,12 @@ import kotlin.jvm.JvmOverloads
  * Location of a problem in the YAML document. Its only use is producing nice error messages. Parser
  * does not use it for any other purposes.
  *
- * @param name - the name of the data stream, to be used as identifier
- * @param index - the index from the beginning of the stream
- * @param line - line of the mark from beginning of the stream
- * @param column - column of the mark from beginning of the line
- * @param buffer - the data
- * @param pointer - the position of the mark from the beginning of the data
+ * @param name the name of the data stream, to be used as identifier
+ * @param index the index from the beginning of the stream
+ * @param line line of the mark from beginning of the stream
+ * @param column column of the mark from beginning of the line
+ * @param buffer the data
+ * @param pointer the position of the mark from the beginning of the data
  */
 class Mark(
     val name: String,
@@ -41,12 +41,12 @@ class Mark(
     /**
      * This constructor is only for test
      *
-     * @param name - the name to be used as identifier
-     * @param index - the index from the beginning of the stream
-     * @param line - line of the mark from beginning of the stream
-     * @param column - column of the mark from beginning of the line
-     * @param str - the data
-     * @param pointer - the position of the mark from the beginning of the data
+     * @param name the name to be used as identifier
+     * @param index the index from the beginning of the stream
+     * @param line line of the mark from beginning of the stream
+     * @param column column of the mark from beginning of the line
+     * @param str the data
+     * @param pointer the position of the mark from the beginning of the data
      */
     internal constructor(
         name: String,
@@ -69,8 +69,8 @@ class Mark(
     /**
      * Create readable YAML with indent 4 and (by default) a [maxLength] of 75 characters.
      *
-     * @param indent - the indent
-     * @param maxLength - cut data after this length
+     * @param indent the indent
+     * @param maxLength cut data after this length
      * @return readable piece of YAML where a problem detected
      */
     @JvmOverloads

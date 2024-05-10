@@ -21,8 +21,8 @@ import java.nio.charset.Charset
 /**
  * Provide an example of implementation of [StreamDataWriter] interface which does not throw [IOException]
  *
- * @param out - the output
- * @param cs - encoding to use to translate String to bytes
+ * @param out the output
+ * @param cs encoding to use to translate String to bytes
  */
 abstract class YamlOutputStreamWriter(
     out: OutputStream,

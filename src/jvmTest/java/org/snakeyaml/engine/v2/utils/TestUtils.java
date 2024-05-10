@@ -49,5 +49,4 @@ public abstract class TestUtils {
       assertEquals(ev1, ev2);
     }
   }
-
 }

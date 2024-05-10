@@ -323,7 +323,7 @@ class ParserImpl(
                 else                                                          -> {
                     val token = scanner.peekToken()
                     throw ParserException(
-                        problem = "expected the node content, but found '" + token.tokenId + "'",
+                        problem = "expected the node content, but found '${token.tokenId}'",
                         contextMark = startMark,
                         context = "while parsing a " + (if (block) "block" else "flow") + " node",
                         problemMark = token.startMark,
@@ -382,7 +382,13 @@ class ParserImpl(
                 // Prepare the next state.
                 states.addLast(ParseDocumentEnd())
                 state = ParseBlockNode()
-                DocumentStartEvent(false, null, emptyMap(), startMark, startMark)
+                DocumentStartEvent(
+                    explicit = false,
+                    specVersion = null,
+                    tags = emptyMap(),
+                    startMark = startMark,
+                    endMark = startMark,
+                )
             } else {
                 // explicit document detected
                 ParseDocumentStart().produce()

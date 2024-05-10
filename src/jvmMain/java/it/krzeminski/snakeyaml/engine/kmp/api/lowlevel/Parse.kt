@@ -13,14 +13,14 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
-import java.io.InputStream
-import java.io.Reader
-import okio.source
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import java.io.InputStream
+import java.io.Reader
+import okio.source
 
 /**
  * Read the input stream and parse the content into events (opposite for Present or Emit)
@@ -41,8 +41,9 @@ actual class Parse actual constructor(
      * @return parsed events
      */
     fun parseInputStream(yaml: InputStream): Iterable<Event> =
-        ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
-            .asSequence().asIterable()
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
+        }
 
     /**
      * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM
@@ -54,8 +55,9 @@ actual class Parse actual constructor(
      * @return parsed events
      */
     fun parseReader(yaml: Reader): Iterable<Event> =
-        ParserImpl(settings, StreamReader(settings, yaml.readText()))
-            .asSequence().asIterable()
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, yaml.readText()))
+        }
 
     /**
      * Parse a YAML stream and produce parsing events.

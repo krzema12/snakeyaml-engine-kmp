@@ -21,19 +21,15 @@ import java.nio.charset.Charset
 /**
  * Provide an example of implementation of [StreamDataWriter] interface which does not throw [IOException]
  *
- * @param out - the output
- * @param cs - encoding to use to translate String to bytes
+ * @param out the output
+ * @param charset encoding to use to translate String to bytes
  */
-abstract class YamlOutputStreamWriter(
+open class YamlOutputStreamWriter @JvmOverloads constructor(
     out: OutputStream,
-    cs: Charset,
-) : OutputStreamWriter(out, cs), StreamDataWriter {
-    /**
-     * to be implemented
-     *
-     * @param e - the reason
-     */
-    abstract fun processIOException(e: IOException?)
+    charset: Charset = Charset.defaultCharset(),
+) : OutputStreamWriter(out, charset), StreamDataWriter {
+
+    open fun processIOException(e: IOException): Unit = throw e
 
     override fun flush() {
         try {

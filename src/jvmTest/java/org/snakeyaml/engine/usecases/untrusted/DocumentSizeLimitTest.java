@@ -79,9 +79,9 @@ public class DocumentSizeLimitTest {
 
   @Test
   public void testLoadDocuments() {
-    String doc1 = "document: this is document one\n";
-    String doc2 = "---\ndocument: this is document 2\n";
-    String docLongest = "---\ndocument: this is document three\n";
+    String doc1         = "document: this is document one\n";
+    String doc2         = "---\ndocument: this is document 2\n";
+    String docLongest   = "---\ndocument: this is document three\n";
     String input = doc1 + doc2 + docLongest;
 
     assertTrue(dumpAllDocs(input, input.length()),

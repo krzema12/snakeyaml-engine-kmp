@@ -13,10 +13,10 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.constructor
 
-import it.krzeminski.snakeyaml.engine.kmp.internal.getEnvironmentVariable
 import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.*
+import it.krzeminski.snakeyaml.engine.kmp.internal.getEnvironmentVariable
 import it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode
@@ -27,19 +27,21 @@ import it.krzeminski.snakeyaml.engine.kmp.resolver.BaseScalarResolver
  * Construct standard Java classes
  */
 open class StandardConstructor(settings: LoadSettings) : BaseConstructor(settings) {
-    init {
-        tagConstructors[Tag.SET] = ConstructYamlSet()
-        tagConstructors[Tag.STR] = ConstructYamlStr()
-        tagConstructors[Tag.SEQ] = ConstructYamlSeq()
-        tagConstructors[Tag.MAP] = ConstructYamlMap()
-        tagConstructors[Tag.ENV_TAG] = ConstructEnv()
 
-        // apply the tag constructors from the provided schema
-        tagConstructors.putAll(settings.schema.schemaTagConstructors)
+    override fun createTagConstructors(): Map<Tag, ConstructNode> =
+        buildMap {
+            put(Tag.SET, ConstructYamlSet())
+            put(Tag.STR, ConstructYamlStr())
+            put(Tag.SEQ, ConstructYamlSeq())
+            put(Tag.MAP, ConstructYamlMap())
+            put(Tag.ENV_TAG, ConstructEnv())
 
-        // the explicit config overrides all
-        tagConstructors.putAll(settings.tagConstructors)
-    }
+            // apply the tag constructors from the provided schema
+            putAll(settings.schema.schemaTagConstructors)
+
+            // the explicit config overrides all
+            putAll(settings.tagConstructors)
+        }
 
     override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
         // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
@@ -62,8 +64,8 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
     private fun validateDuplicateKeys(node: MappingNode) {
         if (settings.allowDuplicateKeys) return
 
-        val groupedByKey = node.value.groupingBy { tuple ->
-            constructKey(tuple.keyNode, node.startMark, tuple.keyNode.startMark)
+        val groupedByKey = node.value.groupingBy { (keyNode, _) ->
+            constructKey(keyNode, node.startMark, keyNode.startMark)
         }
 
         groupedByKey.reduce { key, _, tuple ->

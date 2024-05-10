@@ -13,13 +13,14 @@
  */
 package org.snakeyaml.engine.issues.issue11;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @org.junit.jupiter.api.Tag("fast")
 public class TabInFlowContextTest {
@@ -28,28 +29,16 @@ public class TabInFlowContextTest {
   @DisplayName("Do not fail to parse if TAB is used (issue 11)")
   void parseTabInFlowContext() {
     LoadSettings settings = LoadSettings.builder().build();
-    try {
-      String input = "{\n\t\"x\": \"y\"\n}";
-      Object obj = new Load(settings).loadFromString(input);
-      fail("TAB cannot start a token. Found: " + obj);
-    } catch (Exception e) {
-      assertEquals("while scanning for the next token\n"
-          + "found character '\\t' (TAB) that cannot start any token. (Do not use \\t for indentation)\n"
-          + " in reader, line 2, column 1:\n" + "    \t\"x\": \"y\"\n" + "    ^\n", e.getMessage());
-    }
+    String input = "{\n\t\"x\": \"y\"\n}";
+    Object obj = new Load(settings).loadFromString(input);
+    assertEquals(Map.of("x", "y"), obj);
   }
 
   @Test
-  @DisplayName("TAB cannot start a token.")
+  @DisplayName("TAB can start a token.")
   public void testWrongTab() {
     LoadSettings settings = LoadSettings.builder().build();
-    try {
-      Object obj = new Load(settings).loadFromString("\t  data: 1");
-      fail("TAB cannot start a token. Found: " + obj);
-    } catch (Exception e) {
-      assertEquals("while scanning for the next token\n"
-          + "found character '\\t' (TAB) that cannot start any token. (Do not use \\t for indentation)\n"
-          + " in reader, line 1, column 1:\n" + "    \t  data: 1\n" + "    ^\n", e.getMessage());
-    }
+    Object obj = new Load(settings).loadFromString("\t  data: 1");
+    assertEquals(Map.of("data", 1), obj);
   }
 }

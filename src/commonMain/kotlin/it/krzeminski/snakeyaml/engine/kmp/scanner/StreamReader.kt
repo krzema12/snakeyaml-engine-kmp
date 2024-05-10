@@ -20,10 +20,10 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
 import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
-import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 import okio.*
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * Read the provided stream of code points into String and implement look-ahead operations. Checks
@@ -32,70 +32,74 @@ import okio.ByteString.Companion.encodeUtf8
  * @param loadSettings - configuration options
  * @param stream - the input
  */
+@OptIn(ExperimentalStdlibApi::class)
 class StreamReader(
     loadSettings: LoadSettings,
-    stream: Source,
-) {
-    private val stream: BufferedSource = if (stream is BufferedSource) stream else stream.buffer()
-
-    private val name: String = loadSettings.label
-
-    private val useMarks: Boolean = loadSettings.useMarks
-
-    /** Read data (as a moving window for input stream) */
-    private var codePointsWindow: IntArray = IntArray(0)
-
-    /** Real length of the data in dataWindow */
-    private var dataLength = 0
-
-    /** The variable points to the current position in the data array */
-    private var pointer = 0
-
-    private var eof = false
+    private val stream: BufferedSource,
+) : AutoCloseable {
 
     /**
-     * index is only required to implement 1024 key length restriction and the total length restriction
-     * @return current position as number (in characters) from the beginning of the stream
-     */
-    var index = 0 // in code points
-        private set
-
-    /**
-     * Get the position of the current char in the current YAML document
+     * Read the provided [stream] of code points into a [String] and implement look-ahead operations.
+     * Checks if code points are in the allowed range.
      *
-     * @return index of the current position from the beginning of the current document
+     * @param loadSettings configuration options
+     * @param stream the input
      */
-    var documentIndex = 0 // current document index in code points (only for limiting)
-        private set
-
-    /**
-     * @return current line from the beginning of the stream
-     */
-    var line = 0
-        private set
-
-    /**
-     * @return current position as number (in characters) from the beginning of the current line
-     */
-    var column = 0 // in code points
-        private set
-
-    /**
-     * Create
-     *
-     * @param loadSettings - configuration options
-     * @param stream - the input
-     */
-    constructor(loadSettings: LoadSettings, stream: String) : this(
+    constructor(
+        loadSettings: LoadSettings,
+        stream: String,
+    ) : this(
         loadSettings = loadSettings,
         stream = Buffer().write(stream.encodeUtf8()),
     )
 
     /**
-     * Generate [Mark] if it is configured
+     * Read the provided [stream] of code points into a [String] and implement look-ahead operations.
+     * Checks if code points are in the allowed range.
      *
-     * @return [Mark] of the current position, or `null`
+     * @param loadSettings configuration options
+     * @param stream the input
      */
+    constructor(
+        loadSettings: LoadSettings,
+        stream: Source,
+    ) : this(
+        loadSettings = loadSettings,
+        stream = stream.buffer(),
+    )
+
+    private val name: String = loadSettings.label
+
+    private val useMarks: Boolean = loadSettings.useMarks
+
+    private val bufferSize = loadSettings.bufferSize
+
+    /** Read data (as a moving window for input stream) */
+    private val codepointsBuffer: ArrayDeque<Int> = ArrayDeque(bufferSize)
+
+    /**
+     * Current position as number (in characters) from the beginning [stream].
+     *
+     * [index] is only required to implement 1024 key length restriction and the total length restriction.
+     */
+    var index = 0 // in code points
+        private set
+
+    /**
+     * [index] of the current position from the beginning of the current document.
+     */
+    var documentIndex = 0 // current document index in code points (only for limiting)
+        private set
+
+    /** Current line from the beginning of the stream. */
+    var line = 0
+        private set
+
+    /** Current position as number (in characters) from the beginning of the current [line] */
+    var column = 0 // in code points
+        private set
+
+    /** Generate [Mark] of the current position, or `null` if [LoadSettings.useMarks] is `false`. */
     fun getMark(): Mark? {
         if (!useMarks) return null
 
@@ -104,32 +108,54 @@ class StreamReader(
             index = index,
             line = line,
             column = column,
-            buffer = codePointsWindow,
-            pointer = pointer,
+            codepoints = codepointsBuffer.toList(), // create a copy
         )
     }
 
     /**
-     * read the next [length] characters and move the pointer.
+     * Read the next [length] characters and move the pointer.
      *
-     * If the last character is high surrogate one more character will be read
+     * If the last character is high surrogate one more character will be read.
      *
-     * @param length amount of characters to move forward
+     * @param length amount of characters to move forward.
      */
     @JvmOverloads
     fun forward(length: Int = 1) {
         repeat(length) {
-            if (!ensureEnoughData()) return@repeat
+            val codepoint = stream.readUtf8CodePointOrNull() ?: return
 
-            val c = codePointsWindow[pointer++]
-            moveIndices(1)
-            if (CharConstants.LINEBR.has(c) || c == '\r'.code && ensureEnoughData() && codePointsWindow[pointer] != '\n'.code) {
+            moveIndices(Character.charCount(codepoint))
+
+            if (
+                CharConstants.LINEBR.has(codepoint)
+                ||
+                codepoint == '\r'.code && peek() != '\n'.code
+            ) {
                 line++
                 column = 0
-            } else if (c != 0xFEFF) {
+            } else if (codepoint != ZwnbspCodepoint) {
                 column++
             }
+
         }
+
+//        if (!ensureEnoughData(length)) return
+//        repeat(length) {
+//            val c = codepointsBuffer.removeFirst()
+////            index++
+////                codePointsWindow[pointer++]
+//            moveIndices(1)
+//            if (
+//                CharConstants.LINEBR.has(c)
+//                ||
+//                c == '\r'.code && peek() != '\n'.code
+//            ) {
+//                line++
+//                column = 0
+//            } else if (c != 0xFEFF) {
+//                column++
+//            }
+//        }
     }
 
     /**
@@ -144,23 +170,39 @@ class StreamReader(
         return ff
     }
 
-    /**
-     * Peek the next code point (look without moving the pointer)
-     *
-     * @return the next code point or `0` if empty
-     */
-    fun peek(): Int = if (ensureEnoughData()) codePointsWindow[pointer] else 0
-
     /** @returns `true` if there are no more characters, `false` otherwise. */
     fun isEmpty(): Boolean = peek() == 0
 
     /**
-     * Peek the next [index]-th code point
+     * Peek the next [index]-th code point.
+     *
+     * [index] **must** be greater than 0.
      *
      * @param index to peek
      * @return the next [index]-th code point or `0` if empty
      */
-    fun peek(index: Int): Int = if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
+    @JvmOverloads
+    fun peek(index: Int = 0): Int {
+        stream.peek().use { peek ->
+            var i = 0
+            while (i < index) {
+                peek.readUtf8CodePointOrNull() ?: return 0
+                i++
+            }
+            return peek.readUtf8CodePointOrNull() ?: 0
+        }
+//        val bytesToSkip = (index.coerceAtLeast(0) * Int.SIZE_BYTES).toLong()
+//
+//        return stream.peek().use { peek ->
+//
+//            if (!peek.request(bytesToSkip)) return 0
+//            peek
+//                .apply { skip(bytesToSkip) }
+//                .readUtf8CodePointOrNull()
+//                ?: 0
+//        }
+//        return if (ensureEnoughData(index)) codepointsBuffer[index] else 0
+    }
 
     /**
      * Counts the number of consecutive characters for which [predicate] returns `true`.
@@ -177,22 +219,30 @@ class StreamReader(
     }
 
     /**
-     * Create String from code points
+     * Create [String] from code points.
      *
      * @param length amount of the characters to convert
-     * @return the String representation
+     * @return the [String] representation
      */
     fun prefix(length: Int): String {
         if (length == 0) return ""
 
-        val stringLength = when {
-            ensureEnoughData(length) -> length
-            else                     -> length.coerceAtMost(dataLength - pointer)
+        return stream.peek().use { peek ->
+            buildString {
+                var i = 0
+                while (i++ < length) {
+                    val codepoint = peek.readUtf8CodePointOrNull() ?: break
+                    val c = Character.toChars(codepoint)
+                    append(c)
+                }
+            }
         }
 
-        return codePointsWindow
-            .copyOfRangeSafe(pointer, pointer + stringLength)
-            .joinToString("") { Character.toChars(it).concatToString() }
+//        return codepointsBuffer.take(length).fold(StringBuilder()) { sb, codepoint ->
+//            val c = Character.toChars(codepoint)
+//            sb.append(c)
+////            sb.append(Char(codepoint))
+//        }.toString()
     }
 
     /**
@@ -203,58 +253,103 @@ class StreamReader(
      */
     fun prefixForward(length: Int): String {
         val prefix = prefix(length)
-        pointer += length
+        repeat(length) {
+            stream.readUtf8CodePointOrNull()
+        }
         moveIndices(length)
+//        pointer += length
+//        moveIndices(length)
         // prefix never contains new line characters
         column += length
         return prefix
     }
 
-    private fun ensureEnoughData(size: Int = 0): Boolean {
-        if (!eof && pointer + size >= dataLength) {
+    private fun ensureEnoughData(index: Int = 0): Boolean {
+        if (codepointsBuffer.size < index) {
             update()
         }
-        return pointer + size < dataLength
+        return index in codepointsBuffer.indices
     }
 
     private fun update() {
+        if (stream.exhausted() || stream.request(1)) {
+            stream.close()
+            return
+        }
+
         try {
-            val buffer = stream.readUtf8()
-            val read = buffer.length
-            if (read > 0) {
-                var cpIndex = dataLength - pointer
-                codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                var nonPrintable: Int? = null
-                var i = 0
-                while (i < read) {
-                    val codePoint = buffer.codePointAt(i)
-                    codePointsWindow[cpIndex] = codePoint
-                    if (isPrintable(codePoint)) {
-                        i += Character.charCount(codePoint)
-                    } else {
-                        nonPrintable = codePoint
-                        i = read
+            Buffer().use { buffer ->
+
+                val read = stream.read(buffer, Int.SIZE_BYTES * 256L)
+                if (read <= 0) {
+                    stream.close()
+                    buffer.close()
+                    return
+                }
+
+                fun appendCodepoint(codepoint: Int) {
+                    if (!isPrintable(codepoint)) {
+                        throw ReaderException(
+                            name = name,
+                            position = index,
+                            codePoint = codepoint,
+                            message = "special characters are not allowed",
+                        )
                     }
-                    cpIndex++
+                    codepointsBuffer.addLast(codepoint)
                 }
-                dataLength = cpIndex
-                pointer = 0
-                if (nonPrintable != null) {
-                    throw ReaderException(
-                        name = name,
-                        position = cpIndex - 1,
-                        codePoint = nonPrintable,
-                        message = "special characters are not allowed",
-                    )
+
+                while (!buffer.exhausted()) {
+                    val codepoint = buffer.readInt()
+                    appendCodepoint(codepoint)
                 }
-            } else {
-                eof = true
+
+                val lastChar = codepointsBuffer.lastOrNull()
+                if (lastChar != null) {
+                    if (Character.highSurrogateOf(lastChar).isHighSurrogate()) {
+                        val codepoint = stream.readInt()
+                        appendCodepoint(codepoint)
+                    }
+                }
             }
+
+//            val line = stream.readUtf8Line() ?: run {
+//                println("stream is finished - stream.readUtf8Line() returned null")
+//                return
+//            }
+//
+//            codepointsBuffer += line.map { it.code }
+//            println("read line $line, codepointsBuffer:$codepointsBuffer")
+
+//            var i = 0
+//            while (i < line.length) {
+//                val codepoint = line.codePointAt(i)
+//
+//                if (!isPrintable(codepoint)) {
+//                    throw ReaderException(
+//                        name = name,
+//                        position = index + codepointsBuffer.size,
+//                        codePoint = codepoint,
+//                        message = "special characters are not allowed",
+//                    )
+//                }
+//
+//                codepointsBuffer.addLast(codepoint)
+//
+//                i += Character.charCount(codepoint)
+//            }
+//            codepointsBuffer += '\n'.code
         } catch (ioe: IOException) {
             throw YamlEngineException(ioe)
         }
     }
 
+    /**
+     * ```
+     * index += length
+     * documentIndex += length
+     * ```
+     */
     private fun moveIndices(length: Int) {
         index += length
         documentIndex += length
@@ -265,6 +360,31 @@ class StreamReader(
      */
     fun resetDocumentIndex() {
         documentIndex = 0
+    }
+
+    override fun close() {
+        stream.close()
+    }
+
+    // TODO rename readUtf8CodePointOrNull - 'OrNull' implies it doesn't throw,
+    //      but it does if codepoint is not printable
+    private fun BufferedSource.readUtf8CodePointOrNull(): Int? {
+        // TODO readUtf8CodePointOrNull gets called multiple times - during peeking and forwarding
+        //      StreamReader should be refactored to read chars into a buffer.
+        return try {
+            val codepoint = readUtf8CodePoint()
+            if (!isPrintable(codepoint)) {
+                throw ReaderException(
+                    name = name,
+                    position = 0,
+                    codePoint = codepoint,
+                    message = "special characters are not allowed",
+                )
+            }
+            codepoint
+        } catch (ex: EOFException) {
+            return null
+        }
     }
 
     companion object {
@@ -314,3 +434,10 @@ class StreamReader(
             IntArray(toIndex - fromIndex) { getOrNull(fromIndex + it) ?: 0 }
     }
 }
+
+
+/**
+ * The name `ZWNBSP` should be used if the BOM appears in the middle of a data stream.
+ * Unicode says it should be interpreted as a normal codepoint (namely a word joiner), not as a BOM.
+ */
+private const val ZwnbspCodepoint = 0xFEFF

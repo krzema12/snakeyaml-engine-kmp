@@ -25,7 +25,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException;
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 
 /**
- * https://yaml.org/spec/1.2/spec.html#id2774608
+ * <a href="https://yaml.org/spec/1.2/spec.html#id2774608">https://yaml.org/spec/1.2/spec.html#id2774608</a>
  */
 @org.junit.jupiter.api.Tag("fast")
 public class WindowsTest {

@@ -30,9 +30,9 @@ abstract class BaseConstructor(
     /**
      * Maps (explicit or implicit) tags to the [ConstructNode] implementation.
      */
-    @JvmField
-    // TODO make this a constructor parameter when StandardConstructor is converted
-    protected val tagConstructors: MutableMap<Tag, ConstructNode> = mutableMapOf()
+    private val tagConstructors: Map<Tag, ConstructNode> by lazy { createTagConstructors() }
+
+    protected abstract fun createTagConstructors(): Map<Tag, ConstructNode>
 
     @JvmField
     protected val constructedObjects: MutableMap<Node, Any?> = mutableMapOf()
@@ -221,7 +221,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Create instance of Set from mapping node
+     * Create instance of [Set] from mapping node
      *
      * @param node - the source
      * @return filled Set
@@ -233,7 +233,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Create filled Map from the provided Node
+     * Create filled [Map] from the provided Node
      *
      * @param node - the source
      * @return filled Map
@@ -261,8 +261,11 @@ abstract class BaseConstructor(
                     key.hashCode() // check circular dependencies
                 } catch (e: Exception) {
                     throw ConstructorException(
-                        "while constructing a mapping", node.startMark,
-                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                        context = "while constructing a mapping",
+                        contextMark = node.startMark,
+                        problem = "found unacceptable key $key",
+                        problemMark = tuple.keyNode.startMark,
+                        cause = e,
                     )
                 }
             }
@@ -271,9 +274,7 @@ abstract class BaseConstructor(
                 if (settings.allowRecursiveKeys) {
                     postponeMapFilling(mapping, key, value)
                 } else {
-                    throw YamlEngineException(
-                        "Recursive key for mapping is detected but it is not configured to be allowed.",
-                    )
+                    throw YamlEngineException("Recursive key for mapping is detected but it is not configured to be allowed.")
                 }
             } else {
                 mapping[key] = value
@@ -310,8 +311,11 @@ abstract class BaseConstructor(
                     key.hashCode() // check circular dependencies
                 } catch (e: Exception) {
                     throw ConstructorException(
-                        "while constructing a Set", node.startMark,
-                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                        context = "while constructing a Set",
+                        contextMark = node.startMark,
+                        problem = "found unacceptable key $key",
+                        problemMark = tuple.keyNode.startMark,
+                        cause = e,
                     )
                 }
             }

@@ -13,15 +13,15 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
-import java.io.InputStream
-import java.io.Reader
-import okio.source
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.composer.Composer
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import java.io.InputStream
+import java.io.Reader
+import okio.source
 
 /**
  * Helper to compose input stream to Node
@@ -83,10 +83,12 @@ actual class Compose(
      * @return parsed root Nodes for all the specified YAML documents
      */
     fun composeAllFromReader(yaml: Reader): Iterable<Node> =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, yaml.readText())),
-        ).asSequence().asIterable()
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, yaml.readText())),
+            )
+        }
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
@@ -98,10 +100,12 @@ actual class Compose(
      * @return parsed root Nodes for all the specified YAML documents
      */
     fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
-        ).asSequence().asIterable()
+        Iterable {
+            Composer(
+                settings,
+                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
+            )
+        }
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.

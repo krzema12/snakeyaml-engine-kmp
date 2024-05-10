@@ -13,7 +13,6 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
-import okio.source
 import it.krzeminski.snakeyaml.engine.kmp.composer.Composer
 import it.krzeminski.snakeyaml.engine.kmp.constructor.BaseConstructor
 import it.krzeminski.snakeyaml.engine.kmp.constructor.StandardConstructor
@@ -21,6 +20,7 @@ import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import java.io.InputStream
 import java.io.Reader
+import okio.source
 
 /**
  * Common way to load Java instance(s). This class is not thread-safe. Which means that all the
@@ -37,7 +37,7 @@ class Load @JvmOverloads constructor(
 ) {
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param streamReader - the input
      * @return configured Composer
@@ -46,7 +46,7 @@ class Load @JvmOverloads constructor(
         Composer(settings, ParserImpl(settings, streamReader))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yamlStream - the input
      * @return configured Composer
@@ -55,7 +55,7 @@ class Load @JvmOverloads constructor(
         createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream.source())))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yaml - the input
      * @return configured Composer
@@ -64,7 +64,7 @@ class Load @JvmOverloads constructor(
         createComposer(StreamReader(settings, yaml))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yamlReader - the input
      * @return configured Composer
@@ -111,7 +111,7 @@ class Load @JvmOverloads constructor(
      */
     fun loadFromString(yaml: String): Any? = loadOne(createComposer(yaml))
 
-    // Load all the documents
+    /** Load all the documents */
     private fun loadAll(composer: Composer): Iterable<Any?> =
         Iterable { YamlIterator(composer, constructor) }
 
@@ -156,21 +156,18 @@ class Load @JvmOverloads constructor(
     private class YamlIterator(
         private val composer: Composer,
         private val constructor: BaseConstructor,
-    ) : MutableIterator<Any?> {
-        private var composerInitiated = false
+    ) : Iterator<Any?> {
+        init {
+            composer.hasNext()
+        }
+
         override fun hasNext(): Boolean {
-            composerInitiated = true
             return composer.hasNext()
         }
 
         override fun next(): Any? {
-            if (!composerInitiated) {
-                hasNext()
-            }
             val node = composer.next()
             return constructor.constructSingleDocument(node)
         }
-
-        override fun remove(): Unit = throw UnsupportedOperationException("Removing is not supported.")
     }
 }

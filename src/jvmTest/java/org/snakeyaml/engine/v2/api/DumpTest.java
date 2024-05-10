@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -120,12 +121,7 @@ class DumpTest {
     assertFalse(file.exists());
     file.getParentFile().mkdirs();
     file.createNewFile();
-    StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8) {
-      @Override
-      public void processIOException(IOException e) {
-        throw new RuntimeException(e);
-      }
-    };
+    StreamDataWriter writer = new YamlOutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
     dump.dump(ImmutableMap.of("x", 1, "y", 2, "z", 3), writer);
     assertTrue(file.exists());
     file.delete();// on Windows the file is not deleted

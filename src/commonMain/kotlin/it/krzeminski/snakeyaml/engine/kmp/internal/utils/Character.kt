@@ -61,12 +61,15 @@ internal object Character {
     internal fun toCodePoint(highSurrogate: Char, lowSurrogate: Char): Int =
         (highSurrogate.code shl 10) + lowSurrogate.code + SURROGATE_DECODE_OFFSET
 
+    @OptIn(ExperimentalStdlibApi::class)
     internal fun toChars(codePoint: Int): CharArray = when {
         isBmpCodePoint(codePoint) -> charArrayOf(codePoint.toChar())
         else                      -> {
             val hi = highSurrogateOf(codePoint)
             val lo = lowSurrogateOf(codePoint)
-            require(isSurrogatePair(hi, lo))
+            require(isSurrogatePair(hi, lo)) {
+                "Failed to convert codepoint ${codePoint.toHexString()}. hi:${hi.isHighSurrogate()}, lo:${lo.isLowSurrogate()}"
+            }
             charArrayOf(hi, lo)
         }
     }
@@ -112,9 +115,8 @@ internal object Character {
 
     private const val SURROGATE_DECODE_OFFSET: Int =
         MIN_SUPPLEMENTARY_CODE_POINT -
-          (MIN_HIGH_SURROGATE.code shl 10) -
-          MIN_LOW_SURROGATE.code
+            (MIN_HIGH_SURROGATE.code shl 10) -
+            MIN_LOW_SURROGATE.code
 
     private const val HIGH_SURROGATE_ENCODE_OFFSET: Char = MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10)
-
 }

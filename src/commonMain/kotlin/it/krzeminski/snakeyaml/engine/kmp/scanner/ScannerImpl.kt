@@ -868,8 +868,8 @@ class ScannerImpl(
         allowSimpleKey = false
 
         // Scan and add SCALAR. May change `allow_simple_key`.
-        val tok = scanPlain()
-        addToken(tok)
+        val token = scanPlain()
+        addToken(token)
     }
 
     //endregion
@@ -1006,7 +1006,18 @@ class ScannerImpl(
 
             // Peek ahead until we find the first non-space character, then
             // move forward directly to that character.
-            reader.forwardWhile { c -> c in " " }
+            val skipWhitespace = when (lastToken?.tokenId) {
+                Token.ID.Value,
+                Token.ID.Key,
+                Token.ID.BlockEntry,
+                Token.ID.FlowSequenceStart,
+                Token.ID.Scalar,
+                -> " "
+
+                else
+                -> " \t"
+            }
+            reader.forwardWhile { c -> c in skipWhitespace }
 
             // If the character we have skipped forward to is a comment (#),
             // then peek ahead until we find the next end of line. YAML

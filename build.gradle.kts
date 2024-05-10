@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.InternalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmRun
+
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
@@ -74,3 +77,10 @@ dokkatoo {
         }
     }
 }
+
+@OptIn(InternalKotlinGradlePluginApi::class)
+tasks.matching { it.name == "jvmRun" }
+    .withType<KotlinJvmRun>()
+    .configureEach {
+        this.standardInput = System.`in`
+    }

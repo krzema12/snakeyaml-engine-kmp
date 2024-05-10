@@ -60,7 +60,6 @@ internal object SuiteUtils {
     val deviationsWithError: Set<YamlTestData.Id> = setOf(
         //region originally copied from SnakeYAML
         // https://github.com/snakeyaml/snakeyaml-engine/blob/5a35e1fe7f780d1405d5a03470f9f13d32b1638a/src/test/java/org/snakeyaml/engine/usecases/external_test_suite/SuiteUtils.java#L35-L40
-        "2JQS",
         "3RLN-01",
         "3RLN-04",
         "4MUZ",
@@ -71,35 +70,29 @@ internal object SuiteUtils {
         "5MUD",
         "5T43",
         "6BCT",
-        "6HB6",
-        "6M2F",
+//        "6HB6",
         "7Z25",
         "9SA2",
         "A2M4",
-        "CFD4",
         "DBG4",
         "DC7X",
         "DE56-02",
         "DE56-03",
         "DK3J",
         "FP8R",
-        "FRK4",
         "HM87-00",
         "HWV9",
         "J3BT",
         "K3WX",
-        "K54U",
+//        "K54U",
         "KH5V-01",
         "KZN9",
         "M2N8-00",
         "M7A3",
         "MUS6-03",
-        "NHX8",
         "NJ66",
-        "NKF9",
-        "Q5MG",
+//        "Q5MG",
         "QT73",
-        "S3PD",
         "SM9W-01",
         "UKK6-00",
         "UT92",
@@ -109,6 +102,17 @@ internal object SuiteUtils {
         "WZ62",
         "Y79Y-002",
         "Y79Y-010",
+        //region empty-key cases
+        // These cases use an empty node as a key. Use of empty keys is discouraged and might be removed
+        // in the next YAML version. In short: don't bother trying to fix these tests.
+        "2JQS",
+        "6M2F",
+        "CFD4",
+        "FRK4",
+        "NHX8",
+        "NKF9",
+        "S3PD",
+        //endregion
         //endregion
 
         //region Additional cases that SnakeYAML-Java also doesn't pass
@@ -116,8 +120,8 @@ internal object SuiteUtils {
         // manual exclusions for these cases yet).
         "6CA3",        // https://matrix.yaml.info/details/6CA3.html
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
-        "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
-        "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
+//        "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
+//        "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
         //endregion
     ).mapToYamlTestDataId()
 

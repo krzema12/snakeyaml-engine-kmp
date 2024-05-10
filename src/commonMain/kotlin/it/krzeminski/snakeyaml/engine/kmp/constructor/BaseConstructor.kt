@@ -221,7 +221,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Create instance of Set from mapping node
+     * Create instance of [Set] from mapping node
      *
      * @param node - the source
      * @return filled Set
@@ -233,7 +233,7 @@ abstract class BaseConstructor(
     }
 
     /**
-     * Create filled Map from the provided Node
+     * Create filled [Map] from the provided Node
      *
      * @param node - the source
      * @return filled Map

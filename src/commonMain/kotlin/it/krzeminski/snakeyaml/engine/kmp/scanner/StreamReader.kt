@@ -26,11 +26,12 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
 /**
- * Read the provided stream of code points into String and implement look-ahead operations. Checks
- * if code points are in the allowed range.
+ * Reads the provided [stream] of code points, and implements look-ahead operations.
  *
- * @param loadSettings - configuration options
- * @param stream - the input
+ * Checks if code points are in the allowed range.
+ *
+ * @param loadSettings configuration options
+ * @param stream the input
  */
 class StreamReader(
     loadSettings: LoadSettings,
@@ -54,48 +55,41 @@ class StreamReader(
     private var eof = false
 
     /**
-     * index is only required to implement 1024 key length restriction and the total length restriction
-     * @return current position as number (in characters) from the beginning of the stream
+     * Current position as number (in characters) from the beginning [stream].
+     *
+     * [index] is only required to implement 1024 key length restriction and the total length restriction.
      */
     var index = 0 // in code points
         private set
 
     /**
-     * Get the position of the current char in the current YAML document
-     *
-     * @return index of the current position from the beginning of the current document
+     * [index] of the current position from the beginning of the current document.
      */
     var documentIndex = 0 // current document index in code points (only for limiting)
         private set
 
-    /**
-     * @return current line from the beginning of the stream
-     */
+    /** Current line from the beginning of the stream. */
     var line = 0
         private set
 
-    /**
-     * @return current position as number (in characters) from the beginning of the current line
-     */
-    var column = 0 // in code points
+    /** Current position as number (in characters) from the beginning of the current [line] */
+    var column = 0
         private set
 
     /**
-     * Create
+     * Read the provided String into a [Buffer] and implement look-ahead operations.
      *
-     * @param loadSettings - configuration options
-     * @param stream - the input
+     * Checks if code points are in the allowed range.
+     *
+     * @param loadSettings configuration options
+     * @param stream the input
      */
     constructor(loadSettings: LoadSettings, stream: String) : this(
         loadSettings = loadSettings,
         stream = Buffer().write(stream.encodeUtf8()),
     )
 
-    /**
-     * Generate [Mark] if it is configured
-     *
-     * @return [Mark] of the current position, or `null`
-     */
+    /** Generate [Mark] of the current position, or `null` if [LoadSettings.useMarks] is `false`. */
     fun getMark(): Mark? {
         if (!useMarks) return null
 
@@ -110,11 +104,11 @@ class StreamReader(
     }
 
     /**
-     * read the next [length] characters and move the pointer.
+     * Read the next [length] characters and move the pointer.
      *
-     * If the last character is high surrogate one more character will be read
+     * If the last character is high surrogate one more character will be read.
      *
-     * @param length amount of characters to move forward
+     * @param length amount of characters to move forward.
      */
     @JvmOverloads
     fun forward(length: Int = 1) {
@@ -133,14 +127,16 @@ class StreamReader(
     }
 
     /**
-     * Peek the next code point (look without moving the pointer)
+     * Peek the next code point.
      *
      * @return the next code point or `0` if empty
      */
     fun peek(): Int = if (ensureEnoughData()) codePointsWindow[pointer] else 0
 
     /**
-     * Peek the next [index]-th code point
+     * Peek the next [index]-th code point.
+     *
+     * [index] **must** be greater than 0.
      *
      * @param index to peek
      * @return the next [index]-th code point or `0` if empty
@@ -148,10 +144,10 @@ class StreamReader(
     fun peek(index: Int): Int = if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
 
     /**
-     * Create String from code points
+     * Create [String] from code points.
      *
      * @param length amount of the characters to convert
-     * @return the String representation
+     * @return the [String] representation
      */
     fun prefix(length: Int): String {
         if (length == 0) return ""
@@ -170,7 +166,7 @@ class StreamReader(
      * `prefix(length)` immediately followed by `forward(length)`
      *
      * @param length amount of characters to get
-     * @return the next [length] code points
+     * @return the next [length] code points, as a [String].
      */
     fun prefixForward(length: Int): String {
         val prefix = prefix(length)
@@ -248,9 +244,10 @@ class StreamReader(
 
     companion object {
         /**
-         * Check if the all the data is human-readable (used in Representer)
+         * Check if the all the data is human-readable
+         * (used in [it.krzeminski.snakeyaml.engine.kmp.representer.Representer])
          *
-         * @param data - content to be checked for human-readability
+         * @param data content to be checked for human-readability
          * @return `true` only when everything is human-readable
          */
         @JvmStatic

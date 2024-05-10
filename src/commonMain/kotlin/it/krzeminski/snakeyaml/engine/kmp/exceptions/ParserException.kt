@@ -16,12 +16,13 @@ package it.krzeminski.snakeyaml.engine.kmp.exceptions
 import kotlin.jvm.JvmOverloads
 
 /**
- * Exception thrown by the [Parser] implementations in case of malformed input.
+ * Exception thrown by the [it.krzeminski.snakeyaml.engine.kmp.parser.Parser]
+ * implementations in case of malformed input.
  *
- * @param context Part of the input document in which vicinity the problem occurred.
- * @param contextMark Position of the `context` within the document.
+ * @param context Part of the input document in the vicinity of where [problem] occurred.
+ * @param contextMark Position of the [context] within the document.
  * @param problem Part of the input document that caused the problem.
- * @param problemMark Position of the `problem`. within the document.
+ * @param problemMark Position of the [problem] within the document.
  */
 class ParserException @JvmOverloads constructor(
     problem: String,

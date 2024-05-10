@@ -37,7 +37,7 @@ class Load @JvmOverloads constructor(
 ) {
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param streamReader - the input
      * @return configured Composer
@@ -46,7 +46,7 @@ class Load @JvmOverloads constructor(
         Composer(settings, ParserImpl(settings, streamReader))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yamlStream - the input
      * @return configured Composer
@@ -55,7 +55,7 @@ class Load @JvmOverloads constructor(
         createComposer(StreamReader(settings, YamlUnicodeReader(yamlStream.source())))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yaml - the input
      * @return configured Composer
@@ -64,7 +64,7 @@ class Load @JvmOverloads constructor(
         createComposer(StreamReader(settings, yaml))
 
     /**
-     * Create Composer
+     * Create [Composer]
      *
      * @param yamlReader - the input
      * @return configured Composer
@@ -111,7 +111,7 @@ class Load @JvmOverloads constructor(
      */
     fun loadFromString(yaml: String): Any? = loadOne(createComposer(yaml))
 
-    // Load all the documents
+    /** Load all the documents */
     private fun loadAll(composer: Composer): Iterable<Any?> =
         Iterable { YamlIterator(composer, constructor) }
 

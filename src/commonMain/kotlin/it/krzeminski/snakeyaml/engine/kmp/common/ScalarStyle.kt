@@ -14,10 +14,14 @@
 package it.krzeminski.snakeyaml.engine.kmp.common
 
 /**
- * YAML provides a rich set of scalar styles. Block scalar styles include the literal style and the
- * folded style; flow scalar styles include the plain style and two quoted styles, the single-quoted
- * style and the double-quoted style. These styles offer a range of trade-offs between expressive
- * power and readability.
+ * YAML provides a rich set of scalar styles.
+ *
+ * Block scalar styles include the literal style and the folded style.
+ *
+ * Flow scalar styles include the plain style and two quoted styles, the single-quoted
+ * style and the double-quoted style.
+ *
+ * These styles offer a range of trade-offs between expressive power and readability.
  */
 enum class ScalarStyle(private val styleOpt: Char?) {
     /** Double quoted scalar */

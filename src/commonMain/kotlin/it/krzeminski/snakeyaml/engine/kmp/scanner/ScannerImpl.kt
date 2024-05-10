@@ -896,7 +896,7 @@ class ScannerImpl(
     }
 
     /**
-     * Returns true if the next thing on the reader is a document-end (`...`).
+     * Returns `true` if the next thing on the reader is a document-end (`...`).
      * A document-end is always followed immediately by a new line.
      */
     private fun checkDocumentEnd(): Boolean {
@@ -955,7 +955,6 @@ class ScannerImpl(
     //region Scanners - create tokens
 
     /**
-     * ```text
      * We ignore spaces, line breaks and comments.
      * If we find a line break in the block context, we set the flag
      * `allow_simple_key` on.
@@ -963,8 +962,10 @@ class ScannerImpl(
      * stream. We do not yet support BOM inside the stream as the
      * specification requires. Any such mark will be considered as a part
      * of the document.
-     * TODO: We need to make tab handling rules more sane. A good rule is
-     *       Tabs cannot precede tokens
+     *
+     * TODO: We need to make tab handling rules more sane. A good rule is Tabs cannot precede tokens
+     *
+     * ```text
      * BLOCK-SEQUENCE-START, BLOCK-MAPPING-START, BLOCK-END,
      * KEY(block), VALUE(block), BLOCK-ENTRY
      * So the checking code is
@@ -1269,12 +1270,12 @@ class ScannerImpl(
     }
 
     /**
-     * ```text
      * The YAML 1.2 specification does not restrict characters for anchors and
-     * aliases. This may lead to problems.
-     * see [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
-     * This implementation tries to follow [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
-     * ```
+     * aliases. This may lead to problems, see
+     * [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
+     *
+     * This implementation tries to follow
+     * [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
      */
     private fun scanAnchor(isAnchor: Boolean): Token {
         val startMark = reader.getMark()
@@ -1959,7 +1960,7 @@ class ScannerImpl(
     }
 
     /**
-     * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar
+     * See the specification for details. `SnakeYAML` and `libyaml` allow tabs inside plain scalar.
      */
     private fun scanPlainSpaces(): String {
         var length = 0

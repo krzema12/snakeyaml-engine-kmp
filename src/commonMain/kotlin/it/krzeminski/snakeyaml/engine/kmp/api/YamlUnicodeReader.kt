@@ -13,9 +13,11 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
-import okio.*
-import okio.ByteString.Companion.toByteString
 import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CharEncoding.*
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CharEncoding.Companion.detectCharEncoding
+import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CodepointReader
+import okio.*
+import okio.ByteString.Companion.decodeHex
 
 /**
  * Generic unicode text reader, which will use BOM mark to identify the encoding to be used. If BOM
@@ -26,7 +28,6 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CharEncoding.*
  * Original pseudocode : Thomas Weidenfeller Implementation tweaked: Aki Nieminen Implementation
  * changed: Andrey Somov no default encoding must be provided - UTF-8 is used by default
  * (http://www.yaml.org/spec/1.2/spec.html#id2771184)
- *
  *
  * http://www.unicode.org/unicode/faq/utf_bom.html BOMs:
  *
@@ -40,91 +41,101 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader.CharEncoding.*
  * @param source [Source] to be read
  */
 class YamlUnicodeReader(
-    source: Source,
+    private val source: BufferedSource,
 ) : Source {
 
-    private val encodedSource: Source
+    constructor(source: Source) : this(source.buffer())
 
-    /** the name of the character encoding being used by this stream. */
-    val encoding: CharEncoding
+    /** The character encoding being used by [source]. */
+    val encoding: CharEncoding = source.detectCharEncoding() ?: UTF_8
 
-    /**
-     * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only
-     * BOM bytes are skipped.
-     */
-    init {
-        val bufferedSource = source.buffer()
-        val peek = bufferedSource.peek()
+    private fun interface CodepointReader {
+        fun readCodepoint(source: BufferedSource): Int
 
-        val detectedEncoding: CharEncoding? = when {
-            peek.rangeEquals(0, UTF_32LE.bom) -> UTF_32LE
-            peek.rangeEquals(0, UTF_32BE.bom) -> UTF_32BE
-            peek.rangeEquals(0, UTF_16LE.bom) -> UTF_16LE
-            peek.rangeEquals(0, UTF_16BE.bom) -> UTF_16BE
-            peek.rangeEquals(0, UTF_8.bom)    -> UTF_8
-            else                              -> null // no BOM detected
-        }
+        companion object {
+            // For UTF-16, read one char at a time
+            val UTF_16BE = CodepointReader { source -> source.readShort().toInt() }
 
-        if (detectedEncoding != null) {
-            bufferedSource.skip(detectedEncoding.bom.size.toLong())
-        }
+            // For UTF-16LE, read one char at a time, but swap the first and last bytes
+            val UTF_16LE = CodepointReader { source -> source.readShortLe().toInt() }
 
-        this.encoding = detectedEncoding ?: UTF_8
+            // For UTF-32, read one Int at a time
+            val UTF_32BE = CodepointReader { source -> source.readInt() }
 
-        val bs = readString(bufferedSource, encoding)
-        encodedSource = Buffer().writeUtf8(bs)
-    }
-
-    private fun readString(source: BufferedSource, encoding: CharEncoding): String {
-        return when (encoding) {
-            UTF_8    -> source.readUtf8()
-
-            // For UTF-16, read the entire Buffer one char at a time
-            UTF_16BE -> source.concatToString { readShort().toInt().toChar() }
-
-            // For UTF-16LE, do the same thing but swap
-            // the first and last bytes of the Char before creating a string
-            UTF_16LE -> source.concatToString { readShortLe().toInt().toChar() }
-
-            // For UTF-32, read the buffer an Int at a time
-            UTF_32BE -> source.concatToString { readInt().toChar() }
-
-            UTF_32LE -> source.concatToString { readIntLe().toChar() }
+            // For UTF-32LE, read one little-endian Int at a time
+            val UTF_32LE = CodepointReader { source -> source.readIntLe() }
         }
     }
 
-    override fun close(): Unit = encodedSource.close()
+    private val codepointReader: CodepointReader? = when (encoding) {
+        UTF_8    -> null // UTF8 is already supported by Okio and requires no special treatment
+        UTF_16BE -> CodepointReader.UTF_16BE
+        UTF_16LE -> CodepointReader.UTF_16LE
+        UTF_32BE -> CodepointReader.UTF_32BE
+        UTF_32LE -> CodepointReader.UTF_32LE
+    }
 
-    override fun read(sink: Buffer, byteCount: Long): Long = encodedSource.read(sink, byteCount)
+    override fun read(sink: Buffer, byteCount: Long): Long {
+        if (codepointReader != null) {
+            Buffer().use { buffer ->
+                while (source.request(encoding.charSize) && buffer.size < byteCount) {
+                    val codepoint = codepointReader.readCodepoint(source)
+                    buffer.writeUtf8CodePoint(codepoint)
+                }
+                if (buffer.size <= 0L) return -1
+                buffer.copyTo(sink)
+                return buffer.size
+            }
+        } else {
+            return source.read(sink, byteCount)
+        }
+    }
 
-    override fun timeout(): Timeout = encodedSource.timeout()
+    override fun close(): Unit = source.close()
 
-    fun readString(): String = encodedSource.buffer().readUtf8()
+    override fun timeout(): Timeout = source.timeout()
+
+    /** Read the entire source as a [String]. */
+    // This method is only used in tests - it should be made `internal` when all tests are Kotlin.
+    fun readString(): String = buffer().readUtf8()
 
     enum class CharEncoding(
-        val bom: ByteString,
+        internal val bom: ByteString,
+        internal val charSize: Long,
     ) {
-        UTF_8(0xEF, 0xBB, 0xBF),
-        UTF_16BE(0xFE, 0xFF),
-        UTF_16LE(0xFF, 0xFE),
-        UTF_32BE(0x00, 0x00, 0xFE, 0xFF),
-        UTF_32LE(0xFF, 0xFE, 0x00, 0x00),
+        UTF_8(bom = "efbbbf", charSize = Short.SIZE_BYTES),
+        UTF_16BE(bom = "feff", charSize = Short.SIZE_BYTES),
+        UTF_16LE(bom = "fffe", charSize = Short.SIZE_BYTES),
+        UTF_32BE(bom = "0000feff", charSize = Int.SIZE_BYTES),
+        UTF_32LE(bom = "fffe0000", charSize = Int.SIZE_BYTES),
         ;
 
-        constructor(vararg values: Int) : this(
-            values.map(Int::toByte).toByteArray().toByteString(),
+        constructor(
+            bom: String,
+            charSize: Int,
+        ) : this(
+            bom = bom.decodeHex(),
+            charSize = charSize.toLong(),
         )
-    }
 
-    companion object {
-        private fun BufferedSource.concatToString(
-            readChar: BufferedSource.() -> Char,
-        ): String {
-            return sequence {
-                while (!exhausted()) yield(readChar())
-            }.toList()
-                .toCharArray()
-                .concatToString()
+        companion object {
+            /**
+             * Peek-ahead and check for BOM marks.
+             *
+             * If a BOM is detected, the bytes will be skipped. Otherwise, no bytes will be skipped.
+             */
+            internal fun BufferedSource.detectCharEncoding(): CharEncoding? = select(UnicodeBomOptions)
+
+            private val UnicodeBomOptions: TypedOptions<CharEncoding>
+                get() {
+                    // it's important to sort the entries so that larger BOMs are first,
+                    // otherwise a UTF16 BOM will 'hide' a UTF32 BOM (since they start with the same bytes).
+                    val sortedEntries = CharEncoding.entries.sortedByDescending { it.bom.size }
+
+                    return TypedOptions.of(sortedEntries, CharEncoding::bom)
+                }
         }
     }
+
+    companion object
 }

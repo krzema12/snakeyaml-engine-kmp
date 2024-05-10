@@ -30,9 +30,7 @@ abstract class BaseConstructor(
     /**
      * Maps (explicit or implicit) tags to the [ConstructNode] implementation.
      */
-    @JvmField
-    // TODO make this a constructor parameter when StandardConstructor is converted
-    protected val tagConstructors: MutableMap<Tag, ConstructNode> = mutableMapOf()
+    protected abstract val tagConstructors: Map<Tag, ConstructNode>
 
     @JvmField
     protected val constructedObjects: MutableMap<Node, Any?> = mutableMapOf()
@@ -54,7 +52,8 @@ abstract class BaseConstructor(
         return if (optionalNode != null && Tag.NULL != optionalNode.tag) {
             construct(optionalNode)
         } else {
-            val construct = tagConstructors[Tag.NULL]!!
+            val construct = tagConstructors[Tag.NULL]
+                ?: error("missing NULL constructor in tagConstructors $tagConstructors")
             construct.construct(optionalNode)
         }
     }
@@ -112,7 +111,7 @@ abstract class BaseConstructor(
      * Construct object from the specified [Node]. It does not check if existing instance of [node] is already
      * constructed.
      *
-     * @param node - the source
+     * @param node the source
      * @return instantiated object
      */
     private fun constructObjectNoCheck(node: Node): Any? {
@@ -156,7 +155,7 @@ abstract class BaseConstructor(
     /**
      * Create String from the provided scalar node
      *
-     * @param node - the source
+     * @param node the source
      * @return value of the scalar node
      */
     protected fun constructScalar(node: ScalarNode): String = node.value
@@ -166,7 +165,7 @@ abstract class BaseConstructor(
      * Create List implementation. By default, it returns the value configured in
      * [LoadSettings.defaultList]. Any custom [List] implementation can be provided.
      *
-     * @param node - the node to fill the List
+     * @param node the node to fill the List
      * @return empty List to fill
      */
     protected fun createEmptyListForNode(node: SequenceNode): List<Any?> {
@@ -177,7 +176,7 @@ abstract class BaseConstructor(
      * Create Set implementation. By default, it returns the value configured in
      * [LoadSettings.defaultSet]. Any custom [Set] implementation can be provided.
      *
-     * @param node - the node to fill the Set
+     * @param node the node to fill the Set
      * @return empty Set to fill
      */
     protected fun createEmptySetForNode(node: MappingNode): Set<Any?> {
@@ -188,7 +187,7 @@ abstract class BaseConstructor(
      * Create Map implementation. By default, it returns the value configured in
      * [LoadSettings.defaultMap]. Any custom [Map] implementation can be provided.
      *
-     * @param node - the node to fill the [Map]
+     * @param node the node to fill the [Map]
      * @return empty [Map] to fill
      */
     protected fun createEmptyMapFor(node: MappingNode): Map<Any?, Any?> {
@@ -197,10 +196,10 @@ abstract class BaseConstructor(
     //endregion
 
     /**
-     * Create instance of List
+     * Create instance of [List]
      *
-     * @param node - the source
-     * @return filled List
+     * @param node the source
+     * @return filled [List]
      */
     protected fun constructSequence(node: SequenceNode): List<Any?> {
         val result = settings.defaultList(node.value.size)
@@ -211,8 +210,8 @@ abstract class BaseConstructor(
     /**
      * Fill the collection with the data from provided node
      *
-     * @param node - the source
-     * @param collection - the collection to fill
+     * @param node the source
+     * @param collection the collection to fill
      */
     protected fun constructSequenceStep2(node: SequenceNode, collection: MutableCollection<Any?>) {
         for (child in node.value) {
@@ -223,8 +222,8 @@ abstract class BaseConstructor(
     /**
      * Create instance of [Set] from mapping node
      *
-     * @param node - the source
-     * @return filled Set
+     * @param node the source
+     * @return filled [Set]
      */
     protected fun constructSet(node: MappingNode): Set<Any?> {
         val set = settings.defaultSet(node.value.size)
@@ -235,8 +234,8 @@ abstract class BaseConstructor(
     /**
      * Create filled [Map] from the provided Node
      *
-     * @param node - the source
-     * @return filled Map
+     * @param node the source
+     * @return filled [Map]
      */
     protected fun constructMapping(node: MappingNode): Map<Any?, Any?> {
         val mapping = settings.defaultMap(node.value.size)
@@ -247,8 +246,8 @@ abstract class BaseConstructor(
     /**
      * Fill the mapping with the data from provided node
      *
-     * @param node - the source
-     * @param mapping - empty map to be filled
+     * @param node the source
+     * @param mapping empty map to be filled
      */
     protected open fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
         val nodeValue = node.value
@@ -261,8 +260,11 @@ abstract class BaseConstructor(
                     key.hashCode() // check circular dependencies
                 } catch (e: Exception) {
                     throw ConstructorException(
-                        "while constructing a mapping", node.startMark,
-                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                        context = "while constructing a mapping",
+                        contextMark = node.startMark,
+                        problem = "found unacceptable key $key",
+                        problemMark = tuple.keyNode.startMark,
+                        cause = e,
                     )
                 }
             }
@@ -286,9 +288,9 @@ abstract class BaseConstructor(
      * different hash after initialization compared to clean just created one. And map of course does
      * not observe key hashCode changes.
      *
-     * @param mapping - the mapping to add key/value
-     * @param key - the key to add to map
-     * @param value - the value behind the key
+     * @param mapping the mapping to add key/value
+     * @param key the key to add to map
+     * @param value the value behind the key
      */
     private fun postponeMapFilling(mapping: MutableMap<Any?, Any?>, key: Any?, value: Any?) {
         maps2fill.add(0, RecursiveTuple(mapping, RecursiveTuple(key, value)))
@@ -297,7 +299,7 @@ abstract class BaseConstructor(
     /**
      * Fill the Map with the data from the node
      *
-     * @param node - the source
+     * @param node the source
      * @param set - empty set to fill
      */
     protected open fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
@@ -310,8 +312,11 @@ abstract class BaseConstructor(
                     key.hashCode() // check circular dependencies
                 } catch (e: Exception) {
                     throw ConstructorException(
-                        "while constructing a Set", node.startMark,
-                        "found unacceptable key $key", tuple.keyNode.startMark, e,
+                        context = "while constructing a Set",
+                        contextMark = node.startMark,
+                        problem = "found unacceptable key $key",
+                        problemMark = tuple.keyNode.startMark,
+                        cause = e,
                     )
                 }
             }
@@ -334,8 +339,8 @@ abstract class BaseConstructor(
      * have different hash after initialization compared to clean just created one. And set of course
      * does not observe value hashCode changes.
      *
-     * @param set - the set to add the key
-     * @param key - the item to add to the set
+     * @param set the set to add the key
+     * @param key the item to add to the set
      */
     private fun postponeSetFilling(set: MutableSet<Any?>, key: Any?) {
         sets2fill.add(0, RecursiveTuple(set, key))

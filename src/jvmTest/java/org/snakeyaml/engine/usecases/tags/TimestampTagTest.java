@@ -117,7 +117,7 @@ public class TimestampTagTest {
     @NotNull
     @Override
     public Map<Tag, ConstructNode> getSchemaTagConstructors() {
-      Map<Tag, ConstructNode> parent = super.getSchemaTagConstructors();
+      Map<Tag, ConstructNode> parent = new HashMap<>(super.getSchemaTagConstructors());
       parent.put(myTimeTag, new TimestampConstructor());
       return parent;
     }

@@ -18,6 +18,7 @@ class ParseString(
      * @return parsed events
      */
     fun parseString(yaml: String): Iterable<Event> =
-        ParserImpl(settings, StreamReader(settings, yaml))
-            .asSequence().asIterable()
+        Iterable {
+            ParserImpl(settings, StreamReader(settings, yaml))
+        }
 }

@@ -105,6 +105,10 @@ class CharConstants private constructor(content: String) {
             '_' to "\u00A0", // Unicode non-breaking-space
         )
 
+        /** The reverse of [ESCAPE_REPLACEMENTS]: Map characters to the escaped replacement. */
+        private val escapedReplacements: Map<String, Char> =
+            ESCAPE_REPLACEMENTS.entries.associate { (k, v) -> v to k }
+
         /**
          * A mapping from a character to a number of bytes to read-ahead for that escape sequence. These
          * escape sequences are used to handle unicode escaping in the following formats, where `H` is a
@@ -122,7 +126,7 @@ class CharConstants private constructor(content: String) {
         )
 
         /**
-         * Replace a single character with its string representation
+         * Replace a single character with a readable [String] representation
          *
          * @param char - the char to escape
          * @return the same string or its escaped representation
@@ -130,16 +134,13 @@ class CharConstants private constructor(content: String) {
         @JvmStatic
         fun escapeChar(char: Char): String {
             val charString = char.toString()
-            for (s in ESCAPE_REPLACEMENTS.keys) {
-                val v = ESCAPE_REPLACEMENTS[s]
-                if (" " == v || "/" == v || "\"" == v) {
-                    continue
-                }
-                if (v == charString) {
-                    return "\\" + s // '<TAB>' -> '\t'
-                }
-            }
-            return charString
+
+            // YAML requires these chars are escaped, but here we're just escaping for readability,
+            // so don't escape these chars:
+            if (char in " /\"") return charString
+
+            val escaped = escapedReplacements[charString] ?: return charString
+            return "\\${escaped}"
         }
     }
 }

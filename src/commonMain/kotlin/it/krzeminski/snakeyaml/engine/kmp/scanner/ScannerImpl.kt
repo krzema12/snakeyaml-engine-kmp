@@ -1964,7 +1964,7 @@ class ScannerImpl(
      */
     private fun scanPlainSpaces(): String {
         var length = 0
-        while (reader.peek(length) == ' '.code || reader.peek(length) == '\t'.code) {
+        while (reader.peek(length).toChar() in " \t") {
             length++
         }
         val whitespaces = reader.prefixForward(length)
@@ -1979,7 +1979,7 @@ class ScannerImpl(
         } else {
             val breaks = StringBuilder()
             while (true) {
-                if (reader.peek() == ' '.code) {
+                if (reader.peek().toChar() in " \t") {
                     reader.forward()
                 } else {
                     val lbOpt = scanLineBreak()

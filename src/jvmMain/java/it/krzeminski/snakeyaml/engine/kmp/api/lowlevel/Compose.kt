@@ -20,7 +20,9 @@ import okio.source
 import java.io.InputStream
 import java.io.Reader
 
-actual class Compose(settings: LoadSettings) {
+actual class Compose actual constructor(
+    settings: LoadSettings,
+) {
     private val common = ComposeCommon(settings)
 
     actual fun compose(source: Source): Node? = common.compose(source)

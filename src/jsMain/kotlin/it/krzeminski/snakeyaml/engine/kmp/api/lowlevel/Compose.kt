@@ -4,7 +4,9 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import okio.Source
 
-actual class Compose(settings: LoadSettings) {
+actual class Compose actual constructor(
+    settings: LoadSettings,
+) {
     private val common = ComposeCommon(settings)
 
     actual fun compose(source: Source): Node? = common.compose(source)

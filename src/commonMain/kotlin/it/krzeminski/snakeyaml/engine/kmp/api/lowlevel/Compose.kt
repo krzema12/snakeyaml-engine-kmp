@@ -13,6 +13,7 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import okio.Source
 
@@ -21,7 +22,7 @@ import okio.Source
  *
  * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
  */
-expect class Compose {
+expect class Compose(settings: LoadSettings) {
     /**
      * Parse a YAML stream and produce a single [Node], if available in [source].
      *

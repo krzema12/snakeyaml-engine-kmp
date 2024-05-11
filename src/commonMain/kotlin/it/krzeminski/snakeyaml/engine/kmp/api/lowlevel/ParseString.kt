@@ -2,12 +2,12 @@ package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
-import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
-import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
+@Deprecated("No longer used", ReplaceWith("it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse"))
 class ParseString(
-    private val settings: LoadSettings,
+    settings: LoadSettings,
 ) {
+    private val parse = ParseCommon(settings)
 
     /**
      * Parse a YAML stream and produce parsing events.
@@ -17,8 +17,5 @@ class ParseString(
      * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
      * @return parsed events
      */
-    fun parseString(yaml: String): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, yaml))
-        }
+    fun parseString(yaml: String): Iterable<Event> = parse.parse(yaml)
 }

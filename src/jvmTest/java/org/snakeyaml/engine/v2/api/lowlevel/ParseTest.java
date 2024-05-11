@@ -36,7 +36,7 @@ class ParseTest {
   @Test
   void parseEmptyReader() throws IOException {
     Parse parse = new Parse(LoadSettings.builder().build());
-    Iterable<Event> events = parse.parseReader(CharSource.wrap("").openStream());
+    Iterable<Event> events = parse.parse(CharSource.wrap("").openStream());
     List<Event> list = Lists.newArrayList(events);
     assertEquals(2, list.size());
     TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);
@@ -45,7 +45,7 @@ class ParseTest {
   @Test
   void parseEmptyInputStream() {
     Parse parse = new Parse(LoadSettings.builder().build());
-    Iterable<Event> events = parse.parseInputStream(new ByteArrayInputStream("".getBytes()));
+    Iterable<Event> events = parse.parse(new ByteArrayInputStream("".getBytes()));
     List<Event> list = Lists.newArrayList(events);
     assertEquals(2, list.size());
     TestUtils.compareEvents(Lists.newArrayList(new StreamStartEvent(), new StreamEndEvent()), list);

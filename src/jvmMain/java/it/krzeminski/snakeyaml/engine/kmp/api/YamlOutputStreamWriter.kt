@@ -24,16 +24,15 @@ import java.nio.charset.Charset
  * @param out the output
  * @param cs encoding to use to translate String to bytes
  */
-abstract class YamlOutputStreamWriter(
+open class YamlOutputStreamWriter(
     out: OutputStream,
     cs: Charset,
 ) : OutputStreamWriter(out, cs), StreamDataWriter {
-    /**
-     * to be implemented
-     *
-     * @param e - the reason
-     */
-    abstract fun processIOException(e: IOException?)
+
+    /** Handle [IOException]s thrown while writing. */
+    open fun processIOException(e: IOException) {
+        throw e
+    }
 
     override fun flush() {
         try {

@@ -31,7 +31,7 @@ class SpecVersionTest {
   @DisplayName("Version 1.2 is accepted")
   void version12() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 1.2").build();
-    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.2\n---\nfoo");
+    ScalarNode node = (ScalarNode) new Compose(settings).compose("%YAML 1.2\n---\nfoo");
     assertEquals("foo", node.getValue());
   }
 
@@ -39,7 +39,7 @@ class SpecVersionTest {
   @DisplayName("Version 1.3 is accepted by default")
   void version13() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 1.3").build();
-    ScalarNode node = (ScalarNode) new Compose(settings).composeString("%YAML 1.3\n---\nfoo");
+    ScalarNode node = (ScalarNode) new Compose(settings).compose("%YAML 1.3\n---\nfoo");
     assertEquals("foo", node.getValue());
   }
 
@@ -55,7 +55,7 @@ class SpecVersionTest {
           }
         }).build();
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-        () -> new Compose(settings).composeString("%YAML 1.3\n---\nfoo"));
+        () -> new Compose(settings).compose("%YAML 1.3\n---\nfoo"));
     assertEquals("Too high.", exception.getMessage());
   }
 
@@ -64,7 +64,7 @@ class SpecVersionTest {
   void version20() {
     LoadSettings settings = LoadSettings.builder().setLabel("spec 2.0").build();
     YamlVersionException exception = assertThrows(YamlVersionException.class,
-        () -> new Compose(settings).composeString("%YAML 2.0\n---\nfoo"));
+        () -> new Compose(settings).compose("%YAML 2.0\n---\nfoo"));
     assertEquals("Version{major=2, minor=0}", exception.getMessage());
   }
 }

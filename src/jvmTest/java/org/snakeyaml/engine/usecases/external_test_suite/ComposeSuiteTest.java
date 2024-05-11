@@ -54,7 +54,7 @@ class ComposeSuiteTest {
     List<Node> list = new ArrayList();
     try {
       LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
-      Iterable<Node> iterable = new Compose(settings).composeAllFromString(data.getInput());
+      Iterable<Node> iterable = new Compose(settings).composeAll(data.getInput());
       iterable.forEach(event -> list.add(event));
     } catch (YamlEngineException e) {
       error = e;
@@ -67,7 +67,7 @@ class ComposeSuiteTest {
   void runOne() {
     SuiteData data = SuiteUtils.getOne("C4HZ");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
-    Node node = new Compose(settings).composeString(data.getInput());
+    Node node = new Compose(settings).compose(data.getInput());
     assertNotNull(node);
     // System.out.println(node);
   }

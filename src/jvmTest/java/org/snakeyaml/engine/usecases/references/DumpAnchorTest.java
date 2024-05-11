@@ -36,7 +36,7 @@ public class DumpAnchorTest {
   public void test_anchor_test() {
     String str = TestUtils.getResource("/anchor/issue481.yaml");
     Compose compose = new Compose(LoadSettings.builder().build());
-    Node node = compose.composeReader(new StringReader(str));
+    Node node = compose.compose(new StringReader(str));
 
     DumpSettings setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
         .setAnchorGenerator(node1 -> node1.getAnchor()).build();

@@ -76,8 +76,7 @@ class StreamReader(
     /**
      * Cached codepoints from [stream].
      *
-     * Data will be added when it is [peeked][peek],
-     * and dropped when it is read.
+     * Data will be added when it is [peeked][peek], and dropped when it is read.
      */
     private val codepointsBuffer: ArrayDeque<Int> = ArrayDeque(bufferSize)
 
@@ -86,13 +85,11 @@ class StreamReader(
      *
      * [index] is only required to implement 1024 key length restriction and the total length restriction.
      */
-    var index = 0 // in code points
+    var index = 0
         private set
 
-    /**
-     * [index] of the current position from the beginning of the current document.
-     */
-    var documentIndex = 0 // current document index in code points (only for limiting)
+    /** [index] of the current position (in characters) from the beginning of the current document. */
+    var documentIndex = 0 // (only used for limiting)
         private set
 
     /** Current line from the beginning of the stream. */
@@ -100,7 +97,7 @@ class StreamReader(
         private set
 
     /** Current position as number (in characters) from the beginning of the current [line] */
-    var column = 0 // in code points
+    var column = 0
         private set
 
     /** Generate [Mark] of the current position, or `null` if [LoadSettings.useMarks] is `false`. */
@@ -152,8 +149,6 @@ class StreamReader(
     /**
      * Peek the next [index]-th codepoint.
      *
-     * [index] **must** be greater than 0.
-     *
      * @param index to peek
      * @return the next [index]-th codepoint or `0` if empty
      */
@@ -192,46 +187,23 @@ class StreamReader(
      */
     fun prefixForward(length: Int): String {
         val prefix = prefix(length)
-
         forward(length)
-//        var i = 0
-//        repeat(prefix.length) {
-//            codepointsBuffer.removeFirst()
-////            stream.readUtf8CodePointOrNull()
-//        }
-//        moveIndices(length)
-//        column += length
         return prefix
     }
 
     private fun ensureEnoughData(index: Int = 1): Boolean {
-//        println("[StreamReader.ensureEnoughData(index=$index)] codepointsBuffer.size:${codepointsBuffer.size}, codepointsBuffer.indices:${codepointsBuffer.indices}")
-//        if (stream.exhausted() || stream.request(1)) {
-//            stream.close()
-//            return false
-//        }
         if (index >= codepointsBuffer.size) {
-            //        println("[StreamReader.ensureEnoughData()] updating...")
             update()
         }
-        val x = index <= codepointsBuffer.size
-//        println("[StreamReader.ensureEnoughData()] result:$x")
-        return x
+        return index <= codepointsBuffer.size
     }
 
     private fun update() {
-//        println("[StreamReader.update()] stream:$stream")
         try {
             while (!stream.exhausted() && codepointsBuffer.size < bufferSize) {
-                val codepoint = try {
-                    stream.readUtf8CodePoint()
-                } catch (ex: EOFException) {
-                    //        println("[StreamReader.update()] failed to read UTF8 codepoint from stream $stream")
-                    stream.close()
-                    break
-                }
+                val codepoint = stream.readUtf8CodePointOrNull()
+                    ?: break
 
-                //        println("[StreamReader.update()] UTF8 codepoint ${codepoint.toString(16)}")
                 codepointsBuffer.addLast(codepoint)
 
                 if (!isPrintable(codepoint)) {
@@ -264,15 +236,6 @@ class StreamReader(
      */
     fun resetDocumentIndex() {
         documentIndex = 0
-    }
-
-    private fun BufferedSource.readUtf8CodePointOrNull(): Int? {
-        return try {
-            val codepoint = readUtf8CodePoint()
-            codepoint
-        } catch (ex: EOFException) {
-            return null
-        }
     }
 
     companion object {
@@ -320,6 +283,14 @@ class StreamReader(
                 || c in 0xA0..0xD7FF
                 || c in 0xE000..0xFFFD
                 || c in 0x10000..0x10FFFF
+        }
+
+        private fun BufferedSource.readUtf8CodePointOrNull(): Int? {
+            return try {
+                readUtf8CodePoint()
+            } catch (ex: EOFException) {
+                null
+            }
         }
     }
 }

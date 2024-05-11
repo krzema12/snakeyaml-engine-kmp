@@ -31,7 +31,6 @@ actual class Compose(settings: LoadSettings) {
 
     actual fun composeAll(string: String): Iterable<Node> = common.composeAll(string)
 
-
     /**
      * Parse a YAML stream and produce a single [Node], if available in [reader].
      *

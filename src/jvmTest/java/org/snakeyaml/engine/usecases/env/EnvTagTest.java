@@ -29,7 +29,7 @@ public class EnvTagTest {
   @Test
   public void testImplicitResolverForEnvConstructor() {
     Compose loader = new Compose(LoadSettings.builder().build());
-    Node loaded = loader.composeString("${PATH}");
+    Node loaded = loader.compose("${PATH}");
     assertEquals(Tag.ENV_TAG, loaded.getTag());
   }
 }

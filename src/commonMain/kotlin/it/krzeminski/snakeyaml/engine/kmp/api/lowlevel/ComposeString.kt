@@ -22,8 +22,9 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 /**
  * Helper to compose strings to [Node]s.
  *
- * @param settings - configuration
+ * @param settings configuration
  */
+@Deprecated("Converted to common it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose", ReplaceWith("it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose"))
 class ComposeString(
     private val settings: LoadSettings,
 ) {
@@ -33,29 +34,30 @@ class ComposeString(
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s).
-     * @return parsed [Node] if available
+     * @param string YAML document(s).
+     * @return parsed [Node], if available in [string].
      */
-    fun composeString(yaml: String): Node? =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, yaml)),
-        ).getSingleNode()
+    fun compose(string: String): Node? = composer(string).getSingleNode()
 
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    fun composeString(yaml: String): Node? = compose(yaml)
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s).
-     * @return parsed root Nodes for all the specified YAML documents
+     * @param string YAML document(s).
+     * @return parsed root [Node]s for all YAML documents in [string].
      */
-    fun composeAllFromString(yaml: String): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, yaml)),
-            )
-        }
+    fun composeAll(string: String): Iterable<Node> = Iterable { composer(string) }
+
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    fun composeAllFromString(yaml: String): Iterable<Node> = composeAll(yaml)
+
+    private fun composer(yaml: String): Composer {
+        val reader = StreamReader(stream = yaml, loadSettings = settings)
+        val parser = ParserImpl(settings, reader)
+        return Composer(settings, parser)
+    }
 }

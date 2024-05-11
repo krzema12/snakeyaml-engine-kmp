@@ -13,9 +13,9 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.exceptions
 
+import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants
 import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.internal.utils.toCodePoints
-import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -26,17 +26,21 @@ import kotlin.jvm.JvmOverloads
  * @param index the index from the beginning of the stream
  * @param line line of the mark from beginning of the stream
  * @param column column of the mark from beginning of the line
- * @param buffer the data
+ * @param codepoints the data
  * @param pointer the position of the mark from the beginning of the data
  */
-class Mark(
+class Mark @JvmOverloads constructor(
     val name: String,
     val index: Int,
     val line: Int,
     val column: Int,
-    val buffer: IntArray,
-    val pointer: Int,
+    val codepoints: List<Int>,
+    @Deprecated("pointer is no longer required")
+    val pointer: Int = 0,
 ) {
+
+    @Deprecated("Converted to immutable List<Int>")
+    val buffer: IntArray = codepoints.toIntArray()
 
     /**
      * This constructor is only for test
@@ -48,19 +52,38 @@ class Mark(
      * @param str the data
      * @param pointer the position of the mark from the beginning of the data
      */
+    @JvmOverloads
     internal constructor(
         name: String,
         index: Int,
         line: Int,
         column: Int,
         str: CharSequence,
-        pointer: Int,
+        pointer: Int = 0,
     ) : this(
         name = name,
         index = index,
         line = line,
         column = column,
-        buffer = str.toCodePoints(),
+        codepoints = str.toCodePoints(),
+        pointer = pointer,
+    )
+
+    @JvmOverloads
+    @Deprecated("...")
+    internal constructor(
+        name: String,
+        index: Int,
+        line: Int,
+        column: Int,
+        buffer: IntArray,
+        pointer: Int = 0,
+    ) : this(
+        name = name,
+        index = index,
+        line = line,
+        column = column,
+        codepoints = buffer.toList(),
         pointer = pointer,
     )
 
@@ -73,6 +96,7 @@ class Mark(
      * @param maxLength cut data after this length
      * @return readable piece of YAML where a problem detected
      */
+    @Suppress("DEPRECATION")
     @JvmOverloads
     // TODO this function is only exposed because of testing - mark as `internal` once tests are Kotlin
     fun createSnippet(

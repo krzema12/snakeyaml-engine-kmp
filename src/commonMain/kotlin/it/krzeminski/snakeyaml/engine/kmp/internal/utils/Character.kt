@@ -39,7 +39,7 @@ internal object Character {
      *
      * The Unicode code points are divided into two categories:
      * Basic Multilingual Plane (BMP) code points and Supplementary code points.
-     * BMP code points are present in the range U+0000 to U+FFFF.
+     * BMP code points are present in the range `U+0000` to `U+FFFF`.
      *
      * Whereas, supplementary characters are rare characters that are not represented using the original 16-bit Unicode.
      * For example, these type of characters are used in Chinese or Japanese scripts and hence, are required by the

@@ -1,9 +1,12 @@
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import okio.Source
 
-expect class Parse {
+expect class Parse(
+    settings: LoadSettings,
+) {
     /**
      * Parse a YAML string and produce parsing events.
      *

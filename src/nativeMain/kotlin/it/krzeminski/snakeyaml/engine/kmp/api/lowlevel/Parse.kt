@@ -4,7 +4,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import okio.Source
 
-actual class Parse(
+actual class Parse actual constructor(
     settings: LoadSettings,
 ) {
     private val common = ParseCommon(settings)

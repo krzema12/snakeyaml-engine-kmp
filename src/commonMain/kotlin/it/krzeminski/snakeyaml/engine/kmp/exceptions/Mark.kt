@@ -144,7 +144,7 @@ class Mark @JvmOverloads constructor(
     override fun toString(): String {
         val snippet = createSnippet()
         return """
-            | in $name, line ${line + 1}, column ${column + 1}:
+            | in ${name.trim()}, line ${line + 1}, column ${column + 1}:
             |$snippet
         """.trimMargin()
     }

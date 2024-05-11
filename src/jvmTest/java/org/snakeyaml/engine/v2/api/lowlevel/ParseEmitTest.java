@@ -67,7 +67,7 @@ class ParseEmitTest {
   void yamlToYaml(final InputStream in, final PrintStream out) throws IOException {
     Parse parser = new Parse(LoadSettings.builder().build());
     Emitter emitter = new Emitter(DumpSettings.builder().build(), new MyDumperWriter(out));
-    for (Event event : parser.parseInputStream(in)) {
+    for (Event event : parser.parse(in)) {
       emitter.emit(event);
     }
   }

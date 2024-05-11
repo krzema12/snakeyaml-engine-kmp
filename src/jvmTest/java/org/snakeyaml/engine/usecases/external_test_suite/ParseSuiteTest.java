@@ -43,7 +43,7 @@ class ParseSuiteTest {
   void runOne() {
     SuiteData data = SuiteUtils.getOne("S98Z");
     LoadSettings settings = LoadSettings.builder().setLabel(data.getLabel()).build();
-    Iterable<Event> iterable = new Parse(settings).parseString(data.getInput());
+    Iterable<Event> iterable = new Parse(settings).parse(data.getInput());
     for (Event event : iterable) {
       assertNotNull(event);
       System.out.println(event);

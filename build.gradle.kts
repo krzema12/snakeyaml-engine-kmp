@@ -61,6 +61,21 @@ dokkatoo {
             packageListUrl("https://square.github.io/okio/3.x/okio/okio/package-list")
             url("https://square.github.io/okio/3.x/okio/")
         }
+
+        sourceLink {
+            localDirectory = layout.projectDirectory
+            val projectVersion = provider { project.version.toString() }
+            remoteUrl = projectVersion.map { version ->
+                // if project version matches SemVer, then point the URL to a tag - otherwise, point to main
+                val remoteVersion =
+                    if (version.matches(Regex("""[1-9][0-9]*\.[1-9][0-9]*\.[1-9][0-9]*"""))) {
+                        "v${version}"
+                    } else {
+                        "main"
+                    }
+                uri("https://github.com/krzema12/snakeyaml-engine-kmp/blob/$remoteVersion")
+            }
+        }
     }
 
     pluginsConfiguration {

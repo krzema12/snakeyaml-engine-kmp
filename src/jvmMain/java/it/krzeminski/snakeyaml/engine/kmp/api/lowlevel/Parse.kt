@@ -14,10 +14,8 @@
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
-import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
-import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
-import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import okio.Source
 import okio.source
 import java.io.InputStream
 import java.io.Reader
@@ -27,23 +25,13 @@ import java.io.Reader
  * @param settings - configuration
  */
 actual class Parse actual constructor(
-    private val settings: LoadSettings,
+    settings: LoadSettings,
 ) {
-    private val parseString = ParseString(settings)
+    private val common = ParseCommon(settings)
 
-    /**
-     * Parse a YAML stream and produce parsing events.
-     *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-     * encoding is UTF-16 or UTF-32
-     * @return parsed events
-     */
-    fun parseInputStream(yaml: InputStream): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source())))
-        }
+    actual fun parse(string: String): Iterable<Event> = common.parse(string)
+
+    actual fun parse(source: Source): Iterable<Event> = common.parse(source)
 
     /**
      * Parse a YAML stream and produce parsing events. Since the encoding is already known the BOM
@@ -51,22 +39,28 @@ actual class Parse actual constructor(
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s).
+     * @param reader YAML document(s).
      * @return parsed events
      */
-    fun parseReader(yaml: Reader): Iterable<Event> =
-        Iterable {
-            ParserImpl(settings, StreamReader(settings, yaml.readText()))
-        }
+    fun parse(reader: Reader): Iterable<Event> = parse(reader.readText())
 
     /**
      * Parse a YAML stream and produce parsing events.
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
+     * @param inputStream YAML document(s). Default encoding is UTF-8. The BOM must be present if the
+     * encoding is UTF-16 or UTF-32
      * @return parsed events
      */
-    actual fun parseString(yaml: String): Iterable<Event> =
-        parseString.parseString(yaml)
+    fun parse(inputStream: InputStream): Iterable<Event> = parse(inputStream.source())
+
+    @Deprecated("renamed", ReplaceWith("parse(yaml)"))
+    actual fun parseString(yaml: String): Iterable<Event> = parse(yaml)
+
+    @Deprecated("renamed", ReplaceWith("parse(yaml)"))
+    fun parseInputStream(yaml: InputStream): Iterable<Event> = parse(yaml)
+
+    @Deprecated("renamed", ReplaceWith("parse(yaml)"))
+    fun parseReader(yaml: Reader): Iterable<Event> = parse(yaml)
 }

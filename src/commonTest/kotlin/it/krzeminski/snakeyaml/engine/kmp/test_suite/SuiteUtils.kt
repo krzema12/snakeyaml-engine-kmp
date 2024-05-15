@@ -13,7 +13,7 @@ internal object SuiteUtils {
         val settings = LoadSettings.builder().setLabel(data.label).build()
 
         return try {
-            ParseResult(Parse(settings).parseString(data.inYaml).toList())
+            ParseResult(Parse(settings).parse(data.inYaml).toList())
         } catch (e: YamlEngineException) {
             ParseResult(null, e)
         }

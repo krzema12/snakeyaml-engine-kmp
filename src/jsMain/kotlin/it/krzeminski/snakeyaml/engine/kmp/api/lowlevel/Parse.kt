@@ -2,20 +2,17 @@ package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
+import okio.Source
 
 actual class Parse actual constructor(
     settings: LoadSettings,
 ) {
-    private val parseString = ParseString(settings)
+    private val common = ParseCommon(settings)
 
-    /**
-     * Parse a YAML stream and produce parsing events.
-     *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
-     * @return parsed events
-     */
-    actual fun parseString(yaml: String): Iterable<Event> =
-        parseString.parseString(yaml)
+    actual fun parse(string: String): Iterable<Event> = common.parse(string)
+
+    actual fun parse(source: Source): Iterable<Event> = common.parse(source)
+
+    @Deprecated("renamed", ReplaceWith("parse(yaml)"))
+    actual fun parseString(yaml: String): Iterable<Event> = parse(yaml)
 }

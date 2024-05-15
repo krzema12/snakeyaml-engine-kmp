@@ -34,7 +34,7 @@ public class GlobalDirectivesTest {
   Iterable<Event> yamlToEvents(@Language("file-reference") final String resourceName) {
     InputStream input = TestUtils.getResourceAsStream(resourceName);
     Parse parser = new Parse(LoadSettings.builder().build());
-    return parser.parseInputStream(input);
+    return parser.parse(input);
   }
 
   @Test

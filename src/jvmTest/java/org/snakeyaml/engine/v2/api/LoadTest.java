@@ -197,6 +197,6 @@ class LoadTest {
     Iterable<Object> v = load.loadAllFromString("bbb");
     UnsupportedOperationException exception =
         assertThrows(UnsupportedOperationException.class, () -> v.iterator().remove());
-    assertEquals("Removing is not supported.", exception.getMessage());
+    assertEquals("Operation is not supported for read-only collection", exception.getMessage());
   }
 }

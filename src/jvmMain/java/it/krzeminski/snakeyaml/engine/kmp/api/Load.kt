@@ -156,7 +156,7 @@ class Load @JvmOverloads constructor(
     private class YamlIterator(
         private val composer: Composer,
         private val constructor: BaseConstructor,
-    ) : MutableIterator<Any?> {
+    ) : Iterator<Any?> {
         private var composerInitiated = false
         override fun hasNext(): Boolean {
             composerInitiated = true
@@ -170,7 +170,5 @@ class Load @JvmOverloads constructor(
             val node = composer.next()
             return constructor.constructSingleDocument(node)
         }
-
-        override fun remove(): Unit = throw UnsupportedOperationException("Removing is not supported.")
     }
 }

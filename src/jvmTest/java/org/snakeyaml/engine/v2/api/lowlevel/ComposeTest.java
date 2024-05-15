@@ -32,28 +32,28 @@ class ComposeTest {
   @Test
   void composeEmptyReader() throws IOException {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Node node = compose.composeReader(CharSource.wrap("").openStream());
+    Node node = compose.compose(CharSource.wrap("").openStream());
     assertNull(node);
   }
 
   @Test
   void composeEmptyInputStream() {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Node node = compose.composeInputStream(new ByteArrayInputStream("".getBytes()));
+    Node node = compose.compose(new ByteArrayInputStream("".getBytes()));
     assertNull(node);
   }
 
   @Test
   void composeAllFromEmptyReader() throws IOException {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Iterable<Node> nodes = compose.composeAllFromReader(CharSource.wrap("").openStream());
+    Iterable<Node> nodes = compose.composeAll(CharSource.wrap("").openStream());
     assertFalse(nodes.iterator().hasNext());
   }
 
   @Test
   void composeAllFromEmptyInputStream() {
     Compose compose = new Compose(LoadSettings.builder().build());
-    Iterable<Node> nodes = compose.composeAllFromInputStream(new ByteArrayInputStream("".getBytes()));
+    Iterable<Node> nodes = compose.composeAll(new ByteArrayInputStream("".getBytes()));
     assertFalse(nodes.iterator().hasNext());
   }
 }

@@ -14,107 +14,75 @@
 package it.krzeminski.snakeyaml.engine.kmp.api.lowlevel
 
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
-import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
-import it.krzeminski.snakeyaml.engine.kmp.composer.Composer
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
-import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
-import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import okio.Source
 import okio.source
 import java.io.InputStream
 import java.io.Reader
 
-/**
- * Helper to compose input stream to Node
- * @param settings - configuration
- */
-actual class Compose(
-    private val settings: LoadSettings,
+actual class Compose actual constructor(
+    settings: LoadSettings,
 ) {
+    private val common = ComposeCommon(settings)
 
-    private val composeString = ComposeString(settings)
+    actual fun compose(source: Source): Node? = common.compose(source)
 
-    /**
-     * Parse a YAML stream and produce [Node]
-     *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml - YAML document(s). Since the encoding is already known the BOM must not be present
-     * (it will be parsed as content)
-     * @return parsed [Node] if available
-     */
-    fun composeReader(yaml: Reader): Node? =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, yaml.readText())),
-        ).getSingleNode()
+    actual fun compose(string: String): Node? = common.compose(string)
+
+    actual fun composeAll(source: Source): Iterable<Node> = common.composeAll(source)
+
+    actual fun composeAll(string: String): Iterable<Node> = common.composeAll(string)
 
     /**
-     * Parse a YAML stream and produce [Node]
+     * Parse a YAML stream and produce a single [Node], if available in [reader].
      *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-     * encoding is UTF-16 or UTF-32
-     * @return parsed [Node] if available
+     * @param inputStream YAML document(s).
      */
-    fun composeInputStream(yaml: InputStream): Node? =
-        Composer(
-            settings,
-            ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
-        ).getSingleNode()
+    fun compose(inputStream: InputStream): Node? = compose(inputStream.source())
+
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    fun composeInputStream(yaml: InputStream): Node? = compose(yaml)
+
 
     /**
-     * Parse a YAML stream and produce [Node]
+     * Parse a YAML stream and produce a single [Node], if available in [reader].
      *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml - YAML document(s).
-     * @return parsed [Node] if available
+     * @param reader YAML document(s).
      */
-    actual fun composeString(yaml: String): Node? = composeString.composeString(yaml)
+    fun compose(reader: Reader): Node? = compose(reader.readText())
 
-    // Compose all documents
-    /**
-     * Parse all YAML documents in a stream and produce corresponding representation trees.
-     *
-     * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
-     *
-     * @param yaml stream of YAML documents
-     * @return parsed root Nodes for all the specified YAML documents
-     */
-    fun composeAllFromReader(yaml: Reader): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, yaml.readText())),
-            )
-        }
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    fun composeReader(yaml: Reader): Node? = compose(yaml)
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s). Default encoding is UTF-8. The BOM must be present if the
-     * encoding is UTF-16 or UTF-32
-     * @return parsed root Nodes for all the specified YAML documents
+     * @param inputStream stream of YAML documents
+     * @return parsed root [Node]s for all YAML documents in [inputStream].
      */
-    fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> =
-        Iterable {
-            Composer(
-                settings,
-                ParserImpl(settings, StreamReader(settings, YamlUnicodeReader(yaml.source()))),
-            )
-        }
+    fun composeAll(inputStream: InputStream): Iterable<Node> = composeAll(inputStream.source())
+
+    @Deprecated("renamed", ReplaceWith("composeAll(yaml)"))
+    fun composeAllFromInputStream(yaml: InputStream): Iterable<Node> = composeAll(yaml)
 
     /**
      * Parse all YAML documents in a stream and produce corresponding representation trees.
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s).
-     * @return parsed root Nodes for all the specified YAML documents
+     * @param reader stream of YAML documents
+     * @return parsed root [Node]s for all YAML documents in [reader].
      */
-    actual fun composeAllFromString(yaml: String): Iterable<Node> =
-        composeString.composeAllFromString(yaml)
+    fun composeAll(reader: Reader): Iterable<Node> = composeAll(reader.readText())
+
+    @Deprecated("renamed", ReplaceWith("composeAll(yaml)"))
+    fun composeAllFromReader(yaml: Reader): Iterable<Node> = composeAll(yaml)
+
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    actual fun composeString(yaml: String): Node? = compose(yaml)
+
+    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    actual fun composeAllFromString(yaml: String): Iterable<Node> = composeAll(yaml)
 }

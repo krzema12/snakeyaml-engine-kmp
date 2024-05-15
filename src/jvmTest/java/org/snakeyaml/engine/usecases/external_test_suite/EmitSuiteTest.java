@@ -46,7 +46,7 @@ class EmitSuiteTest {
         // emit without errors
         String yaml = emit.emitToString(result.getEvents().iterator());
         // eat your own dog food
-        new Compose(LoadSettings.builder().build()).composeAllFromString(yaml);
+        new Compose(LoadSettings.builder().build()).composeAll(yaml);
       }
     }
   }

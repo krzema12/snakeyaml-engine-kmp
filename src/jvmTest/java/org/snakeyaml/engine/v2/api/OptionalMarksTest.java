@@ -34,7 +34,7 @@ class OptionalMarksTest {
     SuiteData data = SuiteUtils.getOne("2AUY");
     LoadSettings settings =
         LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
-    Node node = new Compose(settings).composeString("{a: 4}");
+    Node node = new Compose(settings).compose("{a: 4}");
     assertNotNull(node);
   }
 
@@ -45,7 +45,7 @@ class OptionalMarksTest {
     LoadSettings settings =
         LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(true).build();
     ParserException exception =
-        assertThrows(ParserException.class, () -> new Compose(settings).composeString("{a: 4}}"));
+        assertThrows(ParserException.class, () -> new Compose(settings).compose("{a: 4}}"));
     assertTrue(exception.getMessage().contains("line 1, column 7:"),
         "The error must contain Mark data.");
   }
@@ -58,7 +58,7 @@ class OptionalMarksTest {
     LoadSettings settings =
         LoadSettings.builder().setLabel(data.getLabel()).setUseMarks(false).build();
     ParserException exception =
-        assertThrows(ParserException.class, () -> new Compose(settings).composeString("{a: 4}}"));
+        assertThrows(ParserException.class, () -> new Compose(settings).compose("{a: 4}}"));
     assertEquals("expected '<document start>', but found '}'\n", exception.getMessage());
   }
 }

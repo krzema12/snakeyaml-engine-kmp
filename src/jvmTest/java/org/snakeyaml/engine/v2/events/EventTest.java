@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
@@ -34,7 +36,7 @@ class EventTest {
 
   @Test
   void bothMarks() {
-    Mark fake = new Mark("a", 0, 0, 0, new int[0], 0);
+    Mark fake = new Mark("a", 0, 0, 0, List.of(), 0);
     NullPointerException exception = assertThrows(NullPointerException.class,
         () -> new StreamStartEvent(null, fake));
     assertEquals("Both marks must be either present or absent.", exception.getMessage());

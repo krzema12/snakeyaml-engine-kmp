@@ -26,20 +26,28 @@ import kotlin.jvm.JvmOverloads
  * @param index the index from the beginning of the stream
  * @param line line of the mark from beginning of the stream
  * @param column column of the mark from beginning of the line
- * @param buffer the data
+ * @param codepoints the data
  * @param pointer the position of the mark from the beginning of the data
  */
-class Mark(
+class Mark @JvmOverloads constructor(
     val name: String,
     val index: Int,
     val line: Int,
     val column: Int,
-    val buffer: IntArray,
-    val pointer: Int,
+    val codepoints: List<Int>,
+    val pointer: Int = 0,
 ) {
 
+    @Deprecated("Converted to immutable List<Int>, replace with `codepoints`")
+    val buffer: IntArray = codepoints.toIntArray()
+
     /**
-     * This constructor is only for test
+     * Deprecated: please convert [str] to codepoints.
+     *
+     * ```java
+     * // java
+     * List<Integer> codepoints = str.codePoints().boxed().collect(Collectors.toList());
+     * ```
      *
      * @param name the name to be used as identifier
      * @param index the index from the beginning of the stream
@@ -48,19 +56,39 @@ class Mark(
      * @param str the data
      * @param pointer the position of the mark from the beginning of the data
      */
+    @JvmOverloads
+    @Deprecated("No longer used - please convert CharSequence to codepoints")
     internal constructor(
         name: String,
         index: Int,
         line: Int,
         column: Int,
         str: CharSequence,
-        pointer: Int,
+        pointer: Int = 0,
     ) : this(
         name = name,
         index = index,
         line = line,
         column = column,
-        buffer = str.toCodePoints(),
+        codepoints = str.toCodePoints(),
+        pointer = pointer,
+    )
+
+    @JvmOverloads
+    @Deprecated("No longer used - please use a List<Int> instead of IntArray")
+    internal constructor(
+        name: String,
+        index: Int,
+        line: Int,
+        column: Int,
+        buffer: IntArray,
+        pointer: Int = 0,
+    ) : this(
+        name = name,
+        index = index,
+        line = line,
+        column = column,
+        codepoints = buffer.toList(),
         pointer = pointer,
     )
 

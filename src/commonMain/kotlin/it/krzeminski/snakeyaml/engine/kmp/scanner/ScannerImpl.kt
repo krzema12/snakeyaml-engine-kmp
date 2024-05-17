@@ -302,13 +302,13 @@ class ScannerImpl(
                     return
                 }
 
-            // Is it a single quoted scalar?
+            // Is it a single-quoted scalar?
             '\'' -> {
                 fetchSingle()
                 return
             }
 
-            // Is it a double quoted scalar?
+            // Is it a double-quoted scalar?
             '"'  -> {
                 fetchDouble()
                 return
@@ -978,11 +978,6 @@ class ScannerImpl(
      *```
      */
     private fun scanToNextToken() {
-        // If there is a byte order mark (BOM) at the beginning of the stream,
-        // forward past it.
-        if (reader.index == 0 && reader.peek() == 0xFEFF) {
-            reader.forward()
-        }
         var found = false
         var inlineStartColumn = -1
         while (!found) {

@@ -13,9 +13,9 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.exceptions
 
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.toCodePoints
 import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.joinCodepointsToString
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.toCodePoints
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -26,20 +26,28 @@ import kotlin.jvm.JvmOverloads
  * @param index the index from the beginning of the stream
  * @param line line of the mark from beginning of the stream
  * @param column column of the mark from beginning of the line
- * @param buffer the data
- * @param pointer the position of the mark from the beginning of the data
+ * @param codepoints the data
+ * @param pointer the index of the character in [codepoints] that will be marked
  */
-class Mark(
+class Mark @JvmOverloads constructor(
     val name: String,
     val index: Int,
     val line: Int,
     val column: Int,
-    val buffer: IntArray,
-    val pointer: Int,
+    val codepoints: List<Int>,
+    val pointer: Int = 0,
 ) {
 
+    @Deprecated("Converted to immutable List<Int>, replace with `codepoints`")
+    val buffer: IntArray = codepoints.toIntArray()
+
     /**
-     * This constructor is only for test
+     * Deprecated: please convert [str] to codepoints.
+     *
+     * ```java
+     * // java
+     * List<Integer> codepoints = str.codePoints().boxed().collect(Collectors.toList());
+     * ```
      *
      * @param name the name to be used as identifier
      * @param index the index from the beginning of the stream
@@ -48,80 +56,107 @@ class Mark(
      * @param str the data
      * @param pointer the position of the mark from the beginning of the data
      */
+    @JvmOverloads
+    @Deprecated("No longer used - please convert CharSequence to codepoints")
     internal constructor(
         name: String,
         index: Int,
         line: Int,
         column: Int,
         str: CharSequence,
-        pointer: Int,
+        pointer: Int = 0,
     ) : this(
         name = name,
         index = index,
         line = line,
         column = column,
-        buffer = str.toCodePoints(),
+        codepoints = str.toCodePoints(),
+        pointer = pointer,
+    )
+
+    @JvmOverloads
+    @Deprecated("No longer used - please use a List<Int> instead of IntArray")
+    internal constructor(
+        name: String,
+        index: Int,
+        line: Int,
+        column: Int,
+        buffer: IntArray,
+        pointer: Int = 0,
+    ) : this(
+        name = name,
+        index = index,
+        line = line,
+        column = column,
+        codepoints = buffer.toList(),
         pointer = pointer,
     )
 
     private fun isLineBreak(c: Int): Boolean = CharConstants.NULL_OR_LINEBR.has(c)
 
     /**
-     * Create readable YAML with indent 4 and (by default) a [maxLength] of 75 characters.
+     * Create readable YAML snippet of [codepoints], with a caret `^` pointing at [pointer].
      *
-     * @param indent the indent
-     * @param maxLength cut data after this length
-     * @return readable piece of YAML where a problem detected
+     * Only a single line will be rendered. Content before or after a linebreak will not be shown.
+     *
+     * Lines longer than [maxLength] will be truncated, using [SNIPPET_OVERFLOW] to indicate truncation.
+     *
+     * @param indentSize The number of spaces to indent the snippet.
+     * @param maxLength Limit the result to this many characters.
+     * @return readable Piece of YAML that highlights a .
      */
     @JvmOverloads
     // TODO this function is only exposed because of testing - mark as `internal` once tests are Kotlin
     fun createSnippet(
-        indent: Int = 4,
+        indentSize: Int = 4,
         maxLength: Int = 75,
     ): String {
-        val half = maxLength / 2f - 1f
-        var start = pointer
-        var head = ""
-        while (start > 0 && !isLineBreak(buffer[start - 1])) {
-            start -= 1
-            if (pointer - start > half) {
-                head = " ... "
-                start += 5
-                break
-            }
+        val halfMaxLength = maxLength / 2
+
+        val lineBeforePointer = codepoints
+            .take(pointer)
+            .takeLastWhile { !isLineBreak(it) }
+            .joinCodepointsToString()
+
+        val lineAfterPointer = codepoints
+            .drop(pointer)
+            .takeWhile { !isLineBreak(it) }
+            .joinCodepointsToString()
+
+        val head = if (lineBeforePointer.length > halfMaxLength) {
+            SNIPPET_OVERFLOW + lineBeforePointer.takeLast(halfMaxLength).drop(SNIPPET_OVERFLOW.length)
+        } else {
+            lineBeforePointer
         }
-        var tail = ""
-        var end = pointer
-        while (end < buffer.size && !isLineBreak(buffer[end])) {
-            end += 1
-            if (end - pointer > half) {
-                tail = " ... "
-                end -= 5
-                break
-            }
+
+        val tail = if (lineAfterPointer.length > halfMaxLength) {
+            lineAfterPointer.take(halfMaxLength).dropLast(SNIPPET_OVERFLOW.length) + SNIPPET_OVERFLOW
+        } else {
+            lineAfterPointer
         }
-        val result = StringBuilder()
-        for (i in 0 until indent) {
-            result.append(" ")
+
+        val indent = " ".repeat(indentSize)
+        return buildString {
+            append(indent)
+            append(head)
+            append(tail)
+            appendLine()
+
+            append(indent)
+            append(" ".repeat(head.length))
+            append("^")
         }
-        result.append(head)
-        for (i in start until end) {
-            result.appendCodePoint(buffer[i])
-        }
-        result.append(tail)
-        result.append("\n")
-        for (i in 0 until indent + pointer - start + head.length) {
-            result.append(" ")
-        }
-        result.append("^")
-        return result.toString()
     }
 
     override fun toString(): String {
         val snippet = createSnippet()
         return """
-            | in $name, line ${line + 1}, column ${column + 1}:
+            | in ${name.trim()}, line ${line + 1}, column ${column + 1}:
             |$snippet
         """.trimMargin()
+    }
+
+    companion object {
+        private const val SNIPPET_OVERFLOW = " ... "
     }
 }

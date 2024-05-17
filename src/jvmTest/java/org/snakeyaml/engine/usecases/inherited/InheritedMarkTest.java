@@ -13,9 +13,12 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,11 +45,11 @@ public class InheritedMarkTest extends InheritedImportTest {
         }
         index += 1;
       }
-      Mark mark = new Mark("testMarks", index, line, column, input, index);
+      List<Integer> inputCodepoints = input.codePoints().boxed().collect(Collectors.toList());
+      Mark mark = new Mark("testMarks", index, line, column, inputCodepoints, index);
       String snippet = mark.createSnippet(2, 79);
-      assertTrue(snippet.indexOf("\n") > -1, "Must only have one '\n'.");
-      assertEquals(snippet.indexOf("\n"), snippet.lastIndexOf("\n"),
-          "Must only have only one '\n'.");
+      assertTrue(snippet.contains("\n"), "Must contain at least one '\n'.");
+      assertEquals(snippet.indexOf("\n"), snippet.lastIndexOf("\n"), "Must only have only one '\n'.");
       String[] lines = snippet.split("\n");
       String data = lines[0];
       String pointer = lines[1];

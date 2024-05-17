@@ -978,11 +978,6 @@ class ScannerImpl(
      *```
      */
     private fun scanToNextToken() {
-        // If there is a byte order mark (BOM) at the beginning of the stream,
-        // forward past it.
-        if (reader.index == 0 && reader.peek() == 0xFEFF) {
-            reader.forward()
-        }
         var found = false
         var inlineStartColumn = -1
         while (!found) {

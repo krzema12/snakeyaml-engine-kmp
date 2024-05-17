@@ -30,7 +30,7 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader;
 @org.junit.jupiter.api.Tag("fast")
 public class WindowsTest {
 
-  Load loader = new Load(LoadSettings.builder().build());
+  Load loader = new Load();
 
   @Test
   @DisplayName("Check that Windows style line endings handled the same as Unix style ones")
@@ -46,7 +46,7 @@ public class WindowsTest {
   @Test
   void countLinesCRLF() {
     try {
-      loader.loadFromString("\r\n[");
+      loader.loadOne("\r\n[");
       fail();
     } catch (ParserException e) {
       assertTrue(e.getMessage().contains("line 2,"), e.getMessage());
@@ -56,7 +56,7 @@ public class WindowsTest {
   @Test
   void countLinesCRCR() {
     try {
-      loader.loadFromString("\r\r[");
+      loader.loadOne("\r\r[");
       fail();
     } catch (ParserException e) {
       assertTrue(e.getMessage().contains("line 3,"));
@@ -66,7 +66,7 @@ public class WindowsTest {
   @Test
   void countLinesLFLF() {
     try {
-      loader.loadFromString("\n\n[");
+      loader.loadOne("\n\n[");
       fail();
     } catch (ParserException e) {
       assertTrue(e.getMessage().contains("line 3,"));

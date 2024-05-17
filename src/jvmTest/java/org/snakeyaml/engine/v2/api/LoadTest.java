@@ -35,79 +35,70 @@ class LoadTest {
   @Test
   @DisplayName("String 'a' is parsed")
   void parseString() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    String str = (String) load.loadFromString("a");
+    Load load = new Load();
+    String str = (String) load.loadOne("a");
     assertEquals("a", str);
   }
 
   @Test
   @DisplayName("Integer 1 is parsed")
   void parseInteger() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Integer integer = (Integer) load.loadFromString("1");
+    Load load = new Load();
+    Integer integer = (Integer) load.loadOne("1");
     assertEquals(Integer.valueOf(1), integer);
   }
 
   @Test
   @DisplayName("Boolean true is parsed")
   void parseBoolean() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    assertTrue((Boolean) load.loadFromString("true"));
+    Load load = new Load();
+    assertTrue((Boolean) load.loadOne("true"));
   }
 
   @Test
   @DisplayName("null is parsed")
   void parseNull() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    assertNull(load.loadFromString(""));
+    Load load = new Load();
+    assertNull(load.loadOne(""));
   }
 
   @Test
   @DisplayName("null tag is parsed")
   void parseNullTag() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    assertNull(load.loadFromString("!!null"));
+    Load load = new Load();
+    assertNull(load.loadOne("!!null"));
   }
 
   @Test
   @DisplayName("Float is parsed")
   void parseFloat() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Double doubleValue = (Double) load.loadFromString("1.01");
+    Load load = new Load();
+    Double doubleValue = (Double) load.loadOne("1.01");
     assertEquals(Double.valueOf(1.01), doubleValue);
   }
 
   @Test
   @DisplayName("Load from InputStream")
   void loadFromInputStream() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    String v = (String) load.loadFromInputStream(new ByteArrayInputStream("aaa".getBytes()));
+    Load load = new Load();
+    String v = (String) load.loadOne(new ByteArrayInputStream("aaa".getBytes()));
     assertEquals("aaa", v);
   }
 
   @Test
   @DisplayName("Load from Reader")
   void loadFromReader() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    String v = (String) load.loadFromReader(new StringReader("bbb"));
+    Load load = new Load();
+    String v = (String) load.loadOne(new StringReader("bbb"));
     assertEquals("bbb", v);
   }
 
   @Test
   @DisplayName("Load all from String")
-  void loadAllFromString() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+  void loadAll() {
+    Load load = new Load();
     InputStream input = new ByteArrayInputStream("bbb\n---\nccc\n---\nddd".getBytes());
-    Iterable<Object> v = load.loadAllFromInputStream(input);
+    Iterable<Object> v = load.loadAll(input);
     Iterator<Object> iter = v.iterator();
     assertTrue(iter.hasNext(), "expect iterator has next");
     Object o1 = iter.next();
@@ -127,9 +118,8 @@ class LoadTest {
   @Test
   @DisplayName("Load all from String")
   void loadIterableFromString() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Iterable<Object> v = load.loadAllFromString("1\n---\n2\n---\n3");
+    Load load = new Load();
+    Iterable<Object> v = load.loadAll("1\n---\n2\n---\n3");
     int counter = 1;
     for (Object o : v) {
       // System.out.println("O: " + o);
@@ -142,10 +132,9 @@ class LoadTest {
   @Test
   @DisplayName("Load all from String which has only 1 document")
   void loadIterableFromString2() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
 
-    Iterable<Object> iterable = load.loadAllFromString("1\n");
+    Iterable<Object> iterable = load.loadAll("1\n");
     int counter = 1;
     for (Object o : iterable) {
       // System.out.println("O: " + o);
@@ -154,7 +143,7 @@ class LoadTest {
     }
     assertEquals(2, counter);
 
-    Iterator<Object> iter = load.loadAllFromString("1\n").iterator();
+    Iterator<Object> iter = load.loadAll("1\n").iterator();
     iter.hasNext();
     Object o1 = iter.next();
     assertEquals(1, o1);
@@ -164,9 +153,8 @@ class LoadTest {
   @Test
   @DisplayName("Load all from Reader")
   void loadAllFromReader() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Iterable<Object> v = load.loadAllFromReader(new StringReader("bbb"));
+    Load load = new Load();
+    Iterable<Object> v = load.loadAll(new StringReader("bbb"));
     Iterator<Object> iter = v.iterator();
     assertTrue(iter.hasNext());
     Object o1 = iter.next();
@@ -177,10 +165,9 @@ class LoadTest {
   @Test
   @DisplayName("Load a lot of documents from the same Load instance (not recommended)")
   void loadManyFromTheSameInstance() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     for (int i = 0; i < 100000; i++) {
-      Iterable<Object> v = load.loadAllFromReader(new StringReader("{foo: bar, list: [1, 2, 3]}"));
+      Iterable<Object> v = load.loadAll(new StringReader("{foo: bar, list: [1, 2, 3]}"));
       Iterator<Object> iter = v.iterator();
       assertTrue(iter.hasNext());
       Object o1 = iter.next();
@@ -191,10 +178,9 @@ class LoadTest {
 
   @Test
   @DisplayName("Throw UnsupportedOperationException if try to remove from iterator")
-  void loadAllFromStringWithUnsupportedOperationException() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Iterable<Object> v = load.loadAllFromString("bbb");
+  void loadAllWithUnsupportedOperationException() {
+    Load load = new Load();
+    Iterable<Object> v = load.loadAll("bbb");
     UnsupportedOperationException exception =
         assertThrows(UnsupportedOperationException.class, () -> v.iterator().remove());
     assertEquals("Operation is not supported for read-only collection", exception.getMessage());

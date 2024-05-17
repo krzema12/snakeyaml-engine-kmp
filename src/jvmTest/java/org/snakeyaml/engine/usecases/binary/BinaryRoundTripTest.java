@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Serialize;
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle;
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
@@ -49,8 +48,8 @@ public class BinaryRoundTripTest {
     String serialized = dumper.dumpToString(source);
     assertEquals("!!binary |-\n" + "  wpY=\n", serialized);
     // parse back to bytes
-    Load loader = new Load(LoadSettings.builder().build());
-    byte[] deserialized = (byte[]) loader.loadFromString(serialized);
+    Load loader = new Load();
+    byte[] deserialized = (byte[]) loader.loadOne(serialized);
     assertEquals(source, new String(deserialized, StandardCharsets.UTF_8));
   }
 
@@ -98,8 +97,8 @@ public class BinaryRoundTripTest {
     toSerialized.put("key", "a\u0096b");
     String output = dumper.dumpToString(toSerialized);
     assertEquals("{key: \"a\\x96b\"}\n", output);
-    Load loader = new Load(LoadSettings.builder().build());
-    Map<String, String> parsed = (Map<String, String>) loader.loadFromString(output);
+    Load loader = new Load();
+    Map<String, String> parsed = (Map<String, String>) loader.loadOne(output);
     assertEquals(toSerialized.get("key"), parsed.get("key"));
     assertEquals(toSerialized, parsed);
   }

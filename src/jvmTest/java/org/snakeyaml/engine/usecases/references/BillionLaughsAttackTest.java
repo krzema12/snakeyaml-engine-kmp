@@ -47,7 +47,7 @@ public class BillionLaughsAttackTest {
   public void billionLaughsAttackLoaded() {
     LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(72).build();
     Load load = new Load(settings);
-    Map map = (Map) load.loadFromString(data);
+    Map map = (Map) load.loadOne(data);
     assertNotNull(map);
   }
 
@@ -56,7 +56,7 @@ public class BillionLaughsAttackTest {
   public void billionLaughsAttackExpanded() {
     LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(100).build();
     Load load = new Load(settings);
-    Map map = (Map) load.loadFromString(data);
+    Map map = (Map) load.loadOne(data);
     assertNotNull(map);
     try {
       map.toString();
@@ -69,10 +69,9 @@ public class BillionLaughsAttackTest {
   @Test
   @DisplayName("Prevent Billion_laughs_attack by default")
   public void billionLaughsAttackWithRestrictedAliases() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     try {
-      load.loadFromString(data);
+      load.loadOne(data);
       fail();
     } catch (YamlEngineException e) {
       assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=50",
@@ -86,6 +85,6 @@ public class BillionLaughsAttackTest {
     // smaller than number of aliases for scalars
     LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(5).build();
     Load load = new Load(settings);
-    load.loadFromString(scalarAliasesData);
+    load.loadOne(scalarAliasesData);
   }
 }

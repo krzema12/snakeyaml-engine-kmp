@@ -98,7 +98,7 @@ class DumpWidthTest {
     assertEquals(
         ">-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n",
         output);
-    String str = (String) new Load(LoadSettings.builder().build()).loadFromString(
+    String str = (String) new Load().loadOne(
         ">-\n\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n");
     assertEquals("\n" + data1, str, "No LF must be added");
 

@@ -31,9 +31,8 @@ public class FuzzYAMLRead56902Test {
   @Test
   public void testHugeMinorValue() {
     try {
-      LoadSettings settings = LoadSettings.builder().build();
-      Load yamlProcessor = new Load(settings);
-      yamlProcessor.loadFromString("%YAML 1.9224775801");
+      Load yamlProcessor = new Load();
+      yamlProcessor.loadOne("%YAML 1.9224775801");
       fail("Invalid escape code in double quoted scalar should not be accepted");
     } catch (ScannerException e) {
       assertTrue(e.getMessage().contains(
@@ -44,9 +43,8 @@ public class FuzzYAMLRead56902Test {
   @Test
   public void testHugeMajorValue() {
     try {
-      LoadSettings settings = LoadSettings.builder().build();
-      Load yamlProcessor = new Load(settings);
-      yamlProcessor.loadFromString("%YAML 100651234565.1");
+      Load yamlProcessor = new Load();
+      yamlProcessor.loadOne("%YAML 100651234565.1");
       fail("Invalid escape code in double quoted scalar should not be accepted");
     } catch (ScannerException e) {
       assertTrue(

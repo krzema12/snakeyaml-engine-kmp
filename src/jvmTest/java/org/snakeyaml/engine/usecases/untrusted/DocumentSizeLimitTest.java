@@ -35,14 +35,14 @@ public class DocumentSizeLimitTest {
     LoadSettings settings1 = LoadSettings.builder().setCodePointLimit(8).build();
     Load load1 = new Load(settings1);
     String doc = "---\nfoo\n---\nbar\n";
-    Iterator<Object> iter1 = load1.loadAllFromString(doc).iterator();
+    Iterator<Object> iter1 = load1.loadAll(doc).iterator();
     assertEquals("foo", iter1.next());
     assertEquals("bar", iter1.next());
     assertFalse(iter1.hasNext());
     // exceed the limit
     LoadSettings settings2 = LoadSettings.builder().setCodePointLimit(8 - 1).build();
     Load load2 = new Load(settings2);
-    Iterator<Object> iter2 = load2.loadAllFromString(doc).iterator();
+    Iterator<Object> iter2 = load2.loadAll(doc).iterator();
     assertEquals("foo", iter2.next());
     try {
       iter2.next();
@@ -61,14 +61,14 @@ public class DocumentSizeLimitTest {
     LoadSettings settings1 = LoadSettings.builder().setCodePointLimit(limit).build();
     Load load1 = new Load(settings1);
     String complete = "foo\n" + secondDocument;
-    Iterator<Object> iter1 = load1.loadAllFromString(complete).iterator();
+    Iterator<Object> iter1 = load1.loadAll(complete).iterator();
     assertEquals("foo", iter1.next());
     assertEquals("bar", iter1.next());
     assertFalse(iter1.hasNext());
     // exceed the limit
     LoadSettings settings2 = LoadSettings.builder().setCodePointLimit(limit - 1).build();
     Load load2 = new Load(settings2);
-    Iterator<Object> iter2 = load2.loadAllFromString(complete).iterator();
+    Iterator<Object> iter2 = load2.loadAll(complete).iterator();
     assertEquals("foo", iter2.next());
     try {
       iter2.next();
@@ -97,7 +97,7 @@ public class DocumentSizeLimitTest {
   private boolean dumpAllDocs(String input, int codePointLimit) {
     LoadSettings settings1 = LoadSettings.builder().setCodePointLimit(codePointLimit).build();
     Load load = new Load(settings1);
-    Iterator<Object> docs = load.loadAllFromString(input).iterator();
+    Iterator<Object> docs = load.loadAll(input).iterator();
     for (int ndx = 1; ndx <= 3; ndx++) {
       try {
         Object doc = docs.next();

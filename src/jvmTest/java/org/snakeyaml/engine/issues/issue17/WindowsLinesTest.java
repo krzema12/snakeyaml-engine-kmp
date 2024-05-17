@@ -19,17 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class WindowsLinesTest {
 
   @Test
   void parseWindowsNewLine() {
-    Load loader = new Load(LoadSettings.builder().build());
+    Load loader = new Load();
     String source = "parent:\r\n  key: value";
     // System.out.println(source);
-    Map<String, String> list = (Map<String, String>) loader.loadFromString(source);
+    Map<String, String> list = (Map<String, String>) loader.loadOne(source);
     assertEquals(1, list.size());
     assertNotNull(list.get("parent"));
   }

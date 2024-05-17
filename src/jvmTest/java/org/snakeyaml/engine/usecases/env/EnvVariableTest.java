@@ -50,7 +50,7 @@ class EnvVariableTest {
   public void testDockerCompose() {
     Load loader = new Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build());
     String resource = TestUtils.getResource("/env/docker-compose.yaml");
-    Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
+    Map<String, Object> compose = (Map<String, Object>) loader.loadOne(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
             "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"),
@@ -66,7 +66,7 @@ class EnvVariableTest {
     Load loader = new Load(
         LoadSettings.builder().setEnvConfig(new CustomEnvConfig(provided)).build());
     String resource = TestUtils.getResource("/env/docker-compose.yaml");
-    Map<String, Object> compose = (Map<String, Object>) loader.loadFromString(resource);
+    Map<String, Object> compose = (Map<String, Object>) loader.loadOne(resource);
     String output = compose.toString();
     assertTrue(output.endsWith(
             "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"),
@@ -75,7 +75,7 @@ class EnvVariableTest {
 
   private String load(String template) {
     Load loader = new Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build());
-    return (String) loader.loadFromString(template);
+    return (String) loader.loadOne(template);
   }
 
   @Test
@@ -87,8 +87,8 @@ class EnvVariableTest {
   @Test
   @DisplayName("Parsing ENV variables must be explicitly enabled")
   public void testNoEnvConstructor() {
-    Load loader = new Load(LoadSettings.builder().build());
-    String loaded = (String) loader.loadFromString("${EnvironmentKey1}");
+    Load loader = new Load();
+    String loaded = (String) loader.loadOne("${EnvironmentKey1}");
     assertEquals("${EnvironmentKey1}", loaded);
   }
 

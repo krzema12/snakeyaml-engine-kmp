@@ -40,7 +40,6 @@ internal object SuiteUtils {
         "9JBA",
         "CVW2",
         "QB6E",
-        "SU5Z",
         //endregion
 
         //region Additional cases that SnakeYAML-Java also doesn't pass

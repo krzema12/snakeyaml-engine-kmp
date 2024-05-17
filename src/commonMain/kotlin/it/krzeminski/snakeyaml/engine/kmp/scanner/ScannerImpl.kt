@@ -1,8 +1,5 @@
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
-import okio.Buffer
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
-import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.comments.CommentType
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
@@ -12,7 +9,10 @@ import it.krzeminski.snakeyaml.engine.kmp.common.UriEncoder
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*
+import okio.Buffer
 import kotlin.collections.set
 import kotlin.jvm.JvmInline
 
@@ -302,13 +302,13 @@ class ScannerImpl(
                     return
                 }
 
-            // Is it a single quoted scalar?
+            // Is it a single-quoted scalar?
             '\'' -> {
                 fetchSingle()
                 return
             }
 
-            // Is it a double quoted scalar?
+            // Is it a double-quoted scalar?
             '"'  -> {
                 fetchDouble()
                 return
@@ -998,13 +998,28 @@ class ScannerImpl(
             // comments are from a # to the next new-line. We then forward
             // past the comment.
             if (reader.peek() == '#'.code) {
+
+                if (
+                    !commentSeen
+                    && columnBeforeComment != 0
+                    && ff == 0
+                    && (lastToken as? ScalarToken)?.style == ScalarStyle.DOUBLE_QUOTED
+                ) {
+                    throw ScannerException(
+                        problem = "comment without whitespace",
+                        problemMark = startMark,
+                        context = "comment must have whitespace after double-quoted scalar",
+                        contextMark = reader.getMark(),
+                    )
+                }
+
                 commentSeen = true
                 val type: CommentType
                 if (columnBeforeComment != 0
-                    && !(lastToken != null && lastToken?.tokenId == Token.ID.BlockEntry)
+                    && lastToken?.tokenId != Token.ID.BlockEntry
                 ) {
-                    type = CommentType.IN_LINE
                     inlineStartColumn = reader.column
+                    type = CommentType.IN_LINE
                 } else if (inlineStartColumn == reader.column) {
                     type = CommentType.IN_LINE
                 } else {
@@ -1024,8 +1039,10 @@ class ScannerImpl(
                     if (columnBeforeComment == 0) {
                         addToken(
                             CommentToken(
-                                CommentType.BLANK_LINE, breaksOpt, startMark,
-                                reader.getMark(),
+                                commentType = CommentType.BLANK_LINE,
+                                value = breaksOpt,
+                                startMark = startMark,
+                                endMark = reader.getMark(),
                             ),
                         )
                     }

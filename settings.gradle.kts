@@ -15,6 +15,7 @@ dependencyResolutionManagement {
         mavenCentral()
 
         // Declare the Node.js & Yarn download repositories
+        // https://youtrack.jetbrains.com/issue/KT-55620/
         exclusiveContent {
             forRepository {
                 ivy("https://nodejs.org/dist/") {

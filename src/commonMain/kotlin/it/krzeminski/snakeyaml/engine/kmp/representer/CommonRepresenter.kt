@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
 
 /**
  * Represent standard non-platform specific classes
- * @param settings - configuration options
+ * @param settings configuration options
  */
 open class CommonRepresenter(
     private val settings: DumpSettings,
@@ -170,7 +170,10 @@ open class CommonRepresenter(
 
     /** Create [Node] for [Enum]s */
     private val representEnum = RepresentToNode { data ->
-        representScalar(getTag(data::class) { Tag(data::class) }, (data as Enum<*>).name)
+        representScalar(
+            tag = getTag(data::class) { Tag.forType(data::class.simpleName!!) },
+            value = (data as Enum<*>).name,
+        )
     }
 
     /** Create [Node] for [ByteArray] */
@@ -216,10 +219,10 @@ open class CommonRepresenter(
     }
 
     /**
-     * Define the way to get the [Tag] for any class
+     * Define the way to get a [Tag] for any class.
      *
-     * @param clazz      - the class to serialise
-     * @param defaultTag - the tag to use if there is no explicit configuration
+     * @param clazz The class to serialise.
+     * @param defaultTag The tag to use if there is no explicit configuration.
      * @return the [Tag] for output
      */
     protected inline fun getTag(

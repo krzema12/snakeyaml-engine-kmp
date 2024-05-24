@@ -15,7 +15,6 @@ package it.krzeminski.snakeyaml.engine.kmp.nodes
 
 import it.krzeminski.snakeyaml.engine.kmp.common.UriEncoder
 import kotlin.jvm.JvmField
-import kotlin.reflect.KClass
 
 class Tag(
     tag: String,
@@ -28,18 +27,10 @@ class Tag(
 
     val value: String = UriEncoder.encode(tag)
 
-    /**
-     * Create a global tag to dump the fully qualified class name
-     *
-     * @param clazz - the class to use the name
-     */
-    @Deprecated(
-        "Kotlin Reflection is not well supported on non-JVM platforms - manually specify the FQN instead",
-        ReplaceWith("Tag.forClass(clazz.qualifiedName)"),
-    )
-    constructor(clazz: KClass<*>) : this(PREFIX, UriEncoder.encode(clazz.simpleName!!))
-
-    constructor(prefix: String, tag: String) : this(prefix + UriEncoder.encode(tag))
+    constructor(
+        prefix: String,
+        tag: String,
+    ) : this(prefix + UriEncoder.encode(tag))
 
     override fun toString(): String = value
 
@@ -55,7 +46,7 @@ class Tag(
         const val PREFIX = "tag:yaml.org,2002:"
 
         /** Create a [Tag] for a type, using its fully-qualified name. */
-        fun forType(fqn: String): Tag = Tag(PREFIX, fqn)
+        fun forType(fqn: String): Tag = Tag(prefix = PREFIX, tag = fqn)
 
         @JvmField
         val SET = Tag(PREFIX + "set")

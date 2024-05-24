@@ -17,27 +17,21 @@ dependencyResolutionManagement {
         // Declare the Node.js & Yarn download repositories
         // https://youtrack.jetbrains.com/issue/KT-55620/
         exclusiveContent {
-            forRepository {
+            forRepositories(
                 ivy("https://nodejs.org/dist/") {
-                    name = "Node Distributions at $url"
+                    name = "NodeJsDistributions"
                     patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
                     metadataSources { artifact() }
-                    content { includeModule("org.nodejs", "node") }
-                }
-            }
-            filter { includeGroup("org.nodejs") }
-        }
-
-        exclusiveContent {
-            forRepository {
-                ivy("https://github.com/yarnpkg/yarn/releases/download") {
-                    name = "Yarn Distributions at $url"
-                    patternLayout { artifact("v[revision]/[artifact](-v[revision]).[ext]") }
+                },
+                ivy("https://nodejs.org/download/nightly/") {
+                    // Wasm needs nightly releases
+                    // WORKAROUND https://youtrack.jetbrains.com/issue/KT-65864
+                    name = "NodeJsNightly"
+                    patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
                     metadataSources { artifact() }
-                    content { includeModule("com.yarnpkg", "yarn") }
-                }
-            }
-            filter { includeGroup("com.yarnpkg") }
+                },
+            )
+            filter { includeGroup("org.nodejs") }
         }
 
         ivy("https://github.com/") {

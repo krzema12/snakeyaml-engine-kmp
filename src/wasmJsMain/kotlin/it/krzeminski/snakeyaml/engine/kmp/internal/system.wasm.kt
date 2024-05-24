@@ -1,10 +1,4 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
-//
-//internal actual fun getEnvironmentVariable(key: String): String? {
-//    // TODO how can environment variables be implemented in Kotlin/Wasm?
-//    return null
-//}
-
 
 //region Identity hash code
 internal actual fun identityHashCode(any: Any?): IdentityHashCode {
@@ -18,9 +12,9 @@ internal actual fun identityHashCode(any: Any?): IdentityHashCode {
 }
 
 private external interface IdentityHashCodeMap {
-    operator fun get(x: JsReference<Any>): Int
-    operator fun set(x: JsReference<Any>, value: Int): Unit
-    operator fun contains(x: JsReference<Any>): Boolean
+    operator fun get(key: JsReference<Any>): Int
+    operator fun set(key: JsReference<Any>, value: Int)
+    operator fun contains(key: JsReference<Any>): Boolean
 }
 
 private val identityHashCodes: IdentityHashCodeMap = js("new WeakMap()")

@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.targets.js.npm.LockStoreTask
-import org.jetbrains.kotlin.gradle.utils.contentEquals
-
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
     buildsrc.conventions.lang.`kotlin-multiplatform-js`
     buildsrc.conventions.lang.`kotlin-multiplatform-native`
+    buildsrc.conventions.lang.`kotlin-js-npm-workaround`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
@@ -89,24 +87,6 @@ dokkatoo {
                     "img/homepage.svg",
                 )
             )
-        }
-    }
-}
-
-
-tasks.withType<LockStoreTask>().configureEach {
-    doFirst {
-        val value = inputFile.get()
-        val outputFile = outputDirectory.get().asFile.resolve(fileName.get())
-
-        if (!contentEquals(value.asFile, outputFile)) {
-            println("-".repeat(99))
-            println("inputFile")
-            println(value.asFile.readText())
-            println("-".repeat(99))
-            println("outputFile")
-            println(outputFile.readText())
-            println("-".repeat(99))
         }
     }
 }

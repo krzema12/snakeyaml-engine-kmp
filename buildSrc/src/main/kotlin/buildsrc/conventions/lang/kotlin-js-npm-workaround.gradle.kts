@@ -40,6 +40,7 @@ tasks.withType<KotlinNpmInstallTask>().configureEach {
 
 tasks.withType<LockStoreTask>().configureEach {
     doFirst {
+        // pretty-print the lockfile diff, for easier debugging if verification fails on CI
         val inputFile = inputFile.orNull?.asFile.takeIf { it?.exists() == true }
         val outputFile = outputDirectory.orNull?.asFile?.resolve(fileName.orNull ?: "")?.takeIf { it.exists() }
 

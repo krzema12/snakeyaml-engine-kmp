@@ -9,4 +9,6 @@ dependencies {
     //endregion
 
     implementation("org.jetbrains:annotations:24.1.0")
+
+    implementation("io.github.java-diff-utils:java-diff-utils:4.12")
 }

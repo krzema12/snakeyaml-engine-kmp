@@ -2,6 +2,8 @@ package buildsrc.conventions.lang
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.npm.NpmExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -47,8 +49,10 @@ kotlin {
         nodejs()
     }
 
+    // Disable Wasi: No matching variant of io.kotest:kotest-framework-engine:5.9.0 was found
     //wasmWasi {
-    //    nodejs()
+    //    binaries.library()
+    //    //nodejs()
     //}
     //endregion
 
@@ -77,7 +81,17 @@ kotlin {
     mingwX64()
     //endregion
 
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jsCommon") {
+                withJs()
+                group("wasm") {
+                    withWasmJs()
+                    withWasmWasi()
+                }
+            }
+        }
+    }
 
     compilerOptions {
         freeCompilerArgs.addAll(
@@ -95,13 +109,16 @@ kotlin {
     }
 }
 
-// `kotlin-js` and `kotlin-multiplatform` plugins adds a directory in the root-dir for the Yarn lockfile.
-// I think it's a bit annoying to have a top-level directory for a single file, and it makes the project
-// a bit more crowded.
-// It's a little neater if it's in the Gradle dir, next to the version catalog.
 afterEvaluate {
     rootProject.extensions.configure<NpmExtension> {
+        // Kotlin/JS creates lockfiles for JS dependencies in the root directory.
+        // I think it's a bit annoying to have a top-level directory for a single file, and it makes the project
+        // a bit more crowded.
+        // It's a little neater if the lock file dir is in the Gradle dir, next to the version catalog.
         lockFileDirectory = project.rootDir.resolve("gradle/kotlin-js-store")
+
+        // Produce an error if there's no lock file
+        reportNewPackageLock = true
     }
 }
 //endregion

@@ -37,6 +37,7 @@ kotlin {
 
     //region JS Targets
     js(IR) {
+        binaries.library()
         browser()
         nodejs()
     }
@@ -45,6 +46,7 @@ kotlin {
 
     //region Wasm Targets
     wasmJs {
+        binaries.library()
         browser()
         nodejs()
     }

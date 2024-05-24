@@ -11,8 +11,4 @@ kotlin {
     wasmJs {
         nodejs()
     }
-
-    wasmWasi {
-        nodejs()
-    }
 }

@@ -1,7 +1,5 @@
 plugins {
-    buildsrc.conventions.lang.`kotlin-multiplatform-jvm`
-    buildsrc.conventions.lang.`kotlin-multiplatform-js`
-    buildsrc.conventions.lang.`kotlin-multiplatform-native`
+    buildsrc.conventions.lang.`kotlin-multiplatform`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`

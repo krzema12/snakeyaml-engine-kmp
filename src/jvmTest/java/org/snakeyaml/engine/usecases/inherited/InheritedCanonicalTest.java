@@ -52,7 +52,7 @@ public class InheritedCanonicalTest extends InheritedImportTest {
     }
     CanonicalScanner scanner =
         new CanonicalScanner(buffer.toString().replace(System.lineSeparator(), "\n"), label);
-    List<Token> result = new ArrayList();
+    List<Token> result = new ArrayList<>();
     while (scanner.hasNext()) {
       result.add(scanner.next());
     }

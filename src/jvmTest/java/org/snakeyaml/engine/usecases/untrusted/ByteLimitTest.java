@@ -31,7 +31,7 @@ public class ByteLimitTest {
     LoadSettings settings = LoadSettings.builder().setCodePointLimit(15).build();
     Load load = new Load(settings);
     try {
-      load.loadFromString("12345678901234567890");
+      load.loadOne("12345678901234567890");
       fail("Long input should not be accepted");
     } catch (Exception e) {
       assertEquals("The incoming YAML document exceeds the limit: 15 code points.", e.getMessage());
@@ -43,7 +43,7 @@ public class ByteLimitTest {
     LoadSettings settings = LoadSettings.builder().setCodePointLimit(15).build();
     Load load = new Load(settings);
     try {
-      Iterator<Object> iter = load.loadAllFromString("12345678901234567890").iterator();
+      Iterator<Object> iter = load.loadAll("12345678901234567890").iterator();
       iter.next();
       fail("Long input should not be accepted for loadAll");
     } catch (Exception e) {
@@ -55,7 +55,7 @@ public class ByteLimitTest {
   public void testLoadManyDocuments() {
     LoadSettings settings = LoadSettings.builder().setCodePointLimit(8).build();
     Load load = new Load(settings);
-    Iterator<Object> iter = load.loadAllFromString("---\nfoo\n---\nbar\n---\nyep").iterator();
+    Iterator<Object> iter = load.loadAll("---\nfoo\n---\nbar\n---\nyep").iterator();
     assertEquals("foo", iter.next());
     assertEquals("bar", iter.next());
     assertEquals("yep", iter.next());

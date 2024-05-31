@@ -19,29 +19,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInMapTest {
 
   @Test
   void withSeparation() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a: 1}");
+    Load loader = new Load();
+    Map<String, Integer> map = (Map<String, Integer>) loader.loadOne("{a: 1}");
     assertEquals(Integer.valueOf(1), map.get("a"));
   }
 
   @Test
   void withoutEmptyValue() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:}");
+    Load loader = new Load();
+    Map<String, Integer> map = (Map<String, Integer>) loader.loadOne("{a:}");
     assertTrue(map.containsKey("a"));
   }
 
   @Test
   void withoutSeparation() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Map<String, Integer> map = (Map<String, Integer>) loader.loadFromString("{a:1}");
+    Load loader = new Load();
+    Map<String, Integer> map = (Map<String, Integer>) loader.loadOne("{a:1}");
     assertTrue(map.containsKey("a:1"));
   }
 }

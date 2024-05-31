@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
 
 /**
@@ -45,9 +44,8 @@ public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: parse document where 2028 is used as leading space (3rd)")
   void parseValid() {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    Object obj = load.loadAllFromString("--- |2-\n\n\u2028  * C\n");
+    Load load = new Load();
+    Object obj = load.loadAll("--- |2-\n\n\u2028  * C\n");
     assertNotNull(obj);
     Iterable iter = (Iterable) obj;
     try {
@@ -61,9 +59,8 @@ public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: parse document")
   void parseInvalid2() {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    Object obj = load.loadAllFromString("--- |2-\n\n  \u2028* C\n");
+    Load load = new Load();
+    Object obj = load.loadAll("--- |2-\n\n  \u2028* C\n");
     assertNotNull(obj);
     Iterable iter = (Iterable) obj;
     Object doc = iter.iterator().next();
@@ -72,17 +69,15 @@ public class JRubyPsychTest {
 
 
   private void parse(Object expected, String data) {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    Object obj = load.loadFromString(data);
+    Load load = new Load();
+    Object obj = load.loadOne(data);
     assertEquals(expected, obj);
   }
 
   private void crash(String expectedError, String data) {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
+    Load load = new Load();
     try {
-      load.loadFromString(data);
+      load.loadOne(data);
     } catch (Exception e) {
       assertTrue(e.getMessage().contains(expectedError), e.getMessage());
     }
@@ -91,9 +86,8 @@ public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: * is not alias after 2028")
   void failToParseInvalid() {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    Object obj = load.loadAllFromString("\n\u2028* C");
+    Load load = new Load();
+    Object obj = load.loadAll("\n\u2028* C");
     Iterable iter = (Iterable) obj;
     for (Object o : iter) {
       System.out.println(o);
@@ -104,9 +98,8 @@ public class JRubyPsychTest {
   @Test
   @DisplayName("Issue 46: use anchor instead of alias")
   void parse2028_1() {
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    Object obj = load.loadAllFromString("\n\u2028&C");
+    Load load = new Load();
+    Object obj = load.loadAll("\n\u2028&C");
     Iterable iter = (Iterable) obj;
     for (Object o : iter) {
       assertEquals("\u2028&C", o);

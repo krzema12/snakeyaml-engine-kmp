@@ -17,10 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.kotest.matchers.string.StringMatchersKt;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException;
 
 @org.junit.jupiter.api.Tag("fast")
@@ -28,9 +26,9 @@ class ExceptionTest {
 
   @Test
   void sequenceException() {
-    Load load = new Load(LoadSettings.builder().build());
+    Load load = new Load();
     YamlEngineException exception =
-        assertThrows(YamlEngineException.class, () -> load.loadFromString("!!seq abc"));
+      assertThrows(YamlEngineException.class, () -> load.loadOne("!!seq abc"));
     assertTrue(exception.getMessage().contains("java.lang.ClassCastException"));
     assertTrue(exception.getMessage().contains("it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode"));
     assertTrue(exception.getMessage().contains("cannot be cast to"));
@@ -39,10 +37,10 @@ class ExceptionTest {
 
   @Test
   void intException() {
-    Load load = new Load(LoadSettings.builder().build());
+    Load load = new Load();
     YamlEngineException exception =
-        assertThrows(YamlEngineException.class, () -> load.loadFromString("!!int abc"));
+      assertThrows(YamlEngineException.class, () -> load.loadOne("!!int abc"));
     assertEquals("java.lang.NumberFormatException: For input string: \"abc\"",
-        exception.getMessage());
+      exception.getMessage());
   }
 }

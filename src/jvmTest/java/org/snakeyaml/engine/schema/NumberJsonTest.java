@@ -21,81 +21,80 @@ import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class NumberJsonTest {
 
-  Load loader = new Load(LoadSettings.builder().build());
+  private final Load loader = new Load();
 
   @Test
   @DisplayName("Test all integers which are define in the core schema & JSON")
   void parseInteger() {
-    assertEquals(Integer.valueOf(1), loader.loadFromString("1"));
-    assertEquals(Integer.valueOf(-1), loader.loadFromString("-1"));
-    assertEquals(Integer.valueOf(0), loader.loadFromString("0"));
-    assertEquals(Integer.valueOf(0), loader.loadFromString("-0"));
-    assertEquals("012", loader.loadFromString("012"), "Leading zeros are not allowed.");
-    assertEquals(Integer.valueOf(1234567890), loader.loadFromString("1234567890"));
-    assertEquals(Long.valueOf(12345678901L), loader.loadFromString("12345678901"));
+    assertEquals(Integer.valueOf(1), loader.loadOne("1"));
+    assertEquals(Integer.valueOf(-1), loader.loadOne("-1"));
+    assertEquals(Integer.valueOf(0), loader.loadOne("0"));
+    assertEquals(Integer.valueOf(0), loader.loadOne("-0"));
+    assertEquals("012", loader.loadOne("012"), "Leading zeros are not allowed.");
+    assertEquals(Integer.valueOf(1234567890), loader.loadOne("1234567890"));
+    assertEquals(Long.valueOf(12345678901L), loader.loadOne("12345678901"));
     assertEquals(new BigInteger("1234567890123456789123"),
-        loader.loadFromString("1234567890123456789123"));
+        loader.loadOne("1234567890123456789123"));
   }
 
   @Test
   @DisplayName("Test all strings which WERE integers or doubles in YAML 1.1")
   void parseString() {
-    assertEquals("12:10:02", loader.loadFromString("12:10:02"));
-    assertEquals("0b1010", loader.loadFromString("0b1010"));
-    assertEquals("0xFF", loader.loadFromString("0xFF"));
-    assertEquals("1_000", loader.loadFromString("1_000"));
+    assertEquals("12:10:02", loader.loadOne("12:10:02"));
+    assertEquals("0b1010", loader.loadOne("0b1010"));
+    assertEquals("0xFF", loader.loadOne("0xFF"));
+    assertEquals("1_000", loader.loadOne("1_000"));
 
-    assertEquals("1_000.5", loader.loadFromString("1_000.5"));
-    assertEquals("+.inf", loader.loadFromString("+.inf"));
+    assertEquals("1_000.5", loader.loadOne("1_000.5"));
+    assertEquals("+.inf", loader.loadOne("+.inf"));
 
     // start with +
-    assertEquals("+1", loader.loadFromString("+1"));
-    assertEquals("+1223344", loader.loadFromString("+1223344"));
-    assertEquals("+12.23344", loader.loadFromString("+12.23344"));
-    assertEquals("+0.23344", loader.loadFromString("+0.23344"));
-    assertEquals("+0", loader.loadFromString("+0"));
+    assertEquals("+1", loader.loadOne("+1"));
+    assertEquals("+1223344", loader.loadOne("+1223344"));
+    assertEquals("+12.23344", loader.loadOne("+12.23344"));
+    assertEquals("+0.23344", loader.loadOne("+0.23344"));
+    assertEquals("+0", loader.loadOne("+0"));
 
     // leading zero
-    assertEquals("03", loader.loadFromString("03"));
-    assertEquals("03.67", loader.loadFromString("03.67"));
-    assertEquals("3.6", loader.loadFromString("! 3.6"));
-    assertEquals("3", loader.loadFromString("! 3"));
+    assertEquals("03", loader.loadOne("03"));
+    assertEquals("03.67", loader.loadOne("03.67"));
+    assertEquals("3.6", loader.loadOne("! 3.6"));
+    assertEquals("3", loader.loadOne("! 3"));
   }
 
   @Test
   @DisplayName("Test all doubles which are define in the core schema & JSON")
   void parseDouble() {
-    assertEquals(Double.valueOf(-1.345), loader.loadFromString("-1.345"));
-    assertEquals(Double.valueOf(0), loader.loadFromString("0.0"));
-    assertEquals(Double.valueOf(0f), loader.loadFromString("0.0"));
-    assertEquals(Double.valueOf(0d), loader.loadFromString("0.0"));
-    assertEquals(Double.valueOf(+0), loader.loadFromString("0.0"));
-    assertEquals(Double.valueOf(-0.0), loader.loadFromString("-0.0"));
-    assertEquals(Double.valueOf(0.123), loader.loadFromString("0.123"));
-    assertEquals(Double.valueOf(1.23E-6), loader.loadFromString("1.23e-6"));
-    assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e+6"));
-    assertEquals(Double.valueOf(1.23E6), loader.loadFromString("1.23e6"));
-    assertEquals(Double.valueOf(1.23), loader.loadFromString("1.23E0"));
-    assertEquals(Double.valueOf(-1.23E6), loader.loadFromString("-1.23e6"));
-    assertEquals(Double.valueOf(1000.25), loader.loadFromString("1000.25"));
-    assertEquals(Double.valueOf(9000.0), loader.loadFromString("9000.00"));
-    assertEquals(Double.valueOf(1.0), loader.loadFromString("1."));
+    assertEquals(Double.valueOf(-1.345), loader.loadOne("-1.345"));
+    assertEquals(Double.valueOf(0), loader.loadOne("0.0"));
+    assertEquals(Double.valueOf(0f), loader.loadOne("0.0"));
+    assertEquals(Double.valueOf(0d), loader.loadOne("0.0"));
+    assertEquals(Double.valueOf(+0), loader.loadOne("0.0"));
+    assertEquals(Double.valueOf(-0.0), loader.loadOne("-0.0"));
+    assertEquals(Double.valueOf(0.123), loader.loadOne("0.123"));
+    assertEquals(Double.valueOf(1.23E-6), loader.loadOne("1.23e-6"));
+    assertEquals(Double.valueOf(1.23E6), loader.loadOne("1.23e+6"));
+    assertEquals(Double.valueOf(1.23E6), loader.loadOne("1.23e6"));
+    assertEquals(Double.valueOf(1.23), loader.loadOne("1.23E0"));
+    assertEquals(Double.valueOf(-1.23E6), loader.loadOne("-1.23e6"));
+    assertEquals(Double.valueOf(1000.25), loader.loadOne("1000.25"));
+    assertEquals(Double.valueOf(9000.0), loader.loadOne("9000.00"));
+    assertEquals(Double.valueOf(1.0), loader.loadOne("1."));
   }
 
   @Test
   @DisplayName("Parse special doubles which are defined in the JSON schema, but not in JSON")
   void parseDoubleSpecial() {
-    assertEquals(Double.POSITIVE_INFINITY, loader.loadFromString(".inf"));
-    assertEquals(Double.NEGATIVE_INFINITY, loader.loadFromString("-.inf"));
-    assertEquals(Double.NaN, loader.loadFromString(".nan"));
+    assertEquals(Double.POSITIVE_INFINITY, loader.loadOne(".inf"));
+    assertEquals(Double.NEGATIVE_INFINITY, loader.loadOne("-.inf"));
+    assertEquals(Double.NaN, loader.loadOne(".nan"));
 
-    assertEquals(".INF", loader.loadFromString(".INF"));
-    assertEquals(".NAN", loader.loadFromString(".NAN"));
+    assertEquals(".INF", loader.loadOne(".INF"));
+    assertEquals(".NAN", loader.loadOne(".NAN"));
   }
 
   @Test

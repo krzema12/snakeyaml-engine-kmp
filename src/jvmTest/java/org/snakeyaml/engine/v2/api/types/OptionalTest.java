@@ -14,14 +14,13 @@
 package org.snakeyaml.engine.v2.api.types;
 
 import com.google.common.collect.Lists;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -34,7 +33,7 @@ class OptionalTest {
   @DisplayName("Represent Optional as value")
   void representOptional() {
     StandardRepresenter standardRepresenter =
-        new StandardRepresenter(DumpSettings.builder().build());
+      new StandardRepresenter(DumpSettings.builder().build());
     Node node = standardRepresenter.represent(Optional.of("a"));
     assertEquals("tag:yaml.org,2002:java.util.Optional", node.getTag().getValue());
   }
@@ -43,7 +42,7 @@ class OptionalTest {
   @DisplayName("Represent Optional.empty as null")
   void representEmptyOptional() {
     StandardRepresenter standardRepresenter =
-        new StandardRepresenter(DumpSettings.builder().build());
+      new StandardRepresenter(DumpSettings.builder().build());
     Node node = standardRepresenter.represent(Optional.empty());
     assertEquals("tag:yaml.org,2002:null", node.getTag().getValue());
   }
@@ -72,9 +71,9 @@ class OptionalTest {
     DumpSettings settings = DumpSettings.builder().build();
     Dump dump = new Dump(settings);
     String str = dump.dumpToString(Lists.newArrayList(
-        Optional.of(2),
-        Optional.empty(),
-        Optional.of("a"))
+      Optional.of(2),
+      Optional.empty(),
+      Optional.of("a"))
     );
     assertEquals("[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n", str);
   }
@@ -92,27 +91,24 @@ class OptionalTest {
   @Test
   @DisplayName("Optional 'a' is parsed")
   void parseOptional() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional a");
+    Load load = new Load();
+    Optional<String> str = (Optional<String>) load.loadOne("!!java.util.Optional a");
     assertEquals(Optional.of("a"), str);
   }
 
   @Test
   @DisplayName("Empty Optional parsed")
   void parseEmptyOptional() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional null");
+    Load load = new Load();
+    Optional<String> str = (Optional<String>) load.loadOne("!!java.util.Optional null");
     assertEquals(Optional.empty(), str);
   }
 
   @Test
   @DisplayName("Empty Optional parsed")
   void parseEmptyOptional2() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Optional<String> str = (Optional<String>) load.loadFromString("!!java.util.Optional ");
+    Load load = new Load();
+    Optional<String> str = (Optional<String>) load.loadOne("!!java.util.Optional ");
     assertEquals(Optional.empty(), str);
   }
 }

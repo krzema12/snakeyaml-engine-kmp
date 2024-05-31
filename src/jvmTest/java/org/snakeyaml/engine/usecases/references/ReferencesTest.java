@@ -83,7 +83,7 @@ public class ReferencesTest {
     LoadSettings settings = LoadSettings.builder().setMaxAliasesForCollections(150).build();
     Load load = new Load(settings);
     try {
-      load.loadFromString(output);
+      load.loadOne(output);
       fail();
     } catch (Exception e) {
       assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.",
@@ -106,7 +106,7 @@ public class ReferencesTest {
       LoadSettings settings =
         LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(50).build();
       Load load = new Load(settings);
-      load.loadFromString(output);
+      load.loadOne(output);
       final var finish = Instant.now();
       return Duration.between(start, finish);
     });
@@ -127,7 +127,7 @@ public class ReferencesTest {
       LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(40).build();
     Load load = new Load(settings);
     try {
-      load.loadFromString(bigYAML);
+      load.loadOne(bigYAML);
       fail();
     } catch (Exception e) {
       assertEquals("Number of aliases for non-scalar nodes exceeds the specified max=40",

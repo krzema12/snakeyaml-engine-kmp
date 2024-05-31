@@ -32,7 +32,7 @@ public class ListWithCommentTest {
     String str = TestUtils.getResource("/comments/issue512.yaml");
     LoadSettings options = LoadSettings.builder().setParseComments(true).build();
     Load load = new Load(options);
-    List<String> obj = (List<String>) load.loadFromString(str);
+    List<String> obj = (List<String>) load.loadOne(str);
     assertEquals(2, obj.size());
   }
 }

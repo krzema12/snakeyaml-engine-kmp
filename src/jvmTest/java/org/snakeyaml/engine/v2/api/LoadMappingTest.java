@@ -31,18 +31,16 @@ class LoadMappingTest {
   @Test
   @DisplayName("Empty map {} is parsed")
   void parseEmptyMap() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadFromString("{}");
+    Load load = new Load();
+    Map<Integer, Integer> map = (Map<Integer, Integer>) load.loadOne("{}");
     assertEquals(LoadSettings.builder().build().defaultMap.invoke(0), map);
   }
 
   @Test
   @DisplayName("map {a: 1} is parsed")
   void parseMap1() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1}");
+    Load load = new Load();
+    Map<String, Integer> map = (Map<String, Integer>) load.loadOne("{a: 1}");
     Map<String, Integer> expected = ImmutableMap.of("a", 1);
     assertEquals(expected, map);
   }
@@ -50,10 +48,9 @@ class LoadMappingTest {
   @Test
   @DisplayName("map {a: 1, b: 2} is parsed")
   void parseMap2() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     Map<String, Object> map =
-        (Map<String, Object>) load.loadFromString("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
+        (Map<String, Object>) load.loadOne("a: 1\nb: 2\nc:\n  - aaa\n  - bbb");
     Map<String, Object> expected =
         ImmutableMap.of("a", 1, "b", 2, "c", ImmutableList.of("aaa", "bbb"));
     assertEquals(expected, map);
@@ -63,10 +60,9 @@ class LoadMappingTest {
   @Test
   @DisplayName("map {x: 1, y: 2, z:3} is parsed")
   void parseMap3() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     Map<String, Integer> map =
-        (Map<String, Integer>) load.loadFromString(TestUtils.getResource("/load/map1.yaml"));
+        (Map<String, Integer>) load.loadOne(TestUtils.getResource("/load/map1.yaml"));
     Map<String, Integer> expected = ImmutableMap.of("x", 1, "y", 2, "z", 3);
     assertEquals(expected, map);
   }

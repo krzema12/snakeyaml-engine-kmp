@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class TabInFlowContextTest {
@@ -27,10 +26,9 @@ public class TabInFlowContextTest {
   @Test
   @DisplayName("Do not fail to parse if TAB is used (issue 11)")
   void parseTabInFlowContext() {
-    LoadSettings settings = LoadSettings.builder().build();
     try {
       String input = "{\n\t\"x\": \"y\"\n}";
-      Object obj = new Load(settings).loadFromString(input);
+      Object obj = new Load().loadOne(input);
       fail("TAB cannot start a token. Found: " + obj);
     } catch (Exception e) {
       assertEquals("while scanning for the next token\n"
@@ -42,9 +40,8 @@ public class TabInFlowContextTest {
   @Test
   @DisplayName("TAB cannot start a token.")
   public void testWrongTab() {
-    LoadSettings settings = LoadSettings.builder().build();
     try {
-      Object obj = new Load(settings).loadFromString("\t  data: 1");
+      Object obj = new Load().loadOne("\t  data: 1");
       fail("TAB cannot start a token. Found: " + obj);
     } catch (Exception e) {
       assertEquals("while scanning for the next token\n"

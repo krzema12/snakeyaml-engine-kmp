@@ -22,7 +22,6 @@ import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node;
 import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter;
 
@@ -52,20 +51,18 @@ class UuidTest {
   @Test
   @DisplayName("Parse UUID")
   void parseUuid() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     UUID uuid =
-        (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
+        (UUID) load.loadOne("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
     assertEquals(THE_UUID, uuid);
   }
 
   @Test
   @DisplayName("Parse UUID as root")
   void parseUuidAsRoot() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     UUID uuid =
-        (UUID) load.loadFromString("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
+        (UUID) load.loadOne("!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n");
     assertEquals(THE_UUID, uuid);
   }
 }

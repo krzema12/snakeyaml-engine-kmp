@@ -2,7 +2,7 @@ package buildsrc.conventions.lang
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.npm.NpmExtension
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 /**
@@ -110,15 +110,14 @@ kotlin {
 }
 
 afterEvaluate {
-    rootProject.extensions.configure<NpmExtension> {
+    rootProject.extensions.configure<YarnRootExtension> {
         // Kotlin/JS creates lockfiles for JS dependencies in the root directory.
         // I think it's a bit annoying to have a top-level directory for a single file, and it makes the project
         // a bit more crowded.
         // It's a little neater if the lock file dir is in the Gradle dir, next to the version catalog.
         lockFileDirectory = project.rootDir.resolve("gradle/kotlin-js-store")
 
-        // Produce an error if there's no lock file
-        reportNewPackageLock = true
+        // produce an error if there's no lock file
+        reportNewYarnLock = true
     }
 }
-//endregion

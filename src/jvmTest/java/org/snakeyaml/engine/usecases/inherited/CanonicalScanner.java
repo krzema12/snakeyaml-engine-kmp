@@ -21,7 +21,9 @@ import it.krzeminski.snakeyaml.engine.kmp.tokens.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CanonicalScanner implements Scanner {
 
@@ -80,7 +82,8 @@ public class CanonicalScanner implements Scanner {
     this.index = 0;
     this.tokens = new ArrayList<>();
     this.scanned = false;
-    this.mark = new Mark("test", 0, 0, 0, data, 0);
+    List<Integer> codepoints = data.codePoints().boxed().collect(Collectors.toList());
+    this.mark = new Mark("test", 0, 0, 0, codepoints, 0);
   }
 
   public boolean checkToken(Token.ID... choices) {

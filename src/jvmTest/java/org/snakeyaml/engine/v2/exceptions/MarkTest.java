@@ -18,8 +18,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 @Tag("fast")
 class MarkTest {
@@ -27,16 +30,16 @@ class MarkTest {
   @Test
   @DisplayName("Mark snippet")
   void testGet_snippet() {
-    Mark mark = new Mark("test1", 0, 0, 0, "*The first line.\nThe last line.", 0);
+    Mark mark = createMark(0, 0, 0, "*The first line.\nThe last line.", 0);
     assertEquals("    *The first line.\n    ^", mark.createSnippet());
-    mark = new Mark("test1", 0, 0, 0, "The first*line.\nThe last line.", 9);
+    mark = createMark(0, 0, 0, "The first*line.\nThe last line.", 9);
     assertEquals("    The first*line.\n             ^", mark.createSnippet());
   }
 
   @Test
   @DisplayName("Mark toString()")
   void testToString() {
-    Mark mark = new Mark("test1", 0, 0, 0, "*The first line.\nThe last line.", 0);
+    Mark mark = createMark(0, 0, 0, "*The first line.\nThe last line.", 0);
     String[] lines = mark.toString().split("\n");
     assertEquals(" in test1, line 1, column 1:", lines[0]);
     assertEquals("*The first line.", lines[1].trim());
@@ -46,7 +49,7 @@ class MarkTest {
   @Test
   @DisplayName("Mark position")
   void testPosition() {
-    Mark mark = new Mark("test1", 17, 29, 213, "*The first line.\nThe last line.", 0);
+    Mark mark = createMark(17, 29, 213, "*The first line.\nThe last line.", 0);
     assertEquals(17, mark.getIndex(), "index is used in JRuby");
     assertEquals(29, mark.getLine());
     assertEquals(213, mark.getColumn());
@@ -55,24 +58,17 @@ class MarkTest {
   @Test
   @DisplayName("Mark buffer")
   void testGetBuffer() {
-    Mark mark = new Mark("test1", 0, 29, 213, "*The first line.\nThe last line.", 0);
-    int[] buffer = new int[]{42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
-        46, 10, 84, 104, 101, 32, 108, 97, 115, 116, 32, 108, 105, 110, 101, 46};
-    assertEquals(buffer.length, mark.getBuffer().length);
-    boolean match = true;
-    for (int i = 0; i < buffer.length; i++) {
-      if (buffer[i] != mark.getBuffer()[i]) {
-        match = false;
-        break;
-      }
-    }
-    assertTrue(match);
+    Mark mark = createMark(0, 29, 213, "*The first line.\nThe last line.", 0);
+    var buffer = List.of(42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
+      46, 10, 84, 104, 101, 32, 108, 97, 115, 116, 32, 108, 105, 110, 101, 46);
+    assertEquals(buffer.size(), mark.getCodepoints().size());
+    assertIterableEquals(buffer, mark.getCodepoints());
   }
 
   @Test
   @DisplayName("Mark pointer")
   void testGetPointer() {
-    Mark mark = new Mark("test1", 0, 29, 213, "*The first line.\nThe last line.", 5);
+    Mark mark = createMark(0, 29, 213, "*The first line.\nThe last line.", 5);
     assertEquals(5, mark.getPointer());
     assertEquals("test1", mark.getName());
   }
@@ -80,16 +76,15 @@ class MarkTest {
   @Test
   @DisplayName("Mark: createSnippet(): longer content must be reduced")
   void testGetReducedSnippet() {
-    Mark mark = new Mark(
-        "test1",
-        200,
-        2,
-        36,
-        "*The first line,\nThe second line.\nThe third line, which aaaa bbbb ccccc dddddd * contains mor12345678901234\nThe last line.",
-        78);
+    Mark mark = createMark(
+      200,
+      2,
+      36,
+      "*The first line,\nThe second line.\nThe third line, which aaaa bbbb ccccc dddddd * contains mor12345678901234\nThe last line.",
+      78);
     assertEquals(
-        "   ... aaaa bbbb ccccc dddddd * contains mor1234567 ... \n                             ^",
-        mark.createSnippet(2, 55));
+      "   ... aaaa bbbb ccccc dddddd * contains mor1234567 ... \n                             ^",
+      mark.createSnippet(2, 55));
   }
 
   /*
@@ -98,4 +93,15 @@ class MarkTest {
    * line.""".trimMargin().toCharArray() Mark("test1", 2, 35, doc, 78).createSnippet(2, 55) shouldBe
    * """ ... aaa bbbb ccccc dddddd * contains moreeeeeeee ... | ^""".trimMargin() }
    */
+
+  private static Mark createMark(
+    int index,
+    int line,
+    int column,
+    String str,
+    int pointer
+  ) {
+    List<Integer> codepoints = str.codePoints().boxed().collect(Collectors.toList());
+    return new Mark("test1", index, line, column, codepoints, pointer);
+  }
 }

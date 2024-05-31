@@ -28,10 +28,11 @@ package it.krzeminski.snakeyaml.engine.kmp.internal.utils
 /**
  * Appends the string representation of the [codePoint] argument to this Appendable and returns this instance.
  *
- * To append the codepoint, [Appendable.append(Char)][Appendable.append] is called [CodePoints.charCount] times.
+ * To append the codepoint, [Appendable.append(Char)][Appendable.append] is called
+ * [Character.charCount] times.
  *
  * The overall effect is exactly as if the argument were converted to a char array by the function
- * [CodePoints.toChars] and the characters in that array were then appended to this Appendable.
+ * [Character.toChars] and the characters in that array were then appended to this Appendable.
  */
 internal fun <T : Appendable> T.appendCodePoint(codePoint: Int): Appendable {
     if (Character.isBmpCodePoint(codePoint)) {
@@ -40,5 +41,15 @@ internal fun <T : Appendable> T.appendCodePoint(codePoint: Int): Appendable {
         append(Character.highSurrogateOf(codePoint))
         append(Character.lowSurrogateOf(codePoint))
     }
+    return this
+}
+
+internal fun Iterable<Int>.joinCodepointsToString(): String =
+    buildString {
+        appendCodePoints(this@joinCodepointsToString)
+    }
+
+private fun <T : Appendable> T.appendCodePoints(codePoints: Iterable<Int>): T {
+    codePoints.forEach { appendCodePoint(it) }
     return this
 }

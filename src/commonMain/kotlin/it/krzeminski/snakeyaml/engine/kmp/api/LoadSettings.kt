@@ -21,7 +21,9 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
- * Immutable configuration for loading. Description for all the fields can be found in the builder
+ * Immutable configuration for loading.
+ *
+ * Description for all the fields can be found in [LoadSettingsBuilder].
  */
 class LoadSettings internal constructor(
     @JvmField val label: String,
@@ -54,7 +56,7 @@ class LoadSettings internal constructor(
 
     companion object {
         /**
-         * Create the builder
+         * Create a [LoadSettingsBuilder] instance.
          *
          * @return the builder to fill the configuration options
          */

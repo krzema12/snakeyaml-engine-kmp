@@ -71,17 +71,17 @@ internal fun CharArray.codePointCount(
 }
 
 
-internal fun CharSequence.toCodePoints(): IntArray {
-    val codePoints = IntArray(codePointCount())
-    var i = 0
-    var c = 0
-    while (i < length) {
-        val cp = codePointAt(i)
-        codePoints[c] = cp
-        i += Character.charCount(cp)
-        c++
+internal fun CharSequence.toCodePoints(): List<Int> {
+    return buildList(length) {
+        var i = 0
+        var c = 0
+        while (i < length) {
+            val cp = codePointAt(i)
+            add(cp)
+            i += Character.charCount(cp)
+            c++
+        }
     }
-    return codePoints
 }
 
 

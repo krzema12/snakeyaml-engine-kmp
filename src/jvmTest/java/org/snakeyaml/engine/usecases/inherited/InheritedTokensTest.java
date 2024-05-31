@@ -75,10 +75,10 @@ public class InheritedTokensTest extends InheritedImportTest {
       //
       String tokenFileData = getResource(name);
       String[] split = tokenFileData.split("\\s+");
-      List<String> tokens2 = new ArrayList<String>();
+      List<String> tokens2 = new ArrayList<>();
       Collections.addAll(tokens2, split);
       //
-      List<String> tokens1 = new ArrayList<String>();
+      List<String> tokens1 = new ArrayList<>();
       LoadSettings settings = LoadSettings.builder().build();
       StreamReader reader = new StreamReader(settings,
           new YamlUnicodeReader(Okio.source(new FileInputStream(getFileByName(dataName)))));
@@ -112,7 +112,7 @@ public class InheritedTokensTest extends InheritedImportTest {
     File[] files = getStreamsByExtension(".data", true);
     assertTrue(files.length > 0, "No test files found.");
     for (File file : files) {
-      List<String> tokens = new ArrayList<String>();
+      List<String> tokens = new ArrayList<>();
       InputStream input = new FileInputStream(file);
       LoadSettings settings = LoadSettings.builder().build();
       StreamReader reader = new StreamReader(settings, new YamlUnicodeReader(Okio.source(input)));

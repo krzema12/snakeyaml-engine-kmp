@@ -18,53 +18,56 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag;
 import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner;
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CanonicalScanner implements Scanner {
 
-  public static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap();
+  private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<>();
   private static final String DIRECTIVE = "%YAML 1.2";
-  private static final Map<Character, Integer> ESCAPE_CODES = new HashMap();
+  private static final Map<Character, Integer> ESCAPE_CODES = new HashMap<>();
 
   static {
     // ASCII null
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('0'), "\0");
+    ESCAPE_REPLACEMENTS.put('0', "\0");
     // ASCII bell
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('a'), "\u0007");
+    ESCAPE_REPLACEMENTS.put('a', "\u0007");
     // ASCII backspace
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('b'), "\u0008");
+    ESCAPE_REPLACEMENTS.put('b', "\u0008");
     // ASCII horizontal tab
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('t'), "\u0009");
+    ESCAPE_REPLACEMENTS.put('t', "\t");
     // ASCII newline (line feed; &#92;n maps to 0x0A)
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('n'), "\n");
+    ESCAPE_REPLACEMENTS.put('n', "\n");
     // ASCII vertical tab
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('v'), "\u000B");
+    ESCAPE_REPLACEMENTS.put('v', "\u000B");
     // ASCII form-feed
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('f'), "\u000C");
+    ESCAPE_REPLACEMENTS.put('f', "\u000C");
     // carriage-return (&#92;r maps to 0x0D)
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('r'), "\r");
+    ESCAPE_REPLACEMENTS.put('r', "\r");
     // ASCII escape character (Esc)
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('e'), "\u001B");
+    ESCAPE_REPLACEMENTS.put('e', "\u001B");
     // ASCII space
-    ESCAPE_REPLACEMENTS.put(Character.valueOf(' '), "\u0020");
+    ESCAPE_REPLACEMENTS.put(' ', " ");
     // ASCII double-quote
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('"'), "\"");
+    ESCAPE_REPLACEMENTS.put('"', "\"");
     // ASCII backslash
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('\\'), "\\");
+    ESCAPE_REPLACEMENTS.put('\\', "\\");
     // Unicode next line
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('N'), "\u0085");
+    ESCAPE_REPLACEMENTS.put('N', "\u0085");
     // Unicode non-breaking-space
-    ESCAPE_REPLACEMENTS.put(Character.valueOf('_'), "\u00A0");
+    ESCAPE_REPLACEMENTS.put('_', "\u00A0");
 
     // 8-bit Unicode
-    ESCAPE_CODES.put(Character.valueOf('x'), 2);
+    ESCAPE_CODES.put('x', 2);
     // 16-bit Unicode
-    ESCAPE_CODES.put(Character.valueOf('u'), 4);
+    ESCAPE_CODES.put('u', 4);
     // 32-bit Unicode (Supplementary characters are supported)
-    ESCAPE_CODES.put(Character.valueOf('U'), 8);
+    ESCAPE_CODES.put('U', 8);
   }
 
   private final String data;
@@ -80,10 +83,11 @@ public class CanonicalScanner implements Scanner {
     this.index = 0;
     this.tokens = new ArrayList<>();
     this.scanned = false;
-    this.mark = new Mark("test", 0, 0, 0, data, 0);
+    List<Integer> codepoints = data.codePoints().boxed().collect(Collectors.toList());
+    this.mark = new Mark("test", 0, 0, 0, codepoints, 0);
   }
 
-  public boolean checkToken(Token.ID... choices) {
+  public boolean checkToken(Token.ID @NotNull ... choices) {
     if (!scanned) {
       scan();
     }
@@ -101,14 +105,11 @@ public class CanonicalScanner implements Scanner {
     return false;
   }
 
-  public Token peekToken() {
+  public @NotNull Token peekToken() {
     if (!scanned) {
       scan();
     }
-    if (!tokens.isEmpty()) {
-      return this.tokens.get(0);
-    }
-    return null;
+    return this.tokens.stream().findFirst().orElseThrow();
   }
 
   @Override
@@ -116,7 +117,7 @@ public class CanonicalScanner implements Scanner {
     return checkToken();
   }
 
-  public Token next() {
+  public @NotNull Token next() {
     if (!scanned) {
       scan();
     }
@@ -128,9 +129,9 @@ public class CanonicalScanner implements Scanner {
     this.index = 0;
   }
 
-  public Token getToken(Token.ID choice) {
+  public Token getToken(@NotNull Token.ID choice) {
     Token token = next();
-    if (choice != null && token.getTokenId() != choice) {
+    if (token.getTokenId() != choice) {
       throw new CanonicalException("unexpected token " + token);
     }
     return token;
@@ -218,8 +219,7 @@ public class CanonicalScanner implements Scanner {
           break;
 
         default:
-          throw new CanonicalException(
-              "invalid token: " + Character.valueOf((char) c) + " in " + label);
+          throw new CanonicalException("invalid token: " + (char) c + " in " + label);
       }
     }
     scanned = true;
@@ -263,7 +263,7 @@ public class CanonicalScanner implements Scanner {
       index++;
     }
     String value = data.substring(start, index);
-    if (value.length() == 0) {
+    if (value.isEmpty()) {
       value = "!";
     } else if (value.charAt(0) == '!') {
       value = Tag.PREFIX + value.substring(1);

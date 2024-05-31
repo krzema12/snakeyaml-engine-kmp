@@ -36,7 +36,7 @@ public class LocalTagTest {
     tagConstructors.put(new Tag("!ImportValue"), new CustomConstructor());
     LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
-    Object obj = loader.loadFromString("VpcId: !ImportValue SpokeVPC");
+    Object obj = loader.loadOne("VpcId: !ImportValue SpokeVPC");
     Map<String, ImportValueImpl> map = (Map<String, ImportValueImpl>) obj;
     assertEquals("SpokeVPC", map.get("VpcId").getValue());
   }

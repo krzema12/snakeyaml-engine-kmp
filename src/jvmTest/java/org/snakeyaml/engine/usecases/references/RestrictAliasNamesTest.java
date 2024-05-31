@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @Tag("fast")
 public class RestrictAliasNamesTest {
@@ -27,9 +26,8 @@ public class RestrictAliasNamesTest {
   @Test
   public void testAliasFromRuby() {
     try {
-      LoadSettings settings = LoadSettings.builder().build();
-      Load yamlProcessor = new Load(settings);
-      yamlProcessor.loadFromString("Exclude: **/*_old.rb");
+      Load yamlProcessor = new Load();
+      yamlProcessor.loadOne("Exclude: **/*_old.rb");
       fail("Should not accept Alias **/*_old.rb");
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("unexpected character found *(42)"));

@@ -39,7 +39,7 @@ public class FuzzyCollectionTest {
     LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true)
         .setMaxAliasesForCollections(1000).setAllowDuplicateKeys(true).build();
     Load yamlProcessor = new Load(settings);
-    Object fuzzy = yamlProcessor.loadFromReader(reader);
+    Object fuzzy = yamlProcessor.loadOne(reader);
     assertTrue(fuzzy.toString().startsWith("{[[{[[{{[[{{{[[{{[[{{{[[{{[{{[[{[[{{{[[{{[{-?"));
   }
 }

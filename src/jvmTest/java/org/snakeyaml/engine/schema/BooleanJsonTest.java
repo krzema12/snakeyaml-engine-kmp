@@ -19,21 +19,20 @@ import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class BooleanJsonTest {
 
-  Load loader = new Load(LoadSettings.builder().build());
+  private final Load loader = new Load();
 
   @Test
   void parseBoolean() {
-    assertEquals(Boolean.TRUE, loader.loadFromString("true"));
-    assertEquals(Boolean.FALSE, loader.loadFromString("false"));
-    assertEquals("False", loader.loadFromString("False"));
-    assertEquals("True", loader.loadFromString("True"));
+    assertEquals(Boolean.TRUE, loader.loadOne("true"));
+    assertEquals(Boolean.FALSE, loader.loadOne("false"));
+    assertEquals("False", loader.loadOne("False"));
+    assertEquals("True", loader.loadOne("True"));
     // the ! non-specific tag
-    assertEquals("true", loader.loadFromString("! true"));
+    assertEquals("true", loader.loadOne("! true"));
   }
 
   @Test

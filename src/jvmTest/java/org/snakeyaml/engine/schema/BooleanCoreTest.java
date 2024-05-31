@@ -31,22 +31,22 @@ public class BooleanCoreTest {
   @Test
   void parseBoolean() {
     // true | True | TRUE | false | False | FALSE
-    assertEquals(Boolean.TRUE, loader.loadFromString("true"));
-    assertEquals(Boolean.TRUE, loader.loadFromString("True"));
-    assertEquals(Boolean.TRUE, loader.loadFromString("TRUE"));
-    assertEquals(Boolean.FALSE, loader.loadFromString("false"));
-    assertEquals(Boolean.FALSE, loader.loadFromString("False"));
-    assertEquals(Boolean.FALSE, loader.loadFromString("FALSE"));
+    assertEquals(Boolean.TRUE, loader.loadOne("true"));
+    assertEquals(Boolean.TRUE, loader.loadOne("True"));
+    assertEquals(Boolean.TRUE, loader.loadOne("TRUE"));
+    assertEquals(Boolean.FALSE, loader.loadOne("false"));
+    assertEquals(Boolean.FALSE, loader.loadOne("False"));
+    assertEquals(Boolean.FALSE, loader.loadOne("FALSE"));
 
     // the ! non-specific tag
-    assertEquals("true", loader.loadFromString("! true"));
+    assertEquals("true", loader.loadOne("! true"));
   }
 
   @Test
   @DisplayName("Dump special booleans in 1.1 but strings in 1.2")
   void parseString() {
-    assertEquals("on", loader.loadFromString("on"));
-    assertEquals("yes", loader.loadFromString("yes"));
+    assertEquals("on", loader.loadOne("on"));
+    assertEquals("yes", loader.loadOne("yes"));
   }
 
   @Test

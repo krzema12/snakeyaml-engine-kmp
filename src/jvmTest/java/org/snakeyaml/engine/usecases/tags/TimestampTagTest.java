@@ -49,7 +49,7 @@ public class TimestampTagTest {
     LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
     LocalDateTime obj =
-        (LocalDateTime) loader.loadFromString("!!timestamp 2020-03-24T12:34:00.333");
+        (LocalDateTime) loader.loadOne("!!timestamp 2020-03-24T12:34:00.333");
     assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
   }
 
@@ -57,7 +57,7 @@ public class TimestampTagTest {
   public void testImplicitTag() {
     LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
     Load loader = new Load(settings);
-    LocalDateTime obj = (LocalDateTime) loader.loadFromString("2020-03-24T12:34:00.333");
+    LocalDateTime obj = (LocalDateTime) loader.loadOne("2020-03-24T12:34:00.333");
     assertEquals(LocalDateTime.of(2020, 3, 24, 12, 34, 0, 333000000), obj);
   }
 
@@ -66,7 +66,7 @@ public class TimestampTagTest {
     LoadSettings settings = LoadSettings.builder().setSchema(new TimestampSchema()).build();
     Load loader = new Load(settings);
     Map<String, LocalDateTime> map =
-      (Map<String, LocalDateTime>) loader.loadFromString("time: 2020-03-24T13:44:10.333");
+      (Map<String, LocalDateTime>) loader.loadOne("time: 2020-03-24T13:44:10.333");
     LocalDateTime time = map.get("time");
     assertEquals(LocalDateTime.of(2020, 3, 24, 13, 44, 10, 333000000), time);
   }

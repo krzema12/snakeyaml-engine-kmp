@@ -45,7 +45,7 @@ class LoadSettingsTest {
     LoadSettings settings = LoadSettings.builder().setVersionFunction(strict12).build();
     Load load = new Load(settings);
     try {
-      load.loadFromString("%YAML 1.1\n...\nfoo");
+      load.loadOne("%YAML 1.1\n...\nfoo");
       fail();
     } catch (IllegalArgumentException e) {
       assertEquals("Only 1.2 is supported.", e.getMessage());
@@ -58,7 +58,7 @@ class LoadSettingsTest {
     LoadSettings settings = LoadSettings.builder().setAllowDuplicateKeys(false).build();
     Load load = new Load(settings);
     try {
-      load.loadFromString("{a: 1, a: 2}");
+      load.loadOne("{a: 1, a: 2}");
       fail("Duplicate keys must not be allowed.");
     } catch (DuplicateKeyException e) {
       assertTrue(e.getMessage().contains("found duplicate key a"));
@@ -68,10 +68,9 @@ class LoadSettingsTest {
   @Test
   @DisplayName("Do not allow duplicate keys by default")
   void doNotAllowDuplicateKeysByDefault() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     try {
-      load.loadFromString("{a: 1, a: 2}");
+      load.loadOne("{a: 1, a: 2}");
       fail("Duplicate keys must not be allowed.");
     } catch (DuplicateKeyException e) {
       assertTrue(e.getMessage().contains("found duplicate key a"));
@@ -83,7 +82,7 @@ class LoadSettingsTest {
   void allowDuplicateKeysWhenSpecified() {
     LoadSettings settings = LoadSettings.builder().setAllowDuplicateKeys(true).build();
     Load load = new Load(settings);
-    Map<String, Integer> map = (Map<String, Integer>) load.loadFromString("{a: 1, a: 2}");
+    Map<String, Integer> map = (Map<String, Integer>) load.loadOne("{a: 1, a: 2}");
     assertEquals(Integer.valueOf(2), map.get("a"));
   }
 

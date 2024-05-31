@@ -87,9 +87,8 @@ class DumpTest {
     dump.dumpAll(list.iterator(), streamToStringWriter);
     assertEquals("a\n" + "--- null\n" + "--- true\n", streamToStringWriter.toString());
     // load back
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    for (Object obj : load.loadAllFromString(streamToStringWriter.toString())) {
+    Load load = new Load();
+    for (Object obj : load.loadAll(streamToStringWriter.toString())) {
       assertEquals(list.remove(0), obj);
     }
   }
@@ -103,9 +102,8 @@ class DumpTest {
     String output = dump.dumpAllToString(list.iterator());
     assertEquals("a\n" + "--- null\n" + "--- true\n", output);
     // load back
-    LoadSettings loadSettings = LoadSettings.builder().build();
-    Load load = new Load(loadSettings);
-    for (Object obj : load.loadAllFromString(output)) {
+    Load load = new Load();
+    for (Object obj : load.loadAll(output)) {
       assertEquals(list.remove(0), obj);
     }
   }

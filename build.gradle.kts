@@ -1,6 +1,5 @@
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
-    buildsrc.conventions.lang.`kotlin-js-npm-workaround`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`

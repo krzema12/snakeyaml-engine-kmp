@@ -23,7 +23,7 @@ kotlin {
             kotlin.srcDirs(tasks.yamlTestSuiteDataSources)
 
             dependencies {
-                implementation(project.dependencies.platform("io.kotest:kotest-bom:5.9.0"))
+                implementation(project.dependencies.platform("io.kotest:kotest-bom:5.9.1"))
                 implementation("io.kotest:kotest-framework-engine")
                 implementation("io.kotest:kotest-framework-api")
                 implementation("io.kotest:kotest-assertions-core")

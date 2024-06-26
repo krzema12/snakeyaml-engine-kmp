@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * Base configuration for all Kotlin/Multiplatform conventions.
@@ -24,8 +25,6 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
-    jvmToolchain(11)
-
     //region JVM Targets
     jvm {
         withJava()
@@ -97,6 +96,20 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xexpect-actual-classes"
         )
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs = listOf(
+                "-Xjdk-release=8",
+            )
+        }
+    }
+
+    tasks.withType<JavaCompile> {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
     }
 
     // configure all Kotlin/JVM Tests to use JUnit

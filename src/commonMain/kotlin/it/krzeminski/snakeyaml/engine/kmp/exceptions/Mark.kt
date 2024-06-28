@@ -39,7 +39,7 @@ class Mark @JvmOverloads constructor(
 ) {
 
     @Deprecated("Converted to immutable List<Int>, replace with `codepoints`")
-    val buffer: IntArray = codepoints.toIntArray()
+    val buffer: IntArray by lazy { codepoints.toIntArray() }
 
     /**
      * Deprecated: please convert [str] to codepoints.

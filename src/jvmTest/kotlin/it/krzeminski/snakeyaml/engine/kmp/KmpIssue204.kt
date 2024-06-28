@@ -11,7 +11,7 @@ import kotlin.time.measureTime
 
 class KmpIssue204 : FunSpec({
     test("large yaml should be parsed quickly") {
-        // quick and dirty performance test - should be replaced by a proper performance test eventually
+        // FIXME: quick and dirty performance test - should be replaced by a proper performance test eventually
 
         val openAiApiYaml = resourceAsString("/issues/kmp-issue-204-OpenAI-API.yaml")
         val duration = measureTime {

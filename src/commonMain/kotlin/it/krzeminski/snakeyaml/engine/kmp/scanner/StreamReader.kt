@@ -98,7 +98,7 @@ class StreamReader(
             index = index,
             line = line,
             column = column,
-            codepoints = codePointsWindow.toReadOnlyList(),
+            codepoints = codePointsWindow.toReadOnlyListAdapter(),
             pointer = pointer,
         )
     }

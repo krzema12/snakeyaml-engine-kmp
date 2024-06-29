@@ -1,6 +1,9 @@
 name: Run benchmark for parser
 on:
   push:
+    branches:
+      - issue_#208
+  pull_request:
 
 permissions:
   # deployments permission to deploy GitHub pages website
@@ -52,4 +55,4 @@ jobs:
         # Access token to deploy GitHub Pages branch
         github-token: ${{ secrets.GITHUB_TOKEN }}
         # Push and deploy GitHub pages branch automatically
-        auto-push: true
+        auto-push: ${{ github.repository == 'OptimumCode/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}

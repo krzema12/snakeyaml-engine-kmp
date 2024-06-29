@@ -46,6 +46,9 @@ jobs:
         name: SnakeKMP benchmark
         tool: 'jmh'
         output-file-path: ${{ steps.results.outputs.report }}
+        alert-comment-cc-users: "@OptimumCode"
+        comment-on-alert: true
+        summary-always: true
         # Access token to deploy GitHub Pages branch
         github-token: ${{ secrets.GITHUB_TOKEN }}
         # Push and deploy GitHub pages branch automatically

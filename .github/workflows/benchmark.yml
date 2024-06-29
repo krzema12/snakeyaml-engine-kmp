@@ -1,0 +1,52 @@
+name: Run benchmark for parser
+on:
+  push:
+
+permissions:
+  # deployments permission to deploy GitHub pages website
+  deployments: write
+  # contents permission to update benchmark contents in gh-pages branch
+  contents: write
+
+jobs:
+  run-benchmark:
+    name: Performance regression check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: 'Set up JDK'
+      uses: 'actions/setup-java@v4'
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        cache: 'gradle'
+    - name: Validate Gradle Wrapper
+      uses: gradle/actions/wrapper-validation@v3
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper
+    - name: Run benchmark for JVM
+      run: ./gradlew :benchmark:jvmBenchmark
+    # - name: Find benchmark result
+    #   run: |
+    #     MATRIX="["
+    #     for file in $(find benchmark/build/reports/benchmarks/main/ -name *.json -type f)
+    #     do
+    #       MATRIX="$MATRIX{\"report-file\":\"$file\"},"
+    #     done
+    #     MATRIX="${MATRIX%,}]"
+    #     echo "report-files=$MATRIX" >> $GITHUB_OUTPUT
+    - name: Find JVM benchmark result
+      id: results
+      run: echo "report=$(find benchmark/build/reports/benchmarks/main/ -name jvm.json -type f)" >> $GITHUB_OUTPUT
+    - name: Store benchmark result
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        name: My Project Go Benchmark
+        tool: 'jmh'
+        output-file-path: ${{ steps.results.outputs.report }}
+        # Access token to deploy GitHub Pages branch
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        # Push and deploy GitHub pages branch automatically
+        auto-push: true

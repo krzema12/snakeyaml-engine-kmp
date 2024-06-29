@@ -43,7 +43,7 @@ jobs:
     - name: Store benchmark result
       uses: benchmark-action/github-action-benchmark@v1
       with:
-        name: My Project Go Benchmark
+        name: SnakeKMP benchmark
         tool: 'jmh'
         output-file-path: ${{ steps.results.outputs.report }}
         # Access token to deploy GitHub Pages branch

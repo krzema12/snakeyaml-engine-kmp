@@ -51,7 +51,7 @@ jobs:
         name: SnakeKMP benchmark
         tool: 'jmh'
         output-file-path: ${{ steps.results.outputs.report }}
-        alert-comment-cc-users: "@OptimumCode"
+        alert-comment-cc-users: "@OptimumCode,@aSemy"
         comment-on-alert: true
         summary-always: true
         # Access token to deploy GitHub Pages branch

@@ -2,7 +2,7 @@ name: Run benchmark for parser
 on:
   push:
     branches:
-      - issue_#208
+      - main
   pull_request:
 
 permissions:
@@ -10,7 +10,7 @@ permissions:
   deployments: write
   # contents permission to update benchmark contents in gh-pages branch
   contents: write
-  # create comments on PR
+  # pull-requests permission to create comments on PR in case of alert
   pull-requests: write
 
 jobs:
@@ -33,15 +33,6 @@ jobs:
         gradle-version: wrapper
     - name: Run benchmark for JVM
       run: ./gradlew :benchmark:jvmBenchmark
-    # - name: Find benchmark result
-    #   run: |
-    #     MATRIX="["
-    #     for file in $(find benchmark/build/reports/benchmarks/main/ -name *.json -type f)
-    #     do
-    #       MATRIX="$MATRIX{\"report-file\":\"$file\"},"
-    #     done
-    #     MATRIX="${MATRIX%,}]"
-    #     echo "report-files=$MATRIX" >> $GITHUB_OUTPUT
     - name: Find JVM benchmark result
       id: results
       run: echo "report=$(find benchmark/build/reports/benchmarks/main/ -name jvm.json -type f)" >> $GITHUB_OUTPUT
@@ -51,10 +42,10 @@ jobs:
         name: SnakeKMP benchmark
         tool: 'jmh'
         output-file-path: ${{ steps.results.outputs.report }}
-        alert-comment-cc-users: "@OptimumCode,@aSemy"
+        alert-comment-cc-users: "@krzema12,@aSemy"
         comment-on-alert: true
         summary-always: true
-        # Access token to deploy GitHub Pages branch
+        alert-threshold: '200%'
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        # Push and deploy GitHub pages branch automatically
-        auto-push: ${{ github.repository == 'OptimumCode/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}
+        # Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
+        auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}

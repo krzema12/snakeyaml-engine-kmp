@@ -1,5 +1,7 @@
 rootProject.name = "snakeyaml-engine-kmp"
 
+include("benchmark")
+
 pluginManagement {
     repositories {
         mavenCentral()

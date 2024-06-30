@@ -5,7 +5,7 @@ plugins {
 }
 
 allOpen {
-    // JMH required all benchmark classes to be open
+    // JMH requires all benchmark classes to be open
     annotation("org.openjdk.jmh.annotations.State")
 }
 

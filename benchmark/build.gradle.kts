@@ -49,9 +49,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.9.0"))
                 implementation(projects.snakeyamlEngineKmp)
                 implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.11")
-                implementation("com.squareup.okio:okio:3.9.0")
+                implementation("com.squareup.okio:okio")
             }
         }
 
@@ -61,7 +62,7 @@ kotlin {
                     because("error during benchmark generation: e:\n" +
                         "KLIB resolver: Could not find \"net.thauvin.erik.urlencoder:urlencoder-lib\" in [.../snakeyaml-engine-kmp]")
                 }
-                implementation("com.squareup.okio:okio-nodefilesystem:3.9.0")
+                implementation("com.squareup.okio:okio-nodefilesystem")
             }
         }
     }

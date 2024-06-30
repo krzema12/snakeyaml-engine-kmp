@@ -77,7 +77,8 @@ benchmark {
                 "openAiYamlPath",
                 layout.projectDirectory
                     .file("data/issues/kmp-issue-204-OpenAI-API.yaml")
-                    .asFile.absolutePath,
+                    .asFile
+                    .relativeTo(layout.projectDirectory.asFile),
             )
         }
     }

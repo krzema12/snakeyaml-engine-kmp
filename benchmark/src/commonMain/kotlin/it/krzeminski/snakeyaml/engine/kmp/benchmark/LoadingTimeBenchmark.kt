@@ -30,7 +30,7 @@ class LoadingTimeBenchmark {
     }
 
     @Benchmark
-    fun loadsOpenAiSchema(): Map<*, *>? {
+    fun loadsOpenAiSchema(): Map<*, *> {
         return with(FILE_SYSTEM) {
             openReadOnly(openAiYamlPath.toPath(normalize = true)).use { handle ->
                 handle.source().buffer().use { source ->
@@ -48,7 +48,7 @@ class LoadingTimeBenchmark {
                             reader = reader,
                         )
                     )
-                    constructor.constructSingleDocument(composer.getSingleNode()) as? Map<*, *>
+                    constructor.constructSingleDocument(composer.getSingleNode()) as Map<*, *>
                 }
             }
         }

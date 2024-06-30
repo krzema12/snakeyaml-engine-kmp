@@ -76,10 +76,11 @@ benchmark {
             iterationTimeUnit = "s"
             param(
                 "openAiYamlPath",
+                // Absolute path is required by JS target. Otherwise, file cannot be found
                 layout.projectDirectory
                     .file("data/issues/kmp-issue-204-OpenAI-API.yaml")
                     .asFile
-                    .relativeTo(layout.projectDirectory.asFile),
+                    .absolutePath,
             )
         }
     }

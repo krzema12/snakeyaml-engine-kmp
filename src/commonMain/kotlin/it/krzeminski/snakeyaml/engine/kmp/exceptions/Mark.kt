@@ -38,7 +38,10 @@ class Mark @JvmOverloads constructor(
     val pointer: Int = 0,
 ) {
 
-    @Deprecated("Converted to immutable List<Int>, replace with `codepoints`")
+    @Deprecated(
+        "Converted to a List<Int>, replace with `codepoints` (may change semantics)",
+        ReplaceWith("codepoints"),
+    )
     val buffer: IntArray
         get() = codepoints.toIntArray()
 

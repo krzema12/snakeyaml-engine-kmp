@@ -48,8 +48,8 @@ public class LoadSettingsBufferSizeTest {
         "       ^\n" +
         "expected <block end>, but found '<scalar>'\n" +
         " in reader, line 2, column 14:\n" +
-        "    if: 'aaa' == 'bbb'\n" +
-        "              ^\n";
+        "       if: 'aaa' == 'bbb'\n" +
+        "                 ^\n";
 
     assertEquals(expectedError, exception.getMessage());
   }

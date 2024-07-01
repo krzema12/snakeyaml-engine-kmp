@@ -137,8 +137,10 @@ class StreamReader(
             val codepoint = codepointsBuffer.removeFirstOrNull() ?: return
 
             if (useMarks) {
-                codepointsBufferHistory.removeFirst()
                 codepointsBufferHistory.addLast(codepoint)
+                while (codepointsBufferHistory.size > bufferSize) {
+                    codepointsBufferHistory.removeFirst()
+                }
             }
 
             if (

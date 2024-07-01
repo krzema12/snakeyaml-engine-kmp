@@ -1,4 +1,4 @@
-name: Run benchmark for parser
+name: Run Benchmarks
 on:
   push:
     branches:

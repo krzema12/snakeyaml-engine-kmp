@@ -18,29 +18,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 class ColonInFlowContextInListTest {
 
   @Test
   void withSpacesAround() {
-    Load loader = new Load(LoadSettings.builder().build());
-    List<String> list = (List<String>) loader.loadFromString("[ http://foo ]");
+    Load loader = new Load();
+    List<String> list = (List<String>) loader.loadOne("[ http://foo ]");
     assertTrue(list.contains("http://foo"));
   }
 
   @Test
   void withoutSpacesAround() {
-    Load loader = new Load(LoadSettings.builder().build());
-    List<String> list = (List<String>) loader.loadFromString("[http://foo]");
+    Load loader = new Load();
+    List<String> list = (List<String>) loader.loadOne("[http://foo]");
     assertTrue(list.contains("http://foo"));
   }
 
   @Test
   void twoValues() {
-    Load loader = new Load(LoadSettings.builder().build());
-    List<String> list = (List<String>) loader.loadFromString("[ http://foo,http://bar ]");
+    Load loader = new Load();
+    List<String> list = (List<String>) loader.loadOne("[ http://foo,http://bar ]");
     assertTrue(list.contains("http://foo"));
     assertTrue(list.contains("http://bar"));
   }

@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class NonAsciiAnchorTest {
@@ -30,31 +29,30 @@ public class NonAsciiAnchorTest {
   @Test
   @DisplayName("Non ASCII anchor name must be accepted")
   public void testNonAsciiAnchor() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    String floatValue = (String) load.loadFromString("&something_タスク タスク");
+    Load load = new Load();
+    String floatValue = (String) load.loadOne("&something_タスク タスク");
     assertEquals("タスク", floatValue);
   }
 
   @Test
   public void testUnderscore() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Object value = loader.loadFromString("&_ タスク");
+    Load loader = new Load();
+    Object value = loader.loadOne("&_ タスク");
     assertEquals("タスク", value);
   }
 
   @Test
   public void testSmile() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Object value = loader.loadFromString("&\uD83D\uDE01 v1");
+    Load loader = new Load();
+    Object value = loader.loadOne("&\uD83D\uDE01 v1");
     // System.out.println("&\uD83D\uDE01 v1");
     assertEquals("v1", value);
   }
 
   @Test
   public void testAlpha() {
-    Load loader = new Load(LoadSettings.builder().build());
-    Object value = loader.loadFromString("&kääk v1");
+    Load loader = new Load();
+    Object value = loader.loadOne("&kääk v1");
     assertEquals("v1", value);
   }
 
@@ -73,8 +71,7 @@ public class NonAsciiAnchorTest {
   }
 
   private void loadWith(char c) {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
-    load.loadFromString("&" + c + " value");
+    Load load = new Load();
+    load.loadOne("&" + c + " value");
   }
 }

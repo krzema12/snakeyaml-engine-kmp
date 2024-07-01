@@ -34,7 +34,7 @@ import java.io.Reader
  * @param constructor custom YAML constructor
  */
 class Load @JvmOverloads constructor(
-    private val settings: LoadSettings,
+    private val settings: LoadSettings = LoadSettings.builder().build(),
     private val constructor: BaseConstructor = StandardConstructor(settings),
 ) {
 
@@ -121,7 +121,6 @@ class Load @JvmOverloads constructor(
      * @return an [Iterable] over the parsed objects in this stream in proper sequence
      */
     fun loadAll(string: String): Iterable<Any?> = loadAll(createComposer(string))
-
 
     private class YamlIterator(
         private val composer: Composer,

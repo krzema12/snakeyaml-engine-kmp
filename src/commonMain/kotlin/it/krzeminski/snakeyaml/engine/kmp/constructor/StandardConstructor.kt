@@ -111,7 +111,9 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
 
         override fun constructRecursive(node: Node, `object`: Any) {
             if (node.isRecursive) {
-                constructSet2ndStep(node as MappingNode, `object` as MutableSet<Any?>)
+                @Suppress("UNCHECKED_CAST")
+                val set = `object` as MutableSet<Any?>
+                constructSet2ndStep(node as MappingNode, set)
             } else {
                 throw YamlEngineException("Unexpected recursive set structure. Node: $node")
             }
@@ -136,7 +138,9 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
 
         override fun constructRecursive(node: Node, `object`: Any) {
             if (node.isRecursive) {
-                constructSequenceStep2(node as SequenceNode, `object` as MutableList<Any?>)
+                @Suppress("UNCHECKED_CAST")
+                val list = `object` as MutableList<Any?>
+                constructSequenceStep2(node as SequenceNode, list)
             } else {
                 throw YamlEngineException("Unexpected recursive sequence structure. Node: $node")
             }
@@ -156,7 +160,9 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
 
         override fun constructRecursive(node: Node, `object`: Any) {
             if (node.isRecursive) {
-                constructMapping2ndStep(node as MappingNode, `object` as MutableMap<Any?, Any?>)
+                @Suppress("UNCHECKED_CAST")
+                val map =  `object` as MutableMap<Any?, Any?>
+                constructMapping2ndStep(node as MappingNode, map)
             } else {
                 throw YamlEngineException("Unexpected recursive mapping structure. Node: $node")
             }

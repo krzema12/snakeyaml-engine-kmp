@@ -1,4 +1,5 @@
 ### Kotlin/JVM ###
+.kotlin
 *.class
 *.log
 

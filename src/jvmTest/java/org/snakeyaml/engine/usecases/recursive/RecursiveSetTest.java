@@ -32,11 +32,10 @@ class RecursiveSetTest {
   @DisplayName("Fail to load map with recursive keys")
   void failToLoadRecursiveSetByDefault() {
     String recursiveInput = TestUtils.getResource("/recursive/recursive-set-1.yaml");
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     // fail to load map which has only one key - reference to itself
     YamlEngineException exception =
-        assertThrows(YamlEngineException.class, () -> load.loadFromString(recursiveInput));
+        assertThrows(YamlEngineException.class, () -> load.loadOne(recursiveInput));
     assertEquals("Recursive key for mapping is detected but it is not configured to be allowed.",
         exception.getMessage());
   }
@@ -48,7 +47,7 @@ class RecursiveSetTest {
     LoadSettings settings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
     Load load = new Load(settings);
     // load map which has only one key - reference to itself
-    Set recursive = (Set<Object>) load.loadFromString(recursiveInput);
+    Set recursive = (Set<Object>) load.loadOne(recursiveInput);
     assertEquals(3, recursive.size());
   }
 }

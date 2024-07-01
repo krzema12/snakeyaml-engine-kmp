@@ -87,7 +87,7 @@ public class CanonicalScanner implements Scanner {
     this.mark = new Mark("test", 0, 0, 0, codepoints, 0);
   }
 
-  public boolean checkToken(Token.ID... choices) {
+  public boolean checkToken(Token.ID @NotNull ... choices) {
     if (!scanned) {
       scan();
     }
@@ -105,14 +105,11 @@ public class CanonicalScanner implements Scanner {
     return false;
   }
 
-  public Token peekToken() {
+  public @NotNull Token peekToken() {
     if (!scanned) {
       scan();
     }
-    if (!tokens.isEmpty()) {
-      return this.tokens.get(0);
-    }
-    return null;
+    return this.tokens.stream().findFirst().orElseThrow();
   }
 
   @Override
@@ -120,7 +117,7 @@ public class CanonicalScanner implements Scanner {
     return checkToken();
   }
 
-  public Token next() {
+  public @NotNull Token next() {
     if (!scanned) {
       scan();
     }
@@ -266,7 +263,7 @@ public class CanonicalScanner implements Scanner {
       index++;
     }
     String value = data.substring(start, index);
-    if (value.length() == 0) {
+    if (value.isEmpty()) {
       value = "!";
     } else if (value.charAt(0) == '!') {
       value = Tag.PREFIX + value.substring(1);

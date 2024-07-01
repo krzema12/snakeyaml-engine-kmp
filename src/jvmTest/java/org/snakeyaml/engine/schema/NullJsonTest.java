@@ -20,17 +20,16 @@ import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 @org.junit.jupiter.api.Tag("fast")
 public class NullJsonTest {
 
-  Load loader = new Load(LoadSettings.builder().build());
+  private final Load loader = new Load();
 
   @Test
   void parseNull() {
-    assertNull(loader.loadFromString("null"));
-    assertEquals("null", loader.loadFromString("! null"));
+    assertNull(loader.loadOne("null"));
+    assertEquals("null", loader.loadOne("! null"));
   }
 
   @Test

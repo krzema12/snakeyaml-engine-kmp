@@ -269,9 +269,9 @@ public class EmitterTest {
     // TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
     // key:value in the flow.
     assertEquals("&id001 {*id001: a}\n", output);
-    Load load = new Load(LoadSettings.builder().build());
+    Load load = new Load();
     try {
-      load.loadFromString(output);
+      load.loadOne(output);
       fail("TODO fix anchor");
     } catch (ComposerException e) {
       assertTrue(e.getMessage().contains("found undefined alias id001:"), e.getMessage());

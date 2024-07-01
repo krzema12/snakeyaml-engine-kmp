@@ -21,7 +21,6 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 
 /**
  * Example of parsing a local tag
@@ -32,10 +31,9 @@ public class SetsTagTest {
   @Test
   @DisplayName("Test that !!set tag creates a Set")
   public void testSetsTag() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load loader = new Load(settings);
+    Load loader = new Load();
     final String YAML = "---\n" + "sets: !!set\n" + "    ? a\n" + "    ? b\n";
-    Map<String, Set<String>> map = (Map<String, Set<String>>) loader.loadFromString(YAML);
+    Map<String, Set<String>> map = (Map<String, Set<String>>) loader.loadOne(YAML);
     Set<String> set = map.get("sets");
     assertEquals(2, set.size());
     Iterator iter = set.iterator();

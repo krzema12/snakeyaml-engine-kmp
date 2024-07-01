@@ -323,7 +323,7 @@ public class EmitterWithCommentEnabledTest {
     // loaderOptions);
 
     Load load = new Load(loadSettings);
-    load.loadAllFromString(data);
+    load.loadAll(data);
   }
 
   @Test

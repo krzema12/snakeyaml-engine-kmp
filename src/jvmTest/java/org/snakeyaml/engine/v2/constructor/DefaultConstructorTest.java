@@ -32,16 +32,15 @@ class DefaultConstructorTest {
   void constructNullWhenUnknown() {
     LoadSettings settings = LoadSettings.builder().build();
     Load load = new Load(settings, new MagicNullConstructor(settings));
-    String str = (String) load.loadFromString("!unknownLocalTag a");
+    String str = (String) load.loadOne("!unknownLocalTag a");
     assertNull(str);
   }
 
   @Test
   void failWhenUnknown() {
-    LoadSettings settings = LoadSettings.builder().build();
-    Load load = new Load(settings);
+    Load load = new Load();
     YamlEngineException exception =
-        assertThrows(YamlEngineException.class, () -> load.loadFromString("!unknownLocalTag a"));
+        assertThrows(YamlEngineException.class, () -> load.loadOne("!unknownLocalTag a"));
     assertTrue(exception.getMessage()
         .startsWith("could not determine a constructor for the tag !unknownLocalTag"));
   }

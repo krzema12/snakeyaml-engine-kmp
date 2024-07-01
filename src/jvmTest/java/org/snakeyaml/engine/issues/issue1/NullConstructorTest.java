@@ -36,8 +36,8 @@ class NullConstructorTest {
     tagConstructors.put(Tag.NULL, new MyConstructNull());
     LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
-    assertNotNull(loader.loadFromString(""), "Expected MyConstructNull to be called.");
-    assertEquals("absent", loader.loadFromString(""), "Expected MyConstructNull to be called.");
+    assertNotNull(loader.loadOne(""), "Expected MyConstructNull to be called.");
+    assertEquals("absent", loader.loadOne(""), "Expected MyConstructNull to be called.");
   }
 
   @Test
@@ -46,7 +46,7 @@ class NullConstructorTest {
     tagConstructors.put(Tag.NULL, new MyConstructNull());
     LoadSettings settings = LoadSettings.builder().setTagConstructors(tagConstructors).build();
     Load loader = new Load(settings);
-    assertEquals("present", loader.loadFromString("!!null null"),
+    assertEquals("present", loader.loadOne("!!null null"),
         "Expected MyConstructNull to be called.");
   }
 

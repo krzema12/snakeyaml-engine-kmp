@@ -43,13 +43,12 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
 @org.junit.jupiter.api.Tag("fast")
 public class FuzzYAMLRead50431Test {
 
-  LoadSettings settings = LoadSettings.builder().build();
-  Load load = new Load(settings);
+  private final Load load = new Load();
 
   @Test
   public void testIncompleteValue() {
     try {
-      load.loadFromString("\"\\UE30EEE");
+      load.loadOne("\"\\UE30EEE");
       fail("Invalid escape code in double quoted scalar should not be accepted");
     } catch (ScannerException e) {
       assertEquals(
@@ -61,14 +60,14 @@ public class FuzzYAMLRead50431Test {
 
   @Test
   public void testProperValue() {
-    String parsed = (String) load.loadFromString("\"\\U0000003B\"");
+    String parsed = (String) load.loadOne("\"\\U0000003B\"");
     assertEquals(1, parsed.length());
     assertEquals("\u003B", parsed);
   }
 
   @Test
   public void testNotQuoted() {
-    String parsed = (String) load.loadFromString("\\UE30EEE");
+    String parsed = (String) load.loadOne("\\UE30EEE");
     assertEquals(8, parsed.length());
     assertEquals("\\UE30EEE", parsed);
   }

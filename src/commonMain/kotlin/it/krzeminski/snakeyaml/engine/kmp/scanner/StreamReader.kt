@@ -115,6 +115,8 @@ class StreamReader(
             index = index,
             line = line,
             column = column,
+//            codepoints = codePointsWindow.asList(),
+            // TODO maybe don't convert to list?
             codepoints = buildList {
                 addAll(codepointsBufferHistory)
                 addAll(codepointsBuffer)

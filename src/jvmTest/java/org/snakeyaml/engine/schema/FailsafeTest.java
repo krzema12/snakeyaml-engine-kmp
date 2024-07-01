@@ -29,12 +29,12 @@ public class FailsafeTest {
 
   @Test
   void parseString() {
-    assertEquals("true", loader.loadFromString("true"));
-    assertEquals("false", loader.loadFromString("false"));
-    assertEquals("null", loader.loadFromString("null"));
-    assertEquals("1", loader.loadFromString("1"));
-    assertEquals("0001", loader.loadFromString("0001"));
-    assertEquals("3.000", loader.loadFromString("3.000"));
+    assertEquals("true", loader.loadOne("true"));
+    assertEquals("false", loader.loadOne("false"));
+    assertEquals("null", loader.loadOne("null"));
+    assertEquals("1", loader.loadOne("1"));
+    assertEquals("0001", loader.loadOne("0001"));
+    assertEquals("3.000", loader.loadOne("3.000"));
   }
 
   @Test

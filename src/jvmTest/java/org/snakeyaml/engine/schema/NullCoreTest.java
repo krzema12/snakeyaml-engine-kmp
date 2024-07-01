@@ -31,11 +31,11 @@ public class NullCoreTest {
   @Test
   void parseNull() {
     // null | Null | NULL | ~
-    assertNull(loader.loadFromString("null"));
-    assertNull(loader.loadFromString("Null"));
-    assertNull(loader.loadFromString("NULL"));
-    assertNull(loader.loadFromString("~"));
-    assertEquals("null", loader.loadFromString("! null"));
+    assertNull(loader.loadOne("null"));
+    assertNull(loader.loadOne("Null"));
+    assertNull(loader.loadOne("NULL"));
+    assertNull(loader.loadOne("~"));
+    assertEquals("null", loader.loadOne("! null"));
   }
 
   @Test

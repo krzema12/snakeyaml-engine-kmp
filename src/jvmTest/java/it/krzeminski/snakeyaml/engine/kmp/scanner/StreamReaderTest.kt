@@ -1,7 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
 import io.kotest.assertions.asClue
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -15,7 +14,7 @@ class StreamReaderTest : FunSpec({
     test("test peeking and forwarding") {
         val reader = reader(stream = "abc")
 
-        shouldThrow<IndexOutOfBoundsException> { reader.peek(-1) }
+        reader.peek(-1) shouldBe 0
         reader.peek(0) shouldBe 'a'.code
         reader.peek(1) shouldBe 'b'.code
         reader.peek(2) shouldBe 'c'.code
@@ -25,7 +24,7 @@ class StreamReaderTest : FunSpec({
 
         reader.forward()
 
-        reader.peek(-1) shouldBe 'a'.code
+        reader.peek(-1) shouldBe 0
         reader.peek(0) shouldBe 'b'.code
         reader.peek(1) shouldBe 'c'.code
         reader.peek(2) shouldBe 0
@@ -34,7 +33,7 @@ class StreamReaderTest : FunSpec({
 
         reader.forward(2)
 
-        reader.peek(-1) shouldBe 'c'.code
+        reader.peek(-1) shouldBe 0
         reader.peek(0) shouldBe 0
 
         reader.shouldHave(index = 3, documentIndex = 3, line = 0, column = 3)

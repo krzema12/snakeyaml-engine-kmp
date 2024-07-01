@@ -32,10 +32,10 @@ jobs:
       with:
         gradle-version: wrapper
     - name: Run benchmark for JVM
-      run: ./gradlew :benchmark:jvmBenchmark
+      run: ./gradlew :snake-kmp-benchmarks:jvmBenchmark
     - name: Find JVM benchmark result
       id: results
-      run: echo "report=$(find benchmark/build/reports/benchmarks/main/ -name jvm.json -type f)" >> $GITHUB_OUTPUT
+      run: echo "report=$(find snake-kmp-benchmarks/build/reports/benchmarks/main/ -name jvm.json -type f)" >> $GITHUB_OUTPUT
     - name: Store benchmark result
       uses: benchmark-action/github-action-benchmark@v1
       with:

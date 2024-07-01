@@ -42,7 +42,6 @@ jobs:
         name: SnakeKMP benchmark
         tool: 'jmh'
         output-file-path: ${{ steps.results.outputs.report }}
-        alert-comment-cc-users: "@krzema12,@aSemy"
         comment-on-alert: true
         summary-always: true
         alert-threshold: '200%'

@@ -1,10 +1,10 @@
 package buildsrc.conventions.lang
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * Base configuration for all Kotlin/Multiplatform conventions.
@@ -20,10 +20,7 @@ plugins {
 }
 
 
-@OptIn(
-    ExperimentalKotlinGradlePluginApi::class,
-    ExperimentalWasmDsl::class,
-)
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     //region JVM Targets
     jvm {
@@ -42,6 +39,7 @@ kotlin {
 
 
     //region Wasm Targets
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         binaries.library()
         browser()
@@ -98,20 +96,6 @@ kotlin {
         )
     }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            freeCompilerArgs = listOf(
-                "-Xjdk-release=8",
-            )
-        }
-    }
-
-    tasks.withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
-    }
-
     // configure all Kotlin/JVM Tests to use JUnit
     targets.withType<KotlinJvmTarget>().configureEach {
         testRuns.configureEach {
@@ -121,6 +105,34 @@ kotlin {
         }
     }
 }
+
+//region Java versioning
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+
+kotlin.targets.withType<KotlinJvmTarget>().configureEach {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget(minSupportedJavaVersion.toString())
+        freeCompilerArgs.addAll(
+            "-Xjdk-release=${minSupportedJavaVersion.majorVersion}",
+        )
+    }
+
+    testRuns.configureEach {
+        executionTask.configure {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(minSupportedJavaVersion.majorVersion)
+            }
+        }
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = minSupportedJavaVersion.toString()
+    targetCompatibility = minSupportedJavaVersion.toString()
+}
+//endregion
+
 
 afterEvaluate {
     rootProject.extensions.configure<YarnRootExtension> {

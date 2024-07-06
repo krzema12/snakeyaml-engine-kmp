@@ -18,6 +18,7 @@ import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.dsl.JobBuilder
 import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
 
@@ -49,22 +50,20 @@ workflow(
             runsOn = jobRunner,
         ) {
             uses(action = Checkout())
-
-            listOf(
-                minSupportedJava,
-                compiledWithJava
-            ).forEach { javaVersion ->
-                // Temurin 8 isn't available on M1. Remove this when min Java version >= 11.
-                val javaDist = if (jobRunner == MacOSLatest) Zulu else Temurin
-
-                uses(
-                    name = "Set up JDK $javaVersion",
-                    action = SetupJava(
-                        javaVersion = javaVersion,
-                        distribution = javaDist,
-                    ),
-                )
-            }
+            uses(
+                name = "Set up test launcher JDK",
+                action = SetupJava(
+                    javaVersion = minSupportedJava,
+                    distribution = distributionFor(minSupportedJava),
+                ),
+            )
+            uses(
+                name = "Set up compilation JDK",
+                action = SetupJava(
+                    javaVersion = compiledWithJava,
+                    distribution = distributionFor(compiledWithJava),
+                ),
+            )
             uses(
                 name = "Cache Kotlin Konan",
                 action = Cache(
@@ -83,3 +82,11 @@ workflow(
         }
     }
 }
+
+fun JobBuilder<*>.distributionFor(version: String): SetupJava.Distribution =
+    if (runsOn == MacOSLatest && version.toInt() < 11) {
+        // Temurin 8 isn't available on M1. Remove this when min Java version >= 11.
+        Zulu
+    } else {
+        Temurin
+    }

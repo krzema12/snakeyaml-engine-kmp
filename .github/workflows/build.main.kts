@@ -11,6 +11,8 @@
 import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Zulu
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildAction
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
@@ -31,6 +33,12 @@ workflow(
         cancelInProgress = true,
     ),
 ) {
+
+    // Java 8 is the minimum supported version, and is used to run the tests.
+    val minSupportedJava = "8"
+    // Java 21 is to compile the project.
+    val compiledWithJava = "21"
+
     setOf(
         UbuntuLatest,
         MacOSLatest,
@@ -41,12 +49,19 @@ workflow(
             runsOn = jobRunner,
         ) {
             uses(action = Checkout())
-            listOf("8", "21").forEach { javaVersion ->
+
+            listOf(
+                minSupportedJava,
+                compiledWithJava
+            ).forEach { javaVersion ->
+                // Temurin 8 isn't available on M1. Remove this when min Java version >= 11.
+                val javaDist = if (jobRunner == MacOSLatest) Zulu else Temurin
+
                 uses(
                     name = "Set up JDK $javaVersion",
                     action = SetupJava(
                         javaVersion = javaVersion,
-                        distribution = SetupJava.Distribution.Temurin,
+                        distribution = javaDist,
                     ),
                 )
             }

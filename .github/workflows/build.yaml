@@ -67,13 +67,13 @@ jobs:
       uses: 'actions/setup-java@v4'
       with:
         java-version: '8'
-        distribution: 'temurin'
+        distribution: 'zulu'
     - id: 'step-2'
       name: 'Set up JDK 21'
       uses: 'actions/setup-java@v4'
       with:
         java-version: '21'
-        distribution: 'temurin'
+        distribution: 'zulu'
     - id: 'step-3'
       name: 'Cache Kotlin Konan'
       uses: 'actions/cache@v4'

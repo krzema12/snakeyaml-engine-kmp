@@ -41,14 +41,15 @@ workflow(
             runsOn = jobRunner,
         ) {
             uses(action = Checkout())
-            uses(
-                name = "Set up JDK",
-                action = SetupJava(
-                    javaVersion = "11",
-                    distribution = SetupJava.Distribution.Zulu,
-                    cache = SetupJava.BuildPlatform.Gradle,
-                ),
-            )
+            listOf("8", "21").forEach { javaVersion ->
+                uses(
+                    name = "Set up JDK $javaVersion",
+                    action = SetupJava(
+                        javaVersion = javaVersion,
+                        distribution = SetupJava.Distribution.Temurin,
+                    ),
+                )
+            }
             uses(
                 name = "Cache Kotlin Konan",
                 action = Cache(

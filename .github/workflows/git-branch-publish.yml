@@ -31,7 +31,7 @@ jobs:
         with:
           ref: ${{ env.CURRENT_BRANCH_NAME }}
 
-      - name: Set up JDK 21
+      - name: Set up compilation JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin

@@ -31,11 +31,17 @@ jobs:
         with:
           ref: ${{ env.CURRENT_BRANCH_NAME }}
 
-      - name: setup JDK
+      - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 8
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v3
         with:

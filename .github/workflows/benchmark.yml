@@ -38,7 +38,7 @@ jobs:
       with:
         gradle-version: wrapper
     - name: Run benchmarks
-      run: ./gradlew -p snake-kmp-benchmarks benchmark
+      run: ./gradlew -p snake-kmp-benchmarks benchmark --no-parallel
     - uses: actions/upload-artifact@v4
       with:
         name: bench-results-${{ matrix.os }}

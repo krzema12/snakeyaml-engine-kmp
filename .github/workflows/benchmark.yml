@@ -16,11 +16,11 @@ jobs:
         include:
           - os: ubuntu-latest
           - os: macos-latest
-            additional-task: '-x jvmBenchmark -x jsBenchmark'
+            additional-args: '-x jvmBenchmark -x jsBenchmark'
           - os: macos-13 # for macosX64
-            additional-task: '-x jvmBenchmark -x jsBenchmark'
+            additional-args: '-x jvmBenchmark -x jsBenchmark'
           - os: windows-latest
-            additional-task: '-x jvmBenchmark -x jsBenchmark'
+            additional-args: '-x jvmBenchmark -x jsBenchmark'
     name: Performance regression check on ${{ matrix.os }} runner
     runs-on: ${{ matrix.os }}
     steps:
@@ -38,7 +38,7 @@ jobs:
       with:
         gradle-version: wrapper
     - name: Run benchmarks
-      run: ./gradlew -p snake-kmp-benchmarks benchmark --no-parallel
+      run: ./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${{ matrix.additional-args }}
     - uses: actions/upload-artifact@v4
       with:
         name: bench-results-${{ matrix.os }}

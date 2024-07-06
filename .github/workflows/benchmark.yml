@@ -68,14 +68,12 @@ jobs:
     - name: Prepare and join benchmark reports
       id: prep
       run: |
-        current_location=$(pwd)
-        echo "$current_location"
         for report in $(find ./${{ env.RESULTS_DIR }} -type f -name "*.json")
         do
           file_name=$(basename "$report")
           platform="${file_name%.*}"
           # Trim 'it.krzeminski.snakeyaml.engine.kmp.benchmark.' to make benchmark name more readable
-          jq "[ .[] | .benchmark |= \"${platform}.\" + ltrimstr(\"it.krzeminski.snakeyaml.engine.kmp.benchmark.\") | .params |= map_values(. |= ltrimstr(\"$current_location\")) ]" $report > ${{ env.RESULTS_DIR }}/$platform.json
+          jq "[ .[] | .benchmark |= \"${platform}.\" + ltrimstr(\"it.krzeminski.snakeyaml.engine.kmp.benchmark.\") ]" $report > ${{ env.RESULTS_DIR }}/$platform.json
         done
         AGGREGATED_REPORT=aggregated.json
         # Joined reports looks like this: [[{},{}], [{},{}]]

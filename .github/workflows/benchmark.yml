@@ -2,7 +2,7 @@ name: Run Benchmarks
 on:
   push:
     branches:
-      - main
+      - issue_#208
   pull_request:
 
 env:
@@ -92,4 +92,4 @@ jobs:
         alert-threshold: '200%'
         github-token: ${{ secrets.GITHUB_TOKEN }}
         # Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
-        auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}
+        auto-push: ${{ github.event_name != 'pull_request' }}

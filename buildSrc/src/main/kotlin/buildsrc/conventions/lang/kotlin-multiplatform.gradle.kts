@@ -1,7 +1,10 @@
 package buildsrc.conventions.lang
 
+import buildsrc.utils.JavaLanguageVersion
+import buildsrc.utils.JvmTarget
+import buildsrc.utils.compilerFor
+import buildsrc.utils.launcherFor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -107,12 +110,21 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+
+// TODO UrlEncoder needs Java 11, so we can't compile to Java 8
+//      https://github.com/krzema12/snakeyaml-engine-kmp/pull/203#issuecomment-2211712415
+val minSupportedJavaVersion = JavaVersion.VERSION_11
+//val minSupportedJavaVersion = JavaVersion.VERSION_11
+
+// use Java 21 to compile the project
+val javaCompiler = javaToolchains.compilerFor(21)
+// use minimum Java version to run the tests
+val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
-        jvmTarget = JvmTarget.fromTarget(minSupportedJavaVersion.toString())
+        jvmTarget = JvmTarget(minSupportedJavaVersion)
         freeCompilerArgs.addAll(
             "-Xjdk-release=${minSupportedJavaVersion.majorVersion}",
         )
@@ -121,7 +133,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(minSupportedJavaVersion.majorVersion)
+                languageVersion = JavaLanguageVersion(minSupportedJavaVersion)
             }
         }
     }

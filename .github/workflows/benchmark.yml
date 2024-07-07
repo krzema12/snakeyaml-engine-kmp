@@ -89,7 +89,7 @@ jobs:
         output-file-path: ${{ steps.prep.outputs.report }}
         comment-on-alert: true
         summary-always: true
-        alert-threshold: '200%'
+        alert-threshold: '150%'
         github-token: ${{ secrets.GITHUB_TOKEN }}
         # Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
         auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}

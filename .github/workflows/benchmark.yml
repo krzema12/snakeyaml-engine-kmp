@@ -73,7 +73,7 @@ jobs:
           file_name=$(basename "$report")
           platform="${file_name%.*}"
           # Trim 'it.krzeminski.snakeyaml.engine.kmp.benchmark.' to make benchmark name more readable
-          jq "[ .[] | .benchmark |= \"${platform}.\" + ltrimstr(\"it.krzeminski.snakeyaml.engine.kmp.benchmark.\") ]" $report > ${{ env.RESULTS_DIR }}/$platform.json
+          jq "[ .[] | .benchmark |= \"${platform}.\" + ltrimstr(\"it.krzeminski.snakeyaml.engine.kmp.benchmark.\") | .params |= map_values(. |= match(\"data.+\"; \"g\").string) ]" $report > ${{ env.RESULTS_DIR }}/$platform.json
         done
         AGGREGATED_REPORT=aggregated.json
         # Joined reports looks like this: [[{},{}], [{},{}]]

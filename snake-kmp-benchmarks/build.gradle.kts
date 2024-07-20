@@ -59,8 +59,7 @@ kotlin {
         jsMain {
             dependencies {
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0") {
-                    because("error during benchmark generation: e:\n" +
-                        "KLIB resolver: Could not find \"net.thauvin.erik.urlencoder:urlencoder-lib\" in [.../snakeyaml-engine-kmp]")
+                    because("https://github.com/Kotlin/kotlinx-benchmark/issues/185 - only compile dependnecies (declared as api) are using during benchmark compilation")
                 }
                 implementation("com.squareup.okio:okio-nodefilesystem")
             }

@@ -7,17 +7,20 @@
 @file:DependsOn("actions:cache:v4")
 @file:DependsOn("actions:setup-java:v4")
 @file:DependsOn("gradle:gradle-build-action:v3")
+@file:OptIn(ExperimentalKotlinLogicStep::class)
 
 import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.gradle.GradleBuildAction
+import io.github.typesafegithub.workflows.annotations.ExperimentalKotlinLogicStep
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
 import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
+import java.io.File
 
 workflow(
     name = "Build",
@@ -64,6 +67,20 @@ workflow(
                     arguments = "build",
                 ),
             )
+        }
+    }
+
+    job(
+        id = "ensure-no-Okio-in-API",
+        name = "Ensure no Okio in API",
+        runsOn = UbuntuLatest,
+    ) {
+        uses(action = Checkout())
+        run {
+            require("okio" !in File("api/snakeyaml-engine-kmp.api").readText().lowercase()) {
+                "Okio API found in this library's API! Okio is intended to be just an " +
+                    "implementation detail, it shouldn't leak in the API."
+            }
         }
     }
 }

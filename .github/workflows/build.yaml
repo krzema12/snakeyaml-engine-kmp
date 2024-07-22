@@ -100,3 +100,15 @@ jobs:
       uses: 'gradle/gradle-build-action@v3'
       with:
         arguments: 'build'
+  ensure-no-Okio-in-API:
+    name: 'Ensure no Okio in API'
+    runs-on: 'ubuntu-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      env:
+        GHWKT_GITHUB_CONTEXT_JSON: '${{ toJSON(github) }}'
+      run: 'GHWKT_RUN_STEP=''ensure-no-Okio-in-API:step-1'' ''.github/workflows/build.main.kts'''

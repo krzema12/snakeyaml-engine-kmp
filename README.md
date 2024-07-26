@@ -35,7 +35,9 @@ The library has been successfully ported to KMP, and is consumed by [kaml](https
 a library that integrates with [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 
 SnakeYAML Engine KMP uses comprehensive [YAML test suites](https://github.com/yaml/yaml-test-suite)
-that validate correctness. However, performance has not been evaluated.
+that validate correctness. Detailed performance testing wasn't conducted, however we have performance
+reports (see [here](https://krzema12.github.io/snakeyaml-engine-kmp-benchmarks/dev/bench/)) and mechanisms
+in place that should prevent performance regressions.
 
 ## How to use
 

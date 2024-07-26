@@ -11,6 +11,10 @@ group = "it.krzeminski"
 version = "3.0.2-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
+apiValidation {
+  ignoredProjects += listOf("snake-kmp-benchmarks")
+}
+
 kotlin {
     sourceSets {
         commonMain {

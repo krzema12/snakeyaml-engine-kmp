@@ -51,13 +51,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - run-benchmark
-    permissions:
-      # deployments permission to deploy GitHub pages website
-      deployments: write
-      # contents permission to update benchmark contents in gh-pages branch
-      contents: write
-      # pull-requests permission to create comments on PR in case of alert
-      pull-requests: write
     env:
       RESULTS_DIR: bench-results
     steps:

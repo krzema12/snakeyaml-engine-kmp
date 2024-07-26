@@ -96,6 +96,8 @@ jobs:
         alert-threshold: '150%'
         fail-threshold: '200%'
         gh-repository: github.com/krzema12/snakeyaml-engine-kmp-benchmarks
-        github-token: ${{ secrets.PUBLISH_BENCHMARK_RESULTS }}
+        # github-token: ${{ secrets.PUBLISH_BENCHMARK_RESULTS }}
+        # SOME_EMPTY_SECRET contains an empty string. Let's see if GitHub interprets it as not setting the token.
+        github-token: ${{ secrets.SOME_EMPTY_SECRET }}
         # Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
         auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}

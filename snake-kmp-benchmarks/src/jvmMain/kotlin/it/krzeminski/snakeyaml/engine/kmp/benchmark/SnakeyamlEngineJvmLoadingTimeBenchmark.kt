@@ -35,7 +35,7 @@ class SnakeyamlEngineJvmLoadingTimeBenchmark {
                 handle.source().buffer().use { source ->
                     val reader = StreamReader(
                         loadSettings,
-                        YamlUnicodeReader(source.inputStream()).readText(),
+                        YamlUnicodeReader(source.inputStream()),
                     )
                     val composer = Composer(
                         loadSettings,

@@ -56,6 +56,12 @@ kotlin {
             }
         }
 
+        jvmMain {
+            dependencies {
+                implementation("org.snakeyaml:snakeyaml-engine:2.7")
+            }
+        }
+
         jsMain {
             dependencies {
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0") {

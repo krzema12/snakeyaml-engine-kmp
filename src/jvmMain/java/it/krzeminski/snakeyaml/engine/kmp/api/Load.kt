@@ -13,11 +13,7 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
-import it.krzeminski.snakeyaml.engine.kmp.composer.Composer
 import it.krzeminski.snakeyaml.engine.kmp.constructor.BaseConstructor
-import it.krzeminski.snakeyaml.engine.kmp.constructor.StandardConstructor
-import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
-import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import okio.Source
 import okio.source
 import java.io.InputStream
@@ -33,36 +29,17 @@ import java.io.Reader
  * @param settings configuration
  * @param constructor custom YAML constructor
  */
-class Load @JvmOverloads constructor(
-    private val settings: LoadSettings = LoadSettings.builder().build(),
-    private val constructor: BaseConstructor = StandardConstructor(settings),
+actual class Load @JvmOverloads actual constructor(
+    private val settings: LoadSettings,
+    private val constructor: BaseConstructor,
 ) {
+    private val common = LoadCommon(settings, constructor)
 
-    /** Create a new [Composer] from [yaml], using [settings]. */
-    private fun createComposer(yaml: Source): Composer {
-        val reader = StreamReader(loadSettings = settings, stream = YamlUnicodeReader(yaml))
-        return Composer(settings, ParserImpl(settings, reader))
-    }
+    actual fun loadOne(string: String): Any? =
+        common.loadOne(string)
 
-    /** Create a new [Composer] from [inputStream], using [settings]. */
-    private fun createComposer(inputStream: InputStream): Composer = createComposer(inputStream.source())
-
-    /** Create a new [Composer] from [string], using [settings]. */
-    private fun createComposer(string: String): Composer = createComposer(string.byteInputStream())
-
-    /** Create a new [Composer] from [reader], using [settings]. */
-    private fun createComposer(reader: Reader): Composer = createComposer(reader.readText())
-
-    /**
-     * Load a single document with the provided [composer]
-     *
-     * @param composer the component to create the Node
-     * @return decoded YAML document
-     */
-    private fun loadOne(composer: Composer): Any? {
-        val nodeOptional = composer.getSingleNode()
-        return constructor.constructSingleDocument(nodeOptional)
-    }
+    internal actual fun loadOne(source: Source): Any? =
+        common.loadOne(source)
 
     /**
      * Parse the only YAML document in a stream and produce the corresponding object.
@@ -70,7 +47,8 @@ class Load @JvmOverloads constructor(
      * @param inputStream data to load from (BOM is respected to detect encoding and removed from the data)
      * @return parsed object instance
      */
-    fun loadOne(inputStream: InputStream): Any? = loadOne(createComposer(inputStream))
+    fun loadOne(inputStream: InputStream): Any? =
+        common.loadOne(inputStream.source())
 
     /**
      * Parse a YAML document and create a object instance.
@@ -78,20 +56,14 @@ class Load @JvmOverloads constructor(
      * @param reader data to load from (BOM must not be present)
      * @return parsed object instance
      */
-    fun loadOne(reader: Reader): Any? = loadOne(createComposer(reader))
+    fun loadOne(reader: Reader): Any? =
+        common.loadOne(reader.readText())
 
-    /**
-     * Parse a YAML document and create an instance of an object.
-     *
-     * @param yaml YAML data to load from (BOM must not be present)
-     * @return parsed instance
-     * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException if the YAML is not valid
-     */
-    fun loadOne(string: String): Any? = loadOne(createComposer(string))
+    actual fun loadAll(string: String): Iterable<Any?> =
+        common.loadAll(string)
 
-    /** Load all the documents. */
-    private fun loadAll(composer: Composer): Iterable<Any?> =
-        Iterable { YamlIterator(composer, constructor) }
+    internal  actual fun loadAll(source: Source): Iterable<Any?> =
+        common.loadAll(source)
 
     /**
      * Parse all YAML documents in a stream and produce corresponding objects. The documents are
@@ -101,7 +73,8 @@ class Load @JvmOverloads constructor(
      * from the data)
      * @return an [Iterable] over the parsed objects in this stream in proper sequence
      */
-    fun loadAll(inputStream: InputStream): Iterable<Any?> = loadAll(createComposer(inputStream))
+    fun loadAll(inputStream: InputStream): Iterable<Any?> =
+        common.loadAll(inputStream.source())
 
     /**
      * Parse all YAML documents in a String and produce corresponding objects. The documents are
@@ -110,36 +83,8 @@ class Load @JvmOverloads constructor(
      * @param reader YAML data to load from (BOM must not be present)
      * @return an [Iterable] over the parsed objects in this stream in proper sequence
      */
-    fun loadAll(reader: Reader): Iterable<Any?> = loadAll(createComposer(reader))
-
-    /**
-     * Parse all YAML documents in a String and produce corresponding objects. (Because the
-     * encoding in known BOM is not respected.) The documents are parsed only when the iterator is
-     * invoked.
-     *
-     * @param string YAML data to load from (BOM must not be present)
-     * @return an [Iterable] over the parsed objects in this stream in proper sequence
-     */
-    fun loadAll(string: String): Iterable<Any?> = loadAll(createComposer(string))
-
-    private class YamlIterator(
-        private val composer: Composer,
-        private val constructor: BaseConstructor,
-    ) : Iterator<Any?> {
-        private var composerInitiated = false
-        override fun hasNext(): Boolean {
-            composerInitiated = true
-            return composer.hasNext()
-        }
-
-        override fun next(): Any? {
-            if (!composerInitiated) {
-                hasNext()
-            }
-            val node = composer.next()
-            return constructor.constructSingleDocument(node)
-        }
-    }
+    fun loadAll(reader: Reader): Iterable<Any?> =
+        common.loadAll(reader.readText())
 
     @Deprecated("renamed", ReplaceWith("loadAll(yamlStream)"))
     fun loadAllFromInputStream(yamlStream: InputStream): Iterable<Any?> =

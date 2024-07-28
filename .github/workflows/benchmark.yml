@@ -88,7 +88,7 @@ jobs:
         summary-always: true
         alert-threshold: '150%'
         fail-threshold: '200%'
-        gh-repository: ${{ github.event_name == 'pull_request' && 'github.com/krzema12/snakeyaml-engine-kmp-benchmarks' || 'github.com/krzema12/snakeyaml-engine-kmp-benchmarks-testing' }}
+        gh-repository: ${{ github.event_name != 'pull_request' && 'github.com/krzema12/snakeyaml-engine-kmp-benchmarks' || 'github.com/krzema12/snakeyaml-engine-kmp-benchmarks-testing' }}
         github-token: ${{ secrets.PUBLISH_BENCHMARK_RESULTS }}
         # Push and deploy GitHub pages branch automatically only if run in main repo
         auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp'}}

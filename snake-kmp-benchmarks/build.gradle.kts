@@ -49,9 +49,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.9.0"))
                 implementation(projects.snakeyamlEngineKmp)
                 implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.11")
+                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.9.0"))
                 implementation("com.squareup.okio:okio")
             }
         }
@@ -65,7 +65,7 @@ kotlin {
         jsMain {
             dependencies {
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0") {
-                    because("https://github.com/Kotlin/kotlinx-benchmark/issues/185 - only compile dependnecies (declared as api) are using during benchmark compilation")
+                    because("benchmark compilation requires explicit dependencies for JS targets - https://github.com/Kotlin/kotlinx-benchmark/issues/185")
                 }
                 implementation("com.squareup.okio:okio-nodefilesystem")
             }
@@ -81,7 +81,7 @@ benchmark {
             iterationTimeUnit = "s"
             param(
                 "openAiYamlPath",
-                // Absolute path is required by JS target. Otherwise, file cannot be found
+                // JS target requires an absolute path. Otherwise, file cannot be found.
                 layout.projectDirectory
                     .file("data/issues/kmp-issue-204-OpenAI-API.yaml")
                     .asFile

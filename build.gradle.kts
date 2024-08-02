@@ -4,7 +4,7 @@ plugins {
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
     id("dev.adamko.dokkatoo-html") version "2.3.1"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.16.2"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.16.3"
 }
 
 group = "it.krzeminski"

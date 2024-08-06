@@ -1,94 +1,103 @@
-name: Run Benchmarks
+# This file was generated using Kotlin DSL (.github/workflows/benchmark.main.kts).
+# If you want to modify the workflow, please change the Kotlin file and regenerate this YAML file.
+# Generated with https://github.com/typesafegithub/github-workflows-kt
+
+name: 'Run Benchmarks'
 on:
   push:
     branches:
-      - main
-  pull_request:
-
-env:
-  BENCHMARK_RESULTS: snake-kmp-benchmarks/build/reports/benchmarks
-
+    - 'main'
+  pull_request: {}
 concurrency:
-  group: ${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
-
 jobs:
+  check_yaml_consistency:
+    name: 'Check YAML consistency'
+    runs-on: 'ubuntu-latest'
+    steps:
+    - id: 'step-0'
+      name: 'Check out'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      name: 'Execute script'
+      run: 'rm ''.github/workflows/benchmark.yaml'' && ''.github/workflows/benchmark.main.kts'''
+    - id: 'step-2'
+      name: 'Consistency check'
+      run: 'git diff --exit-code ''.github/workflows/benchmark.yaml'''
   run-benchmark:
+    name: 'Performance regression check on ${{ matrix.os }} runner'
+    runs-on: '${{ matrix.os }}'
+    needs:
+    - 'check_yaml_consistency'
     strategy:
       fail-fast: true
       matrix:
         include:
-          - os: ubuntu-latest
-          - os: macos-latest
-            additional-args: '-x jvmBenchmark -x jsBenchmark'
-          - os: macos-13 # for macosX64
-            additional-args: '-x jvmBenchmark -x jsBenchmark'
-          - os: windows-latest
-            additional-args: '-x jvmBenchmark -x jsBenchmark'
-    name: Performance regression check on ${{ matrix.os }} runner
-    runs-on: ${{ matrix.os }}
+        - os: 'ubuntu-latest'
+        - os: 'macos-latest'
+          additional-args: '-x jvmBenchmark -x jsBenchmark'
+        - os: 'macos-13'
+          additional-args: '-x jvmBenchmark -x jsBenchmark'
+        - os: 'windows-latest'
+          additional-args: '-x jvmBenchmark -x jsBenchmark'
     steps:
-    - uses: actions/checkout@v4
-    - name: 'Set up JDK'
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      name: 'Set up JDK'
       uses: 'actions/setup-java@v4'
       with:
         java-version: '11'
         distribution: 'zulu'
         cache: 'gradle'
-    - name: Validate Gradle Wrapper
-      uses: gradle/actions/wrapper-validation@v4
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+    - id: 'step-2'
+      name: 'Validate Gradle Wrapper'
+      uses: 'gradle/actions/wrapper-validation@v4'
+    - id: 'step-3'
+      name: 'Setup Gradle'
+      uses: 'gradle/actions/setup-gradle@v4'
       with:
-        gradle-version: wrapper
-    - name: Run benchmarks
-      run: ./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${{ matrix.additional-args }}
-    - uses: actions/upload-artifact@v4
+        gradle-version: 'wrapper'
+    - id: 'step-4'
+      name: 'Run benchmarks'
+      run: './gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${{ matrix.additional-args }}'
+    - id: 'step-5'
+      uses: 'actions/upload-artifact@v4'
       with:
-        name: bench-results-${{ matrix.os }}
-        path: ${{ env.BENCHMARK_RESULTS }}/main/**/*.json
+        name: 'bench-results-${{ matrix.os }}'
+        path: 'snake-kmp-benchmarks/build/reports/benchmarks/main/**/*.json'
   collect-benchmarks-results:
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
     needs:
-      - run-benchmark
-    env:
-      RESULTS_DIR: bench-results
+    - 'run-benchmark'
+    - 'check_yaml_consistency'
     steps:
-    # without checkout step 'benchmark-action/github-action-benchmark' action won't work
-    - uses: actions/checkout@v4
-    - name: Download benchmark results
-      uses: actions/download-artifact@v4
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      name: 'Download benchmark results'
+      uses: 'actions/download-artifact@v4'
       with:
-        pattern: bench-results-*
-        path: ${{ env.RESULTS_DIR }}
-        merge-multiple: true
-    - name: Prepare and join benchmark reports
-      id: prep
-      run: |
-        for report in $(find ./${{ env.RESULTS_DIR }} -type f -name "*.json")
-        do
-          file_name=$(basename "$report")
-          platform="${file_name%.*}"
-          # Trim 'it.krzeminski.snakeyaml.engine.kmp.benchmark.' to make benchmark name more readable
-          jq "[ .[] | .benchmark |= \"${platform}.\" + ltrimstr(\"it.krzeminski.snakeyaml.engine.kmp.benchmark.\") | .params |= map_values(. |= match(\"data.+\"; \"g\").string) ]" $report > ${{ env.RESULTS_DIR }}/$platform.json
-        done
-        AGGREGATED_REPORT=aggregated.json
-        # Joined reports looks like this: [[{},{}], [{},{}]]
-        # We need to transform them into this: [{},{}]
-        ls ${{ env.RESULTS_DIR }}/*.json
-        jq -s '[ .[] | .[] ]' ${{ env.RESULTS_DIR }}/*.json > $AGGREGATED_REPORT
-        echo "report=$AGGREGATED_REPORT" >> $GITHUB_OUTPUT
-    - name: Store benchmark result
-      uses: benchmark-action/github-action-benchmark@v1
+        path: 'bench-results'
+        pattern: 'bench-results-*'
+        merge-multiple: 'true'
+    - id: 'step-2'
+      name: 'Prepare and join benchmark reports'
+      env:
+        GHWKT_GITHUB_CONTEXT_JSON: '${{ toJSON(github) }}'
+      run: 'GHWKT_RUN_STEP=''collect-benchmarks-results:step-2'' ''.github/workflows/benchmark.main.kts'''
+    - id: 'step-3'
+      name: 'Store benchmark result'
+      uses: 'benchmark-action/github-action-benchmark@v1'
       with:
-        name: SnakeKMP benchmarks
+        name: 'SnakeKMP benchmarks'
         tool: 'jmh'
-        output-file-path: ${{ steps.prep.outputs.report }}
-        comment-on-alert: true
-        summary-always: true
+        output-file-path: 'aggregated.json'
+        gh-repository: 'github.com/krzema12/snakeyaml-engine-kmp-benchmarks'
+        summary-always: 'true'
+        comment-on-alert: 'true'
         alert-threshold: '150%'
         fail-threshold: '200%'
-        gh-repository: github.com/krzema12/snakeyaml-engine-kmp-benchmarks
-        github-token: ${{ secrets.PUBLISH_BENCHMARK_RESULTS }}
-        # Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
-        auto-push: ${{ github.repository == 'krzema12/snakeyaml-engine-kmp' && github.event_name != 'pull_request' }}
+        github-token: '${{ secrets.PUBLISH_BENCHMARK_RESULTS }}'
+        auto-push: '${{ github.repository == ''krzema12/snakeyaml-engine-kmp'' && github.event_name != ''pull_request'' }}'

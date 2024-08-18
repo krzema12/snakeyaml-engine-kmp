@@ -31,11 +31,11 @@ jobs:
         with:
           ref: ${{ env.CURRENT_BRANCH_NAME }}
 
-      - name: setup JDK
+      - name: Set up compilation JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 21
 
       - uses: gradle/gradle-build-action@v3
         with:

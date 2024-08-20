@@ -60,6 +60,7 @@ workflow(
     val publishJob = job(
         id = "publish-artifacts",
         runsOn = RunnerType.MacOSLatest,
+        needs = listOf(stagingRepoJob),
     ) {
         uses(action = Checkout())
         uses(
@@ -92,6 +93,7 @@ workflow(
                 mapOf(
                     "ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername" to expr { SONATYPE_USERNAME },
                     "ORG_GRADLE_PROJECT_snake-kmp.ossrhPassword" to expr { SONATYPE_PASSWORD },
+                    "ORG_GRADLE_PROJECT_snake-kmp.ossrhStagingRepositoryId" to expr { stagingRepoJob.outputs.repositoryId },
                     "ORG_GRADLE_PROJECT_snake-kmp.signing.keyId" to expr { SIGNING_KEY_ID },
                     "ORG_GRADLE_PROJECT_snake-kmp.signing.key" to expr { SIGNING_KEY },
                     "ORG_GRADLE_PROJECT_snake-kmp.signing.password" to expr { SIGNING_PASSWORD },

@@ -40,56 +40,58 @@ workflow(
     ),
     sourceFile = __FILE__,
 ) {
-    val stagingRepoJob = job(
-        id = "create-staging-repo",
-        name = "Create staging repository",
-        runsOn = RunnerType.UbuntuLatest,
-        outputs = object : JobOutputs() {
-            var repositoryId: String by output()
-        }
-    ) {
-        val createRepo = uses(
-            action = CreateNexusStagingRepo(
-                username = expr { SONATYPE_USERNAME },
-                password = expr { SONATYPE_PASSWORD },
-                stagingProfileId = expr { SONATYPE_STAGING_PROFILE_ID },
+    val stagingRepoJob =
+        job(
+            id = "create-staging-repo",
+            name = "Create staging repository",
+            runsOn = RunnerType.UbuntuLatest,
+            outputs = object : JobOutputs() {
+                var repositoryId: String by output()
+            }
+        ) {
+            val createRepo = uses(
+                action = CreateNexusStagingRepo(
+                    username = expr { SONATYPE_USERNAME },
+                    password = expr { SONATYPE_PASSWORD },
+                    stagingProfileId = expr { SONATYPE_STAGING_PROFILE_ID },
+                )
             )
-        )
-        jobOutputs.repositoryId = createRepo.outputs.repositoryId
-    }
-    val publishJob = job(
-        id = "publish-artifacts",
-        runsOn = RunnerType.MacOSLatest,
-        needs = listOf(stagingRepoJob),
-    ) {
-        uses(action = Checkout())
-        uses(
-            name = "Set up JDK",
-            action = SetupJava(
-                javaVersion = "11",
-                distribution = SetupJava.Distribution.Zulu,
-                cache = SetupJava.BuildPlatform.Gradle,
-            ),
-        )
-        uses(
-            name = "Cache Kotlin Konan",
-            action = Cache(
-                path = listOf(
-                    "~/.konan/**/*",
+            jobOutputs.repositoryId = createRepo.outputs.repositoryId
+        }
+    val publishJob =
+        job(
+            id = "publish-artifacts",
+            runsOn = RunnerType.MacOSLatest,
+            needs = listOf(stagingRepoJob),
+        ) {
+            uses(action = Checkout())
+            uses(
+                name = "Set up JDK",
+                action = SetupJava(
+                    javaVersion = "11",
+                    distribution = SetupJava.Distribution.Zulu,
+                    cache = SetupJava.BuildPlatform.Gradle,
                 ),
-                key = "kotlin-konan-${expr { runner.os }}",
-            ),
-        )
-        uses(
-            name = "Set up Gradle",
-            action = ActionsSetupGradle(
-                gradleVersion = "wrapper",
-            ),
-        )
-        run(
-            name = "Publish",
-            command = "./gradlew publishAllPublicationsToSonatypeReleaseRepository",
-            env =
+            )
+            uses(
+                name = "Cache Kotlin Konan",
+                action = Cache(
+                    path = listOf(
+                        "~/.konan/**/*",
+                    ),
+                    key = "kotlin-konan-${expr { runner.os }}",
+                ),
+            )
+            uses(
+                name = "Set up Gradle",
+                action = ActionsSetupGradle(
+                    gradleVersion = "wrapper",
+                ),
+            )
+            run(
+                name = "Publish",
+                command = "./gradlew publishAllPublicationsToSonatypeReleaseRepository",
+                env =
                 mapOf(
                     "ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername" to expr { SONATYPE_USERNAME },
                     "ORG_GRADLE_PROJECT_snake-kmp.ossrhPassword" to expr { SONATYPE_PASSWORD },
@@ -98,19 +100,22 @@ workflow(
                     "ORG_GRADLE_PROJECT_snake-kmp.signing.key" to expr { SIGNING_KEY },
                     "ORG_GRADLE_PROJECT_snake-kmp.signing.password" to expr { SIGNING_PASSWORD },
                 )
-        )
-    }
+            )
+        }
+
     job(
         id = "close-staging-repo",
         runsOn = RunnerType.UbuntuLatest,
         condition = expr { publishJob.result.eq(AbstractResult.Status.Success) },
         needs = listOf(stagingRepoJob, publishJob),
     ) {
-        uses(action = ReleaseNexusStagingRepo(
-            username = expr { SONATYPE_USERNAME },
-            password = expr { SONATYPE_PASSWORD },
-            stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
-        ))
+        uses(
+            action = ReleaseNexusStagingRepo(
+                username = expr { SONATYPE_USERNAME },
+                password = expr { SONATYPE_PASSWORD },
+                stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
+            )
+        )
     }
     job(
         id = "drop-staging-repo",
@@ -118,10 +123,12 @@ workflow(
         condition = expr { publishJob.result.neq(AbstractResult.Status.Success) },
         needs = listOf(stagingRepoJob, publishJob),
     ) {
-        uses(action = DropNexusStagingRepoV1(
-            username = expr { SONATYPE_USERNAME },
-            password = expr { SONATYPE_PASSWORD },
-            stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
-        ))
+        uses(
+            action = DropNexusStagingRepoV1(
+                username = expr { SONATYPE_USERNAME },
+                password = expr { SONATYPE_PASSWORD },
+                stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
+            )
+        )
     }
 }

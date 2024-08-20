@@ -1,0 +1,125 @@
+#!/usr/bin/env kotlin
+@file:Repository("https://repo1.maven.org/maven2/")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:2.3.0")
+
+@file:Repository("https://bindings.krzeminski.it/")
+@file:DependsOn("actions:checkout:v4")
+@file:DependsOn("actions:cache:v4")
+@file:DependsOn("actions:setup-java:v4")
+@file:DependsOn("gradle:actions__setup-gradle:v4")
+@file:DependsOn("nexus-actions:create-nexus-staging-repo:v1")
+@file:DependsOn("nexus-actions:release-nexus-staging-repo:v1")
+@file:DependsOn("nexus-actions:drop-nexus-staging-repo:v1")
+
+import io.github.typesafegithub.workflows.actions.actions.Cache
+import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
+import io.github.typesafegithub.workflows.actions.nexusactions.CreateNexusStagingRepo
+import io.github.typesafegithub.workflows.actions.nexusactions.DropNexusStagingRepoV1
+import io.github.typesafegithub.workflows.actions.nexusactions.ReleaseNexusStagingRepo
+import io.github.typesafegithub.workflows.domain.AbstractResult
+import io.github.typesafegithub.workflows.domain.JobOutputs
+import io.github.typesafegithub.workflows.domain.RunnerType
+import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
+import io.github.typesafegithub.workflows.dsl.expressions.Contexts
+import io.github.typesafegithub.workflows.dsl.expressions.expr
+import io.github.typesafegithub.workflows.dsl.workflow
+
+val SONATYPE_USERNAME by Contexts.secrets
+val SONATYPE_PASSWORD by Contexts.secrets
+val SONATYPE_STAGING_PROFILE_ID by Contexts.secrets
+val SIGNING_KEY_ID by Contexts.secrets
+val SIGNING_KEY by Contexts.secrets
+val SIGNING_PASSWORD by Contexts.secrets
+
+workflow(
+    name = "Publish release to Maven Central",
+    on = listOf(
+        WorkflowDispatch()
+    ),
+    sourceFile = __FILE__,
+) {
+    val stagingRepoJob = job(
+        id = "create-staging-repo",
+        name = "Create staging repository",
+        runsOn = RunnerType.UbuntuLatest,
+        outputs = object : JobOutputs() {
+            var repositoryId: String by output()
+        }
+    ) {
+        val createRepo = uses(
+            action = CreateNexusStagingRepo(
+                username = expr { SONATYPE_USERNAME },
+                password = expr { SONATYPE_PASSWORD },
+                stagingProfileId = expr { SONATYPE_STAGING_PROFILE_ID },
+            )
+        )
+        jobOutputs.repositoryId = createRepo.outputs.repositoryId
+    }
+    val publishJob = job(
+        id = "publish-artifacts",
+        runsOn = RunnerType.MacOSLatest,
+    ) {
+        uses(action = Checkout())
+        uses(
+            name = "Set up JDK",
+            action = SetupJava(
+                javaVersion = "11",
+                distribution = SetupJava.Distribution.Zulu,
+                cache = SetupJava.BuildPlatform.Gradle,
+            ),
+        )
+        uses(
+            name = "Cache Kotlin Konan",
+            action = Cache(
+                path = listOf(
+                    "~/.konan/**/*",
+                ),
+                key = "kotlin-konan-${expr { runner.os }}",
+            ),
+        )
+        uses(
+            name = "Set up Gradle",
+            action = ActionsSetupGradle(
+                gradleVersion = "wrapper",
+            ),
+        )
+        run(
+            name = "Publish",
+            command = "./gradlew publishAllPublicationsToSonatypeReleaseRepository",
+            env =
+                mapOf(
+                    "ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername" to expr { SONATYPE_USERNAME },
+                    "ORG_GRADLE_PROJECT_snake-kmp.ossrhPassword" to expr { SONATYPE_PASSWORD },
+                    "ORG_GRADLE_PROJECT_snake-kmp.signing.keyId" to expr { SIGNING_KEY_ID },
+                    "ORG_GRADLE_PROJECT_snake-kmp.signing.key" to expr { SIGNING_KEY },
+                    "ORG_GRADLE_PROJECT_snake-kmp.signing.password" to expr { SIGNING_PASSWORD },
+                )
+        )
+    }
+    job(
+        id = "close-staging-repo",
+        runsOn = RunnerType.UbuntuLatest,
+        condition = expr { publishJob.result.eq(AbstractResult.Status.Success) },
+        needs = listOf(stagingRepoJob, publishJob),
+    ) {
+        uses(action = ReleaseNexusStagingRepo(
+            username = expr { SONATYPE_USERNAME },
+            password = expr { SONATYPE_PASSWORD },
+            stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
+        ))
+    }
+    job(
+        id = "drop-staging-repo",
+        runsOn = RunnerType.UbuntuLatest,
+        condition = expr { publishJob.result.neq(AbstractResult.Status.Success) },
+        needs = listOf(stagingRepoJob, publishJob),
+    ) {
+        uses(action = DropNexusStagingRepoV1(
+            username = expr { SONATYPE_USERNAME },
+            password = expr { SONATYPE_PASSWORD },
+            stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },
+        ))
+    }
+}

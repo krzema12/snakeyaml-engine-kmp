@@ -89,7 +89,7 @@ jobs:
     - 'create-staging-repo'
     - 'publish-artifacts'
     - 'check_yaml_consistency'
-    if: '${{ needs.publish-artifacts.result != ''success'' }}'
+    if: '${{ !cancelled() && needs.publish-artifacts.result != ''success'' }}'
     steps:
     - id: 'step-0'
       uses: 'nexus-actions/drop-nexus-staging-repo@v1'

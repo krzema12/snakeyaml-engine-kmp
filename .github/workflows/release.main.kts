@@ -120,7 +120,7 @@ workflow(
     job(
         id = "drop-staging-repo",
         runsOn = RunnerType.UbuntuLatest,
-        condition = expr { publishJob.result.neq(AbstractResult.Status.Success) },
+        condition = expr { "!${cancelled()} && ${publishJob.result.neq(AbstractResult.Status.Success)}" },
         needs = listOf(stagingRepoJob, publishJob),
     ) {
         uses(

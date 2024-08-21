@@ -109,3 +109,41 @@ jobs:
     - id: 'step-4'
       name: 'Build'
       run: './gradlew build --stacktrace'
+  build_kotlin_scripts:
+    name: 'Build Kotlin scripts'
+    runs-on: 'ubuntu-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      run: |-
+        find -name *.main.kts -print0 | while read -d $'\0' file
+        do
+            echo "Compiling $file..."
+            kotlinc -Werror -Xallow-any-scripts-in-source-roots -Xuse-fir-lt=false "$file"
+        done
+  workflows_consistency_check:
+    name: 'Run consistency check on all GitHub workflows'
+    runs-on: 'ubuntu-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      run: 'cd .github/workflows'
+    - id: 'step-2'
+      name: 'Regenerate all workflow YAMLs'
+      run: |-
+        find -name "*.main.kts" -print0 | while read -d $'\0' file
+        do
+            if [ -x "$file" ]; then
+                echo "Regenerating $file..."
+                ($file)
+            fi
+        done
+    - id: 'step-3'
+      name: 'Check if some file is different after regeneration'
+      run: 'git diff --exit-code .'

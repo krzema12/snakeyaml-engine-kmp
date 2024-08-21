@@ -46,10 +46,13 @@ jobs:
         path: '~/.konan/**/*'
         key: 'kotlin-konan-${{ runner.os }}'
     - id: 'step-3'
-      name: 'Build'
-      uses: 'gradle/gradle-build-action@v3'
+      name: 'Set up Gradle'
+      uses: 'gradle/actions/setup-gradle@v4'
       with:
-        arguments: 'build'
+        gradle-version: 'wrapper'
+    - id: 'step-4'
+      name: 'Build'
+      run: './gradlew build --stacktrace'
   build-on-MacOSLatest:
     runs-on: 'macos-latest'
     needs:
@@ -71,10 +74,13 @@ jobs:
         path: '~/.konan/**/*'
         key: 'kotlin-konan-${{ runner.os }}'
     - id: 'step-3'
-      name: 'Build'
-      uses: 'gradle/gradle-build-action@v3'
+      name: 'Set up Gradle'
+      uses: 'gradle/actions/setup-gradle@v4'
       with:
-        arguments: 'build'
+        gradle-version: 'wrapper'
+    - id: 'step-4'
+      name: 'Build'
+      run: './gradlew build --stacktrace'
   build-on-WindowsLatest:
     runs-on: 'windows-latest'
     needs:
@@ -96,7 +102,10 @@ jobs:
         path: '~/.konan/**/*'
         key: 'kotlin-konan-${{ runner.os }}'
     - id: 'step-3'
-      name: 'Build'
-      uses: 'gradle/gradle-build-action@v3'
+      name: 'Set up Gradle'
+      uses: 'gradle/actions/setup-gradle@v4'
       with:
-        arguments: 'build'
+        gradle-version: 'wrapper'
+    - id: 'step-4'
+      name: 'Build'
+      run: './gradlew build --stacktrace'

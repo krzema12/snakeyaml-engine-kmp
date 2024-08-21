@@ -21,6 +21,7 @@ plugins {
 // can be set in gradle.properties or environment variables, e.g. ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername
 val ossrhUsername = providers.gradleProperty("snake-kmp.ossrhUsername")
 val ossrhPassword = providers.gradleProperty("snake-kmp.ossrhPassword")
+val ossrhStagingRepositoryID = providers.gradleProperty("snake-kmp.ossrhStagingRepositoryId")
 
 val signingKeyId: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.keyId")
@@ -33,11 +34,13 @@ val signingSecretKeyRingFile: Provider<String> =
 
 val isReleaseVersion = provider { !version.toString().endsWith("-SNAPSHOT") }
 
-val sonatypeReleaseUrl = isReleaseVersion.map { isRelease ->
+val sonatypeReleaseUrl = isReleaseVersion.flatMap { isRelease ->
     if (isRelease) {
-        "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        ossrhStagingRepositoryID.map { repositoryId ->
+            "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
+        }.orElse("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
     } else {
-        "https://oss.sonatype.org/content/repositories/snapshots/"
+        provider { "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 //endregion

@@ -71,4 +71,46 @@ workflow(
             )
         }
     }
+
+    job(
+        id = "build_kotlin_scripts",
+        name = "Build Kotlin scripts",
+        runsOn = UbuntuLatest,
+    ) {
+        uses(action = Checkout())
+        run(
+            command = """
+            find -name *.main.kts -print0 | while read -d ${'$'}'\0' file
+            do
+                echo "Compiling ${'$'}file..."
+                kotlinc -Werror -Xallow-any-scripts-in-source-roots -Xuse-fir-lt=false "${'$'}file"
+            done
+            """.trimIndent()
+        )
+    }
+
+    job(
+        id = "workflows_consistency_check",
+        name = "Run consistency check on all GitHub workflows",
+        runsOn = UbuntuLatest,
+    ) {
+        uses(action = Checkout())
+        run(command = "cd .github/workflows")
+        run(
+            name = "Regenerate all workflow YAMLs",
+            command = """
+            find -name "*.main.kts" -print0 | while read -d ${'$'}'\0' file
+            do
+                if [ -x "${'$'}file" ]; then
+                    echo "Regenerating ${'$'}file..."
+                    (${'$'}file)
+                fi
+            done
+            """.trimIndent(),
+        )
+        run(
+            name = "Check if some file is different after regeneration",
+            command = "git diff --exit-code .",
+        )
+    }
 }

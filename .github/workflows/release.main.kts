@@ -90,7 +90,7 @@ workflow(
             )
             run(
                 name = "Publish",
-                command = "./gradlew publishAllPublicationsToSonatypeReleaseRepository",
+                command = "./gradlew publishAllPublicationsToSonatypeReleaseRepository --stacktrace",
                 env =
                 mapOf(
                     "ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername" to expr { SONATYPE_USERNAME },

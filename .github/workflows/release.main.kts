@@ -16,7 +16,7 @@ import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.nexusactions.CreateNexusStagingRepo
-import io.github.typesafegithub.workflows.actions.nexusactions.DropNexusStagingRepoV1
+import io.github.typesafegithub.workflows.actions.nexusactions.DropNexusStagingRepo
 import io.github.typesafegithub.workflows.actions.nexusactions.ReleaseNexusStagingRepo
 import io.github.typesafegithub.workflows.domain.AbstractResult
 import io.github.typesafegithub.workflows.domain.JobOutputs
@@ -124,7 +124,7 @@ workflow(
         needs = listOf(stagingRepoJob, publishJob),
     ) {
         uses(
-            action = DropNexusStagingRepoV1(
+            action = DropNexusStagingRepo(
                 username = expr { SONATYPE_USERNAME },
                 password = expr { SONATYPE_PASSWORD },
                 stagingRepositoryId = expr { stagingRepoJob.outputs.repositoryId },

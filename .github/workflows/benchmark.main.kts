@@ -1,7 +1,7 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:2.3.0")
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
 
 @file:Repository("https://bindings.krzeminski.it/")
 @file:DependsOn("actions:checkout:v4")

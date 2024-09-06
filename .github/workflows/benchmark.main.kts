@@ -152,7 +152,7 @@ workflow(
                 outputFilePath = AGGREGATED_REPORT,
                 githubToken = expr { PUBLISH_BENCHMARK_RESULTS },
                 // Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
-                autoPush_Untyped = expr { "${github.repository} == 'krzema12/snakeyaml-engine-kmp' && ${github.event_name},
+                autoPush_Untyped = expr { "${github.repository} == 'krzema12/snakeyaml-engine-kmp' && ${github.event_name} != 'pull_request'" },
             ),
         )
     }

@@ -51,7 +51,7 @@ kotlin {
             dependencies {
                 implementation(projects.snakeyamlEngineKmp)
                 implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.12")
-                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.9.0"))
+                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.9.1"))
                 implementation("com.squareup.okio:okio")
             }
         }

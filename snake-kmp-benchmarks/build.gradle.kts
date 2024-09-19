@@ -58,7 +58,7 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation("org.snakeyaml:snakeyaml-engine:2.7")
+                implementation("org.snakeyaml:snakeyaml-engine:2.8")
             }
         }
 

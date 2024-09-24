@@ -57,6 +57,6 @@ expect class Compose(settings: LoadSettings) {
     @Deprecated("renamed", ReplaceWith("compose(yaml)"))
     fun composeString(yaml: String): Node?
 
-    @Deprecated("renamed", ReplaceWith("compose(yaml)"))
+    @Deprecated("renamed", ReplaceWith("composeAll(yaml)"))
     fun composeAllFromString(yaml: String): Iterable<Node>
 }

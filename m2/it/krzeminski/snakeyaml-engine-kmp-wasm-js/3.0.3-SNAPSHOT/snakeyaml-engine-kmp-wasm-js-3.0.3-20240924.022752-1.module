@@ -1,0 +1,116 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../snakeyaml-engine-kmp/3.0.3-SNAPSHOT/snakeyaml-engine-kmp-3.0.3-SNAPSHOT.module",
+    "group": "it.krzeminski",
+    "module": "snakeyaml-engine-kmp",
+    "version": "3.0.3-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "wasmJsApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT.klib",
+          "url": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT.klib",
+          "size": 491473,
+          "sha512": "15c60655cd70c3edc278e10a6b80ecdb5aa269654b3a7d2616c952a50677873f67633f0be7e17d361a4ba3ce9d399f3a52c8184ab517cd5ceb4f3719eaa5da10",
+          "sha256": "6887617c785f49c2bf53ed9127707f96afde66a2ebf58eabb118f26eb5611ba1",
+          "sha1": "4d1ce48e5bc7bbb1ba3b096c7a4aa2b7df4bfa13",
+          "md5": "82c016c722994fa580d12265dafb088d"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.5.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT.klib",
+          "url": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT.klib",
+          "size": 491473,
+          "sha512": "15c60655cd70c3edc278e10a6b80ecdb5aa269654b3a7d2616c952a50677873f67633f0be7e17d361a4ba3ce9d399f3a52c8184ab517cd5ceb4f3719eaa5da10",
+          "sha256": "6887617c785f49c2bf53ed9127707f96afde66a2ebf58eabb118f26eb5611ba1",
+          "sha1": "4d1ce48e5bc7bbb1ba3b096c7a4aa2b7df4bfa13",
+          "md5": "82c016c722994fa580d12265dafb088d"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT-sources.jar",
+          "url": "snakeyaml-engine-kmp-wasm-js-3.0.3-SNAPSHOT-sources.jar",
+          "size": 191163,
+          "sha512": "0bad5e5ccce205c1014b96c6367eb0cea3099e751d297ac6f467920a244d8e98a9d1a8e20b1cab5fe4bcb05fb75ac33a00f8c1ee5f3721541c967e168a7794ff",
+          "sha256": "a3fabb3307ed46e03ee1c67cd939f37c199ad879e758c6724fe03b24acf9af4b",
+          "sha1": "4acc1c405b7b6cc96479a874969e4df40b14bb3c",
+          "md5": "f060680ed28147c60a9f1f1cf436e713"
+        }
+      ]
+    }
+  ]
+}

@@ -3,32 +3,32 @@
   <groupId>it.krzeminski</groupId>
   <artifactId>snakeyaml-engine-kmp-jvm</artifactId>
   <versioning>
-    <lastUpdated>20240919220427</lastUpdated>
+    <lastUpdated>20240924022752</lastUpdated>
     <snapshot>
-      <timestamp>20240919.220427</timestamp>
+      <timestamp>20240924.022752</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
-        <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20240919.220427-1</value>
-        <updated>20240919220427</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>3.0.3-20240919.220427-1</value>
-        <updated>20240919220427</updated>
+        <value>3.0.3-20240924.022752-1</value>
+        <updated>20240924022752</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>module</extension>
-        <value>3.0.3-20240919.220427-1</value>
-        <updated>20240919220427</updated>
+        <value>3.0.3-20240924.022752-1</value>
+        <updated>20240924022752</updated>
       </snapshotVersion>
       <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.0.3-20240924.022752-1</value>
+        <updated>20240924022752</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20240919.220427-1</value>
-        <updated>20240919220427</updated>
+        <value>3.0.3-20240924.022752-1</value>
+        <updated>20240924022752</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

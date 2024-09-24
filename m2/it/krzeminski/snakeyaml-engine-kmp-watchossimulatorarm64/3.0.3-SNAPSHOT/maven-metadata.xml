@@ -3,38 +3,38 @@
   <groupId>it.krzeminski</groupId>
   <artifactId>snakeyaml-engine-kmp-watchossimulatorarm64</artifactId>
   <versioning>
-    <lastUpdated>20240924041820</lastUpdated>
+    <lastUpdated>20240924053313</lastUpdated>
     <snapshot>
-      <timestamp>20240924.041820</timestamp>
+      <timestamp>20240924.053313</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.0.3-20240924.053313-1</value>
+        <updated>20240924053313</updated>
+      </snapshotVersion>
+      <snapshotVersion>
         <extension>klib</extension>
-        <value>3.0.3-20240924.041820-1</value>
-        <updated>20240924041820</updated>
+        <value>3.0.3-20240924.053313-1</value>
+        <updated>20240924053313</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>module</extension>
+        <value>3.0.3-20240924.053313-1</value>
+        <updated>20240924053313</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>metadata</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20240924.041820-1</value>
-        <updated>20240924041820</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>3.0.3-20240924.041820-1</value>
-        <updated>20240924041820</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>module</extension>
-        <value>3.0.3-20240924.041820-1</value>
-        <updated>20240924041820</updated>
+        <value>3.0.3-20240924.053313-1</value>
+        <updated>20240924053313</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20240924.041820-1</value>
-        <updated>20240924041820</updated>
+        <value>3.0.3-20240924.053313-1</value>
+        <updated>20240924053313</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

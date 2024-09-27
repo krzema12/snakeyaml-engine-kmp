@@ -53,7 +53,7 @@ actual class Load @JvmOverloads actual constructor(
     /**
      * Parse a YAML document and create a object instance.
      *
-     * @param reader data to load from (BOM must not be present)
+     * @param reader data to load from
      * @return parsed object instance
      */
     fun loadOne(reader: Reader): Any? =
@@ -80,7 +80,7 @@ actual class Load @JvmOverloads actual constructor(
      * Parse all YAML documents in a String and produce corresponding objects. The documents are
      * parsed only when the iterator is invoked.
      *
-     * @param reader YAML data to load from (BOM must not be present)
+     * @param reader YAML data to load from
      * @return an [Iterable] over the parsed objects in this stream in proper sequence
      */
     fun loadAll(reader: Reader): Iterable<Any?> =

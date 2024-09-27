@@ -14,7 +14,7 @@ class ParseString(
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param yaml - YAML document(s). The BOM must not be present (it will be parsed as content)
+     * @param yaml - YAML document(s).
      * @return parsed events
      */
     fun parseString(yaml: String): Iterable<Event> = parse.parse(yaml)

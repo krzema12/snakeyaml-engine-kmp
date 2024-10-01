@@ -36,6 +36,7 @@ val BENCHMARK_RESULTS = "snake-kmp-benchmarks/build/reports/benchmarks"
 val RESULTS_DIR = "bench-results"
 val AGGREGATED_REPORT = "aggregated.json"
 val PUBLISH_BENCHMARK_RESULTS by Contexts.secrets
+val FULL_REPOSITORY_NAME = "krzema12/snakeyaml-engine-kmp"
 
 workflow(
     name = "Run Benchmarks",
@@ -145,7 +146,7 @@ workflow(
                 name = "SnakeKMP benchmarks",
                 tool = GithubActionBenchmark.Tool.Jmh,
                 // Comment on PR only the PR is made from the same repo
-                commentOnAlert_Untyped = expr { "${github.eventPullRequest.pull_request.head.repo.full_name} == 'krzema12/snakeyaml-engine-kmp'" },
+                commentOnAlert_Untyped = expr { "${github.eventPullRequest.pull_request.head.repo.full_name} == '$FULL_REPOSITORY_NAME'" },
                 summaryAlways = true,
                 alertThreshold = "150%",
                 failThreshold = "200%",
@@ -154,7 +155,7 @@ workflow(
                 // Use GitHub token in case the secret is not available
                 githubToken = expr { "$PUBLISH_BENCHMARK_RESULTS || ${github.token}" },
                 // Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
-                autoPush_Untyped = expr { "${github.repository} == 'krzema12/snakeyaml-engine-kmp' && ${github.event_name} != 'pull_request'" },
+                autoPush_Untyped = expr { "${github.repository} == '$FULL_REPOSITORY_NAME' && ${github.event_name} != 'pull_request'" },
             ),
         )
     }

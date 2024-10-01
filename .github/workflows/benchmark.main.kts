@@ -144,13 +144,15 @@ workflow(
             action = GithubActionBenchmark(
                 name = "SnakeKMP benchmarks",
                 tool = GithubActionBenchmark.Tool.Jmh,
-                commentOnAlert = true,
+                // Comment on PR only the PR is made from the same repo
+                commentOnAlert_Untyped = expr { "${github.eventPullRequest.pull_request.head.repo.full_name} == 'krzema12/snakeyaml-engine-kmp'" },
                 summaryAlways = true,
                 alertThreshold = "150%",
                 failThreshold = "200%",
                 ghRepository = "github.com/krzema12/snakeyaml-engine-kmp-benchmarks",
                 outputFilePath = AGGREGATED_REPORT,
-                githubToken = expr { PUBLISH_BENCHMARK_RESULTS },
+                // Use GitHub token in case the secret is not available
+                githubToken = expr { "$PUBLISH_BENCHMARK_RESULTS || ${github.token}" },
                 // Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
                 autoPush_Untyped = expr { "${github.repository} == 'krzema12/snakeyaml-engine-kmp' && ${github.event_name} != 'pull_request'" },
             ),

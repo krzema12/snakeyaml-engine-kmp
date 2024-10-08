@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.krzeminski</groupId>
+  <artifactId>snakeyaml-engine-kmp-iossimulatorarm64</artifactId>
+  <version>3.0.3-SNAPSHOT</version>
+  <packaging>klib</packaging>
+  <name>SnakeYAML Engine KMP</name>
+  <description>SnakeYAML Engine KMP is a YAML 1.2 processor for Kotlin Multiplatform</description>
+  <url>https://github.com/krzema12/snakeyaml-engine-kmp/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <email>adam@adamko.dev</email>
+    </developer>
+    <developer>
+      <id>krzema12</id>
+      <name>Piotr Krzemiński</name>
+      <email>git@krzeminski.it</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/krzema12/snakeyaml-engine-kmp/</connection>
+    <developerConnection>scm:git:https://github.com/krzema12/</developerConnection>
+    <url>https://github.com/krzema12/snakeyaml-engine-kmp</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.0.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio-iossimulatorarm64</artifactId>
+      <version>3.9.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.thauvin.erik.urlencoder</groupId>
+      <artifactId>urlencoder-lib-iossimulatorarm64</artifactId>
+      <version>1.5.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

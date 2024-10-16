@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ class MarkTest {
   @DisplayName("Mark buffer")
   void testGetBuffer() {
     Mark mark = createMark(0, 29, 213, "*The first line.\nThe last line.", 0);
-    var buffer = List.of(42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
+    List<Integer> buffer = Arrays.asList(42, 84, 104, 101, 32, 102, 105, 114, 115, 116, 32, 108, 105, 110, 101,
       46, 10, 84, 104, 101, 32, 108, 97, 115, 116, 32, 108, 105, 110, 101, 46);
     assertEquals(buffer.size(), mark.getCodepoints().size());
     assertIterableEquals(buffer, mark.getCodepoints());

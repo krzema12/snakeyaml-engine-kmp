@@ -68,7 +68,7 @@ workflow(
             uses(
                 name = "Set up JDK",
                 action = SetupJava(
-                    javaVersion = "11",
+                    javaVersion = "8",
                     distribution = SetupJava.Distribution.Zulu,
                     cache = SetupJava.BuildPlatform.Gradle,
                 ),

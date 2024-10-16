@@ -27,16 +27,12 @@ package org.snakeyaml.engine.v2.scanner;
  * the License.
  */
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * https://github.com/FasterXML/jackson-dataformats-text/issues/400
@@ -52,7 +48,7 @@ public class FuzzYAMLRead50431Test {
     try {
       load.loadOne("\"\\UE30EEE");
       fail("Invalid escape code in double quoted scalar should not be accepted");
-    } catch (Throwable e) {
+    } catch (ScannerException e) {
       assertEquals(
           "found unknown escape character E30EEE",
         e.getMessage().split("\n", 2)[0]

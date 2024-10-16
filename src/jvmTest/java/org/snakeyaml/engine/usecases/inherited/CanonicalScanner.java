@@ -20,7 +20,11 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner;
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class CanonicalScanner implements Scanner {

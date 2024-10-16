@@ -64,7 +64,7 @@ kotlin {
 
         jsMain {
             dependencies {
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0") {
+                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0-SNAPSHOT") {
                     because("benchmark compilation requires explicit dependencies for JS targets - https://github.com/Kotlin/kotlinx-benchmark/issues/185")
                 }
                 implementation("com.squareup.okio:okio-nodefilesystem")

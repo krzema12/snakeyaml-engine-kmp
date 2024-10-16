@@ -24,7 +24,7 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(8)
 
     //region JVM Targets
     jvm {

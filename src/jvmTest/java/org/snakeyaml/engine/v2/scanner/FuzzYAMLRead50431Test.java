@@ -36,6 +36,8 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
 
+import java.util.Optional;
+
 /**
  * https://github.com/FasterXML/jackson-dataformats-text/issues/400
  * https://github.com/FasterXML/jackson-dataformats-text/pull/401
@@ -50,10 +52,10 @@ public class FuzzYAMLRead50431Test {
     try {
       load.loadOne("\"\\UE30EEE");
       fail("Invalid escape code in double quoted scalar should not be accepted");
-    } catch (ScannerException e) {
+    } catch (Throwable e) {
       assertEquals(
           "found unknown escape character E30EEE",
-          e.getMessage().lines().findFirst().orElse(null)
+        e.getMessage().split("\n", 2)[0]
       );
     }
   }

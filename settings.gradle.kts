@@ -13,7 +13,9 @@ dependencyResolutionManagement {
 
     repositories {
         mavenCentral()
-
+        maven {
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+        }
         // Declare the Node.js & Yarn download repositories
         // https://youtrack.jetbrains.com/issue/KT-55620/
         exclusiveContent {

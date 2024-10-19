@@ -27,12 +27,12 @@ package org.snakeyaml.engine.v2.scanner;
  * the License.
  */
 
-import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
+import it.krzeminski.snakeyaml.engine.kmp.api.Load;
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
 
 /**
  * https://github.com/FasterXML/jackson-dataformats-text/issues/400

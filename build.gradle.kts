@@ -20,7 +20,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("com.squareup.okio:okio:3.9.1")
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0-SNAPSHOT")
+                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
             }
         }
 

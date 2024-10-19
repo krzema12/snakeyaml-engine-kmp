@@ -51,7 +51,7 @@ public class FuzzYAMLRead50431Test {
     } catch (ScannerException e) {
       assertEquals(
           "found unknown escape character E30EEE",
-        e.getMessage().split("\n", 2)[0]
+          e.getMessage().split("\n", 2)[0]
       );
     }
   }

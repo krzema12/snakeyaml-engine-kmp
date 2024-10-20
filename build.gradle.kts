@@ -1,3 +1,5 @@
+import buildsrc.utils.configureGradleDaemonJvm
+
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
     buildsrc.conventions.publishing
@@ -12,7 +14,7 @@ version = "3.0.3-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
 apiValidation {
-  ignoredProjects += listOf("snake-kmp-benchmarks")
+    ignoredProjects += listOf("snake-kmp-benchmarks")
 }
 
 kotlin {
@@ -92,3 +94,9 @@ dokkatoo {
         }
     }
 }
+
+configureGradleDaemonJvm(
+    project = project,
+    updateDaemonJvm = tasks.updateDaemonJvm,
+    gradleDaemonJvmVersion = provider { JavaVersion.toVersion(21) },
+)

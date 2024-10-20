@@ -14,6 +14,7 @@
 import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.nexusactions.CreateNexusStagingRepo
 import io.github.typesafegithub.workflows.actions.nexusactions.DropNexusStagingRepo
@@ -66,11 +67,10 @@ workflow(
         ) {
             uses(action = Checkout())
             uses(
-                name = "Set up JDK",
+                name = "Set up Gradle Daemon JDK",
                 action = SetupJava(
-                    javaVersion = "8",
-                    distribution = SetupJava.Distribution.Zulu,
-                    cache = SetupJava.BuildPlatform.Gradle,
+                    javaVersion = "21",
+                    distribution = Temurin,
                 ),
             )
             uses(

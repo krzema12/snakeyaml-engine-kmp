@@ -13,13 +13,11 @@ import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
-import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Zulu
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
-import io.github.typesafegithub.workflows.dsl.JobBuilder
 import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
 
@@ -36,11 +34,6 @@ workflow(
     ),
 ) {
 
-    // Java 8 is the minimum supported version, and is used to run the tests.
-    val minSupportedJava = "8"
-    // Java 21 is to compile the project.
-    val compiledWithJava = "21"
-
     setOf(
         UbuntuLatest,
         MacOSLatest,
@@ -52,17 +45,10 @@ workflow(
         ) {
             uses(action = Checkout())
             uses(
-                name = "Set up test launcher JDK",
+                name = "Set up Gradle Daemon JDK",
                 action = SetupJava(
-                    javaVersion = minSupportedJava,
-                    distribution = distributionFor(minSupportedJava),
-                ),
-            )
-            uses(
-                name = "Set up compilation JDK",
-                action = SetupJava(
-                    javaVersion = compiledWithJava,
-                    distribution = distributionFor(compiledWithJava),
+                    javaVersion = "21",
+                    distribution = Temurin,
                 ),
             )
             uses(
@@ -129,11 +115,3 @@ workflow(
         )
     }
 }
-
-fun JobBuilder<*>.distributionFor(version: String): SetupJava.Distribution =
-    if (runsOn == MacOSLatest && version.toInt() < 11) {
-        // Temurin 8 isn't available on M1. Remove this when min Java version >= 11.
-        Zulu
-    } else {
-        Temurin
-    }

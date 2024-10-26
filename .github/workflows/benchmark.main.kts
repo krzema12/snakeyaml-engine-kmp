@@ -16,6 +16,7 @@ import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.DownloadArtifact
 import io.github.typesafegithub.workflows.actions.actions.UploadArtifact
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
@@ -82,7 +83,7 @@ workflow(
             name = "Set up Gradle Daemon JDK",
             action = SetupJava(
                 javaVersion = "21",
-                distribution = SetupJava.Distribution.Zulu,
+                distribution = Temurin,
             ),
         )
         uses(

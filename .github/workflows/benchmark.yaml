@@ -49,7 +49,7 @@ jobs:
       uses: 'actions/setup-java@v4'
       with:
         java-version: '21'
-        distribution: 'temurin'
+        distribution: 'zulu'
     - id: 'step-2'
       name: 'Validate Gradle Wrapper'
       uses: 'gradle/actions/wrapper-validation@v4'

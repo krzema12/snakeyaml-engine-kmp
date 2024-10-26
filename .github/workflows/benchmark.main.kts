@@ -79,11 +79,10 @@ workflow(
     ) {
         uses(action = Checkout())
         uses(
-            name = "Set up JDK",
+            name = "Set up Gradle Daemon JDK",
             action = SetupJava(
-                javaVersion = "11",
+                javaVersion = "21",
                 distribution = SetupJava.Distribution.Zulu,
-                cache = SetupJava.BuildPlatform.Gradle,
             ),
         )
         uses(

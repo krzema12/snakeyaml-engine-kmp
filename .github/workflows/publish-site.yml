@@ -32,11 +32,11 @@ jobs:
         with:
           ref: ${{ inputs.checkout-ref || github.ref }}
 
-      - name: Setup JDK
+      - name: Set up compilation JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 21
 
       - name: Build site
         uses: gradle/gradle-build-action@v3

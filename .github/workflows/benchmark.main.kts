@@ -14,8 +14,8 @@
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.DownloadArtifact
-import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.actions.UploadArtifact
+import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
@@ -97,11 +97,11 @@ workflow(
         )
         run(
             name = "Run benchmarks",
-            command = "./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${expr { "matrix.additional-args" }}",
+            command = "./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${ expr{ "matrix.additional-args" }}",
         )
         uses(
             action = UploadArtifact(
-                name = "bench-results-${expr { "matrix.os" }}",
+                name = "bench-results-${ expr { "matrix.os" } }",
                 path = listOf("$BENCHMARK_RESULTS/main/**/*.json"),
             )
         )

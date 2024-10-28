@@ -27,7 +27,7 @@ workflow(
             command = """
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
                 cd snakeyaml-engine
-                git log --oneline $(cat ../upsteam-commit.txt)..master
+                git log --oneline $(cat ../upstream-commit.txt)..master
             """.trimIndent()
         )
     }

@@ -46,7 +46,7 @@ jobs:
       uses: 'actions/setup-java@v4'
       with:
         java-version: '21'
-        distribution: 'zulu'
+        distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
       uses: 'actions/cache@v4'

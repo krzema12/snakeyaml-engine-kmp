@@ -28,7 +28,7 @@ jobs:
       uses: 'actions/checkout@v4'
     - id: 'step-1'
       name: 'Clone snakeyaml-engine'
-      run: 'git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git'
+      run: 'git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git'
     - id: 'step-2'
       name: 'Enter snakeyaml-engine''s dir'
       run: 'cd snakeyaml-engine'

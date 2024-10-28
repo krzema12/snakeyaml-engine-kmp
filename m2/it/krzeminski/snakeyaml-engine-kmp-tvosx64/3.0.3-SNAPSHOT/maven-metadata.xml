@@ -3,38 +3,38 @@
   <groupId>it.krzeminski</groupId>
   <artifactId>snakeyaml-engine-kmp-tvosx64</artifactId>
   <versioning>
-    <lastUpdated>20241026142055</lastUpdated>
+    <lastUpdated>20241028063400</lastUpdated>
     <snapshot>
-      <timestamp>20241026.142055</timestamp>
+      <timestamp>20241028.063400</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20241026.142055-1</value>
-        <updated>20241026142055</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>3.0.3-20241026.142055-1</value>
-        <updated>20241026142055</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>module</extension>
-        <value>3.0.3-20241026.142055-1</value>
-        <updated>20241026142055</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>klib</extension>
-        <value>3.0.3-20241026.142055-1</value>
-        <updated>20241026142055</updated>
+        <value>3.0.3-20241028.063400-1</value>
+        <updated>20241028063400</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>metadata</classifier>
         <extension>jar</extension>
-        <value>3.0.3-20241026.142055-1</value>
-        <updated>20241026142055</updated>
+        <value>3.0.3-20241028.063400-1</value>
+        <updated>20241028063400</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.0.3-20241028.063400-1</value>
+        <updated>20241028063400</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>klib</extension>
+        <value>3.0.3-20241028.063400-1</value>
+        <updated>20241028063400</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>module</extension>
+        <value>3.0.3-20241028.063400-1</value>
+        <updated>20241028063400</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

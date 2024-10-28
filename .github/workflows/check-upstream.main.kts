@@ -23,34 +23,12 @@ workflow(
     ) {
         uses(action = Checkout())
         run(
-            name = "Clone snakeyaml-engine",
-            command = "git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git"
-        )
-        run(
-            name = "Enter snakeyaml-engine's dir",
-            command = "cd snakeyaml-engine"
-        )
-        run(
-            name = "DEBUG print wd",
-            command = "pwd"
-        )
-        run(
-            name = "DEBUG print ls",
-            command = "ls"
-        )
-        run(
-            name = "DEBUG run git status",
-            command = "git status"
-        )
-        run(
-            name = "DEBUG run git log",
-            command = "git log"
-        )
-        run(
-            name = "Calculate changes between the last synced change and current state",
-            // TODO: store this commit hash in a file
-            // TODO: get the numerical value (| wc -l)
-            command = "git log --oneline ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9..master"
+            name = "Clone snakeyaml-engine and check for changes",
+            command = """
+                git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
+                cd snakeyaml-engine
+                git log --oneline ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9..master
+            """.trimIndent()
         )
     }
 }

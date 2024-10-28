@@ -1,0 +1,34 @@
+# This file was generated using Kotlin DSL (.github/workflows/check-upstream.main.kts).
+# If you want to modify the workflow, please change the Kotlin file and regenerate this YAML file.
+# Generated with https://github.com/typesafegithub/github-workflows-kt
+
+name: 'Build'
+on:
+  workflow_dispatch: {}
+jobs:
+  check_yaml_consistency:
+    name: 'Check YAML consistency'
+    runs-on: 'ubuntu-latest'
+    steps:
+    - id: 'step-0'
+      name: 'Check out'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      name: 'Execute script'
+      run: 'rm ''.github/workflows/check-upstream.yaml'' && ''.github/workflows/check-upstream.main.kts'''
+    - id: 'step-2'
+      name: 'Consistency check'
+      run: 'git diff --exit-code ''.github/workflows/check-upstream.yaml'''
+  check:
+    runs-on: 'ubuntu-latest'
+    needs:
+    - 'check_yaml_consistency'
+    steps:
+    - id: 'step-0'
+      uses: 'actions/checkout@v4'
+    - id: 'step-1'
+      name: 'Clone snakeyaml-engine'
+      run: 'git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git && cd snakeyaml-engine'
+    - id: 'step-2'
+      name: 'Calculate changes between the last synced change and current state'
+      run: 'git log --oneline ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9..master'

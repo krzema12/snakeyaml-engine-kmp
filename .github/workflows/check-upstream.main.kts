@@ -24,7 +24,11 @@ workflow(
         uses(action = Checkout())
         run(
             name = "Clone snakeyaml-engine",
-            command = "git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git && cd snakeyaml-engine"
+            command = "git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git"
+        )
+        run(
+            name = "Enter snakeyaml-engine's dir",
+            command = "cd snakeyaml-engine"
         )
         run(
             name = "DEBUG run git status",

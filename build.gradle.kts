@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "it.krzeminski"
-version = "3.0.3"
+version = "3.0.4-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
 apiValidation {

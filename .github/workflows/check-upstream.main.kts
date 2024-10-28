@@ -27,6 +27,14 @@ workflow(
             command = "git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git && cd snakeyaml-engine"
         )
         run(
+            name = "DEBUG run git status",
+            command = "git status"
+        )
+        run(
+            name = "DEBUG run git log",
+            command = "git log"
+        )
+        run(
             name = "Calculate changes between the last synced change and current state",
             // TODO: store this commit hash in a file
             // TODO: get the numerical value (| wc -l)

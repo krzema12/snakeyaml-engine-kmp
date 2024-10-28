@@ -28,14 +28,17 @@ workflow(
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
                 cd snakeyaml-engine
                 git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../number-of-commits.txt
-            """.trimIndent()
+            """.trimIndent(),
         )
         run(
             name = "Create an SVG with the number of commits",
             command = """
-                echo "<svg viewBox=\"0 0 240 80\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"20\" y=\"35\">${'$'}(cat number-of-commits.txt)</text></svg>" > badge.svg
-            """.trimIndent()
+                echo "<svg viewBox=\"0 0 85 20\" xmlns=\"http://www.w3.org/2000/svg\"><style>.number { font: 13px sans-serif; }</style><text x=\"0\" y=\"0\" class=\"number\">${'$'}(cat number-of-commits.txt)</text></svg>" > badge.svg
+            """.trimIndent(),
         )
-        run(command = "cat badge.svg")
+        run(
+            name = "Preview badge",
+            command = "cat badge.svg",
+        )
     }
 }

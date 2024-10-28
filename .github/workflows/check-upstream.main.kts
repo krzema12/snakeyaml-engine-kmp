@@ -11,7 +11,7 @@ import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.workflow
 
 workflow(
-    name = "Build",
+    name = "Check upstream",
     on = listOf(
         WorkflowDispatch(),
     ),

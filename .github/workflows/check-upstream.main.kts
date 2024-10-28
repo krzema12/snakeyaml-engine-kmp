@@ -31,6 +31,14 @@ workflow(
             command = "cd snakeyaml-engine"
         )
         run(
+            name = "DEBUG print wd",
+            command = "pwd"
+        )
+        run(
+            name = "DEBUG print ls",
+            command = "ls"
+        )
+        run(
             name = "DEBUG run git status",
             command = "git status"
         )

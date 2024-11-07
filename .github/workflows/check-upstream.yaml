@@ -26,6 +26,8 @@ jobs:
     steps:
     - id: 'step-0'
       uses: 'actions/checkout@v4'
+      with:
+        ref: 'commits-to-upstream-badge'
     - id: 'step-1'
       name: 'Clone snakeyaml-engine and check for changes'
       run: |-
@@ -40,3 +42,11 @@ jobs:
     - id: 'step-3'
       name: 'Preview badge'
       run: 'cat commits-to-upstream-badge.svg'
+    - id: 'step-4'
+      name: 'Commit updated badge'
+      run: |-
+        git config --global user.email "<>"
+        git config --global user.name "GitHub Actions Bot"
+        git add commits-to-upstream-badge.svg
+        git commit --allow-empty -m "Regenerate badge"
+        git push

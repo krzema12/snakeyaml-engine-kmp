@@ -15,6 +15,8 @@ import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
+val badgeFileName = "commits-to-upstream-badge.svg"
+
 workflow(
     name = "Check upstream",
     on = listOf(
@@ -62,11 +64,21 @@ workflow(
                   </g>
                 </svg>
             """.trimIndent()
-            Path("commits-to-upstream-badge.svg").writeText(badgeAsSvg)
+            Path(badgeFileName).writeText(badgeAsSvg)
         }
         run(
             name = "Preview badge",
-            command = "cat commits-to-upstream-badge.svg",
+            command = "cat $badgeFileName",
+        )
+        run(
+            name = "Commit updated badge",
+            command = """
+                git config --global user.email "<>"
+                git config --global user.name "GitHub Actions Bot"
+                git add $badgeFileName
+                git commit --allow-empty -m "Regenerate badge"
+                git push
+            """.trimIndent()
         )
     }
 }

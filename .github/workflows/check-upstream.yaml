@@ -5,6 +5,8 @@
 name: 'Check upstream'
 on:
   workflow_dispatch: {}
+  schedule:
+  - cron: '0 0 * * 6'
 jobs:
   check_yaml_consistency:
     name: 'Check YAML consistency'

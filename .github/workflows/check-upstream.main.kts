@@ -28,7 +28,7 @@ workflow(
         id = "check",
         runsOn = RunnerType.UbuntuLatest,
     ) {
-        uses(action = Checkout(ref="commits-to-upstream-badge"))
+        uses(action = Checkout())
         run(
             name = "Clone snakeyaml-engine and check for changes",
             command = """
@@ -73,6 +73,7 @@ workflow(
         run(
             name = "Commit updated badge",
             command = """
+                git checkout commits-to-upstream-badge
                 git config --global user.email "<>"
                 git config --global user.name "GitHub Actions Bot"
                 git add $badgeFileName

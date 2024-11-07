@@ -54,7 +54,7 @@ workflow(
                   </clipPath>
                   <g clip-path="url(#r)">
                     <rect width="89" height="20" fill="#555"/>
-                    <rect x="89" width="39" height="20" fill="#4c1"/>
+                    <rect x="89" width="39" height="20" fill="#4cc"/>
                     <rect width="128" height="20" fill="url(#s)"/>
                   </g>
                   <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">

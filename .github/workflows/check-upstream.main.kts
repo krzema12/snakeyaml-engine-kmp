@@ -81,7 +81,7 @@ workflow(
                 git stash
                 git checkout commits-to-upstream-badge
                 rm $badgeFileName
-                git unstash
+                git stash pop
                 git add $badgeFileName
                 git config --global user.email "<>"
                 git config --global user.name "GitHub Actions Bot"

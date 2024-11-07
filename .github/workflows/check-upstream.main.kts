@@ -77,10 +77,14 @@ workflow(
         run(
             name = "Commit updated badge",
             command = """
+                git add $badgeFileName
+                git stash
                 git checkout commits-to-upstream-badge
+                rm $badgeFileName
+                git unstash
+                git add $badgeFileName
                 git config --global user.email "<>"
                 git config --global user.name "GitHub Actions Bot"
-                git add $badgeFileName
                 git commit --allow-empty -m "Regenerate badge"
                 git push
             """.trimIndent()

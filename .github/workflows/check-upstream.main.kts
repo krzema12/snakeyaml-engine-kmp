@@ -7,6 +7,7 @@
 @file:OptIn(ExperimentalKotlinLogicStep::class)
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.actions.Checkout.FetchDepth.Infinite
 import io.github.typesafegithub.workflows.annotations.ExperimentalKotlinLogicStep
 import io.github.typesafegithub.workflows.domain.RunnerType
 import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
@@ -28,7 +29,7 @@ workflow(
         id = "check",
         runsOn = RunnerType.UbuntuLatest,
     ) {
-        uses(action = Checkout())
+        uses(action = Checkout(fetchDepth = Infinite))
         run(
             name = "Clone snakeyaml-engine and check for changes",
             command = """

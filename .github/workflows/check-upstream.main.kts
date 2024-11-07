@@ -26,7 +26,7 @@ workflow(
         id = "check",
         runsOn = RunnerType.UbuntuLatest,
     ) {
-        uses(action = Checkout())
+        uses(action = Checkout(ref="commits-to-upstream-badge"))
         run(
             name = "Clone snakeyaml-engine and check for changes",
             command = """

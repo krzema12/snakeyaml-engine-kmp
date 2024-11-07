@@ -77,14 +77,22 @@ workflow(
         run(
             name = "Commit updated badge",
             command = """
+                git config --global user.email "<>"
+                git config --global user.name "GitHub Actions Bot"
+
+                # Pretty complicated... Dealing with conflicts when changing branches,
+                # it probably could be simplified.
+
                 git add $badgeFileName
                 git stash
                 git checkout commits-to-upstream-badge
+
                 rm $badgeFileName
+                git add $badgeFileName
+                git commit -m "Remove previous badge"
+
                 git stash pop
                 git add $badgeFileName
-                git config --global user.email "<>"
-                git config --global user.name "GitHub Actions Bot"
                 git commit --allow-empty -m "Regenerate badge"
                 git push
             """.trimIndent()

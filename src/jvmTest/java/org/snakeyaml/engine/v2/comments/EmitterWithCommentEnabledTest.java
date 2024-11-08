@@ -282,6 +282,16 @@ public class EmitterWithCommentEnabledTest {
   }
 
   @Test
+  public void testCommentsLineBlank() throws Exception {
+    String data = "# Comment 1\n" + "key1:\n" + "  \n" + "  # Comment 2\n" + "\n" + "  # Comment 3\n" + "\n"
+      + "  key2: value1\n" + "# \"Fun\" options\n" + "key3:\n" + "  # Comment 4\n"
+      + "  # Comment 5\n" + "  key4: value2\n" + "key5:\n" + "  key6: value3\n";
+
+    String result = runEmitterWithCommentsEnabled(data);
+    assertEquals(data, result);
+  }
+
+  @Test
   public void testMultiLineString() throws Exception {
     String data = "# YAML load and save bug with keep block chomping indicator\n" + "example:\n"
         + "  description: |+\n" + "    These lines have a carrage return after them.\n"

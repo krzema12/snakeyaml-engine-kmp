@@ -41,7 +41,7 @@ jobs:
         git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../number-of-commits.txt
     - id: 'step-2'
       name: 'Create an SVG with the number of commits'
-      run: 'wget https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue > commits-to-upstream-badge.svg'
+      run: 'wget -O commits-to-upstream-badge.svg https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue'
     - id: 'step-3'
       name: 'Preview badge'
       run: 'cat commits-to-upstream-badge.svg'

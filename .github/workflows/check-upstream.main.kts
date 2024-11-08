@@ -40,7 +40,7 @@ workflow(
         )
         run(
             name = "Create an SVG with the number of commits",
-            command = "wget https://img.shields.io/badge/To%20upstream-$(cat $numberOfCommitsFileName)-blue > $badgeFileName",
+            command = "wget -O $badgeFileName https://img.shields.io/badge/To%20upstream-$(cat $numberOfCommitsFileName)-blue",
         )
         run(
             name = "Preview badge",

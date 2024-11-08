@@ -34,6 +34,7 @@ workflow(
             name = "Clone snakeyaml-engine and check for changes",
             command = """
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
+                wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
                 cd snakeyaml-engine
                 git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../$numberOfCommitsFileName
             """.trimIndent(),

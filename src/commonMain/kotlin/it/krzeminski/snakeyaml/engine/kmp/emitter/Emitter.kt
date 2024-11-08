@@ -1130,12 +1130,14 @@ class Emitter(
         stream.write(indicator)
     }
 
-    private fun writeIndent() {
+    private fun writeIndent(): Int {
         val indentToWrite = indent ?: 0
         if (!indention || column > indentToWrite || column == indentToWrite && !whitespace) {
             writeLineBreak()
         }
-        writeWhitespace(indentToWrite - column)
+        val whitespaces = indentToWrite - this.column
+        writeWhitespace(whitespaces)
+        return whitespaces
     }
 
     private fun writeWhitespace(length: Int) {
@@ -1308,6 +1310,7 @@ class Emitter(
         var wroteComment = false
         if (emitComments) {
             var indentColumns = 0
+            var prevColumns = 0
             var firstComment = true
             for (commentLine in commentLines) {
                 if (commentLine.commentType != CommentType.BLANK_LINE) {
@@ -1319,14 +1322,15 @@ class Emitter(
                         )
                         indentColumns = if (column > 0) column - 1 else 0
                     } else {
-                        writeWhitespace(indentColumns)
+                        writeWhitespace(indentColumns - prevColumns)
                         writeIndicator(indicator = "#")
                     }
                     stream.write(commentLine.value)
                     writeLineBreak()
+                    prevColumns = 0
                 } else {
                     writeLineBreak()
-                    writeIndent()
+                    prevColumns = writeIndent()
                 }
                 wroteComment = true
             }

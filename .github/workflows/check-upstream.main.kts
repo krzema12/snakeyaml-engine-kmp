@@ -38,7 +38,7 @@ workflow(
                 wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
                 cd snakeyaml-engine
                 git log --oneline ${'$'}(cat ../upstream-commit.txt)..master > ../$logDiffBetweenRepos
-                cat $logDiffBetweenRepos | wc -l > ../$numberOfCommitsFileName
+                cat ../$logDiffBetweenRepos | wc -l > ../$numberOfCommitsFileName
             """.trimIndent(),
         )
         run(

@@ -40,7 +40,7 @@ jobs:
         wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${{ github.ref }}/upstream-commit.txt
         cd snakeyaml-engine
         git log --oneline $(cat ../upstream-commit.txt)..master > ../log-diff-between-repos.txt
-        cat log-diff-between-repos.txt | wc -l > ../number-of-commits.txt
+        cat ../log-diff-between-repos.txt | wc -l > ../number-of-commits.txt
     - id: 'step-2'
       name: 'Create an SVG with the number of commits'
       run: 'wget -O commits-to-upstream-badge.svg https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue'

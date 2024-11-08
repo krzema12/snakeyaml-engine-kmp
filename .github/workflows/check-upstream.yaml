@@ -32,7 +32,7 @@ jobs:
     - id: 'step-0'
       uses: 'actions/checkout@v4'
       with:
-        fetch-depth: '0'
+        ref: 'commits-to-upstream-badge'
     - id: 'step-1'
       name: 'Clone snakeyaml-engine and check for changes'
       run: |-
@@ -41,9 +41,7 @@ jobs:
         git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../number-of-commits.txt
     - id: 'step-2'
       name: 'Create an SVG with the number of commits'
-      env:
-        GHWKT_GITHUB_CONTEXT_JSON: '${{ toJSON(github) }}'
-      run: 'GHWKT_RUN_STEP=''check:step-2'' ''.github/workflows/check-upstream.main.kts'''
+      run: 'wget https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue > commits-to-upstream-badge.svg'
     - id: 'step-3'
       name: 'Preview badge'
       run: 'cat commits-to-upstream-badge.svg'
@@ -53,18 +51,6 @@ jobs:
         git config --global user.email "<>"
         git config --global user.name "GitHub Actions Bot"
 
-        # Pretty complicated... Dealing with conflicts when changing branches,
-        # it probably could be simplified.
-
-        git add commits-to-upstream-badge.svg
-        git stash
-        git checkout commits-to-upstream-badge
-
-        rm commits-to-upstream-badge.svg
-        git add commits-to-upstream-badge.svg
-        git commit -m "Remove previous badge"
-
-        git stash pop
         git add commits-to-upstream-badge.svg
         git commit --allow-empty -m "Regenerate badge"
         git push

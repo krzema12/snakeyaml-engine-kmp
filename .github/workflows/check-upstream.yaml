@@ -40,11 +40,10 @@ jobs:
         wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${{ github.ref }}/upstream-commit.txt
         cd snakeyaml-engine
         UPSTREAM_COMMIT=$(cat ../upstream-commit.txt)
-        DIFF_CONTENT=$(git log --oneline $UPSTREAM_COMMIT..master)
         echo "See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..$UPSTREAM_COMMIT" > ../log-diff-between-repos.txt
         echo "" >> ../log-diff-between-repos.txt
-        echo $DIFF_CONTENT >> ../log-diff-between-repos.txt
-        echo $DIFF_CONTENT | wc -l > ../number-of-commits.txt
+        git log --oneline $UPSTREAM_COMMIT..master >> ../log-diff-between-repos.txt
+        git log --oneline $UPSTREAM_COMMIT..master | wc -l > ../number-of-commits.txt
     - id: 'step-2'
       name: 'Create an SVG with the number of commits'
       run: 'wget -O commits-to-upstream-badge.svg https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue'

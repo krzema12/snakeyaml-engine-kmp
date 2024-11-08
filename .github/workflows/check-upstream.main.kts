@@ -38,11 +38,10 @@ workflow(
                 wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
                 cd snakeyaml-engine
                 UPSTREAM_COMMIT=$(cat ../upstream-commit.txt)
-                DIFF_CONTENT=$(git log --oneline ${'$'}UPSTREAM_COMMIT..master)
                 echo "See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..${'$'}UPSTREAM_COMMIT" > ../$logDiffBetweenRepos
                 echo "" >> ../$logDiffBetweenRepos
-                echo ${'$'}DIFF_CONTENT >> ../$logDiffBetweenRepos
-                echo ${'$'}DIFF_CONTENT | wc -l > ../$numberOfCommitsFileName
+                git log --oneline ${'$'}UPSTREAM_COMMIT..master >> ../$logDiffBetweenRepos
+                git log --oneline ${'$'}UPSTREAM_COMMIT..master | wc -l > ../$numberOfCommitsFileName
             """.trimIndent(),
         )
         run(

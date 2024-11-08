@@ -37,7 +37,10 @@ workflow(
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
                 wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
                 cd snakeyaml-engine
-                git log --oneline ${'$'}(cat ../upstream-commit.txt)..master > ../$logDiffBetweenRepos
+                UPSTREAM_COMMIT=$(cat ../upstream-commit.txt)
+                echo "See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..${'$'}UPSTREAM_COMMIT" > ../$logDiffBetweenRepos
+                echo "" >> ../$logDiffBetweenRepos
+                git log --oneline ${'$'}UPSTREAM_COMMIT..master >> ../$logDiffBetweenRepos
                 cat ../$logDiffBetweenRepos | wc -l > ../$numberOfCommitsFileName
             """.trimIndent(),
         )

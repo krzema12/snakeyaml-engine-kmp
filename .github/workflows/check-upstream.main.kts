@@ -7,13 +7,21 @@
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.domain.RunnerType
+import io.github.typesafegithub.workflows.domain.triggers.Cron
+import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.domain.triggers.Schedule
 import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.workflow
+
+val numberOfCommitsFileName = "number-of-commits.txt"
+val badgeFileName = "commits-to-upstream-badge.svg"
 
 workflow(
     name = "Check upstream",
     on = listOf(
         WorkflowDispatch(),
+        Push(branches = listOf("main")),
+        Schedule(triggers = listOf(Cron(minute = "0", hour = "0", dayWeek = "6"))), // Once a week.
     ),
     sourceFile = __FILE__,
 ) {
@@ -21,16 +29,34 @@ workflow(
         id = "check",
         runsOn = RunnerType.UbuntuLatest,
     ) {
-        uses(action = Checkout())
+        uses(action = Checkout(ref = "commits-to-upstream-badge"))
         run(
-            name = "Clone snakeyaml-engine",
-            command = "git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git && cd snakeyaml-engine"
+            name = "Clone snakeyaml-engine and check for changes",
+            command = """
+                git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
+                wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
+                cd snakeyaml-engine
+                git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../$numberOfCommitsFileName
+            """.trimIndent(),
         )
         run(
-            name = "Calculate changes between the last synced change and current state",
-            // TODO: store this commit hash in a file
-            // TODO: get the numerical value (| wc -l)
-            command = "git log --oneline ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9..master"
+            name = "Create an SVG with the number of commits",
+            command = "wget -O $badgeFileName https://img.shields.io/badge/To%20upstream-$(cat $numberOfCommitsFileName)-blue",
+        )
+        run(
+            name = "Preview badge",
+            command = "cat $badgeFileName",
+        )
+        run(
+            name = "Commit updated badge",
+            command = """
+                git config --global user.email "<>"
+                git config --global user.name "GitHub Actions Bot"
+
+                git add $badgeFileName
+                git commit --allow-empty -m "Regenerate badge"
+                git push
+            """.trimIndent()
         )
     }
 }

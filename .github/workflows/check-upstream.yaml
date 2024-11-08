@@ -5,6 +5,11 @@
 name: 'Check upstream'
 on:
   workflow_dispatch: {}
+  push:
+    branches:
+    - 'main'
+  schedule:
+  - cron: '0 0 * * 6'
 jobs:
   check_yaml_consistency:
     name: 'Check YAML consistency'
@@ -26,9 +31,27 @@ jobs:
     steps:
     - id: 'step-0'
       uses: 'actions/checkout@v4'
+      with:
+        ref: 'commits-to-upstream-badge'
     - id: 'step-1'
-      name: 'Clone snakeyaml-engine'
-      run: 'git clone https://bitbucket.org/snakeyaml/snakeyaml-engine.git && cd snakeyaml-engine'
+      name: 'Clone snakeyaml-engine and check for changes'
+      run: |-
+        git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
+        wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${{ github.ref }}/upstream-commit.txt
+        cd snakeyaml-engine
+        git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../number-of-commits.txt
     - id: 'step-2'
-      name: 'Calculate changes between the last synced change and current state'
-      run: 'git log --oneline ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9..master'
+      name: 'Create an SVG with the number of commits'
+      run: 'wget -O commits-to-upstream-badge.svg https://img.shields.io/badge/To%20upstream-$(cat number-of-commits.txt)-blue'
+    - id: 'step-3'
+      name: 'Preview badge'
+      run: 'cat commits-to-upstream-badge.svg'
+    - id: 'step-4'
+      name: 'Commit updated badge'
+      run: |-
+        git config --global user.email "<>"
+        git config --global user.name "GitHub Actions Bot"
+
+        git add commits-to-upstream-badge.svg
+        git commit --allow-empty -m "Regenerate badge"
+        git push

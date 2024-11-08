@@ -1,4 +1,5 @@
-[![Maven Central Version](https://img.shields.io/maven-central/v/it.krzeminski/snakeyaml-engine-kmp?style=for-the-badge)](https://search.maven.org/artifact/it.krzeminski/snakeyaml-engine-kmp/)
+[![Maven Central Version](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp/badge.svg)](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp)
+![Commits to upstream](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/commits-to-upstream-badge.svg)
 
 # SnakeYAML Engine KMP
 

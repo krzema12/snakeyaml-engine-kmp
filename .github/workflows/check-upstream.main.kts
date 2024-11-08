@@ -14,6 +14,7 @@ import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.workflow
 
 val numberOfCommitsFileName = "number-of-commits.txt"
+val logDiffBetweenRepos = "log-diff-between-repos.txt"
 val badgeFileName = "commits-to-upstream-badge.svg"
 
 workflow(
@@ -36,7 +37,11 @@ workflow(
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
                 wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
                 cd snakeyaml-engine
-                git log --oneline $(cat ../upstream-commit.txt)..master | wc -l > ../$numberOfCommitsFileName
+                UPSTREAM_COMMIT=$(cat ../upstream-commit.txt)
+                echo "See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..${'$'}UPSTREAM_COMMIT" > ../$logDiffBetweenRepos
+                echo "" >> ../$logDiffBetweenRepos
+                git log --oneline ${'$'}UPSTREAM_COMMIT..master >> ../$logDiffBetweenRepos
+                git log --oneline ${'$'}UPSTREAM_COMMIT..master | wc -l > ../$numberOfCommitsFileName
             """.trimIndent(),
         )
         run(
@@ -48,13 +53,18 @@ workflow(
             command = "cat $badgeFileName",
         )
         run(
-            name = "Commit updated badge",
+            name = "Preview log diff",
+            command = "cat $logDiffBetweenRepos",
+        )
+        run(
+            name = "Commit updated badge and log diff",
             command = """
                 git config --global user.email "<>"
                 git config --global user.name "GitHub Actions Bot"
 
                 git add $badgeFileName
-                git commit --allow-empty -m "Regenerate badge"
+                git add $logDiffBetweenRepos
+                git commit --allow-empty -m "Regenerate badge and log diff"
                 git push
             """.trimIndent()
         )

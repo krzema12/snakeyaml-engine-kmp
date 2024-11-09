@@ -1,4 +1,4 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..ef7ebe9c06e963e13f4ab465f300a0dd6f0940c9
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..cf808a16bff0eb531a48debcd04be0aab562c21e
 
 bf51157 Update changes
 31e8cd5 Merge branch 'master' into jmh-wip
@@ -35,5 +35,3 @@ f097d7f Formatted source.
 3d97ee7 Merge remote-tracking branch 'refs/remotes/github/master'
 91fd294 Merge pull request #2 from aSemy/patch-1
 e274d60 Update setEnvConfig Javadoc in LoadSettingsBuilder
-cf808a1 Test comment reproducibility.
-8af4b3b Remove extra indent after blank line comments.

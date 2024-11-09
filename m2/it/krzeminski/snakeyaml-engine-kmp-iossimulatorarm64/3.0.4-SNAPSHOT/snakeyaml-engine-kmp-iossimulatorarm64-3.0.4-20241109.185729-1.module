@@ -1,0 +1,132 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../snakeyaml-engine-kmp/3.0.4-SNAPSHOT/snakeyaml-engine-kmp-3.0.4-SNAPSHOT.module",
+    "group": "it.krzeminski",
+    "module": "snakeyaml-engine-kmp",
+    "version": "3.0.4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "iosSimulatorArm64ApiElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp.klib",
+          "url": "snakeyaml-engine-kmp-iossimulatorarm64-3.0.4-SNAPSHOT.klib",
+          "size": 495736,
+          "sha512": "9d70876841e7e264b4ea3a2be2169fb5ce0d1f350d5884b1bacf263765f22da5f7be291f3b737c5403eea4b3a34b8203651f1915946e5d7e4b5bd352e964c575",
+          "sha256": "7a1325891c5aead51b7351eaf4e28ebd1a56ded048784990c3ced666d3f3ee33",
+          "sha1": "285974e5e4ed2ab75bc1a52edf7c8fd17a9bd27c",
+          "md5": "0eeda4a2c833e4fb18f666471a5a76c8"
+        }
+      ]
+    },
+    {
+      "name": "iosSimulatorArm64SourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.native.target": "ios_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-iossimulatorarm64-3.0.4-SNAPSHOT-sources.jar",
+          "url": "snakeyaml-engine-kmp-iossimulatorarm64-3.0.4-SNAPSHOT-sources.jar",
+          "size": 189731,
+          "sha512": "e3a1a95aa4faf5f2a99ada9a70580a16c13e66497f7efed082b2fdf545d98e2173ab6808408eb027e0b27be95c2d9002fad81a88100664aa3bdef1be391673a1",
+          "sha256": "3b7685b2de2e2761eeebb036b5222acfe2ccdacfc4e6d1bd2f5bbb4b195b71bd",
+          "sha1": "76140a2a73c6e1c00f4ef491d4b527096bcec0ea",
+          "md5": "242fc601081aa21203302f78628c643c"
+        }
+      ]
+    },
+    {
+      "name": "iosSimulatorArm64MetadataElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-iossimulatorarm64-3.0.4-SNAPSHOT-metadata.jar",
+          "url": "snakeyaml-engine-kmp-iossimulatorarm64-3.0.4-SNAPSHOT-metadata.jar",
+          "size": 261,
+          "sha512": "1487e5a20c9e4d74f298e07c42e96a61be11b7a768c3fbc199ee138cd68e1fc2267d1cfe3f11f288acc05df755315344d052cc5f6f751f126ab4fe1caa5125ea",
+          "sha256": "c6deada2fac53b8ea6523dbda77597b128006674616f140f04df23264c6d1aa3",
+          "sha1": "2ad14aed781c4a73ed4dbb421966d408a0a06686",
+          "md5": "f43436d6bec321290f6af228ad602604"
+        }
+      ]
+    }
+  ]
+}

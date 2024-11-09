@@ -1,0 +1,132 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../snakeyaml-engine-kmp/3.0.4-SNAPSHOT/snakeyaml-engine-kmp-3.0.4-SNAPSHOT.module",
+    "group": "it.krzeminski",
+    "module": "snakeyaml-engine-kmp",
+    "version": "3.0.4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "iosX64ApiElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_x64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp.klib",
+          "url": "snakeyaml-engine-kmp-iosx64-3.0.4-SNAPSHOT.klib",
+          "size": 495634,
+          "sha512": "f14f7c09c9a527307dbbc4021f6dd57d62a74102d6a544155c27ada877d423c5d5e7cf9c2b3410b3839e2595ece4c651f4f60f19c767c433ff018d8a04073937",
+          "sha256": "3ca8c21985543e416355b0348dd8ed5756c4e38f97ac2b82ea69185e99780ddb",
+          "sha1": "e1893c867073b84dc0b5184e6d3b4550055db826",
+          "md5": "dd067034b21f0a4bfa309bcf6ae78f5d"
+        }
+      ]
+    },
+    {
+      "name": "iosX64SourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.native.target": "ios_x64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-iosx64-3.0.4-SNAPSHOT-sources.jar",
+          "url": "snakeyaml-engine-kmp-iosx64-3.0.4-SNAPSHOT-sources.jar",
+          "size": 189731,
+          "sha512": "e3a1a95aa4faf5f2a99ada9a70580a16c13e66497f7efed082b2fdf545d98e2173ab6808408eb027e0b27be95c2d9002fad81a88100664aa3bdef1be391673a1",
+          "sha256": "3b7685b2de2e2761eeebb036b5222acfe2ccdacfc4e6d1bd2f5bbb4b195b71bd",
+          "sha1": "76140a2a73c6e1c00f4ef491d4b527096bcec0ea",
+          "md5": "242fc601081aa21203302f78628c643c"
+        }
+      ]
+    },
+    {
+      "name": "iosX64MetadataElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_x64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-iosx64-3.0.4-SNAPSHOT-metadata.jar",
+          "url": "snakeyaml-engine-kmp-iosx64-3.0.4-SNAPSHOT-metadata.jar",
+          "size": 261,
+          "sha512": "1487e5a20c9e4d74f298e07c42e96a61be11b7a768c3fbc199ee138cd68e1fc2267d1cfe3f11f288acc05df755315344d052cc5f6f751f126ab4fe1caa5125ea",
+          "sha256": "c6deada2fac53b8ea6523dbda77597b128006674616f140f04df23264c6d1aa3",
+          "sha1": "2ad14aed781c4a73ed4dbb421966d408a0a06686",
+          "md5": "f43436d6bec321290f6af228ad602604"
+        }
+      ]
+    }
+  ]
+}

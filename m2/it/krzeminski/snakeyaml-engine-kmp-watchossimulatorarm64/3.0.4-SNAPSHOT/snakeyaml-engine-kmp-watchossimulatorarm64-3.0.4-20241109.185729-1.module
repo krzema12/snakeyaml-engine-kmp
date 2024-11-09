@@ -1,0 +1,132 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../snakeyaml-engine-kmp/3.0.4-SNAPSHOT/snakeyaml-engine-kmp-3.0.4-SNAPSHOT.module",
+    "group": "it.krzeminski",
+    "module": "snakeyaml-engine-kmp",
+    "version": "3.0.4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "watchosSimulatorArm64ApiElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "watchos_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp.klib",
+          "url": "snakeyaml-engine-kmp-watchossimulatorarm64-3.0.4-SNAPSHOT.klib",
+          "size": 495771,
+          "sha512": "a7723f8d9caf43560881805f68da5c0fec2add3434c136432f4d84314fb78d456a027c1fb1857ffc8946b42d0640d1242df00c356d49ced92fec919db2a1b2d8",
+          "sha256": "e117116422d8e631aeb9184e3475642e9c06c85b825d8c8e4f2294281a9c579d",
+          "sha1": "23b728597bc1261e2b90e3b88d8fb97743c2ec82",
+          "md5": "004bdfccd0d0fcca80ff79608c820115"
+        }
+      ]
+    },
+    {
+      "name": "watchosSimulatorArm64SourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.native.target": "watchos_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-watchossimulatorarm64-3.0.4-SNAPSHOT-sources.jar",
+          "url": "snakeyaml-engine-kmp-watchossimulatorarm64-3.0.4-SNAPSHOT-sources.jar",
+          "size": 189731,
+          "sha512": "e3a1a95aa4faf5f2a99ada9a70580a16c13e66497f7efed082b2fdf545d98e2173ab6808408eb027e0b27be95c2d9002fad81a88100664aa3bdef1be391673a1",
+          "sha256": "3b7685b2de2e2761eeebb036b5222acfe2ccdacfc4e6d1bd2f5bbb4b195b71bd",
+          "sha1": "76140a2a73c6e1c00f4ef491d4b527096bcec0ea",
+          "md5": "242fc601081aa21203302f78628c643c"
+        }
+      ]
+    },
+    {
+      "name": "watchosSimulatorArm64MetadataElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "watchos_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "3.9.1"
+          }
+        },
+        {
+          "group": "net.thauvin.erik.urlencoder",
+          "module": "urlencoder-lib",
+          "version": {
+            "requires": "1.6.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "snakeyaml-engine-kmp-watchossimulatorarm64-3.0.4-SNAPSHOT-metadata.jar",
+          "url": "snakeyaml-engine-kmp-watchossimulatorarm64-3.0.4-SNAPSHOT-metadata.jar",
+          "size": 261,
+          "sha512": "1487e5a20c9e4d74f298e07c42e96a61be11b7a768c3fbc199ee138cd68e1fc2267d1cfe3f11f288acc05df755315344d052cc5f6f751f126ab4fe1caa5125ea",
+          "sha256": "c6deada2fac53b8ea6523dbda77597b128006674616f140f04df23264c6d1aa3",
+          "sha1": "2ad14aed781c4a73ed4dbb421966d408a0a06686",
+          "md5": "f43436d6bec321290f6af228ad602604"
+        }
+      ]
+    }
+  ]
+}

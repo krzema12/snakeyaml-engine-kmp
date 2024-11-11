@@ -25,29 +25,30 @@ import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.io.IOException
 import java.io.StringWriter
 
 class EmitterWithCommentEnabledTest {
-    @Throws(IOException::class)
     private fun runEmitterWithCommentsEnabled(data: String): String {
         val output: StreamDataWriter = MyWriter()
 
-        val dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.BLOCK).setDumpComments(true).build()
+        val dumpSettings = DumpSettings.builder()
+            .setDefaultScalarStyle(ScalarStyle.PLAIN)
+            .setDefaultFlowStyle(FlowStyle.BLOCK)
+            .setDumpComments(true)
+            .build()
         val serializer = Serializer(dumpSettings, Emitter(dumpSettings, output))
 
         serializer.emitStreamStart()
-        val loadSettings = LoadSettings.builder().setParseComments(true).build()
+        val loadSettings = LoadSettings.builder()
+            .setParseComments(true)
+            .build()
         val composer = Composer(
             loadSettings,
             ParserImpl(loadSettings, StreamReader(loadSettings, data))
         )
-        while (composer.hasNext()) {
-            val node = composer.next()
-            // System.out.println(node);
+        for (node in composer) {
             serializer.serializeDocument(node)
         }
         serializer.emitStreamEnd()
@@ -56,42 +57,42 @@ class EmitterWithCommentEnabledTest {
     }
 
     private fun producePrettyFlowEmitter(output: StreamDataWriter): Emitter {
-        val dumpSettings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.FLOW).setDumpComments(true).setMultiLineFlow(true).build()
+        val dumpSettings = DumpSettings.builder()
+            .setDefaultScalarStyle(ScalarStyle.PLAIN)
+            .setDefaultFlowStyle(FlowStyle.FLOW)
+            .setDumpComments(true)
+            .setMultiLineFlow(true)
+            .build()
         return Emitter(dumpSettings, output)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testEmpty() {
         val data = ""
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testWithOnlyComment() {
         val data = "# Comment\n\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testCommentEndingALine() {
         val data = """key: # Comment
   value
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testMultiLineComment() {
         val data = """key: # Comment
      # lines
@@ -99,21 +100,19 @@ class EmitterWithCommentEnabledTest {
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testBlankLine() {
-        val data = "" +  //
+        val data = "" +
                 "\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testBlankLineComments() {
         val data = """
 
@@ -124,11 +123,10 @@ class EmitterWithCommentEnabledTest {
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testBlockScalar() {
         val data = """abc: | # Comment
   def
@@ -136,21 +134,19 @@ class EmitterWithCommentEnabledTest {
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testDirectiveLineEndComment() {
         val data = "%YAML 1.1 #Comment\n---\n"
 
         val result = runEmitterWithCommentsEnabled(data)
         // We currently strip Directive comments
-        Assertions.assertEquals("", result)
+        assertEquals("", result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testSequence() {
         val data = """# Comment
 list: # InlineComment1
@@ -160,11 +156,10 @@ list: # InlineComment1
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testAllComments1() {
         val data = """# Block Comment1
 # Block Comment2
@@ -186,11 +181,10 @@ list: # InlineComment3a
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testMultiDoc() {
         val data = """
             key: value
@@ -202,13 +196,12 @@ list: # InlineComment3a
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testAllComments2() {
-        val data = ("""key:
+        val data = """key:
   key:
     key:
     - # Block Comment1
@@ -227,14 +220,13 @@ key2:
   # Block Comment6b
   item2: value # Inline Comment2
 # Block Comment7
-""")
+"""
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testAllComments3() {
         val data = """
             # Block Comment1
@@ -244,11 +236,10 @@ key2:
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testKeepingNewLineInsideSequence() {
         val data = """
 
@@ -265,50 +256,48 @@ key2:
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testKeepingNewLineInsideSequence2() {
-        val data = ("""
-     apiVersion: kustomize.config.k8s.io/v1beta1
-     kind: Kustomization
+        val data = """
+        apiVersion: kustomize.config.k8s.io/v1beta1
+        kind: Kustomization
 
-     namePrefix: acquisition-gateway-
+        namePrefix: acquisition-gateway-
 
-     bases:
-     - https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-canary-appd-noingress-base?ref=v3.2.0
-     - https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-rollout-hpa-base?ref=v3.2.0
-     # resources:
-     # - Nginx-ConfigMap.yaml
+        bases:
+        - https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-canary-appd-noingress-base?ref=v3.2.0
+        - https://github.intuit.com/dev-patterns/intuit-kustomize//intuit-service-rollout-hpa-base?ref=v3.2.0
+        # resources:
+        # - Nginx-ConfigMap.yaml
 
-     resources:
-     - ConfigMap-v1-splunk-sidecar-config.yaml
-     - CronJob-patch.yaml
+        resources:
+        - ConfigMap-v1-splunk-sidecar-config.yaml
+        - CronJob-patch.yaml
 
-     patchesStrategicMerge:
-     - app-rollout-patch.yaml
-     - Service-patch.yaml
-     - Service-metrics-patch.yaml
-     - Hpa-patch.yaml
-     #- SignalSciences-patch.yaml
+        patchesStrategicMerge:
+        - app-rollout-patch.yaml
+        - Service-patch.yaml
+        - Service-metrics-patch.yaml
+        - Hpa-patch.yaml
+        #- SignalSciences-patch.yaml
 
-     # Uncomment HPA-patch when you need to enable HPA
-     #- Hpa-patch.yaml
-     # Uncomment SignalSciences-patch when you need to enable Signal Sciences
-     #- SignalSciences-patch.yaml
+        # Uncomment HPA-patch when you need to enable HPA
+        #- Hpa-patch.yaml
+        # Uncomment SignalSciences-patch when you need to enable Signal Sciences
+        #- SignalSciences-patch.yaml
 
-     """.trimIndent())
+        """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testCommentsIndentFirstLineBlank() {
-        val data = ("""# Comment 1
+        val data = """# Comment 1
 key1:
   
   # Comment 2
@@ -321,16 +310,15 @@ key3:
   key4: value2
 key5:
   key6: value3
-""")
+"""
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testCommentsLineBlank() {
-        val data = ("""# Comment 1
+        val data = """# Comment 1
 key1:
   
   # Comment 2
@@ -345,16 +333,15 @@ key3:
   key4: value2
 key5:
   key6: value3
-""")
+"""
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testMultiLineString() {
-        val data = ("""# YAML load and save bug with keep block chomping indicator
+        val data = """# YAML load and save bug with keep block chomping indicator
 example:
   description: |+
     These lines have a carrage return after them.
@@ -362,32 +349,31 @@ example:
     block chomping indicator + is used. ("keep": keep the line feed, keep trailing blank lines.)
 
 successfully-loaded: test
-""")
+"""
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(IOException::class)
     fun test100Comments() {
-        val commentBuilder = StringBuilder()
-        for (i in 0..99) {
-            commentBuilder.append("# Comment ").append(i).append("\n")
+        val commentBuilder = buildString {
+            for (i in 0..99) {
+                append("# Comment ").append(i).append("\n")
+            }
         }
         val data = "" + commentBuilder + "simpleKey: simpleValue\n" + "\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testCommentsOnReference() {
-        val data = ("""dummy: &a test
+        val data = """dummy: &a test
 conf:
 - # comment not ok here
   *a #comment not ok here
-""")
+"""
         val expected = """
             dummy: &a test
             conf:
@@ -395,7 +381,7 @@ conf:
 
             """.trimIndent()
         val result = runEmitterWithCommentsEnabled(data)
-        Assertions.assertEquals(expected.replace("a", "id001"), result)
+        assertEquals(expected.replace("a", "id001"), result)
     }
 
     @Test
@@ -405,8 +391,6 @@ conf:
         val loadSettings =
             LoadSettings.builder().setMaxAliasesForCollections(Int.MAX_VALUE).build()
 
-        // final Yaml yaml = new Yaml(new SafeConstructor(), yamlRepresenter, yamlOptions,
-        // loaderOptions);
         val load = Load(loadSettings)
         load.loadAll(data)
     }
@@ -489,7 +473,7 @@ conf:
         emitter.emit(StreamEndEvent(null, null))
 
         val result = output.toString()
-        val data = ("""{
+        val data = """{
   # I'm first
   a: Hello,
   b: {
@@ -498,9 +482,9 @@ conf:
     two: eee
   }
 }
-""")
+"""
 
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
@@ -534,7 +518,7 @@ conf:
 }
 """
 
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
@@ -583,12 +567,12 @@ conf:
 ]
 """
 
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
     @Test
     fun testCommentInEmptySequence() {
-        val output: MyWriter = MyWriter()
+        val output = MyWriter()
         val emitter = producePrettyFlowEmitter(output)
 
         emitter.emit(StreamStartEvent(null, null))
@@ -617,11 +601,10 @@ conf:
 ]
 """
 
-        Assertions.assertEquals(data, result)
+        assertEquals(data, result)
     }
 
-    private val complexConfig: String
-        get() = ("""# Core configurable options for LWC
+    private val complexConfig = """# Core configurable options for LWC
 core:
 
     # The language LWC will use, specified by the shortname. For example, English = en, French = fr, German = de,
@@ -646,7 +629,7 @@ core:
 
     # If true, players will be sent a notice in their chat box when they open a protection they own.
     showMyNotices: false
-""")
+"""
 
     internal inner class MyWriter : StringWriter(), StreamDataWriter {
         override fun flush() {

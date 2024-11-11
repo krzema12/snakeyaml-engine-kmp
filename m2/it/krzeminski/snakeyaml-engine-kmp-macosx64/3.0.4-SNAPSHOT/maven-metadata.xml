@@ -3,38 +3,38 @@
   <groupId>it.krzeminski</groupId>
   <artifactId>snakeyaml-engine-kmp-macosx64</artifactId>
   <versioning>
-    <lastUpdated>20241109185729</lastUpdated>
+    <lastUpdated>20241111092357</lastUpdated>
     <snapshot>
-      <timestamp>20241109.185729</timestamp>
+      <timestamp>20241111.092357</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <extension>module</extension>
-        <value>3.0.4-20241109.185729-1</value>
-        <updated>20241109185729</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <classifier>sources</classifier>
-        <extension>jar</extension>
-        <value>3.0.4-20241109.185729-1</value>
-        <updated>20241109185729</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>klib</extension>
-        <value>3.0.4-20241109.185729-1</value>
-        <updated>20241109185729</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>3.0.4-20241109.185729-1</value>
-        <updated>20241109185729</updated>
+        <value>3.0.4-20241111.092357-1</value>
+        <updated>20241111092357</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>metadata</classifier>
         <extension>jar</extension>
-        <value>3.0.4-20241109.185729-1</value>
-        <updated>20241109185729</updated>
+        <value>3.0.4-20241111.092357-1</value>
+        <updated>20241111092357</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.0.4-20241111.092357-1</value>
+        <updated>20241111092357</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>3.0.4-20241111.092357-1</value>
+        <updated>20241111092357</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>klib</extension>
+        <value>3.0.4-20241111.092357-1</value>
+        <updated>20241111092357</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

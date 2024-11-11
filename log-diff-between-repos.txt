@@ -1,4 +1,4 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..cf808a16bff0eb531a48debcd04be0aab562c21e
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..3d97ee77ff70ab1093a63e4d3dadda9e885fe857
 
 bf51157 Update changes
 31e8cd5 Merge branch 'master' into jmh-wip
@@ -32,6 +32,5 @@ f097d7f Formatted source.
 18c7574 Refactor: improve Emitter as in SnakeYAML
 69a81c0 Refactor: use isEmpty() instead of length() == 0
 1af7dcd Allow to avoid dumping anchors
-3d97ee7 Merge remote-tracking branch 'refs/remotes/github/master'
-91fd294 Merge pull request #2 from aSemy/patch-1
-e274d60 Update setEnvConfig Javadoc in LoadSettingsBuilder
+cf808a1 Test comment reproducibility.
+8af4b3b Remove extra indent after blank line comments.

@@ -18,6 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.comments.CommentLine
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
 import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitable
 import it.krzeminski.snakeyaml.engine.kmp.events.*
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 
 /**
@@ -33,6 +34,8 @@ class Serializer(
 ) {
     private val serializedNodes: MutableSet<Node> = mutableSetOf()
     private val anchors: MutableMap<Node, Anchor?> = mutableMapOf()
+    private val isDereferenceAliases: Boolean = settings.isDereferenceAliases
+    private val recursive: IdentitySet<Node> = IdentitySet()
 
     /**
      * Serialize document
@@ -55,6 +58,7 @@ class Serializer(
         emitable.emit(DocumentEndEvent(settings.isExplicitEnd))
         serializedNodes.clear()
         anchors.clear()
+        recursive.clear()
     }
 
     /** Emit [StreamStartEvent] */
@@ -110,8 +114,18 @@ class Serializer(
     private fun serializeNode(node: Node) {
         val realNode = if (node is AnchorNode) node.realNode else node
 
-        val tAlias = (anchors[realNode])
-        if (serializedNodes.contains(realNode)) {
+
+        if (isDereferenceAliases && recursive.contains(node)) {
+            throw YamlEngineException("Cannot dereference aliases for recursive structures.")
+        }
+        recursive.add(node)
+        val tAlias = if (!isDereferenceAliases) {
+            anchors[realNode]
+        } else {
+            null
+        }
+
+        if (!isDereferenceAliases && serializedNodes.contains(realNode)) {
             emitable.emit(AliasEvent(tAlias))
         } else {
             serializedNodes.add(realNode)
@@ -184,6 +198,7 @@ class Serializer(
                 NodeType.ANCHOR   -> {}
             }
         }
+        recursive.remove(node)
     }
 
     private fun serializeComments(comments: List<CommentLine>?) {

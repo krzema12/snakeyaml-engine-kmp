@@ -12,7 +12,7 @@ expect class Parse(
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param string YAML document(s). The BOM must not be present (it will be parsed as content)
+     * @param string YAML document(s)
      * @return parsed events
      */
     fun parse(string: String): Iterable<Event>
@@ -22,7 +22,7 @@ expect class Parse(
      *
      * See [Processing Overview](http://www.yaml.org/spec/1.2/spec.html.id2762107).
      *
-     * @param source YAML document(s). The BOM must not be present (it will be parsed as content)
+     * @param source YAML document(s)
      * @return parsed events
      */
     fun parse(source: Source): Iterable<Event>

@@ -53,6 +53,7 @@ class DumpSettingsBuilder internal constructor() {
     private var maxSimpleKeyLength = 128
     private var indentWithIndicator = false
     private var dumpComments = false
+    private var isDereferenceAliases = false
     private var schema: Schema = JsonSchema()
 
     /**
@@ -329,6 +330,23 @@ class DumpSettingsBuilder internal constructor() {
     }
 
     /**
+     *
+     * Disable usage of anchors and aliases while serialising an instance. Recursive objects will not
+     * work when they are disabled. (Forces Serializer to skip emitting anchors names, emit Node
+     * content instead of Alias, fail with SerializationException if serialized structure is
+     * recursive.)
+     *
+     * @param dereferenceAliases - true to use copies of objects instead of references to the same
+     * instance
+     * @return the builder with the provided value
+     */
+    fun setDereferenceAliases(dereferenceAliases: Boolean): DumpSettingsBuilder {
+        this.isDereferenceAliases = dereferenceAliases
+        return this
+    }
+
+
+    /**
      * Create immutable DumpSettings
      *
      * @return DumpSettings with the provided values
@@ -358,6 +376,7 @@ class DumpSettingsBuilder internal constructor() {
             customProperties = customProperties,
             indentWithIndicator = indentWithIndicator,
             dumpComments = dumpComments,
+            isDereferenceAliases = isDereferenceAliases,
         )
     }
 }

@@ -4,7 +4,7 @@ package it.krzeminski.snakeyaml.engine.kmp.internal
 internal actual fun identityHashCode(any: Any?): IdentityHashCode {
     if (any == null) return IdentityHashCode(0)
     val ref = any.toJsReference()
-    if (ref !in identityHashCodes) {
+    if (!identityHashCodes.has(ref)) {
         identityHashCodes[ref] = lastIdentityHashCodeId++
     }
     val hc = identityHashCodes[ref]
@@ -14,7 +14,7 @@ internal actual fun identityHashCode(any: Any?): IdentityHashCode {
 private external interface IdentityHashCodeMap {
     operator fun get(key: JsReference<Any>): Int
     operator fun set(key: JsReference<Any>, value: Int)
-    operator fun contains(key: JsReference<Any>): Boolean
+    fun has(key: JsReference<Any>): Boolean
 }
 
 private val identityHashCodes: IdentityHashCodeMap = js("new WeakMap()")

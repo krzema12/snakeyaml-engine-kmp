@@ -62,6 +62,21 @@ To learn about the API, view the [reference documentation](https://krzema12.gith
 We also recommend reading
 [SnakeYAML Engine's documentation](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation).
 
+# Versioning
+
+Semantic versioning is not strictly followed here because we try to reflect the upstream project's versioning.
+
+The major and minor version number correspond to the major and minor version number of the upstream project
+([SnakeYAML Engine](https://bitbucket.org/snakeyaml/snakeyaml-engine/)). Bumping the patch version can happen
+in two cases:
+* the upstream project released a new version with the patch version number increased,
+* some adjustment strictly related to this port library was needed, while being in sync with the same
+  major and minor version number of the upstream project. In particular, it may happen that there's a breaking
+  change not related to reflecting a newer version of the upstream project, then just the patch version number
+  will be incremented.
+
+The release notes for each version mentions which version of the upstream project the given release corresponds to.
+
 ### Snapshot releases
 
 Snapshot versions of SnakeYAML Engine KMP (straight from the main branch) are available.

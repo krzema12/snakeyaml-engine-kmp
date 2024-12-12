@@ -52,6 +52,7 @@ class DumpSettings internal constructor(
     private val customProperties: Map<SettingKey, Any>,
     @JvmField val indentWithIndicator: Boolean,
     @JvmField val dumpComments: Boolean,
+    val isDereferenceAliases: Boolean,
 ) {
 
     fun getCustomProperty(key: SettingKey): Any? = customProperties[key]

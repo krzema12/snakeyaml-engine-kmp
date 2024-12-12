@@ -22,5 +22,6 @@ private external class IdentityHashCodeMap : JsAny {
 
 private val identityHashCodes: IdentityHashCodeMap = js("new WeakMap()")
 
-private var lastIdentityHashCodeId = 0
+// lastIdentityHashCodeId starts from 1 because 0 is a reserved value for `null`
+private var lastIdentityHashCodeId = 1
 //endregion

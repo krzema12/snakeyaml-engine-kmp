@@ -956,6 +956,7 @@ public abstract class it/krzeminski/snakeyaml/engine/kmp/representer/BaseReprese
 	public static synthetic fun representScalar$default (Lit/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter;Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ILjava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode;
 	protected final fun representSequence (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/Iterable;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;
 	protected fun toNodeTuple (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
+	protected final fun toNodeTupleImpl (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
 }
 
 public class it/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter : it/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter {

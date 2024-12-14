@@ -51,25 +51,25 @@ internal class IndentationTest : FunSpec({
         return dump
     }
 
-    test("Dump block map seq with default indent settings") {
+    test("Dump block map seq with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(0)
         val output = dump.dumpToString(createMap())
         output shouldBe "key1:\n" + "- value1\n" + "- value2\n" + "key2:\n" + "- value3\n" + "- value4\n"
     }
 
-    test("Dump block seq map with default indent settings") {
+    test("Dump block seq map with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(0)
         val output = dump.dumpToString(createSequence())
         output shouldBe "- key1: value1\n" + "  key2: value2\n" + "- key3: value3\n" + "  key4: value4\n"
     }
 
-    test("Dump block seq map with specified indicator indent") {
+    test("Dump block seq map with specified indicator indent").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(2)
         val output = dump.dumpToString(createMap())
         output shouldBe "key1:\n" + "  - value1\n" + "  - value2\n" + "key2:\n" + "  - value3\n" + "  - value4\n"
     }
 
-    test("Dump block seq map with indicatorIndent=2") {
+    test("Dump block seq map with indicatorIndent=2").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(2)
         val output = dump.dumpToString(createSequence())
         output shouldBe "  - key1: value1\n" + "    key2: value2\n" + "  - key3: value3\n" + "    key4: value4\n"

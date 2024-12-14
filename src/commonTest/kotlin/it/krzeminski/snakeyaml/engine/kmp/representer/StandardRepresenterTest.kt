@@ -23,7 +23,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 internal class StandardRepresenterTest : FunSpec({
     val standardRepresenter = Representer(DumpSettings.builder().build())
 
-    test("Represent unknown class") {
+    test("Represent unknown class").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         class MyCustomClass(val data: String)
 
         val exception: YamlEngineException = shouldThrow<YamlEngineException> {
@@ -34,7 +34,7 @@ internal class StandardRepresenterTest : FunSpec({
         exception.message shouldBe "Representer is not defined for class MyCustomClass"
     }
 
-    test("Represent Enum as node with global tag") {
+    test("Represent Enum as node with global tag").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val node: Node = standardRepresenter.represent(FormatEnum.JSON)
         node.tag.value shouldBe //        "tag:yaml.org,2002:it.krzeminski.snakeyaml.engine.kmp.representer.FormatEnum",
             "tag:yaml.org,2002:FormatEnum"

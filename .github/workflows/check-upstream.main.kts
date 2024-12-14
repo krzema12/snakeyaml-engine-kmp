@@ -35,9 +35,9 @@ workflow(
             name = "Clone snakeyaml-engine and check for changes",
             command = """
                 git clone --branch master --single-branch https://bitbucket.org/snakeyaml/snakeyaml-engine.git
-                wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/upstream-commit.txt
+                wget https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/${'$'}{{ github.ref }}/latest-analyzed-upstream-commit.txt
                 cd snakeyaml-engine
-                UPSTREAM_COMMIT=$(cat ../upstream-commit.txt)
+                UPSTREAM_COMMIT=$(cat ../latest-analyzed-upstream-commit.txt)
                 echo "See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..${'$'}UPSTREAM_COMMIT" > ../$logDiffBetweenRepos
                 echo "" >> ../$logDiffBetweenRepos
                 git log --oneline ${'$'}UPSTREAM_COMMIT..master >> ../$logDiffBetweenRepos
@@ -46,7 +46,7 @@ workflow(
         )
         run(
             name = "Create an SVG with the number of commits",
-            command = "wget -O $badgeFileName https://img.shields.io/badge/To%20upstream-$(cat $numberOfCommitsFileName)-blue",
+            command = "wget -O $badgeFileName https://img.shields.io/badge/Not%20analyzed%20from%20upstream-$(cat $numberOfCommitsFileName)-blue",
         )
         run(
             name = "Preview badge",

@@ -794,6 +794,9 @@ class Emitter(
         preparedAnchor = null
     }
 
+    /**
+     * Emit the tag for the current event
+     */
     private fun processTag() {
         var tag: String?
         if (event?.eventId == Event.ID.Scalar) {
@@ -812,7 +815,7 @@ class Emitter(
                     )
             ) {
                 preparedTag = null
-                return
+                return // no tag required
             } else if (ev.implicit.canOmitTagInPlainScalar() && tag == null) {
                 tag = "!"
                 preparedTag = null
@@ -822,7 +825,7 @@ class Emitter(
             tag = ev.tag
             if ((!canonical || tag == null) && ev.isImplicit()) {
                 preparedTag = null
-                return
+                return // no tag required
             }
         }
         if (tag == null) {
@@ -832,6 +835,12 @@ class Emitter(
         writeIndicator(indicator = indicator, needWhitespace = true)
     }
 
+    /**
+     * Choose the scalar style based on the contents of the scalar and scalar style chosen by
+     * Representer.
+     *
+     * @return [ScalarStyle] to apply for this scalar event
+     */
     private fun chooseScalarStyle(ev: ScalarEvent): ScalarStyle? {
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
@@ -892,6 +901,12 @@ class Emitter(
         return version.representation
     }
 
+    /**
+     * Detect whether the tag starts with a standard handle and add ! when it does not
+     *
+     * @param tag - raw (complete tag)
+     * @return formatted tag ready to emit
+     */
     private fun prepareTag(tag: String): String {
         if (tag.isEmpty()) {
             throw EmitterException("tag must not be empty")
@@ -899,6 +914,7 @@ class Emitter(
             return tag
         }
         val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
+            // if tag starts with prefix and contains more than just prefix
             prefix != null
                 && tag.startsWith(prefix)
                 && ("!" == prefix || prefix.length < tag.length)
@@ -912,8 +928,7 @@ class Emitter(
             handle = null
             suffix = tag
         }
-        val suffixText = suffix.take(suffix.length)
-        return if (handle != null) handle + suffixText else "!<$suffixText>"
+        return if (handle != null) handle + suffix else "!<$suffix>"
     }
 
     private fun analyzeScalar(scalar: String): ScalarAnalysis {

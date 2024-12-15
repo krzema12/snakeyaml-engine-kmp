@@ -190,13 +190,13 @@ class LoadSettingsBuilder internal constructor() {
     }
 
     /**
-     * Define EnvConfig to parse EVN format. If not set explicitly the variable substitution is not
+     * Define EnvConfig to parse ENV format. If not set explicitly the variable substitution is not
      * applied
      *
      * @param envConfig - non-empty configuration to substitute variables
      * @return the builder with the provided value
      * @see [Variable
-     * substitution](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation.markdown-header-variable-substitution)
+     * substitution](https://bitbucket.org/snakeyaml/snakeyaml-engine/wiki/Documentation#markdown-header-env-variable-substitution)
      */
     fun setEnvConfig(envConfig: EnvConfig?): LoadSettingsBuilder {
         this.envConfig = envConfig

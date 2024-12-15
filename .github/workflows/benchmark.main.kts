@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.1")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
 @file:Repository("https://bindings.krzeminski.it/")
@@ -16,6 +16,7 @@ import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.DownloadArtifact
 import io.github.typesafegithub.workflows.actions.actions.UploadArtifact
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
@@ -36,6 +37,7 @@ val BENCHMARK_RESULTS = "snake-kmp-benchmarks/build/reports/benchmarks"
 val RESULTS_DIR = "bench-results"
 val AGGREGATED_REPORT = "aggregated.json"
 val PUBLISH_BENCHMARK_RESULTS by Contexts.secrets
+val FULL_REPOSITORY_NAME = "krzema12/snakeyaml-engine-kmp"
 
 workflow(
     name = "Run Benchmarks",
@@ -78,11 +80,10 @@ workflow(
     ) {
         uses(action = Checkout())
         uses(
-            name = "Set up JDK",
+            name = "Set up Gradle Daemon JDK",
             action = SetupJava(
-                javaVersion = "11",
-                distribution = SetupJava.Distribution.Zulu,
-                cache = SetupJava.BuildPlatform.Gradle,
+                javaVersion = "21",
+                distribution = Temurin,
             ),
         )
         uses(
@@ -144,15 +145,17 @@ workflow(
             action = GithubActionBenchmark(
                 name = "SnakeKMP benchmarks",
                 tool = GithubActionBenchmark.Tool.Jmh,
-                commentOnAlert = true,
+                // Comment on PR only the PR is made from the same repo
+                commentOnAlert_Untyped = expr { "${github.eventPullRequest.pull_request.head.repo.full_name} == '$FULL_REPOSITORY_NAME'" },
                 summaryAlways = true,
                 alertThreshold = "150%",
                 failThreshold = "200%",
                 ghRepository = "github.com/krzema12/snakeyaml-engine-kmp-benchmarks",
                 outputFilePath = AGGREGATED_REPORT,
-                githubToken = expr { PUBLISH_BENCHMARK_RESULTS },
+                // Use GitHub token in case the secret is not available
+                githubToken = expr { "$PUBLISH_BENCHMARK_RESULTS || ${github.token}" },
                 // Push and deploy GitHub pages branch automatically only if run in main repo and not in PR
-                autoPush_Untyped = expr { "${github.repository} == 'krzema12/snakeyaml-engine-kmp' && ${github.event_name} != 'pull_request'" },
+                autoPush_Untyped = expr { "${github.repository} == '$FULL_REPOSITORY_NAME' && ${github.event_name} != 'pull_request'" },
             ),
         )
     }

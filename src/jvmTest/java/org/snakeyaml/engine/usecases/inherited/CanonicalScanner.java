@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class CanonicalScanner implements Scanner {
@@ -109,7 +110,7 @@ public class CanonicalScanner implements Scanner {
     if (!scanned) {
       scan();
     }
-    return this.tokens.stream().findFirst().orElseThrow();
+    return this.tokens.stream().findFirst().orElseThrow(() -> new NoSuchElementException("No value present"));
   }
 
   @Override

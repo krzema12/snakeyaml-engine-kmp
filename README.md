@@ -1,5 +1,6 @@
 [![Maven Central Version](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp/badge.svg)](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp)
-[![Commits to upstream](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/commits-to-upstream-badge.svg)](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/log-diff-between-repos.txt)
+
+[![Commits to upstream](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/commits-to-upstream-badge.svg)](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/log-diff-between-repos.txt) - the number of commits in snakeyaml-engine that we don't track as candidates for porting to snakeyaml-engine-kmp
 
 # SnakeYAML Engine KMP
 

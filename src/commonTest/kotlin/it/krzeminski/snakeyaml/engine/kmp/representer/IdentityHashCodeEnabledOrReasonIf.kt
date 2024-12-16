@@ -7,7 +7,10 @@ import io.kotest.core.test.EnabledOrReasonIf
 
 internal val identityHashCodeEnabledOrReasonIf: EnabledOrReasonIf = {
     when (platform) {
-        Platform.JVM, Platform.Native -> Enabled.enabled
-        Platform.JS, Platform.WasmJs  -> Enabled.disabled("identity hashcode does not work correctly")
+        Platform.JS,
+        Platform.WasmJs ->
+            Enabled.disabled("identity hashcode does not work correctly: https://github.com/krzema12/snakeyaml-engine-kmp/pull/273")
+
+        else            -> Enabled.enabled
     }
 }

@@ -54,24 +54,52 @@ internal class IndentationTest : FunSpec({
     test("Dump block map seq with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(0)
         val output = dump.dumpToString(createMap())
-        output shouldBe "key1:\n" + "- value1\n" + "- value2\n" + "key2:\n" + "- value3\n" + "- value4\n"
+        output shouldBe """
+                        |key1:
+                        |- value1
+                        |- value2
+                        |key2:
+                        |- value3
+                        |- value4
+                        |
+                        """.trimMargin()
     }
 
     test("Dump block seq map with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(0)
         val output = dump.dumpToString(createSequence())
-        output shouldBe "- key1: value1\n" + "  key2: value2\n" + "- key3: value3\n" + "  key4: value4\n"
+        output shouldBe """
+                        |- key1: value1
+                        |  key2: value2
+                        |- key3: value3
+                        |  key4: value4
+                        |
+                        """.trimMargin()
     }
 
     test("Dump block seq map with specified indicator indent").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(2)
         val output = dump.dumpToString(createMap())
-        output shouldBe "key1:\n" + "  - value1\n" + "  - value2\n" + "key2:\n" + "  - value3\n" + "  - value4\n"
+        output shouldBe """
+                        |key1:
+                        |  - value1
+                        |  - value2
+                        |key2:
+                        |  - value3
+                        |  - value4
+                        |
+                        """.trimMargin()
     }
 
     test("Dump block seq map with indicatorIndent=2").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
         val dump = createDump(2)
         val output = dump.dumpToString(createSequence())
-        output shouldBe "  - key1: value1\n" + "    key2: value2\n" + "  - key3: value3\n" + "    key4: value4\n"
+        output shouldBe """
+                        |  - key1: value1
+                        |    key2: value2
+                        |  - key3: value3
+                        |    key4: value4
+                        |
+                        """.trimMargin()
     }
 })

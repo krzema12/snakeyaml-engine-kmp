@@ -43,7 +43,11 @@ class RepresentEntryTest : FunSpec({
         serializer.serializeDocument(commentedEntryRepresenter.represent(createMap()))
         serializer.emitStreamEnd()
 
-        stringOutputStream.toString() shouldBe "#Key node block comment\n" + "a: val1 #Value node inline comment\n"
+        stringOutputStream.toString() shouldBe """
+                                               |#Key node block comment
+                                               |a: val1 #Value node inline comment
+                                               |
+                                               """.trimMargin()
     }
 })
 

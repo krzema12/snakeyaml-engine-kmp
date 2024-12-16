@@ -179,8 +179,18 @@ abstract class BaseRepresenter(
      * @receiver - Map entry
      * @return the tuple where both key and value are converted to Node
      */
-    protected open fun Map.Entry<*, *>.toNodeTuple(): NodeTuple =
-        NodeTuple(representData(key), representData(value))
+    protected open fun Map.Entry<*, *>.toNodeTuple(): NodeTuple = toNodeTuple(this)
+
+    /**
+     * Create a tuple for one key pair.
+     * This method can be used by implementation to reuse logic from base class
+     *
+     * @param entry Map entry
+     * @return the tuple where both key and value are converted to Node
+     */
+    @JvmName("toNodeTupleImpl")
+    protected fun toNodeTuple(entry: Map.Entry<*, *>): NodeTuple =
+        entry.run { NodeTuple(representData(key), representData(value)) }
 
     /**
      * Create [Node] for the provided [Map]

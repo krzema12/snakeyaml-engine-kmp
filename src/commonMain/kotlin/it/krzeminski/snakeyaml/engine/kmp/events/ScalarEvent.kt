@@ -45,12 +45,6 @@ class ScalarEvent @JvmOverloads constructor(
     /**
      * Indicates the style of the scalar
      *
-     * * `null` - Flow Style - Plain
-     * * `'\''` - Flow Style - Single-Quoted
-     * * `"` - Flow Style - Double-Quoted
-     * * `|` - Block Style - Literal
-     * * `&gt;` - Block Style - Folded
-     *
      * @return Style of the scalar.
      */
     val scalarStyle: ScalarStyle,

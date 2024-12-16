@@ -114,6 +114,19 @@ class ScannerImpl(
     }
 
     /**
+     * Check whether the next token is the given type.
+     */
+    override fun checkToken(choice: Token.ID): Boolean {
+        while (needMoreTokens()) {
+            fetchMoreTokens()
+        }
+        if (!this.tokens.isEmpty()) {
+            return this.tokens[0].tokenId == choice
+        }
+        return false
+    }
+
+    /**
      * Check whether the next token is present.
      *
      * If no [choices] are provided, then any token is considered valid.

@@ -21,9 +21,7 @@ expect class Load(
     /**
      * Parse a YAML document and create an instance of an object.
      *
-     * The string must be encoded as UTF-8.
-     *
-     * @param string YAML data to load from (BOM must not be present)
+     * @param string YAML data to load from
      * @return parsed instance
      * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException if the YAML is not valid
      */
@@ -40,13 +38,10 @@ expect class Load(
     internal fun loadOne(source: Source): Any?
 
     /**
-     * Parse all YAML documents in a String and produce corresponding objects. (Because the
-     * encoding in known BOM is not respected.) The documents are parsed only when the iterator is
-     * invoked.
+     * Parse all YAML documents in a String and produce corresponding objects.
+     * The documents are parsed only when the iterator is invoked.
      *
-     * The string must be encoded as UTF-8.
-     *
-     * @param string YAML data to load from (BOM must not be present)
+     * @param string YAML data to load from
      * @return an [Iterable] over the parsed objects in this stream in proper sequence
      */
     fun loadAll(string: String): Iterable<Any?>

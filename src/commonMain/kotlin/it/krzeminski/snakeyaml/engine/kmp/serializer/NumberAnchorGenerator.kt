@@ -25,12 +25,15 @@ class NumberAnchorGenerator(
     private var lastAnchorId: UInt = 0u,
 ) : AnchorGenerator {
     /**
-     * Create value increasing the number
+     * Create the anchor name (increasing the number) or keep the one when it was already created in
+     * the node by the low level API
      *
-     * @param node - ignored
-     * @return value with format 'id001'
+     * @param node - the data to anchor
+     * @return unique anchor name or existing anchor name
      */
     override fun nextAnchor(node: Node): Anchor {
+        node.anchor?.let { return it }
+
         lastAnchorId++
         val anchorId = lastAnchorId.toString().padStart(3, '0')
         return Anchor("id$anchorId")

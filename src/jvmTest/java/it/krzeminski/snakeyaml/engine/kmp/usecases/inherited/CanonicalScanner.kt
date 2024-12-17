@@ -57,11 +57,7 @@ class CanonicalScanner(data: String, private val label: String) : Scanner {
         if (!scanned) {
             scan()
         }
-        return tokens.stream().findFirst().orElseThrow {
-            NoSuchElementException(
-                "No value present"
-            )
-        }
+        return tokens.firstOrNull() ?: throw NoSuchElementException("No value present")
     }
 
     override fun hasNext(): Boolean {

@@ -381,7 +381,7 @@ conf:
 
             """.trimIndent()
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(expected.replace("a", "id001"), result)
+        assertEquals(expected, result)
     }
 
     @Test

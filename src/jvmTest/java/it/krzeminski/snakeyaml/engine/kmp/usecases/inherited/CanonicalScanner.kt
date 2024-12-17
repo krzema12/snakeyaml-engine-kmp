@@ -166,7 +166,7 @@ class CanonicalScanner(data: String, private val label: String) : Scanner {
             index++
         }
         val value = data.substring(start, index)
-        val token = if (isTokenClassAlias) {
+        return if (isTokenClassAlias) {
             AliasToken(
                 Anchor(value),
                 mark,
@@ -179,7 +179,6 @@ class CanonicalScanner(data: String, private val label: String) : Scanner {
                 mark
             )
         }
-        return token
     }
 
     private fun scanTag(): Token {

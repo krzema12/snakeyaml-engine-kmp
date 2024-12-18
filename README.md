@@ -66,35 +66,17 @@ We also recommend reading
 ### Snapshot releases
 
 Snapshot versions of SnakeYAML Engine KMP (straight from the main branch) are available.
-They are published to a GitHub branch, which must be added as a
-[custom Gradle Plugin repository](https://docs.gradle.org/current/userguide/plugins.html#sec:custom_plugin_repositories)
-
-```kts
-// settings.gradle.kts
-
-@Suppress("UnstableApiUsage")
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-
-        // add the snapshot repository
-        maven("https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
-            name = "SnakeYAML Engine KMP Snapshots"
-            mavenContent {
-                // only include the relevant snapshots
-                includeGroup("it.krzeminski")
-                snapshotsOnly()
-            }
-        }
-    }
-}
-```
-
-Once the repository is configured, add a dependency on the library:
+They are published to Sonatype snapshots repository, which must be added as a
+custom Maven repo:
 
 ```kts
 // build.gradle.kts
+
+repositories {
+    maven {
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
 
 dependencies {
     implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")

@@ -1279,11 +1279,10 @@ class ScannerImpl(
 
     /**
      * The YAML 1.2 specification does not restrict characters for anchors and
-     * aliases. This may lead to problems, see
-     * [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
+     * aliases. This may lead to problems.
      *
-     * This implementation tries to follow
-     * [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
+     * See [alias naming](https://github.com/yaml/libyaml/issues/205#issuecomment-693634465)
+     * See also [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
      */
     private fun scanAnchor(isAnchor: Boolean): Token {
         val startMark = reader.getMark()
@@ -1292,7 +1291,10 @@ class ScannerImpl(
         reader.forward()
         var length = 0
         var c = reader.peek(length)
-        // Anchor may not contain ",[]{}"
+        // The future implementation may try to follow RFC-0003:
+        // https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md
+        // and exclude also ':' (colon)
+        // Anchor may not contain ,[]{}/.*&
         while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
             length++
             c = reader.peek(length)

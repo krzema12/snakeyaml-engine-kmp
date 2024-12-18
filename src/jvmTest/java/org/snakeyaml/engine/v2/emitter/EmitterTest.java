@@ -256,7 +256,7 @@ public class EmitterTest {
   }
 
   @Test
-  @DisplayName("Expected space to separate anchor from colon")
+  @DisplayName("Expected space to separate alias from colon")
   public void testAliasAsKey() {
     DumpSettingsBuilder builder = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.FLOW);
     // this is VERY BAD code
@@ -266,20 +266,13 @@ public class EmitterTest {
     f.put(f, "a");
 
     String output = dump(builder.build(), f);
-    // TODO FIXME this YAML is invalid, the colon will be part of Anchor and not the separator
-    // key:value in the flow.
-    assertEquals("&id001 {*id001: a}\n", output);
-    Load load = new Load();
-    try {
-      load.loadOne(output);
-      fail("TODO fix anchor");
-    } catch (ComposerException e) {
-      assertTrue(e.getMessage().contains("found undefined alias id001:"), e.getMessage());
-    }
+    assertEquals("&id001 {*id001 : a}\n", output);
+    Load load = new Load(LoadSettings.builder().setAllowRecursiveKeys(true).build());
+    Object obj = load.loadOne(output);
+    assertNotNull(obj);
   }
 
   public static class MyDumperWriter extends StringWriter implements StreamDataWriter {
-
   }
 
   @Test

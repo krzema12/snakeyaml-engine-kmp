@@ -23,6 +23,7 @@ import io.github.typesafegithub.workflows.domain.AbstractResult
 import io.github.typesafegithub.workflows.domain.JobOutputs
 import io.github.typesafegithub.workflows.domain.RunnerType
 import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.expressions.Contexts
 import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
@@ -38,6 +39,7 @@ workflow(
     name = "Publish release to Maven Central or snapshot repo",
     on = listOf(
         Push(branches = listOf("main")),
+        WorkflowDispatch(),
     ),
     sourceFile = __FILE__,
 ) {

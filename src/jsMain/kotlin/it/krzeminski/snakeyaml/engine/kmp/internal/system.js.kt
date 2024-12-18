@@ -11,6 +11,7 @@ private var lastIdentityHashCodeId = 0
 private val IDENTITY_HASH_CODE_SYMBOL = symbol("KotlinIdentityHashCode")
 
 internal actual fun identityHashCode(any: Any?): IdentityHashCode {
+    require(jsTypeOf(any) == "object") { "Only non-primitive types are supported!" }
     if (any == null) return IdentityHashCode(0)
     val dyn = any.asDynamic()
     if (dyn[IDENTITY_HASH_CODE_SYMBOL] === undefined) {

@@ -30,4 +30,10 @@ class SystemTest : FunSpec({
         val hashCode2 = identityHashCode(object1)
         hashCode1 shouldBe hashCode2
     }
+
+    test("identityHashCode -> null always has same identity hash code") {
+        val hashCode1 = identityHashCode(null)
+        val hashCode2 = identityHashCode(null)
+        hashCode1 shouldBe hashCode2
+    }
 })

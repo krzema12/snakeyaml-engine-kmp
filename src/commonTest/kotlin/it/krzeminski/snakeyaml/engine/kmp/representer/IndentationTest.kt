@@ -51,7 +51,7 @@ internal class IndentationTest : FunSpec({
         return dump
     }
 
-    test("Dump block map seq with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Dump block map seq with default indent settings") {
         val dump = createDump(0)
         val output = dump.dumpToString(createMap())
         output shouldBe """
@@ -65,7 +65,7 @@ internal class IndentationTest : FunSpec({
                         """.trimMargin()
     }
 
-    test("Dump block seq map with default indent settings").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Dump block seq map with default indent settings") {
         val dump = createDump(0)
         val output = dump.dumpToString(createSequence())
         output shouldBe """
@@ -77,7 +77,7 @@ internal class IndentationTest : FunSpec({
                         """.trimMargin()
     }
 
-    test("Dump block seq map with specified indicator indent").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Dump block seq map with specified indicator indent") {
         val dump = createDump(2)
         val output = dump.dumpToString(createMap())
         output shouldBe """
@@ -91,7 +91,7 @@ internal class IndentationTest : FunSpec({
                         """.trimMargin()
     }
 
-    test("Dump block seq map with indicatorIndent=2").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Dump block seq map with indicatorIndent=2") {
         val dump = createDump(2)
         val output = dump.dumpToString(createSequence())
         output shouldBe """

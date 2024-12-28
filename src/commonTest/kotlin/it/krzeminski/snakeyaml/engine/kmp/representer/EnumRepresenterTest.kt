@@ -21,7 +21,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 
 internal class EnumRepresenterTest : FunSpec({
-    test("Represent Enum as node with global tag").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Represent Enum as node with global tag") {
         val settings =
             DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build()
         val standardRepresenter: Representer = Representer(settings)
@@ -33,7 +33,7 @@ internal class EnumRepresenterTest : FunSpec({
             "tag:yaml.org,2002:FormatEnum"
     }
 
-    test("Dump Enum with ScalarStyle.DOUBLE_QUOTED").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Dump Enum with ScalarStyle.DOUBLE_QUOTED") {
         val settings =
             DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build()
         val dumper = Dump(settings)

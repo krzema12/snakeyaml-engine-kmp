@@ -1,23 +1,26 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
 //region Identity hash code
-internal actual fun identityHashCode(any: Any?): IdentityHashCode {
-    if (any == null) return IdentityHashCode(0)
+internal actual fun objectIdentityHashCode(any: Any): IdentityHashCode {
     val ref = any.toJsReference()
-    if (ref !in identityHashCodes) {
-        identityHashCodes[ref] = lastIdentityHashCodeId++
+    if (!identityHashCodes.has(ref)) {
+        identityHashCodes.set(ref, lastIdentityHashCodeId++)
     }
-    val hc = identityHashCodes[ref]
+    val hc = identityHashCodes.get(ref)
     return IdentityHashCode(hc)
 }
 
-private external interface IdentityHashCodeMap {
-    operator fun get(key: JsReference<Any>): Int
-    operator fun set(key: JsReference<Any>, value: Int)
-    operator fun contains(key: JsReference<Any>): Boolean
+// NOTE: don't add operator modifier to get and set methods
+// kotlin transform those method into `map[key]`
+// instead of `map.get(key)` and causes exception to be thrown
+private external class IdentityHashCodeMap : JsAny {
+    fun get(key: JsAny): Int
+    fun set(key: JsAny, value: Int)
+    fun has(key: JsAny): Boolean
 }
 
 private val identityHashCodes: IdentityHashCodeMap = js("new WeakMap()")
 
-private var lastIdentityHashCodeId = 0
+// lastIdentityHashCodeId starts from 1 because 0 is a reserved value for `null`
+private var lastIdentityHashCodeId = 1
 //endregion

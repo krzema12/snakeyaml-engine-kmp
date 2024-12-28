@@ -35,7 +35,7 @@ class RepresentEntryTest : FunSpec({
         "a" to "val1",
     )
 
-    test("Represent and dump mapping nodes using the new method").config(enabledOrReasonIf = identityHashCodeEnabledOrReasonIf) {
+    test("Represent and dump mapping nodes using the new method") {
         val stringOutputStream = StringOutputStream()
 
         val serializer = Serializer(settings, Emitter(settings, stringOutputStream))

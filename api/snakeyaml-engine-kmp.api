@@ -958,6 +958,7 @@ public abstract class it/krzeminski/snakeyaml/engine/kmp/representer/BaseReprese
 	public static synthetic fun representScalar$default (Lit/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter;Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ILjava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode;
 	protected final fun representSequence (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/Iterable;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;
 	protected fun toNodeTuple (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
+	protected final fun toNodeTupleImpl (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
 }
 
 public class it/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter : it/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter {
@@ -1035,15 +1036,21 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/resolver/Scal
 }
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
 	public abstract fun peekToken ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
 	public abstract fun resetDocumentIndex ()V
 }
 
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner$DefaultImpls {
+	public static fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/scanner/Scanner;Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+}
+
 public final class it/krzeminski/snakeyaml/engine/kmp/scanner/ScannerImpl : it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner {
 	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/scanner/ScannerImpl$Companion;
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader;)V
+	public fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public fun hasNext ()Z
 	public fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;

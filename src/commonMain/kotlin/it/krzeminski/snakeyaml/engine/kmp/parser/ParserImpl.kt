@@ -409,6 +409,7 @@ class ParserImpl(
                 scanner.resetDocumentIndex()
                 val tuple = processDirectives()
                 while (scanner.checkToken(Token.ID.Comment)) {
+                    // the comments in the directive are ignored because they are not part of the Node tree
                     scanner.next()
                 }
                 return if (!scanner.checkToken(Token.ID.StreamEnd)) {

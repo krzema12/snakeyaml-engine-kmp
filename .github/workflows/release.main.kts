@@ -22,6 +22,7 @@ import io.github.typesafegithub.workflows.actions.nexusactions.ReleaseNexusStagi
 import io.github.typesafegithub.workflows.domain.AbstractResult
 import io.github.typesafegithub.workflows.domain.JobOutputs
 import io.github.typesafegithub.workflows.domain.RunnerType
+import io.github.typesafegithub.workflows.domain.triggers.Push
 import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.expressions.Contexts
 import io.github.typesafegithub.workflows.dsl.expressions.expr
@@ -35,9 +36,10 @@ val SIGNING_KEY by Contexts.secrets
 val SIGNING_PASSWORD by Contexts.secrets
 
 workflow(
-    name = "Publish release to Maven Central",
+    name = "Publish release to Maven Central or snapshot repo",
     on = listOf(
-        WorkflowDispatch()
+        Push(branches = listOf("main")),
+        WorkflowDispatch(),
     ),
     sourceFile = __FILE__,
 ) {

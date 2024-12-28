@@ -2,8 +2,11 @@
 # If you want to modify the workflow, please change the Kotlin file and regenerate this YAML file.
 # Generated with https://github.com/typesafegithub/github-workflows-kt
 
-name: 'Publish release to Maven Central'
+name: 'Publish release to Maven Central or snapshot repo'
 on:
+  push:
+    branches:
+    - 'main'
   workflow_dispatch: {}
 jobs:
   check_yaml_consistency:

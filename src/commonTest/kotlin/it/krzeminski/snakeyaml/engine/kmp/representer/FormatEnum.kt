@@ -11,8 +11,8 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.v2.representer;
+package it.krzeminski.snakeyaml.engine.kmp.representer
 
-public enum FormatEnum {
-  YAML, JSON
+enum class FormatEnum {
+    YAML, JSON
 }

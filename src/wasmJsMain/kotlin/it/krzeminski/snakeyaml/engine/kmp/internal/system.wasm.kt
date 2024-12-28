@@ -1,8 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
 //region Identity hash code
-internal actual fun identityHashCode(any: Any?): IdentityHashCode {
-    if (any == null) return IdentityHashCode(0)
+internal actual fun objectIdentityHashCode(any: Any): IdentityHashCode {
     val ref = any.toJsReference()
     if (!identityHashCodes.has(ref)) {
         identityHashCodes.set(ref, lastIdentityHashCodeId++)

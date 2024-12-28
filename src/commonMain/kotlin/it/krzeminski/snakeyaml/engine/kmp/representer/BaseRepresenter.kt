@@ -18,6 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.RepresentToNode
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.hasIdentityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.internal.identityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 import kotlin.jvm.JvmField
@@ -252,20 +253,12 @@ private open class IdentityLikeMap<T> private constructor(
 
     override fun put(key: Any?, value: T): T? = contents.put(key.toIdentityKey(), value)
 
-    private fun Any?.toIdentityKey(): Any? = when (this) {
-        null,
-        is Byte,
-        is Short,
-        is Int,
-        is Long,
-        is Float,
-        is Double,
-        is Boolean,
-        is Char,
-        is String -> this
-
-        else      -> identityHashCode(this)
-    }
+    private fun Any?.toIdentityKey(): Any? =
+        if (hasIdentityHashCode(this)) {
+            identityHashCode(this)
+        } else {
+            this
+        }
 }
 
 private class AnchorNodeMap : IdentityLikeMap<Node>() {

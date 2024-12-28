@@ -11,5 +11,5 @@ internal actual fun getEnvironmentVariable(key: String): String? =
     getenv(key)?.toKStringFromUtf8()
 
 @OptIn(ExperimentalNativeApi::class)
-internal actual fun identityHashCode(any: Any?): IdentityHashCode =
+internal actual fun objectIdentityHashCode(any: Any): IdentityHashCode =
     IdentityHashCode(any.identityHashCode())

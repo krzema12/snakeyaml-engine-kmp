@@ -6,7 +6,7 @@ plugins {
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
     id("dev.adamko.dokkatoo-html") version "2.4.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.16.3"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.17.0"
 }
 
 group = "it.krzeminski"
@@ -39,9 +39,9 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.11.4")
                 implementation("io.kotest:kotest-runner-junit5")
-                implementation("com.google.guava:guava:33.3.1-jre")
+                implementation("com.google.guava:guava:33.4.0-jre")
             }
         }
     }

@@ -114,6 +114,19 @@ class ScannerImpl(
     }
 
     /**
+     * Check whether the next token is the given type.
+     */
+    override fun checkToken(choice: Token.ID): Boolean {
+        while (needMoreTokens()) {
+            fetchMoreTokens()
+        }
+        if (!this.tokens.isEmpty()) {
+            return this.tokens[0].tokenId == choice
+        }
+        return false
+    }
+
+    /**
      * Check whether the next token is present.
      *
      * If no [choices] are provided, then any token is considered valid.
@@ -1477,7 +1490,7 @@ class ScannerImpl(
                     && reader.peek().toChar() !in " \t"
                 ) {
                     if (breaks.isEmpty()) {
-                        stringBuilder.append(" ")
+                        stringBuilder.append(' ')
                     }
                 } else {
                     stringBuilder.append(lineBreak ?: "")
@@ -1687,10 +1700,10 @@ class ScannerImpl(
         val quote = reader.peek()
         reader.forward()
         val chunks = buildString {
-            append(scanFlowScalarNonSpaces(doubleValue, startMark))
+            scanFlowScalarNonSpaces(doubleValue, startMark, this)
             while (reader.peek() != quote) {
-                append(scanFlowScalarSpaces(startMark))
-                append(scanFlowScalarNonSpaces(doubleValue, startMark))
+                scanFlowScalarSpaces(startMark, this)
+                scanFlowScalarNonSpaces(doubleValue, startMark, this)
             }
         }
         reader.forward()
@@ -1701,9 +1714,8 @@ class ScannerImpl(
     /**
      * Scan some number of flow-scalar non-space characters.
      */
-    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Mark?): String {
+    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Mark?, chunks: StringBuilder) {
         // See the specification for details.
-        val chunks = StringBuilder()
         while (true) {
             // Scan through any number of characters which are not: NUL, blank,
             // tabs, line breaks, single-quotes, double-quotes, or backslashes.
@@ -1718,7 +1730,7 @@ class ScannerImpl(
             // differing meanings.
             var c = reader.peek()
             if (!doubleQuoted && c == '\''.code && reader.peek(1) == '\''.code) {
-                chunks.append("'")
+                chunks.append('\'')
                 reader.forward(2)
             } else if (doubleQuoted && c == '\''.code || !doubleQuoted && c.toChar() in "\"\\") {
                 chunks.appendCodePoint(c)
@@ -1748,8 +1760,7 @@ class ScannerImpl(
                     }
                     try {
                         val decimal = hex.toInt(16)
-                        val unicode = Character.toChars(decimal)
-                        chunks.append(unicode)
+                        chunks.appendCodePoint(decimal)
                         reader.forward(length)
                     } catch (e: IllegalArgumentException) {
                         throw ScannerException(
@@ -1771,12 +1782,12 @@ class ScannerImpl(
                     )
                 }
             } else {
-                return chunks.toString()
+                return
             }
         }
     }
 
-    private fun scanFlowScalarSpaces(startMark: Mark?): String {
+    private fun scanFlowScalarSpaces(startMark: Mark?, chunks: StringBuilder) {
         // See the specification for details.
         var length = 0
         // Scan through any number of whitespace (space, tab) characters, consuming them.
@@ -1795,13 +1806,13 @@ class ScannerImpl(
         }
         // If we encounter a line break, scan it into our assembled string...
         val lineBreakOpt = scanLineBreak()
-        return buildString {
+        chunks.apply {
             if (lineBreakOpt != null) {
                 val breaks = scanFlowScalarBreaks(startMark)
                 if ("\n" != lineBreakOpt) {
                     append(lineBreakOpt)
                 } else if (breaks.isEmpty()) {
-                    append(" ")
+                    append(' ')
                 }
                 append(breaks)
             } else {

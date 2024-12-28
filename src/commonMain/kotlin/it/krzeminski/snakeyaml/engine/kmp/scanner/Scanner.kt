@@ -35,6 +35,18 @@ interface Scanner : Iterator<Token> {
     fun checkToken(vararg choices: Token.ID): Boolean
 
     /**
+     * Check if the next token is the given type.
+     *
+     * @param choice token ID to match with
+     * @return `true` if the next token is the given type. Returns `false`
+     * if no more tokens are available.
+     * @throws ScannerException Thrown in case of malformed input.
+     */
+    fun checkToken(choice: Token.ID): Boolean {
+        return checkToken(choices=arrayOf(choice))
+    }
+
+    /**
      * Return the next token, but do not delete it from the stream.
      *
      * @return The token that will be returned on the next call to [next]

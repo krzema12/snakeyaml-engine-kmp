@@ -38,6 +38,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings {
 	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
 	public final fun isCanonical ()Z
+	public final fun isDereferenceAliases ()Z
 	public final fun isExplicitEnd ()Z
 	public final fun isExplicitStart ()Z
 	public final fun isMultiLineFlow ()Z
@@ -57,6 +58,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder {
 	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDefaultFlowStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDefaultScalarStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDereferenceAliases (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDumpComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setExplicitEnd (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setExplicitRootTag (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;

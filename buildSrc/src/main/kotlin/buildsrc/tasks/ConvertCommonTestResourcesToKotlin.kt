@@ -80,7 +80,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         ) { (key, value) ->
             @Suppress("UNCHECKED_CAST")
             when (value) {
-                is ByteArray -> "$indent    \"$key\" to ByteString.of(${value.joinToString(separator = ", ") { "0x$it.toByte()" }})"
+                is ByteArray -> "$indent    \"$key\" to ByteString.of(${value.joinToString(separator = ", ") { "0x${"%02x".format(it)}.toByte()" }})"
                 is Map<*, *> -> "$indent    \"$key\" to ${generateMapCode(value as Map<String, Any>, indentLevel + 1)}"
                 else         -> error("Unexpected type: $value")
             }

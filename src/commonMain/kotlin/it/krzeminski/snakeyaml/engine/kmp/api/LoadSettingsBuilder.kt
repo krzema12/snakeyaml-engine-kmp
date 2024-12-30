@@ -120,10 +120,10 @@ class LoadSettingsBuilder internal constructor() {
 
     /**
      * YAML 1.2 does require unique keys. To support the backwards compatibility it is possible to
-     * select what should happend when non-unique keys are detected.
+     * select what should happen when non-unique keys are detected.
      *
-     * @param allowDuplicateKeys - if `true` then the non-unique keys in a mapping are allowed (last key
-     * wins). `false` by default.
+     * @param allowDuplicateKeys - if `true`, then the non-unique keys in a mapping are allowed (last
+     * key wins). `false` by default.
      * @return the builder with the provided value
      */
     fun setAllowDuplicateKeys(allowDuplicateKeys: Boolean): LoadSettingsBuilder {

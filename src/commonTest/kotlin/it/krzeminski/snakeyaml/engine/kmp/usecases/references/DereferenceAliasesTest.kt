@@ -21,7 +21,7 @@ class DereferenceAliasesTest : FunSpec({
         val dump = Dump(setting)
         val node = dump.dumpToString(map)
         val expected = stringFromResources("issues/issue1086-1-expected.yaml")
-        expected shouldBe node
+        node shouldBe expected
     }
 
     test("no aliases recursive") {

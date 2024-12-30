@@ -15,4 +15,5 @@ fun stringFromResources(path: String): String {
             println("Going deeper: $segment -> $next")
             next
         }[segments.last()] as ByteString).utf8()
+        .replace(Regex("\\r\\n?"), "\n")
 }

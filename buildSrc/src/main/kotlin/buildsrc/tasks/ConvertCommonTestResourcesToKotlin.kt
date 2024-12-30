@@ -26,7 +26,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
 
     // HACK: Ideally we'd retrieve the 'resources' path via Gradle API, but somehow Gradle sees only 'main' and 'test'
     // source sets instead of the required 'commonTest'.
-    private val commonResourcesDir: File = project.rootProject.projectDir
+    private val commonResourcesDir: File = project.projectDir
         .resolve("src").resolve("commonTest").resolve("resources")
 
     @TaskAction

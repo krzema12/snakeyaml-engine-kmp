@@ -32,11 +32,13 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     @TaskAction
     fun action() {
         val destination = destination.asFile.get()
+        println("Destination: $destination")
         fs.delete { delete(destination) }
         destination.mkdirs()
 
         val resourcesMap = buildResourcesMap()
         val code = generateKotlinCode(resourcesMap)
+        println("Code: $code")
 
         destination.resolve("CommonTestResources.kt").writeText(code)
     }
@@ -59,6 +61,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
                 }
             }
 
+        println("Resources map: $resourcesMap")
         return resourcesMap
     }
 

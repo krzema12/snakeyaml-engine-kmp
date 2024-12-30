@@ -36,6 +36,14 @@ enum class ScalarStyle(private val styleOpt: Char?) {
     /** Folded scalar */
     FOLDED('>'),
 
+    /**
+     * Mixture of scalar styles to dump JSON format. Double-quoted style for !!str, !!binary,
+     * !!timestamp. Plain style - for !!bool, !!float, !!int, !!null
+     *
+     * These are never dumped - !!merge, !!value, !!yaml
+     */
+    JSON_SCALAR_STYLE('J'),
+
     /** Plain scalar */
     PLAIN(null);
 

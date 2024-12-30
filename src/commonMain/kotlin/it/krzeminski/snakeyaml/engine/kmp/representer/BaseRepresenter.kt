@@ -125,10 +125,10 @@ abstract class BaseRepresenter(
     /**
      * Create Node for string, using [ScalarStyle.PLAIN] if possible
      *
-     * @param tag - the tag for [Node]
-     * @param value - the source
-     * @param style - the style
-     * @return Node for string
+     * @param tag - the tag to emit
+     * @param value - the value to emit
+     * @param style - scalar style when preferred
+     * @return Node to emit
      */
     protected fun representScalar(
         tag: Tag,

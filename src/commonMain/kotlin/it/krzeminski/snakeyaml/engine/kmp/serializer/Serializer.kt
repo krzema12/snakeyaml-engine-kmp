@@ -202,16 +202,16 @@ class Serializer(
     }
 
     private fun serializeComments(comments: List<CommentLine>?) {
-        if (comments == null) return
-
-        for (line in comments) {
-            val commentEvent = CommentEvent(
-                commentType = line.commentType,
-                value = line.value,
-                startMark = line.startMark,
-                endMark = line.endMark,
-            )
-            emitable.emit(commentEvent)
+        if (settings.dumpComments && comments != null) {
+            for (line in comments) {
+                val commentEvent = CommentEvent(
+                    commentType = line.commentType,
+                    value = line.value,
+                    startMark = line.startMark,
+                    endMark = line.endMark,
+                )
+                emitable.emit(commentEvent)
+            }
         }
     }
 }

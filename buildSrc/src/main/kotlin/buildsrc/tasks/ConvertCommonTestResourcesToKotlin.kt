@@ -66,23 +66,24 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         """
             import okio.ByteString
 
-            class CommonTestResources {
+            object CommonTestResources {
                 val resourcesMap: Map<String, Any> = ${generateMapCode(resourcesMap)}
             }
         """.trimIndent()
 
-    private fun generateMapCode(map: Map<String, Any>, indentLevel: Int = 0): String {
-        val indent = " ".repeat(indentLevel*4)
+    private fun generateMapCode(map: Map<String, Any>): String {
         return map.entries.joinToString(
             separator = ",\n",
             prefix = "mapOf(\n",
-            postfix = "\n$indent)",
+            postfix = "\n)",
         ) { (key, value) ->
             @Suppress("UNCHECKED_CAST")
             when (value) {
-                is ByteArray -> "$indent    \"$key\" to ByteString.of(${value.joinToString(separator = ", ") { "0x${"%02x".format(it)}.toByte()" }})"
-                is Map<*, *> -> "$indent    \"$key\" to ${generateMapCode(value as Map<String, Any>, indentLevel + 1)}"
-                else         -> error("Unexpected type: $value")
+                is ByteArray -> "\"$key\" to ByteString.of(${value.joinToString(separator = ", ") {
+                    "0x${"%02x".format(it)}.toByte()"
+                }})"
+                is Map<*, *> -> "\"$key\" to ${generateMapCode(value as Map<String, Any>)}"
+                else -> error("Unexpected type: $value")
             }
         }
     }

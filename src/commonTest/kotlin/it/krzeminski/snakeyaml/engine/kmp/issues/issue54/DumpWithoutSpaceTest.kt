@@ -43,7 +43,11 @@ class DumpWithoutSpaceTest : FunSpec({
                |  :two: true
                |  *1 : true""".trimMargin()
         )
-        obj shouldNotBe null
+        if (obj == null) {
+            // Kotest's 'shouldNotBe null' induces a StackOverflow:
+            // https://github.com/krzema12/snakeyaml-engine-kmp/actions/runs/12549424377/job/34990474592
+            fail("The object shouldn't be null!")
+        }
     }
 
     test("Dump and load an alias") {

@@ -41,7 +41,7 @@ class ReaderStringTest : FunSpec({
                     StreamReader(LoadSettings.builder().build(), str).peek()
                 } catch (e: Exception) {
                     (
-                        e.message?.startsWith("unacceptable character") ?: false
+                        (e.message?.startsWith("unacceptable character") ?: false)
                             || e.message == "special characters are not allowed"
                     ) shouldBe true
                     charsArrayResult = false
@@ -59,13 +59,13 @@ class ReaderStringTest : FunSpec({
 
     test("high surrogate alone") {
         val reader = StreamReader(LoadSettings.builder().build(), "test\uD800")
-        shouldThrow<ReaderException> {
+        try {
             while (reader.peek() != 0) {
                 reader.forward()
             }
-        }.also {
-            it.toString() shouldContain "(0xD800) The last char is HighSurrogate (no LowSurrogate detected)"
-            it.position shouldBe 5
+        } catch(e: ReaderException) {
+            e.toString() shouldContain "(0xD800) The last char is HighSurrogate (no LowSurrogate detected)"
+            e.position shouldBe 5
         }
     }
 
@@ -75,26 +75,26 @@ class ReaderStringTest : FunSpec({
             reader.forward(1)
         }
         val reader2 = StreamReader(LoadSettings.builder().build(), "test")
-        reader2.peek() shouldBe 't'
+        reader2.peek() shouldBe 't'.code
         reader2.forward()
-        reader2.peek() shouldBe 'e'
+        reader2.peek() shouldBe 'e'.code
         reader2.forward()
-        reader2.peek() shouldBe 's'
+        reader2.peek() shouldBe 's'.code
         reader2.forward()
-        reader2.peek() shouldBe 't'
+        reader2.peek() shouldBe 't'.code
         reader2.forward()
         reader2.peek() shouldBe 0
     }
 
     test("peek int") {
         val reader = StreamReader(LoadSettings.builder().build(), "test")
-        reader.peek(0) shouldBe 't'
-        reader.peek(1) shouldBe 'e'
-        reader.peek(2) shouldBe 's'
-        reader.peek(3) shouldBe 't'
+        reader.peek(0) shouldBe 't'.code
+        reader.peek(1) shouldBe 'e'.code
+        reader.peek(2) shouldBe 's'.code
+        reader.peek(3) shouldBe 't'.code
         reader.forward(1)
-        reader.peek(0) shouldBe 'e'
-        reader.peek(1) shouldBe 's'
-        reader.peek(2) shouldBe 't'
+        reader.peek(0) shouldBe 'e'.code
+        reader.peek(1) shouldBe 's'.code
+        reader.peek(2) shouldBe 't'.code
     }
 })

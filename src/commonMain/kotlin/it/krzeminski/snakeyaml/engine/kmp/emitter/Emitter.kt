@@ -352,11 +352,11 @@ class Emitter(
         simpleKeyContext = simpleKey
         when (event?.eventId) {
             Event.ID.Alias                                                 -> {
-                expectAlias()
+                expectAlias(simpleKey)
             }
 
             Event.ID.Scalar, Event.ID.SequenceStart, Event.ID.MappingStart -> {
-                processAnchor("&")
+                processAnchor()
                 processTag()
                 handleNodeEvent(event!!.eventId)
             }
@@ -396,9 +396,12 @@ class Emitter(
         }
     }
 
-    private fun expectAlias() {
+    /**
+     * @param simpleKey true when this is the alias for a simple key
+     */
+    private fun expectAlias(simpleKey: Boolean) {
         state = if (event is AliasEvent) {
-            processAnchor("*")
+            processAlias(simpleKey)
             states.removeLast()
         } else {
             throw EmitterException("Expecting Alias.")
@@ -782,7 +785,7 @@ class Emitter(
 
     //region Anchor, Tag, and Scalar processors.
 
-    private fun processAnchor(indicator: String) {
+    private fun processAnchorOrAlias(indicator: String, trailingWhitespace: Boolean) {
         val ev = event as NodeEvent
         val anchor: Anchor? = ev.anchor
         if (anchor != null) {
@@ -792,6 +795,19 @@ class Emitter(
             writeIndicator(indicator = indicator + anchor, needWhitespace = true)
         }
         preparedAnchor = null
+        if (trailingWhitespace) {
+            writeWhitespace(1)
+        }
+    }
+
+    private fun processAnchor() {
+        // no need for trailing space
+        processAnchorOrAlias("&", false)
+    }
+
+    private fun processAlias(simpleKey: Boolean) {
+        // because of ':' it needs to add trailing space for simple keys
+        processAnchorOrAlias("*", simpleKey)
     }
 
     /**

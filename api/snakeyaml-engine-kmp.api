@@ -341,6 +341,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle :
 public final class it/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle : java/lang/Enum {
 	public static final field DOUBLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field FOLDED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field JSON_SCALAR_STYLE Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field LITERAL Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field PLAIN Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field SINGLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
@@ -657,9 +658,14 @@ public final class it/krzeminski/snakeyaml/engine/kmp/events/ScalarEvent : it/kr
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
 	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun escapedValue ()Ljava/lang/String;
+	public final fun getDQuoted ()Z
 	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getFolded ()Z
 	public final fun getImplicit ()Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;
+	public final fun getJson ()Z
+	public final fun getLiteral ()Z
 	public final fun getPlain ()Z
+	public final fun getSQuoted ()Z
 	public final fun getScalarStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public final fun getTag ()Ljava/lang/String;
 	public final fun getValue ()Ljava/lang/String;

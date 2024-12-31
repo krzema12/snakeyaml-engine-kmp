@@ -60,6 +60,6 @@ class DumpWithoutSpaceTest : FunSpec({
                            |*id001 : true
                            |""".trimMargin()
         val recursive = parse(output)
-        recursive shouldNotBe null
+        recursive.shouldNotBeNull()
     }
 })

@@ -2,6 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.issues.issue54
 
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
@@ -43,11 +44,7 @@ class DumpWithoutSpaceTest : FunSpec({
                |  :two: true
                |  *1 : true""".trimMargin()
         )
-        if (obj == null) {
-            // Kotest's 'shouldNotBe null' induces a StackOverflow:
-            // https://github.com/krzema12/snakeyaml-engine-kmp/actions/runs/12549424377/job/34990474592
-            fail("The object shouldn't be null!")
-        }
+        obj.shouldNotBeNull()
     }
 
     test("Dump and load an alias") {

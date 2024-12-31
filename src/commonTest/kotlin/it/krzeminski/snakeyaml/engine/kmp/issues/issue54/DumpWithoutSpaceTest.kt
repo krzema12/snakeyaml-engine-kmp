@@ -43,8 +43,7 @@ class DumpWithoutSpaceTest : FunSpec({
                |  :two: true
                |  *1 : true""".trimMargin()
         )
-        // REVERTME: commenting out to see if this is the source of stackoverflow
-        // obj shouldNotBe null
+        obj shouldNotBe null
     }
 
     test("Dump and load an alias") {

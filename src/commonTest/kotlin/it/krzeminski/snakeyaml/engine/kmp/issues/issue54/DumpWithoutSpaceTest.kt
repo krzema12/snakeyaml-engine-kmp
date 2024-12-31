@@ -1,10 +1,9 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue54
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
@@ -22,7 +21,7 @@ class DumpWithoutSpaceTest : FunSpec({
     }
 
     test("The document does not have a space after the *1 alias") {
-        try {
+        shouldThrow<Exception> {
             parse(
                 """|--- &1
                    |hash:
@@ -30,9 +29,8 @@ class DumpWithoutSpaceTest : FunSpec({
                    |  :two: true
                    |  *1: true""".trimMargin()
             )
-            fail("Shouldn't reach here!")
-        } catch (e: Exception) {
-            e.message shouldContain "could not find expected ':'"
+        }.also {
+            it.message shouldContain "could not find expected ':'"
         }
     }
 

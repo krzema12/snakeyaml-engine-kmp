@@ -5,8 +5,9 @@ plugins {
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
+    buildsrc.conventions.`multiplatform-test-resources`
     id("dev.adamko.dokkatoo-html") version "2.4.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.16.3"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.17.0"
 }
 
 group = "it.krzeminski"
@@ -27,7 +28,10 @@ kotlin {
         }
 
         commonTest {
-            kotlin.srcDirs(tasks.yamlTestSuiteDataSources)
+            kotlin.srcDirs(
+                tasks.yamlTestSuiteDataSources,
+                tasks.convertCommonTestResourcesToKotlin,
+            )
 
             dependencies {
                 implementation("io.kotest:kotest-framework-engine:6.0.0.M1")

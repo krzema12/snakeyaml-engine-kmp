@@ -38,6 +38,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings {
 	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
 	public final fun isCanonical ()Z
+	public final fun isDereferenceAliases ()Z
 	public final fun isExplicitEnd ()Z
 	public final fun isExplicitStart ()Z
 	public final fun isMultiLineFlow ()Z
@@ -57,6 +58,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder {
 	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDefaultFlowStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDefaultScalarStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDereferenceAliases (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setDumpComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setExplicitEnd (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 	public final fun setExplicitRootTag (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
@@ -339,6 +341,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle :
 public final class it/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle : java/lang/Enum {
 	public static final field DOUBLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field FOLDED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field JSON_SCALAR_STYLE Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field LITERAL Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field PLAIN Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public static final field SINGLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
@@ -655,9 +658,14 @@ public final class it/krzeminski/snakeyaml/engine/kmp/events/ScalarEvent : it/kr
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
 	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun escapedValue ()Ljava/lang/String;
+	public final fun getDQuoted ()Z
 	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getFolded ()Z
 	public final fun getImplicit ()Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;
+	public final fun getJson ()Z
+	public final fun getLiteral ()Z
 	public final fun getPlain ()Z
+	public final fun getSQuoted ()Z
 	public final fun getScalarStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
 	public final fun getTag ()Ljava/lang/String;
 	public final fun getValue ()Ljava/lang/String;

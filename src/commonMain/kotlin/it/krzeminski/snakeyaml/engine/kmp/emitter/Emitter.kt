@@ -805,14 +805,11 @@ class Emitter(
             if (scalarStyle == null) {
                 scalarStyle = chooseScalarStyle(ev)
             }
+            // check when no tag is required
             if (
                 (!canonical || tag == null)
-                && (
-                    scalarStyle == null
-                        && ev.implicit.canOmitTagInPlainScalar()
-                        || scalarStyle != null
-                        && ev.implicit.canOmitTagInNonPlainScalar()
-                    )
+                && ((scalarStyle == ScalarStyle.PLAIN && ev.implicit.canOmitTagInPlainScalar())
+                        || (scalarStyle != ScalarStyle.PLAIN && ev.implicit.canOmitTagInNonPlainScalar()))
             ) {
                 preparedTag = null
                 return // no tag required
@@ -845,22 +842,26 @@ class Emitter(
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (!ev.plain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
+        if (!ev.plain && ev.dQuoted || canonical) {
             return ScalarStyle.DOUBLE_QUOTED
         }
-        if (ev.plain && ev.implicit.canOmitTagInPlainScalar()) {
+        if (ev.json && ev.tag == Tag.STR.value) {
+            // special case for strings which are always double-quoted in JSON
+            return ScalarStyle.DOUBLE_QUOTED;
+        }
+        if ((ev.plain || ev.json) && ev.implicit.canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis!!.empty || analysis!!.multiline))
                 && (flowLevel != 0 && analysis!!.allowFlowPlain || flowLevel == 0 && analysis!!.allowBlockPlain)
             ) {
-                return null
+                return ScalarStyle.PLAIN
             }
         }
-        if (!ev.plain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
+        if (ev.literal || ev.folded) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.allowBlock) {
                 return ev.scalarStyle
             }
         }
-        if (ev.plain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
+        if (ev.plain || ev.sQuoted) {
             if (analysis!!.allowSingleQuoted && !(simpleKeyContext && analysis!!.multiline)) {
                 return ScalarStyle.SINGLE_QUOTED
             }
@@ -872,21 +873,16 @@ class Emitter(
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (scalarStyle == null) {
-            scalarStyle = chooseScalarStyle(ev)
-        }
         val split = !simpleKeyContext && splitLines
-        if (scalarStyle == null) {
-            writePlain(analysis!!.scalar, split)
-        } else {
-            when (scalarStyle) {
-                ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
-                ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
-                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
-                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
-                else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
-            }
+        when (scalarStyle) {
+            ScalarStyle.PLAIN         -> writePlain(analysis!!.scalar, split)
+            ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
+            ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
+            ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
+            ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
+            else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
         }
+        // reset scalar style for another scalar
         analysis = null
         scalarStyle = null
     }

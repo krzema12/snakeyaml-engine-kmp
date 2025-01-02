@@ -18,7 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.RepresentToNode
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
-import it.krzeminski.snakeyaml.engine.kmp.internal.IdentityHashCode
+import it.krzeminski.snakeyaml.engine.kmp.internal.hasIdentityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.internal.identityHashCode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 import kotlin.jvm.JvmField
@@ -60,7 +60,7 @@ abstract class BaseRepresenter(
      *
      * The order is important (map can be also a sequence of key-values)
      */
-    private val representedObjects: AnchorNodeMap = AnchorNodeMap()
+    private val representedObjects: MutableMap<Any?, Node> = AnchorNodeMap()
 
     /** in Java `null` is not a type. So we have to keep the `null` representer separately */
     protected open fun nullRepresenter(): Node = representScalar(Tag.NULL, "null")
@@ -90,7 +90,7 @@ abstract class BaseRepresenter(
     private fun representData(data: Any?): Node {
         objectToRepresent = data
         // check for identity
-        return representedObjects.getOrElse(identityHashCode(objectToRepresent)) {
+        return representedObjects.getOrElse(objectToRepresent) {
             // check for null first
             if (data == null) {
                 nullRepresenter()
@@ -125,10 +125,10 @@ abstract class BaseRepresenter(
     /**
      * Create Node for string, using [ScalarStyle.PLAIN] if possible
      *
-     * @param tag - the tag for [Node]
-     * @param value - the source
-     * @param style - the style
-     * @return Node for string
+     * @param tag - the tag to emit
+     * @param value - the value to emit
+     * @param style - scalar style when preferred
+     * @return Node to emit
      */
     protected fun representScalar(
         tag: Tag,
@@ -179,8 +179,18 @@ abstract class BaseRepresenter(
      * @receiver - Map entry
      * @return the tuple where both key and value are converted to Node
      */
-    protected open fun Map.Entry<*, *>.toNodeTuple(): NodeTuple =
-        NodeTuple(representData(key), representData(value))
+    protected open fun Map.Entry<*, *>.toNodeTuple(): NodeTuple = toNodeTuple(this)
+
+    /**
+     * Create a tuple for one key pair.
+     * This method can be used by implementation to reuse logic from base class
+     *
+     * @param entry Map entry
+     * @return the tuple where both key and value are converted to Node
+     */
+    @JvmName("toNodeTupleImpl")
+    protected fun toNodeTuple(entry: Map.Entry<*, *>): NodeTuple =
+        entry.run { NodeTuple(representData(key), representData(value)) }
 
     /**
      * Create [Node] for the provided [Map]
@@ -222,36 +232,35 @@ abstract class BaseRepresenter(
     }
 }
 
-private class AnchorNodeMap : MutableMap<IdentityHashCode, Node> {
+/**
+ * The [IdentityLikeMap] tries to emulate `java.util.IdentityHashMap` from JVM world.
+ * However, considering limitations we have in KMP it makes the following assumption:
+ * **primitive types and strings does not have identity (meaning "test" and `new String("test")` would have the same "identity")**.
+ * This was made due to the following points on JVM:
+ * + [5.1.7. Boxing Conversion](https://docs.oracle.com/javase/specs/jls/se23/html/jls-5.html#jls-5.1.7) - primitives withing range -128..127 will have same identity hashcode
+ * + Two equal constant strings will have same identity hashcode. Only creating string explicitly using the constructor will result in a different identity in such case
+ *
+ * This is done because the main goal is to prevent the recursion and primitive types (and strings) cannot cause it.
+ */
+private open class IdentityLikeMap<T> private constructor(
+    private val contents: MutableMap<Any?, T>,
+) : MutableMap<Any?, T> by contents {
+    constructor() : this(HashMap())
 
-    private val contents: MutableMap<IdentityHashCode, AnchorNode> = mutableMapOf()
-    private val contentsView: MutableMap<IdentityHashCode, Node>
-        get() = contents.mapValuesTo(mutableMapOf()) { (_, v) -> v.realNode }
+    override fun containsKey(key: Any?): Boolean = contents.containsKey(key.toIdentityKey())
 
-    override val size: Int get() = contents.size
-    override val entries: MutableSet<MutableMap.MutableEntry<IdentityHashCode, Node>> get() = contentsView.entries
-    override val keys: MutableSet<IdentityHashCode> get() = contentsView.keys
-    override val values: MutableCollection<Node> get() = contentsView.values
+    override fun get(key: Any?): T? = contents[key.toIdentityKey()]
 
-    override fun clear() = contents.clear()
-    override fun containsKey(key: IdentityHashCode): Boolean = contents.containsKey(key)
-    override fun containsValue(value: Node): Boolean = contents.containsValue(value)
+    override fun put(key: Any?, value: T): T? = contents.put(key.toIdentityKey(), value)
 
-    override fun get(key: IdentityHashCode): Node? = contents[key]
+    private fun Any?.toIdentityKey(): Any? =
+        if (hasIdentityHashCode(this)) {
+            identityHashCode(this)
+        } else {
+            this
+        }
+}
 
-    override fun isEmpty(): Boolean = contents.isEmpty()
-    override fun put(key: IdentityHashCode, value: Node): Node? =
-        contents.put(key, AnchorNode(value))
-
-    override fun putAll(from: Map<out IdentityHashCode, Node>): Unit =
-        contents.putAll(from.mapValues { (_, v) -> AnchorNode(v) })
-
-    override fun remove(key: IdentityHashCode): Node? = contents.remove(key)
-
-    @JvmName("getAny")
-    operator fun get(key: Any?): Node? = contents[identityHashCode(key)]
-
-    @JvmName("setAny")
-    operator fun set(key: Any?, value: Node): Node? =
-        contents.put(identityHashCode(key), AnchorNode(value))
+private class AnchorNodeMap : IdentityLikeMap<Node>() {
+    override fun put(key: Any?, value: Node): Node? = super.put(key, AnchorNode(value))
 }

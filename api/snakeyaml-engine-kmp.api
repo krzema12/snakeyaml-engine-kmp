@@ -1,0 +1,1340 @@
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
+	public abstract fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public abstract fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode$DefaultImpls {
+	public static fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/api/ConstructNode;Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/Dump {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;Lit/krzeminski/snakeyaml/engine/kmp/representer/Representer;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;Lit/krzeminski/snakeyaml/engine/kmp/representer/Representer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun dump (Ljava/lang/Object;Lit/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter;)V
+	public final fun dumpAll (Ljava/util/Iterator;Lit/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter;)V
+	public final fun dumpAllToString (Ljava/util/Iterator;)Ljava/lang/String;
+	public final fun dumpNode (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Lit/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter;)V
+	public final fun dumpToString (Ljava/lang/Object;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings$Companion;
+	public final field anchorGenerator Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;
+	public final field bestLineBreak Ljava/lang/String;
+	public final field defaultFlowStyle Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public final field defaultScalarStyle Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public final field dumpComments Z
+	public final field explicitRootTag Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public final field indent I
+	public final field indentWithIndicator Z
+	public final field indicatorIndent I
+	public final field maxSimpleKeyLength I
+	public final field nonPrintableStyle Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+	public final field schema Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
+	public final field tagDirective Ljava/util/Map;
+	public final field width I
+	public final field yamlDirective Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
+	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
+	public final fun isCanonical ()Z
+	public final fun isDereferenceAliases ()Z
+	public final fun isExplicitEnd ()Z
+	public final fun isExplicitStart ()Z
+	public final fun isMultiLineFlow ()Z
+	public final fun isSplitLines ()Z
+	public final fun isUseUnicodeEncoding ()Z
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings$Companion {
+	public final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder {
+	public final fun build ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;
+	public final fun setAnchorGenerator (Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setBestLineBreak (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setCanonical (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDefaultFlowStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDefaultScalarStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDereferenceAliases (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setDumpComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setExplicitEnd (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setExplicitRootTag (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setExplicitStart (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setIndent (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setIndentWithIndicator (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setIndicatorIndent (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setMaxSimpleKeyLength (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setMultiLineFlow (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setNonPrintableStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setSchema (Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setSplitLines (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setTagDirective (Ljava/util/Map;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setUseUnicodeEncoding (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setWidth (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+	public final fun setYamlDirective (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/Load {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/constructor/BaseConstructor;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/constructor/BaseConstructor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun loadAll (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun loadAll (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun loadAll (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun loadAllFromInputStream (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun loadAllFromReader (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun loadAllFromString (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun loadFromInputStream (Ljava/io/InputStream;)Ljava/lang/Object;
+	public final fun loadFromReader (Ljava/io/Reader;)Ljava/lang/Object;
+	public final fun loadFromString (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun loadOne (Ljava/io/InputStream;)Ljava/lang/Object;
+	public final fun loadOne (Ljava/io/Reader;)Ljava/lang/Object;
+	public final fun loadOne (Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$Companion;
+	public final field allowDuplicateKeys Z
+	public final field allowRecursiveKeys Z
+	public final field bufferSize I
+	public final field codePointLimit I
+	public final field defaultList Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final field defaultMap Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final field defaultSet Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final field envConfig Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;
+	public final field label Ljava/lang/String;
+	public final field maxAliasesForCollections I
+	public final field parseComments Z
+	public final field schema Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
+	public final field tagConstructors Ljava/util/Map;
+	public final field useMarks Z
+	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
+	public final fun getVersionFunction ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider {
+	public abstract fun invoke (I)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$Companion {
+	public final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator {
+	public abstract fun invoke (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder {
+	public final fun build ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;
+	public final fun setAllowDuplicateKeys (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setAllowRecursiveKeys (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setBufferSize (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setCodePointLimit (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setDefaultList (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setDefaultMap (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setDefaultSet (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setEnvConfig (Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setLabel (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setMaxAliasesForCollections (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setParseComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setSchema (Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setTagConstructors (Ljava/util/Map;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setUseMarks (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+	public final fun setVersionFunction (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/RepresentToNode {
+	public abstract fun representData (Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/SettingKey {
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter {
+	public abstract fun flush ()V
+	public abstract fun write (Ljava/lang/String;)V
+	public abstract fun write (Ljava/lang/String;II)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter$DefaultImpls {
+	public static fun flush (Lit/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter;)V
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/api/YamlOutputStreamWriter : java/io/OutputStreamWriter, it/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter {
+	public fun <init> (Ljava/io/OutputStream;Ljava/nio/charset/Charset;)V
+	public fun flush ()V
+	public fun processIOException (Ljava/io/IOException;)V
+	public fun write (Ljava/lang/String;)V
+	public fun write (Ljava/lang/String;II)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader : okio/Source {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$Companion;
+	public fun <init> (Lokio/BufferedSource;)V
+	public fun <init> (Lokio/Source;)V
+	public fun close ()V
+	public final fun getEncoding ()Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public fun read (Lokio/Buffer;J)J
+	public final fun readString ()Ljava/lang/String;
+	public fun timeout ()Lokio/Timeout;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding : java/lang/Enum {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding$Companion;
+	public static final field UTF_16BE Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static final field UTF_16LE Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static final field UTF_32BE Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static final field UTF_32LE Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static final field UTF_8 Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/Compose {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public final fun compose (Ljava/io/InputStream;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun compose (Ljava/io/Reader;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun compose (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun compose (Lokio/Source;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun composeAll (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun composeAll (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun composeAll (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun composeAll (Lokio/Source;)Ljava/lang/Iterable;
+	public final fun composeAllFromInputStream (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun composeAllFromReader (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun composeAllFromString (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun composeInputStream (Ljava/io/InputStream;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun composeReader (Ljava/io/Reader;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun composeString (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/ComposeString {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public final fun compose (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun composeAll (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun composeAllFromString (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun composeString (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/Parse {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public final fun parse (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun parse (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun parse (Ljava/lang/String;)Ljava/lang/Iterable;
+	public final fun parse (Lokio/Source;)Ljava/lang/Iterable;
+	public final fun parseInputStream (Ljava/io/InputStream;)Ljava/lang/Iterable;
+	public final fun parseReader (Ljava/io/Reader;)Ljava/lang/Iterable;
+	public final fun parseString (Ljava/lang/String;)Ljava/lang/Iterable;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/ParseString {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public final fun parseString (Ljava/lang/String;)Ljava/lang/Iterable;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/Present {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+	public final fun emitToString (Ljava/util/Iterator;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/api/lowlevel/Serialize {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+	public final fun serializeAll (Ljava/util/List;)Ljava/util/List;
+	public final fun serializeOne (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/util/List;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/comments/CommentEventsCollector {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/parser/Parser;[Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;)V
+	public fun <init> (Lkotlin/collections/ArrayDeque;[Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;)V
+	public final fun collectEvents ()Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentEventsCollector;
+	public final fun collectEvents (Lit/krzeminski/snakeyaml/engine/kmp/events/Event;)Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public final fun collectEventsAndPoll (Lit/krzeminski/snakeyaml/engine/kmp/events/Event;)Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public final fun consume ()Ljava/util/List;
+	public final fun isEmpty ()Z
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/comments/CommentLine {
+	public final field commentType Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public final field endMark Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public final field startMark Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public final field value Ljava/lang/String;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/events/CommentEvent;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/comments/CommentType : java/lang/Enum {
+	public static final field BLANK_LINE Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public static final field BLOCK Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public static final field IN_LINE Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/Anchor {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/Anchor$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/CharConstants {
+	public static final field ALPHA Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants$Companion;
+	public static final field ESCAPE_CODES Ljava/util/Map;
+	public static final field ESCAPE_REPLACEMENTS Ljava/util/Map;
+	public static final field LINEBR Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field NULL_BL_LINEBR Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field NULL_BL_T Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field NULL_BL_T_LINEBR Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field NULL_OR_LINEBR Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field URI_CHARS_FOR_TAG_PREFIX Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final field URI_CHARS_FOR_TAG_SUFFIX Lit/krzeminski/snakeyaml/engine/kmp/common/CharConstants;
+	public static final fun escapeChar (C)Ljava/lang/String;
+	public final fun getContains ()[Z
+	public final fun has (I)Z
+	public final fun has (ILjava/lang/String;)Z
+	public final fun hasNo (I)Z
+	public final fun hasNo (ILjava/lang/String;)Z
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/CharConstants$Companion {
+	public final fun escapeChar (C)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/FlowStyle : java/lang/Enum {
+	public static final field AUTO Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public static final field BLOCK Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public static final field FLOW Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle : java/lang/Enum {
+	public static final field BINARY Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+	public static final field ESCAPE Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle : java/lang/Enum {
+	public static final field DOUBLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field FOLDED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field JSON_SCALAR_STYLE Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field LITERAL Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field PLAIN Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static final field SINGLE_QUOTED Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/SpecVersion {
+	public fun <init> (II)V
+	public final fun getMajor ()I
+	public final fun getMinor ()I
+	public final fun getRepresentation ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/common/UriEncoder {
+	public static final field INSTANCE Lit/krzeminski/snakeyaml/engine/kmp/common/UriEncoder;
+	public static final fun decode (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun decode (Lokio/Buffer;)Ljava/lang/String;
+	public static final fun encode (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/composer/Composer : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/parser/Parser;)V
+	public final fun getSingleNode ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public fun hasNext ()Z
+	public fun next ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public synthetic fun next ()Ljava/lang/Object;
+	public fun remove ()V
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/constructor/BaseConstructor {
+	protected final field constructedObjects Ljava/util/Map;
+	protected final field settings Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	public final fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	protected final fun constructMapping (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;)Ljava/util/Map;
+	protected fun constructMapping2ndStep (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;Ljava/util/Map;)V
+	protected final fun constructObject (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	protected final fun constructScalar (Lit/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode;)Ljava/lang/String;
+	protected final fun constructSequence (Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;)Ljava/util/List;
+	protected final fun constructSequenceStep2 (Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;Ljava/util/Collection;)V
+	protected final fun constructSet (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;)Ljava/util/Set;
+	protected fun constructSet2ndStep (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;Ljava/util/Set;)V
+	public final fun constructSingleDocument (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	protected final fun createEmptyListForNode (Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;)Ljava/util/List;
+	protected final fun createEmptyMapFor (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;)Ljava/util/Map;
+	protected final fun createEmptySetForNode (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;)Ljava/util/Set;
+	protected fun findConstructorFor (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Lit/krzeminski/snakeyaml/engine/kmp/api/ConstructNode;
+	protected abstract fun getTagConstructors ()Ljava/util/Map;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar : it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar$Companion;
+	public fun <init> ()V
+	public fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+	protected fun constructScalar (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructYamlNull : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor : it/krzeminski/snakeyaml/engine/kmp/constructor/BaseConstructor {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;)V
+	protected fun constructMapping2ndStep (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;Ljava/util/Map;)V
+	protected fun constructSet2ndStep (Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;Ljava/util/Set;)V
+	protected fun getTagConstructors ()Ljava/util/Map;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor$ConstructEnv : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor;)V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor$ConstructYamlMap : it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor;)V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/util/Map;
+	public fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor$ConstructYamlSeq : it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor;)V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/util/List;
+	public fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor$ConstructYamlSet : it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor;)V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor$ConstructYamlStr : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/constructor/StandardConstructor;)V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/core/ConstructYamlCoreBool : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Boolean;
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/core/ConstructYamlCoreFloat : it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructYamlJsonFloat {
+	public fun <init> ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/core/ConstructYamlCoreInt : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/constructor/core/ConstructYamlCoreInt$Companion;
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Number;
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/core/ConstructYamlCoreInt$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructOptionalClass : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;)V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/util/Optional;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructUuidClass : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/util/UUID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructYamlBinary : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)[B
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructYamlJsonBool : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Boolean;
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructYamlJsonFloat : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Double;
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/constructor/json/ConstructYamlJsonInt : it/krzeminski/snakeyaml/engine/kmp/constructor/ConstructScalar {
+	public fun <init> ()V
+	public fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Number;
+	public synthetic fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/emitter/Emitable {
+	public abstract fun emit (Lit/krzeminski/snakeyaml/engine/kmp/events/Event;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/emitter/Emitter : it/krzeminski/snakeyaml/engine/kmp/emitter/Emitable {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/emitter/Emitter$Companion;
+	public static final field VALID_INDENT_RANGE Lkotlin/ranges/IntRange;
+	public static final field VALID_INDICATOR_INDENT_RANGE Lkotlin/ranges/IntRange;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;Lit/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter;)V
+	public fun emit (Lit/krzeminski/snakeyaml/engine/kmp/events/Event;)V
+	public final fun writeTagDirective (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun writeVersionDirective (Ljava/lang/String;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/emitter/Emitter$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/emitter/ScalarAnalysis {
+	public fun <init> (Ljava/lang/String;ZZZZZZ)V
+	public final fun getAllowBlock ()Z
+	public final fun getAllowBlockPlain ()Z
+	public final fun getAllowFlowPlain ()Z
+	public final fun getAllowSingleQuoted ()Z
+	public final fun getEmpty ()Z
+	public final fun getMultiline ()Z
+	public final fun getScalar ()Ljava/lang/String;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/env/EnvConfig {
+	public abstract fun getValueFor (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/env/EnvConfig$DefaultImpls {
+	public static fun getValueFor (Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/AliasEvent : it/krzeminski/snakeyaml/engine/kmp/events/NodeEvent {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAlias ()Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/events/CollectionEndEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/events/CollectionStartEvent : it/krzeminski/snakeyaml/engine/kmp/events/NodeEvent {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public final fun getFlowStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public final fun getImplicit ()Z
+	public final fun getTag ()Ljava/lang/String;
+	public final fun isFlow ()Z
+	public final fun isImplicit ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/CommentEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public final fun getCommentType ()Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/DocumentEndEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> (Z)V
+	public fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun isExplicit ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/DocumentStartEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;)V
+	public fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (ZLit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getExplicit ()Z
+	public final fun getSpecVersion ()Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
+	public final fun getTags ()Ljava/util/Map;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getEndMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public abstract fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getStartMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/Event$ID : java/lang/Enum {
+	public static final field Alias Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field Comment Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field DocumentEnd Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field DocumentStart Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field MappingEnd Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field MappingStart Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field Scalar Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field SequenceEnd Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field SequenceStart Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field StreamEnd Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static final field StreamStart Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple {
+	public fun <init> (ZZ)V
+	public final fun bothFalse ()Z
+	public final fun canOmitTagInNonPlainScalar ()Z
+	public final fun canOmitTagInPlainScalar ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/MappingEndEvent : it/krzeminski/snakeyaml/engine/kmp/events/CollectionEndEvent {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/MappingStartEvent : it/krzeminski/snakeyaml/engine/kmp/events/CollectionStartEvent {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/events/NodeEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public final fun getAnchor ()Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/ScalarEvent : it/krzeminski/snakeyaml/engine/kmp/events/NodeEvent {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun escapedValue ()Ljava/lang/String;
+	public final fun getDQuoted ()Z
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public final fun getFolded ()Z
+	public final fun getImplicit ()Lit/krzeminski/snakeyaml/engine/kmp/events/ImplicitTuple;
+	public final fun getJson ()Z
+	public final fun getLiteral ()Z
+	public final fun getPlain ()Z
+	public final fun getSQuoted ()Z
+	public final fun getScalarStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public final fun getTag ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/SequenceEndEvent : it/krzeminski/snakeyaml/engine/kmp/events/CollectionEndEvent {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/SequenceStartEvent : it/krzeminski/snakeyaml/engine/kmp/events/CollectionStartEvent {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/StreamEndEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/events/StreamStartEvent : it/krzeminski/snakeyaml/engine/kmp/events/Event {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getEventId ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/ComposerException : it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException {
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/exceptions/ConstructorException : it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException {
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/DuplicateKeyException : it/krzeminski/snakeyaml/engine/kmp/exceptions/ConstructorException {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Object;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/EmitterException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/Mark {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark$Companion;
+	public fun <init> (Ljava/lang/String;IIILjava/lang/CharSequence;)V
+	public fun <init> (Ljava/lang/String;IIILjava/util/List;)V
+	public fun <init> (Ljava/lang/String;IIILjava/util/List;I)V
+	public synthetic fun <init> (Ljava/lang/String;IIILjava/util/List;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;III[I)V
+	public final fun createSnippet ()Ljava/lang/String;
+	public final fun createSnippet (I)Ljava/lang/String;
+	public final fun createSnippet (II)Ljava/lang/String;
+	public static synthetic fun createSnippet$default (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;IIILjava/lang/Object;)Ljava/lang/String;
+	public final fun getBuffer ()[I
+	public final fun getCodepoints ()Ljava/util/List;
+	public final fun getColumn ()I
+	public final fun getIndex ()I
+	public final fun getLine ()I
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPointer ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/Mark$Companion {
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException$Companion;
+	protected fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getContext ()Ljava/lang/String;
+	public final fun getContextMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public final fun getProblem ()Ljava/lang/String;
+	public final fun getProblemMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/MissingEnvironmentVariableException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/exceptions/MissingEnvironmentVariableException$Companion;
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/MissingEnvironmentVariableException$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/ParserException : it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException {
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/ReaderException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public fun <init> (Ljava/lang/String;IILjava/lang/String;)V
+	public final fun getCodePoint ()I
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPosition ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/RepresenterException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/ScannerException : it/krzeminski/snakeyaml/engine/kmp/exceptions/MarkedYamlEngineException {
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlVersionException : it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlEngineException {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/AnchorNode : it/krzeminski/snakeyaml/engine/kmp/nodes/Node {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)V
+	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public final fun getRealNode ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/nodes/CollectionNode : it/krzeminski/snakeyaml/engine/kmp/nodes/Node {
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getFlowStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public abstract fun getValue ()Ljava/util/List;
+	public final fun setEndMark (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public final fun setFlowStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode : it/krzeminski/snakeyaml/engine/kmp/nodes/CollectionNode {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Z)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public fun getValue ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/nodes/Node {
+	public field endMark Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	protected field resolved Z
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAnchor ()Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+	public final fun getBlockComments ()Ljava/util/List;
+	public final fun getEndComments ()Ljava/util/List;
+	public final fun getInLineComments ()Ljava/util/List;
+	public abstract fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun getStartMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public final fun getTag ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public final fun isRecursive ()Z
+	public final fun isResolved ()Z
+	public final fun setAnchor (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;)V
+	public final fun setBlockComments (Ljava/util/List;)V
+	public final fun setEndComments (Ljava/util/List;)V
+	public final fun setInLineComments (Ljava/util/List;)V
+	public final fun setProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun setRecursive (Z)V
+	public final fun setTag (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)V
+	public final fun component1 ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun component2 ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun getKeyNode ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public final fun getValueNode ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/NodeType : java/lang/Enum {
+	public static final field ANCHOR Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public static final field MAPPING Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public static final field SCALAR Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public static final field SEQUENCE Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode : it/krzeminski/snakeyaml/engine/kmp/nodes/Node {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Z)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public final fun getScalarStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public final fun getValue ()Ljava/lang/String;
+	public final fun isPlain ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode : it/krzeminski/snakeyaml/engine/kmp/nodes/CollectionNode {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Z)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
+	public fun getValue ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/Tag {
+	public static final field BINARY Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field BOOL Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field COMMENT Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag$Companion;
+	public static final field ENV_TAG Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field FLOAT Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field INT Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field MAP Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field NULL Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field PREFIX Ljava/lang/String;
+	public static final field SEQ Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field SET Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field STR Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/nodes/Tag$Companion {
+	public final fun forType (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/parser/Parser : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun checkEvent (Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;)Z
+	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public abstract fun peekEvent ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/parser/ParserImpl : it/krzeminski/snakeyaml/engine/kmp/parser/Parser {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/parser/ParserImpl$Companion;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/scanner/Scanner;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader;)V
+	public fun checkEvent (Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;)Z
+	public fun hasNext ()Z
+	public fun next ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public synthetic fun next ()Ljava/lang/Object;
+	public fun peekEvent ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public fun remove ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/parser/ParserImpl$Companion {
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter : it/krzeminski/snakeyaml/engine/kmp/representer/Representer {
+	protected final field defaultFlowStyle Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	protected final field defaultScalarStyle Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	protected final field parentClassRepresenters Ljava/util/Map;
+	protected final field representers Ljava/util/Map;
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun nullRepresenter ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	public fun represent (Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+	protected final fun representMapping (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode;
+	protected final fun representScalar (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode;
+	public static synthetic fun representScalar$default (Lit/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter;Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ILjava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/ScalarNode;
+	protected final fun representSequence (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/lang/Iterable;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/SequenceNode;
+	protected fun toNodeTuple (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
+	protected final fun toNodeTupleImpl (Ljava/util/Map$Entry;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeTuple;
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter : it/krzeminski/snakeyaml/engine/kmp/representer/BaseRepresenter {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter$Companion;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+	protected final fun getClassTags ()Ljava/util/Map;
+	protected final fun getRepresentBoolean ()Lit/krzeminski/snakeyaml/engine/kmp/api/RepresentToNode;
+	protected final fun getRepresentNumber ()Lit/krzeminski/snakeyaml/engine/kmp/api/RepresentToNode;
+	protected final fun getTag (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/representer/PlatformRepresenter_jvmKt {
+	public static final fun Representer (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)Lit/krzeminski/snakeyaml/engine/kmp/representer/Representer;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/representer/Representer {
+	public abstract fun represent (Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/representer/StandardRepresenter : it/krzeminski/snakeyaml/engine/kmp/representer/CommonRepresenter {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;)V
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver : it/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver$Companion;
+	public static final field ENV_FORMAT Lkotlin/text/Regex;
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun resolve (Ljava/lang/String;Z)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver$Companion {
+	public final fun getEMPTY ()Lkotlin/text/Regex;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver$ImplicitResolversBuilder {
+	public fun <init> ()V
+	public final fun addImplicitResolver (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lkotlin/text/Regex;Ljava/lang/String;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver : it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver$Companion;
+	public static final field INT Lkotlin/text/Regex;
+	public fun <init> ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver$Companion {
+	public final fun getBOOL ()Lkotlin/text/Regex;
+	public final fun getFLOAT ()Lkotlin/text/Regex;
+	public final fun getNULL ()Lkotlin/text/Regex;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/FailsafeScalarResolver : it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver {
+	public fun <init> ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/JsonScalarResolver : it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/resolver/JsonScalarResolver$Companion;
+	public fun <init> ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/resolver/JsonScalarResolver$Companion {
+	public final fun getBOOL ()Lkotlin/text/Regex;
+	public final fun getFLOAT ()Lkotlin/text/Regex;
+	public final fun getINT ()Lkotlin/text/Regex;
+	public final fun getNULL ()Lkotlin/text/Regex;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver {
+	public abstract fun resolve (Ljava/lang/String;Z)Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+	public abstract fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
+	public abstract fun peekToken ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
+	public abstract fun resetDocumentIndex ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner$DefaultImpls {
+	public static fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/scanner/Scanner;Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/ScannerImpl : it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/scanner/ScannerImpl$Companion;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lit/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader;)V
+	public fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+	public fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+	public fun hasNext ()Z
+	public fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
+	public synthetic fun next ()Ljava/lang/Object;
+	public fun peekToken ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
+	public fun remove ()V
+	public fun resetDocumentIndex ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/ScannerImpl$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader$Companion;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Ljava/lang/String;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;Lokio/Source;)V
+	public final fun forward ()V
+	public final fun forward (I)V
+	public static synthetic fun forward$default (Lit/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader;IILjava/lang/Object;)V
+	public final fun getColumn ()I
+	public final fun getDocumentIndex ()I
+	public final fun getIndex ()I
+	public final fun getLine ()I
+	public final fun getMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public static final fun isPrintable (I)Z
+	public static final fun isPrintable (Ljava/lang/String;)Z
+	public final fun peek ()I
+	public final fun peek (I)I
+	public final fun prefix (I)Ljava/lang/String;
+	public final fun prefixForward (I)Ljava/lang/String;
+	public final fun resetDocumentIndex ()V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/scanner/StreamReader$Companion {
+	public final fun isPrintable (I)Z
+	public final fun isPrintable (Ljava/lang/String;)Z
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/schema/CoreSchema : it/krzeminski/snakeyaml/engine/kmp/schema/JsonSchema {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/schema/CoreSchema$Companion;
+	public fun <init> ()V
+	public fun getSchemaTagConstructors ()Ljava/util/Map;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/schema/CoreSchema$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/schema/FailsafeSchema : it/krzeminski/snakeyaml/engine/kmp/schema/Schema {
+	public fun <init> ()V
+	public fun getScalarResolver ()Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;
+	public fun getSchemaTagConstructors ()Ljava/util/Map;
+}
+
+public class it/krzeminski/snakeyaml/engine/kmp/schema/JsonSchema : it/krzeminski/snakeyaml/engine/kmp/schema/Schema {
+	public fun <init> ()V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;Ljava/util/Map;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getScalarResolver ()Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;
+	public fun getSchemaTagConstructors ()Ljava/util/Map;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/schema/Schema {
+	public abstract fun getScalarResolver ()Lit/krzeminski/snakeyaml/engine/kmp/resolver/ScalarResolver;
+	public abstract fun getSchemaTagConstructors ()Ljava/util/Map;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator {
+	public abstract fun nextAnchor (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/serializer/NumberAnchorGenerator : it/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator {
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun nextAnchor (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/serializer/Serializer {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;Lit/krzeminski/snakeyaml/engine/kmp/emitter/Emitable;)V
+	public final fun emitStreamEnd ()V
+	public final fun emitStreamStart ()V
+	public final fun serializeDocument (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)V
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/AliasToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/AnchorToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Lit/krzeminski/snakeyaml/engine/kmp/common/Anchor;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/BlockEndToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/BlockEntryToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/BlockMappingStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/BlockSequenceStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/CommentToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;Ljava/lang/String;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public final fun getCommentType ()Lit/krzeminski/snakeyaml/engine/kmp/comments/CommentType;
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$Companion;
+	public static final field TAG_DIRECTIVE Ljava/lang/String;
+	public static final field YAML_DIRECTIVE Ljava/lang/String;
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TokenValue;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TokenValue;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$Companion {
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TagDirective : it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TokenValue {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TagDirective;
+	public static synthetic fun copy$default (Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TagDirective;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TagDirective;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHandle ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public final fun getPrefix ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TokenValue {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$YamlDirective : it/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$TokenValue {
+	public fun <init> (II)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$YamlDirective;
+	public static synthetic fun copy$default (Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$YamlDirective;IIILjava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/tokens/DirectiveToken$YamlDirective;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMajor ()I
+	public final fun getMinor ()I
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DocumentEndToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/DocumentStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/FlowEntryToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/FlowMappingEndToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/FlowMappingStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/FlowSequenceEndToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/FlowSequenceStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/KeyToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/ScalarToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)V
+	public synthetic fun <init> (Ljava/lang/String;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getPlain ()Z
+	public final fun getStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/StreamEndToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/StreamStartToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/TagToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/tokens/TagTuple;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public final fun getValue ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/TagTuple;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/TagTuple {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getHandle ()Ljava/lang/String;
+	public final fun getSuffix ()Ljava/lang/String;
+}
+
+public abstract class it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getEndMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public final fun getStartMark ()Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;
+	public abstract fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID : java/lang/Enum {
+	public static final field Alias Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Anchor Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field BlockEnd Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field BlockEntry Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field BlockMappingStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field BlockSequenceStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Comment Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Directive Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field DocumentEnd Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field DocumentStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field FlowEntry Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field FlowMappingEnd Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field FlowMappingStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field FlowSequenceEnd Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field FlowSequenceStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Key Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Scalar Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field StreamEnd Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field StreamStart Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Tag Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static final field Value Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+	public static fun values ()[Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+
+public final class it/krzeminski/snakeyaml/engine/kmp/tokens/ValueToken : it/krzeminski/snakeyaml/engine/kmp/tokens/Token {
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun getTokenId ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;
+}
+

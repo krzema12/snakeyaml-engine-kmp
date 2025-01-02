@@ -1,4 +1,6 @@
-[![Maven Central Version](https://img.shields.io/maven-central/v/it.krzeminski/snakeyaml-engine-kmp?style=for-the-badge)](https://search.maven.org/artifact/it.krzeminski/snakeyaml-engine-kmp/)
+[![Maven Central Version](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp/badge.svg)](https://maven-badges.herokuapp.com/maven-central/it.krzeminski/snakeyaml-engine-kmp)
+
+[![Commits to upstream](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/commits-to-upstream-badge.svg)](https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/refs/heads/commits-to-upstream-badge/log-diff-between-repos.txt) - the number of commits in snakeyaml-engine to be considered as candidates for porting to snakeyaml-engine-kmp
 
 # SnakeYAML Engine KMP
 
@@ -35,7 +37,9 @@ The library has been successfully ported to KMP, and is consumed by [kaml](https
 a library that integrates with [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 
 SnakeYAML Engine KMP uses comprehensive [YAML test suites](https://github.com/yaml/yaml-test-suite)
-that validate correctness. However, performance has not been evaluated.
+that validate correctness. Detailed performance testing wasn't conducted, however we have performance
+reports (see [here](https://krzema12.github.io/snakeyaml-engine-kmp-benchmarks/dev/bench/)) and mechanisms
+in place that should prevent performance regressions.
 
 ## How to use
 
@@ -62,35 +66,17 @@ We also recommend reading
 ### Snapshot releases
 
 Snapshot versions of SnakeYAML Engine KMP (straight from the main branch) are available.
-They are published to a GitHub branch, which must be added as a
-[custom Gradle Plugin repository](https://docs.gradle.org/current/userguide/plugins.html#sec:custom_plugin_repositories)
-
-```kts
-// settings.gradle.kts
-
-@Suppress("UnstableApiUsage")
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-
-        // add the snapshot repository
-        maven("https://raw.githubusercontent.com/krzema12/snakeyaml-engine-kmp/artifacts/m2/") {
-            name = "SnakeYAML Engine KMP Snapshots"
-            mavenContent {
-                // only include the relevant snapshots
-                includeGroup("it.krzeminski")
-                snapshotsOnly()
-            }
-        }
-    }
-}
-```
-
-Once the repository is configured, add a dependency on the library:
+They are published to Sonatype snapshots repository, which must be added as a
+custom Maven repo:
 
 ```kts
 // build.gradle.kts
+
+repositories {
+    maven {
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
 
 dependencies {
     implementation("it.krzeminski:snakeyaml-engine-kmp:x.y.z-SNAPSHOT")

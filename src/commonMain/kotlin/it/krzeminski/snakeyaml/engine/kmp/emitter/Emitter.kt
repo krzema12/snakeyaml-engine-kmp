@@ -352,11 +352,11 @@ class Emitter(
         simpleKeyContext = simpleKey
         when (event?.eventId) {
             Event.ID.Alias                                                 -> {
-                expectAlias()
+                expectAlias(simpleKey)
             }
 
             Event.ID.Scalar, Event.ID.SequenceStart, Event.ID.MappingStart -> {
-                processAnchor("&")
+                processAnchor()
                 processTag()
                 handleNodeEvent(event!!.eventId)
             }
@@ -396,9 +396,12 @@ class Emitter(
         }
     }
 
-    private fun expectAlias() {
+    /**
+     * @param simpleKey true when this is the alias for a simple key
+     */
+    private fun expectAlias(simpleKey: Boolean) {
         state = if (event is AliasEvent) {
-            processAnchor("*")
+            processAlias(simpleKey)
             states.removeLast()
         } else {
             throw EmitterException("Expecting Alias.")
@@ -782,7 +785,7 @@ class Emitter(
 
     //region Anchor, Tag, and Scalar processors.
 
-    private fun processAnchor(indicator: String) {
+    private fun processAnchorOrAlias(indicator: String, trailingWhitespace: Boolean) {
         val ev = event as NodeEvent
         val anchor: Anchor? = ev.anchor
         if (anchor != null) {
@@ -792,8 +795,24 @@ class Emitter(
             writeIndicator(indicator = indicator + anchor, needWhitespace = true)
         }
         preparedAnchor = null
+        if (trailingWhitespace) {
+            writeWhitespace(1)
+        }
     }
 
+    private fun processAnchor() {
+        // no need for trailing space
+        processAnchorOrAlias("&", false)
+    }
+
+    private fun processAlias(simpleKey: Boolean) {
+        // because of ':' it needs to add trailing space for simple keys
+        processAnchorOrAlias("*", simpleKey)
+    }
+
+    /**
+     * Emit the tag for the current event
+     */
     private fun processTag() {
         var tag: String?
         if (event?.eventId == Event.ID.Scalar) {
@@ -802,17 +821,14 @@ class Emitter(
             if (scalarStyle == null) {
                 scalarStyle = chooseScalarStyle(ev)
             }
+            // check when no tag is required
             if (
                 (!canonical || tag == null)
-                && (
-                    scalarStyle == null
-                        && ev.implicit.canOmitTagInPlainScalar()
-                        || scalarStyle != null
-                        && ev.implicit.canOmitTagInNonPlainScalar()
-                    )
+                && ((scalarStyle == ScalarStyle.PLAIN && ev.implicit.canOmitTagInPlainScalar())
+                        || (scalarStyle != ScalarStyle.PLAIN && ev.implicit.canOmitTagInNonPlainScalar()))
             ) {
                 preparedTag = null
-                return
+                return // no tag required
             } else if (ev.implicit.canOmitTagInPlainScalar() && tag == null) {
                 tag = "!"
                 preparedTag = null
@@ -822,7 +838,7 @@ class Emitter(
             tag = ev.tag
             if ((!canonical || tag == null) && ev.isImplicit()) {
                 preparedTag = null
-                return
+                return // no tag required
             }
         }
         if (tag == null) {
@@ -832,26 +848,36 @@ class Emitter(
         writeIndicator(indicator = indicator, needWhitespace = true)
     }
 
+    /**
+     * Choose the scalar style based on the contents of the scalar and scalar style chosen by
+     * Representer.
+     *
+     * @return [ScalarStyle] to apply for this scalar event
+     */
     private fun chooseScalarStyle(ev: ScalarEvent): ScalarStyle? {
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (!ev.plain && ev.scalarStyle == ScalarStyle.DOUBLE_QUOTED || canonical) {
+        if (!ev.plain && ev.dQuoted || canonical) {
             return ScalarStyle.DOUBLE_QUOTED
         }
-        if (ev.plain && ev.implicit.canOmitTagInPlainScalar()) {
+        if (ev.json && ev.tag == Tag.STR.value) {
+            // special case for strings which are always double-quoted in JSON
+            return ScalarStyle.DOUBLE_QUOTED;
+        }
+        if ((ev.plain || ev.json) && ev.implicit.canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis!!.empty || analysis!!.multiline))
                 && (flowLevel != 0 && analysis!!.allowFlowPlain || flowLevel == 0 && analysis!!.allowBlockPlain)
             ) {
-                return null
+                return ScalarStyle.PLAIN
             }
         }
-        if (!ev.plain && (ev.scalarStyle == ScalarStyle.LITERAL || ev.scalarStyle == ScalarStyle.FOLDED)) {
+        if (ev.literal || ev.folded) {
             if (flowLevel == 0 && !simpleKeyContext && analysis!!.allowBlock) {
                 return ev.scalarStyle
             }
         }
-        if (ev.plain || ev.scalarStyle == ScalarStyle.SINGLE_QUOTED) {
+        if (ev.plain || ev.sQuoted) {
             if (analysis!!.allowSingleQuoted && !(simpleKeyContext && analysis!!.multiline)) {
                 return ScalarStyle.SINGLE_QUOTED
             }
@@ -863,21 +889,16 @@ class Emitter(
         if (analysis == null) {
             analysis = analyzeScalar(ev.value)
         }
-        if (scalarStyle == null) {
-            scalarStyle = chooseScalarStyle(ev)
-        }
         val split = !simpleKeyContext && splitLines
-        if (scalarStyle == null) {
-            writePlain(analysis!!.scalar, split)
-        } else {
-            when (scalarStyle) {
-                ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
-                ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
-                ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
-                ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
-                else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
-            }
+        when (scalarStyle) {
+            ScalarStyle.PLAIN         -> writePlain(analysis!!.scalar, split)
+            ScalarStyle.DOUBLE_QUOTED -> writeDoubleQuoted(analysis!!.scalar, split)
+            ScalarStyle.SINGLE_QUOTED -> writeSingleQuoted(analysis!!.scalar, split)
+            ScalarStyle.FOLDED        -> writeFolded(analysis!!.scalar, split)
+            ScalarStyle.LITERAL       -> writeLiteral(analysis!!.scalar)
+            else                      -> throw YamlEngineException("Unexpected scalarStyle: $scalarStyle")
         }
+        // reset scalar style for another scalar
         analysis = null
         scalarStyle = null
     }
@@ -892,6 +913,12 @@ class Emitter(
         return version.representation
     }
 
+    /**
+     * Detect whether the tag starts with a standard handle and add ! when it does not
+     *
+     * @param tag - raw (complete tag)
+     * @return formatted tag ready to emit
+     */
     private fun prepareTag(tag: String): String {
         if (tag.isEmpty()) {
             throw EmitterException("tag must not be empty")
@@ -899,6 +926,7 @@ class Emitter(
             return tag
         }
         val matchedPrefix = tagPrefixes.keys.firstOrNull { prefix ->
+            // if tag starts with prefix and contains more than just prefix
             prefix != null
                 && tag.startsWith(prefix)
                 && ("!" == prefix || prefix.length < tag.length)
@@ -912,8 +940,7 @@ class Emitter(
             handle = null
             suffix = tag
         }
-        val suffixText = suffix.take(suffix.length)
-        return if (handle != null) handle + suffixText else "!<$suffixText>"
+        return if (handle != null) handle + suffix else "!<$suffix>"
     }
 
     private fun analyzeScalar(scalar: String): ScalarAnalysis {
@@ -1130,12 +1157,14 @@ class Emitter(
         stream.write(indicator)
     }
 
-    private fun writeIndent() {
+    private fun writeIndent(): Int {
         val indentToWrite = indent ?: 0
         if (!indention || column > indentToWrite || column == indentToWrite && !whitespace) {
             writeLineBreak()
         }
-        writeWhitespace(indentToWrite - column)
+        val whitespaces = indentToWrite - this.column
+        writeWhitespace(whitespaces)
+        return whitespaces
     }
 
     private fun writeWhitespace(length: Int) {
@@ -1308,6 +1337,7 @@ class Emitter(
         var wroteComment = false
         if (emitComments) {
             var indentColumns = 0
+            var prevColumns = 0
             var firstComment = true
             for (commentLine in commentLines) {
                 if (commentLine.commentType != CommentType.BLANK_LINE) {
@@ -1319,14 +1349,15 @@ class Emitter(
                         )
                         indentColumns = if (column > 0) column - 1 else 0
                     } else {
-                        writeWhitespace(indentColumns)
+                        writeWhitespace(indentColumns - prevColumns)
                         writeIndicator(indicator = "#")
                     }
                     stream.write(commentLine.value)
                     writeLineBreak()
+                    prevColumns = 0
                 } else {
                     writeLineBreak()
-                    writeIndent()
+                    prevColumns = writeIndent()
                 }
                 wroteComment = true
             }

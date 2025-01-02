@@ -114,6 +114,19 @@ class ScannerImpl(
     }
 
     /**
+     * Check whether the next token is the given type.
+     */
+    override fun checkToken(choice: Token.ID): Boolean {
+        while (needMoreTokens()) {
+            fetchMoreTokens()
+        }
+        if (!this.tokens.isEmpty()) {
+            return this.tokens[0].tokenId == choice
+        }
+        return false
+    }
+
+    /**
      * Check whether the next token is present.
      *
      * If no [choices] are provided, then any token is considered valid.
@@ -1283,11 +1296,10 @@ class ScannerImpl(
 
     /**
      * The YAML 1.2 specification does not restrict characters for anchors and
-     * aliases. This may lead to problems, see
-     * [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
+     * aliases. This may lead to problems.
      *
-     * This implementation tries to follow
-     * [RFC-0003](https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md)
+     * See [alias naming](https://github.com/yaml/libyaml/issues/205#issuecomment-693634465)
+     * See also [issue 485](https://bitbucket.org/snakeyaml/snakeyaml/issues/485/alias-names-are-too-permissive-compared-to)
      */
     private fun scanAnchor(isAnchor: Boolean): Token {
         val startMark = reader.getMark()
@@ -1296,7 +1308,10 @@ class ScannerImpl(
         reader.forward()
         var length = 0
         var c = reader.peek(length)
-        // Anchor may not contain ",[]{}"
+        // The future implementation may try to follow RFC-0003:
+        // https://github.com/yaml/yaml-spec/blob/master/rfc/RFC-0003.md
+        // and exclude also ':' (colon)
+        // Anchor may not contain ,[]{}/.*&
         while (CharConstants.NULL_BL_T_LINEBR.hasNo(c, ",[]{}/.*&")) {
             length++
             c = reader.peek(length)
@@ -1494,7 +1509,7 @@ class ScannerImpl(
                     && reader.peek().toChar() !in " \t"
                 ) {
                     if (breaks.isEmpty()) {
-                        stringBuilder.append(" ")
+                        stringBuilder.append(' ')
                     }
                 } else {
                     stringBuilder.append(lineBreak ?: "")
@@ -1704,10 +1719,10 @@ class ScannerImpl(
         val quote = reader.peek()
         reader.forward()
         val chunks = buildString {
-            append(scanFlowScalarNonSpaces(doubleValue, startMark))
+            scanFlowScalarNonSpaces(doubleValue, startMark, this)
             while (reader.peek() != quote) {
-                append(scanFlowScalarSpaces(startMark))
-                append(scanFlowScalarNonSpaces(doubleValue, startMark))
+                scanFlowScalarSpaces(startMark, this)
+                scanFlowScalarNonSpaces(doubleValue, startMark, this)
             }
         }
         reader.forward()
@@ -1718,9 +1733,8 @@ class ScannerImpl(
     /**
      * Scan some number of flow-scalar non-space characters.
      */
-    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Mark?): String {
+    private fun scanFlowScalarNonSpaces(doubleQuoted: Boolean, startMark: Mark?, chunks: StringBuilder) {
         // See the specification for details.
-        val chunks = StringBuilder()
         while (true) {
             // Scan through any number of characters which are not: NUL, blank,
             // tabs, line breaks, single-quotes, double-quotes, or backslashes.
@@ -1735,7 +1749,7 @@ class ScannerImpl(
             // differing meanings.
             var c = reader.peek()
             if (!doubleQuoted && c == '\''.code && reader.peek(1) == '\''.code) {
-                chunks.append("'")
+                chunks.append('\'')
                 reader.forward(2)
             } else if (doubleQuoted && c == '\''.code || !doubleQuoted && c.toChar() in "\"\\") {
                 chunks.appendCodePoint(c)
@@ -1765,8 +1779,7 @@ class ScannerImpl(
                     }
                     try {
                         val decimal = hex.toInt(16)
-                        val unicode = Character.toChars(decimal)
-                        chunks.append(unicode)
+                        chunks.appendCodePoint(decimal)
                         reader.forward(length)
                     } catch (e: IllegalArgumentException) {
                         throw ScannerException(
@@ -1788,12 +1801,12 @@ class ScannerImpl(
                     )
                 }
             } else {
-                return chunks.toString()
+                return
             }
         }
     }
 
-    private fun scanFlowScalarSpaces(startMark: Mark?): String {
+    private fun scanFlowScalarSpaces(startMark: Mark?, chunks: StringBuilder) {
         // See the specification for details.
         var length = 0
         // Scan through any number of whitespace (space, tab) characters, consuming them.
@@ -1812,13 +1825,13 @@ class ScannerImpl(
         }
         // If we encounter a line break, scan it into our assembled string...
         val lineBreakOpt = scanLineBreak()
-        return buildString {
+        chunks.apply {
             if (lineBreakOpt != null) {
                 val breaks = scanFlowScalarBreaks(startMark)
                 if ("\n" != lineBreakOpt) {
                     append(lineBreakOpt)
                 } else if (breaks.isEmpty()) {
-                    append(" ")
+                    append(' ')
                 }
                 append(breaks)
             } else {

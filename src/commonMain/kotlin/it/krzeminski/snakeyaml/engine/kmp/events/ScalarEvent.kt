@@ -45,12 +45,6 @@ class ScalarEvent @JvmOverloads constructor(
     /**
      * Indicates the style of the scalar
      *
-     * * `null` - Flow Style - Plain
-     * * `'\''` - Flow Style - Single-Quoted
-     * * `"` - Flow Style - Double-Quoted
-     * * `|` - Block Style - Literal
-     * * `&gt;` - Block Style - Folded
-     *
      * @return Style of the scalar.
      */
     val scalarStyle: ScalarStyle,
@@ -63,6 +57,21 @@ class ScalarEvent @JvmOverloads constructor(
 
     val plain: Boolean
         get() = scalarStyle == ScalarStyle.PLAIN
+
+    val literal: Boolean
+        get() = scalarStyle == ScalarStyle.LITERAL
+
+    val sQuoted: Boolean
+        get() = scalarStyle == ScalarStyle.SINGLE_QUOTED
+
+    val dQuoted: Boolean
+        get() = scalarStyle == ScalarStyle.DOUBLE_QUOTED
+
+    val folded: Boolean
+        get() = scalarStyle == ScalarStyle.FOLDED
+
+    val json: Boolean
+        get() = scalarStyle == ScalarStyle.JSON_SCALAR_STYLE
 
     override fun toString(): String {
         return buildString {

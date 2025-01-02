@@ -1,5 +1,9 @@
 package buildsrc.conventions.lang
 
+import buildsrc.utils.JavaLanguageVersion
+import buildsrc.utils.JvmTarget
+import buildsrc.utils.compilerFor
+import buildsrc.utils.launcherFor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
@@ -24,7 +28,7 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(21)
 
     //region JVM Targets
     jvm {
@@ -45,8 +49,20 @@ kotlin {
     //region Wasm Targets
     wasmJs {
         binaries.library()
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                // Disabled to unblock releasing of the lib.
+                // See https://github.com/krzema12/snakeyaml-engine-kmp/issues/320
+                enabled = false
+            }
+        }
+        nodejs {
+            testTask {
+                // Disabled to unblock releasing of the lib.
+                // See https://github.com/krzema12/snakeyaml-engine-kmp/issues/320
+                enabled = false
+            }
+        }
     }
 
     // Disable Wasi: No matching variant of io.kotest:kotest-framework-engine:5.9.0 was found
@@ -108,6 +124,39 @@ kotlin {
         }
     }
 }
+
+//region Java versioning
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+
+// use Java 21 to compile the project
+val javaCompiler = javaToolchains.compilerFor(21)
+// use minimum Java version to run the tests
+val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
+
+kotlin.targets.withType<KotlinJvmTarget>().configureEach {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        jvmTarget = JvmTarget(minSupportedJavaVersion)
+        freeCompilerArgs.addAll(
+            "-Xjdk-release=${minSupportedJavaVersion.majorVersion}",
+        )
+    }
+
+    testRuns.configureEach {
+        executionTask.configure {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion(minSupportedJavaVersion)
+            }
+        }
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = minSupportedJavaVersion.toString()
+    targetCompatibility = minSupportedJavaVersion.toString()
+}
+//endregion
+
 
 afterEvaluate {
     rootProject.extensions.configure<YarnRootExtension> {

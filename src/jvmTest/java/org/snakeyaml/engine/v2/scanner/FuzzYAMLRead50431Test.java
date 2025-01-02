@@ -28,12 +28,10 @@ package org.snakeyaml.engine.v2.scanner;
  */
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Load;
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException;
 
 /**
@@ -53,7 +51,7 @@ public class FuzzYAMLRead50431Test {
     } catch (ScannerException e) {
       assertEquals(
           "found unknown escape character E30EEE",
-          e.getMessage().lines().findFirst().orElse(null)
+          e.getMessage().split("\n", 2)[0]
       );
     }
   }

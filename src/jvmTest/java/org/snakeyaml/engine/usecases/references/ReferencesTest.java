@@ -97,17 +97,17 @@ public class ReferencesTest {
   @Test
   @DisplayName("Parsing with aliases may take a lot of time, CPU and memory")
   public void parseManyAliasesForCollections() {
-    final var minDuration = Duration.ofMillis(400);
-    final var maxDuration = Duration.ofSeconds(15);
-    final var timeElapsed = assertTimeout(maxDuration, () -> {
+    final Duration minDuration = Duration.ofMillis(400);
+    final Duration maxDuration = Duration.ofSeconds(15);
+    final Duration timeElapsed = assertTimeout(maxDuration, () -> {
       String output = createDump(25);
       // Load
-      final var start = Instant.now();
+      final Instant start = Instant.now();
       LoadSettings settings =
         LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(50).build();
       Load load = new Load(settings);
       load.loadOne(output);
-      final var finish = Instant.now();
+      final Instant finish = Instant.now();
       return Duration.between(start, finish);
     });
     assertTrue(

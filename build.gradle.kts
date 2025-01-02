@@ -1,40 +1,50 @@
+import buildsrc.utils.configureGradleDaemonJvm
+
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
     buildsrc.conventions.publishing
     buildsrc.conventions.`git-branch-publish`
     buildsrc.conventions.`yaml-testing`
-    id("dev.adamko.dokkatoo-html") version "2.3.1"
+    buildsrc.conventions.`multiplatform-test-resources`
+    id("dev.adamko.dokkatoo-html") version "2.4.0"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.17.0"
 }
 
 group = "it.krzeminski"
-version = "3.0.1-SNAPSHOT"
+version = "3.0.4-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
+
+apiValidation {
+    ignoredProjects += listOf("snake-kmp-benchmarks")
+}
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.squareup.okio:okio:3.9.0")
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
+                implementation("com.squareup.okio:okio:3.9.1")
+                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
             }
         }
 
         commonTest {
-            kotlin.srcDirs(tasks.yamlTestSuiteDataSources)
+            kotlin.srcDirs(
+                tasks.yamlTestSuiteDataSources,
+                tasks.convertCommonTestResourcesToKotlin,
+            )
 
             dependencies {
-                implementation(project.dependencies.platform("io.kotest:kotest-bom:5.9.1"))
-                implementation("io.kotest:kotest-framework-engine")
-                implementation("io.kotest:kotest-framework-api")
-                implementation("io.kotest:kotest-assertions-core")
+                implementation("io.kotest:kotest-framework-engine:6.0.0.M1")
+                implementation("io.kotest:kotest-framework-api:6.0.0.M1")
+                implementation("io.kotest:kotest-assertions-core:6.0.0.M1")
             }
         }
 
         jvmTest {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.10.3")
-                implementation("io.kotest:kotest-runner-junit5")
-                implementation("com.google.guava:guava:33.2.1-jre")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.11.4")
+                implementation("io.kotest:kotest-runner-junit5:6.0.0.M1")
+                implementation("com.google.guava:guava:33.4.0-jre")
             }
         }
     }
@@ -87,3 +97,9 @@ dokkatoo {
         }
     }
 }
+
+configureGradleDaemonJvm(
+    project = project,
+    updateDaemonJvm = tasks.updateDaemonJvm,
+    gradleDaemonJvmVersion = provider { JavaVersion.toVersion(21) },
+)

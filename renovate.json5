@@ -1,10 +1,10 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    "config:base",
+    'config:recommended',
   ],
   ignorePaths: [
-      "src/jvmTest/resources/",
+    'src/jvmTest/resources/',
   ],
   automerge: true,
 }

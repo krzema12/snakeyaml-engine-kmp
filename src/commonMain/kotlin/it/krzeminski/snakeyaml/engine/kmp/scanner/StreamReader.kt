@@ -29,6 +29,7 @@ import kotlin.jvm.JvmStatic
  * Reads the provided [stream] of code points, and implements look-ahead operations.
  *
  * Checks if code points are in the allowed range.
+ * If [stream] contains invalid UTF-8-encoded bytes, they will be replaced with `?`.
  *
  * @param loadSettings configuration options
  * @param stream the input

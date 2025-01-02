@@ -34,17 +34,16 @@ kotlin {
             )
 
             dependencies {
-                implementation(project.dependencies.platform("io.kotest:kotest-bom:5.9.1"))
-                implementation("io.kotest:kotest-framework-engine")
-                implementation("io.kotest:kotest-framework-api")
-                implementation("io.kotest:kotest-assertions-core")
+                implementation("io.kotest:kotest-framework-engine:6.0.0.M1")
+                implementation("io.kotest:kotest-framework-api:6.0.0.M1")
+                implementation("io.kotest:kotest-assertions-core:6.0.0.M1")
             }
         }
 
         jvmTest {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-engine:5.11.4")
-                implementation("io.kotest:kotest-runner-junit5")
+                implementation("io.kotest:kotest-runner-junit5:6.0.0.M1")
                 implementation("com.google.guava:guava:33.4.0-jre")
             }
         }

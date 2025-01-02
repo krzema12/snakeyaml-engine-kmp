@@ -28,10 +28,13 @@ class ReaderStringTest : FunSpec({
     }
 
     test("check all") {
-        var counterSurrogates = 0
+        var highSurrogatesCounter = 0
+        var lowSurrogatesCounter = 0
         for (i in 0..<256 * 256) {
             if (i.toChar().isHighSurrogate()) {
-                counterSurrogates++
+                highSurrogatesCounter++
+            } else if (i.toChar().isLowSurrogate()) {
+                lowSurrogatesCounter++
             } else {
                 val str = CharArray(1) { i.toChar() }.concatToString()
                 val regularExpressionResult = StreamReader.isPrintable(str)
@@ -52,8 +55,11 @@ class ReaderStringTest : FunSpec({
             }
         }
         // https://en.wikipedia.org/wiki/Universal_Character_Set_characters
-        withClue("There are 1024 high surrogates (D800–DBFF)") {
-            counterSurrogates shouldBe 1024
+        withClue("There are 1024 low surrogates (D800–DBFF)") {
+            highSurrogatesCounter shouldBe 1024
+        }
+        withClue("There are 1024 high surrogates (DC00–DFFF)") {
+            lowSurrogatesCounter shouldBe 1024
         }
     }
 

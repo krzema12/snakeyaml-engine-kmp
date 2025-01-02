@@ -29,6 +29,7 @@ import kotlin.jvm.JvmStatic
  * Reads the provided [stream] of code points, and implements look-ahead operations.
  *
  * Checks if code points are in the allowed range.
+ * If [stream] contains invalid UTF-8-encoded bytes, they will be replaced with `?`.
  *
  * @param loadSettings configuration options
  * @param stream the input
@@ -191,14 +192,6 @@ class StreamReader(
             if (read > 0) {
                 var cpIndex = dataLength - pointer
                 codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                // Okio seems to make this check redundant, which is a good because I have no idea how to convert it sensibly!
-                //if (buffer.last().isHighSurrogate()) {
-                //    if (stream.read(buffer, read, 1) == -1) {
-                //        eof = true
-                //    } else {
-                //        read++
-                //    }
-                //}
                 var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {

@@ -36,7 +36,7 @@ class ReaderStringTest : FunSpec({
             } else if (i.toChar().isLowSurrogate()) {
                 lowSurrogatesCounter++
             } else {
-                val str = CharArray(1) { i.toChar() }.concatToString()
+                val str = charArrayOf(i.toChar()).concatToString()
                 val regularExpressionResult = StreamReader.isPrintable(str)
 
                 var charsArrayResult = true
@@ -65,7 +65,7 @@ class ReaderStringTest : FunSpec({
 
     test("high surrogates alone") {
         for (i in 0xD800..0xDBFF) {
-            val str = CharArray(1) { i.toChar() }.concatToString()
+            val str = charArrayOf(i.toChar()).concatToString()
             val reader = StreamReader(LoadSettings.builder().build(), str)
             reader.peek() shouldBe '?'.code
         }
@@ -73,7 +73,7 @@ class ReaderStringTest : FunSpec({
 
     test("low surrogates alone") {
         for (i in 0xDC00..0xDFFF) {
-            val str = CharArray(1) { i.toChar() }.concatToString()
+            val str = charArrayOf(i.toChar()).concatToString()
             val reader = StreamReader(LoadSettings.builder().build(), str)
             reader.peek() shouldBe '?'.code
         }

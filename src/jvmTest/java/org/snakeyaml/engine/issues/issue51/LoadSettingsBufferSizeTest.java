@@ -26,22 +26,31 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @org.junit.jupiter.api.Tag("fast")
 public class LoadSettingsBufferSizeTest {
-  private final String yaml = " - foo: bar\n" + "   if: 'aaa' == 'bbb'";
-  private final String expectedError = "while parsing a block mapping\n"
-      + " in reader, line 1, column 4:\n" + "     - foo: bar\n" + "       ^\n"
-      + "expected <block end>, but found '<scalar>'\n" + " in reader, line 2, column 14:\n"
-      + "       if: 'aaa' == 'bbb'\n" + "                 ^\n";
 
   private void parse(String yaml) {
     LoadSettings settings = LoadSettings.builder().setBufferSize(yaml.length()).build();
     new Composer(settings, new ParserImpl(settings, new StreamReader(settings, yaml)))
-        .getSingleNode();
+      .getSingleNode();
   }
 
   @DisplayName("Issue 51 - exact buffer size")
   @Test
   public void setBufferSizeCutsError() {
+    final String yaml = " - foo: bar\n" +
+      "   if: 'aaa' == 'bbb'";
+
     ParserException exception = assertThrows(ParserException.class, () -> parse(yaml));
+
+    String expectedError =
+      "while parsing a block mapping\n" +
+        " in reader, line 1, column 4:\n" +
+        "     - foo: bar\n" +
+        "       ^\n" +
+        "expected <block end>, but found '<scalar>'\n" +
+        " in reader, line 2, column 14:\n" +
+        "       if: 'aaa' == 'bbb'\n" +
+        "                 ^\n";
+
     assertEquals(expectedError, exception.getMessage());
   }
 }

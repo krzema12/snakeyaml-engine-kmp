@@ -63,15 +63,19 @@ class ReaderStringTest : FunSpec({
         }
     }
 
-    test("high surrogate alone") {
-        val reader = StreamReader(LoadSettings.builder().build(), "test\uD800")
-        try {
-            while (reader.peek() != 0) {
-                reader.forward()
-            }
-        } catch(e: ReaderException) {
-            e.toString() shouldContain "(0xD800) The last char is HighSurrogate (no LowSurrogate detected)"
-            e.position shouldBe 5
+    test("high surrogates alone") {
+        for (i in 0xD800..0xDBFF) {
+            val str = CharArray(1) { i.toChar() }.concatToString()
+            val reader = StreamReader(LoadSettings.builder().build(), str)
+            reader.peek() shouldBe '?'.code
+        }
+    }
+
+    test("low surrogates alone") {
+        for (i in 0xDC00..0xDFFF) {
+            val str = CharArray(1) { i.toChar() }.concatToString()
+            val reader = StreamReader(LoadSettings.builder().build(), str)
+            reader.peek() shouldBe '?'.code
         }
     }
 

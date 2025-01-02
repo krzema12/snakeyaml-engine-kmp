@@ -192,14 +192,6 @@ class StreamReader(
             if (read > 0) {
                 var cpIndex = dataLength - pointer
                 codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                // Okio seems to make this check redundant, which is a good because I have no idea how to convert it sensibly!
-                //if (buffer.last().isHighSurrogate()) {
-                //    if (stream.read(buffer, read, 1) == -1) {
-                //        eof = true
-                //    } else {
-                //        read++
-                //    }
-                //}
                 var nonPrintable: Int? = null
                 var i = 0
                 while (i < read) {

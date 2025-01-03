@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 class CommonTestResourcesAccessTest : FunSpec({
     test("stringFromResources - resource exists") {
         stringFromResources("test/resource/foo.txt") shouldBe """
-            Hello from multiplatform resources!
+            Hello from multiplatform! resources!
             Foo bar baz
 
         """.trimIndent()

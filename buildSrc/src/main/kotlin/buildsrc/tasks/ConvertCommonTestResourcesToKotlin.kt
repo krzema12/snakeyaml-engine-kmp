@@ -3,10 +3,8 @@ package buildsrc.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
-import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
-import java.io.File
+import org.gradle.api.tasks.*
+import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import java.nio.file.Path
 import javax.inject.Inject
 
@@ -20,14 +18,13 @@ import javax.inject.Inject
 abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     private val fs: FileSystemOperations,
 ) : DefaultTask() {
+    @get:InputDirectory
+    @get:PathSensitive(RELATIVE)
+    abstract val commonResourcesDir: DirectoryProperty
+
     /** The directory that will contain the generated Kotlin code. */
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
-
-    // HACK: Ideally we'd retrieve the 'resources' path via Gradle API, but somehow Gradle sees only 'main' and 'test'
-    // source sets instead of the required 'commonTest'.
-    private val commonResourcesDir: File = project.projectDir
-        .resolve("src").resolve("commonTest").resolve("resources")
 
     @TaskAction
     fun action() {
@@ -44,10 +41,10 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     private fun buildResourcesMap(): Map<String, Any> {
         val resourcesMap = mutableMapOf<String, Any>()
 
-        commonResourcesDir.walk()
+        commonResourcesDir.asFile.get().walk()
             .filter { it.isFile }
             .forEach { file ->
-                val relativePath = file.relativeTo(commonResourcesDir).toPath()
+                val relativePath = file.relativeTo(commonResourcesDir.asFile.get()).toPath()
                 relativePath.toList().let { pathSegments: List<Path> ->
                     val mapToAddFileTo = pathSegments
                         .dropLast(1)

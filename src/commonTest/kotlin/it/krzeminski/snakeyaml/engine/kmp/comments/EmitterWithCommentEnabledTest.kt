@@ -13,6 +13,9 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.comments
 
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.StringOutputStream
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
@@ -25,13 +28,10 @@ import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import java.io.StringWriter
 
-class EmitterWithCommentEnabledTest {
-    private fun runEmitterWithCommentsEnabled(data: String): String {
-        val output: StreamDataWriter = MyWriter()
+class EmitterWithCommentEnabledTest : FunSpec({
+    fun runEmitterWithCommentsEnabled(data: String): String {
+        val output: StreamDataWriter = StringOutputStream()
 
         val dumpSettings = DumpSettings.builder()
             .setDefaultScalarStyle(ScalarStyle.PLAIN)
@@ -56,7 +56,7 @@ class EmitterWithCommentEnabledTest {
         return output.toString()
     }
 
-    private fun producePrettyFlowEmitter(output: StreamDataWriter): Emitter {
+    fun producePrettyFlowEmitter(output: StreamDataWriter): Emitter {
         val dumpSettings = DumpSettings.builder()
             .setDefaultScalarStyle(ScalarStyle.PLAIN)
             .setDefaultFlowStyle(FlowStyle.FLOW)
@@ -66,54 +66,48 @@ class EmitterWithCommentEnabledTest {
         return Emitter(dumpSettings, output)
     }
 
-    @Test
-    fun testEmpty() {
+    test("empty") {
         val data = ""
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testWithOnlyComment() {
+    test("with only comment") {
         val data = "# Comment\n\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentEndingALine() {
+    test("comment ending a line") {
         val data = """key: # Comment
   value
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testMultiLineComment() {
+    test("multiline comment") {
         val data = """key: # Comment
      # lines
   value
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testBlankLine() {
+    test("blank line") {
         val data = "" +
                 "\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testBlankLineComments() {
+    test("blank line comments") {
         val data = """
 
             abc: def # comment
@@ -123,31 +117,28 @@ class EmitterWithCommentEnabledTest {
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testBlockScalar() {
+    test("block scalar") {
         val data = """abc: | # Comment
   def
   hij
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testDirectiveLineEndComment() {
+    test("directive line end comment") {
         val data = "%YAML 1.1 #Comment\n---\n"
 
         val result = runEmitterWithCommentsEnabled(data)
         // We currently strip Directive comments
-        assertEquals("", result)
+        result shouldBe ""
     }
 
-    @Test
-    fun testSequence() {
+    test("sequence") {
         val data = """# Comment
 list: # InlineComment1
   - # Block Comment
@@ -156,11 +147,10 @@ list: # InlineComment1
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testAllComments1() {
+    test("all comments 1") {
         val data = """# Block Comment1
 # Block Comment2
 key: # Inline Comment1a
@@ -181,11 +171,10 @@ list: # InlineComment3a
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testMultiDoc() {
+    test("multidoc") {
         val data = """
             key: value
             # Block Comment
@@ -196,11 +185,10 @@ list: # InlineComment3a
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testAllComments2() {
+    test("all comments 2") {
         val data = """key:
   key:
     key:
@@ -223,11 +211,10 @@ key2:
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testAllComments3() {
+    test("all comments 3") {
         val data = """
             # Block Comment1
             [item1, {item2: value2}, {item3: value3}] # Inline Comment1
@@ -236,11 +223,10 @@ key2:
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testKeepingNewLineInsideSequence() {
+    test("keeping new line inside sequence") {
         val data = """
 
             key:
@@ -256,11 +242,10 @@ key2:
             """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testKeepingNewLineInsideSequence2() {
+    test("keeping new line inside sequence 2") {
         val data = """
         apiVersion: kustomize.config.k8s.io/v1beta1
         kind: Kustomization
@@ -292,11 +277,10 @@ key2:
         """.trimIndent()
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentsIndentFirstLineBlank() {
+    test("comments, indent, first line blank") {
         val data = """# Comment 1
 key1:
   
@@ -313,11 +297,10 @@ key5:
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentsLineBlank() {
+    test("comments, line blank") {
         val data = """# Comment 1
 key1:
   
@@ -336,11 +319,10 @@ key5:
 """
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testMultiLineString() {
+    test("multiline string") {
         val data = """# YAML load and save bug with keep block chomping indicator
 example:
   description: |+
@@ -351,11 +333,10 @@ example:
 successfully-loaded: test
 """
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun test100Comments() {
+    test("100 comments") {
         val commentBuilder = buildString {
             for (i in 0..99) {
                 append("# Comment ").append(i).append("\n")
@@ -364,11 +345,10 @@ successfully-loaded: test
         val data = "" + commentBuilder + "simpleKey: simpleValue\n" + "\n"
 
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentsOnReference() {
+    test("comments on reference") {
         val data = """dummy: &a test
 conf:
 - # comment not ok here
@@ -381,23 +361,46 @@ conf:
 
             """.trimIndent()
         val result = runEmitterWithCommentsEnabled(data)
-        assertEquals(expected, result)
+        result shouldBe expected
     }
 
-    @Test
-    fun testCommentsAtDataWindowBreak() {
-        val data = complexConfig
+    test("comments at data window break") {
+        val complexConfig = """# Core configurable options for LWC
+core:
+
+    # The language LWC will use, specified by the shortname. For example, English = en, French = fr, German = de,
+    # and so on
+    locale: en
+
+    # How often updates are batched to the database (in seconds). If set to a higher value than 10, you may have
+    # some unexpected results, especially if your server is prone to crashing.
+    flushInterval: 10
+
+    # LWC regularly caches protections locally to prevent the database from being queried as often. The default is 10000
+    # and for most servers is OK. LWC will also fill up to <precache> when the server is started automatically.
+    cacheSize: 10000
+
+    # How many protections are precached on startup. If set to -1, it will use the cacheSize value instead and precache
+    # as much as possible
+    precache: -1
+
+    # If true, players will be sent a notice in their chat box when they open a protection they have access to, but
+    # not their own unless <showMyNotices> is set to true
+    showNotices: true
+
+    # If true, players will be sent a notice in their chat box when they open a protection they own.
+    showMyNotices: false
+"""
 
         val loadSettings =
             LoadSettings.builder().setMaxAliasesForCollections(Int.MAX_VALUE).build()
 
         val load = Load(loadSettings)
-        load.loadAll(data)
+        load.loadAll(complexConfig)
     }
 
-    @Test
-    fun testCommentsInFlowMapping() {
-        val output: StreamDataWriter = MyWriter()
+    test("comments in flow mapping") {
+        val output: StreamDataWriter = StringOutputStream()
         val emitter = producePrettyFlowEmitter(output)
 
         emitter.emit(StreamStartEvent(null, null))
@@ -484,12 +487,11 @@ conf:
 }
 """
 
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentInEmptyFlowMapping() {
-        val output: StreamDataWriter = MyWriter()
+    test("comment in empty flow mapping") {
+        val output: StreamDataWriter = StringOutputStream()
         val emitter = producePrettyFlowEmitter(output)
 
         emitter.emit(StreamStartEvent(null, null))
@@ -518,12 +520,11 @@ conf:
 }
 """
 
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentInFlowSequence() {
-        val output: StreamDataWriter = MyWriter()
+    test("comments in flow sequence") {
+        val output: StreamDataWriter = StringOutputStream()
         val emitter = producePrettyFlowEmitter(output)
         val allImplicit = ImplicitTuple(true, true)
 
@@ -567,12 +568,11 @@ conf:
 ]
 """
 
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    @Test
-    fun testCommentInEmptySequence() {
-        val output = MyWriter()
+    test("comment in empty sequence") {
+        val output = StringOutputStream()
         val emitter = producePrettyFlowEmitter(output)
 
         emitter.emit(StreamStartEvent(null, null))
@@ -601,39 +601,7 @@ conf:
 ]
 """
 
-        assertEquals(data, result)
+        result shouldBe data
     }
 
-    private val complexConfig = """# Core configurable options for LWC
-core:
-
-    # The language LWC will use, specified by the shortname. For example, English = en, French = fr, German = de,
-    # and so on
-    locale: en
-
-    # How often updates are batched to the database (in seconds). If set to a higher value than 10, you may have
-    # some unexpected results, especially if your server is prone to crashing.
-    flushInterval: 10
-
-    # LWC regularly caches protections locally to prevent the database from being queried as often. The default is 10000
-    # and for most servers is OK. LWC will also fill up to <precache> when the server is started automatically.
-    cacheSize: 10000
-
-    # How many protections are precached on startup. If set to -1, it will use the cacheSize value instead and precache
-    # as much as possible
-    precache: -1
-
-    # If true, players will be sent a notice in their chat box when they open a protection they have access to, but
-    # not their own unless <showMyNotices> is set to true
-    showNotices: true
-
-    # If true, players will be sent a notice in their chat box when they open a protection they own.
-    showMyNotices: false
-"""
-
-    internal inner class MyWriter : StringWriter(), StreamDataWriter {
-        override fun flush() {
-            super<StreamDataWriter>.flush()
-        }
-    }
-}
+})

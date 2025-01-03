@@ -13,7 +13,7 @@ internal class StringOutputStream(
     }
 
     override fun write(str: String, off: Int, len: Int) {
-        builder.append(str, off, len)
+        builder.append(str.drop(off).take(len))
     }
 
     override fun toString(): String = builder.toString()

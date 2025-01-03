@@ -283,7 +283,7 @@ key2:
     test("comments, indent, first line blank") {
         val data = """# Comment 1
 key1:
-
+  
   # Comment 2
   # Comment 3
   key2: value1
@@ -303,7 +303,7 @@ key5:
     test("comments, line blank") {
         val data = """# Comment 1
 key1:
-
+  
   # Comment 2
 
   # Comment 3

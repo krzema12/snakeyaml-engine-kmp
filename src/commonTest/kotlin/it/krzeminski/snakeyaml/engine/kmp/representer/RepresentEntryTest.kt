@@ -15,8 +15,8 @@ package it.krzeminski.snakeyaml.engine.kmp.representer
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.StringOutputStream
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
-import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter
 import it.krzeminski.snakeyaml.engine.kmp.comments.CommentLine
 import it.krzeminski.snakeyaml.engine.kmp.comments.CommentType
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
@@ -72,18 +72,4 @@ private class CommentedEntryRepresenter(settings: DumpSettings) : CommonRepresen
 
         return tuple
     }
-}
-
-private class StringOutputStream(
-    private val builder: StringBuilder = StringBuilder(),
-) : StreamDataWriter {
-    override fun write(str: String) {
-        builder.append(str)
-    }
-
-    override fun write(str: String, off: Int, len: Int) {
-        builder.append(str, off, len)
-    }
-
-    override fun toString(): String = builder.toString()
 }

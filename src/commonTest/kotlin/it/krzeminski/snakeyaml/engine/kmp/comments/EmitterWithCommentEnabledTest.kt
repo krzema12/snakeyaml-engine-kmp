@@ -135,7 +135,7 @@ class EmitterWithCommentEnabledTest : FunSpec({
 
         val result = runEmitterWithCommentsEnabled(data)
         // We currently strip Directive comments
-        result shouldBe data
+        result shouldBe ""
     }
 
     test("sequence") {

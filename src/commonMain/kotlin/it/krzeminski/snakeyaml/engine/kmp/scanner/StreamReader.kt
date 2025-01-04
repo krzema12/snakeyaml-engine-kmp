@@ -22,6 +22,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.CharConstants
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -158,9 +159,11 @@ class StreamReader(
             else                     -> length.coerceAtMost(dataLength - pointer)
         }
 
-        return codePointsWindow
-            .copyOfRangeSafe(pointer, pointer + stringLength)
-            .joinToString("") { Character.toChars(it).concatToString() }
+        return buildString(stringLength) {
+            for (i in pointer until pointer + stringLength) {
+                appendCodePoint(codePointsWindow[i])
+            }
+        }
     }
 
     /**

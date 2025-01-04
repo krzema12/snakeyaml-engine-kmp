@@ -40,8 +40,18 @@ kotlin {
     //region JS Targets
     js(IR) {
         binaries.library()
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                environment("EnvironmentKey1", "EnvironmentValue1")
+                environment("EnvironmentEmpty", "")
+            }
+        }
+        nodejs {
+            testTask {
+                environment("EnvironmentKey1", "EnvironmentValue1")
+                environment("EnvironmentEmpty", "")
+            }
+        }
     }
     //endregion
 

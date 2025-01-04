@@ -181,7 +181,6 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader : ok
 	public fun close ()V
 	public final fun getEncoding ()Lit/krzeminski/snakeyaml/engine/kmp/api/YamlUnicodeReader$CharEncoding;
 	public fun read (Lokio/Buffer;J)J
-	public final fun readString ()Ljava/lang/String;
 	public fun timeout ()Lokio/Timeout;
 }
 

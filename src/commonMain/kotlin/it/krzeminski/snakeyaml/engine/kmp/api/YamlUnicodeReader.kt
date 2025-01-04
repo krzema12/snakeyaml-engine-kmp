@@ -96,8 +96,7 @@ class YamlUnicodeReader(
     override fun timeout(): Timeout = source.timeout()
 
     /** Read the entire source as a [String]. */
-    // This method is only used in tests - it should be made `internal` when all tests are Kotlin.
-    fun readString(): String = buffer().readUtf8()
+    internal fun readString(): String = buffer().readUtf8()
 
     enum class CharEncoding(
         internal val bom: ByteString,

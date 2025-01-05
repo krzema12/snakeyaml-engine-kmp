@@ -282,6 +282,6 @@ class StreamReader(
          * Like [IntArray.copyOfRange], but allows for [toIndex] to be out-of-bounds.
          */
         private fun IntArray.copyOfRangeSafe(fromIndex: Int, toIndex: Int): IntArray =
-            IntArray(toIndex - fromIndex) { getOrNull(fromIndex + it) ?: 0 }
+            IntArray(toIndex - fromIndex) { getOrElse(fromIndex + it) { 0 } }
     }
 }

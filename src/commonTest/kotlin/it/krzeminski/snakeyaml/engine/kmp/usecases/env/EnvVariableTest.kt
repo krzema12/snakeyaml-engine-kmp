@@ -1,7 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.env
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
@@ -21,12 +20,19 @@ class EnvVariableTest : FunSpec({
     }
 
     test("Parse docker-compose.yaml example") {
-        val loader = Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build())
-        val resource = stringFromResources("env/docker-compose.yaml")
-        @Suppress("UNCHECKED_CAST")
-        val compose = loader.loadOne(resource) as Map<String, Any>
-        val output = compose.toString()
-        output shouldEndWith "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"
+        try {
+            val loader = Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build())
+            val resource = stringFromResources("env/docker-compose.yaml")
+            @Suppress("UNCHECKED_CAST")
+            val compose = loader.loadOne(resource) as Map<String, Any>
+            val output = compose.toString()
+            output shouldEndWith "environment={URL1=EnvironmentValue1, URL2=, URL3=server3, URL4=, URL5=server5, URL6=server6}}}}"
+        } catch (e: Throwable) {
+            // The code above currently fails on JS (browser) because retrieving env vars is not possible there.
+            // We don't know a more elegant way of skipping the tests on this specific target, hence this try-catch.
+            // See https://kotlinlang.slack.com/archives/CT0G9SD7Z/p1736115537677279
+            e.message shouldBe "process is not defined"
+        }
     }
 
     test("Parsing ENV variables must be explicitly enabled") {
@@ -41,40 +47,61 @@ class EnvVariableTest : FunSpec({
     }
 
     test("Parsing ENV variable which is defined and not empty") {
-        load("\${EnvironmentKey1}") shouldBe VALUE1
-        load("\${EnvironmentKey1-any}") shouldBe VALUE1
-        load("\${EnvironmentKey1:-any}") shouldBe VALUE1
-        load("\${EnvironmentKey1:?any}") shouldBe VALUE1
-        load("\${EnvironmentKey1?any}") shouldBe VALUE1
+        try {
+            load("\${EnvironmentKey1}") shouldBe VALUE1
+            load("\${EnvironmentKey1-any}") shouldBe VALUE1
+            load("\${EnvironmentKey1:-any}") shouldBe VALUE1
+            load("\${EnvironmentKey1:?any}") shouldBe VALUE1
+            load("\${EnvironmentKey1?any}") shouldBe VALUE1
+        } catch (e: Throwable) {
+            // The code above currently fails on JS (browser) because retrieving env vars is not possible there.
+            // We don't know a more elegant way of skipping the tests on this specific target, hence this try-catch.
+            // See https://kotlinlang.slack.com/archives/CT0G9SD7Z/p1736115537677279
+            e.message shouldBe "process is not defined"
+        }
     }
 
     test("Parsing ENV variable which is defined as empty") {
-        load("\${EnvironmentEmpty}") shouldBe ""
-        load("\${EnvironmentEmpty?}") shouldBe ""
-        load("\${EnvironmentEmpty:-detected}") shouldBe "detected"
-        load("\${EnvironmentEmpty-detected}") shouldBe ""
-        load("\${EnvironmentEmpty?detectedError}") shouldBe ""
-        shouldThrow<MissingEnvironmentVariableException> {
-            load("\${EnvironmentEmpty:?detectedError}")
-        }.also {
-            it.message shouldBe "Empty mandatory variable EnvironmentEmpty: detectedError"
+        try {
+            load("\${EnvironmentEmpty}") shouldBe ""
+            load("\${EnvironmentEmpty?}") shouldBe ""
+            load("\${EnvironmentEmpty:-detected}") shouldBe "detected"
+            load("\${EnvironmentEmpty-detected}") shouldBe ""
+            load("\${EnvironmentEmpty?detectedError}") shouldBe ""
+            shouldThrow<MissingEnvironmentVariableException> {
+                load("\${EnvironmentEmpty:?detectedError}")
+            }.also {
+                it.message shouldBe "Empty mandatory variable EnvironmentEmpty: detectedError"
+            }
+        } catch (e: Throwable) {
+            // The code above currently fails on JS (browser) because retrieving env vars is not possible there.
+            // We don't know a more elegant way of skipping the tests on this specific target, hence this try-catch.
+            // See https://kotlinlang.slack.com/archives/CT0G9SD7Z/p1736115537677279
+            e.message shouldBe "process is not defined"
         }
     }
 
     test("Parsing ENV variable which is not set") {
-        load("\${EnvironmentUnset}") shouldBe ""
-        load("\${EnvironmentUnset:- }") shouldBe ""
-        load("\${EnvironmentUnset:-detected}") shouldBe "detected"
-        load("\${EnvironmentUnset-detected}") shouldBe "detected"
-        shouldThrow<MissingEnvironmentVariableException> {
-            load("\${EnvironmentUnset:?detectedError}")
-        }.also {
-            it.message shouldBe "Missing mandatory variable EnvironmentUnset: detectedError"
-        }
-        shouldThrow<MissingEnvironmentVariableException> {
-            load("\${EnvironmentUnset?detectedError}")
-        }.also {
-            it.message shouldBe "Missing mandatory variable EnvironmentUnset: detectedError"
+        try {
+            load("\${EnvironmentUnset}") shouldBe ""
+            load("\${EnvironmentUnset:- }") shouldBe ""
+            load("\${EnvironmentUnset:-detected}") shouldBe "detected"
+            load("\${EnvironmentUnset-detected}") shouldBe "detected"
+            shouldThrow<MissingEnvironmentVariableException> {
+                load("\${EnvironmentUnset:?detectedError}")
+            }.also {
+                it.message shouldBe "Missing mandatory variable EnvironmentUnset: detectedError"
+            }
+            shouldThrow<MissingEnvironmentVariableException> {
+                load("\${EnvironmentUnset?detectedError}")
+            }.also {
+                it.message shouldBe "Missing mandatory variable EnvironmentUnset: detectedError"
+            }
+        } catch (e: Throwable) {
+            // The code above currently fails on JS (browser) because retrieving env vars is not possible there.
+            // We don't know a more elegant way of skipping the tests on this specific target, hence this try-catch.
+            // See https://kotlinlang.slack.com/archives/CT0G9SD7Z/p1736115537677279
+            e.message shouldBe "process is not defined"
         }
     }
 })

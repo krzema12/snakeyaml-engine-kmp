@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.usecases.env;
+package it.krzeminski.snakeyaml.engine.kmp.usecases.env;
 
 import org.jetbrains.annotations.NotNull;
 import it.krzeminski.snakeyaml.engine.kmp.env.EnvConfig;

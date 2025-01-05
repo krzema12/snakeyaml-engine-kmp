@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.snakeyaml.engine.usecases.env
+package it.krzeminski.snakeyaml.engine.kmp.usecases.env
 
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
@@ -34,7 +34,11 @@ class EnvVariableJvmTest : FunSpec({
         val provided = mapOf(KEY1 to "VVVAAA111")
         System.setProperty(EMPTY, "VVVAAA222")
         val loader = Load(
-            builder().setEnvConfig(CustomEnvConfig(provided)).build()
+            builder().setEnvConfig(
+                CustomEnvConfig(
+                    provided
+                )
+            ).build()
         )
         val resource = stringFromResources("env/docker-compose.yaml")
         @Suppress("UNCHECKED_CAST")

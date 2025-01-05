@@ -1,4 +1,6 @@
 import buildsrc.utils.configureGradleDaemonJvm
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -55,6 +57,16 @@ tasks.withType<Test>().configureEach {
         "EnvironmentKey1" to "EnvironmentValue1",
         "EnvironmentEmpty" to "",
     )
+}
+
+tasks.withType<KotlinJsTest>().configureEach {
+    environment("EnvironmentKey1", "EnvironmentValue1")
+    environment("EnvironmentEmpty", "")
+}
+
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment("EnvironmentKey1", "EnvironmentValue1")
+    environment("EnvironmentEmpty", "")
 }
 
 dokkatoo {

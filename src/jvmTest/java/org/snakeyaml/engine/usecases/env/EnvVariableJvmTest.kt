@@ -37,6 +37,7 @@ class EnvVariableJvmTest : FunSpec({
             builder().setEnvConfig(CustomEnvConfig(provided)).build()
         )
         val resource = stringFromResources("env/docker-compose.yaml")
+        @Suppress("UNCHECKED_CAST")
         val compose = loader.loadOne(resource) as Map<String, Any>?
         val output = compose.toString()
         output shouldEndWith "environment={URL1=VVVAAA111, URL2=VVVAAA222, URL3=VVVAAA222, URL4=VVVAAA222, URL5=server5, URL6=server6}}}}"

@@ -1,6 +1,7 @@
 import buildsrc.utils.configureGradleDaemonJvm
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -67,6 +68,11 @@ tasks.withType<KotlinJsTest>().configureEach {
 tasks.withType<KotlinNativeTest>().configureEach {
     environment("EnvironmentKey1", "EnvironmentValue1")
     environment("EnvironmentEmpty", "")
+}
+
+tasks.withType<KotlinNativeSimulatorTest>().configureEach {
+    environment("SIMCTL_CHILD_EnvironmentKey1", "EnvironmentValue1")
+    environment("SIMCTL_CHILD_EnvironmentEmpty", "")
 }
 
 dokkatoo {

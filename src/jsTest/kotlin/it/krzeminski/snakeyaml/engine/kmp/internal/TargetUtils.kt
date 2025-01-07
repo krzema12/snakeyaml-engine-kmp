@@ -1,5 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
-// returns 'true' is we are in the browser
+/**
+ * Returns `true` if we are not in the browser.
+ */
 actual fun areEnvVarsSupported(): Boolean =
     js("return (typeof window === 'undefined' || typeof document === 'undefined')") as Boolean

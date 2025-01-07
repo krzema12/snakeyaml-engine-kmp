@@ -1,6 +1,4 @@
 import buildsrc.utils.configureGradleDaemonJvm
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`

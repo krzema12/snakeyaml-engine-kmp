@@ -26,6 +26,7 @@ kotlin {
             dependencies {
                 implementation("com.squareup.okio:okio:3.9.1")
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
+                runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
             }
         }
 

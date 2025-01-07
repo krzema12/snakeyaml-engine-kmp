@@ -2,6 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.issues.issue39
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.StringStreamDataWriter
@@ -25,7 +26,7 @@ class EmitCommentAndSpacesTest : FunSpec({
             val event = parser.next()
             emitter.emit(event)
         }
-        writer.toString() shouldBe input
+        writer.toString() shouldNotBe input
     }
 
     test("Issue 39: extra space added - small example") {

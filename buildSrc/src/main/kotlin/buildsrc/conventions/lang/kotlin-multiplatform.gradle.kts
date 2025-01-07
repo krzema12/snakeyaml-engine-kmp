@@ -49,20 +49,8 @@ kotlin {
     //region Wasm Targets
     wasmJs {
         binaries.library()
-        browser {
-            testTask {
-                // Disabled to unblock releasing of the lib.
-                // See https://github.com/krzema12/snakeyaml-engine-kmp/issues/320
-                enabled = false
-            }
-        }
-        nodejs {
-            testTask {
-                // Disabled to unblock releasing of the lib.
-                // See https://github.com/krzema12/snakeyaml-engine-kmp/issues/320
-                enabled = false
-            }
-        }
+        browser()
+        nodejs()
     }
 
     // Disable Wasi: No matching variant of io.kotest:kotest-framework-engine:5.9.0 was found

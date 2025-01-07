@@ -1,7 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
 internal actual fun getEnvironmentVariable(key: String): String? {
-    TODO()
+    js("return process.env[key]")
 }
 
 //region Identity hash code

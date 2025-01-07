@@ -1,4 +1,6 @@
 import buildsrc.utils.configureGradleDaemonJvm
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -55,6 +57,10 @@ tasks.withType<Test>().configureEach {
         "EnvironmentKey1" to "EnvironmentValue1",
         "EnvironmentEmpty" to "",
     )
+}
+
+rootProject.plugins.withType<NodeJsRootPlugin> {
+    rootProject.the<NodeJsRootExtension>().versions.karma.version = "6.4.3"
 }
 
 dokkatoo {

@@ -1,5 +1,9 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
+internal actual fun getEnvironmentVariable(key: String): String? {
+    js("return process.env[key]")
+}
+
 //region Identity hash code
 internal actual fun objectIdentityHashCode(any: Any): IdentityHashCode {
     val ref = any.toJsReference()

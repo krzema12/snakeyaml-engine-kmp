@@ -60,10 +60,6 @@ tasks.withType<Test>().configureEach {
     )
 }
 
-rootProject.plugins.withType<NodeJsRootPlugin> {
-    rootProject.the<NodeJsRootExtension>().versions.karma.version = "6.4.3"
-}
-
 dokkatoo {
     moduleName = "SnakeYAML Engine KMP"
 

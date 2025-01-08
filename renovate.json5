@@ -5,6 +5,7 @@
   ],
   ignorePaths: [
     'src/jvmTest/resources/',
+    'src/commonTest/resources/',
   ],
   automerge: true,
 }

@@ -1,4 +1,7 @@
 import buildsrc.utils.configureGradleDaemonJvm
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -22,7 +25,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.squareup.okio:okio:3.9.1")
+                implementation("com.squareup.okio:okio:3.10.1")
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
             }
         }
@@ -59,6 +62,21 @@ tasks.withType<Test>().configureEach {
         "EnvironmentKey1" to "EnvironmentValue1",
         "EnvironmentEmpty" to "",
     )
+}
+
+tasks.withType<KotlinJsTest>().configureEach {
+    environment("EnvironmentKey1", "EnvironmentValue1")
+    environment("EnvironmentEmpty", "")
+}
+
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment("EnvironmentKey1", "EnvironmentValue1")
+    environment("EnvironmentEmpty", "")
+}
+
+tasks.withType<KotlinNativeSimulatorTest>().configureEach {
+    environment("SIMCTL_CHILD_EnvironmentKey1", "EnvironmentValue1")
+    environment("SIMCTL_CHILD_EnvironmentEmpty", "")
 }
 
 dokkatoo {

@@ -32,12 +32,7 @@ class EmitCommentAndSpacesTest : FunSpec({
     test("Issue 39: extra space added - small example") {
 
         val loadSettings = LoadSettings.builder().setParseComments(true).build()
-        val input = """first:
-  second: abc
-
-
-
-"""
+        val input = "first:\n second: abc\n \n \n\n"
         val parser: Parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
         val settings: DumpSettings = DumpSettings.builder().setDumpComments(true).build()
         val writer = StringStreamDataWriter()

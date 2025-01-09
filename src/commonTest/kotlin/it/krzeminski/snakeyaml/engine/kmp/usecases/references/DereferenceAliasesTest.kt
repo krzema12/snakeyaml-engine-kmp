@@ -15,19 +15,19 @@ class DereferenceAliasesTest : FunSpec({
     test("no aliases") {
         val settings = LoadSettings.builder().build()
         val load = Load(settings)
-        val map = load.loadOne(stringFromResources("issues/issue1086-1-input.yaml")) as Map<*, *>?
+        val map = load.loadOne(stringFromResources("/issues/issue1086-1-input.yaml")) as Map<*, *>?
         val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
             .setDereferenceAliases(true).build()
         val dump = Dump(setting)
         val node = dump.dumpToString(map)
-        val expected = stringFromResources("issues/issue1086-1-expected.yaml")
+        val expected = stringFromResources("/issues/issue1086-1-expected.yaml")
         node shouldBe expected
     }
 
     test("no aliases recursive") {
         val settings = LoadSettings.builder().build()
         val load = Load(settings)
-        val map = load.loadOne(stringFromResources("issues/issue1086-2-input.yaml")) as Map<*, *>?
+        val map = load.loadOne(stringFromResources("/issues/issue1086-2-input.yaml")) as Map<*, *>?
         val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
             .setDereferenceAliases(true).build()
         val dump = Dump(setting)

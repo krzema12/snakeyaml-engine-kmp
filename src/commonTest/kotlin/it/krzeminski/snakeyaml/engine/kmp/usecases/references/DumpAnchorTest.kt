@@ -13,7 +13,7 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class DumpAnchorTest : FunSpec({
     test("anchor test") {
-        val str = stringFromResources("anchor/issue481.yaml")
+        val str = stringFromResources("/anchor/issue481.yaml")
         val compose = Compose(LoadSettings.builder().build())
         val node = compose.compose(str)!!
 

@@ -6,12 +6,13 @@ import okio.ByteString
 /**
  * Retrieves a string content from common resources using a given path.
  *
- * @param path The slash-delimited path to the resource.
+ * @param path The slash-delimited path to the resource, with a leading slash.
  * @return The content of the resource as a UTF-8 encoded string with normalized line breaks.
  * @throws IllegalArgumentException if the resource doesn't exist.
  */
 fun stringFromResources(path: String): String {
-    val segments = path.split("/")
+    require(path.startsWith("/")) { "A leading slash is required!" }
+    val segments = path.drop(1).split("/")
     return (segments
         .dropLast(1)
         .fold(Pair(CommonTestResources.resourcesMap, "/resources/")) { (map, pathSoFar), directory ->

@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 
 class CommonTestResourcesAccessTest : FunSpec({
     test("stringFromResources - resource exists") {
-        stringFromResources("test/resource/foo.txt") shouldBe """
+        stringFromResources("/test/resource/foo.txt") shouldBe """
             Hello from multiplatform resources!
             Foo bar baz
 
@@ -15,7 +15,7 @@ class CommonTestResourcesAccessTest : FunSpec({
 
     test("stringFromResources - file doesn't exist") {
         shouldThrow<IllegalArgumentException> {
-            stringFromResources("test/resource/does-not-exist.txt")
+            stringFromResources("/test/resource/does-not-exist.txt")
         }.also {
             it.message shouldBe "File 'does-not-exist.txt' doesn't exist in directory '/resources/test/resource/'!"
         }
@@ -23,9 +23,17 @@ class CommonTestResourcesAccessTest : FunSpec({
 
     test("stringFromResources - directory doesn't exist") {
         shouldThrow<IllegalArgumentException> {
-            stringFromResources("this/resource/for/sure/does/not/exist.txt")
+            stringFromResources("/this/resource/for/sure/does/not/exist.txt")
         }.also {
             it.message shouldBe "Directory 'this' doesn't exist in directory '/resources/'!"
+        }
+    }
+
+    test("stringFromResources - no leading slash") {
+        shouldThrow<IllegalArgumentException> {
+            stringFromResources("test/resource/foo.txt")
+        }.also {
+            it.message shouldBe "A leading slash is required!"
         }
     }
 })

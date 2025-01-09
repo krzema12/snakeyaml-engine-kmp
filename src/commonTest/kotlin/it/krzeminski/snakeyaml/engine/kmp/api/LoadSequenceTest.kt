@@ -37,7 +37,7 @@ class LoadSequenceTest : FunSpec({
     test("list is parsed") {
         val load = Load()
         @Suppress("UNCHECKED_CAST")
-        val list = load.loadOne(stringFromResources("load/list1.yaml")) as List<Any>
+        val list = load.loadOne(stringFromResources("/load/list1.yaml")) as List<Any>
         list shouldBe listOf("a", "bb", "ccc", "dddd")
     }
 })

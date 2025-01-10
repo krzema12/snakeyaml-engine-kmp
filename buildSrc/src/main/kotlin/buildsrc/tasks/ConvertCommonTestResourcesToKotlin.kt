@@ -74,7 +74,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     }
 
     private fun generateFunctions(map: Map<String, Any>, stringBuilder: StringBuilder, path: String = "") {
-        stringBuilder.appendLine(generateSingleFunction(map, path))
+        stringBuilder.generateSingleFunction(map, path)
         stringBuilder.appendLine()
         for ((key, value) in map) {
             when (value) {
@@ -89,12 +89,13 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         }
     }
 
-    private fun generateSingleFunction(map: Map<String, Any>, path: String): String {
+    private fun StringBuilder.generateSingleFunction(map: Map<String, Any>, path: String) {
         val functionName = getFunctionName(path)
-        return map.entries.joinToString(
+        map.entries.joinTo(
+            this,
             separator = ",\n",
             prefix = "fun ${functionName}() = mapOf(\n",
-            postfix = "\n)",
+            postfix = "\n)\n",
         ) { (key, _) ->
             "\"$key\" to ${getFunctionName("$path/$key")}()"
         }

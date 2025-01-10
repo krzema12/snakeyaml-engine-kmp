@@ -22,7 +22,7 @@ class EnvVariableTest : FunSpec({
 
     test("Parse docker-compose.yaml example").config(enabled = areEnvVarsSupported()) {
         val loader = Load(LoadSettings.builder().setEnvConfig(NULL_ENV_CONFIG).build())
-        val resource = stringFromResources("env/docker-compose.yaml")
+        val resource = stringFromResources("/env/docker-compose.yaml")
         @Suppress("UNCHECKED_CAST")
         val compose = loader.loadOne(resource) as Map<String, Any>
         val output = compose.toString()

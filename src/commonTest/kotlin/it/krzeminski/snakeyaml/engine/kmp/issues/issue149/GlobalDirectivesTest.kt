@@ -18,12 +18,12 @@ class GlobalDirectivesTest : FunSpec({
     }
 
     test("Use tag directive") {
-        val events = yamlToEvents("issues/issue149-one-document.yaml")
+        val events = yamlToEvents("/issues/issue149-one-document.yaml")
         events.toList().size shouldBe 10
     }
 
     test("Fail to parse because directive does not stay for the second document") {
-        val events = yamlToEvents("issues/issue149-losing-directives.yaml")
+        val events = yamlToEvents("/issues/issue149-losing-directives.yaml")
         shouldThrow<ParserException> {
             events.toList()
         }.also {
@@ -32,7 +32,7 @@ class GlobalDirectivesTest : FunSpec({
     }
 
     test("Parse both tag directives") {
-        val events = yamlToEvents("issues/issue149-losing-directives-2.yaml")
+        val events = yamlToEvents("/issues/issue149-losing-directives-2.yaml")
         events.toList().size shouldBe 18
     }
 })

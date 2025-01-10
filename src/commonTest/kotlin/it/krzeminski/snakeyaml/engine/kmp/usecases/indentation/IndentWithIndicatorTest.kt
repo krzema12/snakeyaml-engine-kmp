@@ -18,7 +18,7 @@ class IndentWithIndicatorTest : FunSpec({
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 
-        val doc = stringFromResources("indentation/issue416-1.yaml")
+        val doc = stringFromResources("/indentation/issue416-1.yaml")
         output shouldBe doc
     }
 
@@ -32,7 +32,7 @@ class IndentWithIndicatorTest : FunSpec({
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 
-        val doc = stringFromResources("indentation/issue416-2.yaml")
+        val doc = stringFromResources("/indentation/issue416-2.yaml")
         output shouldBe doc
     }
 
@@ -46,7 +46,7 @@ class IndentWithIndicatorTest : FunSpec({
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 
-        val doc = stringFromResources("indentation/issue416-3.yaml")
+        val doc = stringFromResources("/indentation/issue416-3.yaml")
         output shouldBe doc
     }
 })

@@ -12,7 +12,7 @@ class RecursiveSetTest: FunSpec({
     test("Fail to load map with recursive keys") {
         val recursiveInput = stringFromResources("/recursive/recursive-set-1.yaml")
         val load = Load()
-        shouldThrow< YamlEngineException> {
+        shouldThrow<YamlEngineException> {
             load.loadOne(recursiveInput)
         }.also {
             it.message shouldBe "Recursive key for mapping is detected but it is not configured to be allowed."

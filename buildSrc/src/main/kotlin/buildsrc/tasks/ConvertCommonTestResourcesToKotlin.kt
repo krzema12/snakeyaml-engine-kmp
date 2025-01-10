@@ -74,7 +74,8 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     }
 
     private fun generateFunctions(map: Map<String, Any>, stringBuilder: StringBuilder, path: String = "") {
-        stringBuilder.append(generateSingleFunction(map, path))
+        stringBuilder.appendLine(generateSingleFunction(map, path))
+        stringBuilder.appendLine()
         for ((key, value) in map) {
             when (value) {
                 is ByteArray -> stringBuilder.append("fun ${getFunctionName("$path/$key")}() = ByteString.of(${value.joinToString(separator = ", ") {

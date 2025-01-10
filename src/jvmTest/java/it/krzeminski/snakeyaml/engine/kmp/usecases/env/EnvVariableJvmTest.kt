@@ -40,7 +40,7 @@ class EnvVariableJvmTest : FunSpec({
                 )
             ).build()
         )
-        val resource = stringFromResources("env/docker-compose.yaml")
+        val resource = stringFromResources("/env/docker-compose.yaml")
         @Suppress("UNCHECKED_CAST")
         val compose = loader.loadOne(resource) as Map<String, Any>?
         val output = compose.toString()

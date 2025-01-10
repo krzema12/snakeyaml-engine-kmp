@@ -29,7 +29,7 @@ class LoadMappingTest: FunSpec({
     test("map {x: 1, y: 2, z:3} is parsed") {
         val load = Load()
         @Suppress("UNCHECKED_CAST")
-        val map = load.loadOne(stringFromResources("load/map1.yaml")) as Map<String, Any>
+        val map = load.loadOne(stringFromResources("/load/map1.yaml")) as Map<String, Any>
         map shouldBe mapOf("x" to 1, "y" to 2, "z" to 3)
     }
 })

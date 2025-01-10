@@ -17,7 +17,7 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 class EmitCommentAndSpacesTest : FunSpec({
     test("Issue 39: extra space added") {
         val loadSettings = LoadSettings.builder().setParseComments(true).build()
-        val input = stringFromResources("issues/issue39-input.yaml")
+        val input = stringFromResources("/issues/issue39-input.yaml")
         val parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
         val settings = DumpSettings.builder().setDumpComments(true).build()
         val writer = StringStreamDataWriter()

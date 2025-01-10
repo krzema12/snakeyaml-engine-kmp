@@ -76,9 +76,14 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     private fun generateFunctions(map: Map<String, Any>, stringBuilder: StringBuilder, path: String = "") {
         stringBuilder.append(generateSingleFunction(map, path))
         for ((key, value) in map) {
-            if (value is Map<*, *>) {
-                @Suppress("UNCHECKED_CAST")
-                generateFunctions(map[key] as Map<String, Any>, stringBuilder, "$path/$key")
+            when (value) {
+                is ByteArray -> stringBuilder.append("fun ${getFunctionName("$path/$key")}() = ByteString.of(${value.joinToString(separator = ", ") {
+                    "0x${"%02x".format(it)}.toByte()"
+                }})")
+                is Map<*, *> -> {
+                    @Suppress("UNCHECKED_CAST")
+                    generateFunctions(map[key] as Map<String, Any>, stringBuilder, "$path/$key")
+                }
             }
         }
     }
@@ -89,15 +94,8 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
             separator = ",\n",
             prefix = "fun ${functionName}() = mapOf(\n",
             postfix = "\n)",
-        ) { (key, value) ->
-            @Suppress("UNCHECKED_CAST")
-            when (value) {
-                is ByteArray -> "\"$key\" to ByteString.of(${value.joinToString(separator = ", ") {
-                    "0x${"%02x".format(it)}.toByte()"
-                }})"
-                is Map<*, *> -> "\"$key\" to ${getFunctionName("$path/$key")}()"
-                else -> error("Unexpected type: $value")
-            }
+        ) { (key, _) ->
+            "\"$key\" to ${getFunctionName("$path/$key")}()"
         }
     }
 

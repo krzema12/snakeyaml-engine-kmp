@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
+import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

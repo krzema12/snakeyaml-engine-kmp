@@ -14,6 +14,7 @@
 package org.snakeyaml.engine.usecases.inherited;
 
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
+import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

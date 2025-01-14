@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.CanonicalScanner;
+import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.events.Event;

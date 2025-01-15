@@ -18,7 +18,6 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*
-import org.snakeyaml.engine.usecases.inherited.CanonicalException
 
 class CanonicalScanner(data: String, private val label: String) : Scanner {
     private val data = data + "\u0000"

@@ -20,21 +20,20 @@ class InheritedReaderTest: FunSpec({
             // KMP basically only supports UTF-8.
             .filter { it.name !in setOf("odd-utf16.stream-error", "invalid-utf8-byte.stream-error") }
             .forEach { file ->
-                val input = FileInputStream(file)
-                val unicodeReader = YamlUnicodeReader(input.source())
-                val stream = StreamReader(LoadSettings.builder().build(), unicodeReader)
-                try {
-                    while (stream.peek() != 0) {
-                        stream.forward()
+                FileInputStream(file).use { input ->
+                    val unicodeReader = YamlUnicodeReader(input.source())
+                    val stream = StreamReader(LoadSettings.builder().build(), unicodeReader)
+                    try {
+                        while (stream.peek() != 0) {
+                            stream.forward()
+                        }
+                        fail("Invalid stream must not be accepted: ${file.absolutePath}; encoding=${unicodeReader.encoding}")
+                    } catch (e: ReaderException) {
+                        e.toString() shouldContain " special characters are not allowed"
+                    } catch (e: YamlEngineException) {
+                        e.toString() shouldContain " MalformedInputException"
                     }
-                    fail("Invalid stream must not be accepted: ${file.absolutePath}; encoding=${unicodeReader.encoding}")
-                } catch (e: ReaderException) {
-                    e.toString() shouldContain " special characters are not allowed"
-                } catch (e: YamlEngineException) {
-                    e.toString() shouldContain " MalformedInputException"
-                } finally {
-                    input.close()
+                }
             }
-        }
     }
 })

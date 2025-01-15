@@ -53,29 +53,31 @@ class InheritedTokensTest: FunSpec({
 
             val tokens1 = mutableListOf<String>()
             val settings = LoadSettings.builder().build()
-            val reader = StreamReader(
-                loadSettings = settings,
-                stream = YamlUnicodeReader(FileInputStream(getFileByName(dataName)).source()),
-            )
-            val scanner = ScannerImpl(settings, reader)
-            try {
-                while (scanner.checkToken()) {
-                    val token = scanner.next()
-                    if (!(token is StreamStartToken || token is StreamEndToken)) {
-                        val replacement = replaces[token.tokenId]!!
-                        tokens1.add(replacement)
+            FileInputStream(getFileByName(dataName)).source().use { source ->
+                val reader = StreamReader(
+                    loadSettings = settings,
+                    stream = YamlUnicodeReader(source),
+                )
+                val scanner = ScannerImpl(settings, reader)
+                try {
+                    while (scanner.checkToken()) {
+                        val token = scanner.next()
+                        if (!(token is StreamStartToken || token is StreamEndToken)) {
+                            val replacement = replaces[token.tokenId]!!
+                            tokens1.add(replacement)
+                        }
                     }
+                    tokens1 shouldBe tokens2
+                } catch (_: RuntimeException) {
+                    println("File name: \n${tokenFile.name}")
+                    val data = getResource(tokenFile.name)
+                    println("Data: \n$data")
+                    println("Tokens:")
+                    tokens1.forEach {
+                        println("token")
+                    }
+                    fail("Cannot scan: $tokenFile")
                 }
-                tokens1 shouldBe tokens2
-            } catch (_: RuntimeException) {
-                println("File name: \n${tokenFile.name}")
-                val data = getResource(tokenFile.name)
-                println("Data: \n$data")
-                println("Tokens:")
-                tokens1.forEach {
-                    println("token")
-                }
-                fail("Cannot scan: $tokenFile")
             }
         }
     }
@@ -85,26 +87,25 @@ class InheritedTokensTest: FunSpec({
         files.size shouldBeGreaterThan 0
         files.forEach { file ->
             val tokens = mutableListOf<String>()
-            val input = FileInputStream(file)
-            val settings = LoadSettings.builder().build()
-            val reader = StreamReader(settings, YamlUnicodeReader(input.source()))
-            val scanner = ScannerImpl(settings, reader)
-            try {
-                while (scanner.checkToken()) {
-                    val token = scanner.next()
-                    tokens.add(token.javaClass.name)
+            FileInputStream(file).source().use { source ->
+                val settings = LoadSettings.builder().build()
+                val reader = StreamReader(settings, YamlUnicodeReader(source))
+                val scanner = ScannerImpl(settings, reader)
+                try {
+                    while (scanner.checkToken()) {
+                        val token = scanner.next()
+                        tokens.add(token.javaClass.name)
+                    }
+                } catch (e: RuntimeException) {
+                    println("File name: \n${file.name}")
+                    val data = getResource(file.name)
+                    println("Data: \n$data")
+                    println("Tokens:")
+                    tokens.forEach {
+                        println("token")
+                    }
+                    fail("Cannot scan: $file; ${e.message}")
                 }
-            } catch (e: RuntimeException) {
-                println("File name: \n${file.name}")
-                val data = getResource(file.name)
-                println("Data: \n$data")
-                println("Tokens:")
-                tokens.forEach {
-                    println("token")
-                }
-                fail("Cannot scan: $file; ${e.message}")
-            } finally {
-                input.close()
             }
         }
     }

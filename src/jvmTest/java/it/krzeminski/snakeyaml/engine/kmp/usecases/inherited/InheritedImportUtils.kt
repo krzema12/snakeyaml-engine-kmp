@@ -34,33 +34,35 @@ fun getFileByName(name: String): File =
 
 fun canonicalParse(input2: InputStream, label: String): List<Event> {
     val settings = LoadSettings.builder().setLabel(label).build()
-    val reader = StreamReader(settings, YamlUnicodeReader(input2.source()))
-    val buffer = StringBuffer()
-    while (reader.peek() != 0) {
-        buffer.appendCodePoint(reader.peek())
-        reader.forward()
-    }
-    val parser = CanonicalParser(buffer.toString().replace(System.lineSeparator(), "\n"), label)
-    val result = buildList {
-        while (parser.hasNext()) {
-            add(parser.next())
+    input2.use {
+        val reader = StreamReader(settings, YamlUnicodeReader(input2.source()))
+        val buffer = StringBuffer()
+        while (reader.peek() != 0) {
+            buffer.appendCodePoint(reader.peek())
+            reader.forward()
         }
+        val parser = CanonicalParser(buffer.toString().replace(System.lineSeparator(), "\n"), label)
+        val result = buildList {
+            while (parser.hasNext()) {
+                add(parser.next())
+            }
+        }
+        return result
     }
-    input2.close()
-    return result
 }
 
 fun parse(input: InputStream): List<Event> {
     val settings = LoadSettings.builder().build()
-    val reader = StreamReader(settings, YamlUnicodeReader(input.source()))
-    val parser = ParserImpl(settings, reader)
-    val result = buildList {
-        while (parser.hasNext()) {
-            add(parser.next())
+    input.use {
+        val reader = StreamReader(settings, YamlUnicodeReader(input.source()))
+        val parser = ParserImpl(settings, reader)
+        val result = buildList {
+            while (parser.hasNext()) {
+                add(parser.next())
+            }
         }
+        return result
     }
-    input.close()
-    return result
 }
 
 private class InheritedFilenameFilter(

@@ -13,7 +13,6 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
-import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +27,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportUtilsKt.getStreamsByExtension;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @org.junit.jupiter.api.Tag("fast")
-public class InheritedReaderTest extends InheritedImportTest {
+public class InheritedReaderTest {
 
   @Test
   @DisplayName("Reader errors")

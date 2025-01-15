@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
+import static it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportUtilsKt.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import okio.Okio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamStartToken;
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
 
 @org.junit.jupiter.api.Tag("fast")
-public class InheritedTokensTest extends InheritedImportTest {
+public class InheritedTokensTest {
 
   @Test
   @DisplayName("Tokens are correct")

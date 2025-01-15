@@ -14,18 +14,18 @@
 package org.snakeyaml.engine.usecases.inherited;
 
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark;
-import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportUtilsKt.getResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @org.junit.jupiter.api.Tag("fast")
-public class InheritedMarkTest extends InheritedImportTest {
+public class InheritedMarkTest {
 
   @Test
   @DisplayName("Marks")

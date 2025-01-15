@@ -13,6 +13,8 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
+import static it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportUtilsKt.canonicalParse;
+import static it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportUtilsKt.getStreamsByExtension;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,14 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.CanonicalScanner;
-import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.InheritedImportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.events.Event;
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token;
 
 @org.junit.jupiter.api.Tag("fast")
-public class InheritedCanonicalTest extends InheritedImportTest {
+public class InheritedCanonicalTest {
 
   @Test
   @DisplayName("Canonical scan")

@@ -73,7 +73,7 @@ class InheritedTokensTest: FunSpec({
                     println("Data: \n$data")
                     println("Tokens:")
                     tokens1.forEach {
-                        println("token")
+                        println(it)
                     }
                     fail("Cannot scan: $tokenFile")
                 }
@@ -101,7 +101,7 @@ class InheritedTokensTest: FunSpec({
                     println("Data: \n$data")
                     println("Tokens:")
                     tokens.forEach {
-                        println("token")
+                        println(it)
                     }
                     fail("Cannot scan: $file; ${e.message}")
                 }

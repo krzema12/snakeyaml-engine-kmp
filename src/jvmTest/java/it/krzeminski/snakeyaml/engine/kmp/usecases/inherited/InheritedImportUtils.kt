@@ -79,7 +79,7 @@ private fun FileSystem.inheritedFilenameFilter(
     val canonicalFileName = name.substring(0, position) + ".canonical"
     val canonicalFilePath = path.parent?.resolve(canonicalFileName)
         ?: error("Canonical file path does not exist: $path")
-    return if (onlyIfCanonicalPresent && this.exists(canonicalFilePath)) {
+    return if (onlyIfCanonicalPresent && !this.exists(canonicalFilePath)) {
         false
     } else {
         name.endsWith(extension)

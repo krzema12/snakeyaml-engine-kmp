@@ -37,10 +37,9 @@ class InheritedCanonicalTest: FunSpec({
 
 private fun canonicalScan(input: BufferedSource, label: String): List<Token> {
     val buffer = buildString {
-        var ch = input.readUtf8CodePoint()
-        while (ch != -1) {
+        while (input.exhausted()) {
+            var ch = input.readByte().toInt()
             append(ch.toChar())
-            ch = input.readUtf8CodePoint()
         }
     }
     val scanner = CanonicalScanner(buffer.toString().replace(System.lineSeparator(), "\n"), label)

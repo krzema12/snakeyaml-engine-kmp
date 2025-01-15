@@ -13,6 +13,7 @@
  */
 package org.snakeyaml.engine.usecases.inherited;
 
+import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.CanonicalException;
 import it.krzeminski.snakeyaml.engine.kmp.usecases.inherited.CanonicalScanner;
 import org.jetbrains.annotations.NotNull;
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor;

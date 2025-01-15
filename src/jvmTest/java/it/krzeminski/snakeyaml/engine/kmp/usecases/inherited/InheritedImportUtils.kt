@@ -5,11 +5,11 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
-import okio.source
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toPath
+import okio.Source
 import org.snakeyaml.engine.v2.utils.TestUtils
-import java.io.File
-import java.io.FilenameFilter
-import java.io.InputStream
 
 private const val PATH =  "/inherited_yaml_1_1"
 
@@ -20,22 +20,26 @@ fun getResource(theName: String): String =
 fun getStreamsByExtension(
     extension: String,
     onlyIfCanonicalPresent: Boolean = false,
-): Array<File> =
-    File("src/jvmTest/resources$PATH").also {
-        require(it.exists()) { "Folder not found: ${it.absolutePath}" }
-        require(it.isDirectory)
-    }.listFiles(InheritedFilenameFilter(extension, onlyIfCanonicalPresent))
-
-fun getFileByName(name: String): File =
-    File("src/jvmTest/resources$PATH/$name").also {
-        require(it.exists()) { "Folder not found: ${it.absolutePath}" }
-        require(it.isFile)
+): List<Path> =
+    "src/jvmTest/resources$PATH".toPath().also {
+        require(FileSystem.SYSTEM.exists(it)) { "Folder not found: $it" }
+        require(FileSystem.SYSTEM.metadataOrNull(it)?.isDirectory == true)
+    }.let {
+        FileSystem.SYSTEM.listRecursively(it)
+            .filter { FileSystem.SYSTEM.inheritedFilenameFilter(it, extension, onlyIfCanonicalPresent) }
+            .toList()
     }
 
-fun canonicalParse(input2: InputStream, label: String): List<Event> {
+fun getFileByName(name: String): Path =
+    "src/jvmTest/resources$PATH/$name".toPath().also {
+        require(FileSystem.SYSTEM.exists(it)) { "File not found: $it" }
+        require(FileSystem.SYSTEM.metadataOrNull(it)?.isRegularFile == true)
+    }
+
+fun canonicalParse(input2: Source, label: String): List<Event> {
     val settings = LoadSettings.builder().setLabel(label).build()
     input2.use {
-        val reader = StreamReader(settings, YamlUnicodeReader(input2.source()))
+        val reader = StreamReader(settings, YamlUnicodeReader(input2))
         val buffer = StringBuffer()
         while (reader.peek() != 0) {
             buffer.appendCodePoint(reader.peek())
@@ -51,10 +55,10 @@ fun canonicalParse(input2: InputStream, label: String): List<Event> {
     }
 }
 
-fun parse(input: InputStream): List<Event> {
+fun parse(input: Source): List<Event> {
     val settings = LoadSettings.builder().build()
     input.use {
-        val reader = StreamReader(settings, YamlUnicodeReader(input.source()))
+        val reader = StreamReader(settings, YamlUnicodeReader(input))
         val parser = ParserImpl(settings, reader)
         val result = buildList {
             while (parser.hasNext()) {
@@ -65,18 +69,19 @@ fun parse(input: InputStream): List<Event> {
     }
 }
 
-private class InheritedFilenameFilter(
-    private val extension: String,
-    private val onlyIfCanonicalPresent: Boolean,
-) : FilenameFilter {
-    override fun accept(dir: File?, name: String): Boolean {
-        val position = name.lastIndexOf('.')
-        val canonicalFileName = name.substring(0, position) + ".canonical"
-        val canonicalFile = File(dir, canonicalFileName)
-        return if (onlyIfCanonicalPresent && !canonicalFile.exists()) {
-            false
-        } else {
-            name.endsWith(extension)
-        }
+private fun FileSystem.inheritedFilenameFilter(
+    path: Path,
+    extension: String,
+    onlyIfCanonicalPresent: Boolean,
+): Boolean {
+    val name = path.name
+    val position = name.lastIndexOf('.')
+    val canonicalFileName = name.substring(0, position) + ".canonical"
+    val canonicalFilePath = path.parent?.resolve(canonicalFileName)
+        ?: error("Canonical file path does not exist: $path")
+    return if (onlyIfCanonicalPresent && this.exists(canonicalFilePath)) {
+        false
+    } else {
+        name.endsWith(extension)
     }
 }

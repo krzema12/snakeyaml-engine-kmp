@@ -6,7 +6,6 @@ import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import okio.source
-import org.snakeyaml.engine.usecases.inherited.CanonicalParser
 import org.snakeyaml.engine.v2.utils.TestUtils
 import java.io.File
 import java.io.FilenameFilter

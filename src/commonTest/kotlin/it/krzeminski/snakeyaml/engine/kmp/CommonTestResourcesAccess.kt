@@ -30,26 +30,6 @@ fun stringFromResources(path: String): String {
         .replace(Regex("\\r\\n?"), "\n")
 }
 
-/**
- * Returns a map or a leaf (file) in the resources map, pointed to by [path],
- * or `null` if the file or directory cannot be found.
- */
-private fun traverseResourcesMap(path: Path): Any? {
-    var map: Any? = CommonTestResources.resourcesMap
-    for (segment in path.segments) {
-        if (map is Map<*, *>) {
-            if (segment in map) {
-                map = map[segment]
-            } else {
-                return null
-            }
-        } else {
-            return null
-        }
-    }
-    return map
-}
-
 val CommonTestResourcesFileSystem = object : FileSystem() {
     override fun list(dir: Path): List<Path> =
         listOrNull(dir) ?: throw IOException("Cannot list $dir")
@@ -102,4 +82,24 @@ val CommonTestResourcesFileSystem = object : FileSystem() {
 
     override fun createSymlink(source: Path, target: Path) =
         throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+}
+
+/**
+ * Returns a map or a leaf (file) in the resources map, pointed to by [path],
+ * or `null` if the file or directory cannot be found.
+ */
+private fun traverseResourcesMap(path: Path): Any? {
+    var map: Any? = CommonTestResources.resourcesMap
+    for (segment in path.segments) {
+        if (map is Map<*, *>) {
+            if (segment in map) {
+                map = map[segment]
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
+    return map
 }

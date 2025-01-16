@@ -3,6 +3,7 @@ package it.krzeminski.snakeyaml.engine.kmp
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import okio.IOException
 
 class CommonTestResourcesAccessTest : FunSpec({
     test("stringFromResources - resource exists") {
@@ -14,18 +15,18 @@ class CommonTestResourcesAccessTest : FunSpec({
     }
 
     test("stringFromResources - file doesn't exist") {
-        shouldThrow<IllegalArgumentException> {
+        shouldThrow<IOException> {
             stringFromResources("/test/resource/does-not-exist.txt")
         }.also {
-            it.message shouldBe "File 'does-not-exist.txt' doesn't exist in directory '/resources/test/resource/'!"
+            it.message shouldBe "Cannot read test/resource/does-not-exist.txt"
         }
     }
 
     test("stringFromResources - directory doesn't exist") {
-        shouldThrow<IllegalArgumentException> {
+        shouldThrow<IOException> {
             stringFromResources("/this/resource/for/sure/does/not/exist.txt")
         }.also {
-            it.message shouldBe "Directory 'this' doesn't exist in directory '/resources/'!"
+            it.message shouldBe "Cannot read this/resource/for/sure/does/not/exist.txt"
         }
     }
 

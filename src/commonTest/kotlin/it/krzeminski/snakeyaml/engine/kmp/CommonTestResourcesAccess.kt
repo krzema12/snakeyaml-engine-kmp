@@ -8,8 +8,10 @@ import okio.FileMetadata
 import okio.FileSystem
 import okio.IOException
 import okio.Path
+import okio.Path.Companion.toPath
 import okio.Sink
 import okio.Source
+import okio.buffer
 
 /**
  * Retrieves a string content from common resources using a given path.
@@ -20,22 +22,8 @@ import okio.Source
  */
 fun stringFromResources(path: String): String {
     require(path.startsWith("/")) { "A leading slash is required!" }
-    val segments = path.drop(1).split("/")
-    return (segments
-        .dropLast(1)
-        .fold(Pair(CommonTestResources.resourcesMap, "/resources/")) { (map, pathSoFar), directory ->
-            require(directory in map) {
-                "Directory '$directory' doesn't exist in directory '$pathSoFar'!"
-            }
-            @Suppress("UNCHECKED_CAST")
-            Pair(map[directory] as Map<String, Any>, "$pathSoFar$directory/")
-        }).let { (map, pathSoFar) ->
-            val file = segments.last()
-            require(file in map) {
-                "File '$file' doesn't exist in directory '$pathSoFar'!"
-            }
-            map[file] as ByteString
-        }.utf8()
+    val path = path.drop(1).toPath()
+    return CommonTestResourcesFileSystem.source(path).buffer().readUtf8()
         // In this particular library, we produce uniform line breaks (\n)
         // on all OSes, hence it's desired to normalize them even if in
         // the resource file, we have a different kind of line breaks.
@@ -84,7 +72,9 @@ val CommonTestResourcesFileSystem = object : FileSystem() {
         }
 
     override fun source(file: Path): Source =
-        (Buffer().write(traverseResourcesMap(file) as ByteString) as Source)
+        traverseResourcesMap(file)?.let {
+            (Buffer().write(it as ByteString) as Source)
+        } ?: throw IOException("Cannot read $file")
 
     override fun canonicalize(path: Path): Path =
         throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")

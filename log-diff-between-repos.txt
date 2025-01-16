@@ -1,5 +1,2 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..bf51157792e25bdf9c3bb095e28abed0f16ec079
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..5d199440b1289e88441f7e40957cd13336f89c1c
 
-5d19944 [maven-release-plugin] prepare for next development iteration
-da5e518 [maven-release-plugin] prepare release snakeyaml-engine-2.9
-3d451ca Release 2.9

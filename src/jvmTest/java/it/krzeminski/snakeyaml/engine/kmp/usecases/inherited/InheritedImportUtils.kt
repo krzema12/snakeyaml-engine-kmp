@@ -1,5 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.inherited
 
+import it.krzeminski.snakeyaml.engine.kmp.CommonTestResourcesFileSystem
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
@@ -7,7 +8,6 @@ import it.krzeminski.snakeyaml.engine.kmp.internal.FSPath
 import it.krzeminski.snakeyaml.engine.kmp.internal.fsPath
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
-import okio.FileSystem
 import okio.Source
 import org.snakeyaml.engine.v2.utils.TestUtils
 
@@ -21,7 +21,7 @@ fun getStreamsByExtension(
     extension: String,
     onlyIfCanonicalPresent: Boolean = false,
 ): List<FSPath> =
-    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH").also {
+    CommonTestResourcesFileSystem.fsPath(PATH).also {
         require(it.exists) { "Folder not found: $it" }
         require(it.isDirectory)
     }.listRecursively()
@@ -29,7 +29,7 @@ fun getStreamsByExtension(
         .toList()
 
 fun getFileByName(name: String): FSPath =
-    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH/$name").also {
+    CommonTestResourcesFileSystem.fsPath("$PATH/$name").also {
         require(it.exists) { "File not found: $it" }
         require(it.isRegularFile)
     }

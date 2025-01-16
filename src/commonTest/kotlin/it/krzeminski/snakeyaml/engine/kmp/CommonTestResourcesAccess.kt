@@ -6,10 +6,10 @@ import okio.ByteString
 import okio.FileHandle
 import okio.FileMetadata
 import okio.FileSystem
+import okio.IOException
 import okio.Path
 import okio.Sink
 import okio.Source
-import okio.buffer
 
 /**
  * Retrieves a string content from common resources using a given path.
@@ -42,37 +42,38 @@ fun stringFromResources(path: String): String {
         .replace(Regex("\\r\\n?"), "\n")
 }
 
+/**
+ * Returns a map or a leaf (file) in the resources map, pointed to by [path],
+ * or `null` if the file or directory cannot be found.
+ */
 private fun traverseResourcesMap(path: Path): Any? {
-    return try {
-        path.segments
-            .fold(Pair(CommonTestResources.resourcesMap as Any?, "/resources/")) { (map, pathSoFar), node ->
-                if (map is Map<*, *>) {
-                    require(node in map) {
-                        "Node '$node' doesn't exist in directory '$pathSoFar'!"
-                    }
-                    Pair(map[node], "$pathSoFar$node/")
-                } else {
-                    error("It shouldn't happen!")
-                }
-            }.first
-    } catch (e: Exception) {
-        // TODO: hack, reimplement
-        null
+    var map: Any? = CommonTestResources.resourcesMap
+    for (segment in path.segments) {
+        if (map is Map<*, *>) {
+            if (segment in map) {
+                map = map[segment]
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
     }
+    return map
 }
 
 val CommonTestResourcesFileSystem = object : FileSystem() {
     override fun list(dir: Path): List<Path> =
-        (traverseResourcesMap(dir) as Map<String, Any?>).keys
-            .map { dir.resolve(it) }
+        listOrNull(dir) ?: throw IOException("Cannot list $dir")
 
-    override fun listOrNull(dir: Path): List<Path>? =
-        // TODO: definitely needs to be implemented in a cleaner way
-        try {
-            list(dir)
-        } catch (_: Exception) {
-            null
+    override fun listOrNull(dir: Path): List<Path>? {
+        val node = traverseResourcesMap(dir) ?: return null
+        if (node !is Map<*, *>) {
+            return null
         }
+        @Suppress("UNCHECKED_CAST")
+        return (node as Map<String, Any?>).keys.map { dir.resolve(it) }
+    }
 
     override fun metadataOrNull(path: Path): FileMetadata? =
         traverseResourcesMap(path)?.let { node ->

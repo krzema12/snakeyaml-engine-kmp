@@ -6,17 +6,18 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.internal.FSPath
 import it.krzeminski.snakeyaml.engine.kmp.internal.fsPath
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 import okio.Source
-import org.snakeyaml.engine.v2.utils.TestUtils
+import okio.use
 
 private const val PATH =  "/inherited_yaml_1_1"
 
 fun getResource(theName: String): String =
-    TestUtils.getResource("$PATH/$theName")
+    stringFromResources("$PATH/$theName")
 
-@JvmOverloads
 fun getStreamsByExtension(
     extension: String,
     onlyIfCanonicalPresent: Boolean = false,
@@ -38,12 +39,12 @@ fun canonicalParse(input2: Source, label: String): List<Event> {
     val settings = LoadSettings.builder().setLabel(label).build()
     input2.use {
         val reader = StreamReader(settings, YamlUnicodeReader(input2))
-        val buffer = StringBuffer()
+        val buffer = StringBuilder()
         while (reader.peek() != 0) {
             buffer.appendCodePoint(reader.peek())
             reader.forward()
         }
-        val parser = CanonicalParser(buffer.toString().replace(System.lineSeparator(), "\n"), label)
+        val parser = CanonicalParser(buffer.lines().joinToString(separator = "\n"), label)
         val result = buildList {
             while (parser.hasNext()) {
                 add(parser.next())

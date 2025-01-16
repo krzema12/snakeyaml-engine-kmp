@@ -11,8 +11,6 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamEndToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamStartToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
-import okio.source
-import java.io.FileInputStream
 
 class InheritedTokensTest: FunSpec({
     test("Tokens are correct") {
@@ -53,7 +51,7 @@ class InheritedTokensTest: FunSpec({
 
             val tokens1 = mutableListOf<String>()
             val settings = LoadSettings.builder().build()
-            FileInputStream(getFileByName(dataName)).source().use { source ->
+            getFileByName(dataName).source().use { source ->
                 val reader = StreamReader(
                     loadSettings = settings,
                     stream = YamlUnicodeReader(source),
@@ -74,7 +72,7 @@ class InheritedTokensTest: FunSpec({
                     println("Data: \n$data")
                     println("Tokens:")
                     tokens1.forEach {
-                        println("token")
+                        println(it)
                     }
                     fail("Cannot scan: $tokenFile")
                 }
@@ -87,7 +85,7 @@ class InheritedTokensTest: FunSpec({
         files.size shouldBeGreaterThan 0
         files.forEach { file ->
             val tokens = mutableListOf<String>()
-            FileInputStream(file).source().use { source ->
+            file.source().use { source ->
                 val settings = LoadSettings.builder().build()
                 val reader = StreamReader(settings, YamlUnicodeReader(source))
                 val scanner = ScannerImpl(settings, reader)
@@ -102,7 +100,7 @@ class InheritedTokensTest: FunSpec({
                     println("Data: \n$data")
                     println("Tokens:")
                     tokens.forEach {
-                        println("token")
+                        println(it)
                     }
                     fail("Cannot scan: $file; ${e.message}")
                 }

@@ -8,8 +8,6 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
-import okio.source
-import java.io.FileInputStream
 
 class InheritedReaderTest: FunSpec({
     test("Reader errors") {
@@ -19,15 +17,15 @@ class InheritedReaderTest: FunSpec({
             // Supporting UTF-16 will be much more difficult anyway as more code is transferred to KMP, because
             // KMP basically only supports UTF-8.
             .filter { it.name !in setOf("odd-utf16.stream-error", "invalid-utf8-byte.stream-error") }
-            .forEach { file ->
-                FileInputStream(file).use { input ->
-                    val unicodeReader = YamlUnicodeReader(input.source())
+            .forEach { input ->
+                input.source().use { source ->
+                    val unicodeReader = YamlUnicodeReader(source)
                     val stream = StreamReader(LoadSettings.builder().build(), unicodeReader)
                     try {
                         while (stream.peek() != 0) {
                             stream.forward()
                         }
-                        fail("Invalid stream must not be accepted: ${file.absolutePath}; encoding=${unicodeReader.encoding}")
+                        fail("Invalid stream must not be accepted: $input; encoding=${unicodeReader.encoding}")
                     } catch (e: ReaderException) {
                         e.toString() shouldContain " special characters are not allowed"
                     } catch (e: YamlEngineException) {

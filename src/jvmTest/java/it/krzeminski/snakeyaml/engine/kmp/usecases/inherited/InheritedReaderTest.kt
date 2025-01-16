@@ -8,7 +8,6 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
-import okio.FileSystem
 
 class InheritedReaderTest: FunSpec({
     test("Reader errors") {
@@ -19,7 +18,7 @@ class InheritedReaderTest: FunSpec({
             // KMP basically only supports UTF-8.
             .filter { it.name !in setOf("odd-utf16.stream-error", "invalid-utf8-byte.stream-error") }
             .forEach { input ->
-                val unicodeReader = YamlUnicodeReader(FileSystem.SYSTEM.source(input))
+                val unicodeReader = YamlUnicodeReader(input.source())
                 val stream = StreamReader(LoadSettings.builder().build(), unicodeReader)
                 try {
                     while (stream.peek() != 0) {

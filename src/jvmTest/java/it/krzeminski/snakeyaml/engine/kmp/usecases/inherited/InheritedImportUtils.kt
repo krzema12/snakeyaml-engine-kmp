@@ -3,11 +3,11 @@ package it.krzeminski.snakeyaml.engine.kmp.usecases.inherited
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
+import it.krzeminski.snakeyaml.engine.kmp.internal.FSPath
+import it.krzeminski.snakeyaml.engine.kmp.internal.fsPath
 import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import okio.FileSystem
-import okio.Path
-import okio.Path.Companion.toPath
 import okio.Source
 import org.snakeyaml.engine.v2.utils.TestUtils
 
@@ -20,20 +20,18 @@ fun getResource(theName: String): String =
 fun getStreamsByExtension(
     extension: String,
     onlyIfCanonicalPresent: Boolean = false,
-): List<Path> =
-    "src/jvmTest/resources$PATH".toPath().also {
-        require(FileSystem.SYSTEM.exists(it)) { "Folder not found: $it" }
-        require(FileSystem.SYSTEM.metadataOrNull(it)?.isDirectory == true)
-    }.let {
-        FileSystem.SYSTEM.listRecursively(it)
-            .filter { FileSystem.SYSTEM.inheritedFilenameFilter(it, extension, onlyIfCanonicalPresent) }
-            .toList()
-    }
+): List<FSPath> =
+    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH").also {
+        require(it.exists) { "Folder not found: $it" }
+        require(it.isDirectory)
+    }.listRecursively()
+        .filter { it.inheritedFilenameFilter(extension, onlyIfCanonicalPresent) }
+        .toList()
 
-fun getFileByName(name: String): Path =
-    "src/jvmTest/resources$PATH/$name".toPath().also {
-        require(FileSystem.SYSTEM.exists(it)) { "File not found: $it" }
-        require(FileSystem.SYSTEM.metadataOrNull(it)?.isRegularFile == true)
+fun getFileByName(name: String): FSPath =
+    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH/$name").also {
+        require(it.exists) { "File not found: $it" }
+        require(it.isRegularFile)
     }
 
 fun canonicalParse(input2: Source, label: String): List<Event> {
@@ -69,17 +67,15 @@ fun parse(input: Source): List<Event> {
     }
 }
 
-private fun FileSystem.inheritedFilenameFilter(
-    path: Path,
+private fun FSPath.inheritedFilenameFilter(
     extension: String,
     onlyIfCanonicalPresent: Boolean,
 ): Boolean {
-    val name = path.name
     val position = name.lastIndexOf('.')
     val canonicalFileName = name.substring(0, position) + ".canonical"
-    val canonicalFilePath = path.parent?.resolve(canonicalFileName)
-        ?: error("Canonical file path does not exist: $path")
-    return if (onlyIfCanonicalPresent && !this.exists(canonicalFilePath)) {
+    val canonicalFilePath = this.parent?.resolve(canonicalFileName)
+        ?: error("Canonical file path does not exist: $this")
+    return if (onlyIfCanonicalPresent && !canonicalFilePath.exists) {
         false
     } else {
         name.endsWith(extension)

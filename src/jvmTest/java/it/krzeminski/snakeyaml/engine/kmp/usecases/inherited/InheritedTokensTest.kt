@@ -11,7 +11,6 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamEndToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamStartToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
-import okio.FileSystem
 
 class InheritedTokensTest: FunSpec({
     test("Tokens are correct") {
@@ -52,7 +51,7 @@ class InheritedTokensTest: FunSpec({
 
             val tokens1 = mutableListOf<String>()
             val settings = LoadSettings.builder().build()
-            FileSystem.SYSTEM.source(getFileByName(dataName)).use { source ->
+            getFileByName(dataName).source().use { source ->
                 val reader = StreamReader(
                     loadSettings = settings,
                     stream = YamlUnicodeReader(source),
@@ -86,7 +85,7 @@ class InheritedTokensTest: FunSpec({
         files.size shouldBeGreaterThan 0
         files.forEach { file ->
             val tokens = mutableListOf<String>()
-            FileSystem.SYSTEM.source(file).use { source ->
+            file.source().use { source ->
                 val settings = LoadSettings.builder().build()
                 val reader = StreamReader(settings, YamlUnicodeReader(source))
                 val scanner = ScannerImpl(settings, reader)

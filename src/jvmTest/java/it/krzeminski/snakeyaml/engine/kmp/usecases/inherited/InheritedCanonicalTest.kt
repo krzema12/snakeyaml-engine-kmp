@@ -5,18 +5,14 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
 import okio.BufferedSource
-import okio.FileSystem
-import okio.Source
 import okio.buffer
-import java.io.InputStream
-import java.nio.file.Files
 
 class InheritedCanonicalTest: FunSpec({
     test("Canonical scan") {
         val files = getStreamsByExtension(".canonical")
         files.size shouldBeGreaterThan 0
         files.forEach { file ->
-            FileSystem.SYSTEM.source(file).use { input ->
+            file.source().use { input ->
                 val tokens = canonicalScan(input.buffer(), file.name)
                 tokens.shouldNotBeEmpty()
             }
@@ -27,7 +23,7 @@ class InheritedCanonicalTest: FunSpec({
         val files = getStreamsByExtension(".canonical")
         files.size shouldBeGreaterThan 0
         files.forEach { file ->
-            FileSystem.SYSTEM.source(file).use { input ->
+            file.source().use { input ->
                 val tokens = canonicalParse(input, file.name)
                 tokens.shouldNotBeEmpty()
             }

@@ -22,15 +22,18 @@ class DumpWithoutCommentsTest : FunSpec({
         val yaml = "a: 1 # A\nb: 2 # B\n"
         val dumpSettings = DumpSettings.builder().setDumpComments(false).build()
 
+        val streamWriter = StringStreamDataWriter()
         val emitter = Emitter(
             dumpSettings,
-            StringStreamDataWriter(),
+            streamWriter,
         )
         val serializer = Serializer(dumpSettings, emitter)
 
         serializer.emitStreamStart()
         serializer.serializeDocument(createNodeWithComments(yaml))
         serializer.emitStreamEnd()
+
+        streamWriter.toString() shouldBe "a: 1\nb: 2\n"
     }
 
     test("check no comments") {

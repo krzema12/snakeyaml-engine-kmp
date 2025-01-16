@@ -21,7 +21,7 @@ fun getStreamsByExtension(
     extension: String,
     onlyIfCanonicalPresent: Boolean = false,
 ): List<FSPath> =
-    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH").also {
+    FileSystem.SYSTEM.fsPath("src/commonTest/resources$PATH").also {
         require(it.exists) { "Folder not found: $it" }
         require(it.isDirectory)
     }.listRecursively()
@@ -29,7 +29,7 @@ fun getStreamsByExtension(
         .toList()
 
 fun getFileByName(name: String): FSPath =
-    FileSystem.SYSTEM.fsPath("src/jvmTest/resources$PATH/$name").also {
+    FileSystem.SYSTEM.fsPath("src/commonTest/resources$PATH/$name").also {
         require(it.exists) { "File not found: $it" }
         require(it.isRegularFile)
     }

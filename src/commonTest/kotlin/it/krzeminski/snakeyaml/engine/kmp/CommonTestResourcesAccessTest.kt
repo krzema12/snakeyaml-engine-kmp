@@ -22,7 +22,7 @@ class CommonTestResourcesAccessTest : FunSpec({
         shouldThrow<IOException> {
             stringFromResources("/test/resource/does-not-exist.txt")
         }.also {
-            it.message shouldBe "Cannot read test/resource/does-not-exist.txt"
+            it.message shouldBe "File 'test/resource/does-not-exist.txt' doesn't exist"
         }
     }
 
@@ -30,7 +30,7 @@ class CommonTestResourcesAccessTest : FunSpec({
         shouldThrow<IOException> {
             stringFromResources("/this/resource/for/sure/does/not/exist.txt")
         }.also {
-            it.message shouldBe "Cannot read this/resource/for/sure/does/not/exist.txt"
+            it.message shouldBe "File 'this/resource/for/sure/does/not/exist.txt' doesn't exist"
         }
     }
 
@@ -57,7 +57,7 @@ class CommonTestResourcesAccessTest : FunSpec({
         shouldThrow<IOException> {
             CommonTestResourcesFileSystem.source("test/resource/does-not-exist.txt".toPath())
         }.also {
-            it.message shouldBe "Cannot read test/resource/does-not-exist.txt"
+            it.message shouldBe "File 'test/resource/does-not-exist.txt' doesn't exist"
         }
     }
 

@@ -57,7 +57,7 @@ object CommonTestResourcesFileSystem : FileSystem() {
     override fun source(file: Path): Source =
         traverseResourcesMap(file)?.let {
             (Buffer().write(it as ByteString) as Source)
-        } ?: throw IOException("Cannot read $file")
+        } ?: throw IOException("File '$file' doesn't exist")
 
     override fun canonicalize(path: Path): Path =
         throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")

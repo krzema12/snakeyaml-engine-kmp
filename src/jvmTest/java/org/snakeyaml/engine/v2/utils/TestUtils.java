@@ -26,20 +26,6 @@ import it.krzeminski.snakeyaml.engine.kmp.events.Event;
 
 public abstract class TestUtils {
 
-  public static String getResource(@Language("file-reference") String theName) {
-    InputStream inputStream = getResourceAsStream(theName);
-    return new BufferedReader(new InputStreamReader(inputStream)).lines()
-        .collect(Collectors.joining("\n", "", "\n"));
-  }
-
-  public static InputStream getResourceAsStream(@Language("file-reference") String theName) {
-    InputStream inputStream = TestUtils.class.getResourceAsStream(theName);
-    if (inputStream == null) {
-      throw new RuntimeException("Resource not found: " + theName);
-    }
-    return inputStream;
-  }
-
   public static void compareEvents(List<Event> list1, List<Event> list2) {
     assertEquals(list1.size(), list2.size());
     for (Event event1 : list1) {

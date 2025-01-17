@@ -95,11 +95,7 @@ private fun traverseResourcesMap(path: Path): Any? {
     var map: Any? = CommonTestResources.resourcesMap
     for (segment in path.segments) {
         if (map is Map<*, *>) {
-            if (segment in map) {
-                map = map[segment]
-            } else {
-                return null
-            }
+            map = map[segment] ?: return null
         } else {
             return null
         }

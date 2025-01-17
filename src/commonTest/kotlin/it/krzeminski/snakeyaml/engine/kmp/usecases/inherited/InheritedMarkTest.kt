@@ -6,7 +6,7 @@ import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
-import kotlin.streams.toList
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.toCodePoints
 
 class InheritedMarkTest: FunSpec({
     test("Marks") {
@@ -29,7 +29,7 @@ class InheritedMarkTest: FunSpec({
                 }
                 index++
             }
-            val inputCodepoints = input.codePoints().toList()
+            val inputCodepoints = input.toCodePoints()
             val mark = Mark(
                 name = "testMarks",
                 index = index,

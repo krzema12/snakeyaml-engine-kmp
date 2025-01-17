@@ -15,6 +15,8 @@ package it.krzeminski.snakeyaml.engine.kmp.usecases.inherited
 
 import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.codePointAt
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.scanner.Scanner
 import it.krzeminski.snakeyaml.engine.kmp.tokens.*
@@ -29,7 +31,6 @@ class CanonicalScanner(data: String, private val label: String) : Scanner {
         codepoints =  data.map { it.code },
         pointer = 0,
     )
-    @JvmField
     var tokens: MutableList<Token> = mutableListOf()
     private var index = 0
     private var scanned = false

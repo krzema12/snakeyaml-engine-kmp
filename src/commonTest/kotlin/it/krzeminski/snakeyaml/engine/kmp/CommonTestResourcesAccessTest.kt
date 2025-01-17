@@ -61,6 +61,14 @@ class CommonTestResourcesAccessTest : FunSpec({
         }
     }
 
+    test("CommonTestResourcesFileSystem - source(...) if path points to directory") {
+        shouldThrow<IOException> {
+            CommonTestResourcesFileSystem.source("test/resource".toPath())
+        }.also {
+            it.message shouldBe "'test/resource' is not a file"
+        }
+    }
+
     test("CommonTestResourcesFileSystem - metadataOrNull(...) if file exists") {
         val metadata = CommonTestResourcesFileSystem.metadataOrNull("test/resource/foo.txt".toPath())
 

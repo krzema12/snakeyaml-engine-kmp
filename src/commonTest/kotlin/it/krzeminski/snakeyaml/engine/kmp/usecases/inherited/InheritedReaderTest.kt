@@ -8,6 +8,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.YamlUnicodeReader
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
+import okio.use
 
 class InheritedReaderTest: FunSpec({
     test("Reader errors") {

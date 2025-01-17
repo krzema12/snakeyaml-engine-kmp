@@ -11,6 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamEndToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.StreamStartToken
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
+import okio.use
 
 class InheritedTokensTest: FunSpec({
     test("Tokens are correct") {
@@ -92,7 +93,7 @@ class InheritedTokensTest: FunSpec({
                 try {
                     while (scanner.checkToken()) {
                         val token = scanner.next()
-                        tokens.add(token.javaClass.name)
+                        tokens.add(token::class.toString())
                     }
                 } catch (e: RuntimeException) {
                     println("File name: \n${file.name}")

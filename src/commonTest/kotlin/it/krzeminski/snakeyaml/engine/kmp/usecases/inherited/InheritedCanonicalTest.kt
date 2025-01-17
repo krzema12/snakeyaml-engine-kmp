@@ -6,6 +6,7 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
 import okio.BufferedSource
 import okio.buffer
+import okio.use
 
 class InheritedCanonicalTest: FunSpec({
     test("Canonical scan") {
@@ -38,7 +39,7 @@ private fun canonicalScan(input: BufferedSource, label: String): List<Token> {
             append(ch.toChar())
         }
     }
-    val scanner = CanonicalScanner(buffer.toString().replace(System.lineSeparator(), "\n"), label)
+    val scanner = CanonicalScanner(buffer.lines().joinToString(separator = "\n"), label)
     return buildList {
         while (scanner.hasNext()) {
             add(scanner.next())

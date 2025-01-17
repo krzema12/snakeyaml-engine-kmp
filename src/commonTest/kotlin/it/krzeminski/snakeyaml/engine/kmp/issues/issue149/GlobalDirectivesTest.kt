@@ -9,9 +9,10 @@ import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse
 import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException
 import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
+import org.intellij.lang.annotations.Language
 
 class GlobalDirectivesTest : FunSpec({
-    fun yamlToEvents(resourceName: String): Iterable<Event> {
+    fun yamlToEvents(@Language("file-reference") resourceName: String): Iterable<Event> {
         val input = stringFromResources(resourceName)
         val parser = Parse(LoadSettings.builder().build())
         return parser.parse(input)

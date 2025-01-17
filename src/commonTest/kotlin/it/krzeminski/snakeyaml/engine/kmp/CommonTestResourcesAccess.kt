@@ -30,7 +30,10 @@ fun stringFromResources(path: String): String {
         .replace(Regex("\\r\\n?"), "\n")
 }
 
-val CommonTestResourcesFileSystem = object : FileSystem() {
+/**
+ * Exposes files stored in `commonTest/resources` as a [FileSystem].
+ */
+object CommonTestResourcesFileSystem : FileSystem() {
     override fun list(dir: Path): List<Path> =
         listOrNull(dir) ?: throw IOException("Cannot list $dir")
 
@@ -53,8 +56,11 @@ val CommonTestResourcesFileSystem = object : FileSystem() {
 
     override fun source(file: Path): Source =
         traverseResourcesMap(file)?.let {
-            (Buffer().write(it as ByteString) as Source)
-        } ?: throw IOException("Cannot read $file")
+            if (it !is ByteString) {
+                throw IOException("'$file' is not a file")
+            }
+            (Buffer().write(it) as Source)
+        } ?: throw IOException("File '$file' doesn't exist")
 
     override fun canonicalize(path: Path): Path =
         throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
@@ -92,11 +98,7 @@ private fun traverseResourcesMap(path: Path): Any? {
     var map: Any? = CommonTestResources.resourcesMap
     for (segment in path.segments) {
         if (map is Map<*, *>) {
-            if (segment in map) {
-                map = map[segment]
-            } else {
-                return null
-            }
+            map = map[segment] ?: return null
         } else {
             return null
         }

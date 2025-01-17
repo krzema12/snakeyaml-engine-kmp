@@ -44,6 +44,8 @@ class CommonTestResourcesAccessTest : FunSpec({
 
     test("CommonTestResourcesFileSystem - source(...) if file exists and can be read") {
         val source = CommonTestResourcesFileSystem.source("test/resource/foo.txt".toPath())
+
+        // Normalize new line endings to account for Windows.
         source.buffer().readUtf8().lines().joinToString(separator = "\n") shouldBe """
             Hello from multiplatform resources!
             Foo bar baz

@@ -54,7 +54,6 @@ val generateYamlTestSuiteData by tasks.registering(buildsrc.tasks.ConvertCommonT
 
     destination.set(temporaryDir)
     commonResourcesDir.fileProvider(downloadYamlTestSuite.map { it.destinationDir })
-    destination.set(layout.buildDirectory.dir("generated-code-for-yaml-test-suite/src/commonTest/kotlin"))
     accessorFileAndClassName.set("YamlTestSuiteResources")
 }
 

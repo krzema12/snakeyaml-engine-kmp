@@ -47,13 +47,15 @@ val downloadYamlTestSuite by tasks.registering(Sync::class) {
     into(temporaryDir)
 }
 
-val generateYamlTestSuiteData by tasks.registering(buildsrc.tasks.GenerateYamlTestSuiteData::class) {
+val generateYamlTestSuiteData by tasks.registering(buildsrc.tasks.ConvertCommonTestResourcesToKotlin::class) {
     description =
         "generate Kotlin code for accessing the YAML Test Suite data in multiplatform code"
     group = YAML_TEST_TASK_GROUP
 
     destination.set(temporaryDir)
-    yamlTestSuiteFilesDir.fileProvider(downloadYamlTestSuite.map { it.destinationDir })
+    commonResourcesDir.fileProvider(downloadYamlTestSuite.map { it.destinationDir })
+    destination.set(layout.buildDirectory.dir("generated-code-for-yaml-test-suite/src/commonTest/kotlin"))
+    accessorFileAndClassName.set("YamlTestSuiteResources")
 }
 
 val yamlTestSuiteDataSources by tasks.registering(Sync::class) {

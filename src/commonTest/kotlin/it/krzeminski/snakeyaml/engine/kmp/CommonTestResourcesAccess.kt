@@ -33,69 +33,72 @@ fun stringFromResources(path: String): String {
 /**
  * Exposes files stored in `commonTest/resources` as a [FileSystem].
  */
-object CommonTestResourcesFileSystem : FileSystem() {
-    override fun list(dir: Path): List<Path> =
-        listOrNull(dir) ?: throw IOException("Cannot list $dir")
+val CommonTestResourcesFileSystem = buildFileSystem(CommonTestResources.resourcesMap)
 
-    override fun listOrNull(dir: Path): List<Path>? {
-        val node = traverseResourcesMap(dir) ?: return null
-        if (node !is Map<*, *>) {
-            return null
-        }
-        @Suppress("UNCHECKED_CAST")
-        return (node as Map<String, Any?>).keys.map { dir.resolve(it) }
-    }
+internal fun buildFileSystem(resourcesMap: Map<String, Any>): FileSystem =
+    object : FileSystem() {
+        override fun list(dir: Path): List<Path> =
+            listOrNull(dir) ?: throw IOException("Cannot list $dir")
 
-    override fun metadataOrNull(path: Path): FileMetadata? =
-        traverseResourcesMap(path)?.let { node ->
-            FileMetadata(
-                isDirectory = node is Map<*, *>,
-                isRegularFile = node !is Map<*, *>,
-            )
-        }
-
-    override fun source(file: Path): Source =
-        traverseResourcesMap(file)?.let {
-            if (it !is ByteString) {
-                throw IOException("'$file' is not a file")
+        override fun listOrNull(dir: Path): List<Path>? {
+            val node = traverseResourcesMap(resourcesMap, dir) ?: return null
+            if (node !is Map<*, *>) {
+                return null
             }
-            (Buffer().write(it) as Source)
-        } ?: throw IOException("File '$file' doesn't exist")
+            @Suppress("UNCHECKED_CAST")
+            return (node as Map<String, Any?>).keys.map { dir.resolve(it) }
+        }
 
-    override fun canonicalize(path: Path): Path =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun metadataOrNull(path: Path): FileMetadata? =
+            traverseResourcesMap(resourcesMap, path)?.let { node ->
+                FileMetadata(
+                    isDirectory = node is Map<*, *>,
+                    isRegularFile = node !is Map<*, *>,
+                )
+            }
 
-    override fun openReadOnly(file: Path): FileHandle =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun source(file: Path): Source =
+            traverseResourcesMap(resourcesMap, file)?.let {
+                if (it !is ByteString) {
+                    throw IOException("'$file' is not a file")
+                }
+                (Buffer().write(it) as Source)
+            } ?: throw IOException("File '$file' doesn't exist")
 
-    override fun openReadWrite(file: Path, mustCreate: Boolean, mustExist: Boolean): FileHandle =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun canonicalize(path: Path): Path =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun sink(file: Path, mustCreate: Boolean): Sink =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun openReadOnly(file: Path): FileHandle =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun appendingSink(file: Path, mustExist: Boolean): Sink =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun openReadWrite(file: Path, mustCreate: Boolean, mustExist: Boolean): FileHandle =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun createDirectory(dir: Path, mustCreate: Boolean) =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun sink(file: Path, mustCreate: Boolean): Sink =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun atomicMove(source: Path, target: Path) =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun appendingSink(file: Path, mustExist: Boolean): Sink =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun delete(path: Path, mustExist: Boolean) =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+        override fun createDirectory(dir: Path, mustCreate: Boolean) =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-    override fun createSymlink(source: Path, target: Path) =
-        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
-}
+        override fun atomicMove(source: Path, target: Path) =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+
+        override fun delete(path: Path, mustExist: Boolean) =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+
+        override fun createSymlink(source: Path, target: Path) =
+            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    }
 
 /**
  * Returns a map or a leaf (file) in the resources map, pointed to by [path],
  * or `null` if the file or directory cannot be found.
  */
-private fun traverseResourcesMap(path: Path): Any? {
-    var map: Any? = CommonTestResources.resourcesMap
+private fun traverseResourcesMap(resourcesMap: Map<String, Any>, path: Path): Any? {
+    var map: Any? = resourcesMap
     for (segment in path.segments) {
         if (map is Map<*, *>) {
             map = map[segment] ?: return null

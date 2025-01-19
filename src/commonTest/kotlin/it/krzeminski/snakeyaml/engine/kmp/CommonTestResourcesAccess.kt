@@ -35,63 +35,70 @@ fun stringFromResources(path: String): String {
  */
 val CommonTestResourcesFileSystem = buildFileSystem(CommonTestResources.resourcesMap)
 
+/**
+ * Returns an instance of [FileSystem] that can traverse files using a resource map
+ * included in a generated accessor class. One has to configure the build logic to generate
+ * the accessor class for a given directory tree.
+ */
 internal fun buildFileSystem(resourcesMap: Map<String, Any>): FileSystem =
-    object : FileSystem() {
-        override fun list(dir: Path): List<Path> =
-            listOrNull(dir) ?: throw IOException("Cannot list $dir")
+    GenericCommonTestResourcesFileSystem(resourcesMap)
 
-        override fun listOrNull(dir: Path): List<Path>? {
-            val node = traverseResourcesMap(resourcesMap, dir) ?: return null
-            if (node !is Map<*, *>) {
-                return null
-            }
-            @Suppress("UNCHECKED_CAST")
-            return (node as Map<String, Any?>).keys.map { dir.resolve(it) }
+private class GenericCommonTestResourcesFileSystem(private val resourcesMap: Map<String, Any>) : FileSystem() {
+    override fun list(dir: Path): List<Path> =
+        listOrNull(dir) ?: throw IOException("Cannot list $dir")
+
+    override fun listOrNull(dir: Path): List<Path>? {
+        val node = traverseResourcesMap(resourcesMap, dir) ?: return null
+        if (node !is Map<*, *>) {
+            return null
+        }
+        @Suppress("UNCHECKED_CAST")
+        return (node as Map<String, Any?>).keys.map { dir.resolve(it) }
+    }
+
+    override fun metadataOrNull(path: Path): FileMetadata? =
+        traverseResourcesMap(resourcesMap, path)?.let { node ->
+            FileMetadata(
+                isDirectory = node is Map<*, *>,
+                isRegularFile = node !is Map<*, *>,
+            )
         }
 
-        override fun metadataOrNull(path: Path): FileMetadata? =
-            traverseResourcesMap(resourcesMap, path)?.let { node ->
-                FileMetadata(
-                    isDirectory = node is Map<*, *>,
-                    isRegularFile = node !is Map<*, *>,
-                )
+    override fun source(file: Path): Source =
+        traverseResourcesMap(resourcesMap, file)?.let {
+            if (it !is ByteString) {
+                throw IOException("'$file' is not a file")
             }
+            (Buffer().write(it) as Source)
+        } ?: throw IOException("File '$file' doesn't exist")
 
-        override fun source(file: Path): Source =
-            traverseResourcesMap(resourcesMap, file)?.let {
-                if (it !is ByteString) {
-                    throw IOException("'$file' is not a file")
-                }
-                (Buffer().write(it) as Source)
-            } ?: throw IOException("File '$file' doesn't exist")
+    override fun canonicalize(path: Path): Path =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun canonicalize(path: Path): Path =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun openReadOnly(file: Path): FileHandle =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun openReadOnly(file: Path): FileHandle =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun openReadWrite(file: Path, mustCreate: Boolean, mustExist: Boolean): FileHandle =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun openReadWrite(file: Path, mustCreate: Boolean, mustExist: Boolean): FileHandle =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun sink(file: Path, mustCreate: Boolean): Sink =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun sink(file: Path, mustCreate: Boolean): Sink =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun appendingSink(file: Path, mustExist: Boolean): Sink =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun appendingSink(file: Path, mustExist: Boolean): Sink =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun createDirectory(dir: Path, mustCreate: Boolean) =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun createDirectory(dir: Path, mustCreate: Boolean) =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun atomicMove(source: Path, target: Path) =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun atomicMove(source: Path, target: Path) =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+    override fun delete(path: Path, mustExist: Boolean) =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
 
-        override fun delete(path: Path, mustExist: Boolean) =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
-
-        override fun createSymlink(source: Path, target: Path) =
-            throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
-    }
+    override fun createSymlink(source: Path, target: Path) =
+        throw NotImplementedError("This operation is not supported by this simple implementation of the file system.")
+}
 
 /**
  * Returns a map or a leaf (file) in the resources map, pointed to by [path],

@@ -1,8 +1,0 @@
-+STR
-+DOC ---
-=VAL :foo
--DOC
-+DOC ---
-=VAL :foo
--DOC
--STR

@@ -33,12 +33,22 @@ fun stringFromResources(path: String): String {
 /**
  * Exposes files stored in `commonTest/resources` as a [FileSystem].
  */
-object CommonTestResourcesFileSystem : FileSystem() {
+val CommonTestResourcesFileSystem = buildFileSystem(CommonTestResources.resourcesMap)
+
+/**
+ * Returns an instance of [FileSystem] that can traverse files using a resource map
+ * included in a generated accessor class. One has to configure the build logic to generate
+ * the accessor class for a given directory tree.
+ */
+internal fun buildFileSystem(resourcesMap: Map<String, Any>): FileSystem =
+    GenericCommonTestResourcesFileSystem(resourcesMap)
+
+private class GenericCommonTestResourcesFileSystem(private val resourcesMap: Map<String, Any>) : FileSystem() {
     override fun list(dir: Path): List<Path> =
         listOrNull(dir) ?: throw IOException("Cannot list $dir")
 
     override fun listOrNull(dir: Path): List<Path>? {
-        val node = traverseResourcesMap(dir) ?: return null
+        val node = traverseResourcesMap(resourcesMap, dir) ?: return null
         if (node !is Map<*, *>) {
             return null
         }
@@ -47,7 +57,7 @@ object CommonTestResourcesFileSystem : FileSystem() {
     }
 
     override fun metadataOrNull(path: Path): FileMetadata? =
-        traverseResourcesMap(path)?.let { node ->
+        traverseResourcesMap(resourcesMap, path)?.let { node ->
             FileMetadata(
                 isDirectory = node is Map<*, *>,
                 isRegularFile = node !is Map<*, *>,
@@ -55,7 +65,7 @@ object CommonTestResourcesFileSystem : FileSystem() {
         }
 
     override fun source(file: Path): Source =
-        traverseResourcesMap(file)?.let {
+        traverseResourcesMap(resourcesMap, file)?.let {
             if (it !is ByteString) {
                 throw IOException("'$file' is not a file")
             }
@@ -94,8 +104,8 @@ object CommonTestResourcesFileSystem : FileSystem() {
  * Returns a map or a leaf (file) in the resources map, pointed to by [path],
  * or `null` if the file or directory cannot be found.
  */
-private fun traverseResourcesMap(path: Path): Any? {
-    var map: Any? = CommonTestResources.resourcesMap
+private fun traverseResourcesMap(resourcesMap: Map<String, Any>, path: Path): Any? {
+    var map: Any? = resourcesMap
     for (segment in path.segments) {
         if (map is Map<*, *>) {
             map = map[segment] ?: return null

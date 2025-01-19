@@ -8,12 +8,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException
-import it.krzeminski.snakeyaml.engine.kmp.test_suite.DATA_2AUY
+import it.krzeminski.snakeyaml.engine.kmp.test_suite.YamlTestData
 import it.krzeminski.snakeyaml.engine.kmp.test_suite.YamlTestSuiteData
 
 class OptionalMarksTest: FunSpec({
     test("Compose: no marks") {
-        val data = YamlTestSuiteData[DATA_2AUY.id]!!
+        val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
         val settings = LoadSettings.builder()
             .setLabel(data.label)
             .setUseMarks(false)
@@ -23,7 +23,7 @@ class OptionalMarksTest: FunSpec({
     }
 
     test("Compose: failure with marks") {
-        val data = YamlTestSuiteData[DATA_2AUY.id]!!
+        val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
         val settings = LoadSettings.builder()
             .setLabel(data.label)
             .setUseMarks(true)
@@ -38,7 +38,7 @@ class OptionalMarksTest: FunSpec({
     }
 
     test("Compose: failure without marks") {
-        val data = YamlTestSuiteData[DATA_2AUY.id]!!
+        val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
         val settings = LoadSettings.builder()
             .setLabel(data.label)
             .setUseMarks(false)

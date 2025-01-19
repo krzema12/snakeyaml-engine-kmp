@@ -3,6 +3,7 @@ package buildsrc.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import java.nio.file.Path
@@ -26,6 +27,9 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
 
+    @get:Input
+    abstract val accessorFileAndClassName: Property<String>
+
     @TaskAction
     fun action() {
         val destination = destination.asFile.get()
@@ -35,7 +39,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         val resourcesMap = buildResourcesMap()
         val code = generateKotlinCode(resourcesMap)
 
-        destination.resolve("CommonTestResources.kt").writeText(code)
+        destination.resolve("${accessorFileAndClassName.get()}.kt").writeText(code)
     }
 
     private fun buildResourcesMap(): Map<String, Any> {
@@ -65,7 +69,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         return """
             import okio.ByteString
 
-            object CommonTestResources {
+            object ${accessorFileAndClassName.get()} {
                 val resourcesMap: Map<String, Any> = ${getFunctionName("")}()
 
                 $stringBuilder

@@ -2,6 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.comments
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldBeInstanceOf
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.composer.Composer
 import it.krzeminski.snakeyaml.engine.kmp.constructor.StandardConstructor

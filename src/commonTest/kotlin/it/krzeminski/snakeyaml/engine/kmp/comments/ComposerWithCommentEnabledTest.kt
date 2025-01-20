@@ -365,9 +365,7 @@ class ComposerWithCommentEnabledTest: FunSpec({
         val sut = TestConstructor(LoadSettings.builder().build())
         val composer = newComposerWithCommentsEnabled(data)
         val result = sut.constructSingleDocument(composer.getSingleNode())
-        (result is LinkedHashMap<*, *>) shouldBe true
-        @Suppress("UNCHECKED_CAST")
-        val map = result as LinkedHashMap<String, Any>
+        val map = result.shouldBeInstanceOf<LinkedHashMap<String, Any>>()
         map.size shouldBe 1
         map["abc"] shouldBe "def"
     }

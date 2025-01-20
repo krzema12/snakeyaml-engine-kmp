@@ -25,6 +25,7 @@ val yamlTestSuite by configurations.registering {
     asConsumer()
 
     withDependencies {
+        // See [YAML Test Suite](https://github.com/yaml/yaml-test-suite
         add(project.dependencies.create("yaml:yaml-test-suite:data-2022-01-17@zip"))
     }
 }

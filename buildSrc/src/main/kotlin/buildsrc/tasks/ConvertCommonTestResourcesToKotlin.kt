@@ -3,6 +3,7 @@ package buildsrc.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import java.nio.file.Path
@@ -26,6 +27,9 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
     @get:OutputDirectory
     abstract val destination: DirectoryProperty
 
+    @get:Input
+    abstract val accessorFileAndClassName: Property<String>
+
     @TaskAction
     fun action() {
         val destination = destination.asFile.get()
@@ -35,7 +39,7 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         val resourcesMap = buildResourcesMap()
         val code = generateKotlinCode(resourcesMap)
 
-        destination.resolve("CommonTestResources.kt").writeText(code)
+        destination.resolve("${accessorFileAndClassName.get()}.kt").writeText(code)
     }
 
     private fun buildResourcesMap(): Map<String, Any> {
@@ -59,29 +63,50 @@ abstract class ConvertCommonTestResourcesToKotlin @Inject constructor(
         return resourcesMap
     }
 
-    private fun generateKotlinCode(resourcesMap: Map<String, Any>): String =
-        """
+    private fun generateKotlinCode(resourcesMap: Map<String, Any>): String {
+        val stringBuilder = StringBuilder()
+        generateFunctions(resourcesMap, stringBuilder)
+        return """
             import okio.ByteString
 
-            object CommonTestResources {
-                val resourcesMap: Map<String, Any> = ${generateMapCode(resourcesMap)}
+            object ${accessorFileAndClassName.get()} {
+                val resourcesMap: Map<String, Any> = ${getFunctionName("")}()
+
+                $stringBuilder
             }
         """.trimIndent()
+    }
 
-    private fun generateMapCode(map: Map<String, Any>): String {
-        return map.entries.joinToString(
-            separator = ",\n",
-            prefix = "mapOf(\n",
-            postfix = "\n)",
-        ) { (key, value) ->
-            @Suppress("UNCHECKED_CAST")
+    private fun generateFunctions(map: Map<String, Any>, stringBuilder: StringBuilder, path: String = "") {
+        stringBuilder.generateSingleFunction(map, path)
+        stringBuilder.appendLine()
+        for ((key, value) in map) {
             when (value) {
-                is ByteArray -> "\"$key\" to ByteString.of(${value.joinToString(separator = ", ") {
+                is ByteArray -> stringBuilder.append("fun ${getFunctionName("$path/$key")}() = ByteString.of(${value.joinToString(separator = ", ") {
                     "0x${"%02x".format(it)}.toByte()"
-                }})"
-                is Map<*, *> -> "\"$key\" to ${generateMapCode(value as Map<String, Any>)}"
-                else -> error("Unexpected type: $value")
+                }})")
+                is Map<*, *> -> {
+                    @Suppress("UNCHECKED_CAST")
+                    generateFunctions(map[key] as Map<String, Any>, stringBuilder, "$path/$key")
+                }
             }
         }
     }
+
+    private fun StringBuilder.generateSingleFunction(map: Map<String, Any>, path: String) {
+        val functionName = getFunctionName(path)
+        map.entries.joinTo(
+            this,
+            separator = ",\n",
+            prefix = "fun ${functionName}() = mapOf(\n",
+            postfix = "\n)\n",
+        ) { (key, _) ->
+            "\"$key\" to ${getFunctionName("$path/$key")}()"
+        }
+    }
+
+    private val pathToFunctionName: MutableMap<String, String> = mutableMapOf()
+
+    private fun getFunctionName(path: String): String =
+        pathToFunctionName.getOrPut(path) { "function${pathToFunctionName.size}" }
 }

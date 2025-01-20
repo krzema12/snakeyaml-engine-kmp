@@ -17,4 +17,5 @@ val convertCommonTestResourcesToKotlin by tasks.registering(buildsrc.tasks.Conve
     // source sets instead of the required 'commonTest'.
     commonResourcesDir.set(project.projectDir.resolve("src").resolve("commonTest").resolve("resources"))
     destination.set(layout.buildDirectory.dir("generated-code-for-resources/src/commonTest/kotlin"))
+    accessorFileAndClassName.set("CommonTestResources")
 }

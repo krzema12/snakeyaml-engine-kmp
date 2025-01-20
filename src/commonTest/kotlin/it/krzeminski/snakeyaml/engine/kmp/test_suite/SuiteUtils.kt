@@ -34,22 +34,14 @@ internal object SuiteUtils {
      * @see deviationsWithError
      */
     val deviationsWithSuccess: Set<YamlTestData.Id> = setOf(
-        //region originally copied from SnakeYAML
-        // https://github.com/snakeyaml/snakeyaml-engine/blob/5a35e1fe7f780d1405d5a03470f9f13d32b1638a/src/test/java/org/snakeyaml/engine/usecases/external_test_suite/SuiteUtils.java#L33-L34
         "9C9N",
         "9JBA",
         "CVW2",
         "QB6E",
         "SU5Z",
-        //endregion
-
-        //region Additional cases that SnakeYAML-Java also doesn't pass
-        // (SnakeYAML-Java doesn't use the latest YAML Test Suite data, so it doesn't have
-        // manual exclusions for these cases yet).
         "DK95:01",     // https://matrix.yaml.info/details/DK95:01.html
         "JEF9:02",     // https://matrix.yaml.info/details/JEF9:02.html
         "L24T:01",     // https://matrix.yaml.info/details/L24T:01.html
-        //endregion
     ).mapToYamlTestDataId()
 
     /**
@@ -58,8 +50,6 @@ internal object SuiteUtils {
      * @see deviationsWithSuccess for further explanation.
      */
     val deviationsWithError: Set<YamlTestData.Id> = setOf(
-        //region originally copied from SnakeYAML
-        // https://github.com/snakeyaml/snakeyaml-engine/blob/5a35e1fe7f780d1405d5a03470f9f13d32b1638a/src/test/java/org/snakeyaml/engine/usecases/external_test_suite/SuiteUtils.java#L35-L40
         "3RLN-01",
         "3RLN-04",
         "4MUZ",
@@ -114,16 +104,10 @@ internal object SuiteUtils {
         "NKF9",
         "S3PD",
         //endregion
-        //endregion
-
-        //region Additional cases that SnakeYAML-Java also doesn't pass
-        // (SnakeYAML-Java doesn't use the latest YAML Test Suite data, so it doesn't have
-        // manual exclusions for these cases yet).
         "6CA3",        // https://matrix.yaml.info/details/6CA3.html
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
         "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
         "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
-        //endregion
     ).mapToYamlTestDataId()
 
     private fun Set<String>.mapToYamlTestDataId(): Set<YamlTestData.Id> =

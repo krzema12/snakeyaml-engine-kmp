@@ -4,6 +4,8 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.Source
+import okio.buffer
+import okio.use
 
 /**
  * Represents a [FileSystem]-aware [Path]. Thanks to this, there's no need
@@ -35,8 +37,22 @@ class FSPath(val path: Path, val fs: FileSystem) {
     fun resolve(child: String): FSPath =
         FSPath(path.resolve(child), fs)
 
+    operator fun div(child: String): FSPath =
+        this.resolve(child)
+
     fun source(): Source =
         fs.source(path)
+
+    fun readUtf8(): String =
+        source().use {
+            it.buffer().readUtf8()
+        }
+
+    /**
+     * Returns `null` if the file doesn't exist.
+     */
+    fun readUtf8OrNull(): String? =
+        if (this.exists) this.readUtf8() else null
 
     override fun toString(): String =
         path.toString()

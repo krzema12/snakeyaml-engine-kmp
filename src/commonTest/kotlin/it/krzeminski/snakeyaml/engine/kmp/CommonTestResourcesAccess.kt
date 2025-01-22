@@ -12,6 +12,7 @@ import okio.Path.Companion.toPath
 import okio.Sink
 import okio.Source
 import okio.buffer
+import org.intellij.lang.annotations.Language
 
 /**
  * Retrieves a string content from common resources using a given path.
@@ -20,7 +21,7 @@ import okio.buffer
  * @return The content of the resource as a UTF-8 encoded string with normalized line breaks.
  * @throws IllegalArgumentException if the resource doesn't exist.
  */
-fun stringFromResources(path: String): String {
+fun stringFromResources(@Language("file-reference") path: String): String {
     require(path.startsWith("/")) { "A leading slash is required!" }
     val path = path.drop(1).toPath()
     return CommonTestResourcesFileSystem.source(path).buffer().readUtf8()

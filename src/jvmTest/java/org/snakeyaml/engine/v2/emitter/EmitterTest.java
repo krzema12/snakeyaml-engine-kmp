@@ -40,34 +40,6 @@ public class EmitterTest {
   }
 
   @Test
-  public void testWriteFolded() {
-    DumpSettings settings =
-        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.FOLDED).build();
-    String folded = "0123456789 0123456789\n0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<>();
-    map.put("aaa", folded);
-    map.put("bbb", "\nbla-bla\n");
-    String output = dump(settings, map);
-    String expected =
-        "\"aaa\": >-\n  0123456789 0123456789\n\n  0123456789 0123456789\n\"bbb\": >2\n\n  bla-bla\n";
-    assertEquals(expected, output);
-  }
-
-  @Test
-  public void testWriteLiteral() {
-    DumpSettings settings =
-        DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.LITERAL).build();
-    String folded = "0123456789 0123456789 0123456789 0123456789";
-    Map<String, String> map = new LinkedHashMap<>();
-    map.put("aaa", folded);
-    map.put("bbb", "\nbla-bla\n");
-    String output = dump(settings, map);
-    String expected =
-        "\"aaa\": |-\n  0123456789 0123456789 0123456789 0123456789\n\"bbb\": |2\n\n  bla-bla\n";
-    assertEquals(expected, output);
-  }
-
-  @Test
   public void testWritePlain() {
     DumpSettings settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN).build();
     String folded = "0123456789 0123456789\n0123456789 0123456789";

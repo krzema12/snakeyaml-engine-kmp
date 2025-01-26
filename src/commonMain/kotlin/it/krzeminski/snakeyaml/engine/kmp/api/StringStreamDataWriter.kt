@@ -16,5 +16,8 @@ internal class StringStreamDataWriter(
         buffer.writeUtf8(string = str, beginIndex = off, endIndex = off + len)
     }
 
-    override fun toString(): String = buffer.readUtf8()
+    /**
+     * Returns the contents of the internal buffer, without altering the buffer's state.
+     */
+    override fun toString(): String = buffer.peek().readUtf8()
 }

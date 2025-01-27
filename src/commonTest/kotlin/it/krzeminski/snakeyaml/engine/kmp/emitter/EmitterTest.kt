@@ -29,14 +29,16 @@ class EmitterTest: FunSpec({
             "bbb" to "\nbla-bla\n",
         )
         val output = dump(settings, map)
-        val expected = """"aaa": >-
-  0123456789 0123456789
+        val expected = """
+            "aaa": >-
+              0123456789 0123456789
 
-  0123456789 0123456789
-"bbb": >2
+              0123456789 0123456789
+            "bbb": >2
 
-  bla-bla
-"""
+              bla-bla
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -50,12 +52,14 @@ class EmitterTest: FunSpec({
             "bbb" to "\nbla-bla\n",
         )
         val output = dump(settings, map)
-        val expected = """"aaa": |-
-  0123456789 0123456789 0123456789 0123456789
-"bbb": |2
+        val expected = """
+            "aaa": |-
+              0123456789 0123456789 0123456789 0123456789
+            "bbb": |2
 
-  bla-bla
-"""
+              bla-bla
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -69,13 +73,15 @@ class EmitterTest: FunSpec({
             "bbb" to "\nbla-bla",
         )
         val output = dump(settings, map)
-        val expected = """aaa: |-
-  0123456789 0123456789
-  0123456789 0123456789
-bbb: |2-
+        val expected = """
+            aaa: |-
+              0123456789 0123456789
+              0123456789 0123456789
+            bbb: |2-
 
-  bla-bla
-"""
+              bla-bla
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -90,13 +96,15 @@ bbb: |2-
             "bbb" to "\nbla-bla",
        )
             val output = dump(settings, map)
-        val expected = """aaa: |-
-  0123456789 0123456789
-  0123456789 0123456789
-bbb: |2-
+        val expected = """
+            aaa: |-
+              0123456789 0123456789
+              0123456789 0123456789
+            bbb: |2-
 
-  bla-bla
-"""
+              bla-bla
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -111,13 +119,15 @@ bbb: |2-
             "bbb" to "\nbla-bla",
         )
         val output = dump(settings, map)
-        val expected = """'aaa': '0123456789 0123456789
+        val expected = """
+            'aaa': '0123456789 0123456789
 
-  0123456789 0123456789'
-'bbb': '
+              0123456789 0123456789'
+            'bbb': '
 
-  bla-bla'
-"""
+              bla-bla'
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -131,9 +141,11 @@ bbb: |2-
             "bbb" to "\nbla-bla"
         )
         val output = dump(settings, map)
-        val expected = """"aaa": "0123456789 0123456789\n0123456789 0123456789"
-"bbb": "\nbla-bla"
-"""
+        val expected = """
+            "aaa": "0123456789 0123456789\n0123456789 0123456789"
+            "bbb": "\nbla-bla"
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -164,14 +176,18 @@ bbb: |2-
 
         // Split lines enabled (default)
         val output = dump(builder.build(), map)
-        output shouldBe """{"12345": [
-    "1111111111"]}
-"""
+        output shouldBe """
+            {"12345": [
+                "1111111111"]}
+
+            """.trimIndent()
 
         // Split lines disabled
         val output2 = dump(builder.setSplitLines(false).build(), map)
-        output2 shouldBe """{"12345": ["1111111111"]}
-"""
+        output2 shouldBe """
+            {"12345": ["1111111111"]}
+
+            """.trimIndent()
     }
 
     test("write indicator indent") {
@@ -183,10 +199,12 @@ bbb: |2-
         val topLevel = listOf(mapOf("k1" to "v1"), mapOf("k2" to "v2"))
         val map = mapOf("aaa" to topLevel)
         val output = dump(settings, map)
-        val expected = """aaa:
-  -  k1: v1
-  -  k2: v2
-"""
+        val expected = """
+            aaa:
+              -  k1: v1
+              -  k2: v2
+
+            """.trimIndent()
         output shouldBe expected
     }
 
@@ -198,21 +216,29 @@ bbb: |2-
         // Split lines enabled (default)
         val yaml1 = Dump(builder.build())
         val output = yaml1.dumpToString(listOf("1111111111", "2222222222"))
-        output shouldBe """["1111111111",
-  "2222222222"]
-"""
+        output shouldBe """
+            ["1111111111",
+              "2222222222"]
+
+            """.trimIndent()
         val output2 = yaml1.dumpToString(listOf("1", "2"))
-        output2 shouldBe """["1", "2"]
-"""
+        output2 shouldBe """
+            ["1", "2"]
+
+            """.trimIndent()
 
         // Split lines disabled
         val yaml2 = Dump(builder.setSplitLines(false).build())
         val output3 = yaml2.dumpToString(listOf("1111111111", "2222222222"))
-        output3 shouldBe """["1111111111", "2222222222"]
-"""
+        output3 shouldBe """
+            ["1111111111", "2222222222"]
+
+            """.trimIndent()
         val output4 = yaml2.dumpToString(listOf("1", "2"))
-        output4 shouldBe """["1", "2"]
-"""
+        output4 shouldBe """
+            ["1", "2"]
+
+            """.trimIndent()
     }
 
     test("split line, expect first flow mapping key") {
@@ -227,20 +253,28 @@ bbb: |2-
 
         // Split lines enabled (default)
         val output = dump(builder.build(), splitContainerMap)
-        output shouldBe """{"1111111111 2222222222": {
-    "3333333333": "4444444444"}}
-"""
+        output shouldBe """
+            {"1111111111 2222222222": {
+                "3333333333": "4444444444"}}
+
+            """.trimIndent()
         val output2 = dump(builder.build(), nonSplitContainerMap)
-        output2 shouldBe """{"1 2": {"3": "4"}}
-"""
+        output2 shouldBe """
+            {"1 2": {"3": "4"}}
+
+            """.trimIndent()
         // Split lines disabled
         val noSplit = builder.setSplitLines(false).build()
         val output3 = dump(noSplit, splitContainerMap)
-        output3 shouldBe """{"1111111111 2222222222": {"3333333333": "4444444444"}}
-"""
+        output3 shouldBe """
+            {"1111111111 2222222222": {"3333333333": "4444444444"}}
+
+            """.trimIndent()
         val output4 = dump(noSplit, nonSplitContainerMap)
-        output4 shouldBe """{"1 2": {"3": "4"}}
-"""
+        output4 shouldBe """
+            {"1 2": {"3": "4"}}
+
+            """.trimIndent()
     }
 
     test("split line, expect flow mapping key") {
@@ -259,21 +293,29 @@ bbb: |2-
 
         // Split lines enabled (default)
         val output = dump(builder.build(), splitMap)
-        output shouldBe """{"1111111111": "2222222222",
-  "3333333333": "4444444444"}
-"""
+        output shouldBe """
+            {"1111111111": "2222222222",
+              "3333333333": "4444444444"}
+
+            """.trimIndent()
         val output2 = dump(builder.build(), nonSplitMap)
-        output2 shouldBe """{"1": "2", "3": "4"}
-"""
+        output2 shouldBe """
+            {"1": "2", "3": "4"}
+
+            """.trimIndent()
 
         // Split lines disabled
         val noSplit = builder.setSplitLines(false).build()
         val output3 = dump(noSplit, splitMap)
-        output3  shouldBe """{"1111111111": "2222222222", "3333333333": "4444444444"}
-"""
+        output3  shouldBe """
+            {"1111111111": "2222222222", "3333333333": "4444444444"}
+
+            """.trimIndent()
         val output4 = dump(noSplit, nonSplitMap)
-        output4 shouldBe """{"1": "2", "3": "4"}
-"""
+        output4 shouldBe """
+            {"1": "2", "3": "4"}
+
+            """.trimIndent()
     }
 
     test("anchor in maps") {

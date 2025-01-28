@@ -1,5 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.comments
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue

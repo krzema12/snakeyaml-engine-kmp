@@ -352,9 +352,6 @@ private fun assertTokenEquals(
     expectedIdIterator.hasNext().shouldBeTrue()
     val expectedValue = expectedIdIterator.next()
     val id = token.tokenId
-    println("Expected value: $expectedValue")
-    println("Actual   value: $id")
-    println()
     expectedValue shouldBeSameInstanceAs id
 
     if (expectedScalarValueIterator != null && id == ID.Scalar) {

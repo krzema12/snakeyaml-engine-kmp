@@ -341,7 +341,9 @@ private fun assertTokensEqual(
         expectedScalarValueIterator = expectedScalarValueIterator,
         token = token,
     )
-    expectedIterator.hasNext().shouldBeFalse()
+    withClue("unexpected tokens") {
+        expectedIterator.hasNext().shouldBeFalse()
+    }
 }
 
 private fun assertTokenEquals(

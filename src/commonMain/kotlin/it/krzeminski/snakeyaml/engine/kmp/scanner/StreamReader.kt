@@ -23,6 +23,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.internal.utils.appendCodePoint
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.readUtf8WithLimit
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -190,7 +191,7 @@ class StreamReader(
 
     private fun update() {
         try {
-            val buffer = stream.readUtf8()
+            val buffer = stream.readUtf8WithLimit(1024L)
             val read = buffer.length
             if (read > 0) {
                 var cpIndex = dataLength - pointer

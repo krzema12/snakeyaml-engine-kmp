@@ -82,6 +82,8 @@ class ScannerWithCommentEnabledTest: FunSpec({
             key: # Comment
                  # lines
               value
+
+
             """.trimIndent()
         )
 
@@ -119,6 +121,7 @@ class ScannerWithCommentEnabledTest: FunSpec({
             """
 
             abc: def # comment
+
 
 
             """.trimIndent()
@@ -349,6 +352,9 @@ private fun assertTokenEquals(
     expectedIdIterator.hasNext().shouldBeTrue()
     val expectedValue = expectedIdIterator.next()
     val id = token.tokenId
+    println("Expected value: $expectedValue")
+    println("Actual   value: $id")
+    println()
     expectedValue shouldBeSameInstanceAs id
 
     if (expectedScalarValueIterator != null && id == ID.Scalar) {

@@ -114,12 +114,16 @@ class ReaderStringTest : FunSpec({
     }
 
     test("read first codepoint from a yaml that does not fit in memory") {
-        LargeSource(maxSizeBytes = 50L * 1024 * 1024 * 1024 /*50 GB*/).use { source ->
+        LargeSource(maxSizeBytes = 50.GiB).use { source ->
             val reader = StreamReader(LoadSettings.builder().build(), source)
             reader.peek() shouldBe '-'.code
         }
     }
 })
+
+private val Int.GiB: Long
+    get() =  toLong() * 1024 * 1024 * 1024
+
 
 private class LargeSource(
     private val maxSizeBytes: Long,

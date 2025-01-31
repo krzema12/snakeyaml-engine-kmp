@@ -84,7 +84,7 @@ private inline fun BufferedSource.sizeOfFullValidUtf8String(limitBytes: Long): L
 @Suppress("NOTHING_TO_INLINE")
 private inline fun isContinuationByte(byte: Byte): Boolean {
     val asInt = byte.toInt()
-    return asInt and 0xc0 == 0x80
+    return asInt and 0b1100_0000 == 0b1000_0000
 }
 
 /**
@@ -94,15 +94,13 @@ private inline fun isContinuationByte(byte: Byte): Boolean {
 private inline fun continuationBytesCountFor(byte: Byte): Int {
     val asInt = byte.toInt()
 
+    // based on https://www.rfc-editor.org/rfc/rfc3629.html#section-3
     return when {
-        // 110xxxxx
-        asInt and 0xe0 == 0xc0 -> 1
+        asInt and 0b1110_0000 == 0b1100_0000 -> 1
 
-        // 1110xxxx
-        asInt and 0xf0 == 0xe0 -> 2
+        asInt and 0b1111_0000 == 0b1110_0000 -> 2
 
-        // 11110xxx
-        asInt and 0xf8 == 0xf0 -> 3
+        asInt and 0b1111_1000 == 0b1111_0000 -> 3
 
         else -> 0
     }

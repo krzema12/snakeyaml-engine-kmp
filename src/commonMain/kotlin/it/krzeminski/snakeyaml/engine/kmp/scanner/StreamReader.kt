@@ -40,11 +40,19 @@ class StreamReader(
     loadSettings: LoadSettings,
     stream: Source,
 ) {
+    init {
+        require(loadSettings.bufferSize >= 4) { "buffer size must be at least 4 bytes to be able to read all Unicode codepoints" }
+    }
     private val stream: BufferedSource = if (stream is BufferedSource) stream else stream.buffer()
 
     private val name: String = loadSettings.label
 
     private val useMarks: Boolean = loadSettings.useMarks
+
+    /**
+     * Size in bytes what will be used to request a new portion of data from [stream]
+     */
+    private val bufferReadSize: Long = loadSettings.bufferSize.toLong()
 
     /** Read data (as a moving window for input stream) */
     private var codePointsWindow: IntArray = IntArray(0)
@@ -191,7 +199,7 @@ class StreamReader(
 
     private fun update() {
         try {
-            val buffer = stream.readUtf8WithLimit(1024L)
+            val buffer = stream.readUtf8WithLimit(bufferReadSize)
             val read = buffer.length
             if (read > 0) {
                 var cpIndex = dataLength - pointer

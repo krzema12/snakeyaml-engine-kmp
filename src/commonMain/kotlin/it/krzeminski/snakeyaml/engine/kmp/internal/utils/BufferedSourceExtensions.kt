@@ -16,10 +16,9 @@ internal inline fun BufferedSource.readUtf8WithLimit(limitBytes: Long): String {
 @Suppress("NOTHING_TO_INLINE")
 // based on benchmarks it looks like having inline here actually makes a small difference in the performance
 private inline fun BufferedSource.sizeOfFullValidUtf8String(limitBytes: Long): Long {
-    val readBytes = limitBytes
-    val hasAll = request(readBytes)
+    val hasAll = request(limitBytes)
 
-    val originalSize = if (hasAll) readBytes else buffer.size
+    val originalSize = if (hasAll) limitBytes else buffer.size
     if (originalSize == 0L) {
         return 0
     }

@@ -7,6 +7,11 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ReaderException
+import okio.Buffer
+import okio.BufferedSource
+import okio.Source
+import okio.buffer
+import okio.use
 
 class ReaderStringTest : FunSpec({
     test("check printable") {
@@ -107,4 +112,68 @@ class ReaderStringTest : FunSpec({
         reader.peek(1) shouldBe 's'.code
         reader.peek(2) shouldBe 't'.code
     }
+
+    test("read first codepoint from a yaml that does not fit in memory") {
+        LargeSource(maxSizeBytes = 50.GiB).use { source ->
+            val reader = StreamReader(LoadSettings.builder().build(), source)
+            reader.peek() shouldBe '-'.code
+        }
+    }
 })
+
+private val Int.GiB: Long
+    get() =  toLong() * 1024 * 1024 * 1024
+
+
+private class LargeSource(
+    private val maxSizeBytes: Long,
+    private val buffer: Buffer = Buffer(),
+) : Source by buffer {
+    var totalBytes: Long = 0
+        private set
+
+    private var lines: Long = 0
+
+    private fun initialLine(): String =
+        """
+        ---
+        map:
+        - key: "TestValue1"
+
+        """.trimIndent()
+
+    private fun followingLine(): String =
+        """
+        - key${lines++}: "TestValue${lines}"
+
+        """.trimIndent()
+
+    override fun read(sink: Buffer, byteCount: Long): Long {
+        fillBuffer(byteCount)
+        return buffer.read(sink, byteCount)
+    }
+
+    private fun fillBuffer(bytes: Long) {
+        if (bytes == 0L) {
+            return
+        }
+
+        if (totalBytes >= maxSizeBytes) {
+            return
+        }
+
+        val initSize = buffer.size
+
+        if (totalBytes == 0L) {
+            buffer.writeUtf8(initialLine())
+        }
+        do {
+            buffer.writeUtf8(followingLine())
+            if (buffer.size >= maxSizeBytes) {
+                break
+            }
+        } while (buffer.size < bytes)
+
+        totalBytes += buffer.size - initSize
+    }
+}

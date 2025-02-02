@@ -83,13 +83,13 @@ abstract class BaseScalarResolver @JvmOverloads constructor(
         /**
          * No value indication
          */
-        val EMPTY = Regex("^$")
+        val EMPTY = Regex("")
 
         /**
          * group 1: name, group 2: separator, group 3: value
          */
         @JvmField
         @Suppress("RegExpRedundantEscape") // JS requires that the last } is escaped
-        val ENV_FORMAT = Regex("""^\$\{\s*(\w+)(?:(:?[-?])(\w+)?)?\s*\}$""")
+        val ENV_FORMAT = Regex("""\$\{\s*(\w+)(?:(:?[-?])(\w+)?)?\s*\}""")
     }
 }

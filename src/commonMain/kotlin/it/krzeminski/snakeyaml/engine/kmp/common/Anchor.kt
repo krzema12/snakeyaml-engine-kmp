@@ -54,6 +54,6 @@ class Anchor(val value: String) {
             '*',
             '&',
         )
-        private val SPACES_PATTERN = Regex("\\s")
+        private val SPACES_PATTERN = Regex("""\s""")
     }
 }

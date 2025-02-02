@@ -45,7 +45,7 @@ class InheritedTokensTest: FunSpec({
                 // This is needed because Java's split omits the last empty line -
                 // looks like Kotlin's implementation is correct.
                 .trimEnd()
-            val split = tokenFileData.split(Regex("\\s+"))
+            val split = tokenFileData.split(Regex("""\s+"""))
             val tokens2 = buildList {
                 addAll(split)
             }

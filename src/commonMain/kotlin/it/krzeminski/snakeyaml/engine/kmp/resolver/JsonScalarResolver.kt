@@ -38,21 +38,21 @@ class JsonScalarResolver : BaseScalarResolver(
         /**
          * Boolean as defined in JSON
          */
-        val BOOL = Regex("^(?:true|false)$")
+        val BOOL = Regex("true|false")
 
         /**
          * Float as defined in JSON (Number which is Float)
          */
-        val FLOAT = Regex("^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$")
+        val FLOAT = Regex("""(-?(0|[1-9][0-9]*)(\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\.inf)|(\.nan)""")
 
         /**
          * Integer as defined in JSON (Number which is Integer)
          */
-        val INT = Regex("^-?(0|[1-9][0-9]*)$")
+        val INT = Regex("-?(0|[1-9][0-9]*)")
 
         /**
          * Null as defined in JSON
          */
-        val NULL = Regex("^null$")
+        val NULL = Regex("null")
     }
 }

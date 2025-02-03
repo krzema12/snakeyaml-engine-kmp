@@ -1606,6 +1606,6 @@ class Emitter(
 
         private const val SPACE = " "
 
-        private val HANDLE_FORMAT = Regex("""![-_\w]*!""")
+        private val HANDLE_FORMAT = Regex("""^![-_\w]*!$""")
     }
 }

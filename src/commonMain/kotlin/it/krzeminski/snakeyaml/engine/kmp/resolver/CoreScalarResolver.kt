@@ -35,7 +35,7 @@ class CoreScalarResolver : BaseScalarResolver(
     companion object {
 
         /** Boolean as defined in Core */
-        val BOOL = Regex("true|True|TRUE|false|False|FALSE")
+        val BOOL = Regex("^(?:true|True|TRUE|false|False|FALSE)$")
 
         /**
          * Float as defined in JSON (Number which is Float).
@@ -43,21 +43,21 @@ class CoreScalarResolver : BaseScalarResolver(
          * Be aware that this regex will also match integers.
          */
         val FLOAT = Regex(
-            """([-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?)""" + // float
+            """^(?:([-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?)""" + // float
                     """|([-+]?\.(?:inf|Inf|INF))""" + // infinity
-                    """|(\.(?:nan|NaN|NAN))""", // not a number
+                    """|(\.(?:nan|NaN|NAN)))$""", // not a number
         )
 
         /** Integer as defined in Core */
         @JvmField
         val INT = Regex(
-            "([-+]?[0-9]+)" + // (base 10)
+            "^(?:([-+]?[0-9]+)" + // (base 10)
                     "|(0o[0-7]+)" + // (base 8)
-                    "|(0x[0-9a-fA-F]+)", // (base 16)
+                    "|(0x[0-9a-fA-F]+))$", // (base 16)
         )
 
         /** Null as defined in Core */
-        val NULL = Regex("~|null|Null|NULL| ")
+        val NULL = Regex("^(?:~|null|Null|NULL| )$")
 
     }
 }

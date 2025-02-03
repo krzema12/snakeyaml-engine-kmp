@@ -25,7 +25,11 @@ class ConstructYamlBinary : ConstructScalar() {
         // Ignore white spaces for base64 encoded scalar
         // TODO decodeBase64() doesn't seem to require removing whitespace - perhaps this can be removed?
         //      I'm leaving it in because I'm not confident about edge case test coverage for whitespaces.
-        val noWhiteSpaces = constructScalar(node).replace("""\s""".toRegex(), "")
+        val noWhiteSpaces = constructScalar(node).replace(SPACES_PATTERN, "")
         return noWhiteSpaces.decodeBase64()?.toByteArray() ?: byteArrayOf()
+    }
+
+    companion object {
+        private val SPACES_PATTERN = Regex("""\s""")
     }
 }

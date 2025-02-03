@@ -2,6 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.test_suite
 
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Parse
+import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 /**
@@ -12,15 +13,17 @@ internal object SuiteUtils {
     fun parseData(data: YamlTestData): ParseResult {
         val settings = LoadSettings.builder().setLabel(data.label).build()
 
-        return try {
-            ParseResult(Parse(settings).parse(data.inYaml).toList())
-        } catch (e: YamlEngineException) {
-            ParseResult(null, e)
-        }
+        val events = mutableListOf<Event>()
+        return runCatching {
+            Parse(settings).parse(data.inYaml).forEach(events::add)
+            ParseResult(events)
+        }.recover {
+            ParseResult(events, it)
+        }.getOrThrow()
     }
 
     /**
-     * IDs of cases that should **fail** according to YAML Test Suite, but they actually succeed :(
+     * IDs of cases that do **not** have the expected result according to YAML Test Suite :(
      *
      * Such deviations are probably because of an enigmatic bug in SnakeYAML-KMP that hasn't been
      * identified and fixed. This is common for YAML libraries, because YAML is far too complicated!
@@ -31,25 +34,18 @@ internal object SuiteUtils {
      * If by some chance you've made a change and a case now passes: well done!
      * Remove the case ID from this list.
      *
-     * @see deviationsWithError
+     * @see deviationsInEvents
      */
-    val deviationsWithSuccess: Set<YamlTestData.Id> = setOf(
+    val deviationsInResult: Set<YamlTestData.Id> = setOf(
+        // should fail but pass
         "9C9N",
         "9JBA",
         "CVW2",
         "QB6E",
         "SU5Z",
         "DK95:01",     // https://matrix.yaml.info/details/DK95:01.html
-        "JEF9:02",     // https://matrix.yaml.info/details/JEF9:02.html
-        "L24T:01",     // https://matrix.yaml.info/details/L24T:01.html
-    ).mapToYamlTestDataId()
 
-    /**
-     * IDs of cases that should **pass** according to YAML Test Suite, but they actually fail :(
-     *
-     * @see deviationsWithSuccess for further explanation.
-     */
-    val deviationsWithError: Set<YamlTestData.Id> = setOf(
+        // should pass but fail
         "3RLN-01",
         "3RLN-04",
         "4MUZ",
@@ -108,6 +104,52 @@ internal object SuiteUtils {
         "DK95:00",     // https://matrix.yaml.info/details/DK95:00.html
         "DK95:03",     // https://matrix.yaml.info/details/DK95:03.html
         "DK95:07",     // https://matrix.yaml.info/details/DK95:07.html
+    ).mapToYamlTestDataId()
+
+    /**
+     * IDs of cases that **do** have the expected result according to YAML Test Suite
+     * but did not emit the expected events according to the test suite :(
+     *
+     * @see deviationsInResult for further explanation.
+     */
+    val deviationsInEvents: Set<YamlTestData.Id> = setOf(
+        // pass but did emit the wrong events
+        "JEF9:02",     // https://matrix.yaml.info/details/JEF9:02.html
+        "L24T:01",     // https://matrix.yaml.info/details/L24T:01.html
+
+        // fail but did emit the wrong events
+        "2CMS",
+        "4H7K",
+        "4JVG",
+        "7MNF",
+        "9CWY",
+        "9KBC",
+        "CXX2",
+        "DK95:06",
+        "EB22",
+        "EW3V",
+        "G5U8",
+        "H7J7",
+        "HU3P",
+        "JKF3",
+        "KS4U",
+        "MUS6:01",
+        "P2EQ",
+        "RHX7",
+        "SR86",
+        "SU74",
+        "T833",
+        "VJP3:00",
+        "Y79Y:000",
+        "Y79Y:003",
+        "Y79Y:004",
+        "Y79Y:005",
+        "Y79Y:006",
+        "Y79Y:007",
+        "Y79Y:008",
+        "Y79Y:009",
+        "YJV2",
+        "ZCZ6",
     ).mapToYamlTestDataId()
 
     private fun Set<String>.mapToYamlTestDataId(): Set<YamlTestData.Id> =

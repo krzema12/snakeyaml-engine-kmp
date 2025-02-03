@@ -16,7 +16,7 @@ internal sealed interface YamlTestData {
     val outYaml: String?
     val emitYaml: String?
     val inJson: String?
-    val testEvent: String?
+    val testEvent: String
 
     @JvmInline
     value class Id(private val value: String) {
@@ -27,12 +27,9 @@ internal sealed interface YamlTestData {
         override val outYaml: String? get() = null
         override val emitYaml: String? get() = null
         override val inJson: String? get() = null
-        override val testEvent: String? get() = null
     }
 
-    interface Success : YamlTestData {
-        override val testEvent: String
-    }
+    interface Success : YamlTestData
 }
 
 val YamlTestResourcesFileSystem = buildFileSystem(YamlTestSuiteResources.resourcesMap)
@@ -55,7 +52,7 @@ private fun generateYamlTestDataObject(
             override val id: YamlTestData.Id = id
             override val label: String = (path / "===").readUtf8()
             override val inYaml: String = (path / "in.yaml").readUtf8()
-
+            override val testEvent: String = (path / "test.event").readUtf8()
         }
     } else {
         object : YamlTestData.Success {

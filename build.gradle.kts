@@ -37,7 +37,7 @@ kotlin {
             )
 
             dependencies {
-                implementation("io.kotest:kotest-framework-engine:6.0.0.M1")
+                implementation("io.kotest:kotest-framework-engine:6.0.0.M2")
                 implementation("io.kotest:kotest-framework-api:6.0.0.M1")
                 implementation("io.kotest:kotest-assertions-core:6.0.0.M1")
                 implementation("org.jetbrains:annotations:26.0.2")

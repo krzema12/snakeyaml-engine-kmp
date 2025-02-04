@@ -17,6 +17,8 @@ import okio.ByteString.Companion.decodeBase64
 import it.krzeminski.snakeyaml.engine.kmp.constructor.ConstructScalar
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 
+private val SPACES_PATTERN = Regex("""\s""")
+
 /**
  * Create instances bytes for binary
  */
@@ -27,9 +29,5 @@ class ConstructYamlBinary : ConstructScalar() {
         //      I'm leaving it in because I'm not confident about edge case test coverage for whitespaces.
         val noWhiteSpaces = constructScalar(node).replace(SPACES_PATTERN, "")
         return noWhiteSpaces.decodeBase64()?.toByteArray() ?: byteArrayOf()
-    }
-
-    companion object {
-        private val SPACES_PATTERN = Regex("""\s""")
     }
 }

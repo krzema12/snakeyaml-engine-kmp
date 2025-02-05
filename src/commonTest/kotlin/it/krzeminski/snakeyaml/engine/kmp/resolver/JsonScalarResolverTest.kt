@@ -55,23 +55,14 @@ class JsonScalarResolverTest: FunSpec({
     }
 
     test("resolve implicit strings") {
-        scalarResolver.resolve("+.inf", true) shouldBe Tag.STR
-        scalarResolver.resolve("+.inf", true) shouldBe Tag.STR
-        scalarResolver.resolve(".Inf", true) shouldBe Tag.STR
-        scalarResolver.resolve(".INF", true) shouldBe Tag.STR
-        scalarResolver.resolve(".NAN", true) shouldBe Tag.STR
-        scalarResolver.resolve("0xFF", true) shouldBe Tag.STR
-        scalarResolver.resolve("True", true) shouldBe Tag.STR
-        scalarResolver.resolve("TRUE", true) shouldBe Tag.STR
-        scalarResolver.resolve("NULL", true) shouldBe Tag.STR
-        scalarResolver.resolve("~", true) shouldBe Tag.STR
-        scalarResolver.resolve(".Inf", true) shouldBe Tag.STR
-        scalarResolver.resolve(".INF", true) shouldBe Tag.STR
-        scalarResolver.resolve(".NAN", true) shouldBe Tag.STR
-        scalarResolver.resolve("0xFF", true) shouldBe Tag.STR
-        scalarResolver.resolve("True", true) shouldBe Tag.STR
-        scalarResolver.resolve("TRUE", true) shouldBe Tag.STR
-        scalarResolver.resolve("NULL", true) shouldBe Tag.STR
-        scalarResolver.resolve("~", true) shouldBe Tag.STR
+        scalarResolver.resolve("+.inf", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve(".Inf", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve(".INF", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve(".NAN", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve("0xFF", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve("True", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve("TRUE", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve("NULL", implicit = true) shouldBe Tag.STR
+        scalarResolver.resolve("~", implicit = true) shouldBe Tag.STR
     }
 })

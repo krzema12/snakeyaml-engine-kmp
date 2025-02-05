@@ -1,0 +1,18 @@
+package it.krzeminski.snakeyaml.engine.kmp.resolver
+
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.regex.shouldMatch
+import io.kotest.matchers.regex.shouldNotMatch
+import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
+
+class CoreScalarResolverTest : FunSpec({
+    val scalarResolver = CoreScalarResolver()
+
+    test("Resolve implicit integer") {
+        CoreScalarResolver.INT shouldMatch "0o1010"
+        CoreScalarResolver.INT shouldNotMatch "0b1010"
+
+        scalarResolver.resolve("0b1010", true) shouldBe Tag.STR
+    }
+})

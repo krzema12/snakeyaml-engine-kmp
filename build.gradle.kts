@@ -37,9 +37,9 @@ kotlin {
             )
 
             dependencies {
-                implementation("io.kotest:kotest-framework-engine:6.0.0.M1")
-                implementation("io.kotest:kotest-framework-api:6.0.0.M1")
-                implementation("io.kotest:kotest-assertions-core:6.0.0.M1")
+                implementation(libs.kotest.framework.engine)
+                implementation(libs.kotest.framework.api)
+                implementation(libs.kotest.assertions.core)
                 implementation("org.jetbrains:annotations:26.0.2")
                 // Overridig coroutines' version to solve a problem with WASM JS tests.
                 // See https://kotlinlang.slack.com/archives/CDFP59223/p1736191408326039?thread_ts=1734964013.996149&cid=CDFP59223
@@ -51,7 +51,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-engine:5.11.4")
-                implementation("io.kotest:kotest-runner-junit5:6.0.0.M2")
+                implementation(libs.kotest.runner.junit5)
                 implementation("com.google.guava:guava:33.4.0-jre")
             }
         }

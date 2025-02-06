@@ -51,9 +51,9 @@ class CoreScalarResolver : BaseScalarResolver(
         /** Integer as defined in Core */
         @JvmField
         val INT = Regex(
-            "^(([-+]?[0-9]+)" + // (base 10)
+            "^([-+]?[0-9]+)" + // (base 10)
                     "|(0o[0-7]+)" + // (base 8)
-                    "|(0x[0-9a-fA-F]+))$", // (base 16)
+                    "|(0x[0-9a-fA-F]+)$", // (base 16)
         )
 
         /** Null as defined in Core */

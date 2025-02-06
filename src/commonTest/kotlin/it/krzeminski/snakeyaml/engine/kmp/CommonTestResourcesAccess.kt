@@ -28,7 +28,7 @@ fun stringFromResources(@Language("file-reference") path: String): String {
         // In this particular library, we produce uniform line breaks (\n)
         // on all OSes, hence it's desired to normalize them even if in
         // the resource file, we have a different kind of line breaks.
-        .replace(Regex("\\r\\n?"), "\n")
+        .replace(Regex("""\r\n?"""), "\n")
 }
 
 /**

@@ -43,7 +43,7 @@ class JsonScalarResolver : BaseScalarResolver(
         /**
          * Float as defined in JSON (Number which is Float)
          */
-        val FLOAT = Regex("^(-?(0|[1-9][0-9]*)(\\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\\.inf)|(\\.nan)$")
+        val FLOAT = Regex("""^(?:(-?(0|[1-9][0-9]*)(\.[0-9]*)?([eE][-+]?[0-9]+)?)|(-?\.inf)|(\.nan))$""")
 
         /**
          * Integer as defined in JSON (Number which is Integer)

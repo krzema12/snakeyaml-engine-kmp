@@ -38,7 +38,6 @@ kotlin {
 
             dependencies {
                 implementation(libs.kotest.framework.engine)
-                implementation(libs.kotest.framework.api)
                 implementation(libs.kotest.assertions.core)
                 implementation("org.jetbrains:annotations:26.0.2")
                 // Overridig coroutines' version to solve a problem with WASM JS tests.

@@ -15,6 +15,8 @@ package org.snakeyaml.engine.schema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
@@ -23,7 +25,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 @org.junit.jupiter.api.Tag("fast")
 public class BooleanJsonTest {
 
-  private final Load loader = new Load();
+  private final Load loader = new Load(LoadSettings.builder().setSchema(new JsonSchema()).build());
 
   @Test
   void parseBoolean() {
@@ -37,7 +39,7 @@ public class BooleanJsonTest {
 
   @Test
   void dumpBoolean() {
-    Dump dumper = new Dump(DumpSettings.builder().build());
+    Dump dumper = new Dump(DumpSettings.builder().setSchema(new JsonSchema()).build());
     assertEquals("true\n", dumper.dumpToString(Boolean.TRUE));
     assertEquals("false\n", dumper.dumpToString(Boolean.FALSE));
   }

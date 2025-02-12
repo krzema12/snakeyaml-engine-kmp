@@ -16,6 +16,9 @@ package org.snakeyaml.engine.schema;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigInteger;
+
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
@@ -25,7 +28,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 @org.junit.jupiter.api.Tag("fast")
 public class NumberJsonTest {
 
-  private final Load loader = new Load();
+  private final Load loader = new Load(LoadSettings.builder().setSchema(new JsonSchema()).build());
 
   @Test
   @DisplayName("Test all integers which are define in the core schema & JSON")
@@ -100,7 +103,7 @@ public class NumberJsonTest {
   @Test
   @DisplayName("Dump special doubles which are defined in the JSON schema, but not in JSON")
   void dumpDoubleSpecial() {
-    Dump dumper = new Dump(DumpSettings.builder().build());
+    Dump dumper = new Dump(DumpSettings.builder().setSchema(new JsonSchema()).build());
     assertEquals(".inf\n", dumper.dumpToString(Double.POSITIVE_INFINITY));
     assertEquals(".inf\n", dumper.dumpToString(Float.POSITIVE_INFINITY));
 

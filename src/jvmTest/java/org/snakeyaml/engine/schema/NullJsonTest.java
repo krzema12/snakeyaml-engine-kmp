@@ -16,6 +16,8 @@ package org.snakeyaml.engine.schema;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings;
+import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump;
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings;
@@ -24,7 +26,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load;
 @org.junit.jupiter.api.Tag("fast")
 public class NullJsonTest {
 
-  private final Load loader = new Load();
+  private final Load loader = new Load(LoadSettings.builder().setSchema(new JsonSchema()).build());
 
   @Test
   void parseNull() {
@@ -34,7 +36,7 @@ public class NullJsonTest {
 
   @Test
   void dumpNull() {
-    Dump dumper = new Dump(DumpSettings.builder().build());
+    Dump dumper = new Dump(DumpSettings.builder().setSchema(new JsonSchema()).build());
     assertEquals("null\n", dumper.dumpToString(null));
   }
 }

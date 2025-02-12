@@ -21,7 +21,7 @@ import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.EmitterException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
-import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema
+import it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA
 import it.krzeminski.snakeyaml.engine.kmp.schema.Schema
 import it.krzeminski.snakeyaml.engine.kmp.serializer.AnchorGenerator
 import it.krzeminski.snakeyaml.engine.kmp.serializer.NumberAnchorGenerator
@@ -54,7 +54,7 @@ class DumpSettingsBuilder internal constructor() {
     private var indentWithIndicator = false
     private var dumpComments = false
     private var isDereferenceAliases = false
-    private var schema: Schema = JsonSchema()
+    private var schema: Schema = DEFAULT_SCHEMA
 
     /**
      * Define flow style
@@ -316,7 +316,7 @@ class DumpSettingsBuilder internal constructor() {
     /**
      * Provide either recommended or custom
      * [schema](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) instead of
-     * default [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema]. These 3 are available
+     * default [it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA]. These 3 are available
      * [it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema],
      * [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema],
      * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema].

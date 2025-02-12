@@ -17,6 +17,8 @@ import it.krzeminski.snakeyaml.engine.kmp.api.ConstructNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.resolver.ScalarResolver
 
+internal val DEFAULT_SCHEMA = JsonSchema()
+
 /**
  * Interface to be implemented by any Schema
  */

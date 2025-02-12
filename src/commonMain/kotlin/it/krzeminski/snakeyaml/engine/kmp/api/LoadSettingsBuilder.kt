@@ -18,7 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings.SpecVersionMutator
 import it.krzeminski.snakeyaml.engine.kmp.env.EnvConfig
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlVersionException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
-import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema
+import it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA
 import it.krzeminski.snakeyaml.engine.kmp.schema.Schema
 
 /**
@@ -49,7 +49,7 @@ class LoadSettingsBuilder internal constructor() {
     private var useMarks: Boolean = true
     private var envConfig: EnvConfig? = null // no ENV substitution by default
     private var codePointLimit: Int = 3 * 1024 * 1024 // 3 MB
-    private var schema: Schema = JsonSchema()
+    private var schema: Schema = DEFAULT_SCHEMA
 
     /**
      * Label for the input data. Can be used to improve the error message.
@@ -241,7 +241,7 @@ class LoadSettingsBuilder internal constructor() {
     /**
      * Provide either recommended or custom
      * [schema](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) instead of
-     * default * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema] These 3 are available
+     * default * [it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA] These 3 are available
      * [it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema],
      * [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema],
      * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema].

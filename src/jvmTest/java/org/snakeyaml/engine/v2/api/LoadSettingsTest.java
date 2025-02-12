@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings.SpecVersionMutator;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.DuplicateKeyException;
-import it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema;
+import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema;
 
 @Tag("fast")
 class LoadSettingsTest {
@@ -104,10 +104,10 @@ class LoadSettingsTest {
   }
 
   @Test
-  @DisplayName("Use JSON schema by default")
+  @DisplayName("Use Core schema by default")
   void defaultSchema() {
     LoadSettings settings = LoadSettings.builder().build();
-    assertEquals(JsonSchema.class, settings.schema.getClass());
+    assertEquals(CoreSchema.class, settings.schema.getClass());
   }
 
   public enum SomeStatus implements SettingKey {

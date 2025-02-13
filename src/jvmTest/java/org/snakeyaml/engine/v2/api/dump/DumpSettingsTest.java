@@ -24,6 +24,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle;
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle;
 import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion;
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.EmitterException;
+import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema;
 
 import java.util.*;
 
@@ -149,6 +150,13 @@ class DumpSettingsTest {
         DumpSettings.builder().setCustomProperty(new KeyName("key"), "value").build();
     assertEquals("value", settings.getCustomProperty(new KeyName("key")));
     assertNull(settings.getCustomProperty(new KeyName("None")));
+  }
+
+  @Test
+  @DisplayName("Use Core schema by default")
+  void defaultSchema() {
+    DumpSettings settings = DumpSettings.builder().build();
+    assertEquals(CoreSchema.class, settings.schema.getClass());
   }
 
   static class KeyName implements SettingKey {

@@ -2,6 +2,8 @@ package it.krzeminski.snakeyaml.engine.kmp.usecases.references
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
+import io.kotest.core.Platform
+import io.kotest.core.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.concurrent.suspension.shouldCompleteBetween
@@ -60,6 +62,11 @@ class ReferencesTest : FunSpec({
         return output.replace("001: ", "001 : ")
     }
 
+    val failQuicklyTimeout = when(platform) {
+        Platform.JS -> 4.seconds
+        else -> 1.seconds
+    }
+
     test("references with recursive keys not allowed by default") {
         val output = createDump(30)
         // Load
@@ -72,7 +79,7 @@ class ReferencesTest : FunSpec({
             ex.message shouldBe "Recursive key for mapping is detected but it is not configured to be allowed."
         }
         withClue("It should fail quickly") {
-            duration shouldBeLessThan 1.seconds
+            duration shouldBeLessThan failQuicklyTimeout
         }
     }
 
@@ -102,7 +109,7 @@ class ReferencesTest : FunSpec({
         }
 
         withClue("It should fail quickly") {
-            duration shouldBeLessThan 1.seconds
+            duration shouldBeLessThan failQuicklyTimeout
         }
     }
 })

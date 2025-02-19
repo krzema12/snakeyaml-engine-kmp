@@ -32,9 +32,9 @@ class ReferencesTest : FunSpec({
         s1 = root
         s2 = LinkedHashMap()
         /*
-     * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
-     * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
-     */
+         * the time to parse grows very quickly SIZE -> time to parse in seconds 25 -> 1 26 -> 2 27 -> 3
+         * 28 -> 8 29 -> 13 30 -> 28 31 -> 52 32 -> 113 33 -> 245 34 -> 500
+         */
         for (i in 0..<size) {
             t1 = LinkedHashMap()
             t2 = LinkedHashMap()

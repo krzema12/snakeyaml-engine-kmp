@@ -10,6 +10,9 @@ config.set({
     // the default value is 5_000
     // https://karma-runner.github.io/6.4/config/configuration-file.html#pingtimeout
     pingTimeout: 60_000,
+    // the default value is 30_000
+    // https://karma-runner.github.io/6.4/config/configuration-file.html#browsernoactivitytimeout
+    browserNoActivityTimeout: 120_000,
 });
 
 // A workaround from https://android-review.googlesource.com/c/platform/frameworks/support/+/3413540

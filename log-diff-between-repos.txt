@@ -1,2 +1,16 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..5d199440b1289e88441f7e40957cd13336f89c1c
 
+d1b4d0e Format Javadoc
+9a46592 Merge remote-tracking branch 'origin/master' into issue-55-json
+73e5f63 Merged in feature/default-impl-processIOException (pull request #22)
+4de1481 Merge branch 'master' into issue-55-json
+3e19067 Update changes
+5d0fa73 Update changes
+e6b30e3 Wrap IOException in UncheckedIOException by default
+b484094 Clarify when to expect NoSuchElementException
+553748c Fix issue 55 only for JSON
+c46d5f7 Issue 56: remove unused merge code in StandardConstructor
+7b316bb Issue 56: refactor rename variable
+ab996bb Issue 56: refactor rename variable
+61e3f77 Issue 56: improve code
+722566f Issue 55: Restore the merge tag in the Core Schema

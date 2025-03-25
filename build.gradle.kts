@@ -51,7 +51,7 @@ kotlin {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-engine:5.12.1")
                 implementation(libs.kotest.runner.junit5)
-                implementation("com.google.guava:guava:33.4.5-jre")
+                implementation("com.google.guava:guava:33.4.6-jre")
             }
         }
     }

@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     //region Gradle Plugins
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.10")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
     implementation(libs.kotest.framework.multiplatform.plugin.gradle)
     //endregion
 

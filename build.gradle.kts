@@ -25,7 +25,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.squareup.okio:okio:3.10.2")
+                implementation("com.squareup.okio:okio:3.11.0")
                 implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
             }
         }

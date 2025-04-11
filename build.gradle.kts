@@ -43,7 +43,7 @@ kotlin {
                 // Overridig coroutines' version to solve a problem with WASM JS tests.
                 // See https://kotlinlang.slack.com/archives/CDFP59223/p1736191408326039?thread_ts=1734964013.996149&cid=CDFP59223
                 // TODO: remove this workaround in https://github.com/krzema12/snakeyaml-engine-kmp/issues/337
-                runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+                runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             }
         }
 

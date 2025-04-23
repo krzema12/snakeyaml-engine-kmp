@@ -28,9 +28,9 @@ interface Parser : Iterator<Event> {
      * Check if the next event is one of the given type.
      *
      * @param choice Event ID to match.
-     * @returns `true` if the next event has the given ID. Returns `false` if no.
-     * more events are available.
+     * @returns `true` if the next event has the given ID. Returns `false` otherwise.
      * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException in case of malformed input.
+     * @throws NoSuchElementException in case no next event is available.
      */
     fun checkEvent(choice: Event.ID): Boolean
 
@@ -38,8 +38,8 @@ interface Parser : Iterator<Event> {
      * Return the next event, but do not delete it from the stream.
      *
      * @returns the event that will be returned on the next call to [next].
-     * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException in case of malformed input
-     * or [NoSuchElementException] in case no event is available.
+     * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException in case of malformed input.
+     * @throws NoSuchElementException in case no next event is available.
      */
     fun peekEvent(): Event
 
@@ -50,6 +50,7 @@ interface Parser : Iterator<Event> {
      *
      * @returns the next parsed event
      * @throws it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException in case of malformed input.
+     * @throws NoSuchElementException in case no next event is available.
      */
     override fun next(): Event
 }

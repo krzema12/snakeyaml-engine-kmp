@@ -1,2 +1,3 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..d1b4d0e83c273ac99e9c4d092267947daaba4ac2
 
+800995c Maven Central account migration

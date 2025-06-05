@@ -1,5 +1,7 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..d1b4d0e83c273ac99e9c4d092267947daaba4ac2
 
+4964e4f Fix Inline comments in flow mapping context
+b5df29d Keep Java 8 API
 d5aaefd Improve DumpCommentInFlowStyleTest
 155a7a9 Fix parsing comments inside flow mapping context
 f64e742 Introduce DumpCommentInFlowStyleTest

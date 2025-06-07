@@ -49,7 +49,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.13.0")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.13.1")
                 implementation(libs.kotest.runner.junit5)
                 implementation("com.google.guava:guava:33.4.8-jre")
             }

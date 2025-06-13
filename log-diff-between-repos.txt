@@ -1,5 +1,7 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..d1b4d0e83c273ac99e9c4d092267947daaba4ac2
 
+4280db9 Update doc
+c5b0698 Add examples for custom ScalarResolver
 4964e4f Fix Inline comments in flow mapping context
 b5df29d Keep Java 8 API
 d5aaefd Improve DumpCommentInFlowStyleTest

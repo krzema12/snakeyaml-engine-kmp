@@ -1,12 +1,2 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..d1b4d0e83c273ac99e9c4d092267947daaba4ac2
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..4280db9e2cc4e81dff0667d175c2263d53b9d093
 
-4280db9 Update doc
-c5b0698 Add examples for custom ScalarResolver
-4964e4f Fix Inline comments in flow mapping context
-b5df29d Keep Java 8 API
-d5aaefd Improve DumpCommentInFlowStyleTest
-155a7a9 Fix parsing comments inside flow mapping context
-f64e742 Introduce DumpCommentInFlowStyleTest
-bbd2e7b Minor test improvement
-6c87a68 Remove unused repo properties
-800995c Maven Central account migration

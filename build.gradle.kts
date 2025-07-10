@@ -10,7 +10,7 @@ plugins {
     buildsrc.conventions.`yaml-testing`
     buildsrc.conventions.`multiplatform-test-resources`
     id("dev.adamko.dokkatoo-html") version "2.4.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.0"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.1"
 }
 
 group = "it.krzeminski"

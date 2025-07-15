@@ -1,5 +1,8 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..4280db9e2cc4e81dff0667d175c2263d53b9d093
 
+b3c35a0 Upgrade to Java 11
+0663c97 [maven-release-plugin] prepare for next development iteration
+47493f1 [maven-release-plugin] prepare release snakeyaml-engine-2.10
 cb26196 Format Javadoc
 f40a4f2 Add info
 f39e82e Merged in comments-on-empty-string-element (pull request #24)

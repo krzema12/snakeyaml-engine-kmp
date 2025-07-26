@@ -37,10 +37,10 @@ val isReleaseVersion = provider { !version.toString().endsWith("-SNAPSHOT") }
 val sonatypeReleaseUrl = isReleaseVersion.flatMap { isRelease ->
     if (isRelease) {
         ossrhStagingRepositoryID.map { repositoryId ->
-            "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-        }.orElse("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deployByRepositoryId/${repositoryId}/"
+        }.orElse("https://ossrh-staging-api.central.sonatype.com/service/local/deploy/maven2/")
     } else {
-        provider { "https://oss.sonatype.org/content/repositories/snapshots/" }
+        provider { "https://central.sonatype.com/repository/maven-snapshots/" }
     }
 }
 //endregion

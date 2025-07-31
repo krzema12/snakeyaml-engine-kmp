@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.allopen") version "2.1.21"
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.14"
+    alias(libs.plugins.kotlin.allopen)
+    alias(libs.plugins.kotlinx.benchmark)
 }
 
 allOpen {
@@ -50,24 +50,23 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.snakeyamlEngineKmp)
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.14")
-                implementation(project.dependencies.platform("com.squareup.okio:okio-bom:3.15.0"))
-                implementation("com.squareup.okio:okio")
+                implementation(libs.kotlinx.benchmark.runtime)
+                implementation(libs.okio)
             }
         }
 
         jvmMain {
             dependencies {
-                implementation("org.snakeyaml:snakeyaml-engine:2.10")
+                implementation(libs.snakeyaml.engine)
             }
         }
 
         jsMain {
             dependencies {
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0") {
-                    because("benchmark compilation requires explicit dependencies for JS targets - https://github.com/Kotlin/kotlinx-benchmark/issues/185")
-                }
-                implementation("com.squareup.okio:okio-nodefilesystem")
+                // Needed because benchmark compilation requires explicit dependencies for JS targets
+                // - https://github.com/Kotlin/kotlinx-benchmark/issues/185"
+                implementation(libs.urlencoder.lib)
+                implementation(libs.okio.nodefilesystem)
             }
         }
     }

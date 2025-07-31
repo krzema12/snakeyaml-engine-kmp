@@ -31,9 +31,7 @@ kotlin {
     jvmToolchain(21)
 
     //region JVM Targets
-    jvm {
-        withJava()
-    }
+    jvm()
     //endregion
 
 

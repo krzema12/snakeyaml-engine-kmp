@@ -8,8 +8,8 @@ plugins {
     buildsrc.conventions.publishing
     buildsrc.conventions.`yaml-testing`
     buildsrc.conventions.`multiplatform-test-resources`
-    id("dev.adamko.dokkatoo-html") version "2.4.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.1"
+    alias(libs.plugins.dokkatoo.html)
+    alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 group = "it.krzeminski"
@@ -24,8 +24,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.squareup.okio:okio:3.15.0")
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
+                implementation(libs.okio)
+                implementation(libs.urlencoder.lib)
             }
         }
 
@@ -38,7 +38,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.assertions.core)
-                implementation("org.jetbrains:annotations:26.0.2")
+                implementation(libs.jetbrains.annotations)
                 // Overridig coroutines' version to solve a problem with WASM JS tests.
                 // See https://kotlinlang.slack.com/archives/CDFP59223/p1736191408326039?thread_ts=1734964013.996149&cid=CDFP59223
                 // TODO: remove this workaround in https://github.com/krzema12/snakeyaml-engine-kmp/issues/337
@@ -48,9 +48,9 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.13.4")
+                implementation(libs.junit.jupiter.engine)
                 implementation(libs.kotest.runner.junit5)
-                implementation("com.google.guava:guava:33.4.8-jre")
+                implementation(libs.guava)
             }
         }
     }

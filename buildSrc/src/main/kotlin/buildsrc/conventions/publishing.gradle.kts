@@ -1,7 +1,5 @@
 package buildsrc.conventions
 
-import org.gradle.api.plugins.JavaBasePlugin.DOCUMENTATION_GROUP
-
 /**
  * Conventions for publishing.
  *
@@ -19,29 +17,12 @@ plugins {
 
 //region Publication Properties
 // can be set in gradle.properties or environment variables, e.g. ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername
-// TODO remove the below?
-val ossrhStagingRepositoryID = providers.gradleProperty("snake-kmp.ossrhStagingRepositoryId")
-
 val signingKeyId: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.keyId")
 val signingKey: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.key")
 val signingPassword: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.password")
-val signingSecretKeyRingFile: Provider<String> =
-    providers.gradleProperty("snake-kmp.signing.secretKeyRingFile")
-
-val isReleaseVersion = provider { !version.toString().endsWith("-SNAPSHOT") }
-
-val sonatypeReleaseUrl = isReleaseVersion.flatMap { isRelease ->
-    if (isRelease) {
-        ossrhStagingRepositoryID.map { repositoryId ->
-            "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-        }.orElse("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-    } else {
-        provider { "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
-}
 //endregion
 
 
@@ -88,26 +69,8 @@ mavenPublishing {
             useGpgCmd()
         }
     }
-
-    afterEvaluate {
-        // Register signatures in afterEvaluate, otherwise the signing plugin creates
-        // the signing tasks too early, before all the publications are added.
-        signing {
-            sign(publishing.publications)
-        }
-    }
 }
 //endregion
-
-//region Fix Gradle warning about signing tasks using publishing task outputs without explicit dependencies
-// https://youtrack.jetbrains.com/issue/KT-46466
-val signingTasks = tasks.withType<Sign>()
-
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    mustRunAfter(signingTasks)
-}
-//endregion
-
 
 //region publishing logging
 tasks.withType<AbstractPublishToMaven>().configureEach {

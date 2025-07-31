@@ -1,7 +1,5 @@
 package buildsrc.conventions
 
-import org.gradle.api.plugins.JavaBasePlugin.DOCUMENTATION_GROUP
-
 /**
  * Conventions for publishing.
  *
@@ -13,107 +11,53 @@ import org.gradle.api.plugins.JavaBasePlugin.DOCUMENTATION_GROUP
 
 plugins {
     signing
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
 }
 
 
 //region Publication Properties
 // can be set in gradle.properties or environment variables, e.g. ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername
-val ossrhUsername = providers.gradleProperty("snake-kmp.ossrhUsername")
-val ossrhPassword = providers.gradleProperty("snake-kmp.ossrhPassword")
-val ossrhStagingRepositoryID = providers.gradleProperty("snake-kmp.ossrhStagingRepositoryId")
-
 val signingKeyId: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.keyId")
 val signingKey: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.key")
 val signingPassword: Provider<String> =
     providers.gradleProperty("snake-kmp.signing.password")
-val signingSecretKeyRingFile: Provider<String> =
-    providers.gradleProperty("snake-kmp.signing.secretKeyRingFile")
-
-val isReleaseVersion = provider { !version.toString().endsWith("-SNAPSHOT") }
-
-val sonatypeReleaseUrl = isReleaseVersion.flatMap { isRelease ->
-    if (isRelease) {
-        ossrhStagingRepositoryID.map { repositoryId ->
-            "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-        }.orElse("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-    } else {
-        provider { "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
-}
 //endregion
 
 
 //region POM convention
-publishing {
-    publications.withType<MavenPublication>().configureEach {
-        pom {
-            name.convention("SnakeYAML Engine KMP")
-            description.convention("SnakeYAML Engine KMP is a YAML 1.2 processor for Kotlin Multiplatform")
-            url.convention("https://github.com/krzema12/snakeyaml-engine-kmp/")
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+    signAllPublications()
+    pom {
+        name.convention("SnakeYAML Engine KMP")
+        description.convention("SnakeYAML Engine KMP is a YAML 1.2 processor for Kotlin Multiplatform")
+        url.convention("https://github.com/krzema12/snakeyaml-engine-kmp/")
 
-            scm {
-                connection.convention("scm:git:https://github.com/krzema12/snakeyaml-engine-kmp/")
-                developerConnection.convention("scm:git:https://github.com/krzema12/")
-                url.convention("https://github.com/krzema12/snakeyaml-engine-kmp")
-            }
-
-            licenses {
-                license {
-                    name.convention("Apache-2.0")
-                    url.convention("https://opensource.org/licenses/Apache-2.0")
-                }
-            }
-
-            developers {
-                developer {
-                    email.set("adam@adamko.dev")
-                }
-
-                developer {
-                    id.set("krzema12")
-                    name.set("Piotr Krzemiński")
-                    email.set("git@krzeminski.it")
-                }
-            }
+        scm {
+            connection.convention("scm:git:https://github.com/krzema12/snakeyaml-engine-kmp/")
+            developerConnection.convention("scm:git:https://github.com/krzema12/")
+            url.convention("https://github.com/krzema12/snakeyaml-engine-kmp")
         }
-    }
-}
-//endregion
 
-
-//region Maven Central publishing/signing
-val javadocJarStub by tasks.registering(Jar::class) {
-    group = DOCUMENTATION_GROUP
-    description = "Empty Javadoc Jar (required by Maven Central)"
-    archiveClassifier.set("javadoc")
-}
-
-if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
-    publishing {
-        repositories {
-            maven(sonatypeReleaseUrl) {
-                name = "SonatypeRelease"
-                credentials {
-                    username = ossrhUsername.get()
-                    password = ossrhPassword.get()
-                }
-            }
-            // Publish to a project-local Maven directory, for verification.
-            // To test, run:
-            // ./gradlew publishAllPublicationsToProjectLocalRepository
-            // and check $rootDir/build/maven-project-local
-            maven(rootProject.layout.buildDirectory.dir("maven-project-local")) {
-                name = "ProjectLocal"
+        licenses {
+            license {
+                name.convention("Apache-2.0")
+                url.convention("https://opensource.org/licenses/Apache-2.0")
             }
         }
 
-        // Maven Central requires Javadoc JAR, which our project doesn't
-        // have because it's not Java, so use an empty jar.
-        publications.withType<MavenPublication>().configureEach {
-            artifact(javadocJarStub)
+        developers {
+            developer {
+                email.set("adam@adamko.dev")
+            }
+
+            developer {
+                id.set("krzema12")
+                name.set("Piotr Krzemiński")
+                email.set("git@krzeminski.it")
+            }
         }
     }
 
@@ -125,27 +69,8 @@ if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
             useGpgCmd()
         }
     }
-
-    afterEvaluate {
-        // Register signatures in afterEvaluate, otherwise the signing plugin creates
-        // the signing tasks too early, before all the publications are added.
-        signing {
-            sign(publishing.publications)
-        }
-    }
 }
 //endregion
-
-
-//region Fix Gradle warning about signing tasks using publishing task outputs without explicit dependencies
-// https://youtrack.jetbrains.com/issue/KT-46466
-val signingTasks = tasks.withType<Sign>()
-
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    mustRunAfter(signingTasks)
-}
-//endregion
-
 
 //region publishing logging
 tasks.withType<AbstractPublishToMaven>().configureEach {

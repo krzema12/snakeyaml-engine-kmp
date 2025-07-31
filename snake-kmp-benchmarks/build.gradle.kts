@@ -63,9 +63,6 @@ kotlin {
 
         jsMain {
             dependencies {
-                // Needed because benchmark compilation requires explicit dependencies for JS targets
-                // - https://github.com/Kotlin/kotlinx-benchmark/issues/185"
-                implementation(libs.urlencoder.lib)
                 implementation(libs.okio.nodefilesystem)
             }
         }

@@ -22,7 +22,6 @@ import io.github.typesafegithub.workflows.dsl.workflow
 
 val SONATYPE_USERNAME by Contexts.secrets
 val SONATYPE_PASSWORD by Contexts.secrets
-val SONATYPE_STAGING_PROFILE_ID by Contexts.secrets
 val SIGNING_KEY_ID by Contexts.secrets
 val SIGNING_KEY by Contexts.secrets
 val SIGNING_PASSWORD by Contexts.secrets
@@ -30,7 +29,7 @@ val SIGNING_PASSWORD by Contexts.secrets
 workflow(
     name = "Publish release to Maven Central or snapshot repo",
     on = listOf(
-        Push(branches = listOf("fix-publishing")),
+        Push(branches = listOf("main")),
         WorkflowDispatch(),
     ),
     sourceFile = __FILE__,

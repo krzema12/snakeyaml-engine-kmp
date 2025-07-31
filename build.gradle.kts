@@ -1,4 +1,3 @@
-import buildsrc.utils.configureGradleDaemonJvm
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
@@ -118,9 +117,3 @@ dokkatoo {
         }
     }
 }
-
-configureGradleDaemonJvm(
-    project = project,
-    updateDaemonJvm = tasks.updateDaemonJvm,
-    gradleDaemonJvmVersion = provider { JavaVersion.toVersion(21) },
-)

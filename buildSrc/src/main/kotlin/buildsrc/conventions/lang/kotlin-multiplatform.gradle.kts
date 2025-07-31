@@ -19,7 +19,8 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 plugins {
     id("buildsrc.conventions.base")
     kotlin("multiplatform")
-    id("io.kotest.multiplatform")
+    id("io.kotest")
+    id("com.google.devtools.ksp")
 }
 
 

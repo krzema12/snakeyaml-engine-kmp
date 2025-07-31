@@ -92,7 +92,7 @@ val javadocJarStub by tasks.registering(Jar::class) {
 }
 
 if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
-    publishing {
+    mavenPublishing {
         repositories {
             maven(sonatypeReleaseUrl) {
                 name = "SonatypeRelease"
@@ -108,12 +108,6 @@ if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
             maven(rootProject.layout.buildDirectory.dir("maven-project-local")) {
                 name = "ProjectLocal"
             }
-        }
-
-        // Maven Central requires Javadoc JAR, which our project doesn't
-        // have because it's not Java, so use an empty jar.
-        publications.withType<MavenPublication>().configureEach {
-            artifact(javadocJarStub)
         }
     }
 

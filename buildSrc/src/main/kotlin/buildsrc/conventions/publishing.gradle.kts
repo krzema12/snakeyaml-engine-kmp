@@ -13,7 +13,7 @@ import org.gradle.api.plugins.JavaBasePlugin.DOCUMENTATION_GROUP
 
 plugins {
     signing
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
 }
 
 
@@ -47,36 +47,36 @@ val sonatypeReleaseUrl = isReleaseVersion.flatMap { isRelease ->
 
 
 //region POM convention
-publishing {
-    publications.withType<MavenPublication>().configureEach {
-        pom {
-            name.convention("SnakeYAML Engine KMP")
-            description.convention("SnakeYAML Engine KMP is a YAML 1.2 processor for Kotlin Multiplatform")
-            url.convention("https://github.com/krzema12/snakeyaml-engine-kmp/")
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+    signAllPublications()
+    pom {
+        name.convention("SnakeYAML Engine KMP")
+        description.convention("SnakeYAML Engine KMP is a YAML 1.2 processor for Kotlin Multiplatform")
+        url.convention("https://github.com/krzema12/snakeyaml-engine-kmp/")
 
-            scm {
-                connection.convention("scm:git:https://github.com/krzema12/snakeyaml-engine-kmp/")
-                developerConnection.convention("scm:git:https://github.com/krzema12/")
-                url.convention("https://github.com/krzema12/snakeyaml-engine-kmp")
+        scm {
+            connection.convention("scm:git:https://github.com/krzema12/snakeyaml-engine-kmp/")
+            developerConnection.convention("scm:git:https://github.com/krzema12/")
+            url.convention("https://github.com/krzema12/snakeyaml-engine-kmp")
+        }
+
+        licenses {
+            license {
+                name.convention("Apache-2.0")
+                url.convention("https://opensource.org/licenses/Apache-2.0")
+            }
+        }
+
+        developers {
+            developer {
+                email.set("adam@adamko.dev")
             }
 
-            licenses {
-                license {
-                    name.convention("Apache-2.0")
-                    url.convention("https://opensource.org/licenses/Apache-2.0")
-                }
-            }
-
-            developers {
-                developer {
-                    email.set("adam@adamko.dev")
-                }
-
-                developer {
-                    id.set("krzema12")
-                    name.set("Piotr Krzemiński")
-                    email.set("git@krzeminski.it")
-                }
+            developer {
+                id.set("krzema12")
+                name.set("Piotr Krzemiński")
+                email.set("git@krzeminski.it")
             }
         }
     }

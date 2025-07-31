@@ -6,6 +6,7 @@ dependencies {
     //region Gradle Plugins
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.21")
     implementation(libs.kotest.framework.multiplatform.plugin.gradle)
+    implementation(libs.maven.publish.gradle.plugin)
     //endregion
 
     implementation("org.jetbrains:annotations:26.0.2")

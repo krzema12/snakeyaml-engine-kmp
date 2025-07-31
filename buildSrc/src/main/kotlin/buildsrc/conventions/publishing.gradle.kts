@@ -19,8 +19,7 @@ plugins {
 
 //region Publication Properties
 // can be set in gradle.properties or environment variables, e.g. ORG_GRADLE_PROJECT_snake-kmp.ossrhUsername
-val ossrhUsername = providers.gradleProperty("snake-kmp.ossrhUsername")
-val ossrhPassword = providers.gradleProperty("snake-kmp.ossrhPassword")
+// TODO remove the below?
 val ossrhStagingRepositoryID = providers.gradleProperty("snake-kmp.ossrhStagingRepositoryId")
 
 val signingKeyId: Provider<String> =
@@ -80,36 +79,6 @@ mavenPublishing {
             }
         }
     }
-}
-//endregion
-
-
-//region Maven Central publishing/signing
-val javadocJarStub by tasks.registering(Jar::class) {
-    group = DOCUMENTATION_GROUP
-    description = "Empty Javadoc Jar (required by Maven Central)"
-    archiveClassifier.set("javadoc")
-}
-
-if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
-    mavenPublishing {
-        repositories {
-            maven(sonatypeReleaseUrl) {
-                name = "SonatypeRelease"
-                credentials {
-                    username = ossrhUsername.get()
-                    password = ossrhPassword.get()
-                }
-            }
-            // Publish to a project-local Maven directory, for verification.
-            // To test, run:
-            // ./gradlew publishAllPublicationsToProjectLocalRepository
-            // and check $rootDir/build/maven-project-local
-            maven(rootProject.layout.buildDirectory.dir("maven-project-local")) {
-                name = "ProjectLocal"
-            }
-        }
-    }
 
     signing {
         logger.lifecycle("publishing.gradle.kts enabled signing for ${project.path}")
@@ -129,7 +98,6 @@ if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
     }
 }
 //endregion
-
 
 //region Fix Gradle warning about signing tasks using publishing task outputs without explicit dependencies
 // https://youtrack.jetbrains.com/issue/KT-46466

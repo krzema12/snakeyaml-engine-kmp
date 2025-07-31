@@ -115,7 +115,7 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+val minSupportedJavaVersion = JavaVersion.VERSION_11
 
 // use Java 21 to compile the project
 val javaCompiler = javaToolchains.compilerFor(21)

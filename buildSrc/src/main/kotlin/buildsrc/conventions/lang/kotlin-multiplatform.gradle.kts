@@ -5,7 +5,7 @@ import buildsrc.utils.JvmTarget
 import buildsrc.utils.compilerFor
 import buildsrc.utils.launcherFor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -31,9 +31,7 @@ kotlin {
     jvmToolchain(21)
 
     //region JVM Targets
-    jvm {
-        withJava()
-    }
+    jvm()
     //endregion
 
 

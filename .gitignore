@@ -21,8 +21,6 @@ build/
 .gradle/
 !gradle-wrapper.jar
 
-gradle/gradle-daemon-jvm.properties
-
 ### IntelliJ ###
 out/
 .idea/**

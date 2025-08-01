@@ -55,6 +55,10 @@ kotlin {
     }
 }
 
+tasks.updateDaemonJvm {
+    languageVersion = JavaLanguageVersion.of(21)
+}
+
 tasks.withType<Test>().configureEach {
     environment(
         "EnvironmentKey1" to "EnvironmentValue1",

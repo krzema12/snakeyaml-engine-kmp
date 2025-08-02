@@ -28,6 +28,7 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
+    // Use modern JDK to build the project.
     jvmToolchain(21)
 
     //region JVM Targets
@@ -115,11 +116,6 @@ kotlin {
 
 //region Java versioning
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
-
-// use Java 21 to compile the project
-val javaCompiler = javaToolchains.compilerFor(21)
-// use minimum Java version to run the tests
-val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

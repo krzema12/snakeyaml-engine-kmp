@@ -19,7 +19,8 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 plugins {
     id("buildsrc.conventions.base")
     kotlin("multiplatform")
-    id("io.kotest.multiplatform")
+    id("io.kotest")
+    id("com.google.devtools.ksp")
 }
 
 
@@ -115,7 +116,15 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
+    // Keeping backward compatibility.
+    println("!!! Using Java version 1.8")
+    JavaVersion.VERSION_1_8
+} else {
+    // For running tests - kotest needs it.
+    println("!!! Using Java version 11")
+    JavaVersion.VERSION_11
+}
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

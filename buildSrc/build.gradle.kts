@@ -5,7 +5,8 @@ plugins {
 dependencies {
     //region Gradle Plugins
     implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.kotest.framework.multiplatform.plugin.gradle)
+    implementation(libs.kotest.framework.plugin.gradle)
+    implementation(libs.ksp)
     implementation(libs.maven.publish.gradle.plugin)
     //endregion
 

@@ -1,3 +1,4 @@
+import buildsrc.utils.JavaVersions.JAVA_TOOLCHAIN_VERSION
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
@@ -56,7 +57,7 @@ kotlin {
 }
 
 tasks.updateDaemonJvm {
-    languageVersion = JavaLanguageVersion.of(21)
+    languageVersion = JavaLanguageVersion.of(JAVA_TOOLCHAIN_VERSION)
 }
 
 tasks.withType<Test>().configureEach {

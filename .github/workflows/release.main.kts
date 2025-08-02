@@ -63,9 +63,10 @@ workflow(
         )
         run(
             name = "Publish",
-            command = "RELEASE=true ./gradlew publishToMavenCentral --no-configuration-cache --stacktrace",
+            command = "./gradlew publishToMavenCentral --no-configuration-cache --stacktrace",
             env =
             mapOf(
+                "RELEASE" to "true",
                 "ORG_GRADLE_PROJECT_mavenCentralUsername" to expr { SONATYPE_USERNAME },
                 "ORG_GRADLE_PROJECT_mavenCentralPassword" to expr { SONATYPE_PASSWORD },
                 "ORG_GRADLE_PROJECT_snake-kmp.signing.keyId" to expr { SIGNING_KEY_ID },

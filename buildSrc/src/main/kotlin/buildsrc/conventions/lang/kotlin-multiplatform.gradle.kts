@@ -115,7 +115,7 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = if (project.hasProperty("isRelease")) {
+val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
     // Keeping backward compatibility.
     println("!!! Using Java version 1.8")
     JavaVersion.VERSION_1_8

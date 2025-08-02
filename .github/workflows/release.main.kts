@@ -63,7 +63,7 @@ workflow(
         )
         run(
             name = "Publish",
-            command = "./gradlew publishToMavenCentral -DisRelease=true --no-configuration-cache --stacktrace",
+            command = "RELEASE=true ./gradlew publishToMavenCentral --no-configuration-cache --stacktrace",
             env =
             mapOf(
                 "ORG_GRADLE_PROJECT_mavenCentralUsername" to expr { SONATYPE_USERNAME },

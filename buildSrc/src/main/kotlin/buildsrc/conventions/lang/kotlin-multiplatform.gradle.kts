@@ -1,6 +1,7 @@
 package buildsrc.conventions.lang
 
 import buildsrc.utils.JavaLanguageVersion
+import buildsrc.utils.JavaVersions.JAVA_TOOLCHAIN_VERSION
 import buildsrc.utils.JvmTarget
 import buildsrc.utils.compilerFor
 import buildsrc.utils.launcherFor
@@ -22,14 +23,13 @@ plugins {
     id("io.kotest.multiplatform")
 }
 
-
 @OptIn(
     ExperimentalKotlinGradlePluginApi::class,
     ExperimentalWasmDsl::class,
 )
 kotlin {
     // Use modern JDK to build the project.
-    jvmToolchain(21)
+    jvmToolchain(JAVA_TOOLCHAIN_VERSION)
 
     //region JVM Targets
     jvm {

@@ -117,9 +117,11 @@ kotlin {
 //region Java versioning
 val minSupportedJavaVersion = if (project.hasProperty("isRelease")) {
     // Keeping backward compatibility.
+    println("!!! Using Java version 1.8")
     JavaVersion.VERSION_1_8
 } else {
     // For running tests - kotest needs it.
+    println("!!! Using Java version 11")
     JavaVersion.VERSION_11
 }
 

@@ -115,7 +115,15 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
+    // Keeping backward compatibility.
+    JavaVersion.VERSION_1_8
+} else {
+    // For running tests - kotest doesn't work with Java 1.8 starting kotest 6.x.
+    JavaVersion.VERSION_11
+}
+
+logger.info("Using Java version $minSupportedJavaVersion as target")
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

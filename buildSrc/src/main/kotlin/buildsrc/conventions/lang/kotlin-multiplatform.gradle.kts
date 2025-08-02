@@ -123,7 +123,7 @@ val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
     JavaVersion.VERSION_11
 }
 
-logger.info("Using Java version $minSupportedJavaVersion as target")
+logger.quiet("Using Java version $minSupportedJavaVersion as target")
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

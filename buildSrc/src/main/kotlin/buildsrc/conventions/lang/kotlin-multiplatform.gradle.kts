@@ -115,7 +115,7 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+val minSupportedJavaVersion = JavaVersion.VERSION_11
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

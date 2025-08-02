@@ -29,7 +29,7 @@ val SIGNING_PASSWORD by Contexts.secrets
 workflow(
     name = "Publish release to Maven Central or snapshot repo",
     on = listOf(
-        Push(branches = listOf("main")),
+        Push(branches = listOf("renovate/kotest")),
         WorkflowDispatch(),
     ),
     sourceFile = __FILE__,
@@ -63,7 +63,7 @@ workflow(
         )
         run(
             name = "Publish",
-            command = "./gradlew publishToMavenCentral --no-configuration-cache --stacktrace",
+            command = "./gradlew publishToMavenCentral -DisRelease=true --no-configuration-cache --stacktrace",
             env =
             mapOf(
                 "ORG_GRADLE_PROJECT_mavenCentralUsername" to expr { SONATYPE_USERNAME },

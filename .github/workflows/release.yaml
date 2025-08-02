@@ -6,7 +6,7 @@ name: 'Publish release to Maven Central or snapshot repo'
 on:
   push:
     branches:
-    - 'main'
+    - 'renovate/kotest'
   workflow_dispatch: {}
 jobs:
   check_yaml_consistency:

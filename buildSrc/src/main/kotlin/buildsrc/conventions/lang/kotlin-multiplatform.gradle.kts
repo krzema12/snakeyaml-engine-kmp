@@ -145,6 +145,9 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
 tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
     compilerOptions {
         jvmTarget = JvmTarget(javaForTests)
+        freeCompilerArgs.addAll(
+            "-Xjdk-release=${javaForTests.majorVersion}",
+        )
     }
 }
 

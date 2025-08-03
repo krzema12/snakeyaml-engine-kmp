@@ -34,6 +34,17 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
+        compilations.forEach { println("Compilation! ${it.name}") }
+        val test by compilations.getting {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget = JvmTarget(JavaVersion.VERSION_11)
+                    freeCompilerArgs.addAll(
+                        "-Xjdk-release=11",
+                    )
+                }
+            }
+        }
     }
     //endregion
 
@@ -115,15 +126,12 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
-    // Keeping backward compatibility.
-    JavaVersion.VERSION_1_8
-} else {
-    // For running tests - kotest doesn't work with Java 1.8 starting kotest 6.x.
-    JavaVersion.VERSION_11
-}
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
-logger.quiet("Using Java version $minSupportedJavaVersion as target")
+// use Java 21 to compile the project
+val javaCompiler = javaToolchains.compilerFor(21)
+// use minimum Java version to run the tests
+val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -137,15 +145,20 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion(minSupportedJavaVersion)
+                languageVersion = JavaLanguageVersion(JavaVersion.VERSION_11)
             }
         }
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
+tasks.getByName<JavaCompile>("compileJava") {
     sourceCompatibility = minSupportedJavaVersion.toString()
     targetCompatibility = minSupportedJavaVersion.toString()
+}
+
+tasks.getByName<JavaCompile>("compileTestJava") {
+    sourceCompatibility = JavaVersion.VERSION_11.toString()
+    targetCompatibility = JavaVersion.VERSION_11.toString()
 }
 //endregion
 

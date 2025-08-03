@@ -34,6 +34,13 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
+        val test by compilations.getting {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_11)
+                }
+            }
+        }
     }
     //endregion
 
@@ -115,15 +122,7 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = if (System.getenv("RELEASE") == "true") {
-    // Keeping backward compatibility.
-    println("!!! Using Java version 1.8")
-    JavaVersion.VERSION_1_8
-} else {
-    // For running tests - kotest needs it.
-    println("!!! Using Java version 11")
-    JavaVersion.VERSION_11
-}
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
 // use Java 21 to compile the project
 val javaCompiler = javaToolchains.compilerFor(21)

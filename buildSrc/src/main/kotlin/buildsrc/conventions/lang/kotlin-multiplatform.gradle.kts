@@ -23,6 +23,8 @@ plugins {
 }
 
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+
+// 11+ required by kotest.
 val javaForTests = JavaVersion.VERSION_11
 
 @OptIn(

@@ -151,9 +151,14 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
+tasks.getByName<JavaCompile>("javaCompile") {
     sourceCompatibility = minSupportedJavaVersion.toString()
     targetCompatibility = minSupportedJavaVersion.toString()
+}
+
+tasks.getByName<JavaCompile>("javaTestCompile") {
+    sourceCompatibility = JavaVersion.VERSION_11.toString()
+    targetCompatibility = JavaVersion.VERSION_11.toString()
 }
 //endregion
 

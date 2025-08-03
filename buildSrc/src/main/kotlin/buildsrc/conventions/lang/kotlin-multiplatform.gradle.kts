@@ -22,11 +22,6 @@ plugins {
     id("io.kotest.multiplatform")
 }
 
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
-
-// 11+ required by kotest.
-val javaForTests = JavaVersion.VERSION_11
-
 @OptIn(
     ExperimentalKotlinGradlePluginApi::class,
     ExperimentalWasmDsl::class,
@@ -38,17 +33,6 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
-        // Compiling Kotlin tests.
-        val test by compilations.getting {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget = JvmTarget(javaForTests)
-                    freeCompilerArgs.addAll(
-                        "-Xjdk-release=${javaForTests.majorVersion}",
-                    )
-                }
-            }
-        }
     }
     //endregion
 
@@ -130,6 +114,11 @@ kotlin {
 }
 
 //region Java versioning
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+
+// 11+ required by kotest.
+val javaForTests = JavaVersion.VERSION_11
+
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     // Compiling Kotlin production code.
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -150,14 +139,21 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     }
 }
 
+// Compiling Kotlin tests.
+tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
+    compilerOptions {
+        jvmTarget = JvmTarget(javaForTests)
+    }
+}
+
 // Compiling Java production code.
-tasks.getByName<JavaCompile>("compileJava") {
+tasks.named<JavaCompile>("compileJava") {
     sourceCompatibility = minSupportedJavaVersion.toString()
     targetCompatibility = minSupportedJavaVersion.toString()
 }
 
 // Compiling Java tests.
-tasks.getByName<JavaCompile>("compileTestJava") {
+tasks.named<JavaCompile>("compileTestJava") {
     sourceCompatibility = javaForTests.toString()
     targetCompatibility = javaForTests.toString()
 }

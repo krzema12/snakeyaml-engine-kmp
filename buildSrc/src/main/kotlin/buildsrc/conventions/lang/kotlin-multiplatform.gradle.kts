@@ -22,6 +22,8 @@ plugins {
     id("io.kotest.multiplatform")
 }
 
+val minSupportedJavaVersion = JavaVersion.VERSION_1_8
+val javaForTests = JavaVersion.VERSION_11
 
 @OptIn(
     ExperimentalKotlinGradlePluginApi::class,
@@ -34,13 +36,12 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
-        compilations.forEach { println("Compilation! ${it.name}") }
         val test by compilations.getting {
             compileTaskProvider.configure {
                 compilerOptions {
-                    jvmTarget = JvmTarget(JavaVersion.VERSION_11)
+                    jvmTarget = JvmTarget(javaForTests)
                     freeCompilerArgs.addAll(
-                        "-Xjdk-release=11",
+                        "-Xjdk-release=${javaForTests.majorVersion}",
                     )
                 }
             }
@@ -126,13 +127,6 @@ kotlin {
 }
 
 //region Java versioning
-val minSupportedJavaVersion = JavaVersion.VERSION_1_8
-
-// use Java 21 to compile the project
-val javaCompiler = javaToolchains.compilerFor(21)
-// use minimum Java version to run the tests
-val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
-
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -145,7 +139,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion(JavaVersion.VERSION_11)
+                languageVersion = JavaLanguageVersion(javaForTests)
             }
         }
     }
@@ -157,8 +151,8 @@ tasks.getByName<JavaCompile>("compileJava") {
 }
 
 tasks.getByName<JavaCompile>("compileTestJava") {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
+    sourceCompatibility = javaForTests.toString()
+    targetCompatibility = javaForTests.toString()
 }
 //endregion
 

@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 /**
  * Base configuration for all Kotlin/Multiplatform conventions.
@@ -29,22 +30,12 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
+    // Use modern JDK to build the project.
     jvmToolchain(21)
 
     //region JVM Targets
     jvm {
         withJava()
-        compilations.forEach { println("Compilation! ${it.name}") }
-        val test by compilations.getting {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget = JvmTarget(JavaVersion.VERSION_11)
-                    freeCompilerArgs.addAll(
-                        "-Xjdk-release=11",
-                    )
-                }
-            }
-        }
     }
     //endregion
 
@@ -128,12 +119,10 @@ kotlin {
 //region Java versioning
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
-// use Java 21 to compile the project
-val javaCompiler = javaToolchains.compilerFor(21)
-// use minimum Java version to run the tests
-val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
+val javaForTests = JavaVersion.VERSION_11
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
+    // Compiling Kotlin production code.
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         jvmTarget = JvmTarget(minSupportedJavaVersion)
@@ -142,23 +131,33 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
         )
     }
 
+    // Running tests.
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion(JavaVersion.VERSION_11)
+                languageVersion = JavaLanguageVersion(javaForTests)
             }
         }
     }
 }
 
-tasks.getByName<JavaCompile>("compileJava") {
+// Compiling Kotlin tests.
+tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
+    compilerOptions {
+        jvmTarget = JvmTarget(javaForTests)
+    }
+}
+
+// Compiling Java production code.
+tasks.named<JavaCompile>("compileJava") {
     sourceCompatibility = minSupportedJavaVersion.toString()
     targetCompatibility = minSupportedJavaVersion.toString()
 }
 
-tasks.getByName<JavaCompile>("compileTestJava") {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
+// Compiling Java tests.
+tasks.named<JavaCompile>("compileTestJava") {
+    sourceCompatibility = javaForTests.toString()
+    targetCompatibility = javaForTests.toString()
 }
 //endregion
 

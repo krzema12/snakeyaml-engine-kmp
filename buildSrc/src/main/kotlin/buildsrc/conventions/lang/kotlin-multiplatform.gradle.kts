@@ -36,6 +36,7 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
+        // Compiling Kotlin tests.
         val test by compilations.getting {
             compileTaskProvider.configure {
                 compilerOptions {
@@ -128,6 +129,7 @@ kotlin {
 
 //region Java versioning
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
+    // Compiling Kotlin production code.
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         jvmTarget = JvmTarget(minSupportedJavaVersion)
@@ -136,6 +138,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
         )
     }
 
+    // Running tests.
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
@@ -145,11 +148,13 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     }
 }
 
+// Compiling Java production code.
 tasks.getByName<JavaCompile>("compileJava") {
     sourceCompatibility = minSupportedJavaVersion.toString()
     targetCompatibility = minSupportedJavaVersion.toString()
 }
 
+// Compiling Java tests.
 tasks.getByName<JavaCompile>("compileTestJava") {
     sourceCompatibility = javaForTests.toString()
     targetCompatibility = javaForTests.toString()

@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 /**
  * Base configuration for all Kotlin/Multiplatform conventions.
@@ -117,7 +118,6 @@ kotlin {
 //region Java versioning
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
-// 11+ required by kotest.
 val javaForTests = JavaVersion.VERSION_11
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {

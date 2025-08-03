@@ -34,6 +34,7 @@ kotlin {
     //region JVM Targets
     jvm {
         withJava()
+        compilations.forEach { println("Compilation! ${it.name}") }
         val test by compilations.getting {
             compileTaskProvider.configure {
                 compilerOptions {

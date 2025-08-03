@@ -37,7 +37,10 @@ kotlin {
         val test by compilations.getting {
             compileTaskProvider.configure {
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_11)
+                    jvmTarget = JvmTarget(JavaVersion.VERSION_11)
+                    freeCompilerArgs.addAll(
+                        "-Xjdk-release=11",
+                    )
                 }
             }
         }

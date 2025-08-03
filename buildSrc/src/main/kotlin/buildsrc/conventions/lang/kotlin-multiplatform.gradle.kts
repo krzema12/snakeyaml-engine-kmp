@@ -145,7 +145,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion(minSupportedJavaVersion)
+                languageVersion = JavaLanguageVersion(JavaVersion.VERSION_11)
             }
         }
     }

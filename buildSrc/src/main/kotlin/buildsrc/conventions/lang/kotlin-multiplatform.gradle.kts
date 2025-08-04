@@ -2,8 +2,6 @@ package buildsrc.conventions.lang
 
 import buildsrc.utils.JavaLanguageVersion
 import buildsrc.utils.JvmTarget
-import buildsrc.utils.compilerFor
-import buildsrc.utils.launcherFor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
@@ -153,14 +151,12 @@ tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
 
 // Compiling Java production code.
 tasks.named<JavaCompile>("compileJava") {
-    sourceCompatibility = minSupportedJavaVersion.toString()
-    targetCompatibility = minSupportedJavaVersion.toString()
+    options.release = minSupportedJavaVersion.majorVersion.toInt()
 }
 
 // Compiling Java tests.
 tasks.named<JavaCompile>("compileTestJava") {
-    sourceCompatibility = javaForTests.toString()
-    targetCompatibility = javaForTests.toString()
+    options.release = javaForTests.majorVersion.toInt()
 }
 //endregion
 

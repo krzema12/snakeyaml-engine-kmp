@@ -2,12 +2,11 @@ package buildsrc.conventions.lang
 
 import buildsrc.utils.JavaLanguageVersion
 import buildsrc.utils.JvmTarget
-import buildsrc.utils.compilerFor
-import buildsrc.utils.launcherFor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 /**
  * Base configuration for all Kotlin/Multiplatform conventions.
@@ -28,6 +27,7 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
+    // Use modern JDK to build the project.
     jvmToolchain(21)
 
     //region JVM Targets
@@ -114,12 +114,10 @@ kotlin {
 //region Java versioning
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
-// use Java 21 to compile the project
-val javaCompiler = javaToolchains.compilerFor(21)
-// use minimum Java version to run the tests
-val javaTestLauncher = javaToolchains.launcherFor(minSupportedJavaVersion)
+val javaForTests = JavaVersion.VERSION_11
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
+    // Compiling Kotlin production code.
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         jvmTarget = JvmTarget(minSupportedJavaVersion)
@@ -128,18 +126,34 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
         )
     }
 
+    // Running tests.
     testRuns.configureEach {
         executionTask.configure {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion(minSupportedJavaVersion)
+                languageVersion = JavaLanguageVersion(javaForTests)
             }
         }
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = minSupportedJavaVersion.toString()
-    targetCompatibility = minSupportedJavaVersion.toString()
+// Compiling Kotlin tests.
+tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
+    compilerOptions {
+        jvmTarget = JvmTarget(javaForTests)
+        freeCompilerArgs.addAll(
+            "-Xjdk-release=${javaForTests.majorVersion}",
+        )
+    }
+}
+
+// Compiling Java production code.
+tasks.named<JavaCompile>("compileJava") {
+    options.release = minSupportedJavaVersion.majorVersion.toInt()
+}
+
+// Compiling Java tests.
+tasks.named<JavaCompile>("compileTestJava") {
+    options.release = javaForTests.majorVersion.toInt()
 }
 //endregion
 

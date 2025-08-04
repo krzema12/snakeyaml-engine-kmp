@@ -154,7 +154,9 @@ internal object SuiteUtils {
 
     private fun Set<String>.mapToYamlTestDataId(): Set<YamlTestData.Id> =
         map { id ->
-            val updatedId = id.replace("-", ":")
+            val updatedId = id
+                .replace("-", "_")
+                .replace(":", "_")
             YamlTestData.Id(updatedId)
         }.toSet()
 }

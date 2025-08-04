@@ -38,7 +38,7 @@ internal val YamlTestSuiteData: Map<YamlTestData.Id, YamlTestData> =
     YamlTestResourcesFileSystem.fsPath("/").listRecursively()
         .filter { it.isDirectory && (it / "===").exists }
         .associate { dir ->
-            val id = YamlTestData.Id(dir.path.segments.joinToString("-"))
+            val id = YamlTestData.Id(dir.path.segments.joinToString("_"))
             id to generateYamlTestDataObject(id, dir)
         }
 

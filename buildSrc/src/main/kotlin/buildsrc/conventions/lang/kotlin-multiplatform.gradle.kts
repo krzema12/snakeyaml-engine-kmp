@@ -27,9 +27,6 @@ plugins {
     ExperimentalWasmDsl::class,
 )
 kotlin {
-    // Use modern JDK to build the project.
-    jvmToolchain(21)
-
     //region JVM Targets
     jvm()
     //endregion

@@ -147,12 +147,12 @@ tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
 }
 
 // Compiling Java production code.
-tasks.named<JavaCompile>("compileJava") {
+tasks.named<JavaCompile>("compileJvmMainJava") {
     options.release = minSupportedJavaVersion.majorVersion.toInt()
 }
 
 // Compiling Java tests.
-tasks.named<JavaCompile>("compileTestJava") {
+tasks.named<JavaCompile>("compileJvmTestJava") {
     options.release = javaForTests.majorVersion.toInt()
 }
 //endregion

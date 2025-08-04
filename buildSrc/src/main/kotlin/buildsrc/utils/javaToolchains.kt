@@ -11,10 +11,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 // Utilities for configuring Java Toolchains
 
-object JavaVersions {
-    const val JAVA_TOOLCHAIN_VERSION = 21
-}
-
 internal fun JavaToolchainService.compilerFor(version: Int): Provider<JavaCompiler> =
     compilerFor { languageVersion = JavaLanguageVersion.of(version) }
 

@@ -3,7 +3,7 @@ package buildsrc.conventions.lang
 import buildsrc.utils.JavaLanguageVersion
 import buildsrc.utils.JvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -31,9 +31,7 @@ kotlin {
     jvmToolchain(21)
 
     //region JVM Targets
-    jvm {
-        withJava()
-    }
+    jvm()
     //endregion
 
 
@@ -149,12 +147,12 @@ tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
 }
 
 // Compiling Java production code.
-tasks.named<JavaCompile>("compileJava") {
+tasks.named<JavaCompile>("compileJvmMainJava") {
     options.release = minSupportedJavaVersion.majorVersion.toInt()
 }
 
 // Compiling Java tests.
-tasks.named<JavaCompile>("compileTestJava") {
+tasks.named<JavaCompile>("compileJvmTestJava") {
     options.release = javaForTests.majorVersion.toInt()
 }
 //endregion

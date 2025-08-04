@@ -48,7 +48,7 @@ jobs:
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
       with:
-        java-version: '21'
+        java-version: '24'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Validate Gradle Wrapper'

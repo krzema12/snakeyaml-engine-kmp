@@ -4,6 +4,7 @@ import buildsrc.utils.JavaLanguageVersion
 import buildsrc.utils.JvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -21,12 +22,21 @@ plugins {
     id("io.kotest.multiplatform")
 }
 
+val kotlinTarget = "1.9.24" // Newest patch version for 1.9
+val kotlinTargetVersion = KotlinVersion.fromVersion(
+    kotlinTarget.substringBeforeLast("."))
 
 @OptIn(
     ExperimentalKotlinGradlePluginApi::class,
     ExperimentalWasmDsl::class,
 )
 kotlin {
+    compilerOptions {
+        languageVersion = kotlinTargetVersion
+        apiVersion = kotlinTargetVersion
+    }
+    coreLibrariesVersion = kotlinTarget
+
     //region JVM Targets
     jvm()
     //endregion

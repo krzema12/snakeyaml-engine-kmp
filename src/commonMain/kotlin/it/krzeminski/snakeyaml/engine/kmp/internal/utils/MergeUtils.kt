@@ -7,7 +7,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag.Companion.MERGE
 
-abstract class MergeUtils {
+internal abstract class MergeUtils {
     /**
       * Converts the specified [node] into a [MappingNode].
       *

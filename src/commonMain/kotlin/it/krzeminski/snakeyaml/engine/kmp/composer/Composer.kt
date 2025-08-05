@@ -22,6 +22,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.MergeUtils
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 import it.krzeminski.snakeyaml.engine.kmp.parser.Parser
 import it.krzeminski.snakeyaml.engine.kmp.resolver.ScalarResolver
@@ -47,6 +48,11 @@ class Composer(
     private val inlineCommentsCollector: CommentEventsCollector =
         CommentEventsCollector(parser, CommentType.IN_LINE)
     private var nonScalarAliasesCount = 0
+    private val mergeUtils = object : MergeUtils() {
+        override fun asMappingNode(node: Node): MappingNode {
+            return this@Composer.asMappingNode(node)
+        }
+    }
 
     /**
      * Checks if further documents are available.
@@ -311,6 +317,11 @@ class Composer(
         if (!inlineCommentsCollector.isEmpty()) {
             node.inLineComments = inlineCommentsCollector.consume()
         }
+        if (node.hasMergeTag) {
+            val updatedValue = mergeUtils.flatten(node)
+            node.value = updatedValue
+            node.hasMergeTag = false
+        }
         return node
     }
 
@@ -322,8 +333,24 @@ class Composer(
      */
     private fun composeMappingChildren(children: MutableList<NodeTuple>, node: MappingNode) {
         val itemKey = composeKeyNode(node)
+        if (itemKey.tag == Tag.MERGE) {
+            node.hasMergeTag = true
+        }
         val itemValue = composeValueNode(node)
         children.add(NodeTuple(itemKey, itemValue))
+    }
+
+    private fun asMappingNode(node: Node): MappingNode {
+        if (node is MappingNode) {
+            return node
+        } else {
+            val ref = anchors[node.anchor]
+            if (ref is MappingNode) {
+                return ref
+            }
+        }
+        val ev = parser.peekEvent()
+        throw ComposerException("Expected mapping node or an anchor referencing mapping", ev.startMark)
     }
 
     /**

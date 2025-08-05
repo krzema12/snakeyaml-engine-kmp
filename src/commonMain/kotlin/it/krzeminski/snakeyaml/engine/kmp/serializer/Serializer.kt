@@ -19,6 +19,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
 import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitable
 import it.krzeminski.snakeyaml.engine.kmp.events.*
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.MergeUtils
 import it.krzeminski.snakeyaml.engine.kmp.nodes.*
 
 /**
@@ -36,6 +37,16 @@ class Serializer(
     private val anchors: MutableMap<Node, Anchor?> = mutableMapOf()
     private val isDereferenceAliases: Boolean = settings.isDereferenceAliases
     private val recursive: IdentitySet<Node> = IdentitySet()
+    private val mergeUtils = object : MergeUtils() {
+        override fun asMappingNode(node: Node): MappingNode {
+            if (node is MappingNode) {
+                return node
+            }
+            // TODO: This need to be explored more to understand if only MappingNode possible.
+            //       Or at least the error message needs to be improved.
+            throw YamlEngineException("expecting MappingNode while processing merge.")
+        }
+    }
 
     /**
      * Serialize document
@@ -175,6 +186,11 @@ class Serializer(
                     require(realNode is MappingNode)
                     serializeComments(realNode.blockComments)
                     if (realNode.tag != Tag.COMMENT) {
+                        var map = realNode.value
+                        if (this.isDereferenceAliases && realNode.hasMergeTag) {
+                            map = mergeUtils.flatten(realNode)
+                        }
+
                         emitable.emit(
                             MappingStartEvent(
                                 anchor = tAlias,
@@ -185,7 +201,7 @@ class Serializer(
                                 endMark = null,
                             ),
                         )
-                        for ((key, value) in realNode.value) {
+                        for ((key, value) in map) {
                             serializeNode(key)
                             serializeNode(value)
                         }

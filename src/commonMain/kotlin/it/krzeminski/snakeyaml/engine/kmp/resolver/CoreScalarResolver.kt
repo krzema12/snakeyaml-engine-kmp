@@ -18,9 +18,10 @@ import kotlin.jvm.JvmField
 
 
 /**
- * ScalarResolver for Core Schema
+ * ScalarResolver for Core Schema with the merge implemented.
+ * See [Support of Merge Keys](https://ktomk.github.io/writing/yaml-anchor-alias-and-merge-key.html).
  */
-class CoreScalarResolver : BaseScalarResolver(
+class CoreScalarResolver(supportMerge: Boolean) : BaseScalarResolver(
     {
         addImplicitResolver(Tag.NULL, EMPTY, null)
         addImplicitResolver(Tag.BOOL, BOOL, "tfTF")
@@ -29,6 +30,9 @@ class CoreScalarResolver : BaseScalarResolver(
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.")
         addImplicitResolver(Tag.NULL, NULL, "n\u0000")
         addImplicitResolver(Tag.ENV_TAG, ENV_FORMAT, "$")
+        if (supportMerge) {
+            addImplicitResolver(Tag.MERGE, MERGE, "<")
+        }
     },
 ) {
 
@@ -47,6 +51,12 @@ class CoreScalarResolver : BaseScalarResolver(
                     """|([-+]?\.(?:inf|Inf|INF))""" + // infinity
                     """|(\.(?:nan|NaN|NAN)))$""", // not a number
         )
+
+        /**
+         * Merge is optional, but not defined in YAML 1.2
+         */
+        @JvmField
+        val MERGE = Regex("^(?:<<)$")
 
         /** Integer as defined in Core */
         @JvmField

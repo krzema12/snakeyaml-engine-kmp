@@ -23,7 +23,7 @@ import it.krzeminski.snakeyaml.engine.kmp.resolver.CoreScalarResolver
 /**
  * Core schema
  */
-class CoreSchema : JsonSchema(CoreScalarResolver()) {
+class CoreSchema : JsonSchema(CoreScalarResolver(supportMerge = true)) {
 
     /**
      * Provide constructs to support the schema (bool, int, float)

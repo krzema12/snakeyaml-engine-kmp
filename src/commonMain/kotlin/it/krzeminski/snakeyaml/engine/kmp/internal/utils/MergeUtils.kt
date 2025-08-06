@@ -7,18 +7,18 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag.Companion.MERGE
 
-internal abstract class MergeUtils {
+internal class MergeUtils(
     /**
-      * Converts the specified [node] into a [MappingNode].
-      *
-      * This method is designed to transform various types of [Node] into a [MappingNode],
-      * enabling further processing such as merging of keys.
-      *
-      * @param node The node to be transformed.
-      * @return A [MappingNode] representation of the input [node].
-      */
-    abstract fun asMappingNode(node: Node): MappingNode
-
+     * Converts the specified [Node] into a [MappingNode].
+     *
+     * This function is designed to transform various types of [Node] into a [MappingNode],
+     * enabling further processing such as merging of keys.
+     *
+     * @param Node The node to be transformed.
+     * @return A [MappingNode] representation of the input [Node].
+     */
+    private val asMappingNode: (Node) -> MappingNode,
+) {
     /**
      * Processes and resolves merge keys in a [MappingNode], merging resolved key/values into the node.
      *

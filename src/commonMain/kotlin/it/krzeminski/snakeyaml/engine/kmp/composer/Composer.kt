@@ -48,11 +48,7 @@ class Composer(
     private val inlineCommentsCollector: CommentEventsCollector =
         CommentEventsCollector(parser, CommentType.IN_LINE)
     private var nonScalarAliasesCount = 0
-    private val mergeUtils = object : MergeUtils() {
-        override fun asMappingNode(node: Node): MappingNode {
-            return this@Composer.asMappingNode(node)
-        }
-    }
+    private val mergeUtils = MergeUtils(asMappingNode = this@Composer::asMappingNode)
 
     /**
      * Checks if further documents are available.

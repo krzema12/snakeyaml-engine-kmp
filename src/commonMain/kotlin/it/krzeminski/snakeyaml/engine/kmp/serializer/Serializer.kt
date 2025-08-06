@@ -37,16 +37,14 @@ class Serializer(
     private val anchors: MutableMap<Node, Anchor?> = mutableMapOf()
     private val isDereferenceAliases: Boolean = settings.isDereferenceAliases
     private val recursive: IdentitySet<Node> = IdentitySet()
-    private val mergeUtils = object : MergeUtils() {
-        override fun asMappingNode(node: Node): MappingNode {
-            if (node is MappingNode) {
-                return node
-            }
-            // TODO: This need to be explored more to understand if only MappingNode possible.
-            //       Or at least the error message needs to be improved.
-            throw YamlEngineException("expecting MappingNode while processing merge.")
+    private val mergeUtils = MergeUtils(asMappingNode = { node ->
+        if (node is MappingNode) {
+            return@MergeUtils node
         }
-    }
+        // TODO: This need to be explored more to understand if only MappingNode possible.
+        //       Or at least the error message needs to be improved.
+        throw YamlEngineException("expecting MappingNode while processing merge.")
+    })
 
     /**
      * Serialize document

@@ -49,6 +49,9 @@ class Tag(
         fun forType(fqn: String): Tag = Tag(prefix = PREFIX, tag = fqn)
 
         @JvmField
+        val MERGE = Tag(PREFIX + "merge")
+
+        @JvmField
         val SET = Tag(PREFIX + "set")
 
         @JvmField

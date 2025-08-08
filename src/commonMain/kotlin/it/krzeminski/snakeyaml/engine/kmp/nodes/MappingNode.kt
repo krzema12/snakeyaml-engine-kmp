@@ -36,8 +36,9 @@ class MappingNode @JvmOverloads constructor(
      * Applications may need to replace the content (Spring Boot).
      * Merging was removed, but it may be implemented.
      */
-    override val value: List<NodeTuple>,
+    override var value: List<NodeTuple>,
     flowStyle: FlowStyle,
+    var hasMergeTag: Boolean = false,
     resolved: Boolean = true,
     startMark: Mark? = null,
     endMark: Mark? = null,

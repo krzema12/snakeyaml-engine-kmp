@@ -824,11 +824,15 @@ public abstract class it/krzeminski/snakeyaml/engine/kmp/nodes/CollectionNode : 
 public final class it/krzeminski/snakeyaml/engine/kmp/nodes/MappingNode : it/krzeminski/snakeyaml/engine/kmp/nodes/CollectionNode {
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)V
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Z)V
-	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
-	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
-	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZZ)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;)V
+	public synthetic fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Ljava/util/List;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;ZZLit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;Lit/krzeminski/snakeyaml/engine/kmp/exceptions/Mark;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getHasMergeTag ()Z
 	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;
 	public fun getValue ()Ljava/util/List;
+	public final fun setHasMergeTag (Z)V
+	public fun setValue (Ljava/util/List;)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -909,6 +913,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/nodes/Tag {
 	public static final field FLOAT Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
 	public static final field INT Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
 	public static final field MAP Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public static final field MERGE Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
 	public static final field NULL Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
 	public static final field PREFIX Ljava/lang/String;
 	public static final field SEQ Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
@@ -1011,7 +1016,8 @@ public final class it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolve
 public final class it/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver : it/krzeminski/snakeyaml/engine/kmp/resolver/BaseScalarResolver {
 	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver$Companion;
 	public static final field INT Lkotlin/text/Regex;
-	public fun <init> ()V
+	public static final field MERGE Lkotlin/text/Regex;
+	public fun <init> (Z)V
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/resolver/CoreScalarResolver$Companion {

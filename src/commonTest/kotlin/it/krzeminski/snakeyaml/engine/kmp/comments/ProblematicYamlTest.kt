@@ -35,8 +35,8 @@ class ProblematicYamlTest : FunSpec({
         val expectedCommentTypeList = listOf(
             CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK
         )
-        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString1))
-        assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
+        ParserImpl(loadOptions, StreamReader(loadOptions, yamlString1))
+           .assertEventListEquals(expectedEventIdList, expectedCommentTypeList)
     }
 
     test("parse problematic yaml 2") {
@@ -64,8 +64,8 @@ class ProblematicYamlTest : FunSpec({
         val expectedCommentTypeList = listOf(
             CommentType.BLANK_LINE, CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK
         )
-        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString2))
-        assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
+        ParserImpl(loadOptions, StreamReader(loadOptions, yamlString2))
+           .assertEventListEquals(expectedEventIdList, expectedCommentTypeList)
     }
 
     test("parse problematic yaml 3") {
@@ -88,8 +88,8 @@ class ProblematicYamlTest : FunSpec({
             Event.ID.StreamEnd
         )
         val expectedCommentTypeList = listOf(CommentType.BLANK_LINE)
-        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString3))
-        assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
+        ParserImpl(loadOptions, StreamReader(loadOptions, yamlString3))
+           .assertEventListEquals(expectedEventIdList, expectedCommentTypeList)
     }
 
     test("parse problematic yaml 4") {
@@ -146,20 +146,19 @@ class ProblematicYamlTest : FunSpec({
             Event.ID.StreamEnd
         )
         val settings = LoadSettings.Companion.builder().build()
-        val parser = ParserImpl(settings, StreamReader(settings, yamlString4))
-        assertEventListEquals(expectedEventIdList, emptyList(), parser)
+        ParserImpl(settings, StreamReader(settings, yamlString4))
+           .assertEventListEquals(expectedEventIdList, emptyList())
     }
 })
 
-private fun assertEventListEquals(
+private fun Parser.assertEventListEquals(
     expectedEventIdList: List<Event.ID>,
     expectedCommentTypeList: List<CommentType>,
-    parser: Parser
 ) {
     val commentTypeIterator = expectedCommentTypeList.iterator()
     for (expectedEventId in expectedEventIdList) {
-        parser.checkEvent(expectedEventId)
-        val event = parser.next()
+        this.checkEvent(expectedEventId)
+        val event = this.next()
         if (expectedCommentTypeList.isNotEmpty() && event.eventId == Event.ID.Comment) {
             (event as CommentEvent).commentType shouldBe commentTypeIterator.next()
         }

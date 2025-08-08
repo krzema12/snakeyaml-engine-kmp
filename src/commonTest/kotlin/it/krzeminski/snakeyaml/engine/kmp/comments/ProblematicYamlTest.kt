@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
 class ProblematicYamlTest : FunSpec({
-    val LOAD_OPTIONS: LoadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadOptions: LoadSettings = LoadSettings.builder().setParseComments(true).build()
 
     test("parse problematic yaml 1") {
         val yamlString1 = "" +
@@ -35,7 +35,7 @@ class ProblematicYamlTest : FunSpec({
         val expectedCommentTypeList = listOf(
             CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK
         )
-        val parser = ParserImpl(LOAD_OPTIONS, StreamReader(LOAD_OPTIONS, yamlString1))
+        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString1))
         assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
     }
 
@@ -64,7 +64,7 @@ class ProblematicYamlTest : FunSpec({
         val expectedCommentTypeList = listOf(
             CommentType.BLANK_LINE, CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK
         )
-        val parser = ParserImpl(LOAD_OPTIONS, StreamReader(LOAD_OPTIONS, yamlString2))
+        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString2))
         assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
     }
 
@@ -88,7 +88,7 @@ class ProblematicYamlTest : FunSpec({
             Event.ID.StreamEnd
         )
         val expectedCommentTypeList = listOf(CommentType.BLANK_LINE)
-        val parser = ParserImpl(LOAD_OPTIONS, StreamReader(LOAD_OPTIONS, yamlString3))
+        val parser = ParserImpl(loadOptions, StreamReader(loadOptions, yamlString3))
         assertEventListEquals(expectedEventIdList, expectedCommentTypeList, parser)
     }
 

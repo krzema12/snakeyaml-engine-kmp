@@ -44,6 +44,7 @@ internal object SuiteUtils {
         "QB6E",
         "SU5Z",
         "DK95:01",     // https://matrix.yaml.info/details/DK95:01.html
+        "Y79Y-003",
 
         // should pass but fail
         "3RLN-01",
@@ -56,7 +57,6 @@ internal object SuiteUtils {
         "5MUD",
         "5T43",
         "6BCT",
-        "6HB6",
         "7Z25",
         "9SA2",
         "A2M4",
@@ -87,7 +87,6 @@ internal object SuiteUtils {
         "W4TN",
         "W5VH",
         "WZ62",
-        "Y79Y-002",
         "Y79Y-010",
         //region empty-key cases
         // These cases use an empty node as a key. Use of empty keys is discouraged and might be removed

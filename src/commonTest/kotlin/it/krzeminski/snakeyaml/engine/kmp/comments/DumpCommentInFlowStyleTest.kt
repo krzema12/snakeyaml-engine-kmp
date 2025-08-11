@@ -1,5 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.comments
 
+import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -42,6 +43,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
         shouldThrow<Exception> {
             val present = Present(dumpSettings)
             present.emitToString(events.iterator())
+            fail("Inline comment in flow mapping does not work yet")
         }.also {
             it.message shouldContain "expected NodeEvent"
         }

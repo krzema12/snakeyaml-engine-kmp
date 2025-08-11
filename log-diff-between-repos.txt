@@ -1,24 +1,2 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..4280db9e2cc4e81dff0667d175c2263d53b9d093
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..e55f1a6957d5f422f62dd61260ca68a2ac9a01a8
 
-e55f1a6 Issue 47: improve the test
-43fd30e Merge branch 'master' into issue-47
-3c09532 Improve code comments
-37d93ba Properly fix S98Z test case
-4ca0d24 Fix parsing a block scalar with LF, reverting S98Z test case
-9af7845 WIP: Add test for issue 67
-d293b26 Add test for issue 67
-a2dd4e4 Fix parsing a block scalar with LF
-bfa6738 Improve test for issue 67
-7be7959 Add test for issue 67
-b3c35a0 Upgrade to Java 11
-0663c97 [maven-release-plugin] prepare for next development iteration
-47493f1 [maven-release-plugin] prepare release snakeyaml-engine-2.10
-cb26196 Format Javadoc
-f40a4f2 Add info
-f39e82e Merged in comments-on-empty-string-element (pull request #24)
-9210251 Improve analysis - use scalar style to check for quotes
-b6e388b Write commented empty strings in ExpectBlockSequenceItem (#64)
-0d2f135 Solve test failures running on locale with Arabic numerals
-9dfb6b6 Add tests for issue 47
-061a977 Improve test for issue 47
-7eea790 Create a failing test for issue 47

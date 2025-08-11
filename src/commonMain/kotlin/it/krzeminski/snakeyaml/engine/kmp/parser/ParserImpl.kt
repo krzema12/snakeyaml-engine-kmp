@@ -857,10 +857,18 @@ class ParserImpl(
         private val first: Boolean,
     ) : Production {
         override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = ParseFlowMappingKey(first)
+                return produceCommentEvent((scanner.next() as CommentToken))
+            }
             if (!scanner.checkToken(Token.ID.FlowMappingEnd)) {
                 if (!first) {
                     if (scanner.checkToken(Token.ID.FlowEntry)) {
                         scanner.next()
+                        if (scanner.checkToken(Token.ID.Comment)) {
+                            state = ParseFlowMappingKey(true)
+                            return produceCommentEvent((scanner.next() as CommentToken))
+                        }
                     } else {
                         val token = scanner.peekToken()
                         throw ParserException(

@@ -572,7 +572,7 @@ class Emitter(
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
             expectNode(mapping = true)
-            inlineCommentsCollector.collectEvents(event)
+            inlineCommentsCollector.collectEvents()
             writeInlineComments()
         }
     }

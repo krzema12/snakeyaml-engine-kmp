@@ -1,12 +1,9 @@
 package it.krzeminski.snakeyaml.engine.kmp.comments
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
@@ -31,7 +28,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
 
     test("flow with comments") {
         val loader = Compose(LoadSettings.builder().setParseComments(true).build())
-        val content = "{ url: text # comment breaks it\n}"
+        val content = "{url: text # comment breaks it\n}"
         val node = loader.compose(content)!!
         extractInlineComment(node) shouldBe " comment breaks it"
 
@@ -40,14 +37,9 @@ class DumpCommentInFlowStyleTest : FunSpec({
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(9)
 
-        withClue("Inline comment in flow mapping does not work yet") {
-            shouldThrow<Exception> {
-                val present = Present(dumpSettings)
-                present.emitToString(events.iterator())
-            }.also {
-                it.message shouldContain "expected NodeEvent"
-            }
-        }
+        val present = Present(dumpSettings)
+        val output = present.emitToString(events.iterator())
+        output.trim() shouldBe content
     }
 
     test("block with comments") {

@@ -33,6 +33,5 @@ class NoScalarResolverTest : FunSpec({
 })
 
 private class MyScalarResolver : ScalarResolver {
-    override fun resolve(value: String, implicit: Boolean): Tag =
-        Tag.STR
+    override fun resolve(value: String, implicit: Boolean): Tag = Tag.STR
 }

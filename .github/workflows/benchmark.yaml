@@ -43,7 +43,7 @@ jobs:
           additional-args: '-x jvmBenchmark -x jsBenchmark'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
@@ -73,7 +73,7 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Download benchmark results'
       uses: 'actions/download-artifact@v5'

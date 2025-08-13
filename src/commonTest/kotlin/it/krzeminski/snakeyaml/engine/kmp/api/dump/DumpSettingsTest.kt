@@ -6,6 +6,7 @@ import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.types.shouldBeInstanceOf
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.SettingKey
@@ -124,7 +125,7 @@ class DumpSettingsTest : FunSpec({
 
     test("use Core schema by default") {
         val settings = DumpSettings.builder().build()
-        settings.schema::class shouldBe CoreSchema::class
+        settings.schema.shouldBeInstanceOf<CoreSchema>()
     }
 })
 

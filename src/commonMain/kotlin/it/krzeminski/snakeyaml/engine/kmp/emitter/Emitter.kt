@@ -625,8 +625,9 @@ class Emitter(
                     increaseIndent()
                     writeBlockComment()
                     if (event is ScalarEvent) {
-                        analysis = analyzeScalar((event as ScalarEvent).value)
-                        if (!analysis!!.empty || Tag.STR.value == (event as ScalarEvent).tag) {
+                        val scalarEvent = event as ScalarEvent
+                        analysis = analyzeScalar(scalarEvent.value)
+                        if (!analysis!!.empty || Tag.STR.value == scalarEvent.tag) {
                             writeIndent()
                         }
                     }

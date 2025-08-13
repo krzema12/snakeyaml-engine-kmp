@@ -627,7 +627,12 @@ class Emitter(
                     if (event is ScalarEvent) {
                         val scalarEvent = event as ScalarEvent
                         analysis = analyzeScalar(scalarEvent.value)
-                        if (!analysis!!.empty || Tag.STR.value == scalarEvent.tag) {
+                        if (scalarStyle == null) {
+                            scalarStyle = chooseScalarStyle(scalarEvent)
+                        }
+                        if (!analysis!!.empty
+                            || scalarStyle == ScalarStyle.SINGLE_QUOTED
+                            || scalarStyle == ScalarStyle.DOUBLE_QUOTED) {
                             writeIndent()
                         }
                     }

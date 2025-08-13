@@ -150,6 +150,18 @@ list: # InlineComment1
         result shouldBe data
     }
 
+    test("sequence with an empty string") {
+        val data = """# Comment
+list: # InlineComment1
+  - # Block Comment
+    '' # InlineComment2
+# Comment
+"""
+
+        val result = runEmitterWithCommentsEnabled(data)
+        result shouldBe data
+    }
+
     test("all comments 1") {
         val data = """# Block Comment1
 # Block Comment2

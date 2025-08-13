@@ -18,7 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema
 
 class DumpSettingsTest : FunSpec({
 
-    test("Check default values") {
+    test("check default values") {
         val settings = DumpSettings.builder().build()
 
         with(settings) {
@@ -46,7 +46,7 @@ class DumpSettingsTest : FunSpec({
         }
     }
 
-    test("Canonical output") {
+    test("canonical output") {
         val settings = DumpSettings.builder().setCanonical(true).build()
         val dump = Dump(settings)
         val data = buildList {
@@ -56,7 +56,7 @@ class DumpSettingsTest : FunSpec({
         str shouldBe "---\n!!seq [\n  !!int \"0\",\n  !!int \"1\",\n]\n"
     }
 
-    test("Use Windows line break") {
+    test("use Windows line break") {
         val settings = DumpSettings.builder().setBestLineBreak("\r\n").build()
         val dump = Dump(settings)
         val data = buildList {
@@ -76,7 +76,7 @@ class DumpSettingsTest : FunSpec({
         str shouldBe "[\n  0,\n  1,\n  2\n]\n"
     }
 
-    test("Show tag directives") {
+    test("show tag directives") {
         val tagDirectives = linkedMapOf(
             "!python!" to "!python",
             "!yaml!" to "tag:yaml.org,2002:"
@@ -87,7 +87,7 @@ class DumpSettingsTest : FunSpec({
         str shouldBe "%TAG !python! !python\n%TAG !yaml! tag:yaml.org,2002:\n--- data\n"
     }
 
-    test("Check corner cases for indent") {
+    test("check corner cases for indent") {
         val exception1 = shouldThrow<EmitterException> {
             DumpSettings.builder().setIndent(0)
         }
@@ -99,7 +99,7 @@ class DumpSettingsTest : FunSpec({
         exception2.message shouldBe "Indent must be at in range 1..10"
     }
 
-    test("Check corner cases for Indicator Indent") {
+    test("check corner cases for Indicator Indent") {
         val exception1 = shouldThrow<EmitterException> {
             DumpSettings.builder().setIndicatorIndent(-1)
         }
@@ -111,14 +111,14 @@ class DumpSettingsTest : FunSpec({
         exception2.message shouldBe "Indicator indent must be in range 0..9"
     }
 
-    test("Dump explicit version") {
+    test("dump explicit version") {
         val settings = DumpSettings.builder().setYamlDirective(SpecVersion(1, 2)).build()
         val dump = Dump(settings)
         val str = dump.dumpToString("a")
         str shouldBe "%YAML 1.2\n--- a\n"
     }
 
-    test("dumpCustomProperty") {
+    test("dump custom property") {
         val settings = DumpSettings.builder()
             .setCustomProperty(KeyName("key"), "value")
             .build()
@@ -126,7 +126,7 @@ class DumpSettingsTest : FunSpec({
         settings.getCustomProperty(KeyName("None")).shouldBeNull()
     }
 
-    test("Use Core schema by default") {
+    test("use Core schema by default") {
         val settings = DumpSettings.builder().build()
         settings.schema::class shouldBe CoreSchema::class
     }

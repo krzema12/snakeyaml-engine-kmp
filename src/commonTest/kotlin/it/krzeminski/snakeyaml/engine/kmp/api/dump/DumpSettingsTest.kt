@@ -50,9 +50,7 @@ class DumpSettingsTest : FunSpec({
     test("canonical output") {
         val settings = DumpSettings.builder().setCanonical(true).build()
         val dump = Dump(settings)
-        val data = buildList {
-            for (i in 0 until 2) add(i)
-        }
+        val data = listOf(0, 1)
         val str = dump.dumpToString(data)
         str shouldBe "---\n!!seq [\n  !!int \"0\",\n  !!int \"1\",\n]\n"
     }
@@ -60,9 +58,7 @@ class DumpSettingsTest : FunSpec({
     test("use Windows line break") {
         val settings = DumpSettings.builder().setBestLineBreak("\r\n").build()
         val dump = Dump(settings)
-        val data = buildList {
-            for (i in 0 until 2) add(i)
-        }
+        val data = listOf(0, 1)
         val str = dump.dumpToString(data)
         str shouldBe "[0, 1]\r\n"
     }
@@ -70,15 +66,13 @@ class DumpSettingsTest : FunSpec({
     test("setMultiLineFlow") {
         val settings = DumpSettings.builder().setMultiLineFlow(true).build()
         val dump = Dump(settings)
-        val data = buildList {
-            for (i in 0 until 3) add(i)
-        }
+        val data = listOf(0, 1, 2)
         val str = dump.dumpToString(data)
         str shouldBe "[\n  0,\n  1,\n  2\n]\n"
     }
 
     test("show tag directives") {
-        val tagDirectives = linkedMapOf(
+        val tagDirectives = mapOf(
             "!python!" to "!python",
             "!yaml!" to "tag:yaml.org,2002:"
         )

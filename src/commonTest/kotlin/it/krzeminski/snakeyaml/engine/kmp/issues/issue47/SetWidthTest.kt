@@ -30,9 +30,15 @@ class SetWidthTest : FunSpec({
         val writer = StringStreamDataWriter()
         with(Emitter(settings, writer)) {
             emit(StreamStartEvent())
-            emit(DocumentStartEvent(false, null, emptyMap()))
-            emit(ScalarEvent(null, null, ImplicitTuple(true, true), stringToSerialize, ScalarStyle.PLAIN))
-            emit(DocumentEndEvent(false))
+            emit(DocumentStartEvent(explicit = false, specVersion = null, tags = emptyMap()))
+            emit(ScalarEvent(
+                anchor = null,
+                tag = null,
+                implicit = ImplicitTuple(plain = true, nonPlain = true),
+                value = stringToSerialize,
+                scalarStyle = ScalarStyle.PLAIN,
+            ))
+            emit(DocumentEndEvent(isExplicit = false))
             emit(StreamEndEvent())
         }
         val yaml = writer.toString()
@@ -45,9 +51,15 @@ class SetWidthTest : FunSpec({
         val writer = StringStreamDataWriter()
         with(Emitter(settings, writer)) {
             emit(StreamStartEvent())
-            emit(DocumentStartEvent(false, null, emptyMap()))
-            emit(ScalarEvent(null, null, ImplicitTuple(true, true), stringToSerialize, ScalarStyle.PLAIN))
-            emit(DocumentEndEvent(false))
+            emit(DocumentStartEvent(explicit = false, specVersion = null, tags = emptyMap()))
+            emit(ScalarEvent(
+                anchor = null,
+                tag = null,
+                implicit = ImplicitTuple(plain = true, nonPlain = true),
+                value = stringToSerialize,
+                scalarStyle = ScalarStyle.PLAIN,
+            ))
+            emit(DocumentEndEvent(isExplicit = false))
             emit(StreamEndEvent())
         }
         val yaml = writer.toString()

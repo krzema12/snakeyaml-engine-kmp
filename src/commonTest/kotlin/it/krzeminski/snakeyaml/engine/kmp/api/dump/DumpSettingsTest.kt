@@ -1,5 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.api.dump
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -20,25 +21,29 @@ class DumpSettingsTest : FunSpec({
     test("Check default values") {
         val settings = DumpSettings.builder().build()
 
-        settings.bestLineBreak shouldBe "\n"
-        settings.indent shouldBe 2
-        settings.defaultFlowStyle shouldBe FlowStyle.AUTO
-        settings.defaultScalarStyle shouldBe ScalarStyle.PLAIN
-        settings.explicitRootTag shouldBe null
-        settings.indentWithIndicator shouldBe false
-        settings.isExplicitEnd shouldBe false
-        settings.isExplicitStart shouldBe false
-        settings.isCanonical shouldBe false
-        settings.isSplitLines shouldBe true
-        settings.isMultiLineFlow shouldBe false
-        settings.isUseUnicodeEncoding shouldBe true
-        settings.indicatorIndent shouldBe 0
-        settings.maxSimpleKeyLength shouldBe 128
-        settings.nonPrintableStyle shouldBe NonPrintableStyle.ESCAPE
-        settings.width shouldBe 80
-        settings.yamlDirective shouldBe null
-        settings.tagDirective shouldBe emptyMap()
-        settings.anchorGenerator.shouldNotBeNull()
+        with(settings) {
+            assertSoftly {
+                bestLineBreak shouldBe "\n"
+                indent shouldBe 2
+                defaultFlowStyle shouldBe FlowStyle.AUTO
+                defaultScalarStyle shouldBe ScalarStyle.PLAIN
+                explicitRootTag shouldBe null
+                indentWithIndicator shouldBe false
+                isExplicitEnd shouldBe false
+                isExplicitStart shouldBe false
+                isCanonical shouldBe false
+                isSplitLines shouldBe true
+                isMultiLineFlow shouldBe false
+                isUseUnicodeEncoding shouldBe true
+                indicatorIndent shouldBe 0
+                maxSimpleKeyLength shouldBe 128
+                nonPrintableStyle shouldBe NonPrintableStyle.ESCAPE
+                width shouldBe 80
+                yamlDirective shouldBe null
+                tagDirective shouldBe emptyMap()
+                anchorGenerator.shouldNotBeNull()
+            }
+        }
     }
 
     test("Canonical output") {

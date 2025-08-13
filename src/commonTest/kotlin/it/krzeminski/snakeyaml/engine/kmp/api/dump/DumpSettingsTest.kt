@@ -2,7 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.api.dump
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -88,27 +88,23 @@ class DumpSettingsTest : FunSpec({
     }
 
     test("check corner cases for indent") {
-        val exception1 = shouldThrow<EmitterException> {
+        shouldThrowWithMessage<EmitterException>(message = "Indent must be at in range 1..10") {
             DumpSettings.builder().setIndent(0)
         }
-        exception1.message shouldBe "Indent must be at in range 1..10"
 
-        val exception2 = shouldThrow<EmitterException> {
+        shouldThrowWithMessage<EmitterException>(message = "Indent must be at in range 1..10") {
             DumpSettings.builder().setIndent(11)
         }
-        exception2.message shouldBe "Indent must be at in range 1..10"
     }
 
     test("check corner cases for Indicator Indent") {
-        val exception1 = shouldThrow<EmitterException> {
+        shouldThrowWithMessage<EmitterException>(message = "Indicator indent must be in range 0..9") {
             DumpSettings.builder().setIndicatorIndent(-1)
         }
-        exception1.message shouldBe "Indicator indent must be in range 0..9"
 
-        val exception2 = shouldThrow<EmitterException> {
+        shouldThrowWithMessage<EmitterException>(message = "Indicator indent must be in range 0..9") {
             DumpSettings.builder().setIndicatorIndent(10)
         }
-        exception2.message shouldBe "Indicator indent must be in range 0..9"
     }
 
     test("dump explicit version") {

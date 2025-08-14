@@ -1,6 +1,6 @@
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode {
 	public abstract fun construct (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)Ljava/lang/Object;
-	public abstract fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
+	public fun constructRecursive (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;Ljava/lang/Object;)V
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/api/ConstructNode$DefaultImpls {
@@ -157,7 +157,7 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/SettingKe
 }
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/StreamDataWriter {
-	public abstract fun flush ()V
+	public fun flush ()V
 	public abstract fun write (Ljava/lang/String;)V
 	public abstract fun write (Ljava/lang/String;II)V
 }
@@ -533,7 +533,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/emitter/ScalarAnalysis {
 }
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/env/EnvConfig {
-	public abstract fun getValueFor (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getValueFor (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/env/EnvConfig$DefaultImpls {
@@ -1047,7 +1047,7 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/resolver/Scal
 }
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/scanner/Scanner : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
-	public abstract fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
+	public fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
 	public abstract fun peekToken ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;

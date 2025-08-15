@@ -1,7 +1,11 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue67
 
+import io.kotest.assertions.fail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
@@ -49,6 +53,18 @@ class DumpLineBreakTest : FunSpec({
         check(style = ScalarStyle.DOUBLE_QUOTED, yaml = "\n", expected = "\"\\n\"\n");
         check(style = ScalarStyle.DOUBLE_QUOTED, yaml = "", expected = "\"\"\n");
         check(style = ScalarStyle.DOUBLE_QUOTED, yaml = " ", expected = "\" \"\n");
+    }
+
+    test("use Keep in Literal scalar") {
+        val input = "---\n" + "top:\n" + "  foo:\n" + "  - problem: |2+\n" + "\n" + "  bar: baz\n"
+        shouldThrow<Exception> {
+            val obj = load.loadOne(input)
+            obj.shouldNotBeNull()
+            // TODO fix issue 67
+            fail("Fix issue 67")
+        }.also {
+            it.message shouldContain "the leading empty lines contain more spaces (6) than the first non-empty line"
+        }
     }
 })
 

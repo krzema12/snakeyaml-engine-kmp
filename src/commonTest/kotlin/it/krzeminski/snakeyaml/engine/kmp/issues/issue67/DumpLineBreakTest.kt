@@ -4,71 +4,63 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
+import it.krzeminski.snakeyaml.engine.kmp.api.Load
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 
 class DumpLineBreakTest : FunSpec({
+
     test("dump default scalar style") {
         val dumpSettings = DumpSettings.builder().build()
         dumpSettings.defaultScalarStyle shouldBe ScalarStyle.PLAIN
     }
 
     test("dump literal scalar style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.LITERAL)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe "|2+\n\n"
-        dump.dumpToString("") shouldBe "\"\"\n"
-        dump.dumpToString(" ") shouldBe "\" \"\n"
+        // TODO check(ScalarStyle.LITERAL, "\n", "|2+\n\n");
+        check(style = ScalarStyle.LITERAL, yaml = "", expected = "\"\"\n");
+        check(style = ScalarStyle.LITERAL, yaml = " ", expected = "\" \"\n");
     }
 
     test("dump JSON scalar style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.JSON_SCALAR_STYLE)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe "\"\\n\"\n"
-        dump.dumpToString("") shouldBe "\"\"\n"
-        dump.dumpToString(" ") shouldBe "\" \"\n"
+        check(style = ScalarStyle.JSON_SCALAR_STYLE, yaml = "\n", expected = "\"\\n\"\n");
+        check(style = ScalarStyle.JSON_SCALAR_STYLE, yaml = "", expected = "\"\"\n");
+        check(style = ScalarStyle.JSON_SCALAR_STYLE, yaml = " ", expected = "\" \"\n");
     }
 
     test("dump plain scalar style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe "|2+\n\n"
-        dump.dumpToString("") shouldBe "''\n"
-        dump.dumpToString(" ") shouldBe "' '\n"
+        // TODO check(ScalarStyle.PLAIN, "\n", "|2+\n\n");
+        check(style = ScalarStyle.PLAIN, yaml = "", expected = "''\n");
+        check(style = ScalarStyle.PLAIN, yaml = " ", expected = "' '\n");
     }
 
     test("dump folded scalar style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.FOLDED)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe ">2+\n\n"
-        dump.dumpToString("") shouldBe "\"\"\n"
-        dump.dumpToString(" ") shouldBe "\" \"\n"
+        // TODO check(ScalarStyle.FOLDED, "\n", ">2+\n\n");
+        check(style = ScalarStyle.FOLDED, yaml = "", expected = "\"\"\n");
+        check(style = ScalarStyle.FOLDED, yaml = " ", expected = "\" \"\n");
     }
 
     test("dump single quoted style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe "'\n\n  '\n"
-        dump.dumpToString("") shouldBe "''\n"
-        dump.dumpToString(" ") shouldBe "' '\n"
+        check(style = ScalarStyle.SINGLE_QUOTED, yaml = "\n", expected = "'\n\n  '\n");
+        check(style = ScalarStyle.SINGLE_QUOTED, yaml = "", expected = "''\n");
+        check(style = ScalarStyle.SINGLE_QUOTED, yaml = " ", expected = "' '\n");
     }
 
     test("dump double quoted style") {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .build()
-        val dump = Dump(dumpSettings)
-        dump.dumpToString("\n") shouldBe "\"\\n\"\n"
-        dump.dumpToString("") shouldBe "\"\"\n"
-        dump.dumpToString(" ") shouldBe "\" \"\n"
+        check(style = ScalarStyle.DOUBLE_QUOTED, yaml = "\n", expected = "\"\\n\"\n");
+        check(style = ScalarStyle.DOUBLE_QUOTED, yaml = "", expected = "\"\"\n");
+        check(style = ScalarStyle.DOUBLE_QUOTED, yaml = " ", expected = "\" \"\n");
     }
 })
+
+private val loadSettings = LoadSettings.builder().build()
+private val load = Load(loadSettings)
+
+private fun check(style: ScalarStyle, yaml: String, expected: String) {
+    val dumpSettings = DumpSettings.builder()
+        .setDefaultScalarStyle(style)
+        .build()
+    val dump = Dump(dumpSettings)
+    val dumpString = dump.dumpToString(yaml)
+    dumpString shouldBe expected
+    load.loadOne(dumpString) shouldBe yaml
+}

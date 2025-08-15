@@ -1623,7 +1623,7 @@ class ScannerImpl(
     private fun scanBlockScalarIndentation(): BreakIntentHolder {
         // See the specification for details.
         val chunks = StringBuilder()
-        var maxIndent = 0 // max indent empty line
+        var maxIndentOnEmptyLine = 0 // max indent empty line
         var endMark: Mark? = reader.getMark()
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
@@ -1639,21 +1639,23 @@ class ScannerImpl(
                 // character; if we surpass our previous maximum for indent
                 // level, update that too.
                 reader.forward()
-                if (reader.column > maxIndent) {
-                    maxIndent = reader.column
+                if (reader.column > maxIndentOnEmptyLine) {
+                    maxIndentOnEmptyLine = reader.column
                 }
             }
         }
-        val nonEmptyIndent = reader.column // non-empty line detected
-        if (nonEmptyIndent in 1..<maxIndent) {
+        val indent = reader.column // the first non-empty line detected
+        if (indent in 1..<maxIndentOnEmptyLine) {
+            // it means that there is indent, but less than max indented empty line above the first
+            // non-empty line (the current line)
             throw ScannerException(
                 "while scanning a block scalar", endMark,
-                " the leading empty lines contain more spaces ($maxIndent) than the first non-empty line ($nonEmptyIndent).",
+                " the leading empty lines contain more spaces ($maxIndentOnEmptyLine) than the first non-empty line ($indent).",
                 reader.getMark(),
             )
         }
-        // Pass several results back together (Java 8 does not have records)
-        return BreakIntentHolder(chunks.toString(), nonEmptyIndent, endMark)
+        // Pass several results back together
+        return BreakIntentHolder(chunks.toString(), indent, endMark)
     }
 
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {

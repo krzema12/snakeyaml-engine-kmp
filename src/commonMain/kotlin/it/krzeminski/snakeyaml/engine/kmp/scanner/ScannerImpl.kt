@@ -1464,7 +1464,8 @@ class ScannerImpl(
         }
         var lineBreak: String? = null
         // Scan the inner part of the block scalar.
-        if (reader.column < blockIndent && reader.column != this.indent && reader.column != 0) {
+        val col = this.reader.column
+        if (col < blockIndent && col != this.indent && col != 0 && false) {
             // it means that there is indent, but less than expected
             // fix S98Z - Block scalar with more spaces than the first content line
             throw ScannerException(

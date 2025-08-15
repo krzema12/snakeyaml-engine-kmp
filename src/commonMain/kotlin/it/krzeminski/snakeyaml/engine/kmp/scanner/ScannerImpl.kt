@@ -1464,17 +1464,6 @@ class ScannerImpl(
         }
         var lineBreak: String? = null
         // Scan the inner part of the block scalar.
-        val col = this.reader.column
-        if (col < blockIndent && col != this.indent && col != 0 && false) {
-            // it means that there is indent, but less than expected
-            // TODO fix S98Z - Block scalar with more spaces than the first content line
-            throw ScannerException(
-                problem = "while scanning a block scalar",
-                problemMark = startMark,
-                context = " the leading empty lines contain more spaces ($blockIndent) than the first non-empty line.",
-                contextMark = reader.getMark(),
-            )
-        }
         while (reader.column == blockIndent && reader.peek() != 0) {
             stringBuilder.append(breaks)
             val leadingNonSpace = reader.peek().toChar() !in " \t"
@@ -1523,7 +1512,7 @@ class ScannerImpl(
 
     /**
      * Scan a block scalar indicator. The block scalar indicator includes two optional components,
-     * which may appear in either order.
+     * may appear in either order.
      *
      * A block indentation indicator is a non-zero digit describing the indentation level of the block
      * scalar to follow. This indentation is an additional number of spaces relative to the current
@@ -1634,7 +1623,7 @@ class ScannerImpl(
     private fun scanBlockScalarIndentation(): BreakIntentHolder {
         // See the specification for details.
         val chunks = StringBuilder()
-        var maxIndent = 0
+        var maxIndent = 0 // max indent empty line
         var endMark: Mark? = reader.getMark()
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
@@ -1655,8 +1644,16 @@ class ScannerImpl(
                 }
             }
         }
+        val nonEmptyIndent = reader.column // non-empty line detected
+        if (nonEmptyIndent in 1..<maxIndent) {
+            throw ScannerException(
+                "while scanning a block scalar", endMark,
+                " the leading empty lines contain more spaces ($maxIndent) than the first non-empty line ($nonEmptyIndent).",
+                reader.getMark(),
+            )
+        }
         // Pass several results back together (Java 8 does not have records)
-        return BreakIntentHolder(chunks.toString(), maxIndent, endMark)
+        return BreakIntentHolder(chunks.toString(), nonEmptyIndent, endMark)
     }
 
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {

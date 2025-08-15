@@ -1,13 +1,16 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue67
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 
 class DumpLineBreakTest : FunSpec({
 
@@ -60,9 +63,17 @@ class DumpLineBreakTest : FunSpec({
 
     test("use Keep in Literal scalar: S98Z") {
         val input = "empty block scalar: >\n" + " \n" + "  \n" + "   \n" + " # comment"
+        shouldThrow< ScannerException> {
+            load.loadOne(input)
+        }.also {
+            it.message shouldContain "the leading empty lines contain more spaces (3) than the first non-empty line (1)."
+        }
+    }
+
+    test("use Keep in Literal scalar: T26H") {
+        val input = "--- |\n" + " \n" + "  \n" + "  literal\n" + "   \n" + "  \n" + "  text\n" + "\n" + " # Comment\n"
         val obj = load.loadOne(input)
-        // TODO expected a failure
-        obj.shouldNotBeNull()
+        obj shouldBe "\n" + "\n" + "literal\n" + " \n" + "\n" + "text\n"
     }
 })
 

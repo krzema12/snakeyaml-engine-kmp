@@ -45,7 +45,6 @@ internal object SuiteUtils {
         "SU5Z",
         "DK95:01",     // https://matrix.yaml.info/details/DK95:01.html
         "Y79Y-003",
-        "S98Z",
 
         // should pass but fail
         "3RLN-01",

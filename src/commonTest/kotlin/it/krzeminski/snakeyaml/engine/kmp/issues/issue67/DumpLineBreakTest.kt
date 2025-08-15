@@ -61,6 +61,7 @@ class DumpLineBreakTest : FunSpec({
     test("use Keep in Literal scalar: S98Z") {
         val input = "empty block scalar: >\n" + " \n" + "  \n" + "   \n" + " # comment"
         val obj = load.loadOne(input)
+        // TODO expected a failure
         obj.shouldNotBeNull()
     }
 })

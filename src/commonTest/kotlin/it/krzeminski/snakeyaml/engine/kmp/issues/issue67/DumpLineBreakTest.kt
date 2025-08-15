@@ -16,7 +16,7 @@ class DumpLineBreakTest : FunSpec({
     }
 
     test("dump literal scalar style") {
-        // TODO check(ScalarStyle.LITERAL, "\n", "|2+\n\n");
+        check(style = ScalarStyle.LITERAL, yaml = "\n", expected = "|2+\n\n");
         check(style = ScalarStyle.LITERAL, yaml = "", expected = "\"\"\n");
         check(style = ScalarStyle.LITERAL, yaml = " ", expected = "\" \"\n");
     }
@@ -28,13 +28,13 @@ class DumpLineBreakTest : FunSpec({
     }
 
     test("dump plain scalar style") {
-        // TODO check(ScalarStyle.PLAIN, "\n", "|2+\n\n");
+        check(style = ScalarStyle.PLAIN, yaml = "\n", expected = "|2+\n\n");
         check(style = ScalarStyle.PLAIN, yaml = "", expected = "''\n");
         check(style = ScalarStyle.PLAIN, yaml = " ", expected = "' '\n");
     }
 
     test("dump folded scalar style") {
-        // TODO check(ScalarStyle.FOLDED, "\n", ">2+\n\n");
+        check(style = ScalarStyle.FOLDED, yaml = "\n", expected = ">2+\n\n");
         check(style = ScalarStyle.FOLDED, yaml = "", expected = "\"\"\n");
         check(style = ScalarStyle.FOLDED, yaml = " ", expected = "\" \"\n");
     }

@@ -459,18 +459,18 @@ class ScannerImpl(
      * 7| book two:
      * ```
      *
-     * In flow context, tokens should respect indentation. Actually the condition should be
-     * `self.indent >= column` according to the spec. But this condition will prohibit intuitively
+     * In the flow context, tokens should respect indentation. Actually, the condition should be
+     * `this.indent >= column` according to the spec. But this condition will prohibit intuitively
      * correct constructions such as `key : { }`
      */
     private fun unwindIndent(col: Int) {
         // In the flow context, indentation is ignored. We make the scanner less
-        // restrictive than specification requires.
+        // restrictive than the specification requires.
         if (isFlowContext()) {
             return
         }
 
-        // In block context, we may need to issue the BLOCK-END tokens.
+        // In the block context, we may need to issue the BLOCK-END tokens.
         while (indent > col) {
             val mark = reader.getMark()
             indent = indents.removeLast()
@@ -639,7 +639,7 @@ class ScannerImpl(
 
     /**
      * Fetch an entry in the flow style. Flow-style entries occur either immediately after the start
-     * of a collection, or else after a comma.
+     * of a collection or else after a comma.
      */
     private fun fetchFlowEntry() {
         // Simple keys are allowed after ','.
@@ -679,7 +679,7 @@ class ScannerImpl(
             // It's an error for the block entry to occur in the flow
             // context, but we let the scanner detect this.
         }
-        // Simple keys are allowed after '-'.
+        // Simple keys are allowed after '-'
         allowSimpleKey = true
 
         // Reset possible simple key on the current level.
@@ -1464,9 +1464,9 @@ class ScannerImpl(
         }
         var lineBreak: String? = null
         // Scan the inner part of the block scalar.
-        if (reader.column < blockIndent && indent != reader.column) {
+        if (reader.column < blockIndent && reader.column != this.indent && reader.column != 0) {
             // it means that there is indent, but less than expected
-            // fix S98Z - Block scalar with more spaces than first content line
+            // fix S98Z - Block scalar with more spaces than the first content line
             throw ScannerException(
                 problem = "while scanning a block scalar",
                 problemMark = startMark,

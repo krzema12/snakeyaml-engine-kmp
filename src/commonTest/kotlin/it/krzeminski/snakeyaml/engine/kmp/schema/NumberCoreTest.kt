@@ -32,7 +32,26 @@ class NumberCoreTest : FunSpec({
     }
 
     test("all integers which are defined in the core schema but not in JSON") {
-
+        forAll(
+            table(
+                headers("string", "value"),
+                row("012", 12),
+                row("0xFF", 255),
+                row("0o123", 83),
+                row("0o128", "0o128"),
+                // start with +
+                row("+1", 1),
+                row("+1223344", 1223344),
+                row("+12.23344", 12.23344),
+                row("+0.23344", 0.23344),
+                row("+0", 0),
+                // leading zero
+                row("03", 3),
+                row("03.67", 3.67),
+            )
+        ) { string: String, value: Any ->
+            loader.loadOne(string) shouldBe value
+        }
     }
 
     test("all strings which WERE integers or doubles in YAML 1.1") {

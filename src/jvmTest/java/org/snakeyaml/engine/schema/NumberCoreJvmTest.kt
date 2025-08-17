@@ -1,0 +1,15 @@
+package org.snakeyaml.engine.schema
+
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.api.Load
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
+import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema
+import java.math.BigInteger
+
+class NumberCoreJvmTest : FunSpec({
+    test("integer too long to fit in an integer or a long") {
+        val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+        loader.loadOne("1234567890123456789123") shouldBe BigInteger("1234567890123456789123")
+    }
+})

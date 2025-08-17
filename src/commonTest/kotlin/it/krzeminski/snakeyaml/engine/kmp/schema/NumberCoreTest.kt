@@ -55,7 +55,23 @@ class NumberCoreTest : FunSpec({
     }
 
     test("all strings which WERE integers or doubles in YAML 1.1") {
-
+        forAll(
+            table(
+                headers("string", "value"),
+                row("12:10:02", "12:10:02"),
+                row("0b1010", "0b1010"),
+                row("1_000", "1_000"),
+                row("1_000.5", "1_000.5"),
+                row("-0xFF", "-0xFF"),
+                row("+0xFF", "+0xFF"),
+                row("+0o123", "+0o123"),
+                row("-0o123", "-0o123"),
+                row("! 3.6", "3.6"),
+                row("! 3", "3"),
+            )
+        ) { string: String, value: Any ->
+            loader.loadOne(string) shouldBe value
+        }
     }
 
     test("all doubles which are defined in the core schema & JSON") {

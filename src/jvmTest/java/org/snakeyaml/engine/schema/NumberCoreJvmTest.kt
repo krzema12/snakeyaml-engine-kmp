@@ -7,6 +7,8 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema
 import java.math.BigInteger
 
+// TODO implement BigInteger for platforms other than the JVM in https://github.com/krzema12/snakeyaml-engine-kmp/issues/49
+//  For now, this test just covers long number on the JVM where we have BigInteger.
 class NumberCoreJvmTest : FunSpec({
     test("integer too long to fit in an integer or a long") {
         val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())

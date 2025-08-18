@@ -104,7 +104,7 @@ class NumberCoreTest : FunSpec({
                 headers("string", "value"),
                 row(".inf", Double.POSITIVE_INFINITY),
                 row(".Inf", Double.POSITIVE_INFINITY),
-                row(".INF", Double),
+                row(".INF", Double.POSITIVE_INFINITY),
                 row(".-inf", Double.NEGATIVE_INFINITY),
                 row(".-Inf", Double.NEGATIVE_INFINITY),
                 row(".-INF", Double.NEGATIVE_INFINITY),

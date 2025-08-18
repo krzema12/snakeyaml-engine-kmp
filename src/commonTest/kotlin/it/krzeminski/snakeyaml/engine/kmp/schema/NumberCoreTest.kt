@@ -5,6 +5,7 @@ import io.kotest.data.forAll
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
@@ -113,7 +114,7 @@ class NumberCoreTest : FunSpec({
                 row(".NAN", Double.NaN),
             )
         ) { string: String, value: Any ->
-            loader.loadOne(string) shouldBe value
+            loader.loadOne(string)!! shouldBeEqual value
         }
     }
 

@@ -25,7 +25,7 @@ class FailsafeTest : FunSpec({
                 row("0001", "0001"),
                 row("3.000", "3.000")
             )
-        ) { input: String, expected: String ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }
@@ -42,7 +42,7 @@ class FailsafeTest : FunSpec({
                 row(17, "!!int '17'\n"),
                 row(17.4, "!!float '17.4'\n")
             )
-        ) { input: Any?, expected: String ->
+        ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected
         }
     }

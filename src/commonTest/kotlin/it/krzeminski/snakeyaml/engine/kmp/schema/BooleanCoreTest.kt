@@ -27,7 +27,7 @@ class BooleanCoreTest : FunSpec({
                 row("FALSE", false),
                 row("! true", "true")
             )
-        ) { input: String, expected: Any ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }
@@ -40,7 +40,7 @@ class BooleanCoreTest : FunSpec({
                 row(true, "true\n"),
                 row(false, "false\n")
             )
-        ) { input: Boolean, expected: String ->
+        ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected
         }
     }

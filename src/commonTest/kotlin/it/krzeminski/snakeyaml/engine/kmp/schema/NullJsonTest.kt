@@ -21,7 +21,7 @@ class NullJsonTest : FunSpec({
                 row("null", null),
                 row("! null", "null")
             )
-        ) { input: String, expected: String? ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }

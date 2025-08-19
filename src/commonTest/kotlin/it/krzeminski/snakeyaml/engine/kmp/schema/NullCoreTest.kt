@@ -25,7 +25,7 @@ class NullCoreTest : FunSpec({
                 row("~", null),
                 row("! null", "null")
             )
-        ) { input: String, expected: String? ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }

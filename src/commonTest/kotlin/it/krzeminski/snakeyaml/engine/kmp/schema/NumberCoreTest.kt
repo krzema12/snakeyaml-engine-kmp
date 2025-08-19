@@ -125,8 +125,8 @@ class NumberCoreTest : FunSpec({
         forAll(
             table(
                 headers("value", "string"),
-                // There's a different behavior for JS, and it's a bug.
-                // Tracking in https://github.com/krzema12/snakeyaml-engine-kmp/issues/526.
+                // FIXME: There's a different behavior for JS, and it's a bug.
+                //  Tracking in https://github.com/krzema12/snakeyaml-engine-kmp/issues/526.
                 row(Double.POSITIVE_INFINITY, if (platform != Platform.JS) ".inf\n" else "!!int 'Infinity'\n"),
                 row(Float.POSITIVE_INFINITY, if (platform != Platform.JS) ".inf\n" else "!!int 'Infinity'\n"),
                 row(Double.NEGATIVE_INFINITY, if (platform != Platform.JS) "-.inf\n" else "!!int '-Infinity'\n"),

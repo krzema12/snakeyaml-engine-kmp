@@ -1,32 +1,49 @@
 package it.krzeminski.snakeyaml.engine.kmp.schema
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
+import io.kotest.data.headers
+import io.kotest.data.row
+import io.kotest.data.table
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
-import it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema
 
 class FailsafeTest : FunSpec({
     val loader = Load(LoadSettings.builder().setSchema(FailsafeSchema()).build())
 
     test("parse string") {
-        loader.loadOne("true") shouldBe "true"
-        loader.loadOne("false") shouldBe "false"
-        loader.loadOne("null") shouldBe "null"
-        loader.loadOne("1") shouldBe "1"
-        loader.loadOne("0001") shouldBe "0001"
-        loader.loadOne("3.000") shouldBe "3.000"
+        forAll(
+            table(
+                headers("input", "expected"),
+                row("true", "true"),
+                row("false", "false"),
+                row("null", "null"),
+                row("1", "1"),
+                row("0001", "0001"),
+                row("3.000", "3.000")
+            )
+        ) { input: String, expected: String ->
+            loader.loadOne(input) shouldBe expected
+        }
     }
 
     test("dump string") {
         val dumper = Dump(DumpSettings.builder().setSchema(FailsafeSchema()).build())
-        dumper.dumpToString(true) shouldBe "!!bool 'true'\n"
-        dumper.dumpToString(false) shouldBe "!!bool 'false'\n"
-        dumper.dumpToString(null) shouldBe "!!null 'null'\n"
-        dumper.dumpToString(25) shouldBe "!!int '25'\n"
-        dumper.dumpToString(17) shouldBe "!!int '17'\n"
-        dumper.dumpToString(17.4) shouldBe "!!float '17.4'\n"
+        forAll(
+            table(
+                headers("input", "expected"),
+                row(true, "!!bool 'true'\n"),
+                row(false, "!!bool 'false'\n"),
+                row(null, "!!null 'null'\n"),
+                row(25, "!!int '25'\n"),
+                row(17, "!!int '17'\n"),
+                row(17.4, "!!float '17.4'\n")
+            )
+        ) { input: Any?, expected: String ->
+            dumper.dumpToString(input) shouldBe expected
+        }
     }
 })

@@ -1,5 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.schema
 
+import io.kotest.core.Platform
+import io.kotest.core.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.headers
@@ -123,12 +125,12 @@ class NumberCoreTest : FunSpec({
         forAll(
             table(
                 headers("value", "string"),
-                row(Double.POSITIVE_INFINITY, ".inf\n"),
-                row(Float.POSITIVE_INFINITY, ".inf\n"),
-                row(Double.NEGATIVE_INFINITY, "-.inf\n"),
-                row(Float.NEGATIVE_INFINITY, "-.inf\n"),
-                row(Double.NaN, ".nan\n"),
-                row(Float.NaN, ".nan\n"),
+                row(Double.POSITIVE_INFINITY, if (platform != Platform.JS) ".inf\n" else "!!int 'Infinity'\n"),
+                row(Float.POSITIVE_INFINITY, if (platform != Platform.JS) ".inf\n" else "!!int 'Infinity'\n"),
+                row(Double.NEGATIVE_INFINITY, if (platform != Platform.JS) "-.inf\n" else "!!int '-Infinity'\n"),
+                row(Float.NEGATIVE_INFINITY, if (platform != Platform.JS) "-.inf\n" else "!!int '-Infinity'\n"),
+                row(Double.NaN, if (platform != Platform.JS) ".nan\n" else "!!int 'NaN'\n"),
+                row(Float.NaN, if (platform != Platform.JS) ".nan\n" else "!!int 'NaN'\n"),
             )
         ) { value: Any, string: String ->
             dumper.dumpToString(value) shouldBe string

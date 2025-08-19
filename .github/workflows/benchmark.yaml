@@ -43,12 +43,12 @@ jobs:
           additional-args: '-x jvmBenchmark -x jsBenchmark'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
       with:
-        java-version: '21'
+        java-version: '24'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Validate Gradle Wrapper'
@@ -73,10 +73,10 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Download benchmark results'
-      uses: 'actions/download-artifact@v4'
+      uses: 'actions/download-artifact@v5'
       with:
         path: 'bench-results'
         pattern: 'bench-results-*'

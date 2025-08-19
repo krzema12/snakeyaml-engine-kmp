@@ -13,7 +13,8 @@ class CoreScalarResolverTest: FunSpec({
             CoreScalarResolver.INT shouldMatch "0o1010"
             CoreScalarResolver.INT shouldNotMatch "0b1010"
 
-            CoreScalarResolver().resolve("0b1010", implicit = true) shouldBe Tag.STR
+            CoreScalarResolver(supportMerge = true)
+                .resolve("0b1010", implicit = true) shouldBe Tag.STR
         }
     }
 })

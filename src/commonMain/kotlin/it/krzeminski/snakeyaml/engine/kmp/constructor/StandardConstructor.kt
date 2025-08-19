@@ -44,13 +44,11 @@ open class StandardConstructor(settings: LoadSettings) : BaseConstructor(setting
         }
 
     override fun constructMapping2ndStep(node: MappingNode, mapping: MutableMap<Any?, Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
         validateDuplicateKeys(node)
         super.constructMapping2ndStep(node, mapping)
     }
 
     override fun constructSet2ndStep(node: MappingNode, set: MutableSet<Any?>) {
-        // Flattening is not required because merge was removed from YAML 1.2. Only check duplications.
         validateDuplicateKeys(node)
         super.constructSet2ndStep(node, set)
     }

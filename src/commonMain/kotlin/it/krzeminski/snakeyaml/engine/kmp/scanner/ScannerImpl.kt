@@ -459,18 +459,18 @@ class ScannerImpl(
      * 7| book two:
      * ```
      *
-     * In flow context, tokens should respect indentation. Actually the condition should be
-     * `self.indent >= column` according to the spec. But this condition will prohibit intuitively
+     * In the flow context, tokens should respect indentation. Actually, the condition should be
+     * `this.indent >= column` according to the spec. But this condition will prohibit intuitively
      * correct constructions such as `key : { }`
      */
     private fun unwindIndent(col: Int) {
         // In the flow context, indentation is ignored. We make the scanner less
-        // restrictive than specification requires.
+        // restrictive than the specification requires.
         if (isFlowContext()) {
             return
         }
 
-        // In block context, we may need to issue the BLOCK-END tokens.
+        // In the block context, we may need to issue the BLOCK-END tokens.
         while (indent > col) {
             val mark = reader.getMark()
             indent = indents.removeLast()
@@ -639,7 +639,7 @@ class ScannerImpl(
 
     /**
      * Fetch an entry in the flow style. Flow-style entries occur either immediately after the start
-     * of a collection, or else after a comma.
+     * of a collection or else after a comma.
      */
     private fun fetchFlowEntry() {
         // Simple keys are allowed after ','.
@@ -679,7 +679,7 @@ class ScannerImpl(
             // It's an error for the block entry to occur in the flow
             // context, but we let the scanner detect this.
         }
-        // Simple keys are allowed after '-'.
+        // Simple keys are allowed after '-'
         allowSimpleKey = true
 
         // Reset possible simple key on the current level.
@@ -1002,6 +1002,11 @@ class ScannerImpl(
             // move forward directly to that character.
             while (reader.peek(ff) == ' '.code) {
                 ff++
+            }
+            // unfortunately, this check is too simple, but it helps to ignore TABs in JSON
+            // which is always flow context (see issue 55 and tests)
+            if (reader.peek(ff) == '\t'.code && isFlowContext()) {
+                ff++;
             }
             if (ff > 0) {
                 reader.forward(ff)
@@ -1459,16 +1464,6 @@ class ScannerImpl(
         }
         var lineBreak: String? = null
         // Scan the inner part of the block scalar.
-        if (reader.column < blockIndent && indent != reader.column) {
-            // it means that there is indent, but less than expected
-            // fix S98Z - Block scalar with more spaces than first content line
-            throw ScannerException(
-                problem = "while scanning a block scalar",
-                problemMark = startMark,
-                context = " the leading empty lines contain more spaces ($blockIndent) than the first non-empty line.",
-                contextMark = reader.getMark(),
-            )
-        }
         while (reader.column == blockIndent && reader.peek() != 0) {
             stringBuilder.append(breaks)
             val leadingNonSpace = reader.peek().toChar() !in " \t"
@@ -1517,7 +1512,7 @@ class ScannerImpl(
 
     /**
      * Scan a block scalar indicator. The block scalar indicator includes two optional components,
-     * which may appear in either order.
+     * may appear in either order.
      *
      * A block indentation indicator is a non-zero digit describing the indentation level of the block
      * scalar to follow. This indentation is an additional number of spaces relative to the current
@@ -1628,7 +1623,7 @@ class ScannerImpl(
     private fun scanBlockScalarIndentation(): BreakIntentHolder {
         // See the specification for details.
         val chunks = StringBuilder()
-        var maxIndent = 0
+        var maxIndentOnEmptyLine = 0 // max indent empty line
         var endMark: Mark? = reader.getMark()
         // Look ahead some number of lines until the first non-blank character
         // occurs; the determined indentation will be the maximum number of
@@ -1644,13 +1639,23 @@ class ScannerImpl(
                 // character; if we surpass our previous maximum for indent
                 // level, update that too.
                 reader.forward()
-                if (reader.column > maxIndent) {
-                    maxIndent = reader.column
+                if (reader.column > maxIndentOnEmptyLine) {
+                    maxIndentOnEmptyLine = reader.column
                 }
             }
         }
-        // Pass several results back together (Java 8 does not have records)
-        return BreakIntentHolder(chunks.toString(), maxIndent, endMark)
+        val indent = reader.column // the first non-empty line detected
+        if (indent in 1..<maxIndentOnEmptyLine) {
+            // it means that there is indent, but less than max indented empty line above the first
+            // non-empty line (the current line)
+            throw ScannerException(
+                "while scanning a block scalar", endMark,
+                " the leading empty lines contain more spaces ($maxIndentOnEmptyLine) than the first non-empty line ($indent).",
+                reader.getMark(),
+            )
+        }
+        // Pass several results back together
+        return BreakIntentHolder(chunks.toString(), indent, endMark)
     }
 
     private fun scanBlockScalarBreaks(indent: Int): BreakIntentHolder {

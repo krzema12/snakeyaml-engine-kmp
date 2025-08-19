@@ -572,7 +572,7 @@ class Emitter(
             writeInlineComments()
             states.addLast(ExpectFlowMappingKey())
             expectNode(mapping = true)
-            inlineCommentsCollector.collectEvents(event)
+            inlineCommentsCollector.collectEvents()
             writeInlineComments()
         }
     }
@@ -625,8 +625,14 @@ class Emitter(
                     increaseIndent()
                     writeBlockComment()
                     if (event is ScalarEvent) {
-                        analysis = analyzeScalar((event as ScalarEvent).value)
-                        if (!analysis!!.empty) {
+                        val scalarEvent = event as ScalarEvent
+                        analysis = analyzeScalar(scalarEvent.value)
+                        if (scalarStyle == null) {
+                            scalarStyle = chooseScalarStyle(scalarEvent)
+                        }
+                        if (!analysis!!.empty
+                            || scalarStyle == ScalarStyle.SINGLE_QUOTED
+                            || scalarStyle == ScalarStyle.DOUBLE_QUOTED) {
                             writeIndent()
                         }
                     }

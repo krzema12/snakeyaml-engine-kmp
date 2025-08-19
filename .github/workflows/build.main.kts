@@ -3,16 +3,14 @@
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.5.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
-@file:DependsOn("actions:checkout:v4")
+@file:DependsOn("actions:checkout:v5")
 @file:DependsOn("actions:cache:v4")
-@file:DependsOn("actions:setup-java:v4")
 @file:DependsOn("gradle:actions__setup-gradle:v4")
 
+@file:Import("setup-jdk.main.kts")
 
 import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
-import io.github.typesafegithub.workflows.actions.actions.SetupJava
-import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
@@ -44,13 +42,7 @@ workflow(
             runsOn = jobRunner,
         ) {
             uses(action = Checkout())
-            uses(
-                name = "Set up Gradle Daemon JDK",
-                action = SetupJava(
-                    javaVersion = "21",
-                    distribution = Temurin,
-                ),
-            )
+            setupJdk()
             uses(
                 name = "Cache Kotlin Konan",
                 action = Cache(

@@ -1,4 +1,3 @@
-import buildsrc.utils.configureGradleDaemonJvm
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
@@ -13,7 +12,7 @@ plugins {
 }
 
 group = "it.krzeminski"
-version = "3.1.2-SNAPSHOT"
+version = "3.2.1-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
 apiValidation {
@@ -118,9 +117,3 @@ dokkatoo {
         }
     }
 }
-
-configureGradleDaemonJvm(
-    project = project,
-    updateDaemonJvm = tasks.updateDaemonJvm,
-    gradleDaemonJvmVersion = provider { JavaVersion.toVersion(21) },
-)

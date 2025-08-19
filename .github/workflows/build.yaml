@@ -31,12 +31,12 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
       with:
-        java-version: '21'
+        java-version: '24'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
@@ -58,12 +58,12 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
       with:
-        java-version: '21'
+        java-version: '24'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
@@ -85,12 +85,12 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v4'
       with:
-        java-version: '21'
+        java-version: '24'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
@@ -113,7 +113,7 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       run: |-
         find -name *.main.kts -print0 | while read -d $'\0' file
@@ -128,7 +128,7 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v5'
     - id: 'step-1'
       run: 'cd .github/workflows'
     - id: 'step-2'

@@ -4,13 +4,14 @@
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
-@file:DependsOn("actions:checkout:v4")
-@file:DependsOn("actions:download-artifact:v4")
+@file:DependsOn("actions:checkout:v5")
+@file:DependsOn("actions:download-artifact:v5")
 @file:DependsOn("actions:upload-artifact:v4")
-@file:DependsOn("actions:setup-java:v4")
 @file:DependsOn("gradle:actions__wrapper-validation:v4")
 @file:DependsOn("gradle:actions__setup-gradle:v4")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
+
+@file:Import("setup-jdk.main.kts")
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.DownloadArtifact
@@ -79,13 +80,7 @@ workflow(
         )
     ) {
         uses(action = Checkout())
-        uses(
-            name = "Set up Gradle Daemon JDK",
-            action = SetupJava(
-                javaVersion = "21",
-                distribution = Temurin,
-            ),
-        )
+        setupJdk()
         uses(
             name = "Validate Gradle Wrapper",
             action = ActionsWrapperValidation(),

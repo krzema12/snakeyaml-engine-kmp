@@ -31,7 +31,7 @@ class NumberCoreTest : FunSpec({
                 //   For the JVM, the test is in NumberCoreJvmTest.
                 // row("1234567890123456789123", BigInteger("1234567890123456789123")),
             )
-        ) { string: String, value: Any ->
+        ) { string, value ->
             loader.loadOne(string) shouldBe value
         }
     }
@@ -54,7 +54,7 @@ class NumberCoreTest : FunSpec({
                 row("03", 3),
                 row("03.67", 3.67),
             )
-        ) { string: String, value: Any ->
+        ) { string, value ->
             loader.loadOne(string) shouldBe value
         }
     }
@@ -74,7 +74,7 @@ class NumberCoreTest : FunSpec({
                 row("! 3.6", "3.6"),
                 row("! 3", "3"),
             )
-        ) { string: String, value: Any ->
+        ) { string, value ->
             loader.loadOne(string) shouldBe value
         }
     }
@@ -96,7 +96,7 @@ class NumberCoreTest : FunSpec({
                 row("9000.0", 9000.0),
                 row("1.", 1.0),
             )
-        ) { string: String, value: Any ->
+        ) { string, value ->
             loader.loadOne(string) shouldBe value
         }
     }
@@ -115,7 +115,7 @@ class NumberCoreTest : FunSpec({
                 row(".NaN", Double.NaN),
                 row(".NAN", Double.NaN),
             )
-        ) { string: String, value: Any ->
+        ) { string, value ->
             loader.loadOne(string)!! shouldBeEqual value
         }
     }
@@ -134,7 +134,7 @@ class NumberCoreTest : FunSpec({
                 row(Double.NaN, if (platform != Platform.JS) ".nan\n" else "!!int 'NaN'\n"),
                 row(Float.NaN, if (platform != Platform.JS) ".nan\n" else "!!int 'NaN'\n"),
             )
-        ) { value: Any, string: String ->
+        ) { value, string ->
             dumper.dumpToString(value) shouldBe string
         }
     }

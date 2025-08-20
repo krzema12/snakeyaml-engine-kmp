@@ -15,7 +15,6 @@ class NullCoreTest : FunSpec({
     val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
 
     test("parse null") {
-        // null | Null | NULL | ~
         forAll(
             table(
                 headers("input", "expected"),

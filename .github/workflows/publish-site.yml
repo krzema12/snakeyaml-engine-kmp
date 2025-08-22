@@ -46,7 +46,7 @@ jobs:
             :dokkatooGeneratePublicationHtml
 
       - name: Upload Dokkatoo to Pages
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./build/dokka/html/
 

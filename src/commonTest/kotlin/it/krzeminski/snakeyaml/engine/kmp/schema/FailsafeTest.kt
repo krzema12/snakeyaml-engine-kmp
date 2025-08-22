@@ -1,7 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.schema
 
-import io.kotest.core.Platform
-import io.kotest.core.platform
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe

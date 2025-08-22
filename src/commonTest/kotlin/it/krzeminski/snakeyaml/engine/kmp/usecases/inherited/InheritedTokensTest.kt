@@ -1,6 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.inherited
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder.Companion.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe

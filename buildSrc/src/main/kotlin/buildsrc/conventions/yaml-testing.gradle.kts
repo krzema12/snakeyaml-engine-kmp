@@ -1,6 +1,6 @@
 package buildsrc.conventions
 
-import buildsrc.conventions.Constants.YAML_TEST_TASK_GROUP
+import buildsrc.conventions.Yaml_testing_gradle.Constants.YAML_TEST_TASK_GROUP
 import buildsrc.utils.asConsumer
 import buildsrc.utils.dropDirectories
 

@@ -4,6 +4,7 @@ import buildsrc.utils.JavaLanguageVersion
 import buildsrc.utils.JvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -18,7 +19,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     id("buildsrc.conventions.base")
     kotlin("multiplatform")
-    id("io.kotest.multiplatform")
+    id("io.kotest")
+    id("com.google.devtools.ksp")
 }
 
 
@@ -165,5 +167,20 @@ afterEvaluate {
 
         // produce an error if there's no lock file
         reportNewYarnLock = true
+    }
+}
+
+val macOsAllTest by tasks.register("macOsAllTest") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Runs all tests for MacOs and iOS targets"
+}
+
+kotlin.targets.configureEach {
+    if (this !is KotlinTargetWithTests<*, *>) {
+        return@configureEach
+    }
+
+    if (setOf("macos", "ios").any { name.startsWith(it) }) {
+        macOsAllTest.dependsOn(tasks.named("${name}Test"))
     }
 }

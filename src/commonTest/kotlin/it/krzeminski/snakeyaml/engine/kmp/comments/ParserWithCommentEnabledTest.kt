@@ -1,6 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.comments
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder.Companion.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings

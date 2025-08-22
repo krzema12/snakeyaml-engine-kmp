@@ -34,7 +34,7 @@ jobs:
       uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
-      uses: 'actions/setup-java@v4'
+      uses: 'actions/setup-java@v5'
       with:
         java-version: '24'
         distribution: 'temurin'
@@ -50,7 +50,7 @@ jobs:
       with:
         gradle-version: 'wrapper'
     - id: 'step-4'
-      name: 'Build'
+      name: 'Build/test'
       run: './gradlew build --stacktrace'
   build-on-MacOSLatest:
     runs-on: 'macos-latest'
@@ -61,7 +61,7 @@ jobs:
       uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
-      uses: 'actions/setup-java@v4'
+      uses: 'actions/setup-java@v5'
       with:
         java-version: '24'
         distribution: 'temurin'
@@ -77,8 +77,8 @@ jobs:
       with:
         gradle-version: 'wrapper'
     - id: 'step-4'
-      name: 'Build'
-      run: './gradlew build --stacktrace'
+      name: 'Build/test'
+      run: './gradlew macOsAllTest --stacktrace'
   build-on-WindowsLatest:
     runs-on: 'windows-latest'
     needs:
@@ -88,7 +88,7 @@ jobs:
       uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
-      uses: 'actions/setup-java@v4'
+      uses: 'actions/setup-java@v5'
       with:
         java-version: '24'
         distribution: 'temurin'
@@ -104,7 +104,7 @@ jobs:
       with:
         gradle-version: 'wrapper'
     - id: 'step-4'
-      name: 'Build'
+      name: 'Build/test'
       run: './gradlew build --stacktrace'
   build_kotlin_scripts:
     name: 'Build Kotlin scripts'

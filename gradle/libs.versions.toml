@@ -1,7 +1,8 @@
 [versions]
-kotlin = "2.1.21"
-kotest = "6.0.0.M1"
-okio = "3.15.0"
+kotlin = "2.2.10"
+kotest = "6.0.0"
+ksp = "2.2.10-2.0.2"
+okio = "3.16.0"
 urlencoder-lib = "1.6.0"
 kotlinx-benchmark = "0.4.14"
 snakeyaml-engine = "2.10"
@@ -16,8 +17,10 @@ java-diff-utils = "4.16"
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-framework-multiplatform-plugin-gradle = { module = "io.kotest:kotest-framework-multiplatform-plugin-gradle", version.ref = "kotest" }
+kotest-assertions-table = { module = "io.kotest:kotest-assertions-table", version.ref = "kotest" }
+kotest-framework-plugin-gradle = { module = "io.kotest:kotest-framework-plugin-gradle", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
 urlencoder-lib = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", version.ref = "urlencoder-lib" }

@@ -58,9 +58,13 @@ workflow(
                     gradleVersion = "wrapper",
                 ),
             )
+            val target = when (jobRunner) {
+                MacOSLatest -> "macOsAllTest"
+                else -> "build"
+            }
             run(
-                name = "Build",
-                command = "./gradlew build --stacktrace",
+                name = "Build/test",
+                command = "./gradlew $target --stacktrace",
             )
         }
     }

@@ -1,10 +1,9 @@
-package org.snakeyaml.engine.schema
+package it.krzeminski.snakeyaml.engine.kmp.schema
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
-import it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema
 import java.math.BigInteger
 
 // TODO implement BigInteger for platforms other than the JVM in https://github.com/krzema12/snakeyaml-engine-kmp/issues/49

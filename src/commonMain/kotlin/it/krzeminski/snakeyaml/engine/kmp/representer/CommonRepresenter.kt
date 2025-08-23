@@ -74,7 +74,8 @@ open class CommonRepresenter(
 
     /** Create [Node] for [Byte], [Short], [Int], [Long], [Float], [Double] */
     protected val representNumber = RepresentToNode { data: Any ->
-        // For JS, infinity, -infinity and NaN are incorrectly identified as the below types.
+        // For JS, some numbers (known so far: floats, infinity, -infinity and NaN)
+        // are incorrectly identified as the below types.
         // Because of it, they are represented differently than for other platforms.
         // TODO: fix within https://github.com/krzema12/snakeyaml-engine-kmp/issues/526
         if (

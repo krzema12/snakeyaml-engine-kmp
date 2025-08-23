@@ -26,7 +26,7 @@ class NumberJsonTest : FunSpec({
                 row("123456", 123456),
                 row("! 1", "1")
             )
-        ) { input: String, expected: Any ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }
@@ -41,7 +41,7 @@ class NumberJsonTest : FunSpec({
                 row("123.456", 123.456),
                 row("! 1.0", "1.0")
             )
-        ) { input: String, expected: Any ->
+        ) { input, expected ->
             loader.loadOne(input) shouldBe expected
         }
     }
@@ -56,7 +56,7 @@ class NumberJsonTest : FunSpec({
                 row(0, "0\n"),
                 row(123456, "123456\n")
             )
-        ) { input: Int, expected: String ->
+        ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected
         }
     }
@@ -73,7 +73,7 @@ class NumberJsonTest : FunSpec({
                 row(0.0, if (platform != Platform.JS) "0.0\n" else "0\n"),
                 row(123.456, if (platform != Platform.JS) "123.456\n" else "!!int '123.456'\n")
             )
-        ) { input: Double, expected: String ->
+        ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected
         }
     }

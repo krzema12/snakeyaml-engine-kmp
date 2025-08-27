@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldNotBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 
 class WindowsLinesTest : FunSpec({
-    test("Parse Windows new line") {
+    test("parse Windows new line") {
         val loader = Load()
         val source = "parent:\r\n  key: value"
         val list = loader.loadOne(source) as Map<String, Any>

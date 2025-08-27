@@ -15,7 +15,7 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 class WindowsTest : FunSpec({
     val loader = Load()
 
-    test("Check that Windows style line endings handled the same as Unix style ones") {
+    test("check that Windows style line endings handled the same as Unix style ones") {
         val settings = LoadSettings.builder().build()
         val reader1 = StreamReader(settings, "foo\r\nbar")
         val reader2 = StreamReader(settings, "foo\nbar")
@@ -24,24 +24,27 @@ class WindowsTest : FunSpec({
         reader1.line shouldBe reader2.line
     }
 
-    test("Count lines CRLF") {
-        val exception = shouldThrow<ParserException> {
+    test("count lines CRLF") {
+        shouldThrow<ParserException> {
             loader.loadOne("\r\n[")
+        }.also {
+            it.message shouldContain "line 2,"
         }
-        exception.message shouldContain "line 2,"
     }
 
-    test("Count lines CRCR") {
-        val exception = shouldThrow<ParserException> {
+    test("count lines CRCR") {
+        shouldThrow<ParserException> {
             loader.loadOne("\r\r[")
+        }.also {
+            it.message shouldContain "line 3,"
         }
-        exception.message shouldContain "line 3,"
     }
 
-    test("Count lines LFLF") {
-        val exception = shouldThrow<ParserException> {
+    test("count lines LFLF") {
+        shouldThrow<ParserException> {
             loader.loadOne("\n\n[")
+        }.also {
+            it.message shouldContain "line 3,"
         }
-        exception.message shouldContain "line 3,"
     }
 })

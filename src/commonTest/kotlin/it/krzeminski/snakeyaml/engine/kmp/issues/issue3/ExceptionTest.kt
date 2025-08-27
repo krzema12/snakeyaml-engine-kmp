@@ -1,37 +1,39 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue3
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 class ExceptionTest : FunSpec({
-    test("Sequence exception") {
+    test("sequence exception") {
         val load = Load()
-        val exception = shouldThrow<YamlEngineException> {
+        shouldThrow<YamlEngineException> {
             load.loadOne("!!seq abc")
+        }.also {
+            it.message shouldContain "ClassCastException"
         }
-        exception.message shouldContain "ClassCastException"
     }
 
-    test("Int exception") {
+    test("int exception") {
         val load = Load()
         val operationUnderTest = { load.loadOne("!!int abc") }
+
         if (platform == Platform.JVM) {
-            val exception = shouldThrow<YamlEngineException> {
+            shouldThrowWithMessage<YamlEngineException>(message = "java.lang.NumberFormatException: For input string: \"abc\"") {
                 operationUnderTest()
             }
-            exception.message shouldBe "java.lang.NumberFormatException: For input string: \"abc\""
         } else {
             // TODO: https://github.com/krzema12/snakeyaml-engine-kmp/issues/49
-            val exception = shouldThrow<NotImplementedError> {
+            shouldThrow<NotImplementedError> {
                 operationUnderTest()
+            }.also {
+                it.message shouldContain "An operation is not implemented: Kotlin/JS BigInteger implementation"
             }
-            exception.message shouldContain "An operation is not implemented: Kotlin/JS BigInteger implementation"
         }
     }
 })

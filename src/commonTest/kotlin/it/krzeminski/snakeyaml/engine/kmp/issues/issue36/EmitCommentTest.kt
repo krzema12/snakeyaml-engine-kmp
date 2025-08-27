@@ -9,6 +9,51 @@ import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter
 import it.krzeminski.snakeyaml.engine.kmp.events.*
 
+class EmitCommentTest : FunSpec({
+    test("comment with scalar should not be ignored") {
+        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val writer = StreamToStringWriter()
+        val emitter = Emitter(settings, writer)
+        emitter.emit(StreamStartEvent())
+        emitter.emit(DocumentStartEvent(explicit = false, specVersion = null, tags = emptyMap()))
+        emitter.emit(CommentEvent(
+            commentType = CommentType.BLOCK,
+            value = "Hello world!",
+            startMark = null,
+            endMark = null
+        ))
+        emitter.emit(ScalarEvent(
+            anchor = null,
+            tag = null,
+            implicit = ImplicitTuple(plain = true, nonPlain = true),
+            value = "This is the scalar",
+            scalarStyle = ScalarStyle.DOUBLE_QUOTED,
+        ))
+        emitter.emit(DocumentEndEvent(false))
+        emitter.emit(StreamEndEvent())
+
+        writer.toString() shouldBe "#Hello world!\n\"This is the scalar\"\n"
+    }
+
+    test("only comment should not be ignored") {
+        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val writer = StreamToStringWriter()
+        val emitter = Emitter(settings, writer)
+        emitter.emit(StreamStartEvent())
+        emitter.emit(DocumentStartEvent(explicit = false, specVersion = null, tags = emptyMap()))
+        emitter.emit(CommentEvent(
+            commentType = CommentType.BLOCK,
+            value = "Hello world!",
+            startMark = null,
+            endMark = null
+        ))
+        emitter.emit(DocumentEndEvent(isExplicit = false))
+        emitter.emit(StreamEndEvent())
+
+        writer.toString() shouldBe "#Hello world!\n"
+    }
+})
+
 private class StreamToStringWriter : StreamDataWriter {
     private val content = StringBuilder()
 
@@ -26,33 +71,3 @@ private class StreamToStringWriter : StreamDataWriter {
 
     override fun toString(): String = content.toString()
 }
-
-class EmitCommentTest : FunSpec({
-    test("Issue 36: comment with scalar should not be ignored") {
-        val settings = DumpSettings.builder().setDumpComments(true).build()
-        val writer = StreamToStringWriter()
-        val emitter = Emitter(settings, writer)
-        emitter.emit(StreamStartEvent())
-        emitter.emit(DocumentStartEvent(false, null, emptyMap()))
-        emitter.emit(CommentEvent(CommentType.BLOCK, "Hello world!", null, null))
-        emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, true),
-            "This is the scalar", ScalarStyle.DOUBLE_QUOTED))
-        emitter.emit(DocumentEndEvent(false))
-        emitter.emit(StreamEndEvent())
-
-        writer.toString() shouldBe "#Hello world!\n\"This is the scalar\"\n"
-    }
-
-    test("Issue 36: only comment should not be ignored") {
-        val settings = DumpSettings.builder().setDumpComments(true).build()
-        val writer = StreamToStringWriter()
-        val emitter = Emitter(settings, writer)
-        emitter.emit(StreamStartEvent())
-        emitter.emit(DocumentStartEvent(false, null, emptyMap()))
-        emitter.emit(CommentEvent(CommentType.BLOCK, "Hello world!", null, null))
-        emitter.emit(DocumentEndEvent(false))
-        emitter.emit(StreamEndEvent())
-
-        writer.toString() shouldBe "#Hello world!\n"
-    }
-})

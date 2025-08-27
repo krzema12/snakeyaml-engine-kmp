@@ -1,6 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue25
 
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
@@ -9,8 +9,7 @@ import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 class DumpToStringTest : FunSpec({
-    test("If Dump instance is called more then once then the results are not predictable") {
-        val data = linkedMapOf<String, Any>()
+    test("if Dump instance is called more then once then the results are not predictable") {
         val dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build()
         val dump = Dump(dumpSettings)
 
@@ -20,13 +19,14 @@ class DumpToStringTest : FunSpec({
         }
 
         val something = Something()
-        data["before"] = "bla"
-        data["nested"] = something
+        val data = mapOf(
+            "before" to "bla",
+            "nested" to something,
+        )
 
-        val exception = shouldThrow<YamlEngineException> {
+        shouldThrowWithMessage<YamlEngineException>(message = "Representer is not defined for class Something") {
             dump.dumpToString(data)
         }
-        exception.message shouldBe "Representer is not defined for class Something"
 
         val output = dump.dumpToString(data)
         output shouldBe "before: bla\n"

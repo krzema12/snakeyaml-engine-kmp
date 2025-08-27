@@ -12,6 +12,46 @@ import it.krzeminski.snakeyaml.engine.kmp.events.ImplicitTuple
 import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent
 import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent
 
+class EmptyStringOutputTest : FunSpec({
+    test("output empty string") {
+        val dumper = Dump(DumpSettings.builder().build())
+        val output = dumper.dumpToString("")
+        output shouldBe "''\n"
+    }
+
+    test("output empty string with explicit start") {
+        val dumper = Dump(DumpSettings.builder().setExplicitStart(true).build())
+        val output = dumper.dumpToString("")
+        output shouldBe "--- ''\n"
+    }
+
+    test("output empty string with emitter") {
+        dump("") shouldBe "---"
+    }
+
+    test("output string with emitter") {
+        dump("v1234512345") shouldBe "v1234512345"
+    }
+})
+
+private fun dump(value: String): String {
+    val settings = DumpSettings.builder().build()
+    val writer = MyWriter()
+    val emitter = Emitter(settings, writer)
+    emitter.emit(StreamStartEvent())
+    emitter.emit(DocumentStartEvent(explicit = false, specVersion = null, tags = emptyMap()))
+    emitter.emit(ScalarEvent(
+        anchor = null,
+        tag = null,
+        implicit = ImplicitTuple(plain = true, nonPlain = false),
+        value = value,
+        scalarStyle = ScalarStyle.PLAIN,
+        startMark = null,
+        endMark = null,
+    ))
+    return writer.toString()
+}
+
 private class MyWriter : StreamDataWriter {
     private val content = StringBuilder()
 
@@ -29,36 +69,3 @@ private class MyWriter : StreamDataWriter {
 
     override fun toString(): String = content.toString()
 }
-
-private fun dump(value: String): String {
-    val settings = DumpSettings.builder().build()
-    val writer = MyWriter()
-    val emitter = Emitter(settings, writer)
-    emitter.emit(StreamStartEvent())
-    emitter.emit(DocumentStartEvent(false, null, emptyMap()))
-    emitter.emit(ScalarEvent(null, null, ImplicitTuple(true, false),
-        value, ScalarStyle.PLAIN, null, null))
-    return writer.toString()
-}
-
-class EmptyStringOutputTest : FunSpec({
-    test("Output empty string") {
-        val dumper = Dump(DumpSettings.builder().build())
-        val output = dumper.dumpToString("")
-        output shouldBe "''\n"
-    }
-
-    test("Output empty string with explicit start") {
-        val dumper = Dump(DumpSettings.builder().setExplicitStart(true).build())
-        val output = dumper.dumpToString("")
-        output shouldBe "--- ''\n"
-    }
-
-    test("Output empty string with emitter") {
-        dump("") shouldBe "---"
-    }
-
-    test("Output string with emitter") {
-        dump("v1234512345") shouldBe "v1234512345"
-    }
-})

@@ -12,6 +12,36 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.NodeTuple
 import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
+class DoubleQuoteTest : FunSpec({
+    test("unicode substitution") {
+        val settings = DumpSettings.builder().setUseUnicodeEncoding(false).build()
+        val expectedOutput = "double_quoted: \"\\U0001f510This process is simple and secure.\"\n" +
+                "single_quoted: \"\\U0001f510This process is simple and secure.\"\n"
+        emit(settings) shouldBe expectedOutput
+    }
+
+    test("unicode encoding") {
+        val settings = DumpSettings.builder().setUseUnicodeEncoding(true).build()
+        val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
+                "single_quoted: '🔐This process is simple and secure.'\n"
+        emit(settings) shouldBe expectedOutput
+    }
+
+    test("default settings") {
+        val settings = DumpSettings.builder().build()
+        val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
+                "single_quoted: '🔐This process is simple and secure.'\n"
+        emit(settings) shouldBe expectedOutput
+    }
+})
+
+private fun emit(settings: DumpSettings): String {
+    val serialize = Serialize(settings)
+    val eventsIter = serialize.serializeOne(createMappingNode())
+    val emit = Present(settings)
+    return emit.emitToString(eventsIter.iterator())
+}
+
 private fun createMappingNode(): MappingNode {
     val content = "🔐This process is simple and secure."
 
@@ -29,33 +59,3 @@ private fun createMappingNode(): MappingNode {
 
     return MappingNode(Tag.MAP, nodeTuples, FlowStyle.BLOCK)
 }
-
-private fun emit(settings: DumpSettings): String {
-    val serialize = Serialize(settings)
-    val eventsIter = serialize.serializeOne(createMappingNode())
-    val emit = Present(settings)
-    return emit.emitToString(eventsIter.iterator())
-}
-
-class DoubleQuoteTest : FunSpec({
-    test("Unicode substitution") {
-        val settings = DumpSettings.builder().setUseUnicodeEncoding(false).build()
-        val expectedOutput = "double_quoted: \"\\U0001f510This process is simple and secure.\"\n" +
-                "single_quoted: \"\\U0001f510This process is simple and secure.\"\n"
-        emit(settings) shouldBe expectedOutput
-    }
-
-    test("Unicode encoding") {
-        val settings = DumpSettings.builder().setUseUnicodeEncoding(true).build()
-        val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
-                "single_quoted: '🔐This process is simple and secure.'\n"
-        emit(settings) shouldBe expectedOutput
-    }
-
-    test("Default settings") {
-        val settings = DumpSettings.builder().build()
-        val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
-                "single_quoted: '🔐This process is simple and secure.'\n"
-        emit(settings) shouldBe expectedOutput
-    }
-})

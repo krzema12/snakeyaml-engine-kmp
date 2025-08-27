@@ -9,6 +9,25 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
+class NullConstructorTest : FunSpec({
+    test("custom constructor must be called without node") {
+        val tagConstructors = mapOf(Tag.NULL to MyConstructNull())
+        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val loader = Load(settings)
+        val result = loader.loadOne("")
+        result shouldNotBe null
+        result shouldBe "absent"
+    }
+
+    test("custom constructor must be called with node") {
+        val tagConstructors = mapOf(Tag.NULL to MyConstructNull())
+        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val loader = Load(settings)
+        val result = loader.loadOne("!!null null")
+        result shouldBe "present"
+    }
+})
+
 private class MyConstructNull : ConstructNode {
     override fun construct(node: Node?): Any {
         return if (node == null) {
@@ -18,24 +37,3 @@ private class MyConstructNull : ConstructNode {
         }
     }
 }
-
-class NullConstructorTest : FunSpec({
-    test("Custom constructor must be called without node") {
-        val tagConstructors = mutableMapOf<Tag, ConstructNode>()
-        tagConstructors[Tag.NULL] = MyConstructNull()
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
-        val loader = Load(settings)
-        val result = loader.loadOne("")
-        result shouldNotBe null
-        result shouldBe "absent"
-    }
-
-    test("Custom constructor must be called with node") {
-        val tagConstructors = mutableMapOf<Tag, ConstructNode>()
-        tagConstructors[Tag.NULL] = MyConstructNull()
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
-        val loader = Load(settings)
-        val result = loader.loadOne("!!null null")
-        result shouldBe "present"
-    }
-})

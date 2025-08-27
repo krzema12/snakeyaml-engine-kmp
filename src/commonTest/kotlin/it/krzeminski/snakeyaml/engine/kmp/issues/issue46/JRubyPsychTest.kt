@@ -1,6 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.issues.issue46
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
@@ -42,7 +43,7 @@ class JRubyPsychTest : FunSpec({
     test("Issue 46: parse document where 2028 is used as leading space (3rd)") {
         val load = Load()
         val obj = load.loadAll("--- |2-\n\n\u2028  * C\n")
-        obj shouldNotBe null
+        obj.shouldNotBeNull()
         val iter = obj as Iterable<*>
         try {
             iter.iterator().next()
@@ -54,7 +55,7 @@ class JRubyPsychTest : FunSpec({
     test("Issue 46: parse document") {
         val load = Load()
         val obj = load.loadAll("--- |2-\n\n  \u2028* C\n")
-        obj shouldNotBe null
+        obj.shouldNotBeNull()
         val iter = obj as Iterable<*>
         val doc = iter.iterator().next()
         doc shouldBe "\n\u2028* C"

@@ -16,6 +16,7 @@ private class ExampleRepresenter(settings: DumpSettings) : StandardRepresenter(s
 class ProtectedClassesTest : FunSpec({
     test("Substitution") {
         val r = ExampleRepresenter(DumpSettings.builder().build())
-        1 shouldBe 1
+        val node = r.represent(true)
+        node.tag.value shouldBe "tag:yaml.org,2002:bool"
     }
 })

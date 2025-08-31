@@ -31,6 +31,8 @@ class JRubyPsychTest : FunSpec({
         try {
             iter.iterator().next()
         } catch (e: ScannerException) {
+            // There's a bug in the test in snakeyaml-engine (source of this ported test), and the above line doesn't throw this exception (at least in some cases)
+            // TODO: report it to snakeyaml-engine's owner: https://github.com/krzema12/snakeyaml-engine-kmp/issues/541
             e.message shouldContain " the leading empty lines contain more spaces (2) than the first non-empty line."
         }
     }
@@ -74,6 +76,8 @@ private fun crash(expectedError: String, data: String) {
     try {
         load.loadOne(data)
     } catch (e: Exception) {
+        // There's a bug in the test in snakeyaml-engine (source of this ported test), and the above line doesn't throw this exception (at least in some cases)
+        // TODO: report it to snakeyaml-engine's owner: https://github.com/krzema12/snakeyaml-engine-kmp/issues/541
         e.message shouldContain expectedError
     }
 }

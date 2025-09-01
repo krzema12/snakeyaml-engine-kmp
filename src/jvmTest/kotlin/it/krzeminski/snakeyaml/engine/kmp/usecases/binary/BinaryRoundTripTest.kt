@@ -9,7 +9,6 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Serialize
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
-import it.krzeminski.snakeyaml.engine.kmp.events.Event
 import it.krzeminski.snakeyaml.engine.kmp.events.ScalarEvent
 import it.krzeminski.snakeyaml.engine.kmp.nodes.NodeType
 import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode

@@ -1,6 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.env
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.resolver.BaseScalarResolver
 
@@ -16,92 +17,92 @@ import it.krzeminski.snakeyaml.engine.kmp.resolver.BaseScalarResolver
  */
 class EnvFormatTest : FunSpec({
     test("match basic") {
-        val envFormat = BaseScalarResolver.ENV_FORMAT.toPattern()
+        val envFormat = BaseScalarResolver.ENV_FORMAT
 
-        envFormat.matcher("\${V}").matches() shouldBe true
-        envFormat.matcher("\${PATH}").matches() shouldBe true
-        envFormat.matcher("\${VARIABLE}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE }").matches() shouldBe true
-        envFormat.matcher("\${\tVARIABLE  }").matches() shouldBe true
+        envFormat.matches($$"${V}") shouldBe true
+        envFormat.matches($$"${PATH}") shouldBe true
+        envFormat.matches($$"${VARIABLE}") shouldBe true
+        envFormat.matches($$"${ VARIABLE}") shouldBe true
+        envFormat.matches($$"${ VARIABLE }") shouldBe true
+        envFormat.matches($$"${\tVARIABLE  }") shouldBe true
 
-        val matcher = envFormat.matcher("\${VARIABLE}")
-        matcher.matches() shouldBe true
-        matcher.group(1) shouldBe "VARIABLE"
-        matcher.group(2) shouldBe null
-        matcher.group(3) shouldBe null
+        val matcher = envFormat.matchEntire($$"${VARIABLE}")
+        matcher.shouldNotBeNull()
+        matcher.groups[1]?.value shouldBe "VARIABLE"
+        matcher.groups[2]?.value shouldBe null
+        matcher.groups[3]?.value shouldBe null
 
-        envFormat.matcher("\${VARI ABLE}").matches() shouldBe false
+        envFormat.matches($$"${VARI ABLE}") shouldBe false
     }
 
     test("match default") {
-        val envFormat = BaseScalarResolver.ENV_FORMAT.toPattern()
+        val envFormat = BaseScalarResolver.ENV_FORMAT
 
-        envFormat.matcher("\${VARIABLE-default}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE-default}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE-default }").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE-}").matches() shouldBe true
+        envFormat.matches($$"${VARIABLE-default}") shouldBe true
+        envFormat.matches($$"${ VARIABLE-default}") shouldBe true
+        envFormat.matches($$"${ VARIABLE-default }") shouldBe true
+        envFormat.matches($$"${ VARIABLE-}") shouldBe true
 
-        val matcher = envFormat.matcher("\${VARIABLE-default}")
-        matcher.matches() shouldBe true
-        matcher.group(1) shouldBe "VARIABLE"
-        matcher.group(2) shouldBe "-"
-        matcher.group(3) shouldBe "default"
+        val matcher = envFormat.matchEntire($$"${VARIABLE-default}")
+        matcher.shouldNotBeNull()
+        matcher.groups[1]?.value shouldBe "VARIABLE"
+        matcher.groups[2]?.value shouldBe "-"
+        matcher.groups[3]?.value shouldBe "default"
 
-        envFormat.matcher("\${VARIABLE -default}").matches() shouldBe false
-        envFormat.matcher("\${VARIABLE - default}").matches() shouldBe false
+        envFormat.matches($$"${VARIABLE -default}") shouldBe false
+        envFormat.matches($$"${VARIABLE - default}") shouldBe false
     }
 
     test("match default or empty") {
-        val envFormat = BaseScalarResolver.ENV_FORMAT.toPattern()
+        val envFormat = BaseScalarResolver.ENV_FORMAT
 
-        envFormat.matcher("\${VARIABLE:-default}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:-default }").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:-}").matches() shouldBe true
+        envFormat.matches($$"${VARIABLE:-default}") shouldBe true
+        envFormat.matches($$"${ VARIABLE:-default }") shouldBe true
+        envFormat.matches($$"${ VARIABLE:-}") shouldBe true
 
-        val matcher = envFormat.matcher("\${VARIABLE:-default}")
-        matcher.matches() shouldBe true
-        matcher.group(1) shouldBe "VARIABLE"
-        matcher.group(2) shouldBe ":-"
-        matcher.group(3) shouldBe "default"
+        val matcher = envFormat.matchEntire($$"${VARIABLE:-default}")
+        matcher.shouldNotBeNull()
+        matcher.groups[1]?.value shouldBe "VARIABLE"
+        matcher.groups[2]?.value shouldBe ":-"
+        matcher.groups[3]?.value shouldBe "default"
 
-        envFormat.matcher("\${VARIABLE :-default}").matches() shouldBe false
-        envFormat.matcher("\${VARIABLE : -default}").matches() shouldBe false
-        envFormat.matcher("\${VARIABLE : - default}").matches() shouldBe false
+        envFormat.matches($$"${VARIABLE :-default}") shouldBe false
+        envFormat.matches($$"${VARIABLE : -default}") shouldBe false
+        envFormat.matches($$"${VARIABLE : - default}") shouldBe false
     }
 
     test("match error default or empty") {
-        val envFormat = BaseScalarResolver.ENV_FORMAT.toPattern()
+        val envFormat = BaseScalarResolver.ENV_FORMAT
 
-        envFormat.matcher("\${VARIABLE:?err}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:?err }").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:? }").matches() shouldBe true
+        envFormat.matches($$"${VARIABLE:?err}") shouldBe true
+        envFormat.matches($$"${ VARIABLE:?err }") shouldBe true
+        envFormat.matches($$"${ VARIABLE:? }") shouldBe true
 
-        val matcher = envFormat.matcher("\${VARIABLE:?err}")
-        matcher.matches() shouldBe true
-        matcher.group(1) shouldBe "VARIABLE"
-        matcher.group(2) shouldBe ":?"
-        matcher.group(3) shouldBe "err"
+        val matcher = envFormat.matchEntire($$"${VARIABLE:?err}")
+        matcher.shouldNotBeNull()
+        matcher.groups[1]?.value shouldBe "VARIABLE"
+        matcher.groups[2]?.value shouldBe ":?"
+        matcher.groups[3]?.value shouldBe "err"
 
-        envFormat.matcher("\${ VARIABLE :?err }").matches() shouldBe false
-        envFormat.matcher("\${ VARIABLE : ?err }").matches() shouldBe false
-        envFormat.matcher("\${ VARIABLE : ? err }").matches() shouldBe false
+        envFormat.matches($$"${ VARIABLE :?err }") shouldBe false
+        envFormat.matches($$"${ VARIABLE : ?err }") shouldBe false
+        envFormat.matches($$"${ VARIABLE : ? err }") shouldBe false
     }
 
     test("match error default") {
-        val envFormat = BaseScalarResolver.ENV_FORMAT.toPattern()
+        val envFormat = BaseScalarResolver.ENV_FORMAT
 
-        envFormat.matcher("\${VARIABLE?err}").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:?err }").matches() shouldBe true
-        envFormat.matcher("\${ VARIABLE:?}").matches() shouldBe true
+        envFormat.matches($$"${VARIABLE?err}") shouldBe true
+        envFormat.matches($$"${ VARIABLE:?err }") shouldBe true
+        envFormat.matches($$"${ VARIABLE:?}") shouldBe true
 
-        val matcher = envFormat.matcher("\${ VARIABLE?err }")
-        matcher.matches() shouldBe true
-        matcher.group(1) shouldBe "VARIABLE"
-        matcher.group(2) shouldBe "?"
-        matcher.group(3) shouldBe "err"
+        val matcher = envFormat.matchEntire($$"${ VARIABLE?err }")
+        matcher.shouldNotBeNull()
+        matcher.groups[1]?.value shouldBe "VARIABLE"
+        matcher.groups[2]?.value shouldBe "?"
+        matcher.groups[3]?.value shouldBe "err"
 
-        envFormat.matcher("\${ VARIABLE ?err }").matches() shouldBe false
-        envFormat.matcher("\${ VARIABLE ? err }").matches() shouldBe false
+        envFormat.matches($$"${ VARIABLE ?err }") shouldBe false
+        envFormat.matches($$"${ VARIABLE ? err }") shouldBe false
     }
 })

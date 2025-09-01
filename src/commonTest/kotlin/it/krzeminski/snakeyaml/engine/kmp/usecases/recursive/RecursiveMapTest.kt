@@ -1,6 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.recursive
 
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
@@ -49,10 +49,8 @@ class RecursiveMapTest : FunSpec({
     test("fail to load map with recursive keys") {
         val load = Load()
         // fail to load map which has only one key - reference to itself
-        shouldThrow<YamlEngineException> {
+        shouldThrowWithMessage<YamlEngineException>(message = "Recursive key for mapping is detected but it is not configured to be allowed.") {
             load.loadOne("&id002\n*id002 : foo")
-        }.also { exception ->
-            exception.message shouldBe "Recursive key for mapping is detected but it is not configured to be allowed."
         }
     }
 

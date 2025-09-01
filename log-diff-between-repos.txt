@@ -1,3 +1,6 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..e55f1a6957d5f422f62dd61260ca68a2ac9a01a8
 
+fd4862e Add info
+736c7f0 Update deviations
+5656f99 Issue 69: Parse escaped TAB in double-quoted scalar
 4691ca4 Split doc for test suite

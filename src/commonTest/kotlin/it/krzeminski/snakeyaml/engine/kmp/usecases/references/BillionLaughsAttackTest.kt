@@ -1,9 +1,9 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.references
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
@@ -17,14 +17,14 @@ class BillionLaughsAttackTest : FunSpec({
         val settings = LoadSettings.builder().setMaxAliasesForCollections(72).build()
         val load = Load(settings)
         val map = load.loadOne(data) as Map<*, *>
-        map shouldNotBe null
+        map.shouldNotBeNull()
     }
 
     test("billion laughs attack if data expanded") {
         val settings = LoadSettings.builder().setMaxAliasesForCollections(100).build()
         val load = Load(settings)
         val map = load.loadOne(data) as Map<*, *>
-        map shouldNotBe null
+        map.shouldNotBeNull()
 
         val ex = shouldThrow<Throwable> {
             map.toString()
@@ -34,10 +34,11 @@ class BillionLaughsAttackTest : FunSpec({
 
     test("prevent billion laughs attack by default") {
         val load = Load()
-        val ex = shouldThrow<YamlEngineException> {
+        shouldThrowWithMessage<YamlEngineException>(
+            message = "Number of aliases for non-scalar nodes exceeds the specified max=50",
+        ) {
             load.loadOne(data)
         }
-        ex.message shouldBe "Number of aliases for non-scalar nodes exceeds the specified max=50"
     }
 
     test("number of aliases for scalar nodes is not restricted") {

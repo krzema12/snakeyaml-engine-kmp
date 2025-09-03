@@ -2,6 +2,8 @@ package it.krzeminski.snakeyaml.engine.kmp.usecases.references
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.string.shouldContain
@@ -25,6 +27,12 @@ class BillionLaughsAttackTest : FunSpec({
         val load = Load(settings)
         val map = load.loadOne(data) as Map<*, *>
         map.shouldNotBeNull()
+
+        if (platform != Platform.JVM) {
+            // Asserting on running out of memory on platforms other than the JVM
+            // is tricky, so let's skip this part of the test.
+            return@test
+        }
 
         val ex = shouldThrow<Throwable> {
             map.toString()

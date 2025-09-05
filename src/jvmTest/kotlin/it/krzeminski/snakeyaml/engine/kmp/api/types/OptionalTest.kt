@@ -13,33 +13,33 @@ import java.util.Optional
  * that cannot be replaced with Kotlin API in multiplatform code.
  */
 class OptionalTest : FunSpec({
-    test("Represent Optional as value") {
+    test("represent Optional as value") {
         val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
         val node = standardRepresenter.represent(Optional.of("a"))
         node.tag.value shouldBe "tag:yaml.org,2002:java.util.Optional"
     }
 
-    test("Represent Optional.empty as null") {
+    test("represent Optional.empty as null") {
         val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
         val node = standardRepresenter.represent(Optional.empty<Any>())
         node.tag.value shouldBe "tag:yaml.org,2002:null"
     }
 
-    test("Dump Optional as its value") {
+    test("dump Optional as its value") {
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.of("a"))
         str shouldBe "!!java.util.Optional 'a'\n"
     }
 
-    test("Dump empty Optional as null") {
+    test("dump empty Optional as null") {
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.empty<Any>())
         str shouldBe "null\n"
     }
 
-    test("Dump Optionals in list") {
+    test("dump Optionals in list") {
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val str = dump.dumpToString(listOf(
@@ -50,7 +50,7 @@ class OptionalTest : FunSpec({
         str shouldBe "[!!java.util.Optional '2', null, !!java.util.Optional 'a']\n"
     }
 
-    test("Dump Optional containing list") {
+    test("dump Optional containing list") {
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.of(listOf(1, 2)))
@@ -63,13 +63,13 @@ class OptionalTest : FunSpec({
         str shouldBe Optional.of("a")
     }
 
-    test("Empty Optional with null parsed") {
+    test("empty Optional with null parsed") {
         val load = Load()
         val str = load.loadOne("!!java.util.Optional null") as Optional<String>
         str shouldBe Optional.empty<String>()
     }
 
-    test("Empty Optional with empty string parsed") {
+    test("empty Optional with empty string parsed") {
         val load = Load()
         val str = load.loadOne("!!java.util.Optional ") as Optional<String>
         str shouldBe Optional.empty<String>()

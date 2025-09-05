@@ -6,7 +6,6 @@ import it.krzeminski.snakeyaml.engine.kmp.StringOutputStream
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter
-import okio.Buffer
 
 /**
  * Test from https://github.com/yaml/yaml-runtimes

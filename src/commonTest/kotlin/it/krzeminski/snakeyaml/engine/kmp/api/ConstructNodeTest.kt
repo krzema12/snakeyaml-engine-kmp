@@ -1,6 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.api
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
@@ -20,15 +21,14 @@ class ConstructNodeTest : FunSpec({
             }
         }
         val node = SequenceNode(
-            Tag.SEQ,
-            listOf(ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)),
-            FlowStyle.FLOW
+            tag = Tag.SEQ,
+            value = listOf(ScalarNode(Tag.STR, "b", ScalarStyle.PLAIN)),
+            flowStyle = FlowStyle.FLOW
         )
         node.isRecursive = true
-        val exception = shouldThrow<IllegalStateException> {
+        shouldThrowWithMessage<IllegalStateException>(message = "Not implemented") {
             constructNode.constructRecursive(node, ArrayList<Any>())
         }
-        exception.message shouldBe "Not implemented"
     }
 
     test("fail to construct non recursive") {
@@ -43,10 +43,11 @@ class ConstructNodeTest : FunSpec({
             FlowStyle.FLOW
         )
         node.isRecursive = false
-        val exception = shouldThrow<YamlEngineException> {
+        shouldThrow<YamlEngineException> {
             constructNode.constructRecursive(node, ArrayList<Any>())
+        }.also {
+            it.message shouldStartWith "Unexpected recursive structure for Node"
         }
-        exception.message!! shouldStartWith "Unexpected recursive structure for Node"
     }
 })
 

@@ -1,0 +1,77 @@
+package it.krzeminski.snakeyaml.engine.kmp.emitter
+
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.shouldThrow
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
+import it.krzeminski.snakeyaml.engine.kmp.common.Anchor
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
+import it.krzeminski.snakeyaml.engine.kmp.serializer.AnchorGenerator
+
+class AnchorUnicodeTest : FunSpec({
+    val invalidAnchor = setOf('[', ']', '{', '}', ',', '*', '&')
+
+    test("testUnicodeAnchor") {
+        val settings = DumpSettings.builder().setAnchorGenerator(object : AnchorGenerator {
+            private var id = 0
+            override fun nextAnchor(node: Node): Anchor {
+                return Anchor("タスク${id++}")
+            }
+        }).build()
+        val dump = Dump(settings)
+        val list = mutableListOf<String>()
+        list.add("abc")
+
+        val toExport = mutableListOf<List<String>>()
+        toExport.add(list)
+        toExport.add(list)
+
+        val output = dump.dumpToString(toExport)
+        output shouldBe "- &タスク0 [abc]\n- *タスク0\n"
+    }
+
+    test("testInvalidAnchor") {
+        for (ch in invalidAnchor) {
+            val dump = Dump(createSettings(ch))
+            val list = mutableListOf<String>()
+            list.add("abc")
+
+            val toExport = mutableListOf<List<String>>()
+            toExport.add(list)
+            toExport.add(list)
+
+            val exception = shouldThrow<Exception> {
+                dump.dumpToString(toExport)
+            }
+            val message = "Invalid character '$ch' in the anchor: anchor$ch"
+            exception.message shouldBe message
+        }
+    }
+
+    test("testAnchors") {
+        Anchor("a").toString() shouldBe "a"
+        checkAnchor("a ") shouldBe "Anchor may not contain spaces: a "
+        checkAnchor("a \t") shouldBe "Anchor may not contain spaces: a \t"
+        checkAnchor("a[") shouldBe "Invalid character '[' in the anchor: a["
+        checkAnchor("a]") shouldBe "Invalid character ']' in the anchor: a]"
+        checkAnchor("{a") shouldBe "Invalid character '{' in the anchor: {a"
+        checkAnchor("}a") shouldBe "Invalid character '}' in the anchor: }a"
+        checkAnchor("a,b") shouldBe "Invalid character ',' in the anchor: a,b"
+        checkAnchor("a*b") shouldBe "Invalid character '*' in the anchor: a*b"
+        checkAnchor("a&b") shouldBe "Invalid character '&' in the anchor: a&b"
+    }
+})
+
+private fun createSettings(invalid: Char): DumpSettings {
+    return DumpSettings.builder().setAnchorGenerator { Anchor("anchor$invalid") }.build()
+}
+
+private fun checkAnchor(a: String): String? {
+    return try {
+        Anchor(a).toString()
+        throw IllegalStateException("Invalid must not be accepted: $a")
+    } catch (e: Exception) {
+        e.message
+    }
+}

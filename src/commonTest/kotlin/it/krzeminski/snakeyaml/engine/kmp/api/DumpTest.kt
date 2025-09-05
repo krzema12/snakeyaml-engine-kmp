@@ -71,8 +71,7 @@ class DumpTest : FunSpec({
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val outputStream = StringOutputStream()
-        val writer = YamlOutputStreamWriter(outputStream)
-        dump.dump(mapOf("x" to 1, "y" to 2, "z" to 3), writer)
+        dump.dump(mapOf("x" to 1, "y" to 2, "z" to 3), outputStream)
         outputStream.toString() shouldBe "{x: 1, y: 2, z: 3}\n"
     }
 })

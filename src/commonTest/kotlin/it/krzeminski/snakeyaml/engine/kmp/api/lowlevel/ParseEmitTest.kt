@@ -5,8 +5,6 @@ import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.StringOutputStream
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
-import it.krzeminski.snakeyaml.engine.kmp.api.StreamDataWriter
-import it.krzeminski.snakeyaml.engine.kmp.api.YamlOutputStreamWriter
 import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter
 import okio.Buffer
 
@@ -34,8 +32,7 @@ class ParseEmitTest : FunSpec({
  */
 private fun yamlToYaml(input: String, output: StringOutputStream) {
     val parser = Parse(LoadSettings.builder().build())
-    val writer = YamlOutputStreamWriter(output)
-    val emitter = Emitter(DumpSettings.builder().build(), writer)
+    val emitter = Emitter(DumpSettings.builder().build(), output)
     for (event in parser.parse(input)) {
         emitter.emit(event)
     }

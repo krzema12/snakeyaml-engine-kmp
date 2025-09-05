@@ -15,7 +15,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 class ConstructNodeTest : FunSpec({
     test("fail to construct recursive") {
         val constructNode = object : TestConstructNode() {
-            override fun construct(node: Node): Any? {
+            override fun construct(node: Node?): Any? {
                 return null
             }
         }
@@ -33,7 +33,7 @@ class ConstructNodeTest : FunSpec({
 
     test("fail to construct non recursive") {
         val constructNode = object : TestConstructNode() {
-            override fun construct(node: Node): Any? {
+            override fun construct(node: Node?): Any? {
                 return null
             }
         }

@@ -28,7 +28,7 @@ class ConstructNodeTest : FunSpec({
         val exception = shouldThrow<IllegalStateException> {
             constructNode.constructRecursive(node, ArrayList<Any>())
         }
-        exception.message shouldBe "Not implemented in class ${constructNode::class.qualifiedName}"
+        exception.message shouldBe "Not implemented"
     }
 
     test("fail to construct non recursive") {
@@ -53,7 +53,7 @@ class ConstructNodeTest : FunSpec({
 private abstract class TestConstructNode : ConstructNode {
     override fun constructRecursive(node: Node, `object`: Any) {
         if (node.isRecursive) {
-            throw IllegalStateException("Not implemented in class ${this::class.qualifiedName}")
+            throw IllegalStateException("Not implemented")
         }
         throw YamlEngineException("Unexpected recursive structure for Node $node")
     }

@@ -62,10 +62,7 @@ private fun createSettings(invalid: Char): DumpSettings {
 }
 
 private fun checkAnchor(a: String): String? {
-    return try {
+    return shouldThrow<Exception> {
         Anchor(a).toString()
-        throw IllegalStateException("Invalid must not be accepted: $a")
-    } catch (e: Exception) {
-        e.message
-    }
+    }.message
 }

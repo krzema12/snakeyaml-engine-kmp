@@ -1,5 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.emitter
 
+import io.kotest.assertions.AssertionErrorBuilder.Companion.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.assertions.throwables.shouldThrowWithMessage
@@ -45,7 +46,7 @@ private fun createKey(length: Int): String {
     val prefix = length.toString()
     val result = "${prefix}_${outputBuffer.toString().substring(0, length - prefix.length - 1)}"
     if (result.length != length) {
-        throw RuntimeException("It was: ${result.length}")
+        fail("It was: ${result.length}")
     }
     return result
 }

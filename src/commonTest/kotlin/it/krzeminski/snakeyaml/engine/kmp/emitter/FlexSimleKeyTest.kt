@@ -2,7 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.emitter
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
@@ -10,31 +10,26 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 class FlexSimleKeyTest : FunSpec({
     val len = 130
 
-    test("testLongKey") {
+    test("long key") {
         val dump = Dump(createOptions(len))
-        val root = mutableMapOf<String, Any>()
-        val map = mutableMapOf<String, String>()
         val key = createKey(len)
-        map[key] = "v1"
-        root["data"] = map
+        val map = mapOf(key to "v1")
+        val root = mapOf("data" to map)
         dump.dumpToString(root) shouldBe "data: {? $key\n  : v1}\n"
     }
 
-    test("testForceLongKeyToBeImplicit") {
+    test("force long key to be implicit") {
         val dump = Dump(createOptions(len + 10))
-        val root = mutableMapOf<String, Any>()
-        val map = mutableMapOf<String, String>()
         val key = createKey(len)
-        map[key] = "v1"
-        root["data"] = map
+        val map = mapOf(key to "v1")
+        val root = mapOf("data" to map)
         dump.dumpToString(root) shouldBe "data: {$key: v1}\n"
     }
 
-    test("testTooLongKeyLength") {
-        val exception = shouldThrow<YamlEngineException> {
+    test("test too long key length") {
+        shouldThrowWithMessage<YamlEngineException>(message = "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057") {
             createOptions(1024 + 1)
         }
-        exception.message shouldBe "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057"
     }
 })
 
@@ -48,9 +43,9 @@ private fun createKey(length: Int): String {
         outputBuffer.append("" + (i + 1) % 10)
     }
     val prefix = length.toString()
-    val result = prefix + "_" + outputBuffer.toString().substring(0, length - prefix.length - 1)
+    val result = "${prefix}_${outputBuffer.toString().substring(0, length - prefix.length - 1)}"
     if (result.length != length) {
-        throw RuntimeException("It was: " + result.length)
+        throw RuntimeException("It was: ${result.length}")
     }
     return result
 }

@@ -7,14 +7,14 @@ import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 
 class UseUnicodeEncodingTest : FunSpec({
 
-    test("testEmitUnicode") {
+    test("emit unicode") {
         val settings = DumpSettings.builder().build()
         val dump = Dump(settings)
         val russianUnicode = "Пушкин - это наше всё! 😊"
         dump.dumpToString(russianUnicode) shouldBe "$russianUnicode\n"
     }
 
-    test("testEscapeUnicode") {
+    test("escape unicode") {
         val settings = DumpSettings.builder().setUseUnicodeEncoding(false).build()
         val dump = Dump(settings)
         val russianUnicode = "Пушкин - это наше всё! 😊"

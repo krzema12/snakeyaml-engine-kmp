@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.serializer.AnchorGenerator
 class AnchorUnicodeTest : FunSpec({
     val invalidAnchor = setOf('[', ']', '{', '}', ',', '*', '&')
 
-    test("testUnicodeAnchor") {
+    test("unicode anchor") {
         val settings = DumpSettings.builder().setAnchorGenerator(object : AnchorGenerator {
             private var id = 0
             override fun nextAnchor(node: Node): Anchor {
@@ -20,36 +20,30 @@ class AnchorUnicodeTest : FunSpec({
             }
         }).build()
         val dump = Dump(settings)
-        val list = mutableListOf<String>()
-        list.add("abc")
+        val list = listOf("abc")
 
-        val toExport = mutableListOf<List<String>>()
-        toExport.add(list)
-        toExport.add(list)
+        val toExport = listOf(list, list)
 
         val output = dump.dumpToString(toExport)
         output shouldBe "- &タスク0 [abc]\n- *タスク0\n"
     }
 
-    test("testInvalidAnchor") {
+    test("invalid anchor") {
         for (ch in invalidAnchor) {
             val dump = Dump(createSettings(ch))
-            val list = mutableListOf<String>()
-            list.add("abc")
+            val list = listOf("abc")
 
-            val toExport = mutableListOf<List<String>>()
-            toExport.add(list)
-            toExport.add(list)
+            val toExport = listOf(list, list)
 
-            val exception = shouldThrow<Exception> {
+            shouldThrow<Exception> {
                 dump.dumpToString(toExport)
+            }.also {
+                it.message shouldBe "Invalid character '$ch' in the anchor: anchor$ch"
             }
-            val message = "Invalid character '$ch' in the anchor: anchor$ch"
-            exception.message shouldBe message
         }
     }
 
-    test("testAnchors") {
+    test("anchors") {
         Anchor("a").toString() shouldBe "a"
         checkAnchor("a ") shouldBe "Anchor may not contain spaces: a "
         checkAnchor("a \t") shouldBe "Anchor may not contain spaces: a \t"

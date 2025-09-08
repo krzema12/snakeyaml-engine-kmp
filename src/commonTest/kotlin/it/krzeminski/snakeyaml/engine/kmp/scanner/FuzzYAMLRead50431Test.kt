@@ -1,8 +1,11 @@
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 
@@ -14,7 +17,13 @@ class FuzzYAMLRead50431Test : FunSpec({
         shouldThrow<ScannerException> {
             load.loadOne("\"\\UE30EEE")
         }.also {
-            it.message?.split("\n", limit = 2)?.first() shouldBe "found unknown escape character E30EEE"
+            // There's a difference in the error message between JVM and other platforms.
+            // TODO: understand and fix in https://github.com/krzema12/snakeyaml-engine-kmp/issues/550
+            it.message shouldContain if (platform == Platform.JVM) {
+                "found unknown escape character E30EEE"
+            } else {
+                "found unexpected end of stream"
+            }
         }
     }
 

@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 class TokenTest : FunSpec({
 
     test("toString should format scalar token correctly") {
-        val token: Token = ScalarToken("a", true, null, null)
+        val token: Token = ScalarToken(value = "a", plain = true, startMark = null, endMark = null)
         token.toString() shouldBe "<scalar> plain=true style=: value=a"
     }
 })

@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 class SimpleKeyTest : FunSpec({
 
     test("toString should format simple key correctly") {
-        val simpleKey = SimpleKey(0, true, 0, 0, 0, null)
+        val simpleKey = SimpleKey(tokenNumber = 0, isRequired = true, index = 0, line = 0, column = 0, mark = null)
         simpleKey.toString() shouldBe "SimpleKey - tokenNumber=0 required=true index=0 line=0 column=0"
     }
 })

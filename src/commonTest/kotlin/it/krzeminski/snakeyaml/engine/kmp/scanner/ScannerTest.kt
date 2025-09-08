@@ -1,6 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.scanner
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -13,7 +14,7 @@ import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
 
 class ScannerTest : FunSpec({
 
-    test("Expected NoSuchElementException after all the tokens are finished") {
+    test("expected NoSuchElementException after all the tokens are finished") {
         val settings = LoadSettings.builder().build()
         val reader = StreamReader(settings, "444222")
         val scanner = ScannerImpl(settings, reader)
@@ -26,10 +27,8 @@ class ScannerTest : FunSpec({
         scanner.next().tokenId shouldBe Token.ID.StreamEnd
         scanner.hasNext().shouldBeFalse()
 
-        shouldThrow<NoSuchElementException> {
+        shouldThrowWithMessage<NoSuchElementException>(message = "No more Tokens found.") {
             scanner.next()
-        }.also {
-            it.message shouldBe "No more Tokens found."
         }
     }
 

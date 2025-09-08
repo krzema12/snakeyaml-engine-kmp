@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class ImplicitTupleTest : FunSpec({
-    test("testToString") {
-        ImplicitTuple(true, false).toString() shouldBe "implicit=[true, false]"
+    test("toString") {
+        ImplicitTuple(plain = true, nonPlain = false).toString() shouldBe "implicit=[true, false]"
     }
 })

@@ -1,6 +1,6 @@
 package it.krzeminski.snakeyaml.engine.kmp.parser
 
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
@@ -9,7 +9,7 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.ScannerImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
 class ParserTest : FunSpec({
-    test("Expected NoSuchElementException after all the events are finished") {
+    test("expected NoSuchElementException after all the events are finished") {
         val settings = LoadSettings.builder().build()
         val reader = StreamReader(settings, "444333")
         val scanner = ScannerImpl(settings, reader)
@@ -27,10 +27,8 @@ class ParserTest : FunSpec({
         parser.next().eventId shouldBe Event.ID.StreamEnd
         parser.hasNext() shouldBe false
 
-        shouldThrow<NoSuchElementException> {
+        shouldThrowWithMessage<NoSuchElementException>(message = "No more Events found.") {
             parser.next()
-        }.also { exception ->
-            exception.message shouldBe "No more Events found."
         }
     }
 })

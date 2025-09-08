@@ -8,10 +8,10 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
 class ScalarResolverTupleTest : FunSpec({
     test("toString()") {
-        ResolverTuple(Tag.STR, Regex("^(?:true|false)$")).toString() shouldBe if (platform in setOf(Platform.JVM, Platform.WasmJs)) {
-            "Tuple tag=tag:yaml.org,2002:str regexp=^(?:true|false)$"
-        } else {
+        ResolverTuple(Tag.STR, Regex("^(?:true|false)$")).toString() shouldBe if (platform == Platform.JS) {
             "Tuple tag=tag:yaml.org,2002:str regexp=/^(?:true|false)$/gu"
+        } else {
+            "Tuple tag=tag:yaml.org,2002:str regexp=^(?:true|false)$"
         }
     }
 })

@@ -2,6 +2,7 @@ package it.krzeminski.snakeyaml.engine.kmp.exceptions
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.internal.utils.toCodePoints
 
 class MarkTest : FunSpec({
     test("Mark snippet") {
@@ -59,6 +60,6 @@ private fun createMark(
     str: String,
     pointer: Int
 ): Mark {
-    val codepoints = str.codePointSequence().toList()
+    val codepoints = str.toCodePoints().toList()
     return Mark("test1", index, line, column, codepoints, pointer)
 }

@@ -152,7 +152,13 @@ class StreamReader(
      * @param index to peek
      * @return the next [index]-th code point or `0` if empty
      */
-    fun peek(index: Int): Int = if (ensureEnoughData(index)) codePointsWindow[pointer + index] else 0
+    fun peek(index: Int): Int {
+        val windowIndex = pointer + index
+        if (windowIndex < 0) {
+            throw IndexOutOfBoundsException("index + current position must be greater than 0, was $windowIndex")
+        }
+        return if (ensureEnoughData(index)) codePointsWindow[windowIndex] else 0
+    }
 
     /**
      * Create [String] from code points.

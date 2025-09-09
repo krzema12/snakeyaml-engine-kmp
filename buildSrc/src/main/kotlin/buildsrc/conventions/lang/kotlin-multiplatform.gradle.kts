@@ -43,13 +43,6 @@ kotlin {
     //endregion
 
 
-    //region Wasm Targets
-    wasmJs {
-        binaries.library()
-        browser()
-        nodejs()
-    }
-
     // Disable Wasi: No matching variant of io.kotest:kotest-framework-engine:5.9.0 was found
     //wasmWasi {
     //    binaries.library()

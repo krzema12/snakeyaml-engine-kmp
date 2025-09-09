@@ -9,6 +9,8 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.Mark
 class EventTest : FunSpec({
     test("toString") {
         val alias = AliasEvent(Anchor("111"))
+        // This assertion is always true.
+        // TODO: clarify it within https://github.com/krzema12/snakeyaml-engine-kmp/issues/541
         alias shouldNotBe alias.toString()
     }
 

@@ -1,0 +1,3 @@
+# The only non-Kotlin file that gets into the language stats.
+# It's just a JS test config, so let's ignore it.
+karma.config.d/karma.conf.js linguist-vendored

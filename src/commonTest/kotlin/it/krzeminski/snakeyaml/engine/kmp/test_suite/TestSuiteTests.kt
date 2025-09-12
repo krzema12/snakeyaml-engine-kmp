@@ -3,6 +3,7 @@ package it.krzeminski.snakeyaml.engine.kmp.test_suite
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,7 +30,7 @@ class TestSuiteTests : FunSpec({
         val result = SuiteUtils.parseData(data)
 
         when (id) {
-            in deviationsInResult ->
+            in deviationsInResult.map { it.first } ->
                 when (data) {
                     is YamlTestData.Error   ->
                         test("expect test ${data.id} is ignored because it succeeds, but should fail") {
@@ -52,7 +53,7 @@ class TestSuiteTests : FunSpec({
                         }
                 }
 
-            in deviationsInEvents ->
+            in deviationsInEvents.map { it.first } ->
                 when (data) {
                     is YamlTestData.Error   ->
                         test("expect test ${data.id} is ignored because it fails, but with wrong events emitted") {
@@ -98,6 +99,20 @@ class TestSuiteTests : FunSpec({
                         }
                 }
             }
+        }
+    }
+
+    deviationsInResult.forEach { (id, label) ->
+        test("validate deviation in result $id") {
+            id shouldBeIn YamlTestSuiteData.keys
+            label shouldBe YamlTestSuiteData[id]?.label
+        }
+    }
+
+    deviationsInEvents.forEach { (id, label) ->
+        test("validate deviation in events $id") {
+            id shouldBeIn YamlTestSuiteData.keys
+            label shouldBe YamlTestSuiteData[id]?.label
         }
     }
 })

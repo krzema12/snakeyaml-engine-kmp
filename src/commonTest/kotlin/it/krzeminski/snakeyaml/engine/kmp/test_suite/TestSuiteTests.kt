@@ -3,6 +3,7 @@ package it.krzeminski.snakeyaml.engine.kmp.test_suite
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -98,6 +99,18 @@ class TestSuiteTests : FunSpec({
                         }
                 }
             }
+        }
+    }
+
+    deviationsInResult.forEach { id ->
+        test("validate deviation in result $id") {
+            id shouldBeIn YamlTestSuiteData.keys
+        }
+    }
+
+    deviationsInEvents.forEach { id ->
+        test("validate deviation in events $id") {
+            id shouldBeIn YamlTestSuiteData.keys
         }
     }
 })

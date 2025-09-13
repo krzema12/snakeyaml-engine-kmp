@@ -50,14 +50,14 @@ private fun generateYamlTestDataObject(
     return if (isError) {
         object : YamlTestData.Error {
             override val id: YamlTestData.Id = id
-            override val label: String = (path / "===").readUtf8()
+            override val label: String = (path / "===").readUtf8().trim()
             override val inYaml: String = (path / "in.yaml").readUtf8()
             override val testEvent: String = (path / "test.event").readUtf8()
         }
     } else {
         object : YamlTestData.Success {
             override val id: YamlTestData.Id = id
-            override val label: String = (path / "===").readUtf8()
+            override val label: String = (path / "===").readUtf8().trim()
             override val inYaml: String = (path / "in.yaml").readUtf8()
             override val testEvent: String = (path / "test.event").readUtf8()
             override val outYaml: String? = (path / "out.yaml").readUtf8OrNull()

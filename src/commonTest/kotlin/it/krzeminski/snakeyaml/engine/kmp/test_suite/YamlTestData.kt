@@ -9,7 +9,7 @@ import kotlin.jvm.JvmInline
 /**
  * Test data sourced from https://github.com/yaml/yaml-test-suite
  */
-internal sealed interface YamlTestData {
+sealed interface YamlTestData {
     val id: Id
     val label: String
     val inYaml: String

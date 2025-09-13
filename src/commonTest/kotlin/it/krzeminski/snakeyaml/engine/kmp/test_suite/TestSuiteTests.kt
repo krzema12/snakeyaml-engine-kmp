@@ -8,8 +8,6 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotBeEmpty
-import it.krzeminski.snakeyaml.engine.kmp.test_suite.SuiteUtils.deviationsInEvents
-import it.krzeminski.snakeyaml.engine.kmp.test_suite.SuiteUtils.deviationsInResult
 
 
 class TestSuiteTests : FunSpec({
@@ -27,10 +25,10 @@ class TestSuiteTests : FunSpec({
     }
 
     YamlTestSuiteData.forEach { (id, data) ->
-        val result = SuiteUtils.parseData(data)
+        val result = parseTestData(data)
 
         when (id) {
-            in deviationsInResult.map { it.first } ->
+            in deviationsInResult.map { it.id } ->
                 when (data) {
                     is YamlTestData.Error   ->
                         test("expect test ${data.id} is ignored because it succeeds, but should fail") {
@@ -53,7 +51,7 @@ class TestSuiteTests : FunSpec({
                         }
                 }
 
-            in deviationsInEvents.map { it.first } ->
+            in deviationsInEvents.map { it.id } ->
                 when (data) {
                     is YamlTestData.Error   ->
                         test("expect test ${data.id} is ignored because it fails, but with wrong events emitted") {

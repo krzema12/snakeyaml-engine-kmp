@@ -49,7 +49,6 @@ internal object SuiteUtils {
         // should pass but fail
         "3RLN-01",
         "3RLN-04",
-        "4MUZ",
         "4MUZ-00",
         "4MUZ-01",
         "4MUZ-02",
@@ -73,7 +72,6 @@ internal object SuiteUtils {
         "K3WX",
         "K54U",
         "KH5V-01",
-        "KZN9",
         "M2N8-00",
         "M7A3",
         "MUS6-03",

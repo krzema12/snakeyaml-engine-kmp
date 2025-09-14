@@ -25,8 +25,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "Y79Y-003" meaning "Tabs in various contexts",
 
     // should pass but fail
-    "3RLN-01" meaning "Leading tabs in double quoted",
-    "3RLN-04" meaning "Leading tabs in double quoted",
     "4MUZ-00" meaning "Flow mapping colon on line after key",
     "4MUZ-01" meaning "Flow mapping colon on line after key",
     "4MUZ-02" meaning "Flow mapping colon on line after key",
@@ -39,8 +37,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "A2M4" meaning "Spec Example 6.2. Indentation Indicators",
     "DBG4" meaning "Spec Example 7.10. Plain Characters",
     "DC7X" meaning "Various trailing tabs",
-    "DE56-02" meaning "Trailing tabs in double quoted",
-    "DE56-03" meaning "Trailing tabs in double quoted",
     "DK3J" meaning "Zero indented block scalar with line that looks like a comment",
     "FP8R" meaning "Zero indented block scalar",
     "FRK4" meaning "Spec Example 7.3. Completely Empty Flow Nodes",
@@ -49,7 +45,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "J3BT" meaning "Spec Example 5.12. Tabs and Spaces",
     "K3WX" meaning "Colon and adjacent value after comment on next line",
     "K54U" meaning "Tab after document header",
-    "KH5V-01" meaning "Inline tabs in double quoted",
     "M2N8-00" meaning "Question mark edge cases",
     "M7A3" meaning "Spec Example 9.3. Bare Documents",
     "MUS6-03" meaning "Directive variants",

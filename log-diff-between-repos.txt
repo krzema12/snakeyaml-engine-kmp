@@ -1,5 +1,6 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..9132f3cf99c135e8e838f1dea07276bc8f445590
 
+b0191ac Minor refactoring in StreamReader
 69d9b15 Update maven-changes-plugin to version 3.0.0-M3
 872571f Update junit-jupiter
 554a919 Update junit

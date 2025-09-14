@@ -227,8 +227,9 @@ class LoadSettingsBuilder internal constructor() {
     }
 
     /**
-     * The max amount of code points for every input YAML document in the stream. Please be aware that
-     * byte limit depends on the encoding.
+     * The max number of code points for every input YAML document in the stream. Please be aware that
+     * the byte limit depends on the encoding. The presence of the document indicators '---' or/and
+     * '...' will affect the doc size (even though they do not belong to the document content)
      *
      * @param codePointLimit - the max allowed size of a single YAML document in a stream
      * @return the builder with the provided value

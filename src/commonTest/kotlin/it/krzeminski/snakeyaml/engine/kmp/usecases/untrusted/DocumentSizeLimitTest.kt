@@ -1,6 +1,8 @@
 package it.krzeminski.snakeyaml.engine.kmp.usecases.untrusted
 
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
@@ -16,51 +18,44 @@ class DocumentSizeLimitTest : FunSpec({
          */
         val settings1 = LoadSettings.builder().setCodePointLimit(8).build()
         val load1 = Load(settings1)
-        val doc = "---\nfoo\n---\nbar\n"
+        val doc = "---\nfoo\n---\nbarbar\n"
         val iter1 = load1.loadAll(doc).iterator()
         iter1.next() shouldBe "foo"
-        iter1.next() shouldBe "bar"
+        iter1.next() shouldBe "barbar"
         iter1.hasNext() shouldBe false
 
-        // exceed the limit
+        // Exceed the limit by 1
         val settings2 = LoadSettings.builder().setCodePointLimit(8 - 1).build()
         val load2 = Load(settings2)
         val iter2 = load2.loadAll(doc).iterator()
-        iter2.next() shouldBe "foo"
-        try {
+        iter2.next() shouldBe "foo" // the first document is loaded
+        // The second document should fail because of the limit
+        shouldThrowWithMessage<YamlEngineException>(message = "The incoming YAML document exceeds the limit: 7 code points.") {
             iter2.next()
-        } catch (e: YamlEngineException) {
-            // There's a bug in the test in snakeyaml-engine (source of this ported test), and the above line doesn't throw this exception (at least in some cases)
-            // TODO: report it to snakeyaml-engine's owner: https://github.com/krzema12/snakeyaml-engine-kmp/issues/541
-            e.message shouldBe "The incoming YAML document exceeds the limit: 4 code points."
         }
     }
 
     test("last load many documents") {
         /**
          * The document start '---\n' is added to the non-first documents.
+         * Document indicators affect the limit ('---' and '...')
          */
-        val secondDocument = "---\nbar\n"
-        val limit = secondDocument.length
-        val settings1 = LoadSettings.builder().setCodePointLimit(limit).build()
+        val settings1 = LoadSettings.builder().setCodePointLimit(7).build()
         val load1 = Load(settings1)
-        val complete = "foo\n$secondDocument"
+        val complete = "foo\n...\n---\nbar\n"
         val iter1 = load1.loadAll(complete).iterator()
         iter1.next() shouldBe "foo"
         iter1.next() shouldBe "bar"
         iter1.hasNext() shouldBe false
 
         // exceed the limit
-        val settings2 = LoadSettings.builder().setCodePointLimit(limit - 1).build()
+        val settings2 = LoadSettings.builder().setCodePointLimit(6).build()
         val load2 = Load(settings2)
         val iter2 = load2.loadAll(complete).iterator()
-        iter2.next() shouldBe "foo"
-        try {
-            // There's a bug in the test in snakeyaml-engine (source of this ported test), and the above line doesn't throw this exception (at least in some cases)
-            // TODO: report it to snakeyaml-engine's owner: https://github.com/krzema12/snakeyaml-engine-kmp/issues/541
+        iter2.next() shouldBe "foo" // the first document is loaded
+        // Second doc should fail because of the limit
+        shouldThrowWithMessage<YamlEngineException>(message = "The incoming YAML document exceeds the limit: 6 code points.") {
             iter2.next()
-        } catch (e: YamlEngineException) {
-            e.message shouldBe "The incoming YAML document exceeds the limit: 4 code points."
         }
     }
 
@@ -82,7 +77,8 @@ private fun dumpAllDocs(input: String, codePointLimit: Int): Boolean {
     val docs = load.loadAll(input).iterator()
     for (ndx in 1..3) {
         try {
-            docs.next()
+            val doc = docs.next()
+            doc.shouldNotBeNull()
         } catch (e: Exception) {
             return false
         }

@@ -25,7 +25,7 @@ import it.krzeminski.snakeyaml.engine.kmp.events.Event
 interface Parser : Iterator<Event> {
 
     /**
-     * Check if the next event is one of the given type.
+     * Check if the next event is of the given type.
      *
      * @param choice Event ID to match.
      * @returns `true` if the next event has the given ID. Returns `false` otherwise.

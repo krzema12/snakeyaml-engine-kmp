@@ -11,7 +11,7 @@ kotlinx-binary-compatibility-validator = "0.18.1"
 kotlinx-datetime = "0.7.1-0.6.x-compat"
 jetbrains-annotations = "26.0.2-1"
 junit-jupiter = "5.13.4"
-guava = "33.4.8-jre"
+guava = "33.5.0-jre"
 java-diff-utils = "4.16"
 
 [libraries]

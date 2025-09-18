@@ -47,7 +47,6 @@ kotlin {
             dependencies {
                 implementation(libs.junit.jupiter.engine)
                 implementation(libs.kotest.runner.junit5)
-                implementation(libs.guava)
             }
         }
     }

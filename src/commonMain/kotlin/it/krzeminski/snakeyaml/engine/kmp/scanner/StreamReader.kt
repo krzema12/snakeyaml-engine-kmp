@@ -201,38 +201,54 @@ class StreamReader(
         try {
             val buffer = stream.readUtf8WithLimit(bufferReadSize)
             val read = buffer.length
-            if (read > 0) {
-                var cpIndex = dataLength - pointer
-                codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
-                var nonPrintable: Int? = null
-                var i = 0
-                while (i < read) {
-                    val codePoint = buffer.codePointAt(i)
-                    codePointsWindow[cpIndex] = codePoint
-                    if (isPrintable(codePoint)) {
-                        i += Character.charCount(codePoint)
-                    } else {
-                        nonPrintable = codePoint
-                        i = read
-                    }
-                    cpIndex++
-                }
-                dataLength = cpIndex
-                pointer = 0
-                if (nonPrintable != null) {
-                    throw ReaderException(
-                        name = name,
-                        position = cpIndex - 1,
-                        codePoint = nonPrintable,
-                        message = "special characters are not allowed",
-                    )
-                }
-            } else {
+            if (read <= 0) {
                 eof = true
+                return
             }
+            val cpIndex = prepareWindowFor(read)
+            dataLength = transcodeAndValidateToWindow(buffer, read, cpIndex)
+            pointer = 0
         } catch (ioe: IOException) {
             throw YamlEngineException(ioe)
         }
+    }
+
+    /**
+     * Prepare the code points window for appending new code points by compacting the already consumed
+     * part and ensuring space for the newly read chars.
+     *
+     * @return the index in codePointsWindow where new code points should start to be written
+     */
+    private fun prepareWindowFor(read: Int): Int {
+        val cpIndex = dataLength - pointer
+        codePointsWindow = codePointsWindow.copyOfRangeSafe(pointer, dataLength + read)
+        return cpIndex
+    }
+
+    /**
+     * Convert chars in the buffer into code points, validate printability, and place them into the
+     * codePointsWindow starting at cpIndexStart.
+     *
+     * @return the new cpIndex (i.e., dataLength) after filling
+     */
+    private fun transcodeAndValidateToWindow(buffer: String, read: Int, cpIndexStart: Int): Int {
+        var cpIndex = cpIndexStart
+        var i = 0
+        while (i < read) {
+            val codePoint = buffer.codePointAt(i)
+            codePointsWindow[cpIndex] = codePoint
+            if (!isPrintable(codePoint)) {
+                throw ReaderException(
+                    name = name,
+                    position = index + cpIndex,
+                    codePoint = codePoint,
+                    message = "special characters are not allowed",
+                )
+            }
+            i += Character.charCount(codePoint)
+            cpIndex++
+        }
+        return cpIndex
     }
 
     private fun moveIndices(length: Int) {

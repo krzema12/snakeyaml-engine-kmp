@@ -11,6 +11,4 @@ dependencies {
     //endregion
 
     implementation(libs.jetbrains.annotations)
-
-    implementation(libs.java.diff.utils)
 }

@@ -5,7 +5,6 @@ import buildsrc.utils.JvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -157,8 +156,9 @@ tasks.named<JavaCompile>("compileJvmTestJava") {
 }
 //endregion
 
-plugins.withType<YarnPlugin> {
-    the<YarnRootExtension>().apply {
+
+afterEvaluate {
+    rootProject.extensions.configure<YarnRootExtension> {
         // Kotlin/JS creates lockfiles for JS dependencies in the root directory.
         // I think it's a bit annoying to have a top-level directory for a single file, and it makes the project
         // a bit more crowded.

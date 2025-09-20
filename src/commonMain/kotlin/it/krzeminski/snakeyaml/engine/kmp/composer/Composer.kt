@@ -76,6 +76,11 @@ class Composer(
         parser.next()
         // Compose a document if the stream is not empty.
         val document = if (!parser.checkEvent(Event.ID.StreamEnd)) next() else null
+        if (document != null) {
+            // Is there a better place for this code? Should it be in the Node?
+            document.inLineComments = inlineCommentsCollector.collectEvents().consume()
+            document.blockComments = blockCommentsCollector.collectEvents().consume()
+        }
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             val event = parser.next()

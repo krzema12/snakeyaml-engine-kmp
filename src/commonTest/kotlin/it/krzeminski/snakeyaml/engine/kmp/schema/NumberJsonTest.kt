@@ -1,5 +1,7 @@
 package it.krzeminski.snakeyaml.engine.kmp.schema
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
@@ -64,9 +66,12 @@ class NumberJsonTest : FunSpec({
         forAll(
             table(
                 headers("input", "expected"),
-                row(1.0, "1.0\n"),
-                row(-1.0, "-1.0\n"),
-                row(0.0, "0.0\n"),
+                // It's most likely not possible to distinguish between float and integer in JS,
+                // if the part after the decimal point is zero. That's why the behavior for JS
+                // is a bit different.
+                row(1.0, if (platform != Platform.JS) "1.0\n" else "1\n"),
+                row(-1.0, if (platform != Platform.JS) "-1.0\n" else "-1\n"),
+                row(0.0, if (platform != Platform.JS) "0.0\n" else "0\n"),
                 row(123.456, "123.456\n")
             )
         ) { input, expected ->

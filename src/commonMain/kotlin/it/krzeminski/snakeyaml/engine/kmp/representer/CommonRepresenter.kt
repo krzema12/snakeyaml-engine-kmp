@@ -79,10 +79,12 @@ open class CommonRepresenter(
         // Because of it, they are represented differently than for other platforms.
         // TODO: fix within https://github.com/krzema12/snakeyaml-engine-kmp/issues/526
         if (
-            data is Byte
+            (data is Byte
             || data is Short
             || data is Int
-            || data is Long
+            || data is Long)
+            && (data.toString() !in setOf("NaN", "Infinity", "-Infinity"))
+            && "." !in data.toString()
         ) {
             val value = data.toString()
             representScalar(
@@ -92,11 +94,11 @@ open class CommonRepresenter(
         } else {
             val number = data as Number
             val value = when {
-                number is Double && number.isNaN() || number is Float && number.isNaN() -> ".nan"
+                number is Double && number.isNaN() || number is Float && number.isNaN() || number.toString() == "NaN" -> ".nan"
 
-                number == Double.POSITIVE_INFINITY || number == Float.POSITIVE_INFINITY -> ".inf"
+                number == Double.POSITIVE_INFINITY || number == Float.POSITIVE_INFINITY || number.toString() == "Infinity" -> ".inf"
 
-                number == Double.NEGATIVE_INFINITY || number == Float.NEGATIVE_INFINITY -> "-.inf"
+                number == Double.NEGATIVE_INFINITY || number == Float.NEGATIVE_INFINITY || number.toString() == "-Infinity" -> "-.inf"
 
                 else                                                                    -> number.toString()
             }

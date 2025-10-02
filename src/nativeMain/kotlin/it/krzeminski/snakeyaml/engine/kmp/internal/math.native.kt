@@ -8,3 +8,6 @@ internal actual fun createBigInteger(value: String, radix: Int): Number {
 internal actual fun createBigDecimal(value: String): Number {
     TODO("Kotlin/Native BigDecimal implementation")
 }
+
+internal actual fun isInteger(value: Number): Boolean =
+    value is Int || value is Long

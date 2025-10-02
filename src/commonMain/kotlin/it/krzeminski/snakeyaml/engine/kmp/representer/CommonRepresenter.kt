@@ -18,6 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.RepresentToNode
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.internal.isInteger
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
@@ -74,14 +75,7 @@ open class CommonRepresenter(
 
     /** Create [Node] for [Byte], [Short], [Int], [Long], [Float], [Double] */
     protected val representNumber = RepresentToNode { data: Any ->
-        if (
-            (data is Byte
-            || data is Short
-            || data is Int
-            || data is Long)
-            && (data.toString() !in setOf("NaN", "Infinity", "-Infinity"))
-            && "." !in data.toString()
-        ) {
+        if (isInteger(data as Number)) {
             val value = data.toString()
             representScalar(
                 getTag(data::class) { Tag.INT },

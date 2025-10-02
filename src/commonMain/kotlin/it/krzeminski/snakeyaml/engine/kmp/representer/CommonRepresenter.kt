@@ -90,7 +90,7 @@ open class CommonRepresenter(
         } else {
             val number = data as Number
             val value = when {
-                number is Double && number.isNaN() || number is Float && number.isNaN() || number.toString() == "NaN" -> ".nan"
+                number.isNotANumber() -> ".nan"
                 number.isInfinity() -> if (number.isPositive()) ".inf" else "-.inf"
                 else                                                                    -> number.toString()
             }
@@ -244,4 +244,10 @@ private fun Number.isPositive() = when (this) {
     is Double -> this > 0.0
     is Float -> this > 0.0f
     else -> error("Unexpected number type: $this")
+}
+
+private fun Number.isNotANumber() = when (this) {
+    is Double -> this.isNaN()
+    is Float -> this.isNaN()
+    else -> false
 }

@@ -91,11 +91,7 @@ open class CommonRepresenter(
             val number = data as Number
             val value = when {
                 number is Double && number.isNaN() || number is Float && number.isNaN() || number.toString() == "NaN" -> ".nan"
-
-                number == Double.POSITIVE_INFINITY || number == Float.POSITIVE_INFINITY || number.toString() == "Infinity" -> ".inf"
-
-                number == Double.NEGATIVE_INFINITY || number == Float.NEGATIVE_INFINITY || number.toString() == "-Infinity" -> "-.inf"
-
+                number.isInfinity() -> if (number.isPositive()) ".inf" else "-.inf"
                 else                                                                    -> number.toString()
             }
             representScalar(
@@ -236,4 +232,16 @@ open class CommonRepresenter(
         /** all chars that represent a new line */
         private val MULTILINE_PATTERN = Regex("[\n\u0085]")
     }
+}
+
+private fun Number.isInfinity() = when (this) {
+    is Double -> this.isInfinite()
+    is Float -> this.isInfinite()
+    else -> false
+}
+
+private fun Number.isPositive() = when (this) {
+    is Double -> this > 0.0
+    is Float -> this > 0.0f
+    else -> error("Unexpected number type: $this")
 }

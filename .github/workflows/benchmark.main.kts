@@ -7,7 +7,7 @@
 @file:DependsOn("actions:checkout:v5")
 @file:DependsOn("actions:download-artifact:v5")
 @file:DependsOn("actions:upload-artifact:v4")
-@file:DependsOn("gradle:actions__wrapper-validation:v4")
+@file:DependsOn("gradle:actions__wrapper-validation:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v4")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
 

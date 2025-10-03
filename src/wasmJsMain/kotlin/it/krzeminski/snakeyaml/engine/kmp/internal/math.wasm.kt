@@ -1,4 +1,4 @@
 package it.krzeminski.snakeyaml.engine.kmp.internal
 
 internal actual fun isInteger(value: Number): Boolean =
-    js("return Number.isInteger(value)")
+    value is Byte || value is Short || value is Int || value is Long

@@ -38,9 +38,13 @@ class FailsafeTest : FunSpec({
                 row(true, "!!bool 'true'\n"),
                 row(false, "!!bool 'false'\n"),
                 row(null, "!!null 'null'\n"),
+                row(12.toByte(), "!!int '12'\n"),
+                row(45.toShort(), "!!int '45'\n"),
                 row(25, "!!int '25'\n"),
                 row(17, "!!int '17'\n"),
+                row(34L, "!!int '34'\n"),
                 row(17.4, "!!float '17.4'\n"),
+                row(23.5, "!!float '23.5'\n"),
             )
         ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected

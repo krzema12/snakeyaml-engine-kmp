@@ -10,4 +10,4 @@ internal actual fun createBigDecimal(value: String): Number {
 }
 
 internal actual fun isInteger(value: Number): Boolean =
-    value is Int || value is Long
+    value is Byte || value is Short || value is Int || value is Long

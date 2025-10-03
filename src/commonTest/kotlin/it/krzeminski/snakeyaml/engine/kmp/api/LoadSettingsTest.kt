@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST")
 package it.krzeminski.snakeyaml.engine.kmp.api
 
 import io.kotest.assertions.throwables.shouldThrow

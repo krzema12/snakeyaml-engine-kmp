@@ -120,6 +120,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         jvmTarget = JvmTarget(minSupportedJavaVersion)
+        allWarningsAsErrors = true
         freeCompilerArgs.addAll(
             "-Xjdk-release=${minSupportedJavaVersion.majorVersion}",
         )
@@ -139,6 +140,7 @@ kotlin.targets.withType<KotlinJvmTarget>().configureEach {
 tasks.named<KotlinJvmCompile>("compileTestKotlinJvm") {
     compilerOptions {
         jvmTarget = JvmTarget(javaForTests)
+        allWarningsAsErrors = true
         freeCompilerArgs.addAll(
             "-Xjdk-release=${javaForTests.majorVersion}",
         )

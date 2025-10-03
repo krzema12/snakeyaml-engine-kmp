@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST")
 package it.krzeminski.snakeyaml.engine.kmp.usecases.binary
 
 import io.kotest.core.spec.style.FunSpec

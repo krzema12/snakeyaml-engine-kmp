@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST")
 package it.krzeminski.snakeyaml.engine.kmp.usecases.recursive
 
 import io.kotest.assertions.throwables.shouldThrowWithMessage

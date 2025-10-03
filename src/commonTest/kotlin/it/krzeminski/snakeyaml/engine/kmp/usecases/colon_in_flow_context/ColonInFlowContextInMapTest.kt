@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST")
 package it.krzeminski.snakeyaml.engine.kmp.usecases.colon_in_flow_context
 
 import io.kotest.core.spec.style.FunSpec

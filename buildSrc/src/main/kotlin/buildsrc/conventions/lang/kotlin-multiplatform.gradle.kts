@@ -113,7 +113,7 @@ kotlin {
 //region Java versioning
 val minSupportedJavaVersion = JavaVersion.VERSION_1_8
 
-val javaForTests = JavaVersion.VERSION_11
+val javaForTests = JavaVersion.VERSION_17
 
 kotlin.targets.withType<KotlinJvmTarget>().configureEach {
     // Compiling Kotlin production code.

@@ -94,12 +94,6 @@ kotlin {
         }
     }
 
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xexpect-actual-classes"
-        )
-    }
-
     // configure all Kotlin/JVM Tests to use JUnit
     targets.withType<KotlinJvmTarget>().configureEach {
         testRuns.configureEach {

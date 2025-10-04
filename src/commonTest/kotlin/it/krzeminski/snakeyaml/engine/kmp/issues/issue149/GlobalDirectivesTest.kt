@@ -14,7 +14,7 @@ import org.intellij.lang.annotations.Language
 class GlobalDirectivesTest : FunSpec({
     fun yamlToEvents(@Language("file-reference") resourceName: String): Iterable<Event> {
         val input = stringFromResources(resourceName)
-        val parser = Parse(LoadSettings.builder().build())
+        val parser = Parse(LoadSettings())
         return parser.parse(input)
     }
 

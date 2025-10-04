@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 class NullConstructorTest : FunSpec({
     test("custom constructor must be called without node") {
         val tagConstructors = mapOf(Tag.NULL to MyConstructNull())
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val settings = LoadSettings(tagConstructors = tagConstructors)
         val loader = Load(settings)
         val result = loader.loadOne("")
         result shouldNotBe null
@@ -21,7 +21,7 @@ class NullConstructorTest : FunSpec({
 
     test("custom constructor must be called with node") {
         val tagConstructors = mapOf(Tag.NULL to MyConstructNull())
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val settings = LoadSettings(tagConstructors = tagConstructors)
         val loader = Load(settings)
         val result = loader.loadOne("!!null null")
         result shouldBe "present"

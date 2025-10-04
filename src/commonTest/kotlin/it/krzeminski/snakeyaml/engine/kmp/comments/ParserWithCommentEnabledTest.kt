@@ -340,6 +340,6 @@ private fun assertEventListEquals(expectedEventIdList: List<ID>, parser: Parser)
 }
 
 private fun createParser(data: String): Parser {
-    val loadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadSettings = LoadSettings(parseComments = true)
     return ParserImpl(loadSettings, StreamReader(loadSettings, data))
 }

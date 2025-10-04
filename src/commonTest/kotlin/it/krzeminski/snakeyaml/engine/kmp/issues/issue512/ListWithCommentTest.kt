@@ -9,7 +9,7 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 class ListWithCommentTest: FunSpec({
     test("Issue 512 from SnakeYAML") {
         val str = stringFromResources("/comments/issue512.yaml")
-        val options = LoadSettings.builder().setParseComments(true).build()
+        val options = LoadSettings(parseComments = true)
         val load = Load(options)
         @Suppress("UNCHECKED_CAST")
         val obj = load.loadOne(str) as List<String>

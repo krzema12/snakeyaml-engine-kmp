@@ -15,7 +15,7 @@ import okio.Source
  * @param constructor custom YAML constructor
  */
 expect class Load(
-    settings: LoadSettings = LoadSettings.builder().build(),
+    settings: LoadSettings = LoadSettings(),
     constructor: BaseConstructor = StandardConstructor(settings),
 ) {
     /**

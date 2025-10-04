@@ -70,7 +70,7 @@ class ReferencesTest : FunSpec({
     test("references with recursive keys not allowed by default") {
         val output = createDump(30)
         // Load
-        val settings = LoadSettings.builder().setMaxAliasesForCollections(150).build()
+        val settings = LoadSettings(maxAliasesForCollections = 150)
         val load = Load(settings)
         val duration = measureTime {
             val ex = shouldThrow<Exception> {
@@ -86,8 +86,7 @@ class ReferencesTest : FunSpec({
     test("Parsing with aliases may take a lot of time, CPU and memory") {
         val output = createDump(25)
         // Load
-        val settings =
-            LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(50).build()
+        val settings = LoadSettings(allowRecursiveKeys = true, maxAliasesForCollections = 50)
         val load = Load(settings)
         shouldCompleteBetween(400.milliseconds..15.seconds) {
             load.loadOne(output)
@@ -98,8 +97,7 @@ class ReferencesTest : FunSpec({
         // without alias restriction this size should occupy tons of CPU, memory and time to parse
         val bigYAML = createDump(35)
         // Load
-        val settings =
-            LoadSettings.builder().setAllowRecursiveKeys(true).setMaxAliasesForCollections(40).build()
+        val settings = LoadSettings(allowRecursiveKeys = true, maxAliasesForCollections = 40)
         val load = Load(settings)
         val duration = measureTime {
             val ex = shouldThrow<Exception> {

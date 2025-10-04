@@ -15,7 +15,7 @@ import it.krzeminski.snakeyaml.engine.kmp.tokens.Token
 class ScannerTest : FunSpec({
 
     test("expected NoSuchElementException after all the tokens are finished") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val reader = StreamReader(settings, "444222")
         val scanner = ScannerImpl(settings, reader)
 
@@ -48,7 +48,7 @@ class ScannerTest : FunSpec({
 })
 
 private fun scanTo(input: String, skip: Int): Token {
-    val settings = LoadSettings.builder().build()
+    val settings = LoadSettings()
     val reader = StreamReader(settings, input)
     val scanner = ScannerImpl(settings, reader)
     var i = 0

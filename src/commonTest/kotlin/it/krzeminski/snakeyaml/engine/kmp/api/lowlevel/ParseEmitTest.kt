@@ -30,7 +30,7 @@ class ParseEmitTest : FunSpec({
  * Convert a YAML character stream into events and then emit events back to YAML.
  */
 private fun yamlToYaml(input: String, output: StringOutputStream) {
-    val parser = Parse(LoadSettings.builder().build())
+    val parser = Parse(LoadSettings())
     val emitter = Emitter(DumpSettings.builder().build(), output)
     for (event in parser.parse(input)) {
         emitter.emit(event)

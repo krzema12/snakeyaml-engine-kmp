@@ -97,23 +97,24 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/Load {
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings {
-	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$Companion;
-	public final field allowDuplicateKeys Z
-	public final field allowRecursiveKeys Z
-	public final field bufferSize I
-	public final field codePointLimit I
-	public final field defaultList Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
-	public final field defaultMap Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
-	public final field defaultSet Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
-	public final field envConfig Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;
-	public final field label Ljava/lang/String;
-	public final field maxAliasesForCollections I
-	public final field parseComments Z
-	public final field schema Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
-	public final field tagConstructors Ljava/util/Map;
-	public final field useMarks Z
-	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAllowDuplicateKeys ()Z
+	public final fun getAllowRecursiveKeys ()Z
+	public final fun getBufferSize ()I
+	public final fun getCodePointLimit ()I
+	public final fun getCustomProperties ()Ljava/util/Map;
+	public final fun getDefaultList ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final fun getDefaultMap ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final fun getDefaultSet ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;
+	public final fun getEnvConfig ()Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getMaxAliasesForCollections ()I
+	public final fun getParseComments ()Z
+	public final fun getSchema ()Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
+	public final fun getTagConstructors ()Ljava/util/Map;
+	public final fun getUseMarks ()Z
 	public final fun getVersionFunction ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;
 }
 
@@ -121,32 +122,8 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/LoadSetti
 	public abstract fun invoke (I)Ljava/lang/Object;
 }
 
-public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$Companion {
-	public final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-}
-
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator {
 	public abstract fun invoke (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
-}
-
-public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder {
-	public final fun build ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings;
-	public final fun setAllowDuplicateKeys (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setAllowRecursiveKeys (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setBufferSize (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setCodePointLimit (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setDefaultList (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setDefaultMap (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setDefaultSet (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setEnvConfig (Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setLabel (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setMaxAliasesForCollections (I)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setParseComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setSchema (Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setTagConstructors (Ljava/util/Map;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setUseMarks (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
-	public final fun setVersionFunction (Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;)Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettingsBuilder;
 }
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/RepresentToNode {

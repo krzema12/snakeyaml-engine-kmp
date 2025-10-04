@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
 class ParserTest : FunSpec({
     test("expected NoSuchElementException after all the events are finished") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val reader = StreamReader(settings, "444333")
         val scanner = ScannerImpl(settings, reader)
         val parser = ParserImpl(settings, scanner)

@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class TabInFlowContextTest : FunSpec({
     test("do not fail to parse if TAB is used (issue 11)") {
-        val loadSettings = LoadSettings.builder().build()
+        val loadSettings = LoadSettings()
         val input = "{\n\t\"x\": \"y\"\n}"
         val obj = Load(loadSettings).loadOne(input)
         val map = obj as Map<String, Any?>
@@ -18,7 +18,7 @@ class TabInFlowContextTest : FunSpec({
     }
 
     test("TAB cannot start a token") {
-        val loadSettings = LoadSettings.builder().build()
+        val loadSettings = LoadSettings()
         shouldThrow<Exception> {
             Load(loadSettings).loadOne("\t  data: 1")
         }.also {
@@ -30,7 +30,7 @@ class TabInFlowContextTest : FunSpec({
     }
 
     test("issue 55") {
-        val loadSettings = LoadSettings.builder().build()
+        val loadSettings = LoadSettings()
         val obj = Load(loadSettings).loadOne("{ \"foo\":\t\"bar\" }")
         obj.shouldNotBeNull()
     }

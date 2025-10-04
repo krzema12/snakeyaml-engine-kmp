@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
 private fun parse(yaml: String) {
-    val settings = LoadSettings.builder().setBufferSize(yaml.length).build()
+    val settings = LoadSettings(bufferSize = yaml.length)
     Composer(settings, ParserImpl(settings, StreamReader(settings, yaml)))
         .getSingleNode()
 }

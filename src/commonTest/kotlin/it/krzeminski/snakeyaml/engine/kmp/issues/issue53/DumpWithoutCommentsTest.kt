@@ -50,7 +50,7 @@ class DumpWithoutCommentsTest : FunSpec({
 })
 
 fun createNodeWithComments(source: String): Node {
-    val loadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadSettings = LoadSettings(parseComments = true)
     val parser = ParserImpl(loadSettings, StreamReader(loadSettings, source))
     val composer = Composer(loadSettings, parser)
     return composer.getSingleNode()!!

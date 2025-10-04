@@ -16,7 +16,7 @@ class DocumentSizeLimitTest : FunSpec({
         /**
          * The document start '---\n' is added to the first document
          */
-        val settings1 = LoadSettings.builder().setCodePointLimit(8).build()
+        val settings1 = LoadSettings(codePointLimit = 8)
         val load1 = Load(settings1)
         val doc = "---\nfoo\n---\nbarbar\n"
         val iter1 = load1.loadAll(doc).iterator()
@@ -25,7 +25,7 @@ class DocumentSizeLimitTest : FunSpec({
         iter1.hasNext() shouldBe false
 
         // Exceed the limit by 1
-        val settings2 = LoadSettings.builder().setCodePointLimit(8 - 1).build()
+        val settings2 = LoadSettings(codePointLimit = 8 - 1)
         val load2 = Load(settings2)
         val iter2 = load2.loadAll(doc).iterator()
         iter2.next() shouldBe "foo" // the first document is loaded
@@ -40,7 +40,7 @@ class DocumentSizeLimitTest : FunSpec({
          * The document start '---\n' is added to the non-first documents.
          * Document indicators affect the limit ('---' and '...')
          */
-        val settings1 = LoadSettings.builder().setCodePointLimit(7).build()
+        val settings1 = LoadSettings(codePointLimit = 7)
         val load1 = Load(settings1)
         val complete = "foo\n...\n---\nbar\n"
         val iter1 = load1.loadAll(complete).iterator()
@@ -49,7 +49,7 @@ class DocumentSizeLimitTest : FunSpec({
         iter1.hasNext() shouldBe false
 
         // exceed the limit
-        val settings2 = LoadSettings.builder().setCodePointLimit(6).build()
+        val settings2 = LoadSettings(codePointLimit = 6)
         val load2 = Load(settings2)
         val iter2 = load2.loadAll(complete).iterator()
         iter2.next() shouldBe "foo" // the first document is loaded
@@ -72,7 +72,7 @@ class DocumentSizeLimitTest : FunSpec({
 })
 
 private fun dumpAllDocs(input: String, codePointLimit: Int): Boolean {
-    val settings1 = LoadSettings.builder().setCodePointLimit(codePointLimit).build()
+    val settings1 = LoadSettings(codePointLimit = codePointLimit)
     val load = Load(settings1)
     val docs = load.loadAll(input).iterator()
     for (ndx in 1..3) {

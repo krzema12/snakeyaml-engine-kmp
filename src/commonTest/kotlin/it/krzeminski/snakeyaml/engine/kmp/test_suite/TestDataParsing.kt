@@ -9,7 +9,7 @@ import it.krzeminski.snakeyaml.engine.kmp.events.Event
  * passed as [data].
  */
 fun parseTestData(data: YamlTestData): ParseResult {
-    val settings = LoadSettings.builder().setLabel(data.label).build()
+    val settings = LoadSettings(label = data.label)
 
     val events = mutableListOf<Event>()
     return runCatching {

@@ -18,7 +18,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
-import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings.Companion.builder
+import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class EnvVariableJvmTest : FunSpec({
@@ -33,13 +33,7 @@ class EnvVariableJvmTest : FunSpec({
     test("Custom EVN config example") {
         val provided = mapOf(KEY1 to "VVVAAA111")
         System.setProperty(EMPTY, "VVVAAA222")
-        val loader = Load(
-            builder().setEnvConfig(
-                CustomEnvConfig(
-                    provided
-                )
-            ).build()
-        )
+        val loader = Load(LoadSettings(envConfig = CustomEnvConfig(provided)))
         val resource = stringFromResources("/env/docker-compose.yaml")
         @Suppress("UNCHECKED_CAST")
         val compose = loader.loadOne(resource) as Map<String, Any>?

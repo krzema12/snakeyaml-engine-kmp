@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.schema.Schema
 
 class NoScalarResolverTest : FunSpec({
     test("resolve with FailsafeSchema") {
-        val settings = LoadSettings.builder().setSchema(FailsafeSchema()).build()
+        val settings = LoadSettings(schema = FailsafeSchema())
         val load = Load(settings)
         val str = load.loadOne("5")
         str shouldBe "5"
@@ -25,7 +25,7 @@ class NoScalarResolverTest : FunSpec({
             override val schemaTagConstructors: Map<Tag, ConstructNode>
                 get() = mapOf()
         }
-        val settings = LoadSettings.builder().setSchema(schema).build()
+        val settings = LoadSettings(schema = schema)
         val load = Load(settings)
         val str = load.loadOne("5")
         str shouldBe "5"

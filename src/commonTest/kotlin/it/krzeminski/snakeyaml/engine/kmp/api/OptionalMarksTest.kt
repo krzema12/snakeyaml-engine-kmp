@@ -14,20 +14,20 @@ import it.krzeminski.snakeyaml.engine.kmp.test_suite.YamlTestSuiteData
 class OptionalMarksTest: FunSpec({
     test("Compose: no marks") {
         val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
-        val settings = LoadSettings.builder()
-            .setLabel(data.label)
-            .setUseMarks(false)
-            .build()
+        val settings = LoadSettings(
+            label = data.label,
+            useMarks = false,
+        )
         val node = Compose(settings).compose("{a: 4}")
         node.shouldNotBeNull()
     }
 
     test("Compose: failure with marks") {
         val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
-        val settings = LoadSettings.builder()
-            .setLabel(data.label)
-            .setUseMarks(true)
-            .build()
+        val settings = LoadSettings(
+            label = data.label,
+            useMarks = true,
+        )
         shouldThrow<ParserException> {
             Compose(settings).compose("{a: 4}}")
         }.also {
@@ -39,10 +39,10 @@ class OptionalMarksTest: FunSpec({
 
     test("Compose: failure without marks") {
         val data = YamlTestSuiteData[YamlTestData.Id("2AUY")]!!
-        val settings = LoadSettings.builder()
-            .setLabel(data.label)
-            .setUseMarks(false)
-            .build()
+        val settings = LoadSettings(
+            label = data.label,
+            useMarks = false,
+        )
         shouldThrow<ParserException> {
             Compose(settings).compose("{a: 4}}")
         }.also {

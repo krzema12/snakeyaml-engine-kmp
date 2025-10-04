@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.parser.ParserImpl
 import it.krzeminski.snakeyaml.engine.kmp.scanner.StreamReader
 
 class ProblematicYamlTest : FunSpec({
-    val loadOptions: LoadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadOptions: LoadSettings = LoadSettings(parseComments = true)
 
     test("parse problematic yaml 1") {
         val yamlString1 = "" +
@@ -145,7 +145,7 @@ class ProblematicYamlTest : FunSpec({
             Event.ID.DocumentEnd,
             Event.ID.StreamEnd
         )
-        val settings = LoadSettings.Companion.builder().build()
+        val settings = LoadSettings()
         ParserImpl(settings, StreamReader(settings, yamlString4))
            .assertEventListEquals(expectedEventIdList, emptyList())
     }

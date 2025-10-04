@@ -36,7 +36,7 @@ fun getFileByName(name: String): FSPath =
     }
 
 fun canonicalParse(input2: Source, label: String): List<Event> {
-    val settings = LoadSettings.builder().setLabel(label).build()
+    val settings = LoadSettings(label = label)
     input2.use {
         val reader = StreamReader(settings, YamlUnicodeReader(input2))
         val buffer = StringBuilder()
@@ -55,7 +55,7 @@ fun canonicalParse(input2: Source, label: String): List<Event> {
 }
 
 fun parse(input: Source): List<Event> {
-    val settings = LoadSettings.builder().build()
+    val settings = LoadSettings()
     input.use {
         val reader = StreamReader(settings, YamlUnicodeReader(input))
         val parser = ParserImpl(settings, reader)

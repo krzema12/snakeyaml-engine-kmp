@@ -9,7 +9,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class TabInDoubleQuoteTest : FunSpec({
     test("tab in double quote") {
-        val options = LoadSettings.builder().setParseComments(true).build()
+        val options = LoadSettings(parseComments = true)
         val load = Load(options)
         val str = "- \"\\\t\"" // "\TAB"
         val obj = load.loadOne(str) as List<String>

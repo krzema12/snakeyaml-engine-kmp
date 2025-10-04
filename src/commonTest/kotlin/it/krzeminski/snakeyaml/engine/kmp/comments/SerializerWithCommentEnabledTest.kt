@@ -322,9 +322,7 @@ private fun serializeWithCommentsEnabled(data: String): List<Event> {
         .build()
     val serializer = Serializer(dumpSettings, emitter)
     serializer.emitStreamStart()
-    val settings = LoadSettings.builder()
-        .setParseComments(true)
-        .build()
+    val settings = LoadSettings(parseComments = true)
     val composer = Composer(settings, ParserImpl(settings, StreamReader(settings, data)))
     while (composer.hasNext()) {
         serializer.serializeDocument(composer.next())

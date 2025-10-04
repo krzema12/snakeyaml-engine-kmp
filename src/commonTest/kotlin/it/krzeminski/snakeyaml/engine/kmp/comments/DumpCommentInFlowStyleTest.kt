@@ -14,7 +14,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 
 class DumpCommentInFlowStyleTest : FunSpec({
     test("ignoring comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(false).build())
+        val loader = Compose(LoadSettings(parseComments = false))
         val content = "{ url: text # comment breaks it\n}"
         val node = loader.compose(content)
         // check that no comment is present
@@ -27,7 +27,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
     }
 
     test("flow with comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(true).build())
+        val loader = Compose(LoadSettings(parseComments = true))
         val content = "{url: text # comment breaks it\n}"
         val node = loader.compose(content)!!
         extractInlineComment(node) shouldBe " comment breaks it"
@@ -43,7 +43,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
     }
 
     test("block with comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(true).build())
+        val loader = Compose(LoadSettings(parseComments = true))
         val content = "url: text # comment breaks it\n"
         val node = loader.compose(content)!!
 

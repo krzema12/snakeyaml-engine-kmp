@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class NullCoreTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+    val loader = Load(LoadSettings(schema = CoreSchema()))
 
     test("parse null") {
         forAll(

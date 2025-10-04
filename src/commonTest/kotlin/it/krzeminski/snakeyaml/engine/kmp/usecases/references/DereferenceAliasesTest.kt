@@ -13,7 +13,7 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class DereferenceAliasesTest : FunSpec({
     test("no aliases") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val load = Load(settings)
         val map = load.loadOne(stringFromResources("/issues/issue1086-1-input.yaml")) as Map<*, *>?
         val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
@@ -25,7 +25,7 @@ class DereferenceAliasesTest : FunSpec({
     }
 
     test("no aliases recursive") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val load = Load(settings)
         val map = load.loadOne(stringFromResources("/issues/issue1086-2-input.yaml")) as Map<*, *>?
         val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)

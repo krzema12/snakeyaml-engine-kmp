@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
  */
 class EnvTagTest : FunSpec({
     test("implicit resolver for env constructor") {
-        val loader = Compose(LoadSettings.builder().build())
+        val loader = Compose(LoadSettings())
         val loaded = loader.compose($$"${PATH}")
         loaded?.tag shouldBe Tag.ENV_TAG
     }

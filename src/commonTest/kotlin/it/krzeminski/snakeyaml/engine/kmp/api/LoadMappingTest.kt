@@ -9,7 +9,7 @@ class LoadMappingTest: FunSpec({
         val load = Load()
         @Suppress("UNCHECKED_CAST")
         val map = load.loadOne("{}") as Map<Int, Int>
-        map shouldBe LoadSettings.builder().build().defaultMap.invoke(0)
+        map shouldBe LoadSettings().defaultMap.invoke(0)
     }
 
     test("map {a: 1} is parsed") {

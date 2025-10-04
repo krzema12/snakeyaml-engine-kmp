@@ -15,7 +15,7 @@ import okio.use
 
 class ReaderStringTest : FunSpec({
     test("check printable") {
-        val reader = StreamReader(LoadSettings.builder().build(), "test")
+        val reader = StreamReader(LoadSettings(), "test")
         reader.peek(4) shouldBe 0
         StreamReader.isPrintable("test") shouldBe true
     }
@@ -23,7 +23,7 @@ class ReaderStringTest : FunSpec({
     test("check non-printable") {
         StreamReader.isPrintable("test\u0005 fail") shouldBe false
         shouldThrow<ReaderException> {
-            val reader = StreamReader(LoadSettings.builder().build(), "test\u0005 fail")
+            val reader = StreamReader(LoadSettings(), "test\u0005 fail")
             while (reader.peek() != 0) {
                 reader.forward()
             }
@@ -46,7 +46,7 @@ class ReaderStringTest : FunSpec({
 
                 var charsArrayResult = true
                 try {
-                    StreamReader(LoadSettings.builder().build(), str).peek()
+                    StreamReader(LoadSettings(), str).peek()
                 } catch (e: Exception) {
                     (
                         (e.message?.startsWith("unacceptable character") ?: false)
@@ -71,7 +71,7 @@ class ReaderStringTest : FunSpec({
     test("high surrogates alone") {
         for (i in 0xD800..0xDBFF) {
             val str = charArrayOf(i.toChar()).concatToString()
-            val reader = StreamReader(LoadSettings.builder().build(), str)
+            val reader = StreamReader(LoadSettings(), str)
             reader.peek() shouldBe '?'.code
         }
     }
@@ -79,17 +79,17 @@ class ReaderStringTest : FunSpec({
     test("low surrogates alone") {
         for (i in 0xDC00..0xDFFF) {
             val str = charArrayOf(i.toChar()).concatToString()
-            val reader = StreamReader(LoadSettings.builder().build(), str)
+            val reader = StreamReader(LoadSettings(), str)
             reader.peek() shouldBe '?'.code
         }
     }
 
     test("forward") {
-        val reader = StreamReader(LoadSettings.builder().build(), "test")
+        val reader = StreamReader(LoadSettings(), "test")
         while (reader.peek() != 0) {
             reader.forward(1)
         }
-        val reader2 = StreamReader(LoadSettings.builder().build(), "test")
+        val reader2 = StreamReader(LoadSettings(), "test")
         reader2.peek() shouldBe 't'.code
         reader2.forward()
         reader2.peek() shouldBe 'e'.code
@@ -102,7 +102,7 @@ class ReaderStringTest : FunSpec({
     }
 
     test("peek int") {
-        val reader = StreamReader(LoadSettings.builder().build(), "test")
+        val reader = StreamReader(LoadSettings(), "test")
         reader.peek(0) shouldBe 't'.code
         reader.peek(1) shouldBe 'e'.code
         reader.peek(2) shouldBe 's'.code
@@ -115,7 +115,7 @@ class ReaderStringTest : FunSpec({
 
     test("read first codepoint from a yaml that does not fit in memory") {
         LargeSource(maxSizeBytes = 50.GiB).use { source ->
-            val reader = StreamReader(LoadSettings.builder().build(), source)
+            val reader = StreamReader(LoadSettings(), source)
             reader.peek() shouldBe '-'.code
         }
     }

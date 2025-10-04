@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class NullJsonTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(JsonSchema()).build())
+    val loader = Load(LoadSettings(schema = JsonSchema()))
 
     test("parse null") {
         forAll(

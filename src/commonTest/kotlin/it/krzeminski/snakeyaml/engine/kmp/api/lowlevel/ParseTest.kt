@@ -10,7 +10,7 @@ import okio.Buffer
 
 class ParseTest : FunSpec({
     test("parse empty string") {
-        val parse = Parse(LoadSettings.builder().build())
+        val parse = Parse(LoadSettings())
         val events = parse.parse("")
         val list = events.toList()
         list.size shouldBe 2
@@ -18,7 +18,7 @@ class ParseTest : FunSpec({
     }
 
     test("parse empty buffer") {
-        val parse = Parse(LoadSettings.builder().build())
+        val parse = Parse(LoadSettings())
         val events = parse.parse(Buffer())
         val list = events.toList()
         list.size shouldBe 2

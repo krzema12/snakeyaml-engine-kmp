@@ -84,7 +84,7 @@ class SetWidthTest : FunSpec({
 })
 
 private fun parseBack(yaml: String): String {
-    val settings = LoadSettings.builder().build()
+    val settings = LoadSettings()
     val load = Load(settings)
     return load.loadOne(yaml).toString()
 }

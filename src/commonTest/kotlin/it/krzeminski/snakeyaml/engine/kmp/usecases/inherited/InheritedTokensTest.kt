@@ -51,7 +51,7 @@ class InheritedTokensTest: FunSpec({
             }
 
             val tokens1 = mutableListOf<String>()
-            val settings = LoadSettings.builder().build()
+            val settings = LoadSettings()
             getFileByName(dataName).source().use { source ->
                 val reader = StreamReader(
                     loadSettings = settings,
@@ -87,7 +87,7 @@ class InheritedTokensTest: FunSpec({
         files.forEach { file ->
             val tokens = mutableListOf<String>()
             file.source().use { source ->
-                val settings = LoadSettings.builder().build()
+                val settings = LoadSettings()
                 val reader = StreamReader(settings, YamlUnicodeReader(source))
                 val scanner = ScannerImpl(settings, reader)
                 try {

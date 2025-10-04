@@ -21,7 +21,7 @@ class InheritedReaderTest: FunSpec({
             .forEach { input ->
                 input.source().use { source ->
                     val unicodeReader = YamlUnicodeReader(source)
-                    val stream = StreamReader(LoadSettings.builder().build(), unicodeReader)
+                    val stream = StreamReader(LoadSettings(), unicodeReader)
                     try {
                         while (stream.peek() != 0) {
                             stream.forward()

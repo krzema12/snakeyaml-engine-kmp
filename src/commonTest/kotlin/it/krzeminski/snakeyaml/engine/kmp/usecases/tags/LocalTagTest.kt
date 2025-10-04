@@ -17,7 +17,7 @@ class LocalTagTest : FunSpec({
     test("local tag") {
         // register to call CustomConstructor when the Tag !ImportValue is found
         val tagConstructors = mapOf(Tag("!ImportValue") to CustomConstructor())
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val settings = LoadSettings(tagConstructors = tagConstructors)
         val loader = Load(settings)
         val obj = loader.loadOne("VpcId: !ImportValue SpokeVPC")
         val map = obj as Map<String, ImportValueImpl>

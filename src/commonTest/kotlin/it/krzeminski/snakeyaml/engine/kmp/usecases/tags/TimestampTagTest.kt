@@ -20,21 +20,21 @@ import kotlinx.datetime.LocalDateTime
 class TimestampTagTest : FunSpec({
     test("explicit tag") {
         val tagConstructors = mapOf(myTimeTag to TimestampConstructor())
-        val settings = LoadSettings.builder().setTagConstructors(tagConstructors).build()
+        val settings = LoadSettings(tagConstructors = tagConstructors)
         val loader = Load(settings)
         val obj = loader.loadOne("!!timestamp 2020-03-24T12:34:00.333") as LocalDateTime
         obj shouldBe LocalDateTime(2020, 3, 24, 12, 34, 0, 333000000)
     }
 
     test("implicit tag") {
-        val settings = LoadSettings.builder().setSchema(TimestampSchema()).build()
+        val settings = LoadSettings(schema = TimestampSchema())
         val loader = Load(settings)
         val obj = loader.loadOne("2020-03-24T12:34:00.333") as LocalDateTime
         obj shouldBe LocalDateTime(2020, 3, 24, 12, 34, 0, 333000000)
     }
 
     test("implicit tag in map") {
-        val settings = LoadSettings.builder().setSchema(TimestampSchema()).build()
+        val settings = LoadSettings(schema = TimestampSchema())
         val loader = Load(settings)
         val map = loader.loadOne("time: 2020-03-24T13:44:10.333") as Map<String, LocalDateTime>
         val time = map["time"]!!

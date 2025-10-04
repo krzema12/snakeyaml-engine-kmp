@@ -14,7 +14,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class FailsafeTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(FailsafeSchema()).build())
+    val loader = Load(LoadSettings(schema = FailsafeSchema()))
 
     test("parse string") {
         forAll(

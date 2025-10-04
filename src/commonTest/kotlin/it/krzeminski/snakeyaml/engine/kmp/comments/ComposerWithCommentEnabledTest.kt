@@ -363,7 +363,7 @@ class ComposerWithCommentEnabledTest: FunSpec({
             "abc: def # comment\n" + //
             "\n" + //
             "\n"
-        val sut = TestConstructor(LoadSettings.builder().build())
+        val sut = TestConstructor(LoadSettings())
         val composer = newComposerWithCommentsEnabled(data)
         val result = sut.constructSingleDocument(composer.getSingleNode())
         val map = result.shouldBeInstanceOf<LinkedHashMap<String, Any>>()
@@ -394,7 +394,7 @@ class ComposerWithCommentEnabledTest: FunSpec({
 })
 
 private fun newComposerWithCommentsEnabled(data: String): Composer {
-    val settings = LoadSettings.builder().setParseComments(true).build()
+    val settings = LoadSettings(parseComments = true)
     return Composer(settings, ParserImpl(settings, StreamReader(settings, data)))
 }
 

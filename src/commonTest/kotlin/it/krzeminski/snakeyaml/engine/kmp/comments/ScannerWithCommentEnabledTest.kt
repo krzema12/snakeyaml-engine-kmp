@@ -315,7 +315,7 @@ class ScannerWithCommentEnabledTest: FunSpec({
 })
 
 private fun constructScanner(input: String): Scanner {
-    val settings = LoadSettings.builder().setParseComments(true).build()
+    val settings = LoadSettings(parseComments = true)
     return ScannerImpl(settings, StreamReader(settings, input))
 }
 

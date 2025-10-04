@@ -77,7 +77,7 @@ class DumpLineBreakTest : FunSpec({
     }
 })
 
-private val loadSettings = LoadSettings.builder().build()
+private val loadSettings = LoadSettings()
 private val load = Load(loadSettings)
 
 private fun check(style: ScalarStyle, yaml: String, expected: String) {

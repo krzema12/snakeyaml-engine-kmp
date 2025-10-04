@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class StreamReaderTest : FunSpec({
-    val loadSettings = LoadSettings.builder().build()
+    val loadSettings = LoadSettings()
     fun reader(stream: String): StreamReader = StreamReader(loadSettings, stream)
 
     test("test peeking and forwarding") {

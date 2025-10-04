@@ -41,9 +41,7 @@ class EmitterWithCommentEnabledTest : FunSpec({
         val serializer = Serializer(dumpSettings, Emitter(dumpSettings, output))
 
         serializer.emitStreamStart()
-        val loadSettings = LoadSettings.builder()
-            .setParseComments(true)
-            .build()
+        val loadSettings = LoadSettings(parseComments = true)
         val composer = Composer(
             loadSettings,
             ParserImpl(loadSettings, StreamReader(loadSettings, data))
@@ -404,8 +402,7 @@ core:
     showMyNotices: false
 """
 
-        val loadSettings =
-            LoadSettings.builder().setMaxAliasesForCollections(Int.MAX_VALUE).build()
+        val loadSettings = LoadSettings(maxAliasesForCollections = Int.MAX_VALUE)
 
         val load = Load(loadSettings)
         load.loadAll(complexConfig)

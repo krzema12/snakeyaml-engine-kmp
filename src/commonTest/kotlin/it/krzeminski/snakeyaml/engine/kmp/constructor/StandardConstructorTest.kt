@@ -8,10 +8,10 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class StandardConstructorTest: FunSpec({
     test("construct merge example") {
-        val compose = Compose(LoadSettings.builder().build())
+        val compose = Compose(LoadSettings())
         val node = compose.compose(stringFromResources("/load/list1.yaml"))
         node.shouldNotBeNull()
-        val constructor = StandardConstructor(LoadSettings.builder().build())
+        val constructor = StandardConstructor(LoadSettings())
         val obj = constructor.construct(node)
         obj.shouldNotBeNull()
     }

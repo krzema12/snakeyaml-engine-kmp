@@ -56,7 +56,7 @@ class RecursiveMapTest : FunSpec({
     }
 
     test("load map with recursive keys if it is explicitly allowed") {
-        val settings = LoadSettings.builder().setAllowRecursiveKeys(true).build()
+        val settings = LoadSettings(allowRecursiveKeys = true)
         val load = Load(settings)
         // load map which has only one key - reference to itself
         val recursive = load.loadOne("&id002\n*id002 : foo") as Map<Any, Any>

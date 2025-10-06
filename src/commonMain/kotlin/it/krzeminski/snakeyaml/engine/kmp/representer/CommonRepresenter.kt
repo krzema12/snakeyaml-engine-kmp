@@ -75,18 +75,18 @@ open class CommonRepresenter(
 
     /** Create [Node] for [Byte], [Short], [Int], [Long], [Float], [Double] */
     protected val representNumber = RepresentToNode { data: Any ->
-        if (isInteger(data as Number)) {
+        val number = data as Number
+        if (isInteger(number)) {
             val value = data.toString()
             representScalar(
                 getTag(data::class) { Tag.INT },
                 value,
             )
         } else {
-            val number = data as Number
             val value = when {
                 number.isNotANumber() -> ".nan"
                 number.isInfinity() -> if (number.isPositive()) ".inf" else "-.inf"
-                else                                                                    -> number.toString()
+                else -> number.toString()
             }
             representScalar(
                 getTag(data::class) { Tag.FLOAT },

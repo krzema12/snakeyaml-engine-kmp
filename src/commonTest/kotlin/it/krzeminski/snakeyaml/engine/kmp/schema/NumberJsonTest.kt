@@ -66,12 +66,13 @@ class NumberJsonTest : FunSpec({
         forAll(
             table(
                 headers("input", "expected"),
-                // FIXME: There's a different behavior for JS, and it's a bug.
-                //  Tracking in https://github.com/krzema12/snakeyaml-engine-kmp/issues/526.
+                // It's most likely not possible to distinguish between float and integer in JS,
+                // if the part after the decimal point is zero. That's why the behavior for JS
+                // is a bit different.
                 row(1.0, if (platform != Platform.JS) "1.0\n" else "1\n"),
                 row(-1.0, if (platform != Platform.JS) "-1.0\n" else "-1\n"),
                 row(0.0, if (platform != Platform.JS) "0.0\n" else "0\n"),
-                row(123.456, if (platform != Platform.JS) "123.456\n" else "!!int '123.456'\n")
+                row(123.456, "123.456\n")
             )
         ) { input, expected ->
             dumper.dumpToString(input) shouldBe expected

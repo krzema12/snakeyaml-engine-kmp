@@ -31,7 +31,7 @@ class ParseEmitTest : FunSpec({
  */
 private fun yamlToYaml(input: String, output: StringOutputStream) {
     val parser = Parse(LoadSettings())
-    val emitter = Emitter(DumpSettings.builder().build(), output)
+    val emitter = Emitter(DumpSettings(), output)
     for (event in parser.parse(input)) {
         emitter.emit(event)
     }

@@ -33,11 +33,11 @@ class EmitterWithCommentEnabledTest : FunSpec({
     fun runEmitterWithCommentsEnabled(data: String): String {
         val output: StreamDataWriter = StringOutputStream()
 
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setDumpComments(true)
-            .build()
+        val dumpSettings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.PLAIN,
+            defaultFlowStyle = FlowStyle.BLOCK,
+            dumpComments = true,
+        )
         val serializer = Serializer(dumpSettings, Emitter(dumpSettings, output))
 
         serializer.emitStreamStart()
@@ -55,12 +55,12 @@ class EmitterWithCommentEnabledTest : FunSpec({
     }
 
     fun producePrettyFlowEmitter(output: StreamDataWriter): Emitter {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setDumpComments(true)
-            .setMultiLineFlow(true)
-            .build()
+        val dumpSettings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.PLAIN,
+            defaultFlowStyle = FlowStyle.FLOW,
+            dumpComments = true,
+            isMultiLineFlow = true,
+        )
         return Emitter(dumpSettings, output)
     }
 

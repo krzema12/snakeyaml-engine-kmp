@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.events.*
 class SimpleEndToEndTest : FunSpec({
     test("simple case") {
         // Given
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val writer = StringStreamDataWriter()
         val emitter = Emitter(opts = settings, stream = writer)
 

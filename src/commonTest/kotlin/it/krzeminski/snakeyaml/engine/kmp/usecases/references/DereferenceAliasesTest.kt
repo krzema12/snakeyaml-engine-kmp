@@ -16,8 +16,10 @@ class DereferenceAliasesTest : FunSpec({
         val settings = LoadSettings()
         val load = Load(settings)
         val map = load.loadOne(stringFromResources("/issues/issue1086-1-input.yaml")) as Map<*, *>?
-        val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setDereferenceAliases(true).build()
+        val setting = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            isDereferenceAliases = true,
+        )
         val dump = Dump(setting)
         val node = dump.dumpToString(map)
         val expected = stringFromResources("/issues/issue1086-1-expected.yaml")
@@ -28,8 +30,7 @@ class DereferenceAliasesTest : FunSpec({
         val settings = LoadSettings()
         val load = Load(settings)
         val map = load.loadOne(stringFromResources("/issues/issue1086-2-input.yaml")) as Map<*, *>?
-        val setting = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setDereferenceAliases(true).build()
+        val setting = DumpSettings(defaultFlowStyle = FlowStyle.BLOCK, isDereferenceAliases = true)
         val dump = Dump(setting)
         shouldThrow<YamlEngineException> {
             dump.dumpToString(map)

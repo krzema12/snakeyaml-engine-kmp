@@ -15,7 +15,7 @@ class SetWidthTest : FunSpec({
     val stringToSerialize = "arn:aws:iam::12345678901234567890:foobarbaz:testing:testing2:role/github-actions-role/\${{ github.token }}"
 
     test("emitted plain text via Dump with limited width should be split") {
-        val settings = DumpSettings.builder().setWidth(80).build() // Intentionally limited.
+        val settings = DumpSettings(width = 80) // Intentionally limited.
         val writer = StringStreamDataWriter()
         val dump = Dump(settings)
         dump.dump(stringToSerialize, writer)
@@ -26,7 +26,7 @@ class SetWidthTest : FunSpec({
     }
 
     test("emitted plain text via Emitter with limited width should be split") {
-        val settings = DumpSettings.builder().setWidth(80).build() // Intentionally limited.
+        val settings = DumpSettings(width = 80) // Intentionally limited.
         val writer = StringStreamDataWriter()
         with(Emitter(settings, writer)) {
             emit(StreamStartEvent())
@@ -47,7 +47,7 @@ class SetWidthTest : FunSpec({
     }
 
     test("emitted plain text via Emitter with width longer than emitted text should not be split") {
-        val settings = DumpSettings.builder().setWidth(180).build() // Intentionally limited.
+        val settings = DumpSettings(width = 180) // Intentionally limited.
         val writer = StringStreamDataWriter()
         with(Emitter(settings, writer)) {
             emit(StreamStartEvent())
@@ -69,10 +69,10 @@ class SetWidthTest : FunSpec({
     }
 
     test("emitted plain text with limited width and folded scalar style should be split") {
-        val settings = DumpSettings.builder()
-            .setWidth(80) // Intentionally limited.
-            .setDefaultScalarStyle(ScalarStyle.FOLDED)
-            .build()
+        val settings = DumpSettings(
+            width = 80, // Intentionally limited.
+            defaultScalarStyle = ScalarStyle.FOLDED,
+        )
         val dump = Dump(settings)
         val yaml = dump.dumpToString(stringToSerialize)
         val expected = ">-\n" +

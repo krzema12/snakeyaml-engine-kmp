@@ -10,10 +10,7 @@ import okio.Buffer
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
 class DumpBenchmark {
-    private val dumper = Dump(
-        DumpSettings.builder()
-            .build(),
-    )
+    private val dumper = Dump(DumpSettings())
 
     private val streamDataWriter = object : StreamDataWriter {
         val buffer = Buffer()

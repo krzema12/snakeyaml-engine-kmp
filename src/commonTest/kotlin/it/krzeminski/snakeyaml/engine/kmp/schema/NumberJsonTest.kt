@@ -47,7 +47,7 @@ class NumberJsonTest : FunSpec({
     }
 
     test("dump integer") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),
@@ -62,7 +62,7 @@ class NumberJsonTest : FunSpec({
     }
 
     test("dump float") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),

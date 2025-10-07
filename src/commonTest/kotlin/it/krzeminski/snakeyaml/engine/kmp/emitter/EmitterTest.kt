@@ -20,9 +20,7 @@ import it.krzeminski.snakeyaml.engine.kmp.internal.utils.Character
 
 class EmitterTest: FunSpec({
     test("write folded") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.FOLDED)
-            .build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.FOLDED)
         val folded = "0123456789 0123456789\n0123456789 0123456789"
         val map = mapOf(
             "aaa" to folded,
@@ -43,9 +41,7 @@ class EmitterTest: FunSpec({
     }
 
     test("write literal") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.LITERAL)
-            .build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.LITERAL)
         val folded = "0123456789 0123456789 0123456789 0123456789"
         val map = mapOf(
             "aaa" to folded,
@@ -64,9 +60,7 @@ class EmitterTest: FunSpec({
     }
 
     test("write plain") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.PLAIN)
         val folded = "0123456789 0123456789\n0123456789 0123456789"
         val map = mapOf(
             "aaa" to folded,
@@ -86,10 +80,10 @@ class EmitterTest: FunSpec({
     }
 
     test("write plain pretty") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setMultiLineFlow(true)
-            .build()
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.PLAIN,
+            isMultiLineFlow = true,
+        )
         val folded = "0123456789 0123456789\n0123456789 0123456789"
        val map = mapOf(
             "aaa" to folded,
@@ -110,9 +104,7 @@ class EmitterTest: FunSpec({
 
 
     test("write single quoted") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
-            .build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.SINGLE_QUOTED)
         val folded = "0123456789 0123456789\n0123456789 0123456789"
         val map = mapOf(
             "aaa" to folded,
@@ -132,9 +124,7 @@ class EmitterTest: FunSpec({
     }
 
     test("write double quoted") {
-        val settings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED)
         val folded = "0123456789 0123456789\n0123456789 0123456789"
         val map = mapOf(
             "aaa" to folded,
@@ -150,9 +140,7 @@ class EmitterTest: FunSpec({
     }
 
     test("write supplementary unicode") {
-        val settings = DumpSettings.builder()
-            .setUseUnicodeEncoding(false)
-            .build()
+        val settings = DumpSettings(isUseUnicodeEncoding = false)
         val burger = Character.toChars(0x1f354).concatToString()
         val halfBurger = "\uD83C"
         val output = StringStreamDataWriter()
@@ -166,16 +154,17 @@ class EmitterTest: FunSpec({
     }
 
     test("split line, expect first flow sequence item") {
-        val builder = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setWidth(8)
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 8,
+        )
         val map = mapOf(
             "12345" to listOf("1111111111"),
         )
 
         // Split lines enabled (default)
-        val output = dump(builder.build(), map)
+        val output = dump(settings, map)
         output shouldBe """
             {"12345": [
                 "1111111111"]}
@@ -183,7 +172,13 @@ class EmitterTest: FunSpec({
             """.trimIndent()
 
         // Split lines disabled
-        val output2 = dump(builder.setSplitLines(false).build(), map)
+        val settings2 = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 8,
+            isSplitLines = false,
+        )
+        val output2 = dump(settings2, map)
         output2 shouldBe """
             {"12345": ["1111111111"]}
 
@@ -191,11 +186,11 @@ class EmitterTest: FunSpec({
     }
 
     test("write indicator indent") {
-        val settings = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setIndent(5)
-            .setIndicatorIndent(2)
-            .build()
+        val settings = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            indent = 5,
+            indicatorIndent = 2,
+        )
         val topLevel = listOf(mapOf("k1" to "v1"), mapOf("k2" to "v2"))
         val map = mapOf("aaa" to topLevel)
         val output = dump(settings, map)
@@ -209,12 +204,13 @@ class EmitterTest: FunSpec({
     }
 
     test("split line, expect flow sequence item") {
-        val builder = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setWidth(8)
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 8,
+        )
         // Split lines enabled (default)
-        val yaml1 = Dump(builder.build())
+        val yaml1 = Dump(settings)
         val output = yaml1.dumpToString(listOf("1111111111", "2222222222"))
         output shouldBe """
             ["1111111111",
@@ -228,7 +224,13 @@ class EmitterTest: FunSpec({
             """.trimIndent()
 
         // Split lines disabled
-        val yaml2 = Dump(builder.setSplitLines(false).build())
+        val settings2 = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 8,
+            isSplitLines = false,
+        )
+        val yaml2 = Dump(settings2)
         val output3 = yaml2.dumpToString(listOf("1111111111", "2222222222"))
         output3 shouldBe """
             ["1111111111", "2222222222"]
@@ -242,29 +244,35 @@ class EmitterTest: FunSpec({
     }
 
     test("split line, expect first flow mapping key") {
-        val builder = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setWidth(16)
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 16,
+        )
         val nonSplitMap = mapOf("3" to "4")
         val nonSplitContainerMap = mapOf("1 2" to nonSplitMap)
         val splitMap = mapOf("3333333333" to "4444444444")
         val  splitContainerMap = mapOf("1111111111 2222222222" to splitMap)
 
         // Split lines enabled (default)
-        val output = dump(builder.build(), splitContainerMap)
+        val output = dump(settings, splitContainerMap)
         output shouldBe """
             {"1111111111 2222222222": {
                 "3333333333": "4444444444"}}
 
             """.trimIndent()
-        val output2 = dump(builder.build(), nonSplitContainerMap)
+        val output2 = dump(settings, nonSplitContainerMap)
         output2 shouldBe """
             {"1 2": {"3": "4"}}
 
             """.trimIndent()
         // Split lines disabled
-        val noSplit = builder.setSplitLines(false).build()
+        val noSplit = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 16,
+            isSplitLines = false,
+        )
         val output3 = dump(noSplit, splitContainerMap)
         output3 shouldBe """
             {"1111111111 2222222222": {"3333333333": "4444444444"}}
@@ -278,10 +286,11 @@ class EmitterTest: FunSpec({
     }
 
     test("split line, expect flow mapping key") {
-        val builder = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setWidth(16)
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 16,
+        )
         val nonSplitMap = mapOf(
             "1" to "2",
             "3" to "4",
@@ -292,20 +301,25 @@ class EmitterTest: FunSpec({
         )
 
         // Split lines enabled (default)
-        val output = dump(builder.build(), splitMap)
+        val output = dump(settings, splitMap)
         output shouldBe """
             {"1111111111": "2222222222",
               "3333333333": "4444444444"}
 
             """.trimIndent()
-        val output2 = dump(builder.build(), nonSplitMap)
+        val output2 = dump(settings, nonSplitMap)
         output2 shouldBe """
             {"1": "2", "3": "4"}
 
             """.trimIndent()
 
         // Split lines disabled
-        val noSplit = builder.setSplitLines(false).build()
+        val noSplit = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 16,
+            isSplitLines = false,
+        )
         val output3 = dump(noSplit, splitMap)
         output3  shouldBe """
             {"1111111111": "2222222222", "3333333333": "4444444444"}
@@ -319,26 +333,24 @@ class EmitterTest: FunSpec({
     }
 
     test("anchor in maps") {
-        val builder = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.FLOW)
+        val settings = DumpSettings(defaultFlowStyle = FlowStyle.FLOW)
         var map1 = mutableMapOf<String, Any>()
         var map2 = mutableMapOf<String, Any>()
         map1.put("2", map2)
         map2.put("1", map1)
-        val output = dump(builder.build(), map1)
+        val output = dump(settings, map1)
         output shouldBe "&id001 {'2': {'1': *id001}}\n"
     }
 
 
     test("expected space to separate alias from colon") {
-        val builder = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.FLOW)
+        val settings = DumpSettings(defaultFlowStyle = FlowStyle.FLOW)
         // this is VERY BAD code
         // the map has itself as a key (no idea why it may be used except of a DoS attack)
         val f = mutableMapOf<Any, Any>()
         f.put(f, "a")
 
-        val output = dump(builder.build(), f)
+        val output = dump(settings, f)
         output shouldBe "&id001 {*id001 : a}\n"
         val load = Load(LoadSettings(allowRecursiveKeys = true))
         val obj = load.loadOne(output)
@@ -358,17 +370,18 @@ class EmitterTest: FunSpec({
     }
 
     test("allow setting big width") {
-        val builder = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setWidth(1000)
+        val settings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED,
+            defaultFlowStyle = FlowStyle.FLOW,
+            width = 1000,
+        )
         val map = mapOf(
             "12345" to "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
             "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
             "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890"
         )
 
-        val output = dump(builder.build(), map)
+        val output = dump(settings, map)
         output shouldBe "{\"12345\": \"1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
             "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 " +
             "1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890\"}\n"

@@ -28,7 +28,7 @@ class BooleanJsonTest : FunSpec({
     }
 
     test("dump boolean") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),

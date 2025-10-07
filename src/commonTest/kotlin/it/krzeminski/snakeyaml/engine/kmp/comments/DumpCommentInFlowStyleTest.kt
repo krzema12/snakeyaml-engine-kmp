@@ -21,7 +21,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
         val textNode = (node as MappingNode).value.first().valueNode
         textNode.inLineComments.shouldBeEmpty()
 
-        val serialize = Serialize(DumpSettings.builder().setDumpComments(true).build())
+        val serialize = Serialize(DumpSettings(dumpComments = true))
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(8)
     }
@@ -32,7 +32,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
         val node = loader.compose(content)!!
         extractInlineComment(node) shouldBe " comment breaks it"
 
-        val dumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val dumpSettings = DumpSettings(dumpComments = true)
         val serialize = Serialize(dumpSettings)
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(9)
@@ -49,7 +49,7 @@ class DumpCommentInFlowStyleTest : FunSpec({
 
         extractInlineComment(node) shouldBe " comment breaks it"
 
-        val dumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val dumpSettings = DumpSettings(dumpComments = true)
         val serialize = Serialize(dumpSettings)
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(9)

@@ -27,7 +27,7 @@ class NullJsonTest : FunSpec({
     }
 
     test("dump null") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         dumper.dumpToString(null) shouldBe "null\n"
     }
 })

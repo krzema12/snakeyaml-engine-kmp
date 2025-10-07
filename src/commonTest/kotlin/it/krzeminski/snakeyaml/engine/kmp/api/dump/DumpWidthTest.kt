@@ -8,14 +8,21 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 
 class DumpWidthTest : FunSpec({
-    fun dumpSettingWithSplit() = DumpSettings.builder().setSplitLines(true)
-    fun dumpSettingWithoutSplit() = DumpSettings.builder().setSplitLines(false)
+    fun dumpSettingWithSplit(defaultScalarStyle: ScalarStyle, width: Int = DumpSettings().width) = DumpSettings(
+        defaultScalarStyle = defaultScalarStyle,
+        isSplitLines = true,
+        width = width,
+    )
+    fun dumpSettingWithoutSplit(defaultScalarStyle: ScalarStyle) = DumpSettings(
+        defaultScalarStyle = defaultScalarStyle,
+        isSplitLines = false,
+    )
 
     val data1 = "1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000"
     val data2 = "1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000"
 
     test("split lines double quoted") {
-        val dump = Dump(dumpSettingWithSplit().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build())
+        val dump = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED))
         // Split lines enabled (default)
         var output = dump.dumpToString(data1)
         output shouldBe "\"1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\\\n  \\ 9999999999 0000000000\"\n"
@@ -25,13 +32,13 @@ class DumpWidthTest : FunSpec({
         output shouldBe "\"1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777\\\n  \\  8888888888  9999999999  0000000000\"\n"
 
         // Split lines disabled
-        val dump2 = Dump(dumpSettingWithoutSplit().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build())
+        val dump2 = Dump(dumpSettingWithoutSplit(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED))
 
         output = dump2.dumpToString(data1)
         output shouldBe "\"1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\"\n"
 
         // setWidth
-        val dump3 = Dump(dumpSettingWithSplit().setWidth(15).setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build())
+        val dump3 = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED, width = 15))
         output = dump3.dumpToString(data1)
         output shouldBe "\"1111111111 2222222222\\\n" + "  \\ 3333333333 4444444444\\\n" +
                 "  \\ 5555555555 6666666666\\\n" + "  \\ 7777777777 8888888888\\\n" +
@@ -39,7 +46,7 @@ class DumpWidthTest : FunSpec({
     }
 
     test("split lines single quoted") {
-        val dump = Dump(dumpSettingWithSplit().setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED).build())
+        val dump = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.SINGLE_QUOTED))
         // Split lines enabled (default)
         var output = dump.dumpToString(data1)
         output shouldBe "'1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000'\n"
@@ -49,14 +56,14 @@ class DumpWidthTest : FunSpec({
         output shouldBe "'1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000'\n"
 
         // Split lines disabled
-        val dump2 = Dump(dumpSettingWithoutSplit().setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED).build())
+        val dump2 = Dump(dumpSettingWithoutSplit(defaultScalarStyle = ScalarStyle.SINGLE_QUOTED))
 
         output = dump2.dumpToString(data1)
         output shouldBe "'1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000'\n"
     }
 
     test("split lines folded") {
-        val dump = Dump(dumpSettingWithSplit().setDefaultScalarStyle(ScalarStyle.FOLDED).build())
+        val dump = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.FOLDED))
         // Split lines enabled (default)
         var output = dump.dumpToString(data1)
         output shouldBe ">-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n"
@@ -70,21 +77,21 @@ class DumpWidthTest : FunSpec({
         output shouldBe ">-\n  1111111111  2222222222  3333333333  4444444444  5555555555  6666666666  7777777777  8888888888  9999999999  0000000000\n"
 
         // Split lines disabled
-        val dump2 = Dump(dumpSettingWithoutSplit().setDefaultScalarStyle(ScalarStyle.FOLDED).build())
+        val dump2 = Dump(dumpSettingWithoutSplit(defaultScalarStyle = ScalarStyle.FOLDED))
 
         output = dump2.dumpToString(data1)
         output shouldBe ">-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\n"
     }
 
     test("split lines literal") {
-        val dump = Dump(dumpSettingWithSplit().setDefaultScalarStyle(ScalarStyle.LITERAL).build())
+        val dump = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.LITERAL))
         val output = dump.dumpToString(data1)
         // Split lines enabled (default) -- split lines does not apply to literal style
         output shouldBe "|-\n  1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888 9999999999 0000000000\n"
     }
 
     test("split lines plain") {
-        val dump = Dump(dumpSettingWithSplit().setDefaultScalarStyle(ScalarStyle.PLAIN).build())
+        val dump = Dump(dumpSettingWithSplit(defaultScalarStyle = ScalarStyle.PLAIN))
         // Split lines enabled (default)
         var output = dump.dumpToString(data1)
         output shouldBe "1111111111 2222222222 3333333333 4444444444 5555555555 6666666666 7777777777 8888888888\n  9999999999 0000000000\n"
@@ -94,7 +101,7 @@ class DumpWidthTest : FunSpec({
         output shouldBe "$data2\n"
 
         // Split lines disabled
-        val dump2 = Dump(dumpSettingWithoutSplit().setDefaultScalarStyle(ScalarStyle.PLAIN).build())
+        val dump2 = Dump(dumpSettingWithoutSplit(defaultScalarStyle = ScalarStyle.PLAIN))
 
         output = dump2.dumpToString(data1)
         output shouldBe "$data1\n"

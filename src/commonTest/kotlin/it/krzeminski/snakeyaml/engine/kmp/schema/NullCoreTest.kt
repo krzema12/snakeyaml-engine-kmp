@@ -30,7 +30,7 @@ class NullCoreTest : FunSpec({
     }
 
     test("dump null") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         dumper.dumpToString(null) shouldBe "null\n"
     }
 })

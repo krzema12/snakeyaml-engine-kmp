@@ -33,7 +33,7 @@ class FailsafeTest : FunSpec({
     }
 
     test("dump string") {
-        val dumper = Dump(DumpSettings.builder().setSchema(FailsafeSchema()).build())
+        val dumper = Dump(DumpSettings(schema = FailsafeSchema()))
         forAll(
             table(
                 headers("input", "expected"),

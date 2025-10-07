@@ -19,24 +19,25 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/Dump {
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings {
-	public static final field Companion Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings$Companion;
-	public final field anchorGenerator Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;
-	public final field bestLineBreak Ljava/lang/String;
-	public final field defaultFlowStyle Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
-	public final field defaultScalarStyle Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
-	public final field dumpComments Z
-	public final field explicitRootTag Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
-	public final field indent I
-	public final field indentWithIndicator Z
-	public final field indicatorIndent I
-	public final field maxSimpleKeyLength I
-	public final field nonPrintableStyle Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
-	public final field schema Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
-	public final field tagDirective Ljava/util/Map;
-	public final field width I
-	public final field yamlDirective Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
-	public static final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun getCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;)Ljava/lang/Object;
+	public fun <init> ()V
+	public fun <init> (ZZLit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;ZZZIIILjava/lang/String;ZILjava/util/Map;ZZZ)V
+	public synthetic fun <init> (ZZLit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;ZZZIIILjava/lang/String;ZILjava/util/Map;ZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAnchorGenerator ()Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;
+	public final fun getBestLineBreak ()Ljava/lang/String;
+	public final fun getCustomProperties ()Ljava/util/Map;
+	public final fun getDefaultFlowStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;
+	public final fun getDefaultScalarStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;
+	public final fun getDumpComments ()Z
+	public final fun getExplicitRootTag ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;
+	public final fun getIndent ()I
+	public final fun getIndentWithIndicator ()Z
+	public final fun getIndicatorIndent ()I
+	public final fun getMaxSimpleKeyLength ()I
+	public final fun getNonPrintableStyle ()Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;
+	public final fun getSchema ()Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;
+	public final fun getTagDirective ()Ljava/util/Map;
+	public final fun getWidth ()I
+	public final fun getYamlDirective ()Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;
 	public final fun isCanonical ()Z
 	public final fun isDereferenceAliases ()Z
 	public final fun isExplicitEnd ()Z
@@ -44,37 +45,6 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings {
 	public final fun isMultiLineFlow ()Z
 	public final fun isSplitLines ()Z
 	public final fun isUseUnicodeEncoding ()Z
-}
-
-public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettings$Companion {
-	public final fun builder ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-}
-
-public final class it/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder {
-	public final fun build ()Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettings;
-	public final fun setAnchorGenerator (Lit/krzeminski/snakeyaml/engine/kmp/serializer/AnchorGenerator;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setBestLineBreak (Ljava/lang/String;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setCanonical (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setCustomProperty (Lit/krzeminski/snakeyaml/engine/kmp/api/SettingKey;Ljava/lang/Object;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setDefaultFlowStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/FlowStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setDefaultScalarStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/ScalarStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setDereferenceAliases (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setDumpComments (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setExplicitEnd (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setExplicitRootTag (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Tag;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setExplicitStart (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setIndent (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setIndentWithIndicator (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setIndicatorIndent (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setMaxSimpleKeyLength (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setMultiLineFlow (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setNonPrintableStyle (Lit/krzeminski/snakeyaml/engine/kmp/common/NonPrintableStyle;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setSchema (Lit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setSplitLines (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setTagDirective (Ljava/util/Map;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setUseUnicodeEncoding (Z)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setWidth (I)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
-	public final fun setYamlDirective (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)Lit/krzeminski/snakeyaml/engine/kmp/api/DumpSettingsBuilder;
 }
 
 public final class it/krzeminski/snakeyaml/engine/kmp/api/Load {

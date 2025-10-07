@@ -50,7 +50,7 @@ class DumpWithoutSpaceTest : FunSpec({
             ":one" to true,
         )
         map[map] = true
-        val dumpSettings = DumpSettings.builder().build()
+        val dumpSettings = DumpSettings()
         val dump = Dump(dumpSettings)
         val output = dump.dumpToString(map)
         output shouldBe """|&id001

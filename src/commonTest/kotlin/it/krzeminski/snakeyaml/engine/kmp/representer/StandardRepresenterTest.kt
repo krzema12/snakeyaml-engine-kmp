@@ -21,7 +21,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 
 internal class StandardRepresenterTest : FunSpec({
-    val standardRepresenter = Representer(DumpSettings.builder().build())
+    val standardRepresenter = Representer(DumpSettings())
 
     test("Represent unknown class") {
         class MyCustomClass(val data: String)

@@ -121,7 +121,7 @@ class NumberCoreTest : FunSpec({
     }
 
     test("dump special doubles which are defined in the core schema") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         forAll(
             table(
                 headers("value", "string"),

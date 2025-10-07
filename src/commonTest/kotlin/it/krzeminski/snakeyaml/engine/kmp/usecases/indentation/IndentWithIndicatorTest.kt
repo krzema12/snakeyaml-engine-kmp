@@ -9,12 +9,12 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class IndentWithIndicatorTest : FunSpec({
     test("indent with indicator 1") {
-        val settings: DumpSettings = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setIndentWithIndicator(true)
-            .setIndent(2)
-            .setIndicatorIndent(1)
-            .build()
+        val settings = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            indentWithIndicator = true,
+            indent = 2,
+            indicatorIndent = 1,
+        )
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 
@@ -23,12 +23,12 @@ class IndentWithIndicatorTest : FunSpec({
     }
 
     test("indent with indicator 2") {
-        val settings: DumpSettings = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setIndentWithIndicator(true)
-            .setIndent(2)
-            .setIndicatorIndent(2)
-            .build()
+        val settings = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            indentWithIndicator = true,
+            indent = 2,
+            indicatorIndent = 2,
+        )
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 
@@ -37,12 +37,12 @@ class IndentWithIndicatorTest : FunSpec({
     }
 
     test("indent with indicator 3") {
-        val settings: DumpSettings = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setIndentWithIndicator(false)
-            .setIndent(4)
-            .setIndicatorIndent(2)
-            .build()
+        val settings = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            indentWithIndicator = false,
+            indent = 4,
+            indicatorIndent = 2,
+        )
         val dumper = Dump(settings)
         val output = dumper.dumpToString(DATA)
 

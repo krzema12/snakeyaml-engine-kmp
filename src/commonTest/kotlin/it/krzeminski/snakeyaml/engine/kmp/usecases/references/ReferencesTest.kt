@@ -56,7 +56,7 @@ class ReferencesTest : FunSpec({
         f.put(f, "a")
         f.put("g", root)
 
-        val dump = Dump(DumpSettings.builder().build())
+        val dump = Dump(DumpSettings())
         val output = dump.dumpToString(f)
         // TODO no replace should be needed
         return output.replace("001: ", "001 : ")

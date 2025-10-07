@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.events.*
 
 class EmitCommentTest : FunSpec({
     test("comment with scalar should not be ignored") {
-        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val settings = DumpSettings(dumpComments = true)
         val writer = StreamToStringWriter()
         val emitter = Emitter(settings, writer)
         emitter.emit(StreamStartEvent())
@@ -36,7 +36,7 @@ class EmitCommentTest : FunSpec({
     }
 
     test("only comment should not be ignored") {
-        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val settings = DumpSettings(dumpComments = true)
         val writer = StreamToStringWriter()
         val emitter = Emitter(settings, writer)
         emitter.emit(StreamStartEvent())

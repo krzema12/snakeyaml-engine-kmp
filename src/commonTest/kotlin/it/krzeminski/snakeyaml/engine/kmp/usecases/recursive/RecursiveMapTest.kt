@@ -35,7 +35,7 @@ class RecursiveMapTest : FunSpec({
         map1["next"] = map2
         map2["next"] = map1
 
-        val dump = Dump(DumpSettings.builder().build())
+        val dump = Dump(DumpSettings())
         val output1 = dump.dumpToString(map1)
         output1 shouldBe "&id001\nname: first\nnext:\n  name: second\n  next: *id001\n"
 

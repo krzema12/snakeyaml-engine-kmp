@@ -15,7 +15,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 class DumpLineBreakTest : FunSpec({
 
     test("dump default scalar style") {
-        val dumpSettings = DumpSettings.builder().build()
+        val dumpSettings = DumpSettings()
         dumpSettings.defaultScalarStyle shouldBe ScalarStyle.PLAIN
     }
 
@@ -81,9 +81,7 @@ private val loadSettings = LoadSettings()
 private val load = Load(loadSettings)
 
 private fun check(style: ScalarStyle, yaml: String, expected: String) {
-    val dumpSettings = DumpSettings.builder()
-        .setDefaultScalarStyle(style)
-        .build()
+    val dumpSettings = DumpSettings(defaultScalarStyle = style)
     val dump = Dump(dumpSettings)
     val dumpString = dump.dumpToString(yaml)
     dumpString shouldBe expected

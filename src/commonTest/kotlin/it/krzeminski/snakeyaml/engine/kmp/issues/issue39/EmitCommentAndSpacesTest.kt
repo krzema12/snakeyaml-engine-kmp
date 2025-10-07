@@ -19,7 +19,7 @@ class EmitCommentAndSpacesTest : FunSpec({
         val loadSettings = LoadSettings(parseComments = true)
         val input = stringFromResources("/issues/issue39-input.yaml")
         val parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
-        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val settings = DumpSettings(dumpComments = true)
         val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
         while (parser.hasNext()) {
@@ -34,7 +34,7 @@ class EmitCommentAndSpacesTest : FunSpec({
         val loadSettings = LoadSettings(parseComments = true)
         val input = "first:\n second: abc\n \n \n\n"
         val parser: Parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
-        val settings: DumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val settings: DumpSettings = DumpSettings(dumpComments = true)
         val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
         val events = mutableListOf<Event>()

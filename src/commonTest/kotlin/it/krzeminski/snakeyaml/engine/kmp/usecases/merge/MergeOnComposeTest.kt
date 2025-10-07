@@ -64,11 +64,9 @@ private fun merge(inputName: String, loadSettings: LoadSettings): String {
     val input = stringFromResources(inputName)
     val loader = Compose(loadSettings)
     val sourceTree = loader.compose(input)!!
-    val serialize = Serialize(DumpSettings.builder()
-        .setDereferenceAliases(true)
-        .build())
+    val serialize = Serialize(DumpSettings(isDereferenceAliases = true))
     val events = serialize.serializeOne(sourceTree)
-    val present = Present(DumpSettings.builder().build())
+    val present = Present(DumpSettings())
 
     return present.emitToString(events.iterator())
 }

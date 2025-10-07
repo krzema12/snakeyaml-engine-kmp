@@ -33,7 +33,7 @@ class BooleanCoreTest : FunSpec({
     }
 
     test("dump boolean") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         forAll(
             table(
                 headers("input", "expected"),

@@ -14,13 +14,13 @@ import it.krzeminski.snakeyaml.engine.kmp.events.StreamStartEvent
 
 class EmptyStringOutputTest : FunSpec({
     test("output empty string") {
-        val dumper = Dump(DumpSettings.builder().build())
+        val dumper = Dump(DumpSettings())
         val output = dumper.dumpToString("")
         output shouldBe "''\n"
     }
 
     test("output empty string with explicit start") {
-        val dumper = Dump(DumpSettings.builder().setExplicitStart(true).build())
+        val dumper = Dump(DumpSettings(isExplicitStart = true))
         val output = dumper.dumpToString("")
         output shouldBe "--- ''\n"
     }
@@ -35,7 +35,7 @@ class EmptyStringOutputTest : FunSpec({
 })
 
 private fun dump(value: String): String {
-    val settings = DumpSettings.builder().build()
+    val settings = DumpSettings()
     val writer = MyWriter()
     val emitter = Emitter(settings, writer)
     emitter.emit(StreamStartEvent())

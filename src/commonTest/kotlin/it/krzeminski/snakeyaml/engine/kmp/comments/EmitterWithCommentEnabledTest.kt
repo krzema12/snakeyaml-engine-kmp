@@ -33,17 +33,15 @@ class EmitterWithCommentEnabledTest : FunSpec({
     fun runEmitterWithCommentsEnabled(data: String): String {
         val output: StreamDataWriter = StringOutputStream()
 
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setDumpComments(true)
-            .build()
+        val dumpSettings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.PLAIN,
+            defaultFlowStyle = FlowStyle.BLOCK,
+            dumpComments = true,
+        )
         val serializer = Serializer(dumpSettings, Emitter(dumpSettings, output))
 
         serializer.emitStreamStart()
-        val loadSettings = LoadSettings.builder()
-            .setParseComments(true)
-            .build()
+        val loadSettings = LoadSettings(parseComments = true)
         val composer = Composer(
             loadSettings,
             ParserImpl(loadSettings, StreamReader(loadSettings, data))
@@ -57,12 +55,12 @@ class EmitterWithCommentEnabledTest : FunSpec({
     }
 
     fun producePrettyFlowEmitter(output: StreamDataWriter): Emitter {
-        val dumpSettings = DumpSettings.builder()
-            .setDefaultScalarStyle(ScalarStyle.PLAIN)
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setDumpComments(true)
-            .setMultiLineFlow(true)
-            .build()
+        val dumpSettings = DumpSettings(
+            defaultScalarStyle = ScalarStyle.PLAIN,
+            defaultFlowStyle = FlowStyle.FLOW,
+            dumpComments = true,
+            isMultiLineFlow = true,
+        )
         return Emitter(dumpSettings, output)
     }
 
@@ -404,8 +402,7 @@ core:
     showMyNotices: false
 """
 
-        val loadSettings =
-            LoadSettings.builder().setMaxAliasesForCollections(Int.MAX_VALUE).build()
+        val loadSettings = LoadSettings(maxAliasesForCollections = Int.MAX_VALUE)
 
         val load = Load(loadSettings)
         load.loadAll(complexConfig)

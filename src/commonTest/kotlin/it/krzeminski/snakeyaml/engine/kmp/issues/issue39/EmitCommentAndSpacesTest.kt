@@ -16,10 +16,10 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 
 class EmitCommentAndSpacesTest : FunSpec({
     test("Issue 39: extra space added") {
-        val loadSettings = LoadSettings.builder().setParseComments(true).build()
+        val loadSettings = LoadSettings(parseComments = true)
         val input = stringFromResources("/issues/issue39-input.yaml")
         val parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
-        val settings = DumpSettings.builder().setDumpComments(true).build()
+        val settings = DumpSettings(dumpComments = true)
         val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
         while (parser.hasNext()) {
@@ -31,10 +31,10 @@ class EmitCommentAndSpacesTest : FunSpec({
 
     test("Issue 39: extra space added - small example") {
 
-        val loadSettings = LoadSettings.builder().setParseComments(true).build()
+        val loadSettings = LoadSettings(parseComments = true)
         val input = "first:\n second: abc\n \n \n\n"
         val parser: Parser = ParserImpl(loadSettings, StreamReader(loadSettings, input))
-        val settings: DumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val settings: DumpSettings = DumpSettings(dumpComments = true)
         val writer = StringStreamDataWriter()
         val emitter = Emitter(settings, writer)
         val events = mutableListOf<Event>()

@@ -13,7 +13,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class NumberCoreTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+    val loader = Load(LoadSettings(schema = CoreSchema()))
 
     test("all integers which are defined in the core schema & JSON") {
         forAll(
@@ -119,7 +119,7 @@ class NumberCoreTest : FunSpec({
     }
 
     test("dump special doubles which are defined in the core schema") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         forAll(
             table(
                 headers("value", "string"),

@@ -6,42 +6,42 @@ import it.krzeminski.snakeyaml.engine.kmp.StringOutputStream
 
 class DumpTest : FunSpec({
     test("dump string") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString("a")
         str shouldBe "a\n"
     }
 
     test("dump int") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(1)
         str shouldBe "1\n"
     }
 
     test("dump boolean") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(true)
         str shouldBe "true\n"
     }
 
     test("dump seq") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(listOf(2, "a", true))
         str shouldBe "[2, a, true]\n"
     }
 
     test("dump map") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val output = dump.dumpToString(mapOf("x" to 1, "y" to 2, "z" to 3))
         output shouldBe "{x: 1, y: 2, z: 3}\n"
     }
 
     test("dump all instances") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val streamToStringWriter = StringStreamDataWriter()
         val list = mutableListOf<Any?>("a", null, true)
@@ -55,7 +55,7 @@ class DumpTest : FunSpec({
     }
 
     test("dump all instances to String") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val list = mutableListOf<Any?>("a", null, true)
         val output = dump.dumpAllToString(list.iterator())
@@ -68,7 +68,7 @@ class DumpTest : FunSpec({
     }
 
     test("dump to stream") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val outputStream = StringOutputStream()
         dump.dump(mapOf("x" to 1, "y" to 2, "z" to 3), outputStream)

@@ -26,8 +26,11 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.NodeTuple
 import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer
 
 class RepresentEntryTest : FunSpec({
-    val settings = DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setDefaultFlowStyle(FlowStyle.BLOCK).setDumpComments(true).build()
+    val settings = DumpSettings(
+        defaultScalarStyle = ScalarStyle.PLAIN,
+        defaultFlowStyle = FlowStyle.BLOCK,
+        dumpComments = true,
+    )
 
     val commentedEntryRepresenter = CommentedEntryRepresenter(settings)
 

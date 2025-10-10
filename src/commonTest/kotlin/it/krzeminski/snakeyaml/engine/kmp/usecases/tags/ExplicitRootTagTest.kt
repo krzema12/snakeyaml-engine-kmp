@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
  */
 class ExplicitRootTagTest : FunSpec({
     test("explicit root tag") {
-        val settings = DumpSettings.builder().setExplicitRootTag(Tag("!my-data")).build()
+        val settings = DumpSettings(explicitRootTag = Tag("!my-data"))
         val map = mapOf("foo" to "bar")
         val dump = Dump(settings)
         val output = dump.dumpToString(map)

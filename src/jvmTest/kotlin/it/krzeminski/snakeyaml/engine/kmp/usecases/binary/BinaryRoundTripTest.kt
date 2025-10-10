@@ -18,7 +18,7 @@ import it.krzeminski.snakeyaml.engine.kmp.representer.StandardRepresenter
 
 class BinaryRoundTripTest : FunSpec({
     test("binary") {
-        val dumper = Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build())
+        val dumper = Dump(DumpSettings(nonPrintableStyle = NonPrintableStyle.BINARY))
         val source = "\u0096"
         val serialized = dumper.dumpToString(source)
         serialized shouldBe "!!binary |-\n  wpY=\n"
@@ -32,9 +32,7 @@ class BinaryRoundTripTest : FunSpec({
 
     test("binary node") {
         val source = "\u0096"
-        val standardRepresenter = StandardRepresenter(
-            DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.BINARY).build()
-        )
+        val standardRepresenter = StandardRepresenter(DumpSettings(nonPrintableStyle = NonPrintableStyle.BINARY))
         val scalar = standardRepresenter.represent(source) as ScalarNode
 
         // check Node
@@ -43,7 +41,7 @@ class BinaryRoundTripTest : FunSpec({
         scalar.value shouldBe "wpY="
 
         // check Event
-        val serialize = Serialize(DumpSettings.builder().build())
+        val serialize = Serialize(DumpSettings())
         val eventsIter = serialize.serializeOne(scalar)
         val events = eventsIter.toList()
         events.size shouldBe 5
@@ -57,7 +55,7 @@ class BinaryRoundTripTest : FunSpec({
     }
 
     test("str node") {
-        val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
+        val standardRepresenter = StandardRepresenter(DumpSettings())
         val source = "\u0096"
         val scalar = standardRepresenter.represent(source) as ScalarNode
         val node = standardRepresenter.represent(source)
@@ -67,7 +65,7 @@ class BinaryRoundTripTest : FunSpec({
     }
 
     test("round trip binary") {
-        val dumper = Dump(DumpSettings.builder().setNonPrintableStyle(NonPrintableStyle.ESCAPE).build())
+        val dumper = Dump(DumpSettings(nonPrintableStyle = NonPrintableStyle.ESCAPE))
         val toSerialized = mapOf("key" to "a\u0096b")
         val output = dumper.dumpToString(toSerialized)
         output shouldBe "{key: \"a\\x96b\"}\n"

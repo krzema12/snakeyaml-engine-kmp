@@ -16,7 +16,7 @@ class MergeOnComposeTest : FunSpec({
     test("simple load merge") {
         val out = merge(
             inputName = "/merge/issue1096-simple-merge-input.yaml",
-            loadSettings = LoadSettings.builder().setSchema(CoreSchema()).build(),
+            loadSettings = LoadSettings(schema = CoreSchema()),
         )
         val expected = stringFromResources("/merge/issue1096-simple-merge-output.yaml")
         out shouldBe expected
@@ -25,7 +25,7 @@ class MergeOnComposeTest : FunSpec({
     test("complex load merge") {
         val out = merge(
             inputName = "/merge/issue1096-complex-merge-input.yaml",
-            loadSettings = LoadSettings.builder().setSchema(CoreSchema()).build(),
+            loadSettings = LoadSettings(schema = CoreSchema()),
         )
         val expected = stringFromResources("/merge/issue1096-complex-merge-output.yaml")
         out shouldBe expected
@@ -34,7 +34,7 @@ class MergeOnComposeTest : FunSpec({
     test("specs load merge") {
         val out = merge(
             inputName = "/merge/issue1096-merge-input.yaml",
-            loadSettings = LoadSettings.builder().setSchema(CoreSchema()).build(),
+            loadSettings = LoadSettings(schema = CoreSchema()),
         )
         val expected = stringFromResources("/merge/issue1096-merge-output.yaml")
         out shouldBe expected
@@ -49,10 +49,7 @@ class MergeOnComposeTest : FunSpec({
              - &2 <<: *1
              - <<: *2""".trimIndent()
 
-        val loader = Compose(LoadSettings.builder()
-            .setSchema(CoreSchema())
-            .setParseComments(false)
-            .build())
+        val loader = Compose(LoadSettings(schema = CoreSchema(), parseComments = false))
 
         shouldThrow<Exception> {
             loader.compose(str)
@@ -67,11 +64,9 @@ private fun merge(inputName: String, loadSettings: LoadSettings): String {
     val input = stringFromResources(inputName)
     val loader = Compose(loadSettings)
     val sourceTree = loader.compose(input)!!
-    val serialize = Serialize(DumpSettings.builder()
-        .setDereferenceAliases(true)
-        .build())
+    val serialize = Serialize(DumpSettings(isDereferenceAliases = true))
     val events = serialize.serializeOne(sourceTree)
-    val present = Present(DumpSettings.builder().build())
+    val present = Present(DumpSettings())
 
     return present.emitToString(events.iterator())
 }

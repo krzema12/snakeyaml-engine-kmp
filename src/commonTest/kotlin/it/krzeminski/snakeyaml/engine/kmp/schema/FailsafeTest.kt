@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class FailsafeTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(FailsafeSchema()).build())
+    val loader = Load(LoadSettings(schema = FailsafeSchema()))
 
     test("parse string") {
         forAll(
@@ -31,7 +31,7 @@ class FailsafeTest : FunSpec({
     }
 
     test("dump string") {
-        val dumper = Dump(DumpSettings.builder().setSchema(FailsafeSchema()).build())
+        val dumper = Dump(DumpSettings(schema = FailsafeSchema()))
         forAll(
             table(
                 headers("input", "expected"),

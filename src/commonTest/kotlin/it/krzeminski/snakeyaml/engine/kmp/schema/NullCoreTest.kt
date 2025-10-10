@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class NullCoreTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+    val loader = Load(LoadSettings(schema = CoreSchema()))
 
     test("parse null") {
         forAll(
@@ -30,7 +30,7 @@ class NullCoreTest : FunSpec({
     }
 
     test("dump null") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         dumper.dumpToString(null) shouldBe "null\n"
     }
 })

@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class BooleanCoreTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+    val loader = Load(LoadSettings(schema = CoreSchema()))
 
     test("parse boolean") {
         // true | True | TRUE | false | False | FALSE
@@ -33,7 +33,7 @@ class BooleanCoreTest : FunSpec({
     }
 
     test("dump boolean") {
-        val dumper = Dump(DumpSettings.builder().setSchema(CoreSchema()).build())
+        val dumper = Dump(DumpSettings(schema = CoreSchema()))
         forAll(
             table(
                 headers("input", "expected"),

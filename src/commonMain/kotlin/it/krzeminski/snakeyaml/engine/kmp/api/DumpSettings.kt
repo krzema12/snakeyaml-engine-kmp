@@ -17,48 +17,172 @@ import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion
+import it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.EmitterException
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
+import it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA
 import it.krzeminski.snakeyaml.engine.kmp.schema.Schema
 import it.krzeminski.snakeyaml.engine.kmp.serializer.AnchorGenerator
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
+import it.krzeminski.snakeyaml.engine.kmp.serializer.NumberAnchorGenerator
 
 /**
- * Immutable configuration for serialisation. Description for all the fields can be found in the
- * builder
+ * Immutable configuration for serialization.
  */
-class DumpSettings internal constructor(
-    val isExplicitStart: Boolean,
-    val isExplicitEnd: Boolean,
-    @JvmField val explicitRootTag: Tag?,
-    @JvmField val anchorGenerator: AnchorGenerator,
-    @JvmField val yamlDirective: SpecVersion?,
-    @JvmField val tagDirective: Map<String, String>,
-    @JvmField val defaultFlowStyle: FlowStyle,
-    @JvmField val defaultScalarStyle: ScalarStyle,
-    @JvmField val nonPrintableStyle: NonPrintableStyle,
-    @JvmField val schema: Schema,
+class DumpSettings(
+    /**
+     * Add '---' at the beginning of the document.
+     */
+    val isExplicitStart: Boolean = false,
+
+    /**
+     * Add '...' at the end of the document.
+     */
+    val isExplicitEnd: Boolean = false,
+
+    /**
+     * Define root [Tag] or let the tag be detected automatically.
+     */
+    val explicitRootTag: Tag? = null,
+
+    /**
+     * Define anchor name generator (by default 'id' + number)
+     */
+    val anchorGenerator: AnchorGenerator = NumberAnchorGenerator(),
+
+    /**
+     * Add YAML [directive](http://yaml.org/spec/1.2/spec.html#id2782090)
+     */
+    val yamlDirective: SpecVersion? = null,
+
+    /**
+     * Add TAG [directive](http://yaml.org/spec/1.2/spec.html#id2782090)
+     */
+    val tagDirective: Map<String, String> = emptyMap(),
+
+    /**
+     * Define flow style
+     */
+    val defaultFlowStyle: FlowStyle = FlowStyle.AUTO,
+
+    /**
+     * Define default scalar style
+     */
+    val defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN,
+
+    /**
+     * When a String object contains non-printable characters, they are escaped with \\u or \\x
+     * notation. Sometimes it is better to transform this data to binary (with the !!binary tag).
+     * String objects with printable data are not affected by this setting.
+     * Set this to BINARY to force non-printable String to represented as binary (byte array).
+     */
+    val nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.ESCAPE,
+
+    /**
+     * Provide either recommended or custom
+     * [schema](https://yaml.org/spec/1.2.2/#chapter-10-recommended-schemas) instead of
+     * default [it.krzeminski.snakeyaml.engine.kmp.schema.DEFAULT_SCHEMA]. These 3 are available
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.FailsafeSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.JsonSchema],
+     * [it.krzeminski.snakeyaml.engine.kmp.schema.CoreSchema].
+     */
+    val schema: Schema = DEFAULT_SCHEMA,
+
     // emitter
-    val isCanonical: Boolean,
-    val isMultiLineFlow: Boolean,
-    val isUseUnicodeEncoding: Boolean,
-    @JvmField val indent: Int,
-    @JvmField val indicatorIndent: Int,
-    @JvmField val width: Int,
-    @JvmField val bestLineBreak: String,
-    val isSplitLines: Boolean,
-    @JvmField val maxSimpleKeyLength: Int,
+
+    /**
+     * Enforce canonical representation
+     */
+    val isCanonical: Boolean = false,
+
+    /**
+     * Use pretty flow style when every value in the flow context gets a separate line.
+     */
+    val isMultiLineFlow: Boolean = false,
+
+    /**
+     * Specify whether to emit non-ASCII printable Unicode characters (emit Unicode char or escape
+     * sequence starting with '\\u'). The default value is true. When set to false, printable
+     * non-ASCII characters (Cyrillic, Chinese, etc.) will be not printed but escaped (to support ASCII
+     * terminals).
+     */
+    val isUseUnicodeEncoding: Boolean = true,
+
+    /**
+     * Define the amount of spaces for the indent in the block flow style. Default is 2.
+     */
+    val indent: Int = 2,
+
+    /**
+     * Adds the specified indent for sequence indicator in the block flow. Default is 0.
+     *
+     * For better visual results it should be by 2 less than the indent (which is 2 by default).
+     * It is 2 chars less because the first char is `-` and the second char is the space after it.
+     *
+     * Must be in [it.krzeminski.snakeyaml.engine.kmp.emitter.Emitter.VALID_INDENT_RANGE].
+     */
+    val indicatorIndent: Int = 0,
+
+    /**
+     * Set max width for literal scalars. When the scalar representation takes more then the preferred
+     * with the scalar will be split into a few lines. The default is 80.
+     */
+    val width: Int = 80,
+
+    /**
+     * If the YAML is created for another platform (for instance, on Windows to be consumed under
+     * Linux) than this setting is used to define the line ending. The platform line end is used by
+     * default.
+     */
+    val bestLineBreak: String = "\n",
+
+    /**
+     * Define whether to split long lines
+     */
+    val isSplitLines: Boolean = true,
+
+    /**
+     * Define max key length to use simple key (without `?`).
+     * [More info](https://yaml.org/spec/1.2/spec.html#id2798057)
+     */
+    val maxSimpleKeyLength: Int = 128,
+
     // general
-    private val customProperties: Map<SettingKey, Any>,
-    @JvmField val indentWithIndicator: Boolean,
-    @JvmField val dumpComments: Boolean,
-    val isDereferenceAliases: Boolean,
+
+    /**
+     * Custom property is the way to give some runtime parameters to be used during dumping
+     */
+    val customProperties: Map<SettingKey, Any> = emptyMap(),
+
+    /**
+     * Set to true to add the indent for sequences to the general indent
+     */
+    val indentWithIndicator: Boolean = false,
+
+    /**
+     * Set to true to add comments from Nodes to the output.
+     */
+    val dumpComments: Boolean = false,
+
+    /**
+     * Disable usage of anchors and aliases while serialising an instance. Recursive objects will not
+     * work when they are disabled. (Forces Serializer to skip emitting anchors names, emit Node
+     * content instead of Alias, fail with SerializationException if serialized structure is
+     * recursive.)
+     */
+    val isDereferenceAliases: Boolean = false,
 ) {
-
-    fun getCustomProperty(key: SettingKey): Any? = customProperties[key]
-
-    companion object {
-        @JvmStatic
-        fun builder(): DumpSettingsBuilder = DumpSettingsBuilder()
+    init {
+        if (indicatorIndent !in Emitter.VALID_INDICATOR_INDENT_RANGE) {
+            throw EmitterException("Indicator indent must be in range ${Emitter.VALID_INDICATOR_INDENT_RANGE}")
+        }
+        if (maxSimpleKeyLength > 1024) {
+            throw YamlEngineException(
+                "The simple key must not span more than 1024 stream characters. See https://yaml.org/spec/1.2/spec.html#id2798057",
+            )
+        }
+        if (indent !in Emitter.VALID_INDENT_RANGE) {
+            throw EmitterException("Indent must be at in range ${Emitter.VALID_INDENT_RANGE}")
+        }
     }
 }

@@ -13,7 +13,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 class DefaultConstructorTest : FunSpec({
 
     test("construct null when unknown") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val load = Load(settings, MagicNullConstructor(settings))
         val str = load.loadOne("!unknownLocalTag a") as? String
         str.shouldBeNull()

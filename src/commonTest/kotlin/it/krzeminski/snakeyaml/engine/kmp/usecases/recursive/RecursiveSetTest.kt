@@ -21,7 +21,7 @@ class RecursiveSetTest: FunSpec({
 
     test("Load map with recursive keys if it is explicitly allowed") {
         val recursiveInput = stringFromResources("/recursive/recursive-set-1.yaml")
-        val settings = LoadSettings.builder().setAllowRecursiveKeys(true).build()
+        val settings = LoadSettings(allowRecursiveKeys = true)
         val load = Load(settings)
         @Suppress("UNCHECKED_CAST")
         val recursive = load.loadOne(recursiveInput) as Set<Any>

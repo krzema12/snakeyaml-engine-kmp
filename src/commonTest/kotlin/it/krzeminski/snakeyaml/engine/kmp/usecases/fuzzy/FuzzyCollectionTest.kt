@@ -13,11 +13,11 @@ class FuzzyCollectionTest : FunSpec({
          */
         val datastring = " ? - - ? - - ? ? - - ? ? ? - - ? ? - - ? ? ? - - ? ? - ? ? - - ? - - ? ? ? - - ? ? - ?  -? - ? ? - - ? - - ? ? ? - - ? ? - ?  -? - ? ? - - ? - "
 
-        val settings = LoadSettings.builder()
-            .setAllowRecursiveKeys(true)
-            .setMaxAliasesForCollections(1000)
-            .setAllowDuplicateKeys(true)
-            .build()
+        val settings = LoadSettings(
+            allowRecursiveKeys = true,
+            maxAliasesForCollections = 1000,
+            allowDuplicateKeys = true,
+        )
         val yamlProcessor = Load(settings)
         val fuzzy = yamlProcessor.loadOne(datastring)
         fuzzy.toString().shouldStartWith("{[[{[[{{[[{{{[[{{[[{{{[[{{[{{[[{[[{{{[[{{[{-?")

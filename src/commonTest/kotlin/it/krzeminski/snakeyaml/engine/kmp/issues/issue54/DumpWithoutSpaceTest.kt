@@ -15,7 +15,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
  */
 class DumpWithoutSpaceTest : FunSpec({
     fun parse(data: String): Any? {
-        val loadSettings = LoadSettings.builder().setAllowRecursiveKeys(true).build();
+        val loadSettings = LoadSettings(allowRecursiveKeys = true)
         val load = Load(loadSettings);
         return load.loadOne(data);
     }
@@ -50,7 +50,7 @@ class DumpWithoutSpaceTest : FunSpec({
             ":one" to true,
         )
         map[map] = true
-        val dumpSettings = DumpSettings.builder().build()
+        val dumpSettings = DumpSettings()
         val dump = Dump(dumpSettings)
         val output = dump.dumpToString(map)
         output shouldBe """|&id001

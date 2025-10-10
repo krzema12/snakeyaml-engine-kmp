@@ -42,11 +42,11 @@ internal class IndentationTest : FunSpec({
     }
 
     fun createDump(indicatorIndent: Int): Dump {
-        val builder = DumpSettings.builder()
-        builder.setDefaultFlowStyle(FlowStyle.BLOCK)
-        builder.setIndicatorIndent(indicatorIndent)
-        builder.setIndent(indicatorIndent + 2)
-        val settings = builder.build()
+        val settings = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            indicatorIndent = indicatorIndent,
+            indent = indicatorIndent + 2,
+        )
         val dump = Dump(settings)
         return dump
     }

@@ -20,7 +20,7 @@ class LoadingTimeBenchmark {
     @Param("")
     var openAiYamlPath: String = ""
 
-    private val loadSettings = LoadSettings.builder().build()
+    private val loadSettings = LoadSettings()
 
     private lateinit var constructor: BaseConstructor
 

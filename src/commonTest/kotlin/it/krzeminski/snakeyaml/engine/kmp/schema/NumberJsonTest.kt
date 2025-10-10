@@ -14,7 +14,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class NumberJsonTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(JsonSchema()).build())
+    val loader = Load(LoadSettings(schema = JsonSchema()))
 
     test("test all integers which are define in the core schema & JSON") {
         forAll(
@@ -47,7 +47,7 @@ class NumberJsonTest : FunSpec({
     }
 
     test("dump integer") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),
@@ -62,7 +62,7 @@ class NumberJsonTest : FunSpec({
     }
 
     test("dump float") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),

@@ -22,8 +22,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 
 internal class EnumRepresenterTest : FunSpec({
     test("Represent Enum as node with global tag") {
-        val settings =
-            DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED)
         val standardRepresenter: Representer = Representer(settings)
         val node =
             standardRepresenter.represent(FormatEnum.JSON) as ScalarNode
@@ -34,8 +33,7 @@ internal class EnumRepresenterTest : FunSpec({
     }
 
     test("Dump Enum with ScalarStyle.DOUBLE_QUOTED") {
-        val settings =
-            DumpSettings.builder().setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED).build()
+        val settings = DumpSettings(defaultScalarStyle = ScalarStyle.DOUBLE_QUOTED)
         val dumper = Dump(settings)
         val node = dumper.dumpToString(FormatEnum.JSON)
         // node shouldBe "!!it.krzeminski.snakeyaml.engine.kmp.representer.FormatEnum \"JSON\"\n"

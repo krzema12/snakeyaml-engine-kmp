@@ -13,12 +13,12 @@ class AnchorUnicodeTest : FunSpec({
     val invalidAnchor = setOf('[', ']', '{', '}', ',', '*', '&')
 
     test("unicode anchor") {
-        val settings = DumpSettings.builder().setAnchorGenerator(object : AnchorGenerator {
+        val settings = DumpSettings(anchorGenerator = object : AnchorGenerator {
             private var id = 0
             override fun nextAnchor(node: Node): Anchor {
                 return Anchor("タスク${id++}")
             }
-        }).build()
+        })
         val dump = Dump(settings)
         val list = listOf("abc")
 
@@ -58,7 +58,7 @@ class AnchorUnicodeTest : FunSpec({
 })
 
 private fun createSettings(invalid: Char): DumpSettings {
-    return DumpSettings.builder().setAnchorGenerator { Anchor("anchor$invalid") }.build()
+    return DumpSettings(anchorGenerator = { Anchor("anchor$invalid") })
 }
 
 private fun checkAnchor(a: String): String? {

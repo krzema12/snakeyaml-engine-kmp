@@ -20,7 +20,7 @@ import it.krzeminski.snakeyaml.engine.kmp.serializer.Serializer
 class DumpWithoutCommentsTest : FunSpec({
     test("dump map with comments") {
         val yaml = "a: 1 # A\nb: 2 # B\n"
-        val dumpSettings = DumpSettings.builder().setDumpComments(false).build()
+        val dumpSettings = DumpSettings(dumpComments = false)
 
         val streamWriter = StringStreamDataWriter()
         val emitter = Emitter(
@@ -38,7 +38,7 @@ class DumpWithoutCommentsTest : FunSpec({
 
     test("check no comments") {
         val source = "a: 1 # comment"
-        val dumpSettings = DumpSettings.builder().setDumpComments(false).build()
+        val dumpSettings = DumpSettings(dumpComments = false)
         val serializer = Serialize(dumpSettings)
         val events  = serializer.serializeOne(createNodeWithComments(source))
 
@@ -50,7 +50,7 @@ class DumpWithoutCommentsTest : FunSpec({
 })
 
 fun createNodeWithComments(source: String): Node {
-    val loadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadSettings = LoadSettings(parseComments = true)
     val parser = ParserImpl(loadSettings, StreamReader(loadSettings, source))
     val composer = Composer(loadSettings, parser)
     return composer.getSingleNode()!!

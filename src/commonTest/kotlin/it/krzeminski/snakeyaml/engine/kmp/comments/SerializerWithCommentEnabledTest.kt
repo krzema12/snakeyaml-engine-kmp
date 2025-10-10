@@ -315,16 +315,14 @@ class SerializerWithCommentEnabledTest: FunSpec({
 
 private fun serializeWithCommentsEnabled(data: String): List<Event> {
     val emitter = TestEmitter()
-    val dumpSettings = DumpSettings.builder()
-        .setDefaultScalarStyle(ScalarStyle.PLAIN)
-        .setDumpComments(true)
-        .setDefaultFlowStyle(FlowStyle.BLOCK)
-        .build()
+    val dumpSettings = DumpSettings(
+        defaultScalarStyle = ScalarStyle.PLAIN,
+        dumpComments = true,
+        defaultFlowStyle = FlowStyle.BLOCK,
+    )
     val serializer = Serializer(dumpSettings, emitter)
     serializer.emitStreamStart()
-    val settings = LoadSettings.builder()
-        .setParseComments(true)
-        .build()
+    val settings = LoadSettings(parseComments = true)
     val composer = Composer(settings, ParserImpl(settings, StreamReader(settings, data)))
     while (composer.hasNext()) {
         serializer.serializeDocument(composer.next())

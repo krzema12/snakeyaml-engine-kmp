@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 class ProtectedClassesTest : FunSpec({
     test("substitution") {
-        val r = ExampleRepresenter(DumpSettings.builder().build())
+        val r = ExampleRepresenter(DumpSettings())
         val node = r.represent(true)
         node.tag.value shouldBe "tag:yaml.org,2002:bool"
     }

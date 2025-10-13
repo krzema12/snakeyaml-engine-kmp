@@ -35,7 +35,7 @@ class FlexSimleKeyTest : FunSpec({
 })
 
 private fun createOptions(len: Int): DumpSettings {
-    return DumpSettings.builder().setMaxSimpleKeyLength(len).build()
+    return DumpSettings(maxSimpleKeyLength = len)
 }
 
 private fun createKey(length: Int): String {

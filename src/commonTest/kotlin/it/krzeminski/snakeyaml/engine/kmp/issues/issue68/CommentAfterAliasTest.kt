@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ParserException
 
 class CommentAfterAliasTest : FunSpec({
     listOf(false, true).forEach { parseComments ->
-        val loadSettings = LoadSettings.builder().setParseComments(parseComments).build()
+        val loadSettings = LoadSettings(parseComments = parseComments)
 
         test("inline when parsing comments enabled: $parseComments") {
             val compose = Compose(loadSettings)

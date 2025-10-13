@@ -10,7 +10,7 @@ import java.math.BigInteger
 //  For now, this test just covers long number on the JVM where we have BigInteger.
 class NumberCoreJvmTest : FunSpec({
     test("integer too long to fit in an integer or a long") {
-        val loader = Load(LoadSettings.builder().setSchema(CoreSchema()).build())
+        val loader = Load(LoadSettings(schema = CoreSchema()))
         loader.loadOne("1234567890123456789123") shouldBe BigInteger("1234567890123456789123")
     }
 })

@@ -11,11 +11,9 @@ import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
  * https://bitbucket.org/snakeyaml/snakeyaml/issues/1084/dump-as-json
  */
 class DumperJsonTest : FunSpec({
-    val dumper =
-        Dump(DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.FLOW)
-            .setDefaultScalarStyle(ScalarStyle.JSON_SCALAR_STYLE)
-            .build())
+    val dumper = Dump(DumpSettings(
+        defaultFlowStyle = FlowStyle.FLOW,
+        defaultScalarStyle = ScalarStyle.JSON_SCALAR_STYLE))
 
     test("JSON str") {
         dumper.dumpToString("bar1") shouldBe "\"bar1\"\n"

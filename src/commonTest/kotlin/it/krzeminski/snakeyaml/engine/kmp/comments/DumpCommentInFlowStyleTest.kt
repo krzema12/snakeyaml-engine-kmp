@@ -14,25 +14,25 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
 
 class DumpCommentInFlowStyleTest : FunSpec({
     test("ignoring comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(false).build())
+        val loader = Compose(LoadSettings(parseComments = false))
         val content = "{ url: text # comment breaks it\n}"
         val node = loader.compose(content)
         // check that no comment is present
         val textNode = (node as MappingNode).value.first().valueNode
         textNode.inLineComments.shouldBeEmpty()
 
-        val serialize = Serialize(DumpSettings.builder().setDumpComments(true).build())
+        val serialize = Serialize(DumpSettings(dumpComments = true))
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(8)
     }
 
     test("flow with comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(true).build())
+        val loader = Compose(LoadSettings(parseComments = true))
         val content = "{url: text # comment breaks it\n}"
         val node = loader.compose(content)!!
         extractInlineComment(node) shouldBe " comment breaks it"
 
-        val dumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val dumpSettings = DumpSettings(dumpComments = true)
         val serialize = Serialize(dumpSettings)
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(9)
@@ -43,13 +43,13 @@ class DumpCommentInFlowStyleTest : FunSpec({
     }
 
     test("block with comments") {
-        val loader = Compose(LoadSettings.builder().setParseComments(true).build())
+        val loader = Compose(LoadSettings(parseComments = true))
         val content = "url: text # comment breaks it\n"
         val node = loader.compose(content)!!
 
         extractInlineComment(node) shouldBe " comment breaks it"
 
-        val dumpSettings = DumpSettings.builder().setDumpComments(true).build()
+        val dumpSettings = DumpSettings(dumpComments = true)
         val serialize = Serialize(dumpSettings)
         val events = serialize.serializeOne(node)
         events.shouldHaveSize(9)

@@ -7,7 +7,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
 
 class CommentAfterScalarTest : FunSpec({
-    val loadSettings = LoadSettings.builder().setParseComments(true).build()
+    val loadSettings = LoadSettings(parseComments = true)
 
     test("respect inline comment for '!!str # comment'") {
         val compose = Compose(loadSettings)

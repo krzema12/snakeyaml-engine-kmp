@@ -14,13 +14,13 @@ import java.util.UUID
  */
 class UuidTest : FunSpec({
     test("represent UUID as node with global tag") {
-        val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
+        val standardRepresenter = StandardRepresenter(DumpSettings())
         val node = standardRepresenter.represent(THE_UUID)
         node.tag.value shouldBe "tag:yaml.org,2002:java.util.UUID"
     }
 
     test("dump UUID as string") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val output = dump.dumpToString(THE_UUID)
         output shouldBe "!!java.util.UUID '37e6a9fa-52d3-11e8-9c2d-fa7ae01bbebc'\n"

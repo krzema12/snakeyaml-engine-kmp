@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
 class SerializeTest : FunSpec({
     test("serialize one scalar") {
-        val serialize = Serialize(DumpSettings.builder().build())
+        val serialize = Serialize(DumpSettings())
         val events = serialize.serializeOne(ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN))
         val list = events.toList()
         list shouldHaveSize 5

@@ -10,7 +10,7 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 class DumpToStringTest : FunSpec({
     test("if Dump instance is called more then once then the results are not predictable") {
-        val dumpSettings = DumpSettings.builder().setDefaultFlowStyle(FlowStyle.BLOCK).build()
+        val dumpSettings = DumpSettings(defaultFlowStyle = FlowStyle.BLOCK)
         val dump = Dump(dumpSettings)
 
         class Something {

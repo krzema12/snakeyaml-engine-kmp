@@ -16,14 +16,14 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
  */
 class BillionLaughsAttackTest : FunSpec({
     test("load many aliases if explicitly allowed") {
-        val settings = LoadSettings.builder().setMaxAliasesForCollections(72).build()
+        val settings = LoadSettings(maxAliasesForCollections = 72)
         val load = Load(settings)
         val map = load.loadOne(data) as Map<*, *>
         map.shouldNotBeNull()
     }
 
     test("billion laughs attack if data expanded") {
-        val settings = LoadSettings.builder().setMaxAliasesForCollections(100).build()
+        val settings = LoadSettings(maxAliasesForCollections = 100)
         val load = Load(settings)
         val map = load.loadOne(data) as Map<*, *>
         map.shouldNotBeNull()
@@ -51,7 +51,7 @@ class BillionLaughsAttackTest : FunSpec({
 
     test("number of aliases for scalar nodes is not restricted") {
         // smaller than number of aliases for scalars
-        val settings = LoadSettings.builder().setMaxAliasesForCollections(5).build()
+        val settings = LoadSettings(maxAliasesForCollections = 5)
         val load = Load(settings)
         load.loadOne(scalarAliasesData)
     }

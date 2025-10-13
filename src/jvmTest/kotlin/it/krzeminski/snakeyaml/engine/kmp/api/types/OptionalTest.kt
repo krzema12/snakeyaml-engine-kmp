@@ -15,33 +15,33 @@ import java.util.Optional
  */
 class OptionalTest : FunSpec({
     test("represent Optional as value") {
-        val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
+        val standardRepresenter = StandardRepresenter(DumpSettings())
         val node = standardRepresenter.represent(Optional.of("a"))
         node.tag.value shouldBe "tag:yaml.org,2002:java.util.Optional"
     }
 
     test("represent Optional.empty as null") {
-        val standardRepresenter = StandardRepresenter(DumpSettings.builder().build())
+        val standardRepresenter = StandardRepresenter(DumpSettings())
         val node = standardRepresenter.represent(Optional.empty<Any>())
         node.tag.value shouldBe "tag:yaml.org,2002:null"
     }
 
     test("dump Optional as its value") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.of("a"))
         str shouldBe "!!java.util.Optional 'a'\n"
     }
 
     test("dump empty Optional as null") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.empty<Any>())
         str shouldBe "null\n"
     }
 
     test("dump Optionals in list") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(listOf(
             Optional.of(2),
@@ -52,7 +52,7 @@ class OptionalTest : FunSpec({
     }
 
     test("dump Optional containing list") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val dump = Dump(settings)
         val str = dump.dumpToString(Optional.of(listOf(1, 2)))
         str shouldBe "!!java.util.Optional [1, 2]\n"

@@ -16,7 +16,7 @@ class WindowsTest : FunSpec({
     val loader = Load()
 
     test("check that Windows style line endings handled the same as Unix style ones") {
-        val settings = LoadSettings.builder().build()
+        val settings = LoadSettings()
         val reader1 = StreamReader(settings, "foo\r\nbar")
         val reader2 = StreamReader(settings, "foo\nbar")
         reader1.forward(100)

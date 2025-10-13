@@ -12,7 +12,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class BooleanJsonTest : FunSpec({
-    val loader = Load(LoadSettings.builder().setSchema(JsonSchema()).build())
+    val loader = Load(LoadSettings(schema = JsonSchema()))
 
     test("parse boolean") {
         forAll(
@@ -28,7 +28,7 @@ class BooleanJsonTest : FunSpec({
     }
 
     test("dump boolean") {
-        val dumper = Dump(DumpSettings.builder().setSchema(JsonSchema()).build())
+        val dumper = Dump(DumpSettings(schema = JsonSchema()))
         forAll(
             table(
                 headers("input", "expected"),

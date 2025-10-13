@@ -14,13 +14,13 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 class DumpAnchorTest : FunSpec({
     test("anchor test") {
         val str = stringFromResources("/anchor/issue481.yaml")
-        val compose = Compose(LoadSettings.builder().build())
+        val compose = Compose(LoadSettings())
         val node = compose.compose(str)!!
 
-        val setting = DumpSettings.builder()
-            .setDefaultFlowStyle(FlowStyle.BLOCK)
-            .setAnchorGenerator { node1: Node -> node1.anchor!! }
-            .build()
+        val setting = DumpSettings(
+            defaultFlowStyle = FlowStyle.BLOCK,
+            anchorGenerator = { node1: Node -> node1.anchor!! },
+        )
         val yaml = Dump(setting)
 
         val writer = StringOutputStream()

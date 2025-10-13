@@ -8,7 +8,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 class ByteLimitTest : FunSpec({
     test("limit a single document") {
-        val settings = LoadSettings.builder().setCodePointLimit(15).build()
+        val settings = LoadSettings(codePointLimit = 15)
         val load = Load(settings)
         shouldThrow<Exception> {
             load.loadOne("12345678901234567890")
@@ -18,7 +18,7 @@ class ByteLimitTest : FunSpec({
     }
 
     test("load all 553") {
-        val settings = LoadSettings.builder().setCodePointLimit(15).build()
+        val settings = LoadSettings(codePointLimit = 15)
         val load = Load(settings)
         shouldThrow<Exception> {
             val iter = load.loadAll("12345678901234567890").iterator()
@@ -29,7 +29,7 @@ class ByteLimitTest : FunSpec({
     }
 
     test("load many documents") {
-        val settings = LoadSettings.builder().setCodePointLimit(8).build()
+        val settings = LoadSettings(codePointLimit = 8)
         val load = Load(settings)
         val iter = load.loadAll("---\nfoo\n---\nbar\n---\nyep").iterator()
         iter.next() shouldBe "foo"

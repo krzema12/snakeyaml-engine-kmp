@@ -14,21 +14,21 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
 class DoubleQuoteTest : FunSpec({
     test("unicode substitution") {
-        val settings = DumpSettings.builder().setUseUnicodeEncoding(false).build()
+        val settings = DumpSettings(isUseUnicodeEncoding = false)
         val expectedOutput = "double_quoted: \"\\U0001f510This process is simple and secure.\"\n" +
                 "single_quoted: \"\\U0001f510This process is simple and secure.\"\n"
         emit(settings) shouldBe expectedOutput
     }
 
     test("unicode encoding") {
-        val settings = DumpSettings.builder().setUseUnicodeEncoding(true).build()
+        val settings = DumpSettings(isUseUnicodeEncoding = true)
         val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
                 "single_quoted: '🔐This process is simple and secure.'\n"
         emit(settings) shouldBe expectedOutput
     }
 
     test("default settings") {
-        val settings = DumpSettings.builder().build()
+        val settings = DumpSettings()
         val expectedOutput = "double_quoted: \"🔐This process is simple and secure.\"\n" +
                 "single_quoted: '🔐This process is simple and secure.'\n"
         emit(settings) shouldBe expectedOutput

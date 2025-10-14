@@ -186,8 +186,8 @@ class DumpSettings(
         }
     }
 
-    fun copy(modifications: DumpSettingsBuilder.() -> Unit): DumpSettings {
-        val result = object : DumpSettingsBuilder {
+    fun copy(modifications: MutableDumpSettings.() -> Unit): DumpSettings {
+        val result = object : MutableDumpSettings {
             override var isExplicitStart = this@DumpSettings.isExplicitStart
             override var isExplicitEnd = this@DumpSettings.isExplicitEnd
             override var explicitRootTag = this@DumpSettings.explicitRootTag
@@ -212,6 +212,7 @@ class DumpSettings(
             override var dumpComments = this@DumpSettings.dumpComments
             override var isDereferenceAliases = this@DumpSettings.isDereferenceAliases
         }.apply(modifications)
+
         return DumpSettings(
             isExplicitStart = result.isExplicitStart,
             isExplicitEnd = result.isExplicitEnd,
@@ -239,7 +240,7 @@ class DumpSettings(
         )
     }
 
-    interface DumpSettingsBuilder {
+    interface MutableDumpSettings {
         var isExplicitStart: Boolean
         var isExplicitEnd: Boolean
         var explicitRootTag: Tag?

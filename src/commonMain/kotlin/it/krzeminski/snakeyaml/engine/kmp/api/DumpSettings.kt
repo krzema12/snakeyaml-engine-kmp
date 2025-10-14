@@ -186,83 +186,82 @@ class DumpSettings(
         }
     }
 
-    fun copy(modifications: DumpSettingsMutable.() -> Unit): DumpSettings {
-        val mutable = DumpSettingsMutable(
-            isExplicitStart = isExplicitStart,
-            isExplicitEnd = isExplicitEnd,
-            explicitRootTag = explicitRootTag,
-            anchorGenerator = anchorGenerator,
-            yamlDirective = yamlDirective,
-            tagDirective = tagDirective,
-            defaultFlowStyle = defaultFlowStyle,
-            defaultScalarStyle = defaultScalarStyle,
-            nonPrintableStyle = nonPrintableStyle,
-            schema = schema,
-            isCanonical = isCanonical,
-            isMultiLineFlow = isMultiLineFlow,
-            isUseUnicodeEncoding = isUseUnicodeEncoding,
-            indent = indent,
-            indicatorIndent = indicatorIndent,
-            width = width,
-            bestLineBreak = bestLineBreak,
-            isSplitLines = isSplitLines,
-            maxSimpleKeyLength = maxSimpleKeyLength,
-            customProperties = customProperties,
-            indentWithIndicator = indentWithIndicator,
-            dumpComments = dumpComments,
-            isDereferenceAliases = isDereferenceAliases,
-        )
-        mutable.modifications()
+    fun copy(modifications: DumpSettingsBuilder.() -> Unit): DumpSettings {
+        val result = object : DumpSettingsBuilder {
+            override var isExplicitStart = this@DumpSettings.isExplicitStart
+            override var isExplicitEnd = this@DumpSettings.isExplicitEnd
+            override var explicitRootTag = this@DumpSettings.explicitRootTag
+            override var anchorGenerator = this@DumpSettings.anchorGenerator
+            override var yamlDirective = this@DumpSettings.yamlDirective
+            override var tagDirective = this@DumpSettings.tagDirective
+            override var defaultFlowStyle = this@DumpSettings.defaultFlowStyle
+            override var defaultScalarStyle = this@DumpSettings.defaultScalarStyle
+            override var nonPrintableStyle = this@DumpSettings.nonPrintableStyle
+            override var schema = this@DumpSettings.schema
+            override var isCanonical = this@DumpSettings.isCanonical
+            override var isMultiLineFlow = this@DumpSettings.isMultiLineFlow
+            override var isUseUnicodeEncoding = this@DumpSettings.isUseUnicodeEncoding
+            override var indent = this@DumpSettings.indent
+            override var indicatorIndent = this@DumpSettings.indicatorIndent
+            override var width = this@DumpSettings.width
+            override var bestLineBreak = this@DumpSettings.bestLineBreak
+            override var isSplitLines = this@DumpSettings.isSplitLines
+            override var maxSimpleKeyLength = this@DumpSettings.maxSimpleKeyLength
+            override var customProperties = this@DumpSettings.customProperties
+            override var indentWithIndicator = this@DumpSettings.indentWithIndicator
+            override var dumpComments = this@DumpSettings.dumpComments
+            override var isDereferenceAliases = this@DumpSettings.isDereferenceAliases
+        }.apply(modifications)
         return DumpSettings(
-            isExplicitStart = mutable.isExplicitStart,
-            isExplicitEnd = mutable.isExplicitEnd,
-            explicitRootTag = mutable.explicitRootTag,
-            anchorGenerator = mutable.anchorGenerator,
-            yamlDirective = mutable.yamlDirective,
-            tagDirective = mutable.tagDirective,
-            defaultFlowStyle = mutable.defaultFlowStyle,
-            defaultScalarStyle = mutable.defaultScalarStyle,
-            nonPrintableStyle = mutable.nonPrintableStyle,
-            schema = mutable.schema,
-            isCanonical = mutable.isCanonical,
-            isMultiLineFlow = mutable.isMultiLineFlow,
-            isUseUnicodeEncoding = mutable.isUseUnicodeEncoding,
-            indent = mutable.indent,
-            indicatorIndent = mutable.indicatorIndent,
-            width = mutable.width,
-            bestLineBreak = mutable.bestLineBreak,
-            isSplitLines = mutable.isSplitLines,
-            maxSimpleKeyLength = mutable.maxSimpleKeyLength,
-            customProperties = mutable.customProperties,
-            indentWithIndicator = mutable.indentWithIndicator,
-            dumpComments = mutable.dumpComments,
-            isDereferenceAliases = mutable.isDereferenceAliases,
+            isExplicitStart = result.isExplicitStart,
+            isExplicitEnd = result.isExplicitEnd,
+            explicitRootTag = result.explicitRootTag,
+            anchorGenerator = result.anchorGenerator,
+            yamlDirective = result.yamlDirective,
+            tagDirective = result.tagDirective,
+            defaultFlowStyle = result.defaultFlowStyle,
+            defaultScalarStyle = result.defaultScalarStyle,
+            nonPrintableStyle = result.nonPrintableStyle,
+            schema = result.schema,
+            isCanonical = result.isCanonical,
+            isMultiLineFlow = result.isMultiLineFlow,
+            isUseUnicodeEncoding = result.isUseUnicodeEncoding,
+            indent = result.indent,
+            indicatorIndent = result.indicatorIndent,
+            width = result.width,
+            bestLineBreak = result.bestLineBreak,
+            isSplitLines = result.isSplitLines,
+            maxSimpleKeyLength = result.maxSimpleKeyLength,
+            customProperties = result.customProperties,
+            indentWithIndicator = result.indentWithIndicator,
+            dumpComments = result.dumpComments,
+            isDereferenceAliases = result.isDereferenceAliases,
         )
     }
 
-    class DumpSettingsMutable(
-        var isExplicitStart: Boolean,
-        var isExplicitEnd: Boolean,
-        var explicitRootTag: Tag?,
-        var anchorGenerator: AnchorGenerator,
-        var yamlDirective: SpecVersion?,
-        var tagDirective: Map<String, String>,
-        var defaultFlowStyle: FlowStyle,
-        var defaultScalarStyle: ScalarStyle,
-        var nonPrintableStyle: NonPrintableStyle,
-        var schema: Schema,
-        var isCanonical: Boolean,
-        var isMultiLineFlow: Boolean,
-        var isUseUnicodeEncoding: Boolean,
-        var indent: Int,
-        var indicatorIndent: Int,
-        var width: Int,
-        var bestLineBreak: String,
-        var isSplitLines: Boolean,
-        var maxSimpleKeyLength: Int,
-        var customProperties: Map<SettingKey, Any>,
-        var indentWithIndicator: Boolean,
-        var dumpComments: Boolean,
-        var isDereferenceAliases: Boolean,
-    )
+    interface DumpSettingsBuilder {
+        var isExplicitStart: Boolean
+        var isExplicitEnd: Boolean
+        var explicitRootTag: Tag?
+        var anchorGenerator: AnchorGenerator
+        var yamlDirective: SpecVersion?
+        var tagDirective: Map<String, String>
+        var defaultFlowStyle: FlowStyle
+        var defaultScalarStyle: ScalarStyle
+        var nonPrintableStyle: NonPrintableStyle
+        var schema: Schema
+        var isCanonical: Boolean
+        var isMultiLineFlow: Boolean
+        var isUseUnicodeEncoding: Boolean
+        var indent: Int
+        var indicatorIndent: Int
+        var width: Int
+        var bestLineBreak: String
+        var isSplitLines: Boolean
+        var maxSimpleKeyLength: Int
+        var customProperties: Map<SettingKey, Any>
+        var indentWithIndicator: Boolean
+        var dumpComments: Boolean
+        var isDereferenceAliases: Boolean
+    }
 }

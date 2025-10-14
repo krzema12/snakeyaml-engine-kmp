@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings.SpecVersionMutator
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.DuplicateKeyException
@@ -73,6 +74,14 @@ class LoadSettingsTest : FunSpec({
     test("use Core schema by default") {
         val settings = LoadSettings()
         settings.schema::class shouldBe CoreSchema::class
+    }
+
+    test("copy DSL smoke test") {
+        val settings1 = LoadSettings()
+        val settings2 = settings1.copy {
+            label = "foobarbaz"
+        }
+        settings1.label shouldNotBe settings2.label
     }
 })
 

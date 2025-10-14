@@ -13,6 +13,7 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
+import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings.DumpSettingsMutable
 import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion
 import it.krzeminski.snakeyaml.engine.kmp.env.EnvConfig
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlVersionException
@@ -151,4 +152,63 @@ class LoadSettings(
     fun interface SpecVersionMutator {
         operator fun invoke(version: SpecVersion): SpecVersion
     }
+
+    fun copy(modifications: LoadSettingsMutable.() -> Unit): LoadSettings {
+        val mutable = LoadSettingsMutable(
+            label = label,
+            tagConstructors = tagConstructors,
+            defaultList = defaultList,
+            defaultSet = defaultSet,
+            defaultMap = defaultMap,
+            versionFunction = versionFunction,
+            bufferSize = bufferSize,
+            allowDuplicateKeys = allowDuplicateKeys,
+            allowRecursiveKeys = allowRecursiveKeys,
+            maxAliasesForCollections = maxAliasesForCollections,
+            useMarks = useMarks,
+            customProperties = customProperties,
+            envConfig = envConfig,
+            parseComments = parseComments,
+            codePointLimit = codePointLimit,
+            schema = schema,
+        )
+        mutable.modifications()
+        return LoadSettings(
+            label = mutable.label,
+            tagConstructors = mutable.tagConstructors,
+            defaultList = mutable.defaultList,
+            defaultSet = mutable.defaultSet,
+            defaultMap = mutable.defaultMap,
+            versionFunction = mutable.versionFunction,
+            bufferSize = mutable.bufferSize,
+            allowDuplicateKeys = mutable.allowDuplicateKeys,
+            allowRecursiveKeys = mutable.allowRecursiveKeys,
+            maxAliasesForCollections = mutable.maxAliasesForCollections,
+            useMarks = mutable.useMarks,
+            customProperties = mutable.customProperties,
+            envConfig = mutable.envConfig,
+            parseComments = mutable.parseComments,
+            codePointLimit = mutable.codePointLimit,
+            schema = mutable.schema,
+        )
+    }
+
+    class LoadSettingsMutable(
+        var label: String,
+        var tagConstructors: Map<Tag, ConstructNode>,
+        var defaultList: CollectionProvider<MutableList<Any?>>,
+        var defaultSet: CollectionProvider<MutableSet<Any?>>,
+        var defaultMap: CollectionProvider<MutableMap<Any?, Any?>>,
+        var versionFunction: SpecVersionMutator,
+        var bufferSize: Int,
+        var allowDuplicateKeys: Boolean,
+        var allowRecursiveKeys: Boolean,
+        var maxAliasesForCollections: Int,
+        var useMarks: Boolean,
+        var customProperties: Map<SettingKey, Any>,
+        var envConfig: EnvConfig?,
+        var parseComments: Boolean,
+        var codePointLimit: Int,
+        var schema: Schema,
+    )
 }

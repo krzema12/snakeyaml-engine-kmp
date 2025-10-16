@@ -11,6 +11,7 @@ kotlinx-binary-compatibility-validator = "0.18.1"
 kotlinx-datetime = "0.7.1-0.6.x-compat"
 jetbrains-annotations = "26.0.2-1"
 junit-jupiter = "6.0.0"
+kotlinpoet = "2.2.0"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -20,6 +21,9 @@ kotest-assertions-table = { module = "io.kotest:kotest-assertions-table", versio
 kotest-framework-plugin-gradle = { module = "io.kotest:kotest-framework-plugin-gradle", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
 urlencoder-lib = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", version.ref = "urlencoder-lib" }

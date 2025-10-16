@@ -19,12 +19,17 @@ apiValidation {
     ignoredProjects += listOf("snake-kmp-benchmarks")
 }
 
+dependencies {
+    ksp(project(":copy-dsl-ksp-processor"))
+}
+
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.okio)
                 implementation(libs.urlencoder.lib)
+                implementation(project(":copy-dsl-ksp-processor-api"))
             }
         }
 

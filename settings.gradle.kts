@@ -85,3 +85,5 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 
 include(":snake-kmp-benchmarks")
+include(":copy-dsl-ksp-processor")
+include(":copy-dsl-ksp-processor-api")

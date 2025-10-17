@@ -1,4 +1,4 @@
-package it.krzeminski.snakeyaml.engine.kmp.api.dump
+package it.krzeminski.snakeyaml.engine.kmp.api
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
@@ -8,9 +8,6 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import it.krzeminski.snakeyaml.engine.kmp.api.Dump
-import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
-import it.krzeminski.snakeyaml.engine.kmp.api.SettingKey
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle

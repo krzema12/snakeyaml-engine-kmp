@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -62,7 +62,7 @@ kotlin {
 }
 
 // Not added by KSP by default.
-tasks.withType<KotlinCompile>().configureEach {
+tasks.withType<KotlinCompileCommon>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }

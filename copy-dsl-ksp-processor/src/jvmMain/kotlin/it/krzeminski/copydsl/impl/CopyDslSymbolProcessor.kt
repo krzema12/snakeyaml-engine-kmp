@@ -28,9 +28,7 @@ class CopyDslSymbolProcessor(
             return emptyList()
         }
         wasRun = true
-        println("Symbols annotated with @CopyDsl:")
         resolver.getSymbolsWithAnnotation("it.krzeminski.copydsl.api.CopyDsl").forEach { symbol ->
-            println(symbol)
             if (symbol is KSClassDeclaration) {
                 val interfaceName = "Mutable${symbol.simpleName.asString()}"
                 val interfaceSpec = TypeSpec.interfaceBuilder(interfaceName)

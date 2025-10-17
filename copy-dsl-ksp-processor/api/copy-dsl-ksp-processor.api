@@ -1,3 +1,15 @@
 public abstract interface annotation class it/krzeminski/copydsl/api/CopyDsl : java/lang/annotation/Annotation {
 }
 
+public final class it/krzeminski/copydsl/impl/CopyDslSymbolProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
+	public fun <init> (Lcom/google/devtools/ksp/processing/CodeGenerator;)V
+	public fun finish ()V
+	public fun onError ()V
+	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
+}
+
+public final class it/krzeminski/copydsl/impl/CopyDslSymbolProcessorProvider : com/google/devtools/ksp/processing/SymbolProcessorProvider {
+	public fun <init> ()V
+	public fun create (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)Lcom/google/devtools/ksp/processing/SymbolProcessor;
+}
+

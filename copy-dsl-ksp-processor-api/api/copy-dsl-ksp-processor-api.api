@@ -1,3 +1,0 @@
-public abstract interface annotation class it/krzeminski/copydsl/api/CopyDsl : java/lang/annotation/Annotation {
-}
-

@@ -20,7 +20,7 @@ apiValidation {
 }
 
 dependencies {
-    ksp(project(":copy-dsl-ksp-processor"))
+    kspJvm(project(":copy-dsl-ksp-processor"))
 }
 
 kotlin {
@@ -29,7 +29,7 @@ kotlin {
             dependencies {
                 implementation(libs.okio)
                 implementation(libs.urlencoder.lib)
-                implementation(project(":copy-dsl-ksp-processor-api"))
+                implementation(project(":copy-dsl-ksp-processor"))
             }
         }
 

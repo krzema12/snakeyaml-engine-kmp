@@ -1,13 +1,15 @@
 plugins {
-    kotlin("jvm")
+    buildsrc.conventions.lang.`kotlin-multiplatform`
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(libs.ksp.symbol.processing.api)
-    implementation(libs.kotlinpoet)
-    implementation(libs.kotlinpoet.ksp)
+kotlin {
+    sourceSets {
+        jvmMain {
+            dependencies {
+                implementation(libs.ksp.symbol.processing.api)
+                implementation(libs.kotlinpoet)
+                implementation(libs.kotlinpoet.ksp)
+            }
+        }
+    }
 }

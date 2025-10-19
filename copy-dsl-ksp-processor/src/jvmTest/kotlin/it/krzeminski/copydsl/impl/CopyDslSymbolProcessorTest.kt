@@ -63,7 +63,7 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val stdout = runCommand(
             "java",
             "-cp",
-            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
+            listOf(jvmClassFile.invariantSeparatorsPath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
             "MainKt",
         )
         stdout shouldBe """

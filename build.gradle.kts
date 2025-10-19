@@ -85,6 +85,12 @@ tasks.withType<KotlinNativeCompile>().configureEach {
     }
 }
 
+tasks.configureEach {
+    if (name.endsWith("sourcesJar", ignoreCase = true)) {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
 tasks.withType<Test>().configureEach {
     environment(
         "EnvironmentKey1" to "EnvironmentValue1",

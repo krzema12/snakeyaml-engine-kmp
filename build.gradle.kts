@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
@@ -19,12 +22,20 @@ apiValidation {
     ignoredProjects += listOf("snake-kmp-benchmarks")
 }
 
+dependencies {
+    kspCommonMainMetadata(projects.copyDslKspProcessor)
+}
+
 kotlin {
     sourceSets {
         commonMain {
+            // Not added by KSP by default.
+            kotlin.srcDirs("build/generated/ksp/metadata/commonMain/kotlin")
+
             dependencies {
                 implementation(libs.okio)
                 implementation(libs.urlencoder.lib)
+                implementation(project(":copy-dsl-ksp-processor"))
             }
         }
 
@@ -49,6 +60,25 @@ kotlin {
                 implementation(libs.kotest.runner.junit5)
             }
         }
+    }
+}
+
+// Not added by KSP by default.
+tasks.withType<KotlinCompile>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.withType<KotlinJsCompile>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.withType<KotlinNativeCompile>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }
 

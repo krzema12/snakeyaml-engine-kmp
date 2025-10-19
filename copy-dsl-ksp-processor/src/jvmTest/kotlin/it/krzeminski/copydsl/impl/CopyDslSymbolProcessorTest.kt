@@ -65,13 +65,16 @@ class CopyDslSymbolProcessorTest : FunSpec({
         println("jvmClassFile.absoluteFile: ${jvmClassFile.absoluteFile}")
         println("jvmClassFile.absolutePath: ${jvmClassFile.absolutePath}")
         println("jvmClassFile.absoluteFile.invariantSeparatorsPath: ${jvmClassFile.absoluteFile.invariantSeparatorsPath}")
+        println("Files inside:")
+        jvmClassFile.walkTopDown().forEach { println("- $it") }
+        val args = listOf(
+            "-cp",
+            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
+            "MainKt",
+        )
         val stdout = shellRun(
             "java",
-            listOf(
-                "-cp",
-                listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
-                "MainKt",
-            ),
+            args,
         )
         stdout shouldBe """
             myObject.foo: Goo

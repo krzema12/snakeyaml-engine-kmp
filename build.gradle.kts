@@ -19,7 +19,10 @@ version = "4.0.0-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
 apiValidation {
-    ignoredProjects += listOf("snake-kmp-benchmarks")
+    ignoredProjects += listOf(
+        "snake-kmp-benchmarks",
+        "copy-dsl-ksp-processor",
+    )
 }
 
 dependencies {

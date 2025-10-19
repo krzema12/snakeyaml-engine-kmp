@@ -61,22 +61,14 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val jvmClassFile = result.generatedFiles
             .first { it.extension == "class" }
             .parentFile
-        println("jvmClassFile: $jvmClassFile")
-        println("jvmClassFile.absoluteFile: ${jvmClassFile.absoluteFile}")
-        println("jvmClassFile.absolutePath: ${jvmClassFile.absolutePath}")
-        println("jvmClassFile.absoluteFile.invariantSeparatorsPath: ${jvmClassFile.absoluteFile.invariantSeparatorsPath}")
-        println("Files inside:")
-        jvmClassFile.walkTopDown().forEach { println("- $it") }
         val classpathSeparator = if (":" in jvmClassFile.absolutePath) ";" else ":"
-        val args = listOf(
-            "-cp",
-            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(classpathSeparator),
-            "MainKt",
-        )
-        println("Args: $args")
         val stdout = shellRun(
             "java",
-            args,
+            listOf(
+                "-cp",
+                listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(classpathSeparator),
+                "MainKt",
+            ),
         )
         stdout.replace("\r\n", "\n") shouldBe """
             myObject.foo: Goo

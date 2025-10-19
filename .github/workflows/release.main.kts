@@ -30,7 +30,7 @@ val SIGNING_PASSWORD by Contexts.secrets
 workflow(
     name = "Publish release to Maven Central or snapshot repo",
     on = listOf(
-        Push(),
+        Push(branches = listOf("main")),
         WorkflowDispatch(),
     ),
     sourceFile = __FILE__,

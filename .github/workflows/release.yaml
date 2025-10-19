@@ -4,7 +4,9 @@
 
 name: 'Publish release to Maven Central or snapshot repo'
 on:
-  push: {}
+  push:
+    branches:
+    - 'main'
   workflow_dispatch: {}
 jobs:
   check_yaml_consistency:

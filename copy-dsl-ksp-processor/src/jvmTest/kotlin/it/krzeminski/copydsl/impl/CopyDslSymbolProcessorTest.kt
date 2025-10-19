@@ -72,6 +72,7 @@ class CopyDslSymbolProcessorTest : FunSpec({
             listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
             "MainKt",
         )
+        println("Args: $args")
         val stdout = shellRun(
             "java",
             args,

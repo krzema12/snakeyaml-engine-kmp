@@ -67,9 +67,10 @@ class CopyDslSymbolProcessorTest : FunSpec({
         println("jvmClassFile.absoluteFile.invariantSeparatorsPath: ${jvmClassFile.absoluteFile.invariantSeparatorsPath}")
         println("Files inside:")
         jvmClassFile.walkTopDown().forEach { println("- $it") }
+        val classpathSeparator = if (":" in jvmClassFile.absolutePath) ";" else ":"
         val args = listOf(
             "-cp",
-            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(";"),
+            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(classpathSeparator),
             "MainKt",
         )
         println("Args: $args")
@@ -84,6 +85,6 @@ class CopyDslSymbolProcessorTest : FunSpec({
             newObject.foo: Zoo
             newObject.bar: 789
             newObject.baz: 101
-        """.trimIndent()
+        """.trimIndent().replace("\r\n", "\n")
     }
 })

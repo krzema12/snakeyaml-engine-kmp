@@ -20,6 +20,7 @@ kotlin {
                 implementation(libs.kotest.runner.junit5)
 
                 implementation(libs.kotlin.compile.testing.ksp)
+                implementation(libs.turtle)
             }
         }
     }

@@ -13,6 +13,7 @@ jetbrains-annotations = "26.0.2-1"
 junit-jupiter = "6.0.0"
 kotlinpoet = "2.2.0"
 kotlin-compile-testing = "0.10.1"
+turtle = "0.10.0"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -35,6 +36,7 @@ maven-publish-gradle-plugin = { module = "com.vanniktech.maven.publish:com.vanni
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
 kotlin-compile-testing-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlin-compile-testing" }
+turtle = { module = "com.lordcodes.turtle:turtle", version.ref = "turtle" }
 
 [plugins]
 kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }

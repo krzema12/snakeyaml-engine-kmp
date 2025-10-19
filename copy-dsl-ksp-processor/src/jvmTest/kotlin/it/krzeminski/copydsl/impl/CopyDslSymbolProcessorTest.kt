@@ -1,5 +1,6 @@
 package it.krzeminski.copydsl.impl
 
+import com.lordcodes.turtle.shellRun
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.configureKsp
@@ -60,11 +61,13 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val jvmClassFile = result.generatedFiles
             .first { it.extension == "class" }
             .parentFile
-        val stdout = runCommand(
+        val stdout = shellRun(
             "java",
-            "-cp",
-            listOf(jvmClassFile.invariantSeparatorsPath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
-            "MainKt",
+            listOf(
+                "-cp",
+                listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
+                "MainKt",
+            ),
         )
         stdout shouldBe """
             myObject.foo: Goo
@@ -73,7 +76,6 @@ class CopyDslSymbolProcessorTest : FunSpec({
             newObject.foo: Zoo
             newObject.bar: 789
             newObject.baz: 101
-
         """.trimIndent()
     }
 })

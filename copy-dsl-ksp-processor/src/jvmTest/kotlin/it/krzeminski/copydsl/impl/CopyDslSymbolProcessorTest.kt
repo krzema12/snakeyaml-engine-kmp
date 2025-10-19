@@ -78,13 +78,13 @@ class CopyDslSymbolProcessorTest : FunSpec({
             "java",
             args,
         )
-        stdout shouldBe """
+        stdout.replace("\r\n", "\n") shouldBe """
             myObject.foo: Goo
             myObject.bar: 123
             myObject.baz: 456
             newObject.foo: Zoo
             newObject.bar: 789
             newObject.baz: 101
-        """.trimIndent().replace("\r\n", "\n")
+        """.trimIndent()
     }
 })

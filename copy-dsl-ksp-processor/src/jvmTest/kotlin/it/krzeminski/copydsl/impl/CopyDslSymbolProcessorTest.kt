@@ -61,6 +61,10 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val jvmClassFile = result.generatedFiles
             .first { it.extension == "class" }
             .parentFile
+        println("jvmClassFile: $jvmClassFile")
+        println("jvmClassFile.absoluteFile: ${jvmClassFile.absoluteFile}")
+        println("jvmClassFile.absolutePath: ${jvmClassFile.absolutePath}")
+        println("jvmClassFile.absoluteFile.invariantSeparatorsPath: ${jvmClassFile.absoluteFile.invariantSeparatorsPath}")
         val stdout = shellRun(
             "java",
             listOf(

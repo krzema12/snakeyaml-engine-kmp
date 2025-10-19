@@ -69,7 +69,7 @@ class CopyDslSymbolProcessorTest : FunSpec({
         jvmClassFile.walkTopDown().forEach { println("- $it") }
         val args = listOf(
             "-cp",
-            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(":"),
+            listOf(jvmClassFile.absolutePath, compilation.kotlinStdLibJar!!.absolutePath).joinToString(";"),
             "MainKt",
         )
         println("Args: $args")

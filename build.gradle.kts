@@ -65,6 +65,10 @@ kotlin {
     }
 }
 
+ksp {
+    arg("copy-annotation-fqn", "it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl")
+}
+
 // Not added by KSP by default.
 tasks.withType<KotlinCompile>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {

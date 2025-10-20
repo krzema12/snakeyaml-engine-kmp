@@ -15,9 +15,9 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val source = SourceFile.kotlin(
             name = "Main.kt",
             contents = $$"""
-                import it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl
+                import it.krzeminski.copydsl.impl.TestCopyAnnotation
 
-                @CopyDsl
+                @TestCopyAnnotation
                 class MyClass(
                     val foo: String,
                     val bar: Int?,
@@ -50,6 +50,7 @@ class CopyDslSymbolProcessorTest : FunSpec({
 
             configureKsp {
                 symbolProcessorProviders.add(CopyDslSymbolProcessorProvider())
+                processorOptions["copy-annotation-fqn"] = "it.krzeminski.copydsl.impl.TestCopyAnnotation"
             }
         }
 

@@ -6,5 +6,9 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 class CopyDslSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
-        CopyDslSymbolProcessor(codeGenerator = environment.codeGenerator)
+        CopyDslSymbolProcessor(
+            codeGenerator = environment.codeGenerator,
+            copyAnnotationFqn = environment.options["copy-annotation-fqn"]
+                ?: error("Missing 'copyAnnotationFqn' processor option!"),
+        )
 }

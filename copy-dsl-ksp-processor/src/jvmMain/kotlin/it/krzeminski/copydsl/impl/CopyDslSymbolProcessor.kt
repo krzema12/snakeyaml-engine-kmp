@@ -20,6 +20,7 @@ import com.squareup.kotlinpoet.ksp.writeTo
 
 class CopyDslSymbolProcessor(
     private val codeGenerator: CodeGenerator,
+    private val copyAnnotationFqn: String,
 ) : SymbolProcessor {
     private var wasRun = false
 
@@ -32,7 +33,7 @@ class CopyDslSymbolProcessor(
     }
 
     private fun addCopyDslForAnnotatedClasses(resolver: Resolver) =
-        resolver.getSymbolsWithAnnotation("it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl")
+        resolver.getSymbolsWithAnnotation(copyAnnotationFqn)
             .forEach { symbol ->
                 if (symbol is KSClassDeclaration) {
                     generateCopyDslFile(symbol = symbol)

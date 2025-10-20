@@ -39,6 +39,7 @@ kotlin {
                 implementation(libs.okio)
                 implementation(libs.urlencoder.lib)
                 compileOnly(project(":copy-dsl-ksp-processor"))
+                api(project(":copy-dsl-ksp-processor"))
             }
         }
 

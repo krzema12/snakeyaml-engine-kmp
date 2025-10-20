@@ -13,7 +13,7 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
-import it.krzeminski.copydsl.api.CopyDsl
+import it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl
 import it.krzeminski.snakeyaml.engine.kmp.common.SpecVersion
 import it.krzeminski.snakeyaml.engine.kmp.env.EnvConfig
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlVersionException

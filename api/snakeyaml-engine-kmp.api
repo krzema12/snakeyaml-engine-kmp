@@ -844,6 +844,9 @@ public final class it/krzeminski/snakeyaml/engine/kmp/exceptions/YamlVersionExce
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/common/SpecVersion;)V
 }
 
+public abstract interface annotation class it/krzeminski/snakeyaml/engine/kmp/internal/CopyDsl : java/lang/annotation/Annotation {
+}
+
 public final class it/krzeminski/snakeyaml/engine/kmp/nodes/AnchorNode : it/krzeminski/snakeyaml/engine/kmp/nodes/Node {
 	public fun <init> (Lit/krzeminski/snakeyaml/engine/kmp/nodes/Node;)V
 	public fun getNodeType ()Lit/krzeminski/snakeyaml/engine/kmp/nodes/NodeType;

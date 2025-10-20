@@ -13,7 +13,7 @@
  */
 package it.krzeminski.snakeyaml.engine.kmp.api
 
-import it.krzeminski.copydsl.api.CopyDsl
+import it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl
 import it.krzeminski.snakeyaml.engine.kmp.common.FlowStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.NonPrintableStyle
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle

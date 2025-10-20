@@ -15,7 +15,7 @@ class CopyDslSymbolProcessorTest : FunSpec({
         val source = SourceFile.kotlin(
             name = "Main.kt",
             contents = $$"""
-                import it.krzeminski.copydsl.api.CopyDsl
+                import it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl
 
                 @CopyDsl
                 class MyClass(

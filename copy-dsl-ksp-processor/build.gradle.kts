@@ -19,6 +19,7 @@ kotlin {
                 implementation(libs.junit.jupiter.engine)
                 implementation(libs.kotest.runner.junit5)
 
+                implementation(rootProject)
                 implementation(libs.kotlin.compile.testing.ksp)
                 implementation(libs.turtle)
             }

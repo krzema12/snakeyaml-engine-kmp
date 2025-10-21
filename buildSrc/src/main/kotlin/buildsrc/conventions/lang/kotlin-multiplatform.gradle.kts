@@ -54,12 +54,12 @@ kotlin {
         // Removal of this workaround is tracked in https://github.com/krzema12/snakeyaml-engine-kmp/issues/603
         browser {
             testTask {
-                enabled = !System.getProperty("os.name").lowercase().contains("windows")
+                onlyIf { !org.gradle.internal.os.OperatingSystem.current().isWindows }
             }
         }
         nodejs {
             testTask {
-                enabled = !System.getProperty("os.name").lowercase().contains("windows")
+                onlyIf { !org.gradle.internal.os.OperatingSystem.current().isWindows }
             }
         }
     }

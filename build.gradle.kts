@@ -94,6 +94,16 @@ tasks.configureEach {
     }
 }
 
+// There's a problem on Windows, the tests fail with:
+//   Caused by: java.lang.IllegalStateException: Cannot find node module
+//   "kotlin-web-helpers/dist/kotlin-test-karma-runner.js" in "D:\a\snakeyaml-engine-kmp\snakeyaml-engine-kmp\build\wasm\packages\snakeyaml-engine-kmp-test"
+// Since the wasmJS tests are executed on the Ubuntu runner, it's safe to skip the tests on Windows.
+if (System.getProperty("os.name").lowercase().contains("windows")) {
+    tasks.named("wasmJsBrowserTest") {
+        enabled = false
+    }
+}
+
 tasks.withType<Test>().configureEach {
     environment(
         "EnvironmentKey1" to "EnvironmentValue1",

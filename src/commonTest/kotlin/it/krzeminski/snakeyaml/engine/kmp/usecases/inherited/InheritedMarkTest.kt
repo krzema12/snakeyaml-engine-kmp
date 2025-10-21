@@ -16,7 +16,6 @@ class InheritedMarkTest: FunSpec({
             // delimiter, as an empty string.
             .dropWhile { it.isEmpty() }
         inputs.forEach { input ->
-            println("Input: '$input'")
             var index = 0
             var line = 0
             var column = 0

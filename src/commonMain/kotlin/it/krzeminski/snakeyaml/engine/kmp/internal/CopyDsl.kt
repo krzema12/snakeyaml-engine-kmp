@@ -6,4 +6,4 @@ package it.krzeminski.snakeyaml.engine.kmp.internal
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-public annotation class CopyDsl
+internal annotation class CopyDsl

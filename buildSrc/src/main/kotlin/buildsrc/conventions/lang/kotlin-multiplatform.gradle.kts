@@ -46,8 +46,22 @@ kotlin {
     //region Wasm Targets
     wasmJs {
         binaries.library()
-        browser()
-        nodejs()
+        // There's a problem on Windows, the tests fail with:
+        //   Caused by: java.lang.IllegalStateException: Cannot find node module
+        //   "kotlin-web-helpers/dist/kotlin-test-karma-runner.js" in "D:\a\snakeyaml-engine-kmp\snakeyaml-engine-kmp\build\wasm\packages\snakeyaml-engine-kmp-test"
+        // Since the wasmJS tests are executed on the Ubuntu runner, it's safe to skip the tests on Windows.
+        // It was reported in https://youtrack.jetbrains.com/issue/KT-81818/
+        // Removal of this workaround is tracked in https://github.com/krzema12/snakeyaml-engine-kmp/issues/603
+        browser {
+            testTask {
+                onlyIf { !org.gradle.internal.os.OperatingSystem.current().isWindows }
+            }
+        }
+        nodejs {
+            testTask {
+                onlyIf { !org.gradle.internal.os.OperatingSystem.current().isWindows }
+            }
+        }
     }
 
     // Disable Wasi: No matching variant of io.kotest:kotest-framework-engine:5.9.0 was found

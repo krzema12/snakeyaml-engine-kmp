@@ -38,7 +38,6 @@ kotlin {
             dependencies {
                 implementation(libs.okio)
                 implementation(libs.urlencoder.lib)
-                implementation(project(":copy-dsl-ksp-processor"))
             }
         }
 
@@ -64,6 +63,10 @@ kotlin {
             }
         }
     }
+}
+
+ksp {
+    arg("copy-annotation-fqn", "it.krzeminski.snakeyaml.engine.kmp.internal.CopyDsl")
 }
 
 // Not added by KSP by default.

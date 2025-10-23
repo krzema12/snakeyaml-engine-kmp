@@ -1,3 +1,2 @@
-See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..b0191ac3c02aec9d570ca48ed5bf3f5c8d851c00
+See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
-be40e57 Add build with JDK 25

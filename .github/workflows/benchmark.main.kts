@@ -5,8 +5,8 @@
 
 @file:Repository("https://bindings.krzeminski.it/")
 @file:DependsOn("actions:checkout:v5")
-@file:DependsOn("actions:download-artifact:v5")
-@file:DependsOn("actions:upload-artifact:v4")
+@file:DependsOn("actions:download-artifact:v6")
+@file:DependsOn("actions:upload-artifact:v5")
 @file:DependsOn("gradle:actions__wrapper-validation:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v5")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")

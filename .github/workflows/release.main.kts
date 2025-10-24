@@ -37,7 +37,7 @@ workflow(
 ) {
     job(
         id = "release",
-        runsOn = RunnerType.MacOSLatest,
+        runsOn = RunnerType.UbuntuLatest,
     ) {
         uses(action = Checkout())
         setupJdk()

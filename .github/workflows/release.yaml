@@ -6,7 +6,7 @@ name: 'Publish release to Maven Central or snapshot repo'
 on:
   push:
     branches:
-    - 'main'
+    - 'release-ubuntu'
   workflow_dispatch: {}
 jobs:
   check_yaml_consistency:
@@ -23,7 +23,7 @@ jobs:
       name: 'Consistency check'
       run: 'git diff --exit-code ''.github/workflows/release.yaml'''
   release:
-    runs-on: 'macos-latest'
+    runs-on: 'ubuntu-latest'
     needs:
     - 'check_yaml_consistency'
     steps:

@@ -62,7 +62,7 @@ jobs:
       name: 'Run benchmarks'
       run: './gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${{ matrix.additional-args }}'
     - id: 'step-5'
-      uses: 'actions/upload-artifact@v4'
+      uses: 'actions/upload-artifact@v5'
       with:
         name: 'bench-results-${{ matrix.os }}'
         path: 'snake-kmp-benchmarks/build/reports/benchmarks/main/**/*.json'
@@ -76,7 +76,7 @@ jobs:
       uses: 'actions/checkout@v5'
     - id: 'step-1'
       name: 'Download benchmark results'
-      uses: 'actions/download-artifact@v5'
+      uses: 'actions/download-artifact@v6'
       with:
         path: 'bench-results'
         pattern: 'bench-results-*'

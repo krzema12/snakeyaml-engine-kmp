@@ -1,4 +1,11 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+84e55e7 Merge branch 'arrays-test'
+957a804 Improve test coverage for StandardRepresenter (for Set)
+9a01a3c Improve test coverage for StandardRepresenter
+7a1ecac Minor improvement for Java 11
+7abcc03 Cover by tests arrays of primitives
+555467d Reformat test
+5ea32df Reformat test
 6b27f3e The next version will be 3
 8876c5c Issue 72: Enforce mapping keys to be scalars

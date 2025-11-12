@@ -1,5 +1,8 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+636de54 [maven-release-plugin] prepare for next development iteration
+8bebbda [maven-release-plugin] prepare release snakeyaml-engine-3.0
+c2eb39a Update changes
 84e55e7 Merge branch 'arrays-test'
 957a804 Improve test coverage for StandardRepresenter (for Set)
 9a01a3c Improve test coverage for StandardRepresenter

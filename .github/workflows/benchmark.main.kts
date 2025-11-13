@@ -1,12 +1,12 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.5.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.6.0")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
 @file:DependsOn("actions:checkout:v5")
-@file:DependsOn("actions:download-artifact:v5")
-@file:DependsOn("actions:upload-artifact:v4")
+@file:DependsOn("actions:download-artifact:v6")
+@file:DependsOn("actions:upload-artifact:v5")
 @file:DependsOn("gradle:actions__wrapper-validation:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v5")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")

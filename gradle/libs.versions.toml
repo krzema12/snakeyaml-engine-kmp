@@ -1,16 +1,16 @@
 [versions]
 kotlin = "2.2.21"
 kotest = "6.0.0"
-ksp = "2.3.0"
+ksp = "2.3.2"
 okio = "3.16.2"
 urlencoder-lib = "1.6.0"
 kotlinx-benchmark = "0.4.14"
-snakeyaml-engine = "2.10"
+snakeyaml-engine = "3.0"
 dokkatoo = "2.4.0"
 kotlinx-binary-compatibility-validator = "0.18.1"
 kotlinx-datetime = "0.7.1-0.6.x-compat"
 jetbrains-annotations = "26.0.2-1"
-junit-jupiter = "6.0.0"
+junit-jupiter = "6.0.1"
 kotlinpoet = "2.2.0"
 kotlin-compile-testing = "0.11.0"
 turtle = "0.10.0"
@@ -32,7 +32,7 @@ urlencoder-lib = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", versio
 snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml-engine" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-maven-publish-gradle-plugin = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version = "0.34.0"}
+maven-publish-gradle-plugin = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version = "0.35.0"}
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
 kotlin-compile-testing-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlin-compile-testing" }

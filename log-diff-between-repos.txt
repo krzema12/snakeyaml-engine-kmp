@@ -1,8 +1,16 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+2070eb4 [maven-release-plugin] prepare for next development iteration
+db85065 [maven-release-plugin] prepare release snakeyaml-engine-3.0.1
+243f992 Prepare 3.0.1
+37a144f Update changes
+e8c75a9 Issue 74: Refactor packages to run test with module-info.java
+0280e0e Add module-info.java
+33680c3 Merge remote-tracking branch 'origin/master'
 636de54 [maven-release-plugin] prepare for next development iteration
 8bebbda [maven-release-plugin] prepare release snakeyaml-engine-3.0
 c2eb39a Update changes
+b3b6627 Remove unused cobertura plugin
 84e55e7 Merge branch 'arrays-test'
 957a804 Improve test coverage for StandardRepresenter (for Set)
 9a01a3c Improve test coverage for StandardRepresenter

@@ -1,8 +1,8 @@
 [versions]
 kotlin = "2.2.21"
-kotest = "6.0.0"
-ksp = "2.3.2"
-okio = "3.16.3"
+kotest = "6.0.7"
+ksp = "2.3.3"
+okio = "3.16.4"
 urlencoder-lib = "1.6.0"
 kotlinx-benchmark = "0.4.14"
 snakeyaml-engine = "3.0.1"
@@ -12,7 +12,7 @@ kotlinx-datetime = "0.7.1-0.6.x-compat"
 jetbrains-annotations = "26.0.2-1"
 junit-jupiter = "6.0.1"
 kotlinpoet = "2.2.0"
-kotlin-compile-testing = "0.11.0"
+kotlin-compile-testing = "0.11.1"
 turtle = "0.10.0"
 
 [libraries]

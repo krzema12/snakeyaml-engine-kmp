@@ -4,7 +4,7 @@
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
-@file:DependsOn("actions:checkout:v5")
+@file:DependsOn("actions:checkout:v6")
 @file:DependsOn("actions:download-artifact:v6")
 @file:DependsOn("actions:upload-artifact:v5")
 @file:DependsOn("gradle:actions__wrapper-validation:v5")

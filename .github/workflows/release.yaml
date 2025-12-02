@@ -15,7 +15,7 @@ jobs:
     steps:
     - id: 'step-0'
       name: 'Check out'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v6'
     - id: 'step-1'
       name: 'Execute script'
       run: 'rm ''.github/workflows/release.yaml'' && ''.github/workflows/release.main.kts'''
@@ -28,7 +28,7 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v5'
+      uses: 'actions/checkout@v6'
     - id: 'step-1'
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v5'

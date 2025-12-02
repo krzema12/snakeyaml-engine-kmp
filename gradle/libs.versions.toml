@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.2.21"
-kotest = "6.0.0"
+kotest = "6.0.7"
 ksp = "2.3.3"
 okio = "3.16.4"
 urlencoder-lib = "1.6.0"

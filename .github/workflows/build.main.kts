@@ -4,7 +4,7 @@
 
 @file:Repository("https://bindings.krzeminski.it/")
 @file:DependsOn("actions:checkout:v6")
-@file:DependsOn("actions:cache:v4")
+@file:DependsOn("actions:cache:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v5")
 
 @file:Import("setup-jdk.main.kts")

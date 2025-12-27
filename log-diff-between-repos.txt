@@ -1,5 +1,6 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+06b1c92 Add a test for issue 75
 2070eb4 [maven-release-plugin] prepare for next development iteration
 db85065 [maven-release-plugin] prepare release snakeyaml-engine-3.0.1
 243f992 Prepare 3.0.1

@@ -33,7 +33,7 @@ class JRubyPsychTest : FunSpec({
         val load = Load()
         val obj = load.loadAll("--- |2-\n\n  \u2028* C\n")
         obj.shouldNotBeNull()
-        val doc = docs.iterator().next()
+        val doc = obj.iterator().next()
         doc shouldBe "\n\u2028* C"
     }
 

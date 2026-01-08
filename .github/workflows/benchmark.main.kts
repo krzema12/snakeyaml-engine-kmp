@@ -67,10 +67,6 @@ workflow(
                             "additional-args" to "-x jvmBenchmark -x jsBenchmark",
                         ),
                         mapOf(
-                            "os" to "macos-13", // for macosX64
-                            "additional-args" to "-x jvmBenchmark -x jsBenchmark",
-                        ),
-                        mapOf(
                             "os" to "windows-latest",
                             "additional-args" to "-x jvmBenchmark -x jsBenchmark",
                         ),

@@ -25,7 +25,7 @@ class JRubyPsychTest : FunSpec({
         val load = Load()
         val docs = load.loadAll("--- |2-\n\n\u2028  * C\n")
         docs.shouldNotBeNull()
-        val iter = docs as Iterable<*>
+        val iter = docs
         val doc = iter.iterator().next()
         doc.shouldNotBeNull()
     }
@@ -34,7 +34,7 @@ class JRubyPsychTest : FunSpec({
         val load = Load()
         val obj = load.loadAll("--- |2-\n\n  \u2028* C\n")
         obj.shouldNotBeNull()
-        val iter = obj as Iterable<*>
+        val iter = obj
         val doc = iter.iterator().next()
         doc shouldBe "\n\u2028* C"
     }
@@ -42,7 +42,7 @@ class JRubyPsychTest : FunSpec({
     test("* is not alias after 2028") {
         val load = Load()
         val obj = load.loadAll("\n\u2028* C")
-        val iter = obj as Iterable<*>
+        val iter = obj
         for (o in iter) {
             o shouldBe "\u2028* C"
         }
@@ -51,7 +51,7 @@ class JRubyPsychTest : FunSpec({
     test("use anchor instead of alias") {
         val load = Load()
         val obj = load.loadAll("\n\u2028&C")
-        val iter = obj as Iterable<*>
+        val iter = obj
         for (o in iter) {
             o shouldBe "\u2028&C"
         }

@@ -37,8 +37,6 @@ jobs:
         - os: 'ubuntu-latest'
         - os: 'macos-latest'
           additional-args: '-x jvmBenchmark -x jsBenchmark'
-        - os: 'macos-13'
-          additional-args: '-x jvmBenchmark -x jsBenchmark'
         - os: 'windows-latest'
           additional-args: '-x jvmBenchmark -x jsBenchmark'
     steps:

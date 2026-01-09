@@ -42,10 +42,10 @@ class SystemTest : FunSpec({
     listOf(
         1.toByte(),
         1.toShort(),
-        1.toInt(),
+        1,
         1.toLong(),
         1.5.toFloat(),
-        1.5.toDouble(),
+        1.5,
         "test",
         'a',
     ).forEach { primitive ->

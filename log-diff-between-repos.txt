@@ -1,5 +1,10 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+623230a Ignore CLAUDE.md
+5f7eff2 Update version for JDK 11
+0ed8f4f Update JUnit
+c463a58 Update maven-resources-plugin
+93608b6 Update some Maven plugins
 06b1c92 Add a test for issue 75
 2070eb4 [maven-release-plugin] prepare for next development iteration
 db85065 [maven-release-plugin] prepare release snakeyaml-engine-3.0.1

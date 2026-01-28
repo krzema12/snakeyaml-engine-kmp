@@ -1,5 +1,7 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+9c726fa Merge remote-tracking branch 'origin/master' into issue-76-parse-json
+9810a28 Fix parsing of JSON with multiple consecutive TABs
 623230a Ignore CLAUDE.md
 5f7eff2 Update version for JDK 11
 0ed8f4f Update JUnit

@@ -1,5 +1,10 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+68d31df Merge branch 'master' into issue-75
+8a30b31 Update changes
+cedf62b handle boundary condition related to surrogate chars
+c1d4d3c Allow 0x7F in quoted scalar
+e63aa32 Merge branch 'master' into issue-75
 9c726fa Merge remote-tracking branch 'origin/master' into issue-76-parse-json
 9810a28 Fix parsing of JSON with multiple consecutive TABs
 623230a Ignore CLAUDE.md
@@ -7,6 +12,7 @@ See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/comp
 0ed8f4f Update JUnit
 c463a58 Update maven-resources-plugin
 93608b6 Update some Maven plugins
+2c85c8c Allow 7F
 06b1c92 Add a test for issue 75
 2070eb4 [maven-release-plugin] prepare for next development iteration
 db85065 [maven-release-plugin] prepare release snakeyaml-engine-3.0.1

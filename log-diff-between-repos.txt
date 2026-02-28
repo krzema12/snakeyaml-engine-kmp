@@ -1,8 +1,11 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+655f721 Update changes
+d6cc5db Merge branch 'master' into issue-68
 68d31df Merge branch 'master' into issue-75
 8a30b31 Update changes
 cedf62b handle boundary condition related to surrogate chars
+bc68379 Fix issue 68 when comments after anchor/tag
 c1d4d3c Allow 0x7F in quoted scalar
 e63aa32 Merge branch 'master' into issue-75
 9c726fa Merge remote-tracking branch 'origin/master' into issue-76-parse-json

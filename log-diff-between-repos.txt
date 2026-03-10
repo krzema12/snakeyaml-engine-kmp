@@ -1,5 +1,7 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+75442fd Add test for Issue 79: fix test
+f90c8cf Add test for Issue 79: float values may loose precision
 37a9288 Merge pull request #3 from altro3/update-libs
 23a1bd9 Updating plugin versions. Updating lib versions.
 655f721 Update changes

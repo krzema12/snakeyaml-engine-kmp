@@ -8,7 +8,7 @@
 @file:DependsOn("actions:download-artifact:v7")
 @file:DependsOn("actions:upload-artifact:v6")
 @file:DependsOn("gradle:actions__wrapper-validation:v5")
-@file:DependsOn("gradle:actions__setup-gradle:v5")
+@file:DependsOn("gradle:actions__setup-gradle:v6")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
 
 @file:Import("setup-jdk.main.kts")

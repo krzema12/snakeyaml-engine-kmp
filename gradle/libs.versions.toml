@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.3.0"
+kotlin = "2.3.20"
 kotest = "6.1.9"
 ksp = "2.3.6"
 okio = "3.17.0"

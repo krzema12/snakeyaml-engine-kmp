@@ -1,5 +1,9 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+5503e17 Issue 80: Fix L24T test in test suite
+8838fbf Issue 80: fix DK95 in test suite
+4ce68cb Issue 80: fix test code for the test suite
+edae5eb Issue 80: update the test suite to data-2022-01-17
 75442fd Add test for Issue 79: fix test
 f90c8cf Add test for Issue 79: float values may loose precision
 37a9288 Merge pull request #3 from altro3/update-libs

@@ -18,3 +18,7 @@ description: Port changes from snakeyaml-engine project (this project's upstream
 3. For commits worth porting, cluster them into logical changes that e.g. fix a given issue (there may be a commit with)
    tweaking some tests first, then the actual fix, then some refactoring). Think: we need to figure out which commits
    after porting should go into logical PRs to snakeyaml-engine-kmp.
+
+Prepare the plan of creating PRs, and create a PR with the plan so that the owner can review it. Focus on what PRs
+are going to be created and what commits they'll contain. Include links to commits on
+https://github.com/snakeyaml/snakeyaml-engine (it's a mirror of the BitBucket repo).

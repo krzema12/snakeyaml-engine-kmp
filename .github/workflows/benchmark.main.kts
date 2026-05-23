@@ -7,7 +7,6 @@
 @file:DependsOn("actions:checkout:v6")
 @file:DependsOn("actions:download-artifact:v7")
 @file:DependsOn("actions:upload-artifact:v6")
-@file:DependsOn("gradle:actions__wrapper-validation:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v5")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
 
@@ -20,7 +19,6 @@ import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
-import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
 import io.github.typesafegithub.workflows.annotations.ExperimentalKotlinLogicStep
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType
@@ -77,10 +75,6 @@ workflow(
     ) {
         uses(action = Checkout())
         setupJdk()
-        uses(
-            name = "Validate Gradle Wrapper",
-            action = ActionsWrapperValidation(),
-        )
         uses(
             name = "Setup Gradle",
             action = ActionsSetupGradle(

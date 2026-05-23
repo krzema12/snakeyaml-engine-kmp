@@ -22,5 +22,12 @@
         "actions:download-artifact",
       ]
     },
+    {
+      groupName: "gradle-actions",
+      matchPackageNames: [
+        "gradle/actions",
+        "/^gradle:actions__.*$/",
+      ]
+    },
   ]
 }

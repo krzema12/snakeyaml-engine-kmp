@@ -7,4 +7,13 @@
     'src/commonTest/resources/',
   ],
   automerge: true,
+  packageRules: [
+    {
+      groupName: "actions-upload-artifact",
+      matchPackageNames: [
+        "actions/upload-artifact",
+        "actions:upload-artifact",
+      ]
+    }
+  ]
 }

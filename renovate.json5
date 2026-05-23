@@ -14,6 +14,13 @@
         "actions/upload-artifact",
         "actions:upload-artifact",
       ]
-    }
+    },
+    {
+      groupName: "actions-download-artifact",
+      matchPackageNames: [
+        "actions/download-artifact",
+        "actions:download-artifact",
+      ]
+    },
   ]
 }

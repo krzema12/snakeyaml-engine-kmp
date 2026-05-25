@@ -51,7 +51,7 @@ internal object Character {
     internal fun isSupplementaryCodePoint(codePoint: Int): Boolean =
         codePoint in MIN_SUPPLEMENTARY_CODE_POINT..MAX_CODE_POINT
 
-    internal fun charCount(codePoint: Int): Int = if (codePoint <= MIN_SUPPLEMENTARY_CODE_POINT) 1 else 2
+    internal fun charCount(codePoint: Int): Int = if (codePoint < MIN_SUPPLEMENTARY_CODE_POINT) 1 else 2
 
     internal fun isValidCodePoint(codePoint: Int): Boolean = codePoint in MIN_CODE_POINT..MAX_CODE_POINT
 

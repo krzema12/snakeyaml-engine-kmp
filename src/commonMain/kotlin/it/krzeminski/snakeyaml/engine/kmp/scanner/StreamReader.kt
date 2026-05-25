@@ -293,7 +293,7 @@ class StreamReader(
          */
         @JvmStatic
         fun isPrintable(c: Int): Boolean {
-            return c in 0x20..0x7E
+            return c in 0x20..0x7F
                     || c == 0x9
                     || c == 0xA
                     || c == 0xD

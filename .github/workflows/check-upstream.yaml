@@ -30,7 +30,7 @@ jobs:
     - 'check_yaml_consistency'
     steps:
     - id: 'step-0'
-      uses: 'actions/checkout@v5'
+      uses: 'actions/checkout@v6'
       with:
         ref: 'commits-to-upstream-badge'
     - id: 'step-1'

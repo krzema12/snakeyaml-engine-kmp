@@ -1,14 +1,13 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.6.0")
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.7.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
-@file:DependsOn("actions:checkout:v5")
-@file:DependsOn("actions:download-artifact:v6")
-@file:DependsOn("actions:upload-artifact:v5")
-@file:DependsOn("gradle:actions__wrapper-validation:v5")
-@file:DependsOn("gradle:actions__setup-gradle:v5")
+@file:DependsOn("actions:checkout:v6")
+@file:DependsOn("actions:download-artifact:v8")
+@file:DependsOn("actions:upload-artifact:v7")
+@file:DependsOn("gradle:actions__setup-gradle:v6")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
 
 @file:Import("setup-jdk.main.kts")
@@ -20,7 +19,6 @@ import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
-import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
 import io.github.typesafegithub.workflows.annotations.ExperimentalKotlinLogicStep
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType
@@ -67,10 +65,6 @@ workflow(
                             "additional-args" to "-x jvmBenchmark -x jsBenchmark",
                         ),
                         mapOf(
-                            "os" to "macos-13", // for macosX64
-                            "additional-args" to "-x jvmBenchmark -x jsBenchmark",
-                        ),
-                        mapOf(
                             "os" to "windows-latest",
                             "additional-args" to "-x jvmBenchmark -x jsBenchmark",
                         ),
@@ -81,10 +75,6 @@ workflow(
     ) {
         uses(action = Checkout())
         setupJdk()
-        uses(
-            name = "Validate Gradle Wrapper",
-            action = ActionsWrapperValidation(),
-        )
         uses(
             name = "Setup Gradle",
             action = ActionsSetupGradle(

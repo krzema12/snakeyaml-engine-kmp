@@ -27,10 +27,10 @@ class DumpBenchmark {
     private val objectToDump: Any = linkedMapOf(
         "byte" to 1.toByte(),
         "short" to 1.toShort(),
-        "int" to 1.toInt(),
+        "int" to 1,
         "long" to 1.toLong(),
         "float" to 1.5.toFloat(),
-        "double" to 1.5.toDouble(),
+        "double" to 1.5,
         "char" to 'c',
         "string" to "test",
     )

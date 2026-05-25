@@ -7,4 +7,27 @@
     'src/commonTest/resources/',
   ],
   automerge: true,
+  packageRules: [
+    {
+      groupName: "actions-upload-artifact",
+      matchPackageNames: [
+        "actions/upload-artifact",
+        "actions:upload-artifact",
+      ]
+    },
+    {
+      groupName: "actions-download-artifact",
+      matchPackageNames: [
+        "actions/download-artifact",
+        "actions:download-artifact",
+      ]
+    },
+    {
+      groupName: "gradle-actions",
+      matchPackageNames: [
+        "gradle/actions",
+        "/^gradle:actions__.*$/",
+      ]
+    },
+  ]
 }

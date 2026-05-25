@@ -54,8 +54,8 @@ open class MarkedYamlEngineException protected constructor(
 
                     if (
                         !problemIsPresent
-                        || contextMark.name == problemMark?.name
-                        || contextMark.line != problemMark?.line
+                        || contextMark.name == problemMark.name
+                        || contextMark.line != problemMark.line
                         || contextMark.column != problemMark.column
                     ) {
                         appendLine(contextMark)

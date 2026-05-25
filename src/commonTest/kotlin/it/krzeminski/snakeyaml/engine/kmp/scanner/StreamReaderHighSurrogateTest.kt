@@ -6,10 +6,6 @@ import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 
 /**
- * Ported from snakeyaml-engine [StreamReaderHighSurrogateTest](
- * https://github.com/snakeyaml/snakeyaml-engine/blob/master/src/test/java/org/snakeyaml/engine/v2/scanner/StreamReaderHighSurrogateTest.java
- * )
- *
  * Tests that the StreamReader correctly handles high surrogates at buffer boundaries and does not
  * throw IndexOutOfBoundsException or misinterpret surrogate pairs.
  */

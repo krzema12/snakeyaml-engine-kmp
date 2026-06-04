@@ -71,9 +71,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "S3PD" meaning "Spec Example 8.18. Implicit Block Mapping Entries",
     //endregion
     "6CA3" meaning "Tab indented top flow",
-    "DK95:00" meaning "Tabs that look like indentation",
-    "DK95:03" meaning "Tabs that look like indentation",
-    "DK95:07" meaning "Tabs that look like indentation",
 )
 
 /**
@@ -85,7 +82,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
 val deviationsInEvents: Set<TestIdWithLabel> = setOf(
     // pass but did emit the wrong events
     "JEF9:02" meaning "Trailing whitespace in streams",
-    "L24T:01" meaning "Trailing line of spaces",
 
     // fail but did emit the wrong events
     "2CMS" meaning "Invalid mapping in plain multiline",

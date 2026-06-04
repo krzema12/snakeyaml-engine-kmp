@@ -4,6 +4,7 @@ package it.krzeminski.snakeyaml.engine.kmp.issues.issue75
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
@@ -27,6 +28,8 @@ class EscapeCharInDoubleQuoteTest : FunSpec({
         val str = "key: \u007F"
         shouldThrow<ScannerException> {
             load.loadOne(str)
+        }.also {
+            it.message shouldContain "DEL character (0x7F) is not allowed in plain scalars"
         }
     }
 
@@ -34,6 +37,8 @@ class EscapeCharInDoubleQuoteTest : FunSpec({
         val str = "ke\u007Fy: value"
         shouldThrow<ScannerException> {
             load.loadOne(str)
+        }.also {
+            it.message shouldContain "DEL character (0x7F) is not allowed in plain scalars"
         }
     }
 
@@ -43,6 +48,8 @@ class EscapeCharInDoubleQuoteTest : FunSpec({
         val str = "key: value # comment with \u007F"
         shouldThrow<ScannerException> {
             loadWithComments.loadOne(str)
+        }.also {
+            it.message shouldContain "DEL character (0x7F) is not allowed in comments"
         }
     }
 
@@ -50,6 +57,8 @@ class EscapeCharInDoubleQuoteTest : FunSpec({
         val str = "|\n  text with \u007F"
         shouldThrow<ScannerException> {
             load.loadOne(str)
+        }.also {
+            it.message shouldContain "DEL character (0x7F) is not allowed in block scalars"
         }
     }
 
@@ -57,6 +66,8 @@ class EscapeCharInDoubleQuoteTest : FunSpec({
         val str = ">\n  text with \u007F"
         shouldThrow<ScannerException> {
             load.loadOne(str)
+        }.also {
+            it.message shouldContain "DEL character (0x7F) is not allowed in block scalars"
         }
     }
 })

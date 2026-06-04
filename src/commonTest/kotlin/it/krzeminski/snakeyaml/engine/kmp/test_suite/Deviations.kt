@@ -36,7 +36,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "9SA2" meaning "Multiline double quoted flow mapping key",
     "A2M4" meaning "Spec Example 6.2. Indentation Indicators",
     "DBG4" meaning "Spec Example 7.10. Plain Characters",
-    "DC7X" meaning "Various trailing tabs",
     "DK3J" meaning "Zero indented block scalar with line that looks like a comment",
     "FP8R" meaning "Zero indented block scalar",
     "FRK4" meaning "Spec Example 7.3. Completely Empty Flow Nodes",

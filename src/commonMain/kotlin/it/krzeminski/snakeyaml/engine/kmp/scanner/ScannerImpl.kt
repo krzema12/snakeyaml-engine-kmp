@@ -1064,6 +1064,15 @@ class ScannerImpl(
         reader.forward()
         var length = 0
         while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
+            val c = reader.peek(length)
+            if (c == 0x7F) {
+                throw ScannerException(
+                    context = "while scanning a comment",
+                    contextMark = startMark,
+                    problem = "DEL character (0x7F) is not allowed in comments",
+                    problemMark = reader.getMark(),
+                )
+            }
             length++
         }
         val value = reader.prefixForward(length)
@@ -1469,6 +1478,15 @@ class ScannerImpl(
             val leadingNonSpace = reader.peek().toChar() !in " \t"
             var length = 0
             while (CharConstants.NULL_OR_LINEBR.hasNo(reader.peek(length))) {
+                val c = reader.peek(length)
+                if (c == 0x7F) {
+                    throw ScannerException(
+                        context = "while scanning a block scalar",
+                        contextMark = startMark,
+                        problem = "DEL character (0x7F) is not allowed in block scalars",
+                        problemMark = reader.getMark(),
+                    )
+                }
                 length++
             }
             stringBuilder.append(reader.prefixForward(length))
@@ -1888,6 +1906,14 @@ class ScannerImpl(
             }
             while (true) {
                 c = reader.peek(length)
+                if (c == 0x7F) {
+                    throw ScannerException(
+                        context = "while scanning a plain scalar",
+                        contextMark = startMark,
+                        problem = "DEL character (0x7F) is not allowed in plain scalars",
+                        problemMark = reader.getMark(),
+                    )
+                }
                 if (
                     CharConstants.NULL_BL_T_LINEBR.has(c)
                     || c == ':'.code

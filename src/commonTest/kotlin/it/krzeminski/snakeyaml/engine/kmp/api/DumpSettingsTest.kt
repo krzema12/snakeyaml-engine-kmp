@@ -120,7 +120,9 @@ class DumpSettingsTest : FunSpec({
 
     test("copy DSL smoke test") {
         val settings1 = DumpSettings()
-        val settings2 = DumpSettings(width = 12345)
+        val settings2 = settings1.copy {
+            width = 12345
+        }
         settings1.width shouldNotBe settings2.width
     }
 })

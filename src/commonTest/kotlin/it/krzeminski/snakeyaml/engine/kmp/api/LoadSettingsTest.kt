@@ -78,7 +78,9 @@ class LoadSettingsTest : FunSpec({
 
     test("copy DSL smoke test") {
         val settings1 = LoadSettings()
-        val settings2 = LoadSettings(label = "foobarbaz")
+        val settings2 = settings1.copy {
+            label = "foobarbaz"
+        }
         settings1.label shouldNotBe settings2.label
     }
 })

@@ -5,19 +5,15 @@ import io.kotest.matchers.shouldBe
 import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
+import it.krzeminski.snakeyaml.engine.kmp.api.copy
 import it.krzeminski.snakeyaml.engine.kmp.common.ScalarStyle
 
 class DumpWidthTest : FunSpec({
-    fun dumpSettingWithSplit(defaultScalarStyle: ScalarStyle, width: Int? = null): DumpSettings {
-        val settings = DumpSettings(
-            defaultScalarStyle = defaultScalarStyle,
-            isSplitLines = true,
-        )
-        return if (width != null) DumpSettings(
-            defaultScalarStyle = defaultScalarStyle,
-            isSplitLines = true,
-            width = width,
-        ) else settings
+    fun dumpSettingWithSplit(defaultScalarStyle: ScalarStyle, width: Int? = null) = DumpSettings(
+        defaultScalarStyle = defaultScalarStyle,
+        isSplitLines = true,
+    ).copy {
+        width?.let { this.width = it }
     }
     fun dumpSettingWithoutSplit(defaultScalarStyle: ScalarStyle) = DumpSettings(
         defaultScalarStyle = defaultScalarStyle,

@@ -973,6 +973,7 @@ public final class it/krzeminski/snakeyaml/engine/kmp/nodes/Tag$Companion {
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/parser/Parser : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
 	public abstract fun checkEvent (Lit/krzeminski/snakeyaml/engine/kmp/events/Event$ID;)Z
 	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
+	public synthetic fun next ()Ljava/lang/Object;
 	public abstract fun peekEvent ()Lit/krzeminski/snakeyaml/engine/kmp/events/Event;
 }
 
@@ -1089,6 +1090,7 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/scanner/Scann
 	public fun checkToken (Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun checkToken ([Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token$ID;)Z
 	public abstract fun next ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
+	public synthetic fun next ()Ljava/lang/Object;
 	public abstract fun peekToken ()Lit/krzeminski/snakeyaml/engine/kmp/tokens/Token;
 	public abstract fun resetDocumentIndex ()V
 }

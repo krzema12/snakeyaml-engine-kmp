@@ -183,6 +183,12 @@ class ScannerImpl(
 
     private fun isFlowContext(): Boolean = !isBlockContext()
 
+    private fun lastTokenIsBlockScalar(): Boolean {
+        val token = lastToken
+        if (token !is ScalarToken) return false
+        return token.style == ScalarStyle.LITERAL || token.style == ScalarStyle.FOLDED
+    }
+
     /** Returns `true` if more tokens should be scanned. */
     private fun needMoreTokens(): Boolean {
         // If we are done, we do not require more tokens.
@@ -1008,6 +1014,30 @@ class ScannerImpl(
             if (reader.peek(ff) == '\t'.code && isFlowContext()) {
                 ff++;
             }
+            // In block context, tabs that are not acting as indentation should be
+            // treated as separator whitespace. This covers lines that contain only
+            // whitespace (a blank line) and lines whose leading spaces are followed
+            // by a tab that then separates indentation from content. Skip unless we
+            // just emitted a block scalar - in that case the tab is genuinely
+            // misplaced indentation and the caller should raise the usual
+            // "tab cannot start token" error.
+            if (isBlockContext() && reader.peek(ff) == '\t'.code && !lastTokenIsBlockScalar()) {
+                var lookAhead = ff
+                while (reader.peek(lookAhead) == ' '.code || reader.peek(lookAhead) == '\t'.code) {
+                    lookAhead++
+                }
+                val next = reader.peek(lookAhead)
+                if (next == '\n'.code || next == '\r'.code || next == 0 || next == '#'.code) {
+                    // Blank line: skip all trailing whitespace.
+                    ff = lookAhead
+                } else if (ff > 0 && reader.column == 0) {
+                    // Leading space(s) followed by tab at the start of a line: the tab
+                    // is a separator between indentation and content, not indentation itself.
+                    while (reader.peek(ff) == '\t'.code) {
+                        ff++
+                    }
+                }
+            }
             if (ff > 0) {
                 reader.forward(ff)
             }
@@ -1491,6 +1521,10 @@ class ScannerImpl(
             }
             stringBuilder.append(reader.prefixForward(length))
             lineBreak = scanLineBreak()
+            if (lineBreak == null && reader.peek() == 0) {
+                // Per the YAML spec, if the stream ends without a final line break, one is assumed.
+                lineBreak = "\n"
+            }
             val brme = scanBlockScalarBreaks(blockIndent)
             breaks = brme.breaks
             endMark = brme.endMark

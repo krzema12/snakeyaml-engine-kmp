@@ -36,7 +36,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "9SA2" meaning "Multiline double quoted flow mapping key",
     "A2M4" meaning "Spec Example 6.2. Indentation Indicators",
     "DBG4" meaning "Spec Example 7.10. Plain Characters",
-    "DC7X" meaning "Various trailing tabs",
     "DK3J" meaning "Zero indented block scalar with line that looks like a comment",
     "FP8R" meaning "Zero indented block scalar",
     "FRK4" meaning "Spec Example 7.3. Completely Empty Flow Nodes",
@@ -71,9 +70,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
     "S3PD" meaning "Spec Example 8.18. Implicit Block Mapping Entries",
     //endregion
     "6CA3" meaning "Tab indented top flow",
-    "DK95:00" meaning "Tabs that look like indentation",
-    "DK95:03" meaning "Tabs that look like indentation",
-    "DK95:07" meaning "Tabs that look like indentation",
 )
 
 /**
@@ -85,7 +81,6 @@ val deviationsInResult: Set<TestIdWithLabel> = setOf(
 val deviationsInEvents: Set<TestIdWithLabel> = setOf(
     // pass but did emit the wrong events
     "JEF9:02" meaning "Trailing whitespace in streams",
-    "L24T:01" meaning "Trailing line of spaces",
 
     // fail but did emit the wrong events
     "2CMS" meaning "Invalid mapping in plain multiline",

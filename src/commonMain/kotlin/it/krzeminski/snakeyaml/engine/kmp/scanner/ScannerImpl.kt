@@ -1011,8 +1011,8 @@ class ScannerImpl(
             }
             // unfortunately, this check is too simple, but it helps to ignore TABs in JSON
             // which is always flow context (see issue 55 and tests)
-            if (reader.peek(ff) == '\t'.code && isFlowContext()) {
-                ff++;
+            while (reader.peek(ff) == '\t'.code && isFlowContext()) {
+                ff++
             }
             // In block context, tabs that are not acting as indentation should be
             // treated as separator whitespace. This covers lines that contain only

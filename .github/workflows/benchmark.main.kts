@@ -120,6 +120,18 @@ workflow(
         // without checkout step 'benchmark-action/github-action-benchmark' action won't work
         uses(action = Checkout())
         uses(
+            name = "Downgrade Kotlin",
+            action = SetupKotlin(
+                // One version before 2.4.0 that contains a bug leading to this failure:
+                //   While analysing .github/workflows/build.main.kts:53:13:
+                //   org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments:
+                //   Expected FirResolvedTypeRef with ConeKotlinType but was FirUserTypeRefImpl
+                // This downgrade is meant to be a temporary workaround.
+                // See https://github.com/typesafegithub/github-workflows-kt/issues/2348
+                version = "2.3.21",
+            ),
+        )
+        uses(
             name = "Download benchmark results",
             action = DownloadArtifact(
                 pattern = "bench-results-*",

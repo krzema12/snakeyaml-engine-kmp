@@ -4,14 +4,17 @@
 
 @file:Repository("https://bindings.krzeminski.it/")
 @file:DependsOn("actions:checkout:v6")
+@file:DependsOn("fwilhe2:setup-kotlin:v1")
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.fwilhe2.SetupKotlin
 import io.github.typesafegithub.workflows.domain.RunnerType
 import io.github.typesafegithub.workflows.domain.triggers.Cron
 import io.github.typesafegithub.workflows.domain.triggers.Push
 import io.github.typesafegithub.workflows.domain.triggers.Schedule
 import io.github.typesafegithub.workflows.domain.triggers.WorkflowDispatch
 import io.github.typesafegithub.workflows.dsl.workflow
+import io.github.typesafegithub.workflows.yaml.DEFAULT_CONSISTENCY_CHECK_JOB_CONFIG
 
 val numberOfCommitsFileName = "number-of-commits.txt"
 val logDiffBetweenRepos = "log-diff-between-repos.txt"
@@ -25,6 +28,22 @@ workflow(
         Schedule(triggers = listOf(Cron(minute = "0", hour = "0", dayWeek = "6"))), // Once a week.
     ),
     sourceFile = __FILE__,
+    consistencyCheckJobConfig = DEFAULT_CONSISTENCY_CHECK_JOB_CONFIG.copy(
+        additionalSteps = {
+            uses(
+                name = "Downgrade Kotlin",
+                action = SetupKotlin(
+                    // One version before 2.4.0 that contains a bug leading to this failure:
+                    //   While analysing .github/workflows/build.main.kts:53:13:
+                    //   org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments:
+                    //   Expected FirResolvedTypeRef with ConeKotlinType but was FirUserTypeRefImpl
+                    // This downgrade is meant to be a temporary workaround.
+                    // See https://github.com/typesafegithub/github-workflows-kt/issues/2348
+                    version = "2.3.21",
+                ),
+            )
+        },
+    ),
 ) {
     job(
         id = "check",

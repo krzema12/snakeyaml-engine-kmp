@@ -26,6 +26,22 @@ class CommentAfterAliasTest : FunSpec({
             compose.compose(input).shouldNotBeNull()
         }
 
+        test("tag with inline comment when parsing comments enabled: $parseComments") {
+            val compose = Compose(loadSettings)
+            val input = """
+            |key: !!str # comment
+            |  value""".trimMargin()
+            compose.compose(input).shouldNotBeNull()
+        }
+
+        test("anchor and tag with comment when parsing comments enabled: $parseComments") {
+            val compose = Compose(loadSettings)
+            val input = """
+            |key: &anchor !!str # comment
+            |  value""".trimMargin()
+            compose.compose(input).shouldNotBeNull()
+        }
+
         test("block comment and nested after when parsing comments enabled: $parseComments") {
             val compose = Compose(loadSettings)
             val input = """

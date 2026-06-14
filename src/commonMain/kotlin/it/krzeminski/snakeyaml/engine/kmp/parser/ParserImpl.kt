@@ -1011,6 +1011,7 @@ class ParserImpl(
             return when {
                 indentlessSequence && scanner.checkToken(Token.ID.BlockEntry) -> {
                     endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
                     state = ParseIndentlessSequenceEntryKey()
                     SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
                 }
@@ -1029,24 +1030,28 @@ class ParserImpl(
 
                 scanner.checkToken(Token.ID.FlowSequenceStart) -> {
                     endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
                     state = ParseFlowSequenceFirstEntry()
                     SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
                 }
 
                 scanner.checkToken(Token.ID.FlowMappingStart) -> {
                     endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
                     state = ParseFlowMappingFirstKey()
                     MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
                 }
 
                 block && scanner.checkToken(Token.ID.BlockSequenceStart) -> {
                     endMark = scanner.peekToken().startMark
+                    states.addLast(nextState)
                     state = ParseBlockSequenceFirstEntry()
                     SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
                 }
 
                 block && scanner.checkToken(Token.ID.BlockMappingStart) -> {
                     endMark = scanner.peekToken().startMark
+                    states.addLast(nextState)
                     state = ParseBlockMappingFirstKey()
                     MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
                 }

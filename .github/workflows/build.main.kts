@@ -6,11 +6,13 @@
 @file:DependsOn("actions:checkout:v6")
 @file:DependsOn("actions:cache:v5")
 @file:DependsOn("gradle:actions__setup-gradle:v6")
+@file:DependsOn("fwilhe2:setup-kotlin:v1")
 
 @file:Import("setup-jdk.main.kts")
 
 import io.github.typesafegithub.workflows.actions.actions.Cache
 import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.fwilhe2.SetupKotlin
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.domain.Concurrency
 import io.github.typesafegithub.workflows.domain.RunnerType.*
@@ -18,6 +20,7 @@ import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
 import io.github.typesafegithub.workflows.dsl.expressions.expr
 import io.github.typesafegithub.workflows.dsl.workflow
+import io.github.typesafegithub.workflows.yaml.DEFAULT_CONSISTENCY_CHECK_JOB_CONFIG
 
 workflow(
     name = "Build",
@@ -26,6 +29,22 @@ workflow(
         PullRequest(),
     ),
     sourceFile = __FILE__,
+    consistencyCheckJobConfig = DEFAULT_CONSISTENCY_CHECK_JOB_CONFIG.copy(
+        additionalSteps = {
+            uses(
+                name = "Downgrade Kotlin",
+                action = SetupKotlin(
+                    // One version before 2.4.0 that contains a bug leading to this failure:
+                    //   While analysing .github/workflows/build.main.kts:53:13:
+                    //   org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments:
+                    //   Expected FirResolvedTypeRef with ConeKotlinType but was FirUserTypeRefImpl
+                    // This downgrade is meant to be a temporary workaround.
+                    // See https://github.com/typesafegithub/github-workflows-kt/issues/2348
+                    version = "2.3.21",
+                ),
+            )
+        },
+    ),
     concurrency = Concurrency(
         group = "\${{ github.workflow }} @ \${{ github.event.pull_request.head.label || github.head_ref || github.ref }}",
         cancelInProgress = true,
@@ -75,6 +94,18 @@ workflow(
         runsOn = UbuntuLatest,
     ) {
         uses(action = Checkout())
+        uses(
+            name = "Downgrade Kotlin",
+            action = SetupKotlin(
+                // One version before 2.4.0 that contains a bug leading to this failure:
+                //   While analysing .github/workflows/build.main.kts:53:13:
+                //   org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments:
+                //   Expected FirResolvedTypeRef with ConeKotlinType but was FirUserTypeRefImpl
+                // This downgrade is meant to be a temporary workaround.
+                // See https://github.com/typesafegithub/github-workflows-kt/issues/2348
+                version = "2.3.21",
+            ),
+        )
         run(
             command = """
             find -name *.main.kts -print0 | while read -d ${'$'}'\0' file
@@ -92,6 +123,18 @@ workflow(
         runsOn = UbuntuLatest,
     ) {
         uses(action = Checkout())
+        uses(
+            name = "Downgrade Kotlin",
+            action = SetupKotlin(
+                // One version before 2.4.0 that contains a bug leading to this failure:
+                //   While analysing .github/workflows/build.main.kts:53:13:
+                //   org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments:
+                //   Expected FirResolvedTypeRef with ConeKotlinType but was FirUserTypeRefImpl
+                // This downgrade is meant to be a temporary workaround.
+                // See https://github.com/typesafegithub/github-workflows-kt/issues/2348
+                version = "2.3.21",
+            ),
+        )
         run(command = "cd .github/workflows")
         run(
             name = "Regenerate all workflow YAMLs",

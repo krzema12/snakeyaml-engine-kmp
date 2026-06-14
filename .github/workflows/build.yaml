@@ -120,6 +120,11 @@ jobs:
     - id: 'step-0'
       uses: 'actions/checkout@v6'
     - id: 'step-1'
+      name: 'Downgrade Kotlin'
+      uses: 'fwilhe2/setup-kotlin@v1'
+      with:
+        version: '2.3.21'
+    - id: 'step-2'
       run: |-
         find -name *.main.kts -print0 | while read -d $'\0' file
         do
@@ -135,8 +140,13 @@ jobs:
     - id: 'step-0'
       uses: 'actions/checkout@v6'
     - id: 'step-1'
-      run: 'cd .github/workflows'
+      name: 'Downgrade Kotlin'
+      uses: 'fwilhe2/setup-kotlin@v1'
+      with:
+        version: '2.3.21'
     - id: 'step-2'
+      run: 'cd .github/workflows'
+    - id: 'step-3'
       name: 'Regenerate all workflow YAMLs'
       run: |-
         find -name "*.main.kts" -print0 | while read -d $'\0' file
@@ -146,6 +156,6 @@ jobs:
                 ($file)
             fi
         done
-    - id: 'step-3'
+    - id: 'step-4'
       name: 'Check if some file is different after regeneration'
       run: 'git diff --exit-code .'

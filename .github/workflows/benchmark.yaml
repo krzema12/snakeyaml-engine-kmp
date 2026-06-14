@@ -75,18 +75,23 @@ jobs:
     - id: 'step-0'
       uses: 'actions/checkout@v6'
     - id: 'step-1'
+      name: 'Downgrade Kotlin'
+      uses: 'fwilhe2/setup-kotlin@v1'
+      with:
+        version: '2.3.21'
+    - id: 'step-2'
       name: 'Download benchmark results'
       uses: 'actions/download-artifact@v8'
       with:
         path: 'bench-results'
         pattern: 'bench-results-*'
         merge-multiple: 'true'
-    - id: 'step-2'
+    - id: 'step-3'
       name: 'Prepare and join benchmark reports'
       env:
         GHWKT_GITHUB_CONTEXT_JSON: '${{ toJSON(github) }}'
-      run: 'GHWKT_RUN_STEP=''benchmark.yaml:collect-benchmarks-results:step-2'' ''.github/workflows/benchmark.main.kts'''
-    - id: 'step-3'
+      run: 'GHWKT_RUN_STEP=''benchmark.yaml:collect-benchmarks-results:step-3'' ''.github/workflows/benchmark.main.kts'''
+    - id: 'step-4'
       name: 'Store benchmark result'
       uses: 'benchmark-action/github-action-benchmark@v1'
       with:

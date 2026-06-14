@@ -29,8 +29,6 @@ dependencies {
     kspCommonMainMetadata(projects.copyDslKspProcessor)
 }
 
-
-
 kotlin {
     sourceSets {
         commonMain {

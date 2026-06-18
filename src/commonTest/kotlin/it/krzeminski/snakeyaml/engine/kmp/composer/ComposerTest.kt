@@ -8,6 +8,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 class ComposerTest : FunSpec({
 
@@ -25,6 +26,14 @@ class ComposerTest : FunSpec({
             Compose(LoadSettings()).compose("[a, *id b]")
         }.also {
             it.message shouldContain "found undefined alias id"
+        }
+    }
+
+    test("fail to compose non-scalar key") {
+        shouldThrow<YamlEngineException> {
+            Compose(LoadSettings(allowNonScalarKeys = false)).compose("{ [1,2]: value}")
+        }.also {
+            it.message shouldBe "Non scalar key is detected but it is not configured to be allowed."
         }
     }
 

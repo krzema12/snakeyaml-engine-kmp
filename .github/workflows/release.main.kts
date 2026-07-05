@@ -56,7 +56,7 @@ workflow(
 ) {
     job(
         id = "release",
-        runsOn = RunnerType.MacOSLatest,
+        runsOn = RunnerType.MacosLatest,
     ) {
         uses(action = Checkout())
         setupJdk()

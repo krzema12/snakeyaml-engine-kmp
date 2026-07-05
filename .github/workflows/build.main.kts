@@ -53,7 +53,7 @@ workflow(
 
     setOf(
         UbuntuLatest,
-        MacOSLatest,
+        MacosLatest,
         WindowsLatest,
     ).forEach { jobRunner ->
         job(
@@ -78,7 +78,7 @@ workflow(
                 ),
             )
             val target = when (jobRunner) {
-                MacOSLatest -> "macOsAllTest"
+                MacosLatest -> "macOsAllTest"
                 else -> "build"
             }
             run(

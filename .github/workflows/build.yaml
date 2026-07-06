@@ -18,7 +18,7 @@ jobs:
     steps:
     - id: 'step-0'
       name: 'Check out'
-      uses: 'actions/checkout@v4'
+      uses: 'actions/checkout@v6'
     - id: 'step-1'
       name: 'Downgrade Kotlin'
       uses: 'fwilhe2/setup-kotlin@v1'
@@ -57,7 +57,7 @@ jobs:
     - id: 'step-4'
       name: 'Build/test'
       run: './gradlew build --stacktrace'
-  build-on-MacOSLatest:
+  build-on-MacosLatest:
     runs-on: 'macos-latest'
     needs:
     - 'check_yaml_consistency'

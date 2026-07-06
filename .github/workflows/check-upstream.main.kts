@@ -3,7 +3,7 @@
 @file:DependsOn("io.github.typesafegithub:github-workflows-kt:4.0.0")
 
 @file:Repository("https://bindings.krzeminski.it/")
-@file:DependsOn("actions:checkout:v6")
+@file:DependsOn("actions:checkout:v7")
 @file:DependsOn("fwilhe2:setup-kotlin:v1")
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout

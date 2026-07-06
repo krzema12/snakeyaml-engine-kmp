@@ -9,7 +9,7 @@
 @file:DependsOn("actions:upload-artifact:v7")
 @file:DependsOn("gradle:actions__setup-gradle:v6")
 @file:DependsOn("benchmark-action:github-action-benchmark:v1")
-@file:DependsOn("fwilhe2:setup-kotlin:v1")
+@file:DependsOn("fwilhe2:setup-kotlin:v2")
 
 @file:Import("setup-jdk.main.kts")
 

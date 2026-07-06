@@ -6,7 +6,7 @@
 @file:DependsOn("actions:checkout:v7")
 @file:DependsOn("actions:cache:v6")
 @file:DependsOn("gradle:actions__setup-gradle:v6")
-@file:DependsOn("fwilhe2:setup-kotlin:v1")
+@file:DependsOn("fwilhe2:setup-kotlin:v2")
 
 @file:Import("setup-jdk.main.kts")
 

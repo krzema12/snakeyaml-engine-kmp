@@ -127,7 +127,6 @@ open class CommonRepresenter(
     private val representPrimitiveArray = RepresentToNode { data ->
         val style = settings.defaultFlowStyle
         val iterableData = when (data) {
-            is ByteArray    -> data.asIterable()
             is ShortArray   -> data.asIterable()
             is IntArray     -> data.asIterable()
             is LongArray    -> data.asIterable()

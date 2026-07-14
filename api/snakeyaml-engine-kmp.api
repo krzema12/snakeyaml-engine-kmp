@@ -72,9 +72,10 @@ public final class it/krzeminski/snakeyaml/engine/kmp/api/Load {
 
 public final class it/krzeminski/snakeyaml/engine/kmp/api/LoadSettings {
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$CollectionProvider;Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;IZZZIZLjava/util/Map;Lit/krzeminski/snakeyaml/engine/kmp/env/EnvConfig;ZILit/krzeminski/snakeyaml/engine/kmp/schema/Schema;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAllowDuplicateKeys ()Z
+	public final fun getAllowNonScalarKeys ()Z
 	public final fun getAllowRecursiveKeys ()Z
 	public final fun getBufferSize ()I
 	public final fun getCodePointLimit ()I
@@ -155,6 +156,7 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/MutableDu
 
 public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/MutableLoadSettings {
 	public abstract fun getAllowDuplicateKeys ()Z
+	public abstract fun getAllowNonScalarKeys ()Z
 	public abstract fun getAllowRecursiveKeys ()Z
 	public abstract fun getBufferSize ()I
 	public abstract fun getCodePointLimit ()I
@@ -171,6 +173,7 @@ public abstract interface class it/krzeminski/snakeyaml/engine/kmp/api/MutableLo
 	public abstract fun getUseMarks ()Z
 	public abstract fun getVersionFunction ()Lit/krzeminski/snakeyaml/engine/kmp/api/LoadSettings$SpecVersionMutator;
 	public abstract fun setAllowDuplicateKeys (Z)V
+	public abstract fun setAllowNonScalarKeys (Z)V
 	public abstract fun setAllowRecursiveKeys (Z)V
 	public abstract fun setBufferSize (I)V
 	public abstract fun setCodePointLimit (I)V

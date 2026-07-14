@@ -94,6 +94,15 @@ class LoadSettings(
     val allowRecursiveKeys: Boolean = false,
 
     /**
+     * Non-scalar keys in a mapping may cause issues when used with an untrusted source. Since using a
+     * collection as a key in mapping is a relatively rare use case (and it is not supported in JSON),
+     * this possibility can be switched off.
+     *
+     * True by default for backward compatibility.
+     */
+    val allowNonScalarKeys: Boolean = true,
+
+    /**
      * Restrict the number of aliases for collection nodes to prevent 'billion laughs attack'. The
      * purpose of this setting is to force SnakeYAML to fail before a lot of CPU and memory resources
      * are allocated for the parser. Aliases for scalar nodes do not count because they do not grow

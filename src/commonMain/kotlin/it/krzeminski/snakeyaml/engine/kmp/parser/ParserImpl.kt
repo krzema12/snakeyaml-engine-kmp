@@ -204,6 +204,19 @@ class ParserImpl(
 
     private fun parseBlockNodeOrIndentlessSequence(): Event = parseNode(block = true, indentlessSequence = true)
 
+    private fun hasNodeContent(block: Boolean, indentlessSequence: Boolean): Boolean {
+        if (indentlessSequence && scanner.checkToken(Token.ID.BlockEntry)) {
+            return true
+        }
+        if (scanner.checkToken(Token.ID.Scalar, Token.ID.FlowSequenceStart, Token.ID.FlowMappingStart)) {
+            return true
+        }
+        if (block && scanner.checkToken(Token.ID.BlockSequenceStart, Token.ID.BlockMappingStart)) {
+            return true
+        }
+        return false
+    }
+
     private fun parseNode(block: Boolean, indentlessSequence: Boolean): Event {
         var startMark: Mark? = null
         var endMark: Mark? = null
@@ -263,6 +276,27 @@ class ParserImpl(
                 }
             } else {
                 tag = null
+            }
+            // Handle comments that appear after properties (anchor/tag) but before node content.
+            if ((anchor != null || tag != null) && scanner.checkToken(Token.ID.Comment)) {
+                val commentTokensAfterProperties = mutableListOf<CommentToken>()
+                while (scanner.checkToken(Token.ID.Comment)) {
+                    commentTokensAfterProperties.add(scanner.next() as CommentToken)
+                }
+                if (hasNodeContent(block, indentlessSequence)) {
+                    state = ParseNodeWithPendingComments(
+                        block, indentlessSequence, anchor, tag,
+                        startMark, endMark, tagMark,
+                        commentTokensAfterProperties, states.removeLast(),
+                    )
+                    return produceCommentEvent(commentTokensAfterProperties.removeFirst())
+                } else {
+                    val nonPlainImplicit = ImplicitTuple(tag == null, false)
+                    val scalarEvent = ScalarEvent(anchor, tag, nonPlainImplicit, "", ScalarStyle.PLAIN, startMark, endMark)
+                    states.removeLast()
+                    state = ParseDocumentEndThenComments(commentTokensAfterProperties)
+                    return scalarEvent
+                }
             }
             if (startMark == null) {
                 startMark = scanner.peekToken().startMark
@@ -927,6 +961,155 @@ class ParserImpl(
         override fun produce(): Event {
             state = (ParseFlowMappingKey(false))
             return processEmptyScalar(scanner.peekToken().startMark)
+        }
+    }
+
+    /**
+     * Production that emits pending comment events collected after anchor/tag, then parses node
+     * content.
+     */
+    private inner class ParseNodeWithPendingComments(
+        private val block: Boolean,
+        private val indentlessSequence: Boolean,
+        private val anchor: Anchor?,
+        private val tag: String?,
+        private val startMark: Mark?,
+        private val endMark: Mark?,
+        private val tagMark: Mark?,
+        private val pendingComments: MutableList<CommentToken>,
+        private val nextState: Production,
+    ) : Production {
+        override fun produce(): Event {
+            if (pendingComments.isNotEmpty()) {
+                state = this
+                return produceCommentEvent(pendingComments.removeFirst())
+            }
+            state = ParseNodeContent(block, indentlessSequence, anchor, tag, startMark, endMark, tagMark, nextState)
+            return state!!.produce()
+        }
+    }
+
+    /**
+     * Production that parses node content after anchor/tag and any comments have been processed.
+     */
+    private inner class ParseNodeContent(
+        private val block: Boolean,
+        private val indentlessSequence: Boolean,
+        private val anchor: Anchor?,
+        private val tag: String?,
+        private var startMark: Mark?,
+        private var endMark: Mark?,
+        private val tagMark: Mark?,
+        private val nextState: Production,
+    ) : Production {
+        override fun produce(): Event {
+            if (startMark == null) {
+                startMark = scanner.peekToken().startMark
+                endMark = startMark
+            }
+            val implicit = tag == null
+            return when {
+                indentlessSequence && scanner.checkToken(Token.ID.BlockEntry) -> {
+                    endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
+                    state = ParseIndentlessSequenceEntryKey()
+                    SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                scanner.checkToken(Token.ID.Scalar) -> {
+                    val token = scanner.next() as ScalarToken
+                    endMark = token.endMark
+                    val implicitValues = when {
+                        token.plain && tag == null -> ImplicitTuple(plain = true, nonPlain = false)
+                        tag == null                -> ImplicitTuple(plain = false, nonPlain = true)
+                        else                       -> ImplicitTuple(plain = false, nonPlain = false)
+                    }
+                    state = nextState
+                    ScalarEvent(anchor, tag, implicitValues, token.value, token.style, startMark, endMark)
+                }
+
+                scanner.checkToken(Token.ID.FlowSequenceStart) -> {
+                    endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
+                    state = ParseFlowSequenceFirstEntry()
+                    SequenceStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                }
+
+                scanner.checkToken(Token.ID.FlowMappingStart) -> {
+                    endMark = scanner.peekToken().endMark
+                    states.addLast(nextState)
+                    state = ParseFlowMappingFirstKey()
+                    MappingStartEvent(anchor, tag, implicit, FlowStyle.FLOW, startMark, endMark)
+                }
+
+                block && scanner.checkToken(Token.ID.BlockSequenceStart) -> {
+                    endMark = scanner.peekToken().startMark
+                    states.addLast(nextState)
+                    state = ParseBlockSequenceFirstEntry()
+                    SequenceStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                block && scanner.checkToken(Token.ID.BlockMappingStart) -> {
+                    endMark = scanner.peekToken().startMark
+                    states.addLast(nextState)
+                    state = ParseBlockMappingFirstKey()
+                    MappingStartEvent(anchor, tag, implicit, FlowStyle.BLOCK, startMark, endMark)
+                }
+
+                anchor != null || tag != null -> {
+                    // Empty scalars are allowed even if a tag or an anchor is specified.
+                    state = nextState
+                    val nonPlainImplicit = ImplicitTuple(implicit, false)
+                    ScalarEvent(anchor, tag, nonPlainImplicit, "", ScalarStyle.PLAIN, startMark, endMark)
+                }
+
+                else -> {
+                    val token = scanner.peekToken()
+                    throw ParserException(
+                        problem = "expected the node content, but found '" + token.tokenId + "'",
+                        contextMark = startMark,
+                        context = "while parsing a " + (if (block) "block" else "flow") + " node",
+                        problemMark = token.startMark,
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Production that emits DocumentEnd event, then emits any pending comments that were collected
+     * after an empty scalar. This ensures comments appear after DocumentEnd in the event stream,
+     * which is where the Composer expects to find inline comments for the root document node.
+     */
+    private inner class ParseDocumentEndThenComments(
+        private val pendingComments: MutableList<CommentToken>,
+    ) : Production {
+        private var documentEndEmitted = false
+
+        override fun produce(): Event {
+            if (!documentEndEmitted) {
+                documentEndEmitted = true
+                val token = scanner.peekToken()
+                val startMark = token.startMark
+                val endMark: Mark?
+                val explicit: Boolean
+                if (scanner.checkToken(Token.ID.DocumentEnd)) {
+                    val t = scanner.next()
+                    endMark = t.endMark
+                    explicit = true
+                } else {
+                    endMark = startMark
+                    explicit = false
+                }
+                directiveTags.clear()
+                state = this
+                return DocumentEndEvent(explicit, startMark, endMark)
+            }
+            if (pendingComments.isNotEmpty()) {
+                state = this
+                return produceCommentEvent(pendingComments.removeFirst())
+            }
+            return ParseDocumentStart().produce()
         }
     }
 

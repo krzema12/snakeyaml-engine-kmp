@@ -334,6 +334,9 @@ class Composer(
      */
     private fun composeMappingChildren(children: MutableList<NodeTuple>, node: MappingNode) {
         val itemKey = composeKeyNode(node)
+        if (itemKey.nodeType != NodeType.SCALAR && !settings.allowNonScalarKeys) {
+            throw YamlEngineException("Non scalar key is detected but it is not configured to be allowed.")
+        }
         if (itemKey.tag == Tag.MERGE) {
             node.hasMergeTag = true
         }

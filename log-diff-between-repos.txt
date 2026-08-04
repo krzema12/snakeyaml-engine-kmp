@@ -1,5 +1,8 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+573395a [maven-release-plugin] prepare for next development iteration
+d9038ed [maven-release-plugin] prepare release snakeyaml-engine-3.1
+9c6118d Rename references from bitbucket to codeberg
 5503e17 Issue 80: Fix L24T test in test suite
 8838fbf Issue 80: fix DK95 in test suite
 4ce68cb Issue 80: fix test code for the test suite

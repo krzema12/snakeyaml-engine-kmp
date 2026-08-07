@@ -1,5 +1,17 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+bb3449c [maven-release-plugin] prepare for next development iteration
+af08515 [maven-release-plugin] prepare release snakeyaml-engine-3.1.1
+dd0b67e Update changes
+d10d1a6 Version is 3.1.1
+170dd30 Port form SnakeYAML: Comments located in list become list entries after serialize
+cdbd8c4 Merge pull request 'issue-84-comment-on-document-separator' (#86) from issue-84-comment-on-document-separator into main
+420b60e Update changes
+5e51edf Update changes
+5d8790d Issue 84: update changelog
+a60a763 Issue 84: fix ClassCastException when a comment follows a document marker
+46de059 Issue 84: add failing regression tests for comment on document separator
+4dcf6b3 Make junit-jupiter-api a test dependency
 573395a [maven-release-plugin] prepare for next development iteration
 d9038ed [maven-release-plugin] prepare release snakeyaml-engine-3.1
 9c6118d Rename references from bitbucket to codeberg

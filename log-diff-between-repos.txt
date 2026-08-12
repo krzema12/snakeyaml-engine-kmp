@@ -1,5 +1,8 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+93ecc0a Update changes
+5533fd3 Update changes
+8aa1c1f Expose whether the tag of a Node was resolved
 bb3449c [maven-release-plugin] prepare for next development iteration
 af08515 [maven-release-plugin] prepare release snakeyaml-engine-3.1.1
 dd0b67e Update changes

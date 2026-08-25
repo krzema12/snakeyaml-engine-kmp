@@ -16,9 +16,11 @@ package it.krzeminski.snakeyaml.engine.kmp.representer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
+import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode
 
 internal class StandardRepresenterTest : FunSpec({
     val standardRepresenter = Representer(DumpSettings())
@@ -32,6 +34,18 @@ internal class StandardRepresenterTest : FunSpec({
             )
         }
         exception.message shouldBe "Representer is not defined for class MyCustomClass"
+    }
+
+    test("Represent Iterator as node") {
+        val listOfStrings = listOf("hello", "world")
+        val iterator = listOfStrings.iterator()
+        val node: Node = standardRepresenter.represent(iterator)
+        node.tag.value shouldBe "tag:yaml.org,2002:seq"
+        val seq = node as SequenceNode
+        seq.value.size shouldBe 2
+        seq.value.forEach { it.tag.value shouldBe "tag:yaml.org,2002:str" }
+        val dumper = Dump(DumpSettings())
+        dumper.dumpToString(listOfStrings.iterator()) shouldBe "[hello, world]\n"
     }
 
     test("Represent Enum as node with global tag") {

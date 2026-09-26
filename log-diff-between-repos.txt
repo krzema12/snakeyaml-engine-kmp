@@ -1,5 +1,18 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+f13a6a6 Amendment for issue 97
+bcdb896 Minor cleanup in issue 97
+1a2fc4a Add a fix for issue 97
+d784be2 Fix issue 97
+1205fd4 Merge pull request 'Fix issue 95' (#96) from issue-95 into main
+19c40d7 Update changes
+ad5b80a Fix issue 95
+1b13c4f Add more unit test for Issue 92
+bc63712 Update changes
+31bb119 Apply review comments
+e9c4c0e Fix issue 92: ClassCastException when a block scalar is followed by indented comments
+ec41dd1 Update changes
+f63e3de Fix issue 90: Fail parsing !!null followed by empty line
 93ecc0a Update changes
 5533fd3 Update changes
 8aa1c1f Expose whether the tag of a Node was resolved

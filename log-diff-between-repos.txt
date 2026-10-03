@@ -1,5 +1,10 @@
 See in BitBucket: https://bitbucket.org/snakeyaml/snakeyaml-engine/branches/compare/master..be40e57ffc1b5bac2d485d77c1af2da7e35adc7d
 
+08833ea [maven-release-plugin] prepare for next development iteration
+8a670d3 [maven-release-plugin] prepare release snakeyaml-engine-3.2
+5b4f270 Update changes
+842715e Issue 99: take the review comments
+35fabdc Issue 99: Accept TAB characters as whitespace
 f13a6a6 Amendment for issue 97
 bcdb896 Minor cleanup in issue 97
 1a2fc4a Add a fix for issue 97

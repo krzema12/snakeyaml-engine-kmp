@@ -1006,13 +1006,10 @@ class ScannerImpl(
             var ff = 0
             // Peek ahead until we find the first non-space character, then
             // move forward directly to that character.
-            while (reader.peek(ff) == ' '.code) {
+            // In flow context a TAB is separation whitespace wherever a space is, so the two are
+            // skipped by the same loop (see issue 55 and tests). (this causes Y79Y-003 to fail)
+            while (reader.peek(ff) == ' '.code || (reader.peek(ff) == '\t'.code && isFlowContext())) {
                 ff++
-            }
-            // unfortunately, this check is too simple, but it helps to ignore TABs in JSON
-            // which is always flow context (see issue 55 and tests)
-            if (reader.peek(ff) == '\t'.code && isFlowContext()) {
-                ff++;
             }
             // In block context, tabs that are not acting as indentation should be
             // treated as separator whitespace. This covers lines that contain only

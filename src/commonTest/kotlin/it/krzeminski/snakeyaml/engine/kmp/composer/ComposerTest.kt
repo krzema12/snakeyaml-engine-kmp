@@ -8,6 +8,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException
+import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 class ComposerTest : FunSpec({
 
@@ -34,5 +35,17 @@ class ComposerTest : FunSpec({
         val optionalNode = compose.compose(data)
         optionalNode.shouldNotBeNull()
         optionalNode.anchor!!.value shouldBe "113"
+    }
+
+    test("fail to compose non scalar key") {
+        val exception = shouldThrow<YamlEngineException> {
+            Compose(LoadSettings()).compose("{ [1,2]: value}")
+        }
+        exception.message shouldBe "Non scalar key is detected but it is not configured to be allowed."
+    }
+
+    test("compose non scalar key when allowed") {
+        val node = Compose(LoadSettings(allowNonScalarKeys = true)).compose("{ [1,2]: value}")
+        node.shouldNotBeNull()
     }
 })

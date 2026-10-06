@@ -48,7 +48,7 @@ class RecursiveMapTest : FunSpec({
     }
 
     test("fail to load map with recursive keys") {
-        val load = Load()
+        val load = Load(LoadSettings(allowNonScalarKeys = true))
         // fail to load map which has only one key - reference to itself
         shouldThrowWithMessage<YamlEngineException>(message = "Recursive key for mapping is detected but it is not configured to be allowed.") {
             load.loadOne("&id002\n*id002 : foo")
@@ -56,7 +56,7 @@ class RecursiveMapTest : FunSpec({
     }
 
     test("load map with recursive keys if it is explicitly allowed") {
-        val settings = LoadSettings(allowRecursiveKeys = true)
+        val settings = LoadSettings(allowNonScalarKeys = true, allowRecursiveKeys = true)
         val load = Load(settings)
         // load map which has only one key - reference to itself
         val recursive = load.loadOne("&id002\n*id002 : foo") as Map<Any, Any>

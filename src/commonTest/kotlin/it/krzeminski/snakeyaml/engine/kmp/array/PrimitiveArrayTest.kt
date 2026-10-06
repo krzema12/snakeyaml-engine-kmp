@@ -10,7 +10,9 @@ class PrimitiveArrayTest : FunSpec({
     val shorts = shortArrayOf(300, 301, 302)
     val ints = intArrayOf(40000, 40001, 40002)
     val longs = longArrayOf(5000000000L, 5000000001L)
-    val floats = floatArrayOf(0.1f, 3.1415f)
+    // Upstream uses 0.1f and 3.1415f. On JS a Float is a double, so those values dump with double
+    // precision there; the upstream values are asserted in PrimitiveArrayJvmTest (JVM only).
+    val floats = floatArrayOf(0.5f, 3.25f)
     val doubles = doubleArrayOf(50.0001, 2150.0002)
     val chars = charArrayOf('a', 'b', 'c', 'd', 'e')
     val bools = booleanArrayOf(true, false)
@@ -22,7 +24,7 @@ class PrimitiveArrayTest : FunSpec({
         dumper.dumpToString(shorts) shouldBe "[300, 301, 302]\n"
         dumper.dumpToString(ints) shouldBe "[40000, 40001, 40002]\n"
         dumper.dumpToString(longs) shouldBe "[5000000000, 5000000001]\n"
-        dumper.dumpToString(floats) shouldBe "[0.1, 3.1415]\n"
+        dumper.dumpToString(floats) shouldBe "[0.5, 3.25]\n"
         dumper.dumpToString(doubles) shouldBe "[50.0001, 2150.0002]\n"
         dumper.dumpToString(chars) shouldBe "[a, b, c, d, e]\n"
         dumper.dumpToString(bools) shouldBe "[true, false]\n"

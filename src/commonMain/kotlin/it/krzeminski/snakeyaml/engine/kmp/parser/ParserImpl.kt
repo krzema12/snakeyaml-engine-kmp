@@ -738,6 +738,10 @@ class ParserImpl(
 
     private inner class ParseBlockMappingValue : Production {
         override fun produce(): Event {
+            if (scanner.checkToken(Token.ID.Comment)) {
+                state = ParseBlockMappingValue()
+                return produceCommentEvent(scanner.next() as CommentToken)
+            }
             if (scanner.checkToken(Token.ID.Value)) {
                 val token = scanner.next()
                 return if (scanner.checkToken(Token.ID.Comment)) {

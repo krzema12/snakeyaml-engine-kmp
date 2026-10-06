@@ -135,6 +135,29 @@ class ComposerWithCommentEnabledTest: FunSpec({
         assertNodesEqual(expected, result)
     }
 
+    test("adjacent block scalars with header comments") {
+        // https://codeberg.org/snakeyaml/snakeyaml-engine/pulls/98
+        // The header comment of the second entry's block scalar ("two") must not be lost while
+        // composing the first entry's block scalar ("a").
+        val data = "" + //
+            "- > # one\n" + //
+            "  a\n" + //
+            "- > # two\n" + //
+            "  b\n"
+        val expected = listOf(
+            "SequenceNode", //
+            "    ScalarNode: a", //
+            "        InLine Comment", //
+            "        InLine Comment", //
+            "    ScalarNode: b", //
+        )
+
+        val sut = newComposerWithCommentsEnabled(data)
+        val result = getNodeList(sut)
+
+        assertNodesEqual(expected, result)
+    }
+
     test("directive line end comment") {
         val data = "%YAML 1.1 #Comment\n---\n"
         val expected = listOf(

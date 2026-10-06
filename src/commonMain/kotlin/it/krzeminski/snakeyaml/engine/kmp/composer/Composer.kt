@@ -172,6 +172,11 @@ class Composer(
             blockCommentsCollector.consume()
             inlineCommentsCollector.collectEvents().consume()
         } else {
+            // A block scalar's header comment (e.g. "> # comment") is emitted before the node's own
+            // event. Usually a preceding sibling node (e.g. a mapping key) absorbs it as a trailing
+            // inline comment; where there is none (e.g. this is a sequence entry), it would otherwise
+            // sit in front of the node event below and break the cast to NodeEvent.
+            val leadingInlineComments = inlineCommentsCollector.collectEvents().consume()
             val event = parser.peekEvent() as NodeEvent
             val anchor: Anchor? = event.anchor
             // the check for duplicate anchors has been removed (issue 174)
@@ -181,6 +186,12 @@ class Composer(
                 composeSequenceNode(anchor)
             } else {
                 composeMappingNode(anchor)
+            }
+            if (leadingInlineComments.isNotEmpty()) {
+                // Merge rather than overwrite: composeScalarNode above may already have attached the
+                // NEXT node's leading comment as this node's trailing one (two adjacent block scalar
+                // entries, each with a header comment), and overwriting would drop it.
+                node.inLineComments = leadingInlineComments + node.inLineComments.orEmpty()
             }
         }
         if (parent != null) {

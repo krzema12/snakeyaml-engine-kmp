@@ -60,6 +60,10 @@ class Composer(
         if (parser.checkEvent(Event.ID.StreamStart)) {
             parser.next()
         }
+        // An in-line comment on the same line as a document marker (e.g. "--- # comment" or
+        // "... # comment") is emitted as a standalone CommentEvent; if no document follows, it sits
+        // in front of STREAM-END and must not be mistaken for another document.
+        inlineCommentsCollector.collectEvents().consume()
         // If there are more documents available?
         return !parser.checkEvent(Event.ID.StreamEnd)
     }
@@ -110,7 +114,7 @@ class Composer(
         inlineCommentsCollector.collectEvents().consume()
         if (parser.checkEvent(Event.ID.StreamEnd)) {
             val commentLines = blockCommentsCollector.consume()
-            val startMark = commentLines.first().startMark
+            val startMark = commentLines.firstOrNull()?.startMark
             val children = mutableListOf<NodeTuple>()
             val node: Node = MappingNode(
                 tag = Tag.COMMENT,

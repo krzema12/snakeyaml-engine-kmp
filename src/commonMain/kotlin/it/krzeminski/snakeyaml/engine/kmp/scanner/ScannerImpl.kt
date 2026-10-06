@@ -77,6 +77,14 @@ class ScannerImpl(
     private var lastToken: Token? = null
 
     /**
+     * True when a block scalar has just been scanned and scanBlockScalarBreaks() consumed the leading
+     * whitespace of the line that follows it. The reader then sits at a non-zero column even though
+     * only whitespace precedes it on that line, so reader.column must not be used to decide
+     * whether something appears at the start of a line. See issue 92.
+     */
+    private var lineStartConsumedByBlockScalar = false
+
+    /**
      * Variables related to simple keys treatment.
      * Number of tokens that were emitted through the [checkToken] method.
      */
@@ -999,9 +1007,14 @@ class ScannerImpl(
     private fun scanToNextToken() {
         var found = false
         var inlineStartColumn = -1
+        // Only the first iteration can be looking at the line a block scalar left us in the middle
+        // of; every later iteration starts at a line break it scanned itself.
+        var atLineStart = lineStartConsumedByBlockScalar
+        lineStartConsumedByBlockScalar = false
         while (!found) {
             val startMark = reader.getMark()
-            val columnBeforeComment = reader.column
+            val columnAtTokenStart = if (atLineStart) 0 else reader.column
+            atLineStart = false
             var commentSeen = false
             var ff = 0
             // Peek ahead until we find the first non-space character, then
@@ -1045,7 +1058,7 @@ class ScannerImpl(
             if (reader.peek() == '#'.code) {
                 commentSeen = true
                 val type: CommentType
-                if (columnBeforeComment != 0
+                if (columnAtTokenStart != 0
                     && !(lastToken != null && lastToken?.tokenId == Token.ID.BlockEntry)
                 ) {
                     type = CommentType.IN_LINE
@@ -1066,7 +1079,7 @@ class ScannerImpl(
             val breaksOpt = scanLineBreak()
             if (breaksOpt != null) { // found a line-break
                 if (settings.parseComments && !commentSeen) {
-                    if (columnBeforeComment == 0) {
+                    if (columnAtTokenStart == 0) {
                         addToken(
                             CommentToken(
                                 CommentType.BLANK_LINE, breaksOpt, startMark,
@@ -1545,6 +1558,9 @@ class ScannerImpl(
                 break
             }
         }
+        // scanBlockScalarBreaks() above consumed the leading whitespace of the line that follows the
+        // scalar, so the reader is mid-line with nothing but whitespace behind it.
+        lineStartConsumedByBlockScalar = true
         // Chomp the tail.
         if (chomping.addExistingFinalLineBreak) {
             // add the final line break (if exists !) TODO find out if to add anyway

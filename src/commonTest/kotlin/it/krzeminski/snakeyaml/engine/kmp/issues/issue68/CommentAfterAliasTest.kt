@@ -70,4 +70,22 @@ class CommentAfterAliasTest : FunSpec({
             Load(loadSettings).loadOne(input) shouldBe ""
         }
     }
+
+    val commentSettings = LoadSettings(parseComments = true)
+
+    test("Issue 68: comment between anchor and flow sequence") {
+        Load(commentSettings).loadOne("k: &a # c\n  [1, 2]\n") shouldBe mapOf("k" to listOf(1, 2))
+    }
+
+    test("Issue 68: comment between tag and indentless block sequence") {
+        Load(commentSettings).loadOne("k: !!seq # c\n- 1\n") shouldBe mapOf("k" to listOf(1))
+    }
+
+    test("Issue 68: two comments between anchor and scalar") {
+        Load(commentSettings).loadOne("k: &a # c1\n  # c2\n  v\n") shouldBe mapOf("k" to "v")
+    }
+
+    test("Issue 68: comment between tag and flow mapping") {
+        Load(commentSettings).loadOne("k: !!map # c\n  {x: 1}\n") shouldBe mapOf("k" to mapOf("x" to 1))
+    }
 })

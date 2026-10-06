@@ -106,8 +106,9 @@ class TabSeparationTest : FunSpec({
         // Divergence from upstream: upstream reports this input with a TAB-specific message. KMP still
         // rejects it, but with a different message, because KMP's scanPlainSpaces also skips TABs on
         // continuation lines (KMP-only change, PR #173), which is what lets the YAML Test Suite cases
-        // UV7Q, NB6Z and HS5T pass.
+        // UV7Q, NB6Z and HS5T pass. If scanPlainSpaces is ever aligned with upstream (skipping only spaces
+        // on continuation lines), this assertion should go back to assertFails(...) as upstream has it.
         shouldThrow<ScannerException> { load("foo:\n  a: 1\n  \tb: 2") }
-            .message shouldContain "mapping values are not allowed here"
+            .message.shouldContain("mapping values are not allowed here").shouldContain("line 3, column 5")
     }
 })

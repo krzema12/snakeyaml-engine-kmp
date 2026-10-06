@@ -90,6 +90,9 @@ class LoadSettings(
     /**
      * Allow only non-recursive keys for maps and sets. By default, it is not allowed. Even though YAML
      * allows using anything as a key, it may cause unexpected issues when loading recursive structures.
+     *
+     * A recursive key is necessarily a collection, so this only takes effect together with
+     * [allowNonScalarKeys] set to `true`.
      */
     val allowRecursiveKeys: Boolean = false,
 

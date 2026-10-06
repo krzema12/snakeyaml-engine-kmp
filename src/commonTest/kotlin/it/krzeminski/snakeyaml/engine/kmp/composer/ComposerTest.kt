@@ -9,8 +9,11 @@ import it.krzeminski.snakeyaml.engine.kmp.api.LoadSettings
 import it.krzeminski.snakeyaml.engine.kmp.api.lowlevel.Compose
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.ComposerException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
+import it.krzeminski.snakeyaml.engine.kmp.nodes.Tag
 
 class ComposerTest : FunSpec({
+    fun compose(data: String): Node = Compose(LoadSettings()).compose(data)!!
 
     test("fail to compose one document when more documents are provided.") {
         shouldThrow<ComposerException> {
@@ -47,5 +50,23 @@ class ComposerTest : FunSpec({
     test("compose non scalar key when allowed") {
         val node = Compose(LoadSettings(allowNonScalarKeys = true)).compose("{ [1,2]: value}")
         node.shouldNotBeNull()
+    }
+
+    test("A tag which is not in the source is resolved.") {
+        compose("18").isResolved() shouldBe true
+        compose("[a]").isResolved() shouldBe true
+        compose("{a: b}").isResolved() shouldBe true
+    }
+
+    test("A tag which is in the source is not resolved.") {
+        compose("!!str 18").also { it.isResolved() shouldBe false; it.tag shouldBe Tag.STR }
+        compose("!!seq [a]").also { it.isResolved() shouldBe false; it.tag shouldBe Tag.SEQ }
+        compose("!!map {a: b}").also { it.isResolved() shouldBe false; it.tag shouldBe Tag.MAP }
+    }
+
+    test("The non-specific tag is resolved as well.") {
+        compose("! 18").isResolved() shouldBe true
+        compose("! [a]").isResolved() shouldBe true
+        compose("! {a: b}").isResolved() shouldBe true
     }
 })

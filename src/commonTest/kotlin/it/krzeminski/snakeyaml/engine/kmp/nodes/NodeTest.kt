@@ -24,4 +24,17 @@ class NodeTest : FunSpec({
         node.setProperty("p", "value") shouldBe null
         node.getProperty("p") shouldBe "value"
     }
+
+    test("resolved by default") {
+        val node: Node = ScalarNode(Tag.STR, "a", ScalarStyle.PLAIN)
+        node.isResolved() shouldBe true
+    }
+
+    test("not resolved when the tag is explicit") {
+        val node: Node = ScalarNode(
+            tag = Tag.STR, resolved = false, value = "a", scalarStyle = ScalarStyle.PLAIN,
+            startMark = null, endMark = null,
+        )
+        node.isResolved() shouldBe false
+    }
 })

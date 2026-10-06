@@ -16,9 +16,12 @@ package it.krzeminski.snakeyaml.engine.kmp.representer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import it.krzeminski.snakeyaml.engine.kmp.api.Dump
 import it.krzeminski.snakeyaml.engine.kmp.api.DumpSettings
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
+import it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.Node
+import it.krzeminski.snakeyaml.engine.kmp.nodes.SequenceNode
 
 internal class StandardRepresenterTest : FunSpec({
     val standardRepresenter = Representer(DumpSettings())
@@ -38,5 +41,28 @@ internal class StandardRepresenterTest : FunSpec({
         val node: Node = standardRepresenter.represent(FormatEnum.JSON)
         node.tag.value shouldBe //        "tag:yaml.org,2002:it.krzeminski.snakeyaml.engine.kmp.representer.FormatEnum",
             "tag:yaml.org,2002:FormatEnum"
+    }
+
+    test("Represent Iterator as node with global tag") {
+        val listOfStrings = listOf("hello", "world")
+        val node = standardRepresenter.represent(listOfStrings.iterator())
+        node.tag.value shouldBe "tag:yaml.org,2002:seq"
+        val seq = node as SequenceNode
+        seq.value.size shouldBe 2
+        seq.value.forEach { it.tag.value shouldBe "tag:yaml.org,2002:str" }
+        // dump
+        val dumper = Dump(DumpSettings())
+        dumper.dumpToString(listOfStrings.iterator()) shouldBe "[hello, world]\n"
+    }
+
+    test("Represent Set as node") {
+        val setOfStrings = setOf("aaa", "bbb") // upstream: TreeSet; common Kotlin has no TreeSet, a LinkedHashSet keeps this order
+        val node = standardRepresenter.represent(setOfStrings)
+        node.tag.value shouldBe "tag:yaml.org,2002:set"
+        val map = node as MappingNode
+        map.value.size shouldBe 2
+        // dump
+        val dumper = Dump(DumpSettings())
+        dumper.dumpToString(setOfStrings.iterator()) shouldBe "[aaa, bbb]\n"
     }
 })

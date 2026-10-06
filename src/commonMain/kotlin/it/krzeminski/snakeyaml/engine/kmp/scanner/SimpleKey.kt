@@ -27,7 +27,9 @@ internal class SimpleKey(
     val line: Int,
     val column: Int,
     val mark: Mark?,
+    /** the key is separated from the preceding token on the same line by TAB (block context only) */
+    val isTabSeparated: Boolean,
 ) {
     override fun toString(): String =
-        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column"
+        "SimpleKey - tokenNumber=$tokenNumber required=$isRequired index=$index line=$line column=$column tabSeparated=$isTabSeparated"
 }

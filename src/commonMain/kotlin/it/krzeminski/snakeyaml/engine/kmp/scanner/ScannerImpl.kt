@@ -117,6 +117,14 @@ class ScannerImpl(
      */
     private var allowSimpleKey = true
 
+    /**
+     * True if the whitespace in front of the current token (on the same line) contains TAB, in the
+     * block context. TAB is valid separation, but it may not act as indentation. It means that such a
+     * token may not start a block collection: neither a block entry, nor an explicit key, nor a
+     * simple key (see issue 99 and Y79Y in the test suite).
+     */
+    private var tabSeparated = false
+
     init {
         fetchStreamStart() // Add the STREAM-START token.
     }
@@ -438,6 +446,7 @@ class ScannerImpl(
                 line = reader.line,
                 column = reader.column,
                 mark = reader.getMark(),
+                isTabSeparated = tabSeparated,
             )
             possibleSimpleKeys[flowLevel] = key
         }
@@ -683,6 +692,9 @@ class ScannerImpl(
                     reader.getMark()
                 )
             }
+            if (tabSeparated) {
+                throw tabBeforeBlockIndicator("sequence entry")
+            }
 
             // We may need to add BLOCK-SEQUENCE-START.
             if (addIndent(reader.column)) {
@@ -707,6 +719,13 @@ class ScannerImpl(
         addToken(token)
     }
 
+    private fun tabBeforeBlockIndicator(what: String): ScannerException = ScannerException(
+        context = "while scanning for the next token",
+        contextMark = null,
+        problem = "found a $what after \\t(TAB). (Do not use \\t(TAB) for indentation)",
+        problemMark = reader.getMark(),
+    )
+
     /** Fetch a key in a block-style mapping. */
     private fun fetchKey() {
         // Block context needs additional checks.
@@ -714,6 +733,9 @@ class ScannerImpl(
             // Are we allowed to start a key (not necessary a simple)?
             if (!allowSimpleKey) {
                 throw ScannerException("mapping keys are not allowed here", reader.getMark())
+            }
+            if (tabSeparated) {
+                throw tabBeforeBlockIndicator("mapping key")
             }
             // We may need to add BLOCK-MAPPING-START.
             if (addIndent(reader.column)) {
@@ -740,6 +762,14 @@ class ScannerImpl(
         // Do we determine a simple key?
         val key = possibleSimpleKeys.remove(flowLevel)
         if (key != null) {
+            if (key.isTabSeparated) {
+                throw ScannerException(
+                    context = "while scanning a simple key",
+                    contextMark = key.mark,
+                    problem = "found a key after \\t(TAB). (Do not use \\t(TAB) for indentation)",
+                    problemMark = reader.getMark(),
+                )
+            }
             // Add KEY.
             addToken(key.tokenNumber - tokensTaken, KeyToken(key.mark, key.mark))
 
@@ -990,19 +1020,10 @@ class ScannerImpl(
      * specification requires. Any such mark will be considered as a part
      * of the document.
      *
-     * TODO: We need to make tab handling rules more sane. A good rule is Tabs cannot precede tokens
-     *
-     * ```text
-     * BLOCK-SEQUENCE-START, BLOCK-MAPPING-START, BLOCK-END,
-     * KEY(block), VALUE(block), BLOCK-ENTRY
-     * So the checking code is
-     * if <TAB>:
-     * self.allow_simple_keys = False
-     * We also need to add the check for `allow_simple_keys == True` to
-     * `unwind_indent` before issuing BLOCK-END.
-     * Scanners for block, flow, and plain scalars need to be modified.
-     * </TAB>
-     *```
+     * Tabs are separation whitespace after a token on the same line, but they
+     * cannot be indentation. A token preceded by a tab (see `tabSeparated`)
+     * cannot start a block collection: BLOCK-ENTRY, KEY(block) and a simple key
+     * are rejected (issue 99).
      */
     private fun scanToNextToken() {
         var found = false
@@ -1011,10 +1032,13 @@ class ScannerImpl(
         // of; every later iteration starts at a line break it scanned itself.
         var atLineStart = lineStartConsumedByBlockScalar
         lineStartConsumedByBlockScalar = false
+        tabSeparated = false
         while (!found) {
             val startMark = reader.getMark()
             val columnAtTokenStart = if (atLineStart) 0 else reader.column
             atLineStart = false
+            // Is there a token before us on this line? Then any TAB we find is separation.
+            val afterTokenOnLine = columnAtTokenStart != 0
             var commentSeen = false
             var ff = 0
             // Peek ahead until we find the first non-space character, then
@@ -1040,12 +1064,19 @@ class ScannerImpl(
                 if (next == '\n'.code || next == '\r'.code || next == 0 || next == '#'.code) {
                     // Blank line: skip all trailing whitespace.
                     ff = lookAhead
+                } else if (afterTokenOnLine) {
+                    // TAB after a token on the same line (e.g. 'key:<TAB>value' or
+                    // '-<TAB>item') is separation whitespace (issue 99). The next token
+                    // may not start a block collection, which is checked later.
+                    ff = lookAhead
+                    tabSeparated = true
                 } else if (ff > 0 && reader.column == 0) {
                     // Leading space(s) followed by tab at the start of a line: the tab
                     // is a separator between indentation and content, not indentation itself.
                     while (reader.peek(ff) == '\t'.code) {
                         ff++
                     }
+                    tabSeparated = true
                 }
             }
             if (ff > 0) {
@@ -1078,6 +1109,7 @@ class ScannerImpl(
             // simple keys may be allowed.
             val breaksOpt = scanLineBreak()
             if (breaksOpt != null) { // found a line-break
+                tabSeparated = false
                 if (settings.parseComments && !commentSeen) {
                     if (columnAtTokenStart == 0) {
                         addToken(
@@ -1173,7 +1205,7 @@ class ScannerImpl(
         }
         val value = reader.prefixForward(length)
         c = reader.peek()
-        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 DIRECTIVE_PREFIX, startMark,
@@ -1185,7 +1217,7 @@ class ScannerImpl(
 
     private fun scanYamlDirectiveValue(startMark: Mark?): DirectiveToken.YamlDirective {
         // See the specification for details.
-        while (reader.peek() == ' '.code) {
+        while (reader.peek() == ' '.code || reader.peek() == '\t'.code) {
             reader.forward()
         }
         val major = scanYamlDirectiveNumber(startMark)
@@ -1202,7 +1234,7 @@ class ScannerImpl(
         reader.forward()
         val minor = scanYamlDirectiveNumber(startMark)
         c = reader.peek()
-        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
@@ -1254,11 +1286,11 @@ class ScannerImpl(
      */
     private fun scanTagDirectiveValue(startMark: Mark?): DirectiveToken.TagDirective {
         // See the specification for details.
-        while (reader.peek() == ' '.code) {
+        while (reader.peek() == ' '.code || reader.peek() == '\t'.code) {
             reader.forward()
         }
         val handle = scanTagDirectiveHandle(startMark)
-        while (reader.peek() == ' '.code) {
+        while (reader.peek() == ' '.code || reader.peek() == '\t'.code) {
             reader.forward()
         }
         val prefix = scanTagDirectivePrefix(startMark)
@@ -1275,7 +1307,7 @@ class ScannerImpl(
         // See the specification for details.
         val value = scanTagHandle("directive", startMark)
         val c = reader.peek()
-        if (c != ' '.code) {
+        if (c != ' '.code && c != '\t'.code) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
@@ -1294,7 +1326,7 @@ class ScannerImpl(
         // See the specification for details.
         val value = scanTagUri("directive", CharConstants.URI_CHARS_FOR_TAG_PREFIX, startMark)
         val c = reader.peek()
-        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = DIRECTIVE_PREFIX,
@@ -1308,7 +1340,7 @@ class ScannerImpl(
 
     private fun scanDirectiveIgnoredLine(startMark: Mark?): CommentToken? {
         // See the specification for details.
-        while (reader.peek() == ' '.code) {
+        while (reader.peek() == ' '.code || reader.peek() == '\t'.code) {
             reader.forward()
         }
         var commentToken: CommentToken? = null
@@ -1438,7 +1470,7 @@ class ScannerImpl(
             // is of the form !foo or !foo!bar.
             var length = 1
             var useHandle = false
-            while (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+            while (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
                 if (c == '!'.code) {
                     useHandle = true
                     break
@@ -1459,7 +1491,7 @@ class ScannerImpl(
         c = reader.peek()
         // Check that the next character is allowed to follow a tag-property,
         // if it is not, raise the error.
-        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = "while scanning a tag",
@@ -1634,7 +1666,7 @@ class ScannerImpl(
             indicator = null
         }
         c = reader.peek()
-        if (CharConstants.NULL_BL_LINEBR.hasNo(c)) {
+        if (CharConstants.NULL_BL_T_LINEBR.hasNo(c)) {
             val s = Character.toChars(c).concatToString()
             throw ScannerException(
                 problem = SCANNING_SCALAR,
@@ -1655,7 +1687,7 @@ class ScannerImpl(
         // See the specification for details.
 
         // Forward past any number of trailing spaces
-        while (reader.peek() == ' '.code) {
+        while (reader.peek() == ' '.code || reader.peek() == '\t'.code) {
             reader.forward()
         }
 

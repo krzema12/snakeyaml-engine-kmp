@@ -12,7 +12,7 @@ fun JobBuilder<*>.setupJdk() =
     uses(
         name = "Set up Gradle Daemon JDK",
         action = SetupJava(
-            javaVersion = "24",
+            javaVersion = "25",
             distribution = Temurin,
         ),
     )

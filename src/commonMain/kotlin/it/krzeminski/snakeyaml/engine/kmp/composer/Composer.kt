@@ -60,6 +60,10 @@ class Composer(
         if (parser.checkEvent(Event.ID.StreamStart)) {
             parser.next()
         }
+        // An in-line comment on the same line as a document marker (e.g. "--- # comment" or
+        // "... # comment") is emitted as a standalone CommentEvent; if no document follows, it sits
+        // in front of STREAM-END and must not be mistaken for another document.
+        inlineCommentsCollector.collectEvents().consume()
         // If there are more documents available?
         return !parser.checkEvent(Event.ID.StreamEnd)
     }
@@ -105,9 +109,12 @@ class Composer(
     override fun next(): Node {
         // Collect inter-document start comments
         blockCommentsCollector.collectEvents()
+        // An in-line comment on the same line as a document end marker (e.g. "... # comment")
+        // is emitted as a CommentEvent before the next DOCUMENT-START event; drop it here.
+        inlineCommentsCollector.collectEvents().consume()
         if (parser.checkEvent(Event.ID.StreamEnd)) {
             val commentLines = blockCommentsCollector.consume()
-            val startMark = commentLines.first().startMark
+            val startMark = commentLines.firstOrNull()?.startMark
             val children = mutableListOf<NodeTuple>()
             val node: Node = MappingNode(
                 tag = Tag.COMMENT,
@@ -122,6 +129,10 @@ class Composer(
         }
         // Drop the DOCUMENT-START event.
         parser.next()
+        // An in-line comment on the same line as the document start marker (e.g. "--- # comment")
+        // is emitted as a CommentEvent before the node event; drop it here so composeNode() sees
+        // the actual node event (comments cannot be supported here, same as for aliases).
+        inlineCommentsCollector.collectEvents().consume()
         // Compose the root node.
         val node = composeNode(null)
         // Drop the DOCUMENT-END event.
@@ -161,6 +172,11 @@ class Composer(
             blockCommentsCollector.consume()
             inlineCommentsCollector.collectEvents().consume()
         } else {
+            // A block scalar's header comment (e.g. "> # comment") is emitted before the node's own
+            // event. Usually a preceding sibling node (e.g. a mapping key) absorbs it as a trailing
+            // inline comment; where there is none (e.g. this is a sequence entry), it would otherwise
+            // sit in front of the node event below and break the cast to NodeEvent.
+            val leadingInlineComments = inlineCommentsCollector.collectEvents().consume()
             val event = parser.peekEvent() as NodeEvent
             val anchor: Anchor? = event.anchor
             // the check for duplicate anchors has been removed (issue 174)
@@ -170,6 +186,12 @@ class Composer(
                 composeSequenceNode(anchor)
             } else {
                 composeMappingNode(anchor)
+            }
+            if (leadingInlineComments.isNotEmpty()) {
+                // Merge rather than overwrite: composeScalarNode above may already have attached the
+                // NEXT node's leading comment as this node's trailing one (two adjacent block scalar
+                // entries, each with a header comment), and overwriting would drop it.
+                node.inLineComments = leadingInlineComments + node.inLineComments.orEmpty()
             }
         }
         if (parent != null) {
@@ -334,6 +356,9 @@ class Composer(
      */
     private fun composeMappingChildren(children: MutableList<NodeTuple>, node: MappingNode) {
         val itemKey = composeKeyNode(node)
+        if (itemKey.nodeType != NodeType.SCALAR && !settings.allowNonScalarKeys) {
+            throw YamlEngineException("Non scalar key is detected but it is not configured to be allowed.")
+        }
         if (itemKey.tag == Tag.MERGE) {
             node.hasMergeTag = true
         }

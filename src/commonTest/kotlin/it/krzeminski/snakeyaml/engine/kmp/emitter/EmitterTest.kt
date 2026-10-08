@@ -352,7 +352,7 @@ class EmitterTest: FunSpec({
 
         val output = dump(settings, f)
         output shouldBe "&id001 {*id001 : a}\n"
-        val load = Load(LoadSettings(allowRecursiveKeys = true))
+        val load = Load(LoadSettings(allowNonScalarKeys = true, allowRecursiveKeys = true))
         val obj = load.loadOne(output)
         obj.shouldNotBeNull()
     }

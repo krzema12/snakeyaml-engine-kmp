@@ -11,7 +11,7 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 class RecursiveSetTest: FunSpec({
     test("Fail to load map with recursive keys") {
         val recursiveInput = stringFromResources("/recursive/recursive-set-1.yaml")
-        val load = Load()
+        val load = Load(LoadSettings(allowNonScalarKeys = true))
         shouldThrow<YamlEngineException> {
             load.loadOne(recursiveInput)
         }.also {
@@ -21,7 +21,7 @@ class RecursiveSetTest: FunSpec({
 
     test("Load map with recursive keys if it is explicitly allowed") {
         val recursiveInput = stringFromResources("/recursive/recursive-set-1.yaml")
-        val settings = LoadSettings(allowRecursiveKeys = true)
+        val settings = LoadSettings(allowNonScalarKeys = true, allowRecursiveKeys = true)
         val load = Load(settings)
         @Suppress("UNCHECKED_CAST")
         val recursive = load.loadOne(recursiveInput) as Set<Any>

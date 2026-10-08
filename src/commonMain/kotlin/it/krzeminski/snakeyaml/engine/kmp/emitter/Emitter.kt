@@ -611,7 +611,11 @@ class Emitter(
                 indent = indents.removeLastOrNull()
                 state = states.removeLast()
             } else if (event is CommentEvent) {
+                val standalone = isStandaloneBlockSequenceComment(event as CommentEvent)
                 blockCommentsCollector.collectEvents(event)
+                if (standalone) {
+                    writeBlockComment()
+                }
             } else {
                 writeIndent()
                 if (!indentWithIndicator || first) {
@@ -643,6 +647,18 @@ class Emitter(
                 inlineCommentsCollector.collectEvents()
                 writeInlineComments()
             }
+        }
+
+        /**
+         * A comment before a block sequence item is standalone (on its own source line, at or before the
+         * column of the "-" indicator) rather than glued to the "-" of the previous line (as in
+         * `"- # comment\n  value"`). Standalone comments must be written before the "-" is written;
+         * glued comments are written after it, as part of the item's value.
+         */
+        private fun isStandaloneBlockSequenceComment(commentEvent: CommentEvent): Boolean {
+            val currentIndent = indent ?: return false
+            val column = commentEvent.startMark?.column ?: return false
+            return column <= currentIndent
         }
     }
 
@@ -717,10 +733,13 @@ class Emitter(
 
     private inner class ExpectBlockMappingValue : EmitterState {
         override fun expect() {
-            writeIndent()
-            writeIndicator(indicator = ":", needWhitespace = true, indentation = true)
+            // An explicit ("? key") key can itself carry a trailing in-line comment (e.g. a block
+            // scalar key's header comment); that comment must be written while still on the key's own
+            // line, before the value indicator, or it ends up orphaning the value below it.
             event = inlineCommentsCollector.collectEventsAndPoll(event)
             writeInlineComments()
+            writeIndent()
+            writeIndicator(indicator = ":", needWhitespace = true, indentation = true)
             event = blockCommentsCollector.collectEventsAndPoll(event)
             writeBlockComment()
             states.addLast(ExpectBlockMappingKey(false))

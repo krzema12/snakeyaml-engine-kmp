@@ -138,5 +138,17 @@ sealed class Node @JvmOverloads constructor(
      */
     fun getProperty(key: String): Any? = properties?.get(key)
 
+    /**
+     * Indicates whether the tag of this node was assigned by the resolver instead of being specified
+     * in the source.
+     *
+     * When it is `false`, [tag] is the tag as it was written in the document (with the tag handle
+     * expanded). The non-specific tag `!` counts as no tag: it is resolved as well.
+     *
+     * Set by [it.krzeminski.snakeyaml.engine.kmp.composer.Composer]. Nodes which are not composed
+     * from a document are resolved by default. Only relevant during loading.
+     *
+     * @return `true` if the tag is implicit, `false` if it is explicit
+     */
     fun isResolved(): Boolean = resolved
 }

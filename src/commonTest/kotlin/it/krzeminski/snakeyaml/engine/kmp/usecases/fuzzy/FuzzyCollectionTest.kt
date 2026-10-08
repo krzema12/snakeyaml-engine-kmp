@@ -14,6 +14,7 @@ class FuzzyCollectionTest : FunSpec({
         val datastring = " ? - - ? - - ? ? - - ? ? ? - - ? ? - - ? ? ? - - ? ? - ? ? - - ? - - ? ? ? - - ? ? - ?  -? - ? ? - - ? - - ? ? ? - - ? ? - ?  -? - ? ? - - ? - "
 
         val settings = LoadSettings(
+            allowNonScalarKeys = true,
             allowRecursiveKeys = true,
             maxAliasesForCollections = 1000,
             allowDuplicateKeys = true,

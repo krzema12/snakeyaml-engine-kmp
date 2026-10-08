@@ -160,6 +160,34 @@ list: # InlineComment1
         result shouldBe data
     }
 
+    test("sequence with standalone comment between items") {
+        val data = "- a\n# standalone comment\n- b\n"
+
+        val result = runEmitterWithCommentsEnabled(data)
+        result shouldBe data
+    }
+
+    test("indented sequence with standalone comment between items") {
+        val data = "list: # InlineComment1\n  - a\n  # standalone comment\n  - b\n"
+
+        val result = runEmitterWithCommentsEnabled(data)
+        result shouldBe data
+    }
+
+    test("sequence with multiple standalone comment lines between items") {
+        val data = "- a\n# comment 1\n# comment 2\n- b\n"
+
+        val result = runEmitterWithCommentsEnabled(data)
+        result shouldBe data
+    }
+
+    test("sequence with standalone comment before first item") {
+        val data = "# standalone comment\n- a\n- b\n"
+
+        val result = runEmitterWithCommentsEnabled(data)
+        result shouldBe data
+    }
+
     test("all comments 1") {
         val data = """# Block Comment1
 # Block Comment2

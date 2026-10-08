@@ -90,6 +90,9 @@ class LoadSettings(
     /**
      * Allow only non-recursive keys for maps and sets. By default, it is not allowed. Even though YAML
      * allows using anything as a key, it may cause unexpected issues when loading recursive structures.
+     *
+     * A recursive key is necessarily a collection, so this only takes effect together with
+     * [allowNonScalarKeys] set to `true`.
      */
     val allowRecursiveKeys: Boolean = false,
 
@@ -145,6 +148,15 @@ class LoadSettings(
      *
      */
     val schema: Schema = DEFAULT_SCHEMA,
+
+    /**
+     * Non-scalar keys in a mapping may cause issues when used with an untrusted source. Since using a
+     * collection as a key in mapping is a relatively rare use case (and it is not supported in JSON),
+     * this possibility is switched off by default (even though it is a standard feature of YAML).
+     *
+     * `true` when any collection may be a key in a mapping. `false` by default.
+     */
+    val allowNonScalarKeys: Boolean = false,
 ) {
     fun interface CollectionProvider<T> {
         operator fun invoke(initialCapacity: Int): T

@@ -41,7 +41,7 @@ jobs:
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v6'
       with:
-        java-version: '24'
+        java-version: '25'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
@@ -68,7 +68,7 @@ jobs:
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v6'
       with:
-        java-version: '24'
+        java-version: '25'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'
@@ -95,7 +95,7 @@ jobs:
       name: 'Set up Gradle Daemon JDK'
       uses: 'actions/setup-java@v6'
       with:
-        java-version: '24'
+        java-version: '25'
         distribution: 'temurin'
     - id: 'step-2'
       name: 'Cache Kotlin Konan'

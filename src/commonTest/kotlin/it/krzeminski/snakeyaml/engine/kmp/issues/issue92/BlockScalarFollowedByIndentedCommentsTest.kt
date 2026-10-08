@@ -16,7 +16,9 @@ import it.krzeminski.snakeyaml.engine.kmp.nodes.MappingNode
 import it.krzeminski.snakeyaml.engine.kmp.nodes.ScalarNode
 
 /**
- * Issue 92: a block scalar (| or >) nested inside a collection, followed by two or more indented
+ * Ported from issue 92 in SnakeYAML Engine.
+ *
+ * A block scalar (| or >) nested inside a collection, followed by two or more indented
  * comment lines separated by a blank line, used to make the scanner misclassify those whole-line
  * comments as in-line comments. The stray comment event then leaked into the composer, which threw
  * an unchecked ClassCastException when comment parsing was enabled.
@@ -29,12 +31,12 @@ class BlockScalarFollowedByIndentedCommentsTest : FunSpec({
 
     fun foo(loaded: Any?): Any? = ((loaded as Map<*, *>)["cm"] as Map<*, *>)["foo"]
 
-    test("Issue 92: literal block scalar followed by two indented comments loads as expected") {
+    test("literal block scalar followed by two indented comments loads as expected") {
         val yaml = "cm:\n  foo: |\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         Load(settings).loadOne(yaml) shouldBe mapOf("cm" to mapOf("foo" to "x\n", "bar" to 1))
     }
 
-    test("Issue 92: the indented comments are attached as block comments, not dropped") {
+    test("the indented comments are attached as block comments, not dropped") {
         val yaml = "cm:\n  foo: |\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         val root = Compose(settings).compose(yaml).shouldNotBeNull() as MappingNode
         val tuples = (root.value[0].valueNode as MappingNode).value
@@ -51,29 +53,29 @@ class BlockScalarFollowedByIndentedCommentsTest : FunSpec({
         blockComments[2].value shouldBe " comment 2"
     }
 
-    test("Issue 92: folded block scalar variant") {
+    test("folded block scalar variant") {
         val yaml = "cm:\n  foo: >\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         foo(Load(settings).loadOne(yaml)) shouldBe "x\n"
     }
 
-    test("Issue 92: explicit chomping indicator variant") {
+    test("explicit chomping indicator variant") {
         val yaml = "cm:\n  foo: |-\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         foo(Load(settings).loadOne(yaml)) shouldBe "x"
     }
 
-    test("Issue 92: block scalar inside a sequence item variant") {
+    test("block scalar inside a sequence item variant") {
         val yaml = "- foo: |\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         Load(settings).loadOne(yaml) shouldBe listOf(mapOf("foo" to "x\n", "bar" to 1))
     }
 
-    test("Issue 92: '#' lines indented to the block scalar's own content level are literal content, not comments - only dedented lines are") {
+    test("'#' lines indented to the block scalar's own content level are literal content, not comments - only dedented lines are") {
         val yaml = "cm:\n  foo: |\n    x\n    # comment 1\n\n    # comment 2\n  bar: 1\n"
         Load(settings).loadOne(yaml) shouldBe
             mapOf("cm" to mapOf("foo" to "x\n# comment 1\n\n# comment 2\n", "bar" to 1))
         commentTypes(yaml) shouldBe emptyList()
     }
 
-    test("Issue 92: a single indented comment is a block comment on the next key, not an in-line comment on the block scalar") {
+    test("a single indented comment is a block comment on the next key, not an in-line comment on the block scalar") {
         val yaml = "cm:\n  foo: |\n    x\n  # comment\n  bar: 1\n"
         val root = Compose(settings).compose(yaml).shouldNotBeNull() as MappingNode
         val cm = root.value[0].valueNode as MappingNode
@@ -85,24 +87,24 @@ class BlockScalarFollowedByIndentedCommentsTest : FunSpec({
         comments[0].commentType shouldBe CommentType.BLOCK
     }
 
-    test("Issue 92: indented comments at the end of the stream variant") {
+    test("indented comments at the end of the stream variant") {
         val yaml = "cm:\n  foo: |\n    x\n  # comment 1\n\n  # comment 2\n"
         foo(Load(settings).loadOne(yaml)) shouldBe "x\n"
     }
 
-    test("Issue 92: indented comments at the end of the stream variant (not comments)") {
+    test("indented comments at the end of the stream variant (not comments)") {
         val yaml = "cm:\n  foo: |\n    x\n    # comment 1\n\n    # comment 2\n  bar: 1"
         foo(Load(settings).loadOne(yaml)) shouldBe "x\n# comment 1\n\n# comment 2\n"
     }
 
-    test("Issue 92: CRLF line breaks - the classification hinges on the column the reader reports after a line break") {
+    test("CRLF line breaks - the classification hinges on the column the reader reports after a line break") {
         val yaml = "cm:\r\n  foo: |\r\n    x\r\n  # comment 1\r\n\r\n  # comment 2\r\n  bar: 1\r\n"
         Load(settings).loadOne(yaml) shouldBe mapOf("cm" to mapOf("foo" to "x\n", "bar" to 1))
         commentTypes(yaml) shouldBe
             listOf(CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK)
     }
 
-    test("Issue 92: a genuine in-line comment on the block scalar header stays IN_LINE while the trailing indented comments become BLOCK") {
+    test("a genuine in-line comment on the block scalar header stays IN_LINE while the trailing indented comments become BLOCK") {
         val yaml = "cm:\n  foo: | # inline\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         commentTypes(yaml) shouldBe listOf(
             CommentType.IN_LINE, CommentType.BLOCK, CommentType.BLANK_LINE, CommentType.BLOCK,
@@ -123,7 +125,7 @@ class BlockScalarFollowedByIndentedCommentsTest : FunSpec({
         blockComments[2].value shouldBe " comment 2"
     }
 
-    test("Issue 92: the reproducer round trips - the comments are not merely present but positioned so that the emitter reproduces the input exactly") {
+    test("the reproducer round trips - the comments are not merely present but positioned so that the emitter reproduces the input exactly") {
         val yaml = "cm:\n  foo: |\n    x\n  # comment 1\n\n  # comment 2\n  bar: 1\n"
         val node = Compose(settings).compose(yaml).shouldNotBeNull()
 

@@ -13,7 +13,9 @@ import it.krzeminski.snakeyaml.engine.kmp.stringFromResources
 import java.math.BigDecimal
 
 /**
- * Test for Issue 79 - float values should preserve decimal precision using BigDecimal.
+ * Ported from issue 79 in SnakeYAML Engine.
+ *
+ * Float values should preserve decimal precision using BigDecimal.
  *
  * Adaptation: upstream subclasses `ConstructYamlJsonFloat` and overrides its protected
  * `constructFromString`. In KMP that method is private (and returns `Double`), so the
@@ -30,7 +32,7 @@ class FloatPrecisionTest : FunSpec({
         }
     }
 
-    test("Issue 79: float values should be parsed as BigDecimal for exact decimal precision") {
+    test("float values should be parsed as BigDecimal for exact decimal precision") {
         val yaml = stringFromResources("/issues/issue79-input.yaml")
         val settings = LoadSettings(tagConstructors = mapOf(Tag.FLOAT to ConstructBigDecimalFloat()))
         val root = Load(settings).loadOne(yaml) as Map<*, *>

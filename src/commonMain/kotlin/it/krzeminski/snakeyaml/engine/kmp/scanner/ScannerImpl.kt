@@ -80,7 +80,7 @@ class ScannerImpl(
      * True when a block scalar has just been scanned and scanBlockScalarBreaks() consumed the leading
      * whitespace of the line that follows it. The reader then sits at a non-zero column even though
      * only whitespace precedes it on that line, so reader.column must not be used to decide
-     * whether something appears at the start of a line. See issue 92.
+     * whether something appears at the start of a line.
      */
     private var lineStartConsumedByBlockScalar = false
 
@@ -121,7 +121,7 @@ class ScannerImpl(
      * True if the whitespace in front of the current token (on the same line) contains TAB, in the
      * block context. TAB is valid separation, but it may not act as indentation. It means that such a
      * token may not start a block collection: neither a block entry, nor an explicit key, nor a
-     * simple key (see issue 99 and Y79Y in the test suite).
+     * simple key (see Y79Y in the test suite).
      */
     private var tabSeparated = false
 
@@ -1023,7 +1023,7 @@ class ScannerImpl(
      * Tabs are separation whitespace after a token on the same line, but they
      * cannot be indentation. A token preceded by a tab (see `tabSeparated`)
      * cannot start a block collection: BLOCK-ENTRY, KEY(block) and a simple key
-     * are rejected (issue 99).
+     * are rejected.
      */
     private fun scanToNextToken() {
         var found = false
@@ -1066,7 +1066,7 @@ class ScannerImpl(
                     ff = lookAhead
                 } else if (afterTokenOnLine) {
                     // TAB after a token on the same line (e.g. 'key:<TAB>value' or
-                    // '-<TAB>item') is separation whitespace (issue 99). The next token
+                    // '-<TAB>item') is separation whitespace. The next token
                     // may not start a block collection, which is checked later.
                     ff = lookAhead
                     tabSeparated = true

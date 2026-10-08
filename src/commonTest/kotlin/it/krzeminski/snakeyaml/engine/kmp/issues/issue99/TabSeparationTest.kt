@@ -11,7 +11,9 @@ import it.krzeminski.snakeyaml.engine.kmp.exceptions.ScannerException
 import it.krzeminski.snakeyaml.engine.kmp.exceptions.YamlEngineException
 
 /**
- * Issue 99: YAML 1.2 forbids TAB in indentation only. TAB is legal separation whitespace between
+ * Ported from issue 99 in SnakeYAML Engine.
+ *
+ * YAML 1.2 forbids TAB in indentation only. TAB is legal separation whitespace between
  * tokens on a line, also in block context. It still may not be used where it would act as
  * indentation, i.e. in front of a block collection indicator or an implicit key which starts a new
  * block mapping (see Y79Y in the YAML test suite).
@@ -26,25 +28,25 @@ class TabSeparationTest : FunSpec({
         }
     }
 
-    test("Issue 99: TAB after the ':' value indicator") {
+    test("TAB after the ':' value indicator") {
         load("a:\tvalue") shouldBe mapOf("a" to "value")
         load("a: \tvalue") shouldBe mapOf("a" to "value")
         load("a:\t \tvalue") shouldBe mapOf("a" to "value")
         load("a:\n  b:\tc") shouldBe mapOf("a" to mapOf("b" to "c"))
     }
 
-    test("Issue 99: TAB after the '-' block entry indicator") {
+    test("TAB after the '-' block entry indicator") {
         load("-\tx") shouldBe listOf("x")
         load("- \tx") shouldBe listOf("x")
         load("-\tx\n-\ty") shouldBe listOf("x", "y")
     }
 
-    test("Issue 99: TAB after explicit key and value indicators") {
+    test("TAB after explicit key and value indicators") {
         load("? a\n:\tb") shouldBe mapOf("a" to "b")
         load("?\ta\n:\tb") shouldBe mapOf("a" to "b")
     }
 
-    test("Issue 99: TAB before flow collections and quoted scalars") {
+    test("TAB before flow collections and quoted scalars") {
         load("a:\t[1, 2]") shouldBe mapOf("a" to listOf(1, 2))
         load("a:\t{b: 1}") shouldBe mapOf("a" to mapOf("b" to 1))
         load("a:\t\"q\"") shouldBe mapOf("a" to "q")
@@ -52,41 +54,41 @@ class TabSeparationTest : FunSpec({
         load("\"a\"\t: b") shouldBe mapOf("a" to "b")
     }
 
-    test("Issue 99: TAB after the document start marker") {
+    test("TAB after the document start marker") {
         load("---\tx") shouldBe "x"
         load("--- \tx") shouldBe "x"
     }
 
-    test("Issue 99: TAB after anchors and tags") {
+    test("TAB after anchors and tags") {
         load("a: &x\t1") shouldBe mapOf("a" to 1)
         load("a: !!str\t1") shouldBe mapOf("a" to "1")
         load("a: !!str\t&x\t1") shouldBe mapOf("a" to "1")
     }
 
-    test("Issue 99: TAB inside directives") {
+    test("TAB inside directives") {
         load("%YAML\t1.2\t# c\n---\ta") shouldBe "a"
         load("%TAG\t!e!\ttag:yaml.org,2002:\n--- !e!str\ta") shouldBe "a"
     }
 
-    test("Issue 99: TAB around block scalar headers") {
+    test("TAB around block scalar headers") {
         load("a:\t|\n  x\n") shouldBe mapOf("a" to "x\n")
         load("a: |\t# c\n  x\n") shouldBe mapOf("a" to "x\n")
         load("a: |\t\n  x\n") shouldBe mapOf("a" to "x\n")
     }
 
-    test("Issue 99: TAB before a plain scalar that only looks like an indicator") {
+    test("TAB before a plain scalar that only looks like an indicator") {
         load("-\t-1") shouldBe listOf(-1)
         load("? a\n: -\tb") shouldBe mapOf("a" to listOf("b"))
     }
 
-    test("Issue 99: TAB and space mixed in flow context") {
+    test("TAB and space mixed in flow context") {
         load("a: {b:\t c}\n") shouldBe mapOf("a" to mapOf("b" to "c"))
         load("a: [1,\t 2]") shouldBe mapOf("a" to listOf(1, 2))
         load("a: [1, \t \t2]") shouldBe mapOf("a" to listOf(1, 2))
         load("{\n\t \"a\": 1\n}") shouldBe mapOf("a" to 1)
     }
 
-    test("Issue 99: TAB may not precede a block collection indicator") {
+    test("TAB may not precede a block collection indicator") {
         assertFails("-\t-")
         assertFails("- \t-")
         assertFails("?\t-")
@@ -95,13 +97,13 @@ class TabSeparationTest : FunSpec({
         shouldThrow<YamlEngineException> { load("a:\t- x") }
     }
 
-    test("Issue 99: TAB may not precede an implicit key which starts a new block mapping") {
+    test("TAB may not precede an implicit key which starts a new block mapping") {
         assertFails("?\tkey:")
         assertFails("? key:\n:\tkey:")
         assertFails("-\ta: b")
     }
 
-    test("Issue 99: TAB as indentation is still rejected") {
+    test("TAB as indentation is still rejected") {
         assertFails("a:\n\tb: c")
         // Divergence from upstream: upstream reports this input with a TAB-specific message. KMP still
         // rejects it, but with a different message, because KMP's scanPlainSpaces also skips TABs on
